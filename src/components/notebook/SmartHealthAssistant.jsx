@@ -270,7 +270,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
                      <div className="text-sm leading-relaxed markdown-content">
                        <ReactMarkdown
                          components={{
-                           a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-white/80" />
+                           a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" className={`underline font-semibold transition-colors ${msg.role === "user" ? "text-white hover:text-white/80" : "text-primary hover:text-primary/80"}`} />
                          }}
                        >
                          {msg.content}
