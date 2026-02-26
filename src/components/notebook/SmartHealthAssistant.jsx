@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import ReactMarkdown from "react-markdown";
 import { 
   Mic, Camera, X, Check, Loader2, Sparkles, 
   Keyboard, ChevronRight, ArrowLeft 
@@ -266,7 +267,15 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
                        </div>
                      ) : null}
                      
-                     <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                     <div className="text-sm leading-relaxed markdown-content">
+                       <ReactMarkdown
+                         components={{
+                           a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-white/80" />
+                         }}
+                       >
+                         {msg.content}
+                       </ReactMarkdown>
+                     </div>
 
                      {/* Inline Suggestions (only on the LAST assistant message if not processing) */}
                      {msg.role === "assistant" && i === messages.length - 1 && !isProcessing && suggestedActions.length > 0 && (
