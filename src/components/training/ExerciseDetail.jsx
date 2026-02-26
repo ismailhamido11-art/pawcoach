@@ -1,5 +1,7 @@
 import { ArrowLeft, Timer, CheckCircle, HelpCircle, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 const LEVEL_CONFIG = {
   debutant: { label: "Débutant", color: "text-green-700 bg-green-50 border-green-200" },
