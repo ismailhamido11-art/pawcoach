@@ -45,11 +45,11 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
 
   // Initialize conversation when opening
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      // Trigger initial greeting
+    if (isOpen && messages.length === 0 && dogId) {
+      // Trigger initial greeting only when we have dogId
       processConversation([]);
     }
-  }, [isOpen]);
+  }, [isOpen, dogId]);
 
   // Scroll to bottom
   useEffect(() => {
