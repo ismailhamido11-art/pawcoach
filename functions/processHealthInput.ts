@@ -124,7 +124,8 @@ ${historyContext}
 
     if (!response.ok) {
       const err = await response.text();
-      return Response.json({ error: err }, { status: response.status });
+      console.error(`OpenRouter error (${response.status}):`, err);
+      return Response.json({ error: `OpenRouter error: ${err}` }, { status: response.status });
     }
 
     const data = await response.json();
