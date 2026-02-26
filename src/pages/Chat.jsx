@@ -54,8 +54,24 @@ export default function Chat() {
   const bottomRef = useRef(null);
   const fileInputRef = useRef(null);
 
+  const helpSent = useRef(false);
+
   useEffect(() => { initChat(); }, []);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+
+  // Auto-send help message from Training tab
+  useEffect(() => {
+    if (!initializing && dog && !helpSent.current) {
+      const params = new URLSearchParams(window.location.search);
+      const helpMsg = params.get("help");
+      if (helpMsg) {
+        helpSent.current = true;
+        sendMessage(decodeURIComponent(helpMsg));
+        // Clean URL without reload
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    }
+  }, [initializing, dog]);
 
   const initChat = async () => {
     const u = await base44.auth.me();
