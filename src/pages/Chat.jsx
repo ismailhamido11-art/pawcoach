@@ -103,11 +103,6 @@ RÈGLES IMPORTANTES :
       .slice(-10)
       .map(m => ({ role: m.role, content: m.content }));
 
-    const response = await base44.integrations.Core.InvokeLLM({
-      prompt: content,
-      response_json_schema: null,
-    });
-
     const aiResponse = await base44.integrations.Core.InvokeLLM({
       prompt: `${buildSystemPrompt(dog)}\n\n--- Historique de conversation ---\n${history.map(m => `${m.role === "user" ? "Utilisateur" : "PawCoach"}: ${m.content}`).join("\n")}\n\nUtilisateur: ${content}\n\nPawCoach:`,
     });
