@@ -196,7 +196,7 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
           <div className="w-10 h-10" />
         )}
         <div className="flex-1 bg-secondary h-2 rounded-full overflow-hidden">
-          <div className="bg-primary h-full transition-all duration-500" style={{ width: \`\${progress}%\` }} />
+          <div className="bg-primary h-full transition-all duration-500" style={{ width: `${progress}%` }} />
         </div>
         <div className="w-10 flex items-center justify-end font-bold text-sm text-muted-foreground">
           {step + 1}/{INTERVIEW_STEPS.length}
@@ -238,11 +238,11 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
             {/* Big Mic Button */}
             <button
               onClick={toggleMic}
-              className={\`relative w-36 h-36 sm:w-40 sm:h-40 rounded-full flex items-center justify-center transition-all tap-scale mb-12 \${
+              className={`relative w-36 h-36 sm:w-40 sm:h-40 rounded-full flex items-center justify-center transition-all tap-scale mb-12 ${
                 listening 
                   ? "bg-red-500 shadow-[0_0_50px_rgba(239,68,68,0.5)]" 
                   : "bg-primary shadow-2xl shadow-primary/30 hover:scale-105"
-              }\`}
+              }`}
             >
               {listening ? (
                 <>
