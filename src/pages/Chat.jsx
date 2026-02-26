@@ -4,6 +4,7 @@ import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Bot, Camera, Lock } from "lucide-react";
+import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 
 function getAge(birthDate) {
@@ -16,17 +17,18 @@ function buildSystemPrompt(d) {
   const activityMap = { faible: "Faible", modere: "Modérée", eleve: "Élevée", tres_eleve: "Très élevée" };
   const envMap = { appartement: "Appartement", maison_sans_jardin: "Maison sans jardin", maison_avec_jardin: "Maison avec jardin" };
   return `Tu es PawCoach, le coach bien-être et dressage canin personnel de l'utilisateur.
-PROFIL DU CHIEN:
-Prénom: ${d.name}
-Race: ${d.breed || "inconnue"}
-Age: ${getAge(d.birth_date) || "inconnu"}
-Poids: ${d.weight ? d.weight + " kg" : "inconnu"}
-Sexe: ${d.sex === "male" ? "Mâle" : d.sex === "female" ? "Femelle" : "inconnu"}
-Stérilisé: ${d.neutered ? "Oui" : "Non"}
-Activité: ${activityMap[d.activity_level] || "inconnue"}
-Environnement: ${envMap[d.environment] || "inconnu"}
-Allergies: ${d.allergies || "aucune"}
-Problèmes connus: ${d.health_issues || "aucun"}
+  PROFIL DU CHIEN:
+  Prénom: ${d.name}
+  Race: ${d.breed || "inconnue"}
+  Age: ${getAge(d.birth_date) || "inconnu"}
+  Poids: ${d.weight ? d.weight + " kg" : "inconnu"}
+  Sexe: ${d.sex === "male" ? "Mâle" : d.sex === "female" ? "Femelle" : "inconnu"}
+  Stérilisé: ${d.neutered ? "Oui" : "Non"}
+  Activité: ${activityMap[d.activity_level] || "inconnue"}
+  Environnement: ${envMap[d.environment] || "inconnu"}
+  Allergies: ${d.allergies || "aucune"}
+  Problèmes connus: ${d.health_issues || "aucun"}
+  Vétérinaire: ${d.vet_name || "Non renseigné"} (${d.vet_city || "Ville inconnue"})
 
 RÈGLES:
 1) Tu es un coach informatif, PAS vétérinaire.
@@ -366,6 +368,7 @@ export default function Chat() {
                 placeholder={dog ? `Question sur ${dog.name}...` : "Posez votre question..."}
                 className="flex-1 h-11 rounded-xl border-border bg-muted/30"
               />
+              <VoiceInput onTranscript={(text) => setInput(text)} className="h-11 w-11 !rounded-xl border border-border" />
               <Button
                 onClick={() => sendMessage()}
                 disabled={(!input.trim() && !pendingImage) || loading}
