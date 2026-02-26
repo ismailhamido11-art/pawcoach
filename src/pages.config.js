@@ -48,9 +48,9 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Chat from './pages/Chat';
-import Scan from './pages/Scan';
 import Notebook from './pages/Notebook';
 import Onboarding from './pages/Onboarding';
+import Scan from './pages/Scan';
 import Training from './pages/Training';
 import Premium from './pages/Premium';
 import Profile from './pages/Profile';
@@ -59,9 +59,9 @@ import __Layout from './Layout.jsx';
 
 export const PAGES = {
     "Chat": Chat,
-    "Scan": Scan,
     "Notebook": Notebook,
     "Onboarding": Onboarding,
+    "Scan": Scan,
     "Training": Training,
     "Premium": Premium,
     "Profile": Profile,

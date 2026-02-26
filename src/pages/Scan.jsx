@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import ShareCard from "../components/scan/ShareCard";
 import { Button } from "@/components/ui/button";

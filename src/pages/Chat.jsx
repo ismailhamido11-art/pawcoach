@@ -43,6 +43,7 @@ function getTodayString() {
 }
 
 export default function Chat() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
   const [messages, setMessages] = useState([]);
