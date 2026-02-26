@@ -54,6 +54,7 @@ import Scan from './pages/Scan';
 import Training from './pages/Training';
 import Premium from './pages/Premium';
 import Profile from './pages/Profile';
+import Nutrition from './pages/Nutrition';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +66,7 @@ export const PAGES = {
     "Training": Training,
     "Premium": Premium,
     "Profile": Profile,
+    "Nutrition": Nutrition,
 }
 
 export const pagesConfig = {
