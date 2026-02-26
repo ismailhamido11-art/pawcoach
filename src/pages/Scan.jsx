@@ -193,6 +193,10 @@ export default function Scan() {
     });
     setSaved(true);
     setHistory(prev => [result, ...prev]);
+
+    const newPoints = (user.points || 0) + 10;
+    await base44.auth.updateMe({ points: newPoints });
+    setUser(prev => ({ ...prev, points: newPoints }));
   };
 
   const reset = () => {

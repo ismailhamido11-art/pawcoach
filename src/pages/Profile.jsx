@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import GamificationDashboard from "../components/gamification/GamificationDashboard";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -89,6 +90,8 @@ export default function Profile() {
             <ChevronRight className="w-5 h-5 text-white flex-shrink-0" />
           </button>
         )}
+
+        <GamificationDashboard points={user?.points || 0} />
 
         {/* My dogs */}
         <div className="bg-white rounded-2xl border border-border overflow-hidden">

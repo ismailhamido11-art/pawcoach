@@ -79,6 +79,10 @@ export default function Training() {
         completed_date: new Date().toISOString().split("T")[0],
       });
       newProgresses = [...progresses, newP];
+      
+      const newPoints = (user.points || 0) + 50;
+      await base44.auth.updateMe({ points: newPoints });
+      setUser(prev => ({ ...prev, points: newPoints }));
     }
 
     setProgresses(newProgresses);

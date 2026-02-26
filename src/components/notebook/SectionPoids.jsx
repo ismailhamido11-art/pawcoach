@@ -31,6 +31,10 @@ export default function SectionPoids({ records, dogId, onAdd, onDelete }) {
       value: parseFloat(form.value),
     });
     onAdd(rec);
+    try {
+      const u = await base44.auth.me();
+      await base44.auth.updateMe({ points: (u.points || 0) + 20 });
+    } catch(e) {}
     setForm({ value: "", date: new Date().toISOString().split("T")[0] });
     setShowForm(false);
     setSaving(false);

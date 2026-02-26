@@ -23,6 +23,10 @@ export default function SectionVaccins({ records, dogId, onAdd, onDelete }) {
       next_date: form.next_date || null,
     });
     onAdd(rec);
+    try {
+      const u = await base44.auth.me();
+      await base44.auth.updateMe({ points: (u.points || 0) + 20 });
+    } catch(e) {}
     setForm({ title: "", date: "", next_date: "" });
     setShowForm(false);
     setSaving(false);
