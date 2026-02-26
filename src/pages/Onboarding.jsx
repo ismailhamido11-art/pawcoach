@@ -153,7 +153,7 @@ export default function Onboarding() {
         <div className="px-5 py-6">
           {step === 0 && <StepDogInfo data={data} onChange={handleChange} />}
           {step === 1 && <StepProfile data={data} onChange={handleChange} />}
-          {step === 2 && <StepHealth data={data} onChange={handleChange} />}
+          {step === 2 && <StepHealth data={data} onChange={handleChange} dogName={data.name} onVetDataExtracted={setVetExtracted} />}
         </div>
       </div>
 
