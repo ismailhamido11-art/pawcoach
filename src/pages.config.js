@@ -51,6 +51,7 @@ import Onboarding from './pages/Onboarding';
 import Training from './pages/Training';
 import Notebook from './pages/Notebook';
 import Scan from './pages/Scan';
+import Chat from './pages/Chat';
 import __Layout from './Layout.jsx';
 
 
@@ -59,6 +60,7 @@ export const PAGES = {
     "Training": Training,
     "Notebook": Notebook,
     "Scan": Scan,
+    "Chat": Chat,
 }
 
 export const pagesConfig = {
