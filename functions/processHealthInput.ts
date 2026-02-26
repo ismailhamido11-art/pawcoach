@@ -6,11 +6,14 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    // Support new "conversation" mode or legacy "single input" mode
     const { messages, text, imageUrl, dogId } = await req.json();
 
     const apiKey = Deno.env.get("OPENROUTER_API_KEY");
-    if (!apiKey) return Response.json({ error: 'Missing OPENROUTER_API_KEY' }, { status: 500 });
+    console.log("[DEBUG] apiKey exists:", !!apiKey, "Length:", apiKey?.length);
+    if (!apiKey) {
+      console.error("[ERROR] OPENROUTER_API_KEY not found in env");
+      return Response.json({ error: 'Missing OPENROUTER_API_KEY' }, { status: 500 });
+    }
 
     const today = new Date().toISOString().split("T")[0];
 
