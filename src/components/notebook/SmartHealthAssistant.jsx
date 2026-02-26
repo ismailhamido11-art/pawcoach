@@ -205,7 +205,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
         )}
       </DialogTrigger>
       
-      <DialogContent className="max-w-none w-full h-full p-0 border-0 bg-background/95 backdrop-blur-xl sm:rounded-none" hideClose>
+      <DialogContent className="max-w-none w-full h-full p-0 border-0 bg-background/95 backdrop-blur-xl sm:rounded-none">
         <div className="h-full flex flex-col relative overflow-hidden bg-gradient-to-br from-background via-white to-secondary/20">
           
           {/* Header */}
