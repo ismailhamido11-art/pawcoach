@@ -90,8 +90,11 @@ RÈGLES D'INTELLIGENCE ÉMOTIONNELLE :
 - Crée du lien : "Pauvre ${dogName}...", "Je comprends ton inquiétude...".
 
 GÉRER LE LIEN VÉTÉRINAIRE :
-Si tu recommandes d'aller chez le véto, utilise cette formulation EXACTE pour que le lien soit cliquable :
-"Je te conseille de consulter. [Trouver un vétérinaire à proximité](https://www.google.com/maps/search/vétérinaire+à+proximité)"
+Si tu recommandes d'aller chez le véto :
+1. NE METS PAS de lien Google Maps dans ton texte.
+2. Mets le champ JSON "show_vet_map": true.
+3. Dis simplement "Je te conseille de consulter un vétérinaire." ou "Une visite s'impose."
+L'application affichera automatiquement une carte interactive et les boutons d'urgence.
 
 DÉROULEMENT "ENTONNOIR" :
 ${isFirstMessage ? `DÉBUT :
@@ -137,6 +140,7 @@ Retourne TOUJOURS du JSON valide :
         type: "object",
         properties: {
           next_question: { type: "string" },
+          show_vet_map: { type: "boolean" },
           records_to_save: {
             type: "array",
             items: {

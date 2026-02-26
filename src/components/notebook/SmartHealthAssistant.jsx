@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import ReactMarkdown from "react-markdown";
 import { 
   Mic, Camera, X, Check, Loader2, Sparkles, 
-  Keyboard, ChevronRight, ArrowLeft, ExternalLink, MapPin
+  Keyboard, ChevronRight, ArrowLeft, ExternalLink, MapPin, Phone, AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +33,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
   
   // Conversation state
   const [messages, setMessages] = useState([]);
+  // Helper to detect if a message has a vet map card
   const [inputValue, setInputValue] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
@@ -73,7 +74,11 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
 
       // 1. Add assistant response (next question)
       if (data.next_question) {
-        addMessage({ role: "assistant", content: data.next_question });
+        addMessage({ 
+          role: "assistant", 
+          content: data.next_question,
+          show_vet_map: data.show_vet_map // Attach the flag to the message
+        });
       }
 
       // 2. Handle document scan suggestion
@@ -316,6 +321,49 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
                      `} />
                    </div>
                  </motion.div>
+
+                 {/* VET CARD - Displayed outside the bubble if show_vet_map is true */}
+                 {msg.role === "assistant" && msg.show_vet_map && (
+                   <motion.div 
+                     initial={{ opacity: 0, y: 10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     className="mx-4 mt-2 mb-4 bg-white rounded-xl shadow-lg border border-red-100 overflow-hidden"
+                   >
+                     <div className="bg-red-50 p-3 border-b border-red-100 flex items-center gap-2">
+                       <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                         <AlertCircle className="w-5 h-5 text-red-600" />
+                       </div>
+                       <div>
+                         <h4 className="font-bold text-red-900 text-sm">Consultation recommandée</h4>
+                         <p className="text-xs text-red-700">Trouver un professionnel à proximité</p>
+                       </div>
+                     </div>
+                     <div className="p-3 grid grid-cols-2 gap-3">
+                       <a 
+                         href="https://www.google.com/maps/search/vétérinaire+à+proximité" 
+                         target="_blank" 
+                         rel="noopener noreferrer"
+                         className="flex flex-col items-center justify-center gap-2 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors group"
+                       >
+                         <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                           <MapPin className="w-5 h-5 text-blue-600" />
+                         </div>
+                         <span className="text-xs font-semibold text-slate-700">Ouvrir Maps</span>
+                       </a>
+                       <a 
+                         href="https://www.google.com/search?q=urgence+vétérinaire+à+proximité" 
+                         target="_blank" 
+                         rel="noopener noreferrer"
+                         className="flex flex-col items-center justify-center gap-2 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors group"
+                       >
+                         <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center group-hover:bg-red-100 transition-colors">
+                           <Phone className="w-5 h-5 text-red-600" />
+                         </div>
+                         <span className="text-xs font-semibold text-slate-700">Urgences</span>
+                       </a>
+                     </div>
+                   </motion.div>
+                 )}
                ))}
 
                {isProcessing && (
