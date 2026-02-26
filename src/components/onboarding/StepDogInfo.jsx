@@ -72,12 +72,15 @@ export default function StepDogInfo({ data, onChange }) {
         <Label className="text-sm font-semibold text-foreground mb-2 block">
           Prénom de votre chien <span className="text-primary">*</span>
         </Label>
-        <Input
-          placeholder="Ex : Lulu, Max, Bella..."
-          value={data.name || ""}
-          onChange={e => onChange("name", e.target.value)}
-          className="h-13 rounded-2xl border-border bg-white text-base shadow-sm focus-visible:ring-primary"
-        />
+        <div className="flex gap-2">
+          <Input
+            placeholder="Ex : Lulu, Max, Bella..."
+            value={data.name || ""}
+            onChange={e => onChange("name", e.target.value)}
+            className="h-11 rounded-2xl border-border bg-white text-base shadow-sm focus-visible:ring-primary"
+          />
+          <VoiceInput onTranscript={t => onChange("name", t)} />
+        </div>
       </div>
 
       {/* Breed */}
