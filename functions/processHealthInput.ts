@@ -63,6 +63,15 @@ ${historyContext}
       }
     ];
 
+    // Determine if there's an image in the conversation
+    let hasImage = imageUrl;
+    if (!hasImage && messages && Array.isArray(messages)) {
+      hasImage = messages.some(msg => msg.image_url);
+    }
+
+    // Select model based on content type
+    const model = hasImage ? "openai/gpt-4o" : "deepseek/deepseek-v3.2";
+
     if (messages && Array.isArray(messages)) {
       // New conversation mode
       messages.forEach(msg => {
@@ -88,7 +97,7 @@ ${historyContext}
         "X-Title": "PawCoach",
       },
       body: JSON.stringify({
-        model: "openai/gpt-4o",
+        model: model,
         messages: llmMessages,
         response_format: { type: "json_object" }
       }),
