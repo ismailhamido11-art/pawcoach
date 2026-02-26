@@ -9,22 +9,51 @@ export default function SectionVaccins({ records, dogId, onDelete }) {
 
   const vaccines = records.filter(r => r.type === "vaccine").sort((a, b) => new Date(b.date) - new Date(a.date));
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const getReminderInfo = (record) => {
+    let dateToUse = record.next_date;
+    let isEstimated = false;
+    
+    if (!dateToUse) {
+      // Estimate 1 year later
+      const d = new Date(record.date);
+      d.setFullYear(d.getFullYear() + 1);
+      dateToUse = d.toISOString().split('T')[0];
+      isEstimated = true;
+    }
+
+    const nextDateObj = new Date(dateToUse);
+    const isOverdue = nextDateObj < today;
+    
+    return {
+      dateStr: dateToUse,
+      isEstimated,
+      isOverdue,
+      text: isOverdue ? "En retard" : (isEstimated ? "Rappel estimé" : "Rappel")
+    };
+  };
+
   return (
     <div className="space-y-3">
       {vaccines.length === 0 ? (
         <EmptyState emoji="💉" text="Aucun vaccin enregistré" />
       ) : (
-        vaccines.map(r => (
-          <RecordRow key={r.id} record={r} onDelete={onDelete}
-            icon={<Syringe className="w-4 h-4 text-blue-600" />}
-            accentClass="bg-blue-50 border-blue-100"
-            extra={r.next_date && (
-              <span className="text-xs text-amber-600 font-medium flex items-center gap-1">
-                <Calendar className="w-3 h-3" /> Rappel : {fmtDate(r.next_date)}
-              </span>
-            )}
-          />
-        ))
+        vaccines.map(r => {
+          const reminder = getReminderInfo(r);
+          return (
+            <RecordRow key={r.id} record={r} onDelete={onDelete}
+              icon={<Syringe className="w-4 h-4 text-blue-600" />}
+              accentClass="bg-blue-50 border-blue-100"
+              extra={
+                <span className={`text-xs font-medium flex items-center gap-1 mt-1 ${reminder.isOverdue ? 'text-destructive' : 'text-amber-600'}`}>
+                  <Calendar className="w-3 h-3" /> {reminder.text} : {fmtDate(reminder.dateStr)}
+                </span>
+              }
+            />
+          );
+        })
       )}
 
     </div>

@@ -7,9 +7,11 @@ import SectionPoids from "../components/notebook/SectionPoids";
 import PremiumSection from "../components/notebook/PremiumSection";
 import UpcomingReminders from "../components/notebook/UpcomingReminders";
 import SmartHealthAssistant from "../components/notebook/SmartHealthAssistant";
+import { RecordRow } from "../components/notebook/SectionVaccins";
 import { Syringe, Stethoscope, Weight, Pill, FileText } from "lucide-react";
 
 const TABS = [
+  { id: "all",        label: "Journal",  shortLabel: "Tous" },
   { id: "vaccine",    label: "Vaccins",  shortLabel: "Vaccins" },
   { id: "vet_visit",  label: "Visites",  shortLabel: "Vétérinaire" },
   { id: "weight",     label: "Poids",    shortLabel: "Poids" },
@@ -63,7 +65,7 @@ export default function Notebook() {
   const [dog, setDog] = useState(null);
   const [user, setUser] = useState(null);
   const [records, setRecords] = useState([]);
-  const [activeTab, setActiveTab] = useState("vaccine");
+  const [activeTab, setActiveTab] = useState("all");
 
   useEffect(() => { loadData(); }, []);
 
@@ -86,7 +88,29 @@ export default function Notebook() {
 
   const isPremium = user?.role === "admin";
   const activeTabLabel = TABS.find(t => t.id === activeTab)?.shortLabel;
-  const countForTab = (id) => records.filter(r => r.type === id).length;
+  const countForTab = (id) => id === "all" ? records.length : records.filter(r => r.type === id).length;
+
+  const sortedRecords = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const getIconForType = (type) => {
+    switch (type) {
+      case 'vaccine': return <Syringe className="w-4 h-4 text-blue-600" />;
+      case 'weight': return <Weight className="w-4 h-4 text-teal-600" />;
+      case 'vet_visit': return <Stethoscope className="w-4 h-4 text-purple-600" />;
+      case 'medication': return <Pill className="w-4 h-4 text-amber-600" />;
+      case 'note': return <FileText className="w-4 h-4 text-gray-600" />;
+      default: return <FileText className="w-4 h-4" />;
+    }
+  };
+  const getAccentClassForType = (type) => {
+    switch (type) {
+      case 'vaccine': return "bg-blue-50 border-blue-100";
+      case 'weight': return "bg-teal-50 border-teal-100";
+      case 'vet_visit': return "bg-purple-50 border-purple-100";
+      case 'medication': return "bg-amber-50 border-amber-100";
+      case 'note': return "bg-gray-50 border-gray-200";
+      default: return "bg-muted border-border";
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -135,6 +159,24 @@ export default function Notebook() {
 
       {/* Section content */}
       <div className="px-4 pt-4">
+        {activeTab === "all" && (
+          <div className="space-y-3">
+            {sortedRecords.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground text-sm">Aucun événement enregistré</div>
+            ) : (
+              sortedRecords.map(r => (
+                <RecordRow 
+                  key={r.id} 
+                  record={r} 
+                  onDelete={handleDelete}
+                  icon={getIconForType(r.type)}
+                  accentClass={getAccentClassForType(r.type)}
+                  extra={r.type === 'weight' ? <span className="text-xs font-bold text-teal-600 mt-1 block">{r.value} kg</span> : null}
+                />
+              ))
+            )}
+          </div>
+        )}
         {activeTab === "vaccine" && (
           <SectionVaccins records={records} dogId={dog?.id} onDelete={handleDelete} />
         )}

@@ -7,9 +7,21 @@ import { Weight, Plus, X } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 export default function SectionPoids({ records, dogId, onDelete }) {
+  const [period, setPeriod] = useState("All");
 
-  const weights = records.filter(r => r.type === "weight" && r.value)
+  const allWeights = records.filter(r => r.type === "weight" && r.value)
     .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  const now = new Date();
+  const getStartDate = () => {
+    if (period === "1M") return new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+    if (period === "6M") return new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
+    if (period === "1Y") return new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+    return new Date(0);
+  };
+  
+  const startDate = getStartDate();
+  const weights = allWeights.filter(r => new Date(r.date) >= startDate);
 
   const chartData = weights.map(r => ({
     date: new Date(r.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit" }),
@@ -19,18 +31,35 @@ export default function SectionPoids({ records, dogId, onDelete }) {
 
   return (
     <div className="space-y-3">
-      {weights.length >= 2 && (
+      {allWeights.length >= 2 && (
         <div className="bg-white border border-border rounded-2xl p-4">
-          <p className="text-sm font-semibold text-foreground mb-3">Courbe de poids</p>
-          <ResponsiveContainer width="100%" height={140}>
-            <LineChart data={chartData} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="date" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
-              <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} domain={["auto", "auto"]} />
-              <Tooltip formatter={(v) => [`${v} kg`, "Poids"]} labelStyle={{ fontSize: 11 }} contentStyle={{ borderRadius: 10, fontSize: 11 }} />
-              <Line type="monotone" dataKey="poids" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3, fill: "hsl(var(--primary))" }} />
-            </LineChart>
-          </ResponsiveContainer>
+          <div className="flex justify-between items-center mb-3">
+            <p className="text-sm font-semibold text-foreground">Courbe de poids</p>
+            <div className="flex gap-1 bg-muted p-1 rounded-lg">
+              {["1M", "6M", "1Y", "All"].map(p => (
+                <button
+                  key={p}
+                  onClick={() => setPeriod(p)}
+                  className={`text-[10px] px-2 py-0.5 rounded-md font-medium transition-colors ${period === p ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+          {weights.length >= 2 ? (
+            <ResponsiveContainer width="100%" height={140}>
+              <LineChart data={chartData} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} domain={["auto", "auto"]} />
+                <Tooltip formatter={(v) => [`${v} kg`, "Poids"]} labelStyle={{ fontSize: 11 }} contentStyle={{ borderRadius: 10, fontSize: 11 }} />
+                <Line type="monotone" dataKey="poids" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3, fill: "hsl(var(--primary))" }} />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-[140px] flex items-center justify-center text-xs text-muted-foreground">Pas assez de données sur cette période</div>
+          )}
           {weights.length > 0 && (
             <p className="text-xs text-muted-foreground text-center mt-2">
               Dernier poids : <strong className="text-foreground">{weights[weights.length - 1].value} kg</strong>
