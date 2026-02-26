@@ -67,7 +67,7 @@ Retourne TOUJOURS du JSON valide avec cette structure :
     }
 
     // Call Base44 native LLM
-    const result = await base44.integrations.Core.InvokeLLM({
+    const llmResult = await base44.integrations.Core.InvokeLLM({
       prompt: systemPrompt + "\n\nUtilisateur : " + userContent,
       response_json_schema: {
         type: "object",
@@ -94,7 +94,15 @@ Retourne TOUJOURS du JSON valide avec cette structure :
       file_urls: fileUrls.length > 0 ? fileUrls : undefined
     });
 
-    return Response.json(result);
+    // Parse the JSON response
+    let parsedResult = llmResult;
+    if (typeof llmResult === "string") {
+      parsedResult = JSON.parse(llmResult);
+    } else if (llmResult.response && typeof llmResult.response === "string") {
+      parsedResult = JSON.parse(llmResult.response);
+    }
+
+    return Response.json(parsedResult);
 
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
