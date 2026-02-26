@@ -8,7 +8,9 @@ const LEVEL_CONFIG = {
   intermediaire: { label: "Intermédiaire", color: "text-amber-600 bg-amber-50 border-amber-200" },
 };
 
-export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked, onBack, onComplete, onHelp }) {
+import VideoCoaching from "./VideoCoaching";
+
+export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked, dogName, onBack, onComplete, onHelp }) {
   const levelCfg = LEVEL_CONFIG[exercise.level];
 
   return (
@@ -82,6 +84,8 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
             </Button>
           </div>
         )}
+
+        {!isPremiumLocked && <VideoCoaching exerciseName={exercise.name} dogName={dogName} />}
       </div>
 
       {/* Bottom actions */}
