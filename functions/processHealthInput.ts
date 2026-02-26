@@ -14,14 +14,21 @@ Deno.serve(async (req) => {
     let dogDetails = "";
     let historyContext = "";
     
+    console.log(`[DEBUG] Processing for dogId: ${dogId}`);
+    
     if (dogId) {
       try {
+        // Try getting the dog directly
         const dogs = await base44.entities.Dog.filter({ id: dogId });
+        console.log(`[DEBUG] Dogs found: ${JSON.stringify(dogs)}`);
+
         if (dogs && dogs.length > 0) {
           const dog = dogs[0];
           dogName = dog.name || "ton chien";
           if (dog.breed) dogDetails += dog.breed;
           if (dog.weight) dogDetails += ` (${dog.weight}kg)`;
+        } else {
+           console.warn(`[WARN] No dog found for id ${dogId}`);
         }
         
         const records = await base44.entities.HealthRecord.filter({ dog_id: dogId }, "-date", 15);
