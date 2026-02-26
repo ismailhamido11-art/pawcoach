@@ -275,7 +275,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
                             <button
                               key={idx}
                               onClick={() => handleSend(action)}
-                              className="text-xs bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-lg transition-colors border border-primary/20"
+                              className="text-xs bg-white hover:bg-slate-50 text-primary font-medium px-4 py-2 rounded-full shadow-sm border border-primary/30 transition-all active:scale-95"
                             >
                               {action}
                             </button>
