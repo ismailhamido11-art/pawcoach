@@ -50,12 +50,18 @@
 import Onboarding from './pages/Onboarding';
 import Home from './pages/Home';
 import Chat from './pages/Chat';
+import Scan from './pages/Scan';
+import Training from './pages/Training';
+import Notebook from './pages/Notebook';
 
 
 export const PAGES = {
     "Onboarding": Onboarding,
     "Home": Home,
     "Chat": Chat,
+    "Scan": Scan,
+    "Training": Training,
+    "Notebook": Notebook,
 }
 
 export const pagesConfig = {
