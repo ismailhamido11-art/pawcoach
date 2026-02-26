@@ -97,6 +97,8 @@ export default function Notebook() {
         <p className="text-white/70 text-sm">{dog ? `Suivi de ${dog.name}` : "Chargement..."}</p>
       </div>
 
+      <UpcomingReminders records={records} isPremium={isPremium} />
+
       {/* Tab bar */}
       <div className="bg-white border-b border-border sticky top-0 z-10 shadow-sm">
         <div className="flex overflow-x-auto">
