@@ -47,20 +47,24 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import Chat from './pages/Chat';
+import Scan from './pages/Scan';
+import Notebook from './pages/Notebook';
 import Onboarding from './pages/Onboarding';
 import Training from './pages/Training';
-import Notebook from './pages/Notebook';
-import Scan from './pages/Scan';
-import Chat from './pages/Chat';
+import Premium from './pages/Premium';
+import Profile from './pages/Profile';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "Chat": Chat,
+    "Scan": Scan,
+    "Notebook": Notebook,
     "Onboarding": Onboarding,
     "Training": Training,
-    "Notebook": Notebook,
-    "Scan": Scan,
-    "Chat": Chat,
+    "Premium": Premium,
+    "Profile": Profile,
 }
 
 export const pagesConfig = {
