@@ -2,10 +2,20 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Info } from "lucide-react";
+import VetBookletScanner from "./VetBookletScanner";
 
-export default function StepHealth({ data, onChange }) {
+export default function StepHealth({ data, onChange, dogName, onVetDataExtracted }) {
   return (
     <div className="space-y-6">
+      {/* Vet booklet scanner */}
+      <VetBookletScanner dogName={dogName} onDataExtracted={onVetDataExtracted} />
+
+      <div className="flex items-center gap-3">
+        <div className="flex-1 h-px bg-border" />
+        <span className="text-xs text-muted-foreground font-medium">ou remplis manuellement</span>
+        <div className="flex-1 h-px bg-border" />
+      </div>
+
       {/* Optional notice */}
       <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4">
         <Info className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
