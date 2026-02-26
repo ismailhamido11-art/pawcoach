@@ -43,7 +43,13 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  // Initialize conversation when opening - no initial message, let the backend handle it
+  // Initialize conversation when opening
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      // Trigger initial greeting
+      processConversation([]);
+    }
+  }, [isOpen]);
 
   // Scroll to bottom
   useEffect(() => {
