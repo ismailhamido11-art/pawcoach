@@ -3,6 +3,8 @@ import { base44 } from "@/api/base44Client";
 import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
 import ExerciseDetail from "../components/training/ExerciseDetail";
+import CelebrationScreen from "../components/training/CelebrationScreen";
+import MilestoneScreen from "../components/training/MilestoneScreen";
 import { CheckCircle, Timer, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -20,6 +22,7 @@ const EXERCISES = [
   { order_number: 10, name: "Touche",             emoji: "✋",  level: "intermediaire", duration: "3 min",  is_premium: true,  description: "Toucher un objet ou une main sur commande.", steps: ["Présentez votre main paume vers le chien.", "Quand il touche la paume avec son museau, dites « Touche » et récompensez.", "Déplacez votre main à différentes hauteurs et angles.", "Introduisez d'autres surfaces à toucher.", "Utilisez « Touche » pour guider votre chien vers des endroits précis."] },
 ];
 
+const MILESTONES = [3, 5, 10];
 const LEVEL_CONFIG = {
   debutant:      { label: "Débutant",      color: "text-green-700 bg-green-50 border-green-200" },
   intermediaire: { label: "Intermédiaire", color: "text-amber-600 bg-amber-50 border-amber-200" },
@@ -31,7 +34,8 @@ export default function Training() {
   const [user, setUser] = useState(null);
   const [progresses, setProgresses] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [completing, setCompleting] = useState(null);
+  const [celebration, setCelebration] = useState(null); // exercise name
+  const [milestone, setMilestone] = useState(null); // count
 
   useEffect(() => { loadData(); }, []);
 
@@ -48,22 +52,24 @@ export default function Training() {
 
   const isCompleted = (order) => progresses.some(p => p.exercise_id === String(order) && p.completed);
 
-  const completedCount = EXERCISES.filter(e => isCompleted(e.order_number)).length;
+  const completedExercises = EXERCISES.filter(e => isCompleted(e.order_number));
+  const completedCount = completedExercises.length;
 
-  const isPremium = user?.role === "admin"; // treat admin as premium for now
+  const isPremium = user?.role === "admin";
 
-  const toggleComplete = async (exercise) => {
+  const handleComplete = async (exercise) => {
     if (!dog || !user) return;
     const key = String(exercise.order_number);
     const existing = progresses.find(p => p.exercise_id === key);
-    setCompleting(exercise.order_number);
+    const wasCompleted = existing?.completed;
 
+    let newProgresses;
     if (existing && existing.completed) {
       await base44.entities.UserProgress.update(existing.id, { completed: false, completed_date: null });
-      setProgresses(prev => prev.map(p => p.id === existing.id ? { ...p, completed: false } : p));
+      newProgresses = progresses.map(p => p.id === existing.id ? { ...p, completed: false } : p);
     } else if (existing) {
       await base44.entities.UserProgress.update(existing.id, { completed: true, completed_date: new Date().toISOString().split("T")[0] });
-      setProgresses(prev => prev.map(p => p.id === existing.id ? { ...p, completed: true } : p));
+      newProgresses = progresses.map(p => p.id === existing.id ? { ...p, completed: true } : p);
     } else {
       const newP = await base44.entities.UserProgress.create({
         user_email: user.email,
@@ -72,11 +78,49 @@ export default function Training() {
         completed: true,
         completed_date: new Date().toISOString().split("T")[0],
       });
-      setProgresses(prev => [...prev, newP]);
+      newProgresses = [...progresses, newP];
     }
-    setCompleting(null);
+
+    setProgresses(newProgresses);
     setSelected(null);
+
+    // Only show celebration if we just completed (not un-completing)
+    if (!wasCompleted) {
+      const newCount = newProgresses.filter(p => p.completed).length;
+      if (MILESTONES.includes(newCount)) {
+        setMilestone(newCount);
+      } else {
+        setCelebration(exercise.name);
+      }
+    }
   };
+
+  const handleHelp = (exercise) => {
+    const msg = `J'ai besoin d'aide avec l'exercice « ${exercise.name} » pour ${dog?.name || "mon chien"}. ${dog?.name || "Mon chien"} est un ${dog?.breed || "chien"} de ${dog?.weight || "?"} kg.`;
+    navigate(createPageUrl("Chat") + `?help=${encodeURIComponent(msg)}`);
+  };
+
+  // Overlay screens
+  if (milestone !== null) {
+    const completedUpTo = EXERCISES.filter(e => isCompleted(e.order_number));
+    return (
+      <MilestoneScreen
+        dogName={dog?.name || "Ton chien"}
+        completedExercises={completedUpTo}
+        onContinue={() => setMilestone(null)}
+      />
+    );
+  }
+
+  if (celebration) {
+    return (
+      <CelebrationScreen
+        dogName={dog?.name || "Ton chien"}
+        exerciseName={celebration}
+        onContinue={() => setCelebration(null)}
+      />
+    );
+  }
 
   // Detail screen
   if (selected) {
@@ -88,8 +132,8 @@ export default function Training() {
         isCompleted={isCompleted(exercise.order_number)}
         isPremiumLocked={locked}
         onBack={() => setSelected(null)}
-        onComplete={() => toggleComplete(exercise)}
-        onHelp={() => navigate(createPageUrl("Chat"))}
+        onComplete={() => handleComplete(exercise)}
+        onHelp={() => handleHelp(exercise)}
       />
     );
   }
@@ -99,29 +143,22 @@ export default function Training() {
     <div className="min-h-screen bg-background pb-24">
       <WellnessBanner />
 
-      {/* Header */}
       <div className="gradient-primary pt-10 pb-6 px-5">
         <h1 className="text-white font-bold text-xl mb-0.5">Coach Dressage 🐾</h1>
         <p className="text-white/70 text-sm mb-4">
           {dog ? `Entraîne-toi avec ${dog.name}` : "Chargement..."}
         </p>
-
-        {/* Progress bar */}
         <div className="bg-white/15 rounded-2xl p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-white text-sm font-semibold">{completedCount} / 10 tours maîtrisés</span>
             <span className="text-white/80 text-sm">{Math.round((completedCount / 10) * 100)}%</span>
           </div>
           <div className="bg-white/25 rounded-full h-2.5">
-            <div
-              className="bg-white rounded-full h-2.5 transition-all duration-700"
-              style={{ width: `${(completedCount / 10) * 100}%` }}
-            />
+            <div className="bg-white rounded-full h-2.5 transition-all duration-700" style={{ width: `${(completedCount / 10) * 100}%` }} />
           </div>
         </div>
       </div>
 
-      {/* Exercise list */}
       <div className="px-4 pt-4 space-y-3">
         {EXERCISES.map(exercise => {
           const done = isCompleted(exercise.order_number);
@@ -135,13 +172,9 @@ export default function Training() {
               className={`w-full flex items-center gap-4 p-4 rounded-2xl border text-left tap-scale transition-all duration-200 shadow-sm bg-white
                 ${done ? "border-green-200 bg-green-50/40" : "border-border"}`}
             >
-              {/* Image placeholder */}
-              <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl flex-shrink-0
-                ${done ? "bg-green-100" : "bg-secondary/50"}`}>
+              <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 ${done ? "bg-green-100" : "bg-secondary/50"}`}>
                 {exercise.emoji}
               </div>
-
-              {/* Info */}
               <div className="flex-1 min-w-0">
                 <p className={`font-semibold text-sm leading-tight ${done ? "text-green-700" : "text-foreground"}`}>
                   {exercise.name}
@@ -151,13 +184,10 @@ export default function Training() {
                     {lvl.label}
                   </span>
                   <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Timer className="w-3 h-3" />
-                    {exercise.duration}
+                    <Timer className="w-3 h-3" /> {exercise.duration}
                   </span>
                 </div>
               </div>
-
-              {/* Right badge */}
               <div className="flex-shrink-0">
                 {done ? (
                   <div className="w-7 h-7 rounded-full bg-green-500 flex items-center justify-center">
