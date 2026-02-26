@@ -2,11 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
-import NutritionQuickActions from "../components/nutrition/NutritionQuickActions";
 import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Salad, Lock } from "lucide-react";
+import { Send, Salad } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 function getAge(birthDate) {
