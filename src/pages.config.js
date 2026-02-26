@@ -49,24 +49,26 @@
  */
 import Chat from './pages/Chat';
 import Notebook from './pages/Notebook';
+import Nutrition from './pages/Nutrition';
 import Onboarding from './pages/Onboarding';
 import Premium from './pages/Premium';
 import Profile from './pages/Profile';
 import Scan from './pages/Scan';
 import Training from './pages/Training';
-import Nutrition from './pages/Nutrition';
+import Home from './pages/Home';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Chat": Chat,
     "Notebook": Notebook,
+    "Nutrition": Nutrition,
     "Onboarding": Onboarding,
     "Premium": Premium,
     "Profile": Profile,
     "Scan": Scan,
     "Training": Training,
-    "Nutrition": Nutrition,
+    "Home": Home,
 }
 
 export const pagesConfig = {
