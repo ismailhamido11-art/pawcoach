@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Camera, Upload } from "lucide-react";
+import { Camera } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import VoiceInput from "@/components/ui/VoiceInput";
 
 const BREEDS = [
   "Berger Allemand", "Berger Australien", "Berger Belge", "Beagle", "Bichon Frisé",

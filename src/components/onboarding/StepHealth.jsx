@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Info } from "lucide-react";
 import VetBookletScanner from "./VetBookletScanner";
+import VoiceInput from "@/components/ui/VoiceInput";
 
 export default function StepHealth({ data, onChange, dogName, onVetDataExtracted }) {
   return (
