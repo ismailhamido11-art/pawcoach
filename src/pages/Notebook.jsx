@@ -5,6 +5,7 @@ import BottomNav from "../components/BottomNav";
 import SectionVaccins from "../components/notebook/SectionVaccins";
 import SectionPoids from "../components/notebook/SectionPoids";
 import PremiumSection from "../components/notebook/PremiumSection";
+import UpcomingReminders from "../components/notebook/UpcomingReminders";
 import { Syringe, Stethoscope, Weight, Pill, FileText } from "lucide-react";
 
 const TABS = [
