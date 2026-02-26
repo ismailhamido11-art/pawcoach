@@ -107,6 +107,9 @@ ${historyContext}
       llmMessages.push({ role: "user", content });
     }
 
+    console.log("API Key present:", !!apiKey, "Length:", apiKey?.length || 0);
+    console.log("Using model:", model);
+    
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -122,6 +125,8 @@ ${historyContext}
       }),
     });
 
+    console.log(`OpenRouter response status: ${response.status}`);
+    
     if (!response.ok) {
       const err = await response.text();
       console.error(`OpenRouter error (${response.status}):`, err);
