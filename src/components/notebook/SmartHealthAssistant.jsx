@@ -107,8 +107,9 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
       }
 
     } catch (e) {
-      console.error(e);
-      addMessage({ role: "assistant", content: "Oups, j'ai eu un petit souci de connexion. On peut réessayer ?" });
+      console.error("SmartHealthAssistant error:", e);
+      const errMsg = e?.response?.data?.error || e?.message || "Erreur inconnue";
+      addMessage({ role: "assistant", content: `Oups, erreur : ${errMsg}. On peut réessayer ?` });
     } finally {
       setIsProcessing(false);
     }
