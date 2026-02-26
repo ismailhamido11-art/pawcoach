@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import ReactMarkdown from "react-markdown";
 import { 
   Mic, Camera, X, Check, Loader2, Sparkles, 
-  Keyboard, ChevronRight, ArrowLeft 
+  Keyboard, ChevronRight, ArrowLeft, ExternalLink, MapPin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -267,10 +267,26 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
                        </div>
                      ) : null}
                      
-                     <div className="text-sm leading-relaxed markdown-content">
+                     <div className="text-sm leading-relaxed markdown-content break-words">
                        <ReactMarkdown
                          components={{
-                           a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" className={`underline font-semibold transition-colors ${msg.role === "user" ? "text-white hover:text-white/80" : "text-primary hover:text-primary/80"}`} />
+                           a: ({node, ...props}) => (
+                             <a 
+                               {...props} 
+                               target="_blank" 
+                               rel="noopener noreferrer" 
+                               className={`
+                                 inline-flex items-center gap-1.5 px-3 py-2 my-1 rounded-lg font-medium transition-all no-underline break-words max-w-full
+                                 ${msg.role === "user" 
+                                   ? "bg-white/20 text-white hover:bg-white/30 border border-white/30" 
+                                   : "bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-100 shadow-sm"}
+                               `}
+                             >
+                               {String(props.children).includes("vétérinaire") ? <MapPin className="w-4 h-4 flex-shrink-0" /> : <ExternalLink className="w-3.5 h-3.5 flex-shrink-0" />}
+                               <span className="truncate">{props.children}</span>
+                             </a>
+                           ),
+                           p: ({node, ...props}) => <p {...props} className="mb-2 last:mb-0" />
                          }}
                        >
                          {msg.content}
