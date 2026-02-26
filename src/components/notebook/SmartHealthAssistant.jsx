@@ -63,37 +63,33 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
         dogId
       });
 
+      // InvokeLLM returns the JSON directly in data
+      const response = data.response ? JSON.parse(data.response) : data;
+
       // 1. Add assistant response (next question)
-      if (data.next_question) {
-        addMessage({ role: "assistant", content: data.next_question });
+      if (response.next_question) {
+        addMessage({ role: "assistant", content: response.next_question });
       }
 
       // 2. Handle document scan suggestion
-      setShowScanner(!!data.suggest_scan);
+      setShowScanner(!!response.suggest_scan);
 
       // 3. Collect records
-      if (data.records_to_save && data.records_to_save.length > 0) {
+      if (response.records_to_save && response.records_to_save.length > 0) {
         setPendingRecords(prev => {
-          // Merge unique records
           const newRecs = [...prev];
-          data.records_to_save.forEach(rec => {
+          response.records_to_save.forEach(rec => {
              if (!newRecs.find(r => r.title === rec.title && r.date === rec.date)) {
                newRecs.push(rec);
              }
           });
           return newRecs;
         });
-        // Feedback
-        addMessage({ 
-           role: "assistant", 
-           content: `J'ai noté : ${data.records_to_save.map(r => r.title).join(", ")}. On continue ?` 
-        });
       }
 
       // 4. Finished?
-      if (data.is_finished) {
+      if (response.is_finished) {
         setIsFinished(true);
-        // Show summary view automatically? Or just wait for user to click "Terminer"
       }
 
     } catch (e) {
