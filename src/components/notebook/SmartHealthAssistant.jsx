@@ -63,22 +63,19 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
         dogId
       });
 
-      // InvokeLLM returns the JSON directly in data
-      const response = data.response ? JSON.parse(data.response) : data;
-
       // 1. Add assistant response (next question)
-      if (response.next_question) {
-        addMessage({ role: "assistant", content: response.next_question });
+      if (data.next_question) {
+        addMessage({ role: "assistant", content: data.next_question });
       }
 
       // 2. Handle document scan suggestion
-      setShowScanner(!!response.suggest_scan);
+      setShowScanner(!!data.suggest_scan);
 
       // 3. Collect records
-      if (response.records_to_save && response.records_to_save.length > 0) {
+      if (data.records_to_save && data.records_to_save.length > 0) {
         setPendingRecords(prev => {
           const newRecs = [...prev];
-          response.records_to_save.forEach(rec => {
+          data.records_to_save.forEach(rec => {
              if (!newRecs.find(r => r.title === rec.title && r.date === rec.date)) {
                newRecs.push(rec);
              }
@@ -88,7 +85,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
       }
 
       // 4. Finished?
-      if (response.is_finished) {
+      if (data.is_finished) {
         setIsFinished(true);
       }
 
