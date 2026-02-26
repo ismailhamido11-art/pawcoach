@@ -54,7 +54,7 @@ export default function Onboarding() {
       birth_date = approxAgeToBirthDate(data.age_years, data.age_months);
     }
 
-    await base44.entities.Dog.create({
+    const dog = await base44.entities.Dog.create({
       name: data.name,
       photo: data.photo || null,
       breed: data.breed || null,
@@ -74,6 +74,29 @@ export default function Onboarding() {
       owner: user.email,
       onboarding_completed: true,
     });
+
+    // Save vet booklet extracted data as HealthRecords
+    if (vetExtracted && dog?.id) {
+      const records = [];
+      (vetExtracted.vaccines || []).forEach(v => {
+        if (v.name && v.name !== "illisible") {
+          records.push({ dog_id: dog.id, type: "vaccine", title: v.name, date: v.date || new Date().toISOString().split("T")[0] });
+        }
+      });
+      (vetExtracted.treatments || []).forEach(t => {
+        if (t.name && t.name !== "illisible") {
+          records.push({ dog_id: dog.id, type: "medication", title: t.name, date: t.date || new Date().toISOString().split("T")[0] });
+        }
+      });
+      (vetExtracted.weight_records || []).forEach(w => {
+        if (w.weight_kg) {
+          records.push({ dog_id: dog.id, type: "weight", title: `Poids: ${w.weight_kg} kg`, date: w.date || new Date().toISOString().split("T")[0], value: w.weight_kg });
+        }
+      });
+      if (records.length > 0) {
+        await base44.entities.HealthRecord.bulkCreate(records);
+      }
+    }
 
     setSaving(false);
     setDone(true);
