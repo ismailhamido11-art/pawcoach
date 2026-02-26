@@ -2,62 +2,98 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ScanLine, MessageCircle, Dumbbell, BookHeart, ChevronRight, Sparkles } from "lucide-react";
+import { ScanLine, MessageCircle, Dumbbell, BookHeart } from "lucide-react";
 
 function getAge(birthDate) {
   if (!birthDate) return null;
   const now = new Date();
   const birth = new Date(birthDate);
-  const years = now.getFullYear() - birth.getFullYear();
-  const months = now.getMonth() - birth.getMonth();
-  const totalMonths = years * 12 + months;
+  const totalMonths =
+    (now.getFullYear() - birth.getFullYear()) * 12 +
+    (now.getMonth() - birth.getMonth());
+  if (totalMonths < 1) return "moins d'1 mois";
   if (totalMonths < 12) return `${totalMonths} mois`;
-  if (years === 1) return "1 an";
-  return `${years} ans`;
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+  if (months === 0) return years === 1 ? "1 an" : `${years} ans`;
+  return `${years} ans et ${months} mois`;
 }
 
-const QUICK_ACTIONS = [
-  { label: "Scanner un aliment", icon: ScanLine, page: "Scan", color: "bg-amber-50 text-amber-600", border: "border-amber-200" },
-  { label: "Parler à PawCoach", icon: MessageCircle, page: "Chat", color: "bg-teal-50 text-primary", border: "border-teal-200" },
-  { label: "Séance de dressage", icon: Dumbbell, page: "Training", color: "bg-purple-50 text-purple-600", border: "border-purple-200" },
-  { label: "Carnet de santé", icon: BookHeart, page: "Notebook", color: "bg-rose-50 text-rose-600", border: "border-rose-200" },
-];
-
-const TIPS = [
-  "💧 Un chien adulte a besoin de 50 ml d'eau par kg de poids corporel par jour.",
-  "🦷 Brosser les dents de votre chien 2-3 fois par semaine prévient les maladies parodontales.",
-  "🌞 Évitez les sorties entre 12h et 16h en été pour protéger les coussinets.",
-  "🎾 10 minutes de jeu mental fatigue autant qu'une heure de marche.",
-  "🥩 Les chiens ont besoin de protéines animales de qualité comme base de leur alimentation.",
-  "😴 Un chien adulte dort 12 à 14h par jour, c'est tout à fait normal !",
+const ACTION_CARDS = [
+  {
+    label: "Scan Bouffe",
+    icon: ScanLine,
+    subtitle: "Scanne un aliment",
+    page: "Scan",
+    bg: "bg-teal-500",
+    lightBg: "bg-teal-50",
+    textColor: "text-teal-700",
+    iconBg: "bg-teal-400/30",
+  },
+  {
+    label: "Coach Dressage",
+    icon: Dumbbell,
+    subtitle: null, // dynamic
+    page: "Training",
+    bg: "bg-amber-400",
+    lightBg: "bg-amber-50",
+    textColor: "text-amber-700",
+    iconBg: "bg-amber-300/30",
+  },
+  {
+    label: "Assistant IA",
+    icon: MessageCircle,
+    subtitle: "Pose une question",
+    page: "Chat",
+    bg: "bg-blue-500",
+    lightBg: "bg-blue-50",
+    textColor: "text-blue-700",
+    iconBg: "bg-blue-400/30",
+  },
+  {
+    label: "Carnet de suivi",
+    icon: BookHeart,
+    subtitle: null, // dynamic
+    page: "Notebook",
+    bg: "bg-emerald-500",
+    lightBg: "bg-emerald-50",
+    textColor: "text-emerald-700",
+    iconBg: "bg-emerald-400/30",
+  },
 ];
 
 export default function Home() {
   const navigate = useNavigate();
   const [dog, setDog] = useState(null);
+  const [trainingCount, setTrainingCount] = useState(0);
+  const [reminderCount, setReminderCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [tip] = useState(() => TIPS[Math.floor(Math.random() * TIPS.length)]);
 
   useEffect(() => {
-    loadDog();
+    loadData();
   }, []);
 
-  const loadDog = async () => {
-    try {
-      const user = await base44.auth.me();
-      const dogs = await base44.entities.Dog.filter({ owner: user.email });
-      if (dogs.length === 0) {
-        navigate(createPageUrl("Onboarding"));
-      } else {
-        setDog(dogs[0]);
-      }
-    } catch {
+  const loadData = async () => {
+    const user = await base44.auth.me();
+    const dogs = await base44.entities.Dog.filter({ owner: user.email });
+    if (dogs.length === 0) {
       navigate(createPageUrl("Onboarding"));
+      return;
     }
+    const d = dogs[0];
+    setDog(d);
+
+    // Count completed training exercises
+    const progress = await base44.entities.UserProgress.filter({ user_email: user.email, dog_id: d.id, completed: true });
+    setTrainingCount(progress.length);
+
+    // Count upcoming health reminders (records with next_date in future)
+    const records = await base44.entities.HealthRecord.filter({ dog_id: d.id });
+    const today = new Date().toISOString().split("T")[0];
+    const upcoming = records.filter(r => r.next_date && r.next_date >= today);
+    setReminderCount(upcoming.length);
+
     setLoading(false);
   };
 
@@ -65,40 +101,47 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <span className="text-4xl animate-bounce-soft">🐾</span>
+          <span className="text-4xl animate-bounce">🐾</span>
           <p className="text-muted-foreground text-sm">Chargement...</p>
         </div>
       </div>
     );
   }
 
+  const age = getAge(dog?.birth_date);
+
+  const getSubtitle = (card) => {
+    if (card.page === "Training") return `${trainingCount}/10 tours maîtrisés`;
+    if (card.page === "Notebook") return `${reminderCount} rappel${reminderCount !== 1 ? "s" : ""} à venir`;
+    return card.subtitle;
+  };
+
   return (
     <div className="min-h-screen bg-background pb-24">
-      <WellnessBanner />
-
-      {/* Hero header */}
-      <div className="gradient-primary pt-12 pb-10 px-5 relative overflow-hidden">
+      {/* Header card */}
+      <div className="gradient-primary px-5 pt-12 pb-8 relative overflow-hidden">
+        {/* Decorative blobs */}
         <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-10 translate-x-10" />
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-8 -translate-x-8" />
 
-        <div className="relative flex items-center justify-between mb-4">
+        {/* Logo row */}
+        <div className="relative flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">🐾</span>
-            <span className="text-white font-bold text-lg tracking-tight">PawCoach</span>
+            <span className="text-xl">🐾</span>
+            <span className="text-white font-bold text-base tracking-tight">PawCoach</span>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={() => navigate(createPageUrl("Onboarding"))}
-            className="text-white/70 text-xs hover:text-white hover:bg-white/10 rounded-xl"
+            className="text-white/70 text-xs hover:text-white bg-white/10 rounded-xl px-3 py-1.5 font-medium"
           >
             Modifier
-          </Button>
+          </button>
         </div>
 
+        {/* Dog info */}
         {dog && (
           <div className="relative flex items-center gap-4">
-            <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white/20 flex items-center justify-center border-2 border-white/30">
+            <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white/20 flex items-center justify-center border-2 border-white/30 flex-shrink-0">
               {dog.photo ? (
                 <img src={dog.photo} alt={dog.name} className="w-full h-full object-cover" />
               ) : (
@@ -106,93 +149,51 @@ export default function Home() {
               )}
             </div>
             <div className="text-white">
-              <h1 className="text-3xl font-bold">{dog.name}</h1>
-              <p className="text-white/80 text-sm font-medium">{dog.breed}</p>
-              <div className="flex gap-2 mt-1 flex-wrap">
-                {getAge(dog.birth_date) && (
-                  <span className="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full">
-                    {getAge(dog.birth_date)}
-                  </span>
-                )}
-                {dog.weight && (
-                  <span className="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full">
-                    {dog.weight} kg
-                  </span>
-                )}
-                {dog.activity_level && (
-                  <span className="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full capitalize">
-                    {dog.activity_level.replace("_", " ")}
-                  </span>
-                )}
-              </div>
+              <p className="text-white/70 text-sm mb-0.5">Salut ! Comment va</p>
+              <h1 className="text-3xl font-extrabold leading-tight">{dog.name} ?</h1>
+              <p className="text-white/80 text-sm mt-1 font-medium">
+                {[dog.breed, age].filter(Boolean).join(" · ")}
+              </p>
             </div>
           </div>
         )}
       </div>
 
-      <div className="px-5 pt-5 space-y-5">
-        {/* Tip of the day */}
-        <Card className="border-amber-200 bg-amber-50 shadow-none">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <Sparkles className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-xs font-semibold text-amber-700 mb-1">Conseil du jour</p>
-                <p className="text-sm text-amber-800">{tip}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Wellness banner */}
+      <div className="bg-gray-100 border-b border-gray-200 px-5 py-2 text-center">
+        <p className="text-xs text-gray-500 font-medium">
+          🐾 PawCoach est un coach bien-être, pas un vétérinaire.
+        </p>
+      </div>
 
-        {/* Quick actions */}
-        <div>
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-            Accès rapide
-          </h2>
-          <div className="grid grid-cols-2 gap-3">
-            {QUICK_ACTIONS.map(({ label, icon: Icon, page, color, border }) => (
+      {/* 2x2 Action cards */}
+      <div className="px-5 pt-6">
+        <div className="grid grid-cols-2 gap-4">
+          {ACTION_CARDS.map((card) => {
+            const Icon = card.icon;
+            const subtitle = getSubtitle(card);
+            return (
               <button
-                key={page}
-                onClick={() => navigate(createPageUrl(page))}
-                className={`p-4 rounded-2xl border ${border} ${color} bg-opacity-60 flex flex-col items-start gap-3 tap-scale transition-all hover:shadow-md text-left`}
+                key={card.page}
+                onClick={() => navigate(createPageUrl(card.page))}
+                className={`${card.lightBg} rounded-3xl p-5 flex flex-col items-start gap-3 tap-scale transition-all hover:shadow-md text-left border border-transparent hover:border-gray-100`}
               >
-                <Icon className="w-6 h-6" />
-                <span className="text-sm font-semibold leading-tight">{label}</span>
+                <div className={`${card.bg} w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm`}>
+                  <Icon className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className={`font-bold text-sm ${card.textColor}`}>{card.label}</p>
+                  {subtitle && (
+                    <p className="text-xs text-gray-500 mt-0.5 leading-tight">{subtitle}</p>
+                  )}
+                </div>
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
-
-        {/* Dog health summary */}
-        {dog && (
-          <Card className="shadow-none border-border">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-bold text-foreground">Profil santé</h2>
-                <button
-                  onClick={() => navigate(createPageUrl("Notebook"))}
-                  className="text-xs text-primary font-medium flex items-center gap-1"
-                >
-                  Voir tout <ChevronRight className="w-3 h-3" />
-                </button>
-              </div>
-              <div className="grid grid-cols-3 gap-3 text-center">
-                {[
-                  { label: "Allergies", value: dog.allergies ? "⚠️" : "✅", sub: dog.allergies || "Aucune" },
-                  { label: "Vaccins", value: dog.last_vaccine ? "💉" : "❓", sub: dog.last_vaccine || "Non renseigné" },
-                  { label: "Santé", value: dog.health_issues ? "🔶" : "💚", sub: dog.health_issues ? "À suivre" : "Bonne" },
-                ].map(item => (
-                  <div key={item.label} className="bg-muted/50 rounded-xl p-3">
-                    <p className="text-2xl mb-1">{item.value}</p>
-                    <p className="text-xs font-semibold text-foreground">{item.label}</p>
-                    <p className="text-[10px] text-muted-foreground truncate">{item.sub}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
+
+      <BottomNav currentPage="Home" />
     </div>
   );
 }
