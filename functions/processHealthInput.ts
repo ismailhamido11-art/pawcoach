@@ -111,15 +111,20 @@ ${historyContext}
 
     console.log("API Key present:", !!apiKey, "Length:", apiKey?.length || 0);
     console.log("Using model:", model);
+    console.log("Auth header value:", `Bearer ${apiKey.substring(0, 20)}...`);
+    
+    const headers = {
+      "authorization": `Bearer ${apiKey}`,
+      "content-type": "application/json",
+      "http-referer": "https://pawcoach.app",
+      "x-title": "PawCoach",
+    };
+    
+    console.log("Headers being sent:", Object.keys(headers));
     
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://pawcoach.app",
-        "X-Title": "PawCoach",
-      },
+      headers: headers,
       body: JSON.stringify({
         model: model,
         messages: llmMessages,
