@@ -22,7 +22,6 @@ Deno.serve(async (req) => {
     let historyContext = "";
     if (dogId) {
       try {
-        // Get dog name
         const dogs = await base44.entities.Dog.filter({ id: dogId });
         if (dogs && dogs.length > 0) {
           dogName = dogs[0].name || "ton chien";
@@ -33,7 +32,7 @@ Deno.serve(async (req) => {
           historyContext = "Historique médical récent du chien :\n" + records.map(r => `- ${r.date} : [${r.type}] ${r.title} ${r.value ? `(${r.value}kg)` : ''} ${r.details ? `(${r.details})` : ''}`).join("\n");
         }
       } catch (e) {
-        console.error("Error fetching history", e);
+        console.warn("[WARN] Error fetching history (non-blocking):", e.message);
       }
     }
 
