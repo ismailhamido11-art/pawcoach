@@ -6,6 +6,7 @@ import SectionVaccins from "../components/notebook/SectionVaccins";
 import SectionPoids from "../components/notebook/SectionPoids";
 import PremiumSection from "../components/notebook/PremiumSection";
 import UpcomingReminders from "../components/notebook/UpcomingReminders";
+import SmartHealthAssistant from "../components/notebook/SmartHealthAssistant";
 import { Syringe, Stethoscope, Weight, Pill, FileText } from "lucide-react";
 
 const TABS = [
@@ -144,6 +145,7 @@ export default function Notebook() {
         )}
       </div>
 
+      <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} />
       <BottomNav currentPage="Notebook" />
     </div>
   );
