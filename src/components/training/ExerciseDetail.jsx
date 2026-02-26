@@ -70,6 +70,18 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
             ))}
           </div>
         )}
+
+        {!isPremiumLocked && (
+          <div className="bg-white rounded-2xl border border-border p-4 flex items-center justify-between mt-6 shadow-sm">
+            <div>
+              <p className="text-xs font-bold text-foreground">Accessoire recommandé</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Lien partenaire</p>
+            </div>
+            <Button onClick={() => window.open("https://amazon.fr", "_blank")} size="sm" variant="outline" className="rounded-xl h-8 text-xs font-semibold">
+              Voir l'offre
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Bottom actions */}

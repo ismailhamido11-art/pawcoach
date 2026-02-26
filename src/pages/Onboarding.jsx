@@ -98,6 +98,16 @@ export default function Onboarding() {
       }
     }
 
+    try {
+      await base44.integrations.Core.SendEmail({
+        to: user.email,
+        subject: `Bienvenue sur PawCoach, ${user.full_name || "l'ami"} !`,
+        body: `${data.name} est maintenant inscrit ! Voici 3 choses à essayer :\n1) Scanne les croquettes de ${data.name}\n2) Demande un conseil à l'assistant IA\n3) Commence le premier exercice de dressage.`,
+      });
+    } catch (e) {
+      console.error("Failed to send welcome email", e);
+    }
+
     setSaving(false);
     setDone(true);
   };

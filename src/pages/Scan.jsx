@@ -364,6 +364,16 @@ export default function Scan() {
               </CardContent>
             </Card>
 
+            <div className="bg-white rounded-2xl border border-border p-4 flex items-center justify-between shadow-sm">
+              <div>
+                <p className="text-xs font-bold text-foreground">Disponible chez nos partenaires</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">Lien partenaire</p>
+              </div>
+              <Button onClick={() => window.open("https://zooplus.fr", "_blank")} size="sm" variant="outline" className="rounded-xl h-8 text-xs font-semibold">
+                Voir l'offre
+              </Button>
+            </div>
+
             <div className="grid grid-cols-3 gap-2">
               <Button variant="outline" onClick={reset} className="h-12 rounded-2xl font-semibold text-sm">
                 Nouveau
