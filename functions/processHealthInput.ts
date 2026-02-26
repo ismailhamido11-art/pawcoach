@@ -14,10 +14,17 @@ Deno.serve(async (req) => {
 
     const today = new Date().toISOString().split("T")[0];
 
-    // Fetch existing records for context
+    // Fetch dog info and health records for context
+    let dogName = "ton chien";
     let historyContext = "";
     if (dogId) {
       try {
+        // Get dog name
+        const dogs = await base44.entities.Dog.filter({ id: dogId });
+        if (dogs && dogs.length > 0) {
+          dogName = dogs[0].name || "ton chien";
+        }
+        
         const records = await base44.entities.HealthRecord.filter({ dog_id: dogId }, "-date", 10);
         if (records && records.length > 0) {
           historyContext = "Historique médical récent du chien :\n" + records.map(r => `- ${r.date} : [${r.type}] ${r.title} ${r.value ? `(${r.value}kg)` : ''} ${r.details ? `(${r.details})` : ''}`).join("\n");
