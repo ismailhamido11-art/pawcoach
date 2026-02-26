@@ -18,12 +18,19 @@ Deno.serve(async (req) => {
     
     if (dogId) {
       try {
-        // Try getting the dog directly
-        const dogs = await base44.entities.Dog.filter({ id: dogId });
-        console.log(`[DEBUG] Dogs found: ${JSON.stringify(dogs)}`);
+        console.log(`[DEBUG] Fetching dog with ID: ${dogId}`);
+        // Use get() for direct ID lookup
+        let dog = null;
+        try {
+          dog = await base44.entities.Dog.get(dogId);
+        } catch (e) {
+          console.warn(`[WARN] Dog.get(${dogId}) failed, trying filter...`);
+          const dogs = await base44.entities.Dog.filter({ id: dogId });
+          if (dogs && dogs.length > 0) dog = dogs[0];
+        }
 
-        if (dogs && dogs.length > 0) {
-          const dog = dogs[0];
+        if (dog) {
+          console.log(`[DEBUG] Dog found: ${dog.name}`);
           dogName = dog.name || "ton chien";
           if (dog.breed) dogDetails += dog.breed;
           if (dog.weight) dogDetails += ` (${dog.weight}kg)`;
