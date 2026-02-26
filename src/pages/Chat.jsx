@@ -1,29 +1,42 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Sparkles, Bot } from "lucide-react";
+import { Send, Bot } from "lucide-react";
 
 function getAge(birthDate) {
   if (!birthDate) return null;
-  const now = new Date();
-  const birth = new Date(birthDate);
-  const years = now.getFullYear() - birth.getFullYear();
-  const months = now.getMonth() - birth.getMonth();
-  const total = years * 12 + months;
-  if (total < 12) return `${total} mois`;
-  return `${years} an${years > 1 ? "s" : ""}`;
+  const months = Math.floor((Date.now() - new Date(birthDate)) / (1000 * 60 * 60 * 24 * 30));
+  return months < 12 ? `${months} mois` : `${Math.floor(months / 12)} ans`;
 }
 
-const SUGGESTIONS = [
-  "Quelle quantité donner à mon chien ?",
-  "Mon chien gratte beaucoup, pourquoi ?",
-  "Comment apprendre le rappel à mon chien ?",
-  "Combien de sorties par jour ?",
-  "Mon chien vomit, est-ce grave ?",
-];
+function buildSystemPrompt(d) {
+  const activityMap = { faible: "Faible", modere: "Modérée", eleve: "Élevée", tres_eleve: "Très élevée" };
+  const envMap = { appartement: "Appartement", maison_sans_jardin: "Maison sans jardin", maison_avec_jardin: "Maison avec jardin" };
+  return `Tu es PawCoach, le coach bien-être et dressage canin personnel de l'utilisateur.
+PROFIL DU CHIEN:
+Prénom: ${d.name}
+Race: ${d.breed || "inconnue"}
+Age: ${getAge(d.birth_date) || "inconnu"}
+Poids: ${d.weight ? d.weight + " kg" : "inconnu"}
+Sexe: ${d.sex === "male" ? "Mâle" : d.sex === "female" ? "Femelle" : "inconnu"}
+Stérilisé: ${d.neutered ? "Oui" : "Non"}
+Activité: ${activityMap[d.activity_level] || "inconnue"}
+Environnement: ${envMap[d.environment] || "inconnu"}
+Allergies: ${d.allergies || "aucune"}
+Problèmes connus: ${d.health_issues || "aucun"}
+
+RÈGLES:
+1) Tu es un coach informatif, PAS vétérinaire.
+2) Tu ne diagnostiques JAMAIS.
+3) Tu ne prescris JAMAIS de médicaments.
+4) Si symptômes sérieux, dis: "Contacte ton vétérinaire ou le centre antipoison animal : 04 78 87 10 40"
+5) Disclaimer UNIQUEMENT si ta réponse concerne la santé.
+6) Personnalise avec le prénom du chien.
+7) Tutoiement, chaleureux, concis.
+8) Si photo, décris ce que tu observes sans diagnostiquer.`;
+}
 
 export default function Chat() {
   const [dog, setDog] = useState(null);
@@ -33,13 +46,8 @@ export default function Chat() {
   const [initializing, setInitializing] = useState(true);
   const bottomRef = useRef(null);
 
-  useEffect(() => {
-    initChat();
-  }, []);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  useEffect(() => { initChat(); }, []);
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
   const initChat = async () => {
     const user = await base44.auth.me();
@@ -50,12 +58,11 @@ export default function Chat() {
       const history = await base44.entities.ChatMessage.filter({ dog_id: d.id });
       const sorted = history.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
       if (sorted.length === 0) {
-        const welcome = {
+        setMessages([{
           role: "assistant",
-          content: `Bonjour ! Je suis PawCoach, votre coach bien-être pour **${d.name}** 🐾\n\nJe connais le profil de ${d.name} : ${d.breed}${getAge(d.birth_date) ? `, ${getAge(d.birth_date)}` : ""}${d.weight ? `, ${d.weight} kg` : ""}. Je suis là pour vous aider avec la nutrition, le comportement, l'entraînement et le bien-être.\n\nQue puis-je faire pour vous aujourd'hui ?`,
+          content: `Bonjour ! 🐾 Je suis PawCoach, ton coach bien-être pour **${d.name}**.\n\nJe connais son profil : ${d.breed}${getAge(d.birth_date) ? `, ${getAge(d.birth_date)}` : ""}${d.weight ? `, ${d.weight} kg` : ""}.\n\nPose-moi n'importe quelle question sur sa nutrition, son comportement ou son dressage !`,
           timestamp: new Date().toISOString(),
-        };
-        setMessages([welcome]);
+        }]);
       } else {
         setMessages(sorted);
       }
@@ -63,30 +70,18 @@ export default function Chat() {
     setInitializing(false);
   };
 
-  const buildSystemPrompt = (d) => {
-    return `Tu es PawCoach, un coach bien-être canin bienveillant et expert, qui répond en français. 
-Tu connais parfaitement le profil du chien de l'utilisateur :
-- Nom : ${d.name}
-- Race : ${d.breed}
-- Âge : ${getAge(d.birth_date) || "inconnu"}
-- Poids : ${d.weight ? d.weight + " kg" : "inconnu"}
-- Sexe : ${d.sex === "male" ? "Mâle" : d.sex === "female" ? "Femelle" : "inconnu"}${d.neutered ? " (stérilisé)" : ""}
-- Niveau d'activité : ${d.activity_level || "inconnu"}
-- Environnement : ${d.environment || "inconnu"}
-- Allergies : ${d.allergies || "aucune connue"}
-- Problèmes de santé : ${d.health_issues || "aucun connu"}
-- Autres animaux : ${d.other_animals ? "oui" : "non"}
-
-RÈGLES IMPORTANTES :
-1. Tu es un COACH BIEN-ÊTRE, pas un vétérinaire. Rappelle-le si nécessaire.
-2. Pour tout symptôme grave, recommande toujours de consulter un vétérinaire.
-3. Personnalise tes réponses au profil de ${d.name}.
-4. Réponds de façon chaleureuse, courte et pratique. Utilise des émojis avec parcimonie.
-5. Ne pose jamais de diagnostic médical.`;
+  const getSuggestions = (d) => {
+    if (!d) return [];
+    return [
+      `Comment dresser ${d.name} ?`,
+      `Que peut manger ${d.name} ?`,
+      `Exercices pour ${d.breed || "mon chien"}`,
+      `Signes de stress à surveiller`,
+    ];
   };
 
   const sendMessage = async (text) => {
-    const content = text || input.trim();
+    const content = (text || input).trim();
     if (!content || !dog) return;
     setInput("");
 
@@ -94,24 +89,21 @@ RÈGLES IMPORTANTES :
     setMessages(prev => [...prev, userMsg]);
     setLoading(true);
 
-    // Save user message
     await base44.entities.ChatMessage.create({ dog_id: dog.id, ...userMsg });
 
-    // Build conversation history for API
-    const history = messages
-      .filter(m => m.role !== "assistant" || m.content !== messages[0]?.content)
+    // Build last 10 messages for context (excluding welcome)
+    const contextMsgs = [...messages, userMsg]
+      .filter(m => m.role === "user" || messages.indexOf(m) > 0)
       .slice(-10)
       .map(m => ({ role: m.role, content: m.content }));
 
-    const aiResponse = await base44.integrations.Core.InvokeLLM({
-      prompt: `${buildSystemPrompt(dog)}\n\n--- Historique de conversation ---\n${history.map(m => `${m.role === "user" ? "Utilisateur" : "PawCoach"}: ${m.content}`).join("\n")}\n\nUtilisateur: ${content}\n\nPawCoach:`,
+    const response = await base44.functions.invoke("pawcoachChat", {
+      systemPrompt: buildSystemPrompt(dog),
+      messages: contextMsgs,
     });
 
-    const assistantMsg = {
-      role: "assistant",
-      content: aiResponse,
-      timestamp: new Date().toISOString(),
-    };
+    const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
+    const assistantMsg = { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() };
 
     setMessages(prev => [...prev, assistantMsg]);
     await base44.entities.ChatMessage.create({ dog_id: dog.id, ...assistantMsg });
@@ -122,28 +114,32 @@ RÈGLES IMPORTANTES :
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-3">
-          <span className="text-4xl animate-bounce-soft block">🐾</span>
+          <span className="text-4xl block animate-bounce">🐾</span>
           <p className="text-muted-foreground text-sm">Chargement du chat...</p>
         </div>
       </div>
     );
   }
 
+  const suggestions = getSuggestions(dog);
+  const showSuggestions = messages.length <= 1;
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <WellnessBanner />
+      {/* Wellness banner */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-amber-50 border-b border-amber-200 px-4 py-1.5 text-center">
+        <p className="text-xs text-amber-700 font-medium">🐾 PawCoach est un coach bien-être, pas un vétérinaire.</p>
+      </div>
 
       {/* Header */}
-      <div className="gradient-primary pt-10 pb-4 px-5">
+      <div className="gradient-primary pt-10 pb-4 px-5 mt-7">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center">
             <Bot className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-white font-bold text-lg">PawCoach Chat</h1>
-            {dog && (
-              <p className="text-white/70 text-xs">Personnalisé pour {dog.name} · {dog.breed}</p>
-            )}
+            <h1 className="text-white font-bold text-lg">Assistant IA</h1>
+            {dog && <p className="text-white/70 text-xs">Personnalisé pour {dog.name} · {dog.breed}</p>}
           </div>
           <div className="ml-auto flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
             <div className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
@@ -153,39 +149,34 @@ RÈGLES IMPORTANTES :
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-32">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-40">
         {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex gap-3 animate-slide-up ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-          >
+          <div key={i} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role === "assistant" && (
               <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
                 <span className="text-sm">🐾</span>
               </div>
             )}
-            <div
-              className={`max-w-[80%] px-4 py-3 rounded-2xl ${
-                msg.role === "user"
-                  ? "chat-bubble-user text-white rounded-br-sm"
-                  : "chat-bubble-assistant text-foreground rounded-bl-sm"
-              }`}
-            >
-              <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+            <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
+              msg.role === "user"
+                ? "chat-bubble-user text-white rounded-br-sm"
+                : "chat-bubble-assistant text-foreground rounded-bl-sm"
+            }`}>
+              {msg.content}
             </div>
           </div>
         ))}
 
         {loading && (
-          <div className="flex gap-3 justify-start animate-fade-in">
+          <div className="flex gap-2 justify-start">
             <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
               <span className="text-sm">🐾</span>
             </div>
             <div className="chat-bubble-assistant px-4 py-3 rounded-2xl rounded-bl-sm">
-              <div className="flex gap-1 items-center">
-                <div className="w-2 h-2 bg-primary rounded-full animate-pulse-soft" style={{ animationDelay: "0ms" }} />
-                <div className="w-2 h-2 bg-primary rounded-full animate-pulse-soft" style={{ animationDelay: "200ms" }} />
-                <div className="w-2 h-2 bg-primary rounded-full animate-pulse-soft" style={{ animationDelay: "400ms" }} />
+              <div className="flex gap-1 items-center h-4">
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
             </div>
           </div>
@@ -193,31 +184,29 @@ RÈGLES IMPORTANTES :
         <div ref={bottomRef} />
       </div>
 
-      {/* Suggestions */}
-      {messages.length <= 1 && (
-        <div className="px-4 pb-2">
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-            {SUGGESTIONS.map((s, i) => (
-              <button
-                key={i}
-                onClick={() => sendMessage(s)}
-                className="flex-shrink-0 text-xs bg-secondary text-secondary-foreground px-3 py-2 rounded-xl border border-border hover:border-primary hover:text-primary transition-all tap-scale"
-              >
-                {s}
-              </button>
-            ))}
+      {/* Bottom area: suggestions + input */}
+      <div className="fixed bottom-16 left-0 right-0 bg-background border-t border-border">
+        {showSuggestions && (
+          <div className="px-4 pt-3 pb-1">
+            <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+              {suggestions.map((s, i) => (
+                <button
+                  key={i}
+                  onClick={() => sendMessage(s)}
+                  className="flex-shrink-0 text-xs bg-secondary text-secondary-foreground px-3 py-2 rounded-xl border border-border hover:border-primary hover:text-primary transition-all tap-scale whitespace-nowrap"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* Input */}
-      <div className="fixed bottom-16 left-0 right-0 bg-white border-t border-border px-4 py-3">
-        <div className="flex gap-2">
+        )}
+        <div className="flex gap-2 px-4 py-3">
           <Input
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === "Enter" && !e.shiftKey && sendMessage()}
-            placeholder="Posez votre question sur votre chien..."
+            placeholder={`Question sur ${dog?.name || "votre chien"}...`}
             className="flex-1 h-11 rounded-xl border-border bg-muted/30"
           />
           <Button
