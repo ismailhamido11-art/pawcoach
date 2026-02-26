@@ -327,6 +327,13 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
 
           {/* Input Area */}
           <div className="p-4 bg-white/80 backdrop-blur-md border-t border-border/50 z-20">
+            {isFinished ? (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center">
+                <Button onClick={saveAllAndClose} className="w-full rounded-full bg-primary hover:bg-primary/90 text-white h-12 text-lg font-medium shadow-lg">
+                  Terminer et sauvegarder
+                </Button>
+              </motion.div>
+            ) : (
              <div className="flex items-center gap-3 relative">
                
                {/* Hidden File Input */}
@@ -364,6 +371,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
                  </button>
                </div>
              </div>
+            )}
           </div>
 
         </div>
