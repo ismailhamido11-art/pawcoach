@@ -1,29 +1,26 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import Stripe from 'npm:stripe@14.21.0';
+import Stripe from 'npm:stripe@17.3.1';
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY"));
-
-const PRICES = {
-  monthly: "price_1T4tkFDuhaIxY4PGpnhDTx5L",
-  yearly: "price_1T4tkFDuhaIxY4PGWLeWApDL",
-};
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
-    if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { plan, successUrl, cancelUrl } = await req.json();
-    const priceId = PRICES[plan] || PRICES.monthly;
+    const { priceId } = await req.json();
+    if (!priceId) return Response.json({ error: 'priceId required' }, { status: 400 });
+
+    const origin = req.headers.get("origin") || "https://paw-coach-care.base44.app";
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
       line_items: [{ price: priceId, quantity: 1 }],
       customer_email: user.email,
-      success_url: successUrl + "?session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: cancelUrl,
+      success_url: `${origin}/?premium=success`,
+      cancel_url: `${origin}/Premium`,
       metadata: {
         base44_app_id: Deno.env.get("BASE44_APP_ID"),
         user_email: user.email,
