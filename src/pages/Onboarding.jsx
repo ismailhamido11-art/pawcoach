@@ -28,6 +28,7 @@ export default function Onboarding() {
   const [done, setDone] = useState(false);
   const [data, setData] = useState({});
   const [saving, setSaving] = useState(false);
+  const [vetExtracted, setVetExtracted] = useState(null);
 
   const handleChange = (field, value) => {
     setData(prev => ({ ...prev, [field]: value }));
