@@ -268,6 +268,21 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
                      
                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
 
+                     {/* Inline Suggestions (only on the LAST assistant message if not processing) */}
+                     {msg.role === "assistant" && i === messages.length - 1 && !isProcessing && suggestedActions.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {suggestedActions.map((action, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => handleSend(action)}
+                              className="text-xs bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-lg transition-colors border border-primary/20"
+                            >
+                              {action}
+                            </button>
+                          ))}
+                        </div>
+                     )}
+
                      {/* Tail decoration */}
                      <div className={`absolute bottom-0 w-4 h-4 
                         ${msg.role === "user" 
@@ -291,42 +306,24 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
              <div ref={messagesEndRef} />
           </div>
 
-          {/* Suggestions & Scanner */}
-          <div className="absolute bottom-20 left-0 right-0 z-20 px-4 flex flex-col gap-2 items-end">
-           <AnimatePresence>
-             {suggestedActions.length > 0 && (
-               <div className="flex flex-wrap gap-2 justify-end mb-2 w-full">
-                 {suggestedActions.map((action, idx) => (
-                   <motion.button
-                     key={idx}
-                     initial={{ opacity: 0, scale: 0.8, y: 10 }}
-                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                     exit={{ opacity: 0, scale: 0.8 }}
-                     onClick={() => handleSend(action)}
-                     className="bg-white/90 backdrop-blur-sm hover:bg-white text-primary text-sm px-4 py-2 rounded-xl shadow-sm border border-primary/10 transition-colors"
-                   >
-                     {action}
-                   </motion.button>
-                 ))}
-               </div>
-             )}
-
-             {showScanner && (
-               <motion.div 
-                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-                 className="w-full flex justify-center"
-               >
-                 <button 
-                   onClick={() => fileInputRef.current?.click()}
-                   className="bg-accent hover:bg-accent/90 text-accent-foreground px-6 py-3 rounded-full shadow-xl flex items-center gap-2 font-bold transform hover:scale-105 transition-all border-2 border-white"
-                 >
-                   <Camera className="w-5 h-5" />
-                   Scanner le document
-                 </button>
-               </motion.div>
-             )}
-           </AnimatePresence>
-          </div>
+          {/* Scanner floating button */}
+          <AnimatePresence>
+            {showScanner && (
+              <div className="absolute bottom-20 left-0 right-0 z-20 px-4 flex justify-center">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
+                >
+                  <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="bg-accent hover:bg-accent/90 text-accent-foreground px-6 py-3 rounded-full shadow-xl flex items-center gap-2 font-bold transform hover:scale-105 transition-all border-2 border-white"
+                  >
+                    <Camera className="w-5 h-5" />
+                    Scanner le document
+                  </button>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>
 
           {/* Input Area */}
           <div className="p-4 bg-white/80 backdrop-blur-md border-t border-border/50 z-20">
