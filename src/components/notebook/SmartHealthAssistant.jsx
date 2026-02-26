@@ -251,13 +251,13 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
           <div className="flex-1 overflow-y-auto p-4 space-y-6 z-10 scroll-smooth">
              <AnimatePresence initial={false}>
                {messages.map((msg, i) => (
-                 <motion.div
-                   key={i}
-                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                   transition={{ duration: 0.3 }}
-                   className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                 >
+                 <div key={i} className="flex flex-col w-full">
+                   <motion.div
+                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                     animate={{ opacity: 1, y: 0, scale: 1 }}
+                     transition={{ duration: 0.3 }}
+                     className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                   >
                    <div 
                      className={`
                        max-w-[85%] rounded-2xl p-4 shadow-sm relative
@@ -364,6 +364,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
                      </div>
                    </motion.div>
                  )}
+                 </div>
                ))}
 
                {isProcessing && (
