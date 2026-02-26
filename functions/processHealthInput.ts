@@ -38,15 +38,32 @@ Deno.serve(async (req) => {
            console.warn(`[WARN] No dog found for id ${dogId}`);
         }
         
-        const records = await base44.entities.HealthRecord.filter({ dog_id: dogId }, "-date", 15);
-        if (records && records.length > 0) {
-          const summaryLines = records.map(r => {
-            let line = `${r.date}: ${r.title}`;
+        const records = await base44.entities.HealthRecord.filter({ dog_id: dogId }, "-date", 20);
+        
+        // Analyze missing info
+        let missingInfos = [];
+        if (records) {
+           const lastWeight = records.find(r => r.type === 'weight');
+           const lastVaccine = records.find(r => r.type === 'vaccine');
+           const lastVet = records.find(r => r.type === 'vet_visit');
+           
+           if (!lastWeight) missingInfos.push("poids (jamais fait)");
+           else {
+              const d = new Date(lastWeight.date);
+              const now = new Date();
+              const diffTime = Math.abs(now - d);
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+              if (diffDays > 30) missingInfos.push(`poids (vieux de ${diffDays} jours)`);
+           }
+           if (!lastVaccine) missingInfos.push("vaccins (aucun)");
+           if (!lastVet) missingInfos.push("visite vétérinaire (aucune)");
+           
+           const summaryLines = records.map(r => {
+            let line = `${r.date} [${r.type}]: ${r.title}`;
             if (r.value) line += ` (${r.value}kg)`;
-            if (r.details) line += ` - ${r.details}`;
             return line;
           });
-          historyContext = "Historique récent:\n" + summaryLines.slice(0, 5).join("\n");
+          historyContext = "DONNÉES EXISTANTES DU CARNET:\n" + summaryLines.slice(0, 8).join("\n");
         }
       } catch (e) {
         console.warn("[WARN] Error fetching history:", e.message);
@@ -64,35 +81,39 @@ Deno.serve(async (req) => {
     const isFirstMessage = !messages || messages.length === 0 || (Array.isArray(messages) && messages.length === 1);
 
     // Build prompt for LLM
-    const systemPrompt = `Tu es un assistant de santé personnalisé pour ${dogName}${dogDetails ? ` (${dogDetails})` : ''}, le chien de ${ownerName}.
+    const systemPrompt = `Tu es un VRAI assistant vétérinaire proactif pour ${dogName}${dogDetails ? ` (${dogDetails})` : ''}, le chien de ${ownerName}.
 
-Ton rôle : Écouter ${ownerName}, poser des questions bienveillantes, et garder un journal de la santé de ${dogName}.
-Ton ton : Chaleureux, attentif, comme un ami qui se soucie vraiment de ${dogName}. Utilise le prénom du chien.
+OBJECTIF PRINCIPAL : Compléter le carnet de santé de ${dogName} (mode Interview).
+Tu ne dois pas juste "discuter", tu dois enquêter gentiment pour récupérer les infos manquantes.
 
-${isFirstMessage ? `PREMIER MESSAGE :
-Commence par une intro chaleureuse et personnalisée. Mentionne le nom du chien (${dogName}) et sa race/poids si connus (${dogDetails}).
-Explique brièvement que tu es là pour l'aider à suivre la santé de ${dogName} (vaccins, poids, bobos...).
+INFORMATIONS MANQUANTES À RÉCUPÉRER EN PRIORITÉ :
+${(typeof missingInfos !== 'undefined' && missingInfos.length > 0) ? missingInfos.join(", ") : "Aucune, le carnet est à jour !"}
 
-Termine par une question ouverte ou une proposition d'action pertinente.
-Exemple: "Coucou ${ownerName} ! 👋 Ravi de te retrouver pour prendre soin de ${dogName}. Je vois qu'on n'a pas mis à jour son poids depuis un moment, tu veux qu'on le fasse ?" (si pertinent) ou juste "Comment va ${dogName} aujourd'hui ?"
+CONTEXTE DU CARNET :
+${historyContext || "Aucune donnée enregistrée."}
 
-Génère aussi 2 ou 3 "suggested_actions" courtes et pertinentes pour démarrer (ex: "Ajouter un vaccin", "Peser ${dogName}", "Scanner une ordonnance").` : `SUIVI DE CONVERSATION :
-Sois personnel et naturel (2-3 phrases max).
-Référence ce qu'on s'est dit.
-Pose une seule question qui continue la discussion logiquement.
-${historyContext ? `Historique (utilise-le pour ne pas reposer les mêmes questions) :\n${historyContext}` : ""}
+RÈGLES DE CONVERSATION :
+1. Si l'utilisateur te salue ou est vague ("ça va", "rien de spé") -> POSE UNE QUESTION PRÉCISE sur une info manquante.
+   Exemple : "Super ! Dis-moi, ça fait longtemps qu'on n'a pas pesé ${dogName}, tu connais son poids actuel ?"
+2. Si l'utilisateur te donne une info (ex: "il pèse 12kg") -> CONFIRME ("Noté 12kg !") et ENCHAÎNE sur une autre info manquante ou demande s'il y a autre chose.
+3. Ne répète jamais "Je suis là pour t'aider...". Sois direct et amical.
+4. Une seule question à la fois. Pas de multiples questions.
 
-Génère des "suggested_actions" UNIQUEMENT si c'est pertinent pour la suite immédiate.`}
+${isFirstMessage ? `C'est le début de conversation.
+Salue chaleureusement ${ownerName} et ${dogName}.
+Si des infos manquent (voir liste plus haut), propose tout de suite de les mettre à jour.
+Sinon, demande simplement comment va ${dogName}.` : `C'est la suite de la conversation.
+Analyse la réponse de l'utilisateur.
+S'il a donné une info, extrais-la pour "records_to_save".
+Ensuite, regarde ce qu'il manque encore dans le carnet et pose la question suivante.
+Ne repose PAS une question si l'info est déjà dans le CONTEXTE DU CARNET.`}
 
-Après réponse : crée des records HealthRecord si données précises.
-Si l'utilisateur veut scanner un document ou une ordonnance, mets "suggest_scan": true.
-
-Retourne TOUJOURS du JSON valide avec cette structure :
+Retourne TOUJOURS du JSON valide :
 {
-  "next_question": "ta question courte",
+  "next_question": "ta réponse ici (max 2 phrases + 1 question)",
   "records_to_save": [{ "type": "vaccine|vet_visit|weight|medication|allergy|note", "title": "...", "date": "YYYY-MM-DD", "next_date": "...", "value": number, "details": "..." }],
   "suggest_scan": false,
-  "suggested_actions": ["Action 1", "Action 2"],
+  "suggested_actions": ["Action courte 1", "Action courte 2"],
   "is_finished": false
 }`;
 
