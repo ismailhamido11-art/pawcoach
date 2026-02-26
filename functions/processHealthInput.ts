@@ -6,7 +6,8 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { text, imageUrl, dogId } = await req.json();
+    // Support new "conversation" mode or legacy "single input" mode
+    const { messages, text, imageUrl, dogId } = await req.json();
 
     const apiKey = Deno.env.get("OPENROUTER_API_KEY");
     if (!apiKey) return Response.json({ error: 'Missing OPENROUTER_API_KEY' }, { status: 500 });
@@ -26,40 +27,57 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Build the prompt
-    let userContent = [];
-    if (imageUrl) {
-      userContent.push({ type: "image_url", image_url: { url: imageUrl } });
-      userContent.push({ type: "text", text: "Extrais les informations de santé de cette image." });
-    }
-    if (text) {
-      userContent.push({ type: "text", text: `L'utilisateur dit : "${text}"` });
-    }
-
-    const systemPrompt = `Tu es un assistant vétérinaire expert en extraction de données.
+    // Build messages for the LLM
+    const llmMessages = [
+      { 
+        role: "system", 
+        content: `Tu es l'assistant de santé personnel et empathique de PawCoach.
 Aujourd'hui nous sommes le ${today}.
-Ta tâche est d'analyser le texte ou l'image fourni et d'extraire des enregistrements de santé structurés pour le chien.
 
-${historyContext ? historyContext + "\n\nUtilise cet historique pour personnaliser ta réponse. Pose des questions de suivi pertinentes dans le champ 'message' pour montrer une continuité et un suivi intelligent (par ex: faire le lien avec un ancien problème, éviter de demander un vaccin fait récemment, etc.).\n" : ""}
-Retourne UNIQUEMENT un JSON valide (sans markdown) contenant un tableau "records" (si des données sont à enregistrer) et une chaîne "message" (ta réponse à l'utilisateur).
-Chaque record doit suivre ce format :
+Ton rôle est double :
+1. Guider l'utilisateur pour enregistrer des événements de santé (vaccins, poids, visites, etc.).
+2. T'intéresser à l'expérience émotionnelle du maître (ex: "Comment avez-vous vécu cela ?", "Est-ce que ça n'a pas été trop dur pour vous ?").
+
+CONSIGNES DE DIALOGUE :
+- Ne pose qu'UNE seule question à la fois.
+- Si l'utilisateur commence, pose une question de clarification si nécessaire (date, réaction).
+- Si tu détectes un événement médical important (maladie, opération, vaccin), demande comment le chien a réagi, PUIS demande comment le maître l'a vécu.
+- Suggère de scanner un document (ordonnance, facture) UNIQUEMENT si c'est pertinent pour avoir des détails précis (ex: "Avez-vous l'ordonnance sous la main ? Je pourrais la scanner pour noter les dosages exacts.").
+- Sois chaleureux, humain, et encourageant.
+
+FORMAT DE SORTIE (JSON UNIQUEMENT) :
 {
-  "type": "vaccine" | "vet_visit" | "weight" | "medication" | "allergy" | "note",
-  "title": string (ex: "Vaccin Rage", "Visite annuelle", "Poids", "Antibiotique"),
-  "date": string (YYYY-MM-DD, obligatoire, déduis-la si nécessaire, par défaut aujourd'hui si "hier" ou "aujourd'hui" est dit),
-  "next_date": string (YYYY-MM-DD, optionnel, pour les rappels),
-  "value": number (optionnel, pour le poids en kg),
-  "details": string (optionnel, contexte supplémentaire)
+  "next_question": "Ta prochaine question pour l'utilisateur, ou null si l'interaction semble terminée.",
+  "records_to_save": [
+     // Tableau d'objets HealthRecord COMPLETS. Ne le remplis que si tu as toutes les infos (date, type, titre).
+     // Structure: { "type": "...", "title": "...", "date": "...", "next_date": "...", "value": number, "details": "..." }
+     // Types: vaccine, vet_visit, weight, medication, allergy, note
+  ],
+  "suggest_scan": boolean, // true si tu penses qu'un scan serait utile MAINTENANT
+  "is_finished": boolean // true si l'utilisateur a dit "terminé", "c'est tout", ou si tu as fini de traiter l'info
 }
 
-Règles :
-- Si on parle de poids (ex: "Il fait 15kg"), type="weight", value=15, title="Pesée".
-- Si on parle de vaccin (ex: "Rappel CHPL"), type="vaccine". Essaie de deviner la prochaine date si c'est standard (1 an après).
-- Si on parle de visite vétérinaire, type="vet_visit".
-- Si médicament, type="medication".
-- Si aucune nouvelle donnée n'est à enregistrer, retourne un JSON avec "records": [] et réponds de manière conversationnelle et contextuelle dans "message".
-- Si des données sont détectées, ajoute un message de confirmation chaleureux et personnalisé dans le champ "message" du JSON racine.
-`;
+CONTEXTE MÉDICAL :
+${historyContext}
+`
+      }
+    ];
+
+    if (messages && Array.isArray(messages)) {
+      // New conversation mode
+      messages.forEach(msg => {
+        const content = [];
+        if (msg.image_url) content.push({ type: "image_url", image_url: { url: msg.image_url } });
+        if (msg.content) content.push({ type: "text", text: msg.content });
+        llmMessages.push({ role: msg.role, content });
+      });
+    } else {
+      // Legacy mode (single input)
+      const content = [];
+      if (imageUrl) content.push({ type: "image_url", image_url: { url: imageUrl } });
+      if (text) content.push({ type: "text", text: `L'utilisateur dit : "${text}"` });
+      llmMessages.push({ role: "user", content });
+    }
 
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
@@ -70,11 +88,8 @@ Règles :
         "X-Title": "PawCoach",
       },
       body: JSON.stringify({
-        model: "openai/gpt-4o", // Use a capable model for extraction
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userContent }
-        ],
+        model: "openai/gpt-4o",
+        messages: llmMessages,
         response_format: { type: "json_object" }
       }),
     });

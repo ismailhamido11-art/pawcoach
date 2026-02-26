@@ -9,135 +9,204 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "framer-motion";
 
+// Sound utility (clean beep/pop using Web Audio API)
+const playPop = () => {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(800, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.1);
+  } catch(e) {}
+};
+
 export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = false }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [mode, setMode] = useState("idle"); // idle, listening, processing, review, text
-  const [transcript, setTranscript] = useState("");
-  const [scannedImage, setScannedImage] = useState(null);
-  const [result, setResult] = useState(null); // { records: [], message: "" }
+  
+  // Conversation state
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [pendingRecords, setPendingRecords] = useState([]);
+  const [isFinished, setIsFinished] = useState(false);
   
   const recognitionRef = useRef(null);
+  const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  // --- Voice Logic ---
+  // Initialize conversation when opening
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      setTimeout(() => {
+        addMessage({ 
+          role: "assistant", 
+          content: "Bonjour ! Que souhaitez-vous enregistrer aujourd'hui ? (Vaccin, poids, visite...)" 
+        });
+      }, 500);
+    }
+  }, [isOpen]);
+
+  // Scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isProcessing]);
+
+  const addMessage = (msg) => {
+    setMessages(prev => [...prev, msg]);
+    if (msg.role === "assistant") playPop();
+  };
+
+  const processConversation = async (newMessages) => {
+    setIsProcessing(true);
+    try {
+      const { data } = await base44.functions.invoke("processHealthInput", {
+        messages: newMessages,
+        dogId
+      });
+
+      // 1. Add assistant response (next question)
+      if (data.next_question) {
+        addMessage({ role: "assistant", content: data.next_question });
+      }
+
+      // 2. Handle document scan suggestion
+      setShowScanner(!!data.suggest_scan);
+
+      // 3. Collect records
+      if (data.records_to_save && data.records_to_save.length > 0) {
+        setPendingRecords(prev => {
+          // Merge unique records
+          const newRecs = [...prev];
+          data.records_to_save.forEach(rec => {
+             if (!newRecs.find(r => r.title === rec.title && r.date === rec.date)) {
+               newRecs.push(rec);
+             }
+          });
+          return newRecs;
+        });
+        // Feedback
+        addMessage({ 
+           role: "assistant", 
+           content: `J'ai noté : ${data.records_to_save.map(r => r.title).join(", ")}. On continue ?` 
+        });
+      }
+
+      // 4. Finished?
+      if (data.is_finished) {
+        setIsFinished(true);
+        // Show summary view automatically? Or just wait for user to click "Terminer"
+      }
+
+    } catch (e) {
+      console.error(e);
+      addMessage({ role: "assistant", content: "Oups, j'ai eu un petit souci de connexion. On peut réessayer ?" });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleSend = async (text = inputValue, image = null) => {
+    if ((!text && !image) || isProcessing) return;
+
+    const newMsg = { 
+      role: "user", 
+      content: text, 
+      image_url: image 
+    };
+    
+    // Add to UI immediately
+    addMessage(newMsg);
+    setInputValue("");
+    setShowScanner(false); // Reset scanner suggestion after use
+
+    // Send full history to backend
+    const history = [...messages, newMsg];
+    await processConversation(history);
+  };
+
+  // --- Voice ---
   const startListening = () => {
     if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
-      alert("Dictée non supportée. Utilisez le clavier.");
+      alert("Dictée non supportée.");
       return;
     }
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     recognition.lang = "fr-FR";
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-      setMode("listening");
-      setTranscript("");
-    };
-
+    
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
     recognition.onresult = (e) => {
-      const current = e.results[e.results.length - 1][0].transcript;
-      setTranscript(current);
-    };
-
-    recognition.onend = () => {
-      // Auto-process if we have text
-      if (recognitionRef.current && transcript.trim().length > 2) {
-        handleProcess(transcript, null);
-      } else {
-        setMode("idle");
-      }
+      const transcript = e.results[0][0].transcript;
+      handleSend(transcript);
     };
 
     recognitionRef.current = recognition;
     recognition.start();
   };
 
-  const stopListening = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      recognitionRef.current = null;
-      // onend will trigger process
-    }
-  };
+  // --- Upload Image ---
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  // --- Process Logic ---
-  const handleProcess = async (text, file) => {
-    setMode("processing");
+    // Show optimistic loading bubble
+    addMessage({ role: "user", content: "Analyse du document...", type: "loading_image" });
+    
     try {
-      let imageUrl = null;
-      if (file) {
-        const { file_url } = await base44.integrations.Core.UploadFile({ file });
-        imageUrl = file_url;
-      }
-
-      const { data } = await base44.functions.invoke("processHealthInput", {
-        text,
-        imageUrl,
-        dogId
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      // Replace loading bubble with actual image message
+      setMessages(prev => {
+        const next = [...prev];
+        next.pop(); // remove loading
+        return [...next, { role: "user", content: "", image_url: file_url }];
       });
+      
+      const history = [...messages, { role: "user", content: "Voici le document.", image_url: file_url }];
+      await processConversation(history);
 
-      setResult(data);
-      setMode("review");
-    } catch (e) {
-      console.error(e);
-      alert("Erreur lors de l'analyse.");
-      setMode("idle");
+    } catch(err) {
+      console.error(err);
+      addMessage({ role: "system", content: "Erreur lors de l'envoi de l'image." });
     }
   };
 
-  const confirmRecord = async (record) => {
-    try {
-      await base44.entities.HealthRecord.create({
-        dog_id: dogId,
-        ...record
-      });
-      onRecordAdded(record);
-      // Remove confirmed record from result list
-      setResult(prev => ({
-        ...prev,
-        records: prev.records.filter(r => r !== record)
-      }));
-    } catch (e) {
-      console.error(e);
+  const saveAllAndClose = async () => {
+    for (const rec of pendingRecords) {
+      await base44.entities.HealthRecord.create({ dog_id: dogId, ...rec });
+      onRecordAdded(rec);
     }
+    setIsOpen(false);
+    setMessages([]);
+    setPendingRecords([]);
+    setIsFinished(false);
   };
 
-  const allDone = result?.records?.length === 0;
-
-  useEffect(() => {
-    if (mode === "review" && allDone) {
-      // Close after a brief delay showing "All done"
-      const t = setTimeout(() => {
-        setIsOpen(false);
-        setMode("idle");
-        setResult(null);
-        setTranscript("");
-        setScannedImage(null);
-      }, 1500);
-      return () => clearTimeout(t);
-    }
-  }, [allDone, mode]);
-
-
-  // --- Render Components ---
-
+  // --- UI ---
   return (
     <Dialog open={isOpen} onOpenChange={(open) => {
       setIsOpen(open);
-      if(!open) { setMode("idle"); setResult(null); setTranscript(""); }
+      if(!open) { setMessages([]); setPendingRecords([]); setIsFinished(false); }
     }}>
       <DialogTrigger asChild>
         {inline ? (
-          <button className="w-full bg-white rounded-2xl p-4 shadow-lg border border-slate-100 flex items-center gap-4 tap-scale group">
+          <button className="w-full bg-white rounded-2xl p-4 shadow-lg border border-slate-100 flex items-center gap-4 tap-scale group hover:border-primary/30 transition-all">
              <div className="w-12 h-12 rounded-full gradient-primary flex items-center justify-center flex-shrink-0 relative">
                 <Sparkles className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
                 <span className="absolute inset-0 rounded-full bg-white/30 animate-ping opacity-75" />
              </div>
              <div className="text-left flex-1">
                 <p className="font-bold text-foreground text-sm">Assistant Santé</p>
-                <p className="text-xs text-muted-foreground">Parler, écrire ou scanner...</p>
+                <p className="text-xs text-muted-foreground">Discussion guidée & intelligente</p>
              </div>
              <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
           </button>
@@ -150,263 +219,138 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
       </DialogTrigger>
       
       <DialogContent className="max-w-none w-full h-full p-0 border-0 bg-background/95 backdrop-blur-xl sm:rounded-none" hideClose>
-        <div className="h-full flex flex-col relative overflow-hidden">
+        <div className="h-full flex flex-col relative overflow-hidden bg-gradient-to-br from-background via-white to-secondary/20">
           
-          {/* Background Ambient Orbs */}
-          <div className="absolute top-[-20%] left-[-20%] w-[80vw] h-[80vw] bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-[-20%] right-[-20%] w-[80vw] h-[80vw] bg-accent/10 rounded-full blur-3xl pointer-events-none" />
-
           {/* Header */}
-          <div className="flex items-center justify-between p-6 z-10">
-             <button onClick={() => setIsOpen(false)} className="p-2 rounded-full bg-muted/50 hover:bg-muted transition-colors">
+          <div className="flex items-center justify-between p-4 border-b border-border/40 backdrop-blur-sm z-20">
+             <button onClick={() => setIsOpen(false)} className="p-2 rounded-full hover:bg-muted/50 transition-colors">
                <X className="w-6 h-6 text-foreground/70" />
              </button>
-             {mode !== "idle" && (
-                <button onClick={() => { setMode("idle"); setTranscript(""); }} className="text-sm font-medium text-muted-foreground">
-                  Annuler
-                </button>
+             <div className="flex flex-col items-center">
+               <span className="font-bold text-foreground">Assistant Santé</span>
+               <div className="flex items-center gap-1.5">
+                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                 <span className="text-[10px] text-muted-foreground uppercase tracking-wider">En ligne</span>
+               </div>
+             </div>
+             {pendingRecords.length > 0 ? (
+               <Button size="sm" onClick={saveAllAndClose} className="rounded-full bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20">
+                 <Check className="w-4 h-4 mr-1" /> Sauver ({pendingRecords.length})
+               </Button>
+             ) : (
+               <div className="w-10" />
              )}
           </div>
 
-          {/* MAIN CONTENT AREA */}
-          <div className="flex-1 flex flex-col items-center justify-center p-6 z-10 relative">
-            
-            <AnimatePresence mode="wait">
-              
-              {/* IDLE STATE */}
-              {mode === "idle" && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-                  className="flex flex-col items-center text-center space-y-12 w-full max-w-md"
-                >
-                  <div className="space-y-4">
-                    <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-600">
-                      Quoi de neuf ?
-                    </h2>
-                    <p className="text-muted-foreground text-lg">
-                      "J'ai fait le rappel de vaccin hier"<br/>
-                      "Il pèse 12.5 kg"
-                    </p>
-                  </div>
-
-                  {/* Big Interaction Buttons */}
-                  <div className="flex items-center justify-center gap-8">
-                    {/* Camera */}
-                    <div className="flex flex-col items-center gap-3">
-                      <button 
-                        onClick={() => fileInputRef.current?.click()}
-                        className="w-16 h-16 rounded-3xl bg-white border border-border shadow-lg flex items-center justify-center hover:scale-105 transition-transform"
-                      >
-                        <Camera className="w-7 h-7 text-primary" />
-                      </button>
-                      <span className="text-xs font-medium text-muted-foreground">Scanner</span>
-                      <input 
-                        type="file" ref={fileInputRef} accept="image/*" className="hidden" 
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          if(file) {
-                            setScannedImage(URL.createObjectURL(file));
-                            handleProcess(null, file);
-                          }
-                        }}
-                      />
-                    </div>
-
-                    {/* BIG MIC */}
-                    <div className="relative">
-                      <button 
-                        onClick={startListening}
-                        className="w-28 h-28 rounded-full gradient-primary shadow-2xl shadow-primary/40 flex items-center justify-center tap-scale relative z-10"
-                      >
-                        <Mic className="w-12 h-12 text-white" />
-                      </button>
-                      {/* Decorative rings */}
-                      <div className="absolute inset-0 rounded-full border border-primary/20 scale-125 pointer-events-none" />
-                      <div className="absolute inset-0 rounded-full border border-primary/10 scale-150 pointer-events-none" />
-                    </div>
-
-                    {/* Text */}
-                    <div className="flex flex-col items-center gap-3">
-                      <button 
-                        onClick={() => setMode("text")}
-                        className="w-16 h-16 rounded-3xl bg-white border border-border shadow-lg flex items-center justify-center hover:scale-105 transition-transform"
-                      >
-                        <Keyboard className="w-7 h-7 text-primary" />
-                      </button>
-                      <span className="text-xs font-medium text-muted-foreground">Écrire</span>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* LISTENING STATE */}
-              {mode === "listening" && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
-                  className="flex flex-col items-center text-center space-y-8 w-full"
-                >
-                  <div className="relative">
-                    <div className="w-32 h-32 rounded-full bg-primary flex items-center justify-center shadow-xl z-20 relative">
-                      <Mic className="w-14 h-14 text-white" />
-                    </div>
-                    {/* Pulsing waves */}
-                    <motion.div 
-                      animate={{ scale: [1, 2.5], opacity: [0.5, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                      className="absolute inset-0 bg-primary/30 rounded-full z-10"
-                    />
-                    <motion.div 
-                      animate={{ scale: [1, 2], opacity: [0.5, 0] }}
-                      transition={{ duration: 1.5, delay: 0.5, repeat: Infinity }}
-                      className="absolute inset-0 bg-primary/20 rounded-full z-10"
-                    />
-                  </div>
-
-                  <div className="space-y-4 max-w-xs">
-                    <p className="text-2xl font-semibold text-foreground">Je t'écoute...</p>
-                    <p className="text-lg text-muted-foreground min-h-[3rem]">
-                      "{transcript || "..."}"
-                    </p>
-                  </div>
-
-                  <Button onClick={stopListening} variant="outline" className="rounded-full px-8">
-                    C'est tout
-                  </Button>
-                </motion.div>
-              )}
-
-              {/* TEXT INPUT STATE */}
-              {mode === "text" && (
-                <motion.div
-                   initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-                   className="w-full max-w-md space-y-6"
-                >
-                  <h3 className="text-xl font-bold text-center">Écris ce qui s'est passé</h3>
-                  <div className="relative">
-                    <Input 
-                      autoFocus
-                      placeholder="Ex: Poids 15kg ce matin..."
-                      className="h-14 rounded-2xl pl-4 pr-12 text-lg shadow-sm"
-                      value={transcript}
-                      onChange={(e) => setTranscript(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && handleProcess(transcript, null)}
-                    />
-                    <Button 
-                      onClick={() => handleProcess(transcript, null)}
-                      size="icon" 
-                      className="absolute right-2 top-2 h-10 w-10 rounded-xl gradient-primary"
-                    >
-                      <ArrowLeft className="w-5 h-5 text-white rotate-180" />
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* PROCESSING STATE */}
-              {mode === "processing" && (
-                <motion.div
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                  className="flex flex-col items-center justify-center space-y-6"
-                >
-                  <div className="relative w-24 h-24">
-                     <div className="absolute inset-0 border-4 border-t-primary border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin" />
-                     <div className="absolute inset-2 border-4 border-t-transparent border-r-accent border-b-transparent border-l-transparent rounded-full animate-spin-reverse" />
-                     <Sparkles className="absolute inset-0 m-auto w-8 h-8 text-primary animate-pulse" />
-                  </div>
-                  <p className="text-lg font-medium text-muted-foreground animate-pulse">
-                    Analyse magique en cours...
-                  </p>
-                </motion.div>
-              )}
-
-              {/* REVIEW STATE */}
-              {mode === "review" && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-                  className="w-full max-w-md space-y-6"
-                >
-                  {allDone ? (
-                    <div className="text-center space-y-4">
-                       <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                         <Check className="w-10 h-10 text-green-600" />
+          {/* Chat Area */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-6 z-10 scroll-smooth">
+             <AnimatePresence initial={false}>
+               {messages.map((msg, i) => (
+                 <motion.div
+                   key={i}
+                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                   animate={{ opacity: 1, y: 0, scale: 1 }}
+                   transition={{ duration: 0.3 }}
+                   className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                 >
+                   <div 
+                     className={`
+                       max-w-[85%] rounded-2xl p-4 shadow-sm relative
+                       ${msg.role === "user" 
+                         ? "bg-primary text-white rounded-br-none" 
+                         : "bg-white border border-border/50 text-foreground rounded-bl-none"}
+                     `}
+                   >
+                     {msg.image_url ? (
+                       <div className="mb-2 rounded-lg overflow-hidden border border-white/20">
+                         <img src={msg.image_url} alt="Document" className="w-full h-auto max-h-48 object-cover" />
                        </div>
-                       <h3 className="text-2xl font-bold text-green-700">C'est noté !</h3>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="text-center mb-6">
-                        <h3 className="text-xl font-bold text-foreground">J'ai compris ça :</h3>
-                        {result?.message && <p className="text-sm text-muted-foreground mt-1">{result.message}</p>}
-                      </div>
+                     ) : null}
+                     
+                     <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
 
-                      <div className="space-y-4 max-h-[60vh] overflow-y-auto px-1">
-                        {result?.records?.map((rec, i) => (
-                          <motion.div 
-                            key={i}
-                            initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.1 }}
-                            className="bg-white border border-border rounded-2xl p-4 shadow-sm relative overflow-hidden group"
-                          >
-                            <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary to-emerald-400" />
-                            
-                            <div className="flex justify-between items-start mb-2 pl-3">
-                              <div className="flex items-center gap-2">
-                                <span className="text-2xl">{getEmoji(rec.type)}</span>
-                                <div>
-                                  <p className="font-bold text-foreground">{rec.title}</p>
-                                  <p className="text-xs text-muted-foreground capitalize">{rec.type.replace('_', ' ')}</p>
-                                </div>
-                              </div>
-                              <span className="text-xs font-bold bg-secondary px-2 py-1 rounded-lg text-primary-foreground/80">
-                                {rec.date}
-                              </span>
-                            </div>
+                     {/* Tail decoration */}
+                     <div className={`absolute bottom-0 w-4 h-4 
+                        ${msg.role === "user" 
+                          ? "-right-2 bg-primary [clip-path:polygon(0_0,0%_100%,100%_100%)]" 
+                          : "-left-2 bg-white border-b border-l border-border/50 [clip-path:polygon(100%_0,0%_100%,100%_100%)]"}
+                     `} />
+                   </div>
+                 </motion.div>
+               ))}
 
-                            {rec.details && <p className="text-sm text-muted-foreground pl-3 mb-3">{rec.details}</p>}
-                            {rec.value && <p className="text-sm font-semibold pl-3 mb-3">Valeur: {rec.value} kg</p>}
-                            
-                            {rec.next_date && (
-                               <div className="ml-3 flex items-center gap-2 text-xs text-amber-600 bg-amber-50 p-2 rounded-lg mb-3">
-                                 <span className="font-bold">⏰ Rappel :</span> {rec.next_date}
-                               </div>
-                            )}
-
-                            <div className="flex gap-3 pl-3 mt-2">
-                               <Button 
-                                 onClick={() => confirmRecord(rec)}
-                                 className="flex-1 gradient-primary text-white rounded-xl h-10 shadow-md shadow-primary/20"
-                               >
-                                 <Check className="w-4 h-4 mr-2" /> Confirmer
-                               </Button>
-                               <Button 
-                                 variant="outline"
-                                 onClick={() => {
-                                   // Remove from list without adding
-                                   setResult(prev => ({...prev, records: prev.records.filter(r => r !== rec)}));
-                                 }}
-                                 className="px-3 rounded-xl border-dashed"
-                               >
-                                 <X className="w-4 h-4 text-muted-foreground" />
-                               </Button>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-
-                      {result?.records?.length === 0 && !allDone && (
-                        <div className="text-center p-6 bg-muted/30 rounded-2xl border border-dashed border-border">
-                           <p className="text-muted-foreground">Je n'ai rien trouvé de précis.</p>
-                           <Button variant="link" onClick={() => setMode("idle")} className="text-primary mt-2">
-                             Réessayer
-                           </Button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </motion.div>
-              )}
-
-            </AnimatePresence>
+               {isProcessing && (
+                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+                   <div className="bg-white border border-border/50 rounded-2xl rounded-bl-none p-3 flex gap-1.5 shadow-sm">
+                     <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                     <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                     <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                   </div>
+                 </motion.div>
+               )}
+             </AnimatePresence>
+             <div ref={messagesEndRef} />
           </div>
+
+          {/* Scanner Suggestion (Floating) */}
+          <AnimatePresence>
+            {showScanner && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
+                className="absolute bottom-24 left-0 right-0 flex justify-center z-20"
+              >
+                <button 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground px-6 py-3 rounded-full shadow-xl flex items-center gap-2 font-bold transform hover:scale-105 transition-all border-2 border-white"
+                >
+                  <Camera className="w-5 h-5" />
+                  Scanner le document
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Input Area */}
+          <div className="p-4 bg-white/80 backdrop-blur-md border-t border-border/50 z-20">
+             <div className="flex items-center gap-3 relative">
+               
+               {/* Hidden File Input */}
+               <input 
+                 type="file" ref={fileInputRef} accept="image/*" className="hidden" 
+                 onChange={handleImageUpload}
+               />
+
+               {/* Mic Button */}
+               <button 
+                 onClick={startListening}
+                 className={`
+                   w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md
+                   ${isListening ? "bg-red-500 text-white animate-pulse shadow-red-500/40" : "bg-secondary hover:bg-secondary/80 text-foreground"}
+                 `}
+               >
+                 <Mic className="w-5 h-5" />
+               </button>
+
+               {/* Text Input */}
+               <div className="flex-1 relative">
+                 <Input 
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                    placeholder="Message..."
+                    className="h-12 rounded-full pl-5 pr-12 border-border/60 shadow-inner bg-muted/20 focus:bg-white transition-colors"
+                 />
+                 <button 
+                   onClick={() => handleSend()}
+                   disabled={!inputValue.trim()}
+                   className="absolute right-1 top-1 h-10 w-10 bg-primary rounded-full flex items-center justify-center text-white shadow-md disabled:opacity-50 disabled:shadow-none transition-all hover:scale-105 active:scale-95"
+                 >
+                   <ArrowLeft className="w-5 h-5 rotate-90" />
+                 </button>
+               </div>
+             </div>
+          </div>
+
         </div>
       </DialogContent>
     </Dialog>
