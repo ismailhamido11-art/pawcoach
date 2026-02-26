@@ -43,17 +43,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = fa
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  // Initialize conversation when opening
-  useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      setTimeout(() => {
-        addMessage({ 
-          role: "assistant", 
-          content: "Bonjour ! Que souhaitez-vous enregistrer aujourd'hui ? (Vaccin, poids, visite...)" 
-        });
-      }, 500);
-    }
-  }, [isOpen]);
+  // Initialize conversation when opening - no initial message, let the backend handle it
 
   // Scroll to bottom
   useEffect(() => {
