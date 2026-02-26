@@ -50,10 +50,10 @@
 import Chat from './pages/Chat';
 import Notebook from './pages/Notebook';
 import Onboarding from './pages/Onboarding';
-import Scan from './pages/Scan';
-import Training from './pages/Training';
 import Premium from './pages/Premium';
 import Profile from './pages/Profile';
+import Scan from './pages/Scan';
+import Training from './pages/Training';
 import Nutrition from './pages/Nutrition';
 import __Layout from './Layout.jsx';
 
@@ -62,10 +62,10 @@ export const PAGES = {
     "Chat": Chat,
     "Notebook": Notebook,
     "Onboarding": Onboarding,
-    "Scan": Scan,
-    "Training": Training,
     "Premium": Premium,
     "Profile": Profile,
+    "Scan": Scan,
+    "Training": Training,
     "Nutrition": Nutrition,
 }
 
