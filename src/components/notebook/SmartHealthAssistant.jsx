@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
+export default function SmartHealthAssistant({ dogId, onRecordAdded, inline = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState("idle"); // idle, listening, processing, review, text
   const [transcript, setTranscript] = useState("");
@@ -129,11 +129,24 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       if(!open) { setMode("idle"); setResult(null); setTranscript(""); }
     }}>
       <DialogTrigger asChild>
-        <button className="fixed bottom-24 right-5 h-16 w-16 rounded-full gradient-primary shadow-xl shadow-primary/40 flex items-center justify-center tap-scale z-40 group">
-          <Sparkles className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
-          {/* Pulse ring */}
-          <span className="absolute inset-0 rounded-full bg-white/30 animate-ping opacity-75" />
-        </button>
+        {inline ? (
+          <button className="w-full bg-white rounded-2xl p-4 shadow-lg border border-slate-100 flex items-center gap-4 tap-scale group">
+             <div className="w-12 h-12 rounded-full gradient-primary flex items-center justify-center flex-shrink-0 relative">
+                <Sparkles className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
+                <span className="absolute inset-0 rounded-full bg-white/30 animate-ping opacity-75" />
+             </div>
+             <div className="text-left flex-1">
+                <p className="font-bold text-foreground text-sm">Assistant Santé</p>
+                <p className="text-xs text-muted-foreground">Parler, écrire ou scanner...</p>
+             </div>
+             <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+          </button>
+        ) : (
+          <button className="fixed bottom-24 right-5 h-16 w-16 rounded-full gradient-primary shadow-xl shadow-primary/40 flex items-center justify-center tap-scale z-40 group">
+            <Sparkles className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
+            <span className="absolute inset-0 rounded-full bg-white/30 animate-ping opacity-75" />
+          </button>
+        )}
       </DialogTrigger>
       
       <DialogContent className="max-w-none w-full h-full p-0 border-0 bg-background/95 backdrop-blur-xl sm:rounded-none" hideClose>

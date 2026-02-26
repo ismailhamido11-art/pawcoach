@@ -13,6 +13,19 @@ Deno.serve(async (req) => {
 
     const today = new Date().toISOString().split("T")[0];
 
+    // Fetch existing records for context
+    let historyContext = "";
+    if (dogId) {
+      try {
+        const records = await base44.entities.HealthRecord.filter({ dog_id: dogId }, "-date", 10);
+        if (records && records.length > 0) {
+          historyContext = "Historique médical récent du chien :\n" + records.map(r => `- ${r.date} : [${r.type}] ${r.title} ${r.value ? `(${r.value}kg)` : ''} ${r.details ? `(${r.details})` : ''}`).join("\n");
+        }
+      } catch (e) {
+        console.error("Error fetching history", e);
+      }
+    }
+
     // Build the prompt
     let userContent = [];
     if (imageUrl) {
@@ -27,7 +40,8 @@ Deno.serve(async (req) => {
 Aujourd'hui nous sommes le ${today}.
 Ta tâche est d'analyser le texte ou l'image fourni et d'extraire des enregistrements de santé structurés pour le chien.
 
-Retourne UNIQUEMENT un JSON valide (sans markdown) contenant un tableau "records".
+${historyContext ? historyContext + "\n\nUtilise cet historique pour personnaliser ta réponse. Pose des questions de suivi pertinentes dans le champ 'message' pour montrer une continuité et un suivi intelligent (par ex: faire le lien avec un ancien problème, éviter de demander un vaccin fait récemment, etc.).\n" : ""}
+Retourne UNIQUEMENT un JSON valide (sans markdown) contenant un tableau "records" (si des données sont à enregistrer) et une chaîne "message" (ta réponse à l'utilisateur).
 Chaque record doit suivre ce format :
 {
   "type": "vaccine" | "vet_visit" | "weight" | "medication" | "allergy" | "note",
@@ -43,8 +57,8 @@ Règles :
 - Si on parle de vaccin (ex: "Rappel CHPL"), type="vaccine". Essaie de deviner la prochaine date si c'est standard (1 an après).
 - Si on parle de visite vétérinaire, type="vet_visit".
 - Si médicament, type="medication".
-- Si rien n'est détecté, retourne { "records": [], "message": "Je n'ai pas compris. Peux-tu préciser ?" }
-- Si détecté, ajoute un petit message de confirmation dans le champ "message" du JSON racine (ex: "J'ai trouvé 1 vaccin.").
+- Si aucune nouvelle donnée n'est à enregistrer, retourne un JSON avec "records": [] et réponds de manière conversationnelle et contextuelle dans "message".
+- Si des données sont détectées, ajoute un message de confirmation chaleureux et personnalisé dans le champ "message" du JSON racine.
 `;
 
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {

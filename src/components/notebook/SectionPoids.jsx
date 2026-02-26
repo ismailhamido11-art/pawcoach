@@ -6,10 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Weight, Plus, X } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
-export default function SectionPoids({ records, dogId, onAdd, onDelete }) {
-  const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ value: "", date: new Date().toISOString().split("T")[0] });
-  const [saving, setSaving] = useState(false);
+export default function SectionPoids({ records, dogId, onDelete }) {
 
   const weights = records.filter(r => r.type === "weight" && r.value)
     .sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -19,26 +16,6 @@ export default function SectionPoids({ records, dogId, onAdd, onDelete }) {
     poids: r.value,
     id: r.id,
   }));
-
-  const handleSave = async () => {
-    if (!form.value || !form.date) return;
-    setSaving(true);
-    const rec = await base44.entities.HealthRecord.create({
-      dog_id: dogId,
-      type: "weight",
-      title: `Poids – ${new Date(form.date).toLocaleDateString("fr-FR")}`,
-      date: form.date,
-      value: parseFloat(form.value),
-    });
-    onAdd(rec);
-    try {
-      const u = await base44.auth.me();
-      await base44.auth.updateMe({ points: (u.points || 0) + 20 });
-    } catch(e) {}
-    setForm({ value: "", date: new Date().toISOString().split("T")[0] });
-    setShowForm(false);
-    setSaving(false);
-  };
 
   return (
     <div className="space-y-3">
@@ -62,33 +39,7 @@ export default function SectionPoids({ records, dogId, onAdd, onDelete }) {
         </div>
       )}
 
-      {showForm && (
-        <div className="bg-teal-50 border border-teal-200 rounded-2xl p-4 space-y-3 animate-slide-up">
-          <div className="flex items-center justify-between">
-            <p className="font-semibold text-sm text-teal-700">Nouvelle mesure</p>
-            <button onClick={() => setShowForm(false)}><X className="w-4 h-4 text-teal-400" /></button>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label className="text-xs text-muted-foreground mb-1 block">Poids (kg) *</Label>
-              <Input type="number" step="0.1" placeholder="Ex: 8.5" value={form.value}
-                onChange={e => setForm(f => ({ ...f, value: e.target.value }))}
-                className="h-10 rounded-xl bg-white border-teal-200" />
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground mb-1 block">Date *</Label>
-              <Input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                className="h-10 rounded-xl bg-white border-teal-200" />
-            </div>
-          </div>
-          <Button onClick={handleSave} disabled={!form.value || !form.date || saving}
-            className="w-full h-10 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold border-0">
-            {saving ? "Enregistrement..." : "Enregistrer"}
-          </Button>
-        </div>
-      )}
-
-      {weights.length === 0 && !showForm && (
+      {weights.length === 0 && (
         <div className="text-center py-8">
           <p className="text-3xl mb-2">⚖️</p>
           <p className="text-muted-foreground text-sm">Aucune pesée enregistrée</p>
@@ -110,12 +61,6 @@ export default function SectionPoids({ records, dogId, onAdd, onDelete }) {
         </div>
       ))}
 
-      {!showForm && (
-        <Button onClick={() => setShowForm(true)} variant="outline"
-          className="w-full h-10 rounded-xl border-teal-200 text-teal-700 font-semibold gap-2 hover:bg-teal-50">
-          <Plus className="w-4 h-4" /> Ajouter un poids
-        </Button>
-      )}
     </div>
   );
 }

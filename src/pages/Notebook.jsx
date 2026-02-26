@@ -93,9 +93,18 @@ export default function Notebook() {
       <WellnessBanner />
 
       {/* Header */}
-      <div className="gradient-primary pt-10 pb-5 px-5">
-        <h1 className="text-white font-bold text-xl mb-0.5">Carnet de santé</h1>
-        <p className="text-white/70 text-sm">{dog ? `Suivi de ${dog.name}` : "Chargement..."}</p>
+      <div className="gradient-primary pt-10 pb-10 px-5 relative overflow-hidden">
+        <div className="relative z-10">
+          <h1 className="text-white font-bold text-2xl mb-2">Carnet de santé</h1>
+          <p className="text-white/90 text-sm leading-relaxed">
+            {dog ? `L'Assistant Santé intelligent est là pour le suivi de ${dog.name}. Raconte-lui votre dernière visite, un nouveau vaccin, ou scanne un document !` : "Chargement..."}
+          </p>
+        </div>
+        <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+      </div>
+
+      <div className="px-5 mt-[-28px] relative z-20 mb-6">
+         <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} inline={true} />
       </div>
 
       <UpcomingReminders records={records} isPremium={isPremium} />
@@ -127,10 +136,10 @@ export default function Notebook() {
       {/* Section content */}
       <div className="px-4 pt-4">
         {activeTab === "vaccine" && (
-          <SectionVaccins records={records} dogId={dog?.id} onAdd={handleAdd} onDelete={handleDelete} />
+          <SectionVaccins records={records} dogId={dog?.id} onDelete={handleDelete} />
         )}
         {activeTab === "weight" && (
-          <SectionPoids records={records} dogId={dog?.id} onAdd={handleAdd} onDelete={handleDelete} />
+          <SectionPoids records={records} dogId={dog?.id} onDelete={handleDelete} />
         )}
         {(activeTab === "vet_visit" || activeTab === "medication" || activeTab === "note") && (
           <PremiumSection
@@ -138,14 +147,12 @@ export default function Notebook() {
             records={records}
             dogId={dog?.id}
             isPremium={isPremium}
-            onAdd={handleAdd}
             onDelete={handleDelete}
             config={PREMIUM_CONFIGS[activeTab]}
           />
         )}
       </div>
 
-      <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} />
       <BottomNav currentPage="Notebook" />
     </div>
   );
