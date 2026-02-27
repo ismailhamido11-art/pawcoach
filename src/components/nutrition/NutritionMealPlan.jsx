@@ -2,6 +2,7 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCw, ShoppingCart, Lock } from "lucide-react";
+import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
 function getAge(birthDate) {
@@ -72,7 +73,7 @@ Sois très précis, pratique et personnalisé pour ${dog.name}.`;
       {/* Dog summary */}
       <div className="bg-white rounded-2xl border border-border p-4 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center text-2xl">🐕</div>
+          <div className="w-12 h-12 rounded-xl bg-safe/10 flex items-center justify-center text-2xl">🐕</div>
           <div>
             <p className="font-bold text-foreground">{dog.name}</p>
             <p className="text-xs text-muted-foreground">
@@ -80,8 +81,8 @@ Sois très précis, pratique et personnalisé pour ${dog.name}.`;
             </p>
           </div>
           {recentScans.length > 0 && (
-            <div className="ml-auto bg-green-50 px-2.5 py-1 rounded-full border border-green-100">
-              <span className="text-green-700 text-xs font-medium">🔍 {recentScans.length} scans intégrés</span>
+            <div className="ml-auto bg-safe/10 px-2.5 py-1 rounded-full border border-safe/20">
+              <span className="text-safe text-xs font-medium">🔍 {recentScans.length} scans intégrés</span>
             </div>
           )}
         </div>
@@ -95,7 +96,7 @@ Sois très précis, pratique et personnalisé pour ${dog.name}.`;
           <p className="text-sm text-muted-foreground px-4">
             Génère un plan hebdomadaire complet adapté au profil exact de {dog.name}, avec quantités, marques recommandées et aliments à éviter.
           </p>
-          <Button onClick={generate} className="bg-green-600 hover:bg-green-700 text-white font-bold h-12 px-8 rounded-2xl shadow-lg shadow-green-200">
+          <Button onClick={generate} className="bg-safe hover:bg-safe/90 text-white font-bold h-12 px-8 rounded-2xl shadow-lg shadow-safe/30">
             ✨ Générer mon plan de repas
           </Button>
         </div>
@@ -103,7 +104,7 @@ Sois très précis, pratique et personnalisé pour ${dog.name}.`;
 
       {loading && (
         <div className="flex flex-col items-center justify-center py-12 space-y-4">
-          <Loader2 className="w-10 h-10 text-green-600 animate-spin" />
+          <Loader2 className="w-10 h-10 text-safe animate-spin" />
           <div className="text-center">
             <p className="font-semibold text-foreground">NutriCoach analyse le profil de {dog.name}...</p>
             <p className="text-xs text-muted-foreground mt-1">Création du plan personnalisé</p>
@@ -119,7 +120,7 @@ Sois très précis, pratique et personnalisé pour ${dog.name}.`;
               className="prose prose-sm max-w-none prose-headings:text-foreground prose-strong:text-foreground"
               components={{
                 h1: ({ children }) => <h1 className="text-base font-bold text-foreground mt-4 mb-2 first:mt-0">{children}</h1>,
-                h2: ({ children }) => <h2 className="text-sm font-bold text-green-700 mt-4 mb-2 first:mt-0 flex items-center gap-1">{children}</h2>,
+                h2: ({ children }) => <h2 className="text-sm font-bold text-safe mt-4 mb-2 first:mt-0 flex items-center gap-1">{children}</h2>,
                 h3: ({ children }) => <h3 className="text-sm font-semibold text-foreground mt-3 mb-1">{children}</h3>,
                 p: ({ children }) => <p className="text-sm text-foreground my-1.5 leading-relaxed">{children}</p>,
                 ul: ({ children }) => <ul className="my-1.5 ml-4 list-disc space-y-0.5">{children}</ul>,
@@ -132,35 +133,37 @@ Sois très précis, pratique et personnalisé pour ${dog.name}.`;
           </div>
 
           {/* Affiliate brands */}
-          <div className="bg-amber-50 rounded-2xl border border-amber-200 p-4">
-            <p className="text-xs font-bold text-amber-800 flex items-center gap-1.5 mb-3">
+          <div className="bg-accent/10 rounded-2xl border border-accent/20 p-4">
+            <p className="text-xs font-bold text-accent flex items-center gap-1.5 mb-3">
               <ShoppingCart className="w-3.5 h-3.5" /> Marques recommandées – Liens partenaires
             </p>
             <div className="grid grid-cols-1 gap-2">
               {AFFILIATE_BRANDS.map((brand, i) => (
-                <a
+                <motion.a
                   key={i}
                   href={brand.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between bg-white rounded-xl px-3 py-2.5 border border-amber-100 shadow-sm tap-scale"
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  className="flex items-center justify-between bg-white rounded-xl px-3 py-2.5 border border-accent/20 shadow-sm"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{brand.emoji}</span>
-                    <span className="text-sm font-semibold text-foreground">{brand.name}</span>
-                  </div>
-                  <span className="text-xs text-amber-600 font-medium">Voir →</span>
-                </a>
+                      <span className="text-sm font-semibold text-foreground">{brand.name}</span>
+                    </div>
+                    <span className="text-xs text-accent font-medium">Voir →</span>
+                    </motion.a>
               ))}
             </div>
-            <p className="text-[10px] text-amber-600 mt-2 text-center">🤝 Liens affiliés – soutient PawCoach sans surcoût</p>
+            <p className="text-[10px] text-accent mt-2 text-center">🤝 Liens affiliés – soutient PawCoach sans surcoût</p>
           </div>
 
           {/* Regenerate */}
           <Button
             onClick={generate}
             variant="outline"
-            className="w-full h-11 rounded-2xl border-green-200 text-green-700 font-semibold gap-2"
+            className="w-full h-11 rounded-2xl border-safe/20 text-safe font-semibold gap-2"
           >
             <RefreshCw className="w-4 h-4" />
             Régénérer le plan
