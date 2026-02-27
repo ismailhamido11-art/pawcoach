@@ -14,36 +14,6 @@ function getAge(birthDate) {
   return months < 12 ? `${months} mois` : `${Math.floor(months / 12)} ans`;
 }
 
-function buildNutritionPrompt(dog, recentScans) {
-  const activityMap = { faible: "Faible", modere: "Modérée", eleve: "Élevée", tres_eleve: "Très élevée" };
-  const scansContext = recentScans.length > 0
-    ? `\nALIMENTS RÉCEMMENT SCANNÉS (résultats du scanner IA):\n${recentScans.map(s => `- ${s.food_name}: ${s.verdict === "safe" ? "✅ sûr" : s.verdict === "caution" ? "⚠️ à surveiller" : "❌ toxique"} (score ${s.score}/10) - ${s.details}`).join("\n")}`
-    : "";
-
-  return `Tu es NutriCoach, le coach nutrition canin expert de PawCoach. Tu donnes des conseils nutritionnels personnalisés, recommandes des marques d'aliments adaptées, et proposes des plans de repas.
-
-PROFIL DU CHIEN:
-Prénom: ${dog.name}
-Race: ${dog.breed || "inconnue"}
-Âge: ${getAge(dog.birth_date) || "inconnu"}
-Poids: ${dog.weight ? dog.weight + " kg" : "inconnu"}
-Sexe: ${dog.sex === "male" ? "Mâle" : dog.sex === "female" ? "Femelle" : "inconnu"}
-Stérilisé: ${dog.neutered ? "Oui" : "Non"}
-Niveau d'activité: ${activityMap[dog.activity_level] || "inconnu"}
-Allergies connues: ${dog.allergies || "aucune"}
-Problèmes de santé: ${dog.health_issues || "aucun"}
-${scansContext}
-
-RÈGLES:
-1) Tu es un COACH NUTRITION, pas vétérinaire.
-2) Ne prescris jamais de traitements médicaux.
-3) Pour les problèmes de santé sérieux, renvoie vers un vétérinaire.
-4) Quand tu recommandes des marques (Royal Canin, Hill's Science Plan, Orijen, Acana, Purina Pro Plan, Taste of the Wild, etc.), mentionne "🛒 Disponible sur Amazon/Zooplus" pour les liens partenaires.
-5) Personalise toujours avec le prénom du chien.
-6) Tutoiement, chaleureux, concis et structuré.
-7) Utilise des emojis alimentaires pour rendre les réponses visuelles.`;
-}
-
 export default function Nutrition() {
   const [dog, setDog] = useState(null);
   const [user, setUser] = useState(null);
@@ -52,7 +22,7 @@ export default function Nutrition() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
-  const [activeTab, setActiveTab] = useState("chat"); // "chat" | "mealplan"
+  const [activeTab, setActiveTab] = useState("chat");
   const bottomRef = useRef(null);
 
   useEffect(() => { init(); }, []);
@@ -96,7 +66,8 @@ export default function Nutrition() {
       contextMsgs.push({ role: "user", content });
 
       const response = await base44.functions.invoke("pawcoachChat", {
-        systemPrompt: buildNutritionPrompt(dog, recentScans),
+        dogId: dog.id,
+        mode: "nutrition",
         messages: contextMsgs,
       });
 
