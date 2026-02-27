@@ -242,14 +242,14 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
           <div>
             <p className="font-bold text-foreground text-sm leading-tight">Assistant Santé</p>
             <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-safe animate-pulse" />
               <span className="text-[10px] text-muted-foreground">En ligne</span>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {pendingRecords.length > 0 && !hasSaved && (
-            <Button size="sm" onClick={saveAllRecords} className="rounded-full bg-green-600 hover:bg-green-700 text-white text-xs h-8 shadow-md">
+            <Button size="sm" onClick={saveAllRecords} className="rounded-full bg-safe hover:bg-safe/90 text-white text-xs h-8 shadow-md">
               <Check className="w-3.5 h-3.5 mr-1" /> Sauver ({pendingRecords.length})
             </Button>
           )}
@@ -265,23 +265,23 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       <div className="max-h-[380px] overflow-y-auto p-4 space-y-4 scroll-smooth bg-gradient-to-b from-white to-slate-50/50">
 
         {/* Loading state before first message */}
-        {messages.length === 0 && isProcessing && (
-          <div className="flex justify-start">
-            <div className="bg-white border border-border/50 rounded-2xl rounded-bl-none p-3 flex gap-1.5 shadow-sm">
-              <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-              <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-              <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-            </div>
-          </div>
-        )}
+         {messages.length === 0 && isProcessing && (
+           <div className="flex justify-start">
+             <div className="bg-white border border-border/50 rounded-2xl rounded-bl-none p-3 flex gap-1.5 shadow-sm">
+               <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary/40 rounded-full" />
+               <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }} className="w-2 h-2 bg-primary/40 rounded-full" />
+               <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }} className="w-2 h-2 bg-primary/40 rounded-full" />
+             </div>
+           </div>
+         )}
 
         {/* Saved confirmation */}
         {hasSaved && (
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex justify-center py-4">
-            <div className="bg-green-50 border border-green-200 rounded-2xl px-6 py-4 text-center">
-              <Check className="w-8 h-8 text-green-600 mx-auto mb-2" />
-              <p className="text-sm font-bold text-green-800">Enregistré avec succès !</p>
-              <p className="text-xs text-green-600 mt-1">Le carnet se met à jour...</p>
+            <div className="bg-safe/10 border border-safe/20 rounded-2xl px-6 py-4 text-center">
+              <Check className="w-8 h-8 text-safe mx-auto mb-2" />
+              <p className="text-sm font-bold text-safe">Enregistré avec succès !</p>
+              <p className="text-xs text-safe/70 mt-1">Le carnet se met à jour...</p>
             </div>
           </motion.div>
         )}
@@ -397,9 +397,9 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
           {isProcessing && messages.length > 0 && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
               <div className="bg-white border border-border/50 rounded-2xl rounded-bl-sm p-3 flex gap-1.5 shadow-sm">
-                <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary/40 rounded-full" />
+                <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }} className="w-2 h-2 bg-primary/40 rounded-full" />
+                <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }} className="w-2 h-2 bg-primary/40 rounded-full" />
               </div>
             </motion.div>
           )}
@@ -427,7 +427,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       <div className="px-3 py-3 bg-white border-t border-slate-100">
         {isFinished && pendingRecords.length > 0 ? (
           <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
-            <Button onClick={saveAllRecords} className="w-full rounded-full bg-primary hover:bg-primary/90 text-white h-11 text-sm font-medium shadow-md">
+            <Button onClick={saveAllRecords} className="w-full rounded-full bg-safe hover:bg-safe/90 text-white h-11 text-sm font-medium shadow-md">
               <Check className="w-4 h-4 mr-2" />
               Enregistrer {pendingRecords.length} entrée{pendingRecords.length > 1 ? 's' : ''} dans le carnet
             </Button>
