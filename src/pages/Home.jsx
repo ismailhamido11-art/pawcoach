@@ -131,6 +131,7 @@ export default function Home() {
       const result = response.data || {};
       setTodayCheckin(result.checkin || { mood, energy, appetite, ai_response: result.aiResponse, date: getTodayString() });
       setStreak(result.streak || streak);
+      if (navigator.vibrate) navigator.vibrate(50);
       // Add to recent check-ins
       setRecentCheckins(prev => [
         { mood, energy, appetite, ai_response: result.aiResponse, date: getTodayString() },
@@ -565,6 +566,7 @@ export default function Home() {
 
 function MilestoneCelebration({ milestone, onClose }) {
   useEffect(() => {
+    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
     confetti({
       particleCount: 80,
       spread: 70,

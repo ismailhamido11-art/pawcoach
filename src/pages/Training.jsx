@@ -98,6 +98,7 @@ export default function Training() {
 
       // Only show celebration and update streak if we just completed (not un-completing)
       if (!wasCompleted) {
+        if (navigator.vibrate) navigator.vibrate(30);
         // --- STREAK UPDATE ---
         await updateStreakSilently(dog.id, user.email);
 

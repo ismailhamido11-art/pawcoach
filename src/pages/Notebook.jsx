@@ -139,6 +139,7 @@ export default function Notebook() {
   const handleAdd = async (rec) => {
     setRecords(prev => [...prev, rec]);
     setShowRecords(true);
+    if (navigator.vibrate) navigator.vibrate(30);
 
     // --- STREAK UPDATE ---
     if (dog && user) {

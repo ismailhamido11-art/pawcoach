@@ -181,7 +181,9 @@ export default function Scan() {
       const updatedUser = await base44.auth.me();
       setUser(updatedUser);
 
-      setResult({ ...aiResult, photo_url: file_url, timestamp: new Date().toISOString() });
+      const finalResult = { ...aiResult, photo_url: file_url, timestamp: new Date().toISOString() };
+      setResult(finalResult);
+      if (finalResult.verdict === "toxic" && navigator.vibrate) navigator.vibrate(200);
     } catch (e) {
       console.error(e);
       setError("L'analyse a échoué. Vérifie ta connexion et réessaie.");
@@ -205,6 +207,7 @@ export default function Scan() {
       });
       setSaved(true);
       setHistory(prev => [result, ...prev]);
+      if (navigator.vibrate) navigator.vibrate(30);
 
       const newPoints = (user.points || 0) + 10;
       await base44.auth.updateMe({ points: newPoints });
