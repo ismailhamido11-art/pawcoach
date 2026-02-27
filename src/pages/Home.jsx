@@ -221,11 +221,20 @@ export default function Home() {
 
 
 
+      {/* Header avec Logo */}
+      <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-5 pt-4 z-10">
+        <div>
+          <h1 className="text-lg font-bold gradient-text">PawCoach</h1>
+          <p className="text-xs text-muted-foreground">Wellness AI</p>
+        </div>
+        <AnimatedLogo size="sm" />
+      </div>
+
       {/* Bouton Profil */}
-      <motion.div whileTap={{ scale: 0.96 }} transition={spring} className="absolute top-16 right-6 z-10">
+      <motion.div whileTap={{ scale: 0.96 }} transition={spring} className="absolute top-6 right-6 z-10">
       <Link
         to={createPageUrl("Profile")}
-        className="p-2 rounded-full bg-white shadow-sm border border-border text-muted-foreground hover:text-primary transition-colors block"
+        className="p-2 rounded-full bg-white/80 backdrop-blur-md shadow-sm border border-border text-muted-foreground hover:text-primary transition-colors block"
       >
         <UserCircle className="w-6 h-6" />
       </Link>
