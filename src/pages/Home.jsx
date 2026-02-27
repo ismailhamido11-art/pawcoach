@@ -10,6 +10,14 @@ import {
   ChevronDown, ChevronUp, Sparkles, Check, Salad, MapPin
 } from "lucide-react";
 import confetti from "canvas-confetti";
+import { motion, AnimatePresence } from "framer-motion";
+
+const spring = { type: "spring", stiffness: 400, damping: 30 };
+const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
+const listItem = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 20 } }
+};
 
 const MOOD_OPTIONS = [
   { value: 1, emoji: "😢", label: "Triste" },
@@ -180,18 +188,25 @@ export default function Home() {
   const longestStreak = streak?.longest_streak || 0;
 
   return (
-    <div className="min-h-screen bg-background pb-24 relative">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 120, damping: 20 }}
+      className="min-h-screen bg-background pb-24 relative"
+    >
       <WellnessBanner />
 
 
 
       {/* Bouton Profil */}
+      <motion.div whileTap={{ scale: 0.96 }} transition={spring} className="absolute top-16 right-6 z-10">
       <Link
         to={createPageUrl("Profile")}
-        className="absolute top-16 right-6 p-2 rounded-full bg-white shadow-sm border border-border text-muted-foreground hover:text-primary transition-colors z-10"
+        className="p-2 rounded-full bg-white shadow-sm border border-border text-muted-foreground hover:text-primary transition-colors block"
       >
         <UserCircle className="w-6 h-6" />
       </Link>
+      </motion.div>
 
       <div className="pt-24 px-6">
         {/* Header avec streak */}
@@ -230,69 +245,80 @@ export default function Home() {
             {/* Humeur */}
             <div className="mb-4">
               <p className="text-sm font-medium text-muted-foreground mb-2">Humeur</p>
-              <div className="flex gap-2">
+              <motion.div className="flex gap-2" variants={listContainer} initial="hidden" animate="show">
                 {MOOD_OPTIONS.map(opt => (
-                  <button
+                  <motion.button
                     key={opt.value}
+                    variants={listItem}
+                    whileTap={{ scale: 0.96 }}
+                    transition={spring}
                     onClick={() => setMood(opt.value)}
-                    className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-all ${mood === opt.value
+                    className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-colors ${mood === opt.value
                       ? "border-primary bg-primary/5 scale-105"
                       : "border-border/50 bg-white hover:border-border"
                       }`}
                   >
                     <span className="text-2xl">{opt.emoji}</span>
                     <span className="text-xs text-muted-foreground">{opt.label}</span>
-                  </button>
+                  </motion.button>
                 ))}
-              </div>
+              </motion.div>
             </div>
 
             {/* Energie */}
             <div className="mb-4">
               <p className="text-sm font-medium text-muted-foreground mb-2">Energie</p>
-              <div className="flex gap-2">
+              <motion.div className="flex gap-2" variants={listContainer} initial="hidden" animate="show">
                 {ENERGY_OPTIONS.map(opt => (
-                  <button
+                  <motion.button
                     key={opt.value}
+                    variants={listItem}
+                    whileTap={{ scale: 0.96 }}
+                    transition={spring}
                     onClick={() => setEnergy(opt.value)}
-                    className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-all ${energy === opt.value
+                    className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-colors ${energy === opt.value
                       ? "border-primary bg-primary/5 scale-105"
                       : "border-border/50 bg-white hover:border-border"
                       }`}
                   >
                     <span className="text-lg">{opt.emoji}</span>
                     <span className="text-xs text-muted-foreground">{opt.label}</span>
-                  </button>
+                  </motion.button>
                 ))}
-              </div>
+              </motion.div>
             </div>
 
             {/* Appetit */}
             <div className="mb-5">
               <p className="text-sm font-medium text-muted-foreground mb-2">Appetit</p>
-              <div className="flex gap-2">
+              <motion.div className="flex gap-2" variants={listContainer} initial="hidden" animate="show">
                 {APPETITE_OPTIONS.map(opt => (
-                  <button
+                  <motion.button
                     key={opt.value}
+                    variants={listItem}
+                    whileTap={{ scale: 0.96 }}
+                    transition={spring}
                     onClick={() => setAppetite(opt.value)}
-                    className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-all ${appetite === opt.value
+                    className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-colors ${appetite === opt.value
                       ? "border-primary bg-primary/5 scale-105"
                       : "border-border/50 bg-white hover:border-border"
                       }`}
                   >
                     <span className="text-2xl">{opt.emoji}</span>
                     <span className="text-xs text-muted-foreground">{opt.label}</span>
-                  </button>
+                  </motion.button>
                 ))}
-              </div>
+              </motion.div>
             </div>
 
             {/* Bouton Envoyer */}
-            <button
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              transition={spring}
               onClick={handleCheckin}
               disabled={!mood || !energy || !appetite || submitting}
-              className={`w-full py-3 rounded-xl font-semibold text-white transition-all ${mood && energy && appetite && !submitting
-                ? "bg-primary hover:bg-primary/90 active:scale-[0.98]"
+              className={`w-full py-3 rounded-xl font-semibold text-white transition-colors ${mood && energy && appetite && !submitting
+                ? "bg-primary hover:bg-primary/90"
                 : "bg-gray-300 cursor-not-allowed"
                 }`}
             >
@@ -304,7 +330,7 @@ export default function Home() {
               ) : (
                 "Envoyer"
               )}
-            </button>
+            </motion.button>
           </div>
         ) : (
           /* ---------- RESULTAT CHECK-IN ---------- */
@@ -483,13 +509,13 @@ export default function Home() {
             <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-wide mb-3 px-1">
               Journal de bord
             </h3>
-            <div className="space-y-2">
+            <motion.div className="space-y-2" variants={listContainer} initial="hidden" animate="show">
               {recentCheckins.slice(todayCheckin ? 1 : 0, 5).map((c, i) => {
                 const moodOpt = MOOD_OPTIONS.find(m => m.value === c.mood);
                 const energyOpt = ENERGY_OPTIONS.find(e => e.value === c.energy);
                 const dateLabel = formatDateLabel(c.date);
                 return (
-                  <div key={i} className="bg-white rounded-xl px-4 py-3 border border-border/30 flex items-center gap-3">
+                  <motion.div key={i} variants={listItem} className="bg-white rounded-xl px-4 py-3 border border-border/30 flex items-center gap-3">
                     <span className="text-xl">{moodOpt?.emoji || ""}</span>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">
@@ -497,70 +523,78 @@ export default function Home() {
                       </p>
                       <p className="text-xs text-muted-foreground">{dateLabel}</p>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
-            </div>
+            </motion.div>
           </div>
         )}
 
         {/* ACCES RAPIDE */}
-        <div className="space-y-3">
+        <motion.div className="space-y-3" variants={listContainer} initial="hidden" animate="show">
           <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-wide px-1">
             Acces rapide
           </h3>
 
-          <Link
-            to={createPageUrl("Notebook")}
-            className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 group hover:border-primary/30 transition-all"
-          >
-            <div className="w-11 h-11 rounded-full bg-red-50 flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform">
-              <BookHeart className="w-5 h-5" />
-            </div>
-            <div className="text-left flex-1">
-              <p className="font-semibold text-foreground text-sm">Carnet de santé</p>
-              <p className="text-xs text-muted-foreground">Vaccins, poids, suivi</p>
-            </div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground" />
-          </Link>
+          <motion.div variants={listItem} whileTap={{ scale: 0.96 }} transition={spring}>
+            <Link
+              to={createPageUrl("Notebook")}
+              className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 group hover:border-primary/30 transition-colors"
+            >
+              <div className="w-11 h-11 rounded-full bg-red-50 flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform">
+                <BookHeart className="w-5 h-5" />
+              </div>
+              <div className="text-left flex-1">
+                <p className="font-semibold text-foreground text-sm">Carnet de santé</p>
+                <p className="text-xs text-muted-foreground">Vaccins, poids, suivi</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </Link>
+          </motion.div>
 
-          <Link
-            to={createPageUrl("Nutrition")}
-            className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 group hover:border-primary/30 transition-all"
-          >
-            <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-green-500 group-hover:scale-110 transition-transform">
-              <Salad className="w-5 h-5" />
-            </div>
-            <div className="text-left flex-1">
-              <p className="font-semibold text-foreground text-sm">NutriCoach</p>
-              <p className="text-xs text-muted-foreground">Conseils nutrition, plan repas IA</p>
-            </div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground" />
-          </Link>
+          <motion.div variants={listItem} whileTap={{ scale: 0.96 }} transition={spring}>
+            <Link
+              to={createPageUrl("Nutrition")}
+              className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 group hover:border-primary/30 transition-colors"
+            >
+              <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-green-500 group-hover:scale-110 transition-transform">
+                <Salad className="w-5 h-5" />
+              </div>
+              <div className="text-left flex-1">
+                <p className="font-semibold text-foreground text-sm">NutriCoach</p>
+                <p className="text-xs text-muted-foreground">Conseils nutrition, plan repas IA</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </Link>
+          </motion.div>
 
-          <Link
-            to={createPageUrl("FindVet")}
-            className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 group hover:border-primary/30 transition-all"
-          >
-            <div className="w-11 h-11 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
-              <MapPin className="w-5 h-5" />
-            </div>
-            <div className="text-left flex-1">
-              <p className="font-semibold text-foreground text-sm">Trouver un véto</p>
-              <p className="text-xs text-muted-foreground">Cliniques vétérinaires proches</p>
-            </div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground" />
-          </Link>
-        </div>
+          <motion.div variants={listItem} whileTap={{ scale: 0.96 }} transition={spring}>
+            <Link
+              to={createPageUrl("FindVet")}
+              className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 group hover:border-primary/30 transition-colors"
+            >
+              <div className="w-11 h-11 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
+                <MapPin className="w-5 h-5" />
+              </div>
+              <div className="text-left flex-1">
+                <p className="font-semibold text-foreground text-sm">Trouver un véto</p>
+                <p className="text-xs text-muted-foreground">Cliniques vétérinaires proches</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </Link>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* MILESTONE CELEBRATION OVERLAY */}
-      {milestone && (
-        <MilestoneCelebration milestone={milestone} onClose={() => setMilestone(null)} />
-      )}
+      <AnimatePresence>
+        {milestone && (
+          <MilestoneCelebration milestone={milestone} onClose={() => setMilestone(null)} />
+        )}
+      </AnimatePresence>
 
       <BottomNav currentPage="Home" />
-    </div>
+    </motion.div>
   );
 }
 
@@ -576,12 +610,25 @@ function MilestoneCelebration({ milestone, onClose }) {
   }, []);
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
       onClick={onClose}
     >
-      <div className="bg-white rounded-3xl p-8 text-center shadow-2xl max-w-[280px] mx-6 animate-bounce-soft">
-        <p className="text-5xl mb-3">🎉</p>
+      <motion.div
+        initial={{ scale: 0, y: -60, rotate: -15 }}
+        animate={{ scale: 1, y: 0, rotate: 0 }}
+        exit={{ scale: 0, opacity: 0 }}
+        transition={{ type: "spring", stiffness: 180, damping: 12 }}
+        className="bg-white rounded-3xl p-8 text-center shadow-2xl max-w-[280px] mx-6"
+      >
+        <motion.p
+          animate={{ scale: [1, 1.08, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="text-5xl mb-3"
+        >🎉</motion.p>
         <p className="text-xl font-bold text-foreground">{milestone.message}</p>
         <p className="text-sm text-muted-foreground mt-1">{milestone.sub}</p>
         <div className="mt-4 flex items-center justify-center gap-1.5">
@@ -589,8 +636,8 @@ function MilestoneCelebration({ milestone, onClose }) {
           <span className="text-sm font-bold text-orange-600">{milestone.days} jours</span>
         </div>
         <p className="text-xs text-muted-foreground mt-4">Touche pour fermer</p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
