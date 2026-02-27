@@ -4,6 +4,7 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
+import AnimatedLogo from "../components/AnimatedLogo";
 import {
   BookHeart, ChevronRight, UserCircle,
   Heart, Flame, Loader2,
