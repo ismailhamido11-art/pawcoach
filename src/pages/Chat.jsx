@@ -18,6 +18,55 @@ function getTodayString() {
   return new Date().toISOString().split("T")[0];
 }
 
+// --- STREAK HELPER ---
+async function updateStreakSilently(dogId, ownerEmail) {
+  try {
+    const today = getTodayString();
+    const streaks = await base44.entities.Streak.filter({ dog_id: dogId });
+    if (streaks.length > 0) {
+      const s = streaks[0];
+      if (s.last_activity_date === today) return;
+      const lastDate = new Date(s.last_activity_date + "T12:00:00");
+      const todayDate = new Date(today + "T12:00:00");
+      const diffDays = Math.round((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+      let newStreak = s.current_streak;
+      let graceDaysUsed = s.grace_days_used || 0;
+      let graceDaysRemaining = s.grace_days_remaining ?? 1;
+      if (diffDays === 1) {
+        newStreak += 1;
+      } else if (diffDays === 2 && graceDaysRemaining > 0) {
+        newStreak += 1;
+        graceDaysUsed += 1;
+        graceDaysRemaining -= 1;
+      } else {
+        newStreak = 1;
+        graceDaysUsed = 0;
+        graceDaysRemaining = 1;
+      }
+      const newLongest = Math.max(s.longest_streak || 0, newStreak);
+      await base44.entities.Streak.update(s.id, {
+        current_streak: newStreak,
+        longest_streak: newLongest,
+        last_activity_date: today,
+        grace_days_used: graceDaysUsed,
+        grace_days_remaining: graceDaysRemaining,
+      });
+    } else {
+      await base44.entities.Streak.create({
+        dog_id: dogId,
+        owner_email: ownerEmail,
+        current_streak: 1,
+        longest_streak: 1,
+        last_activity_date: today,
+        grace_days_used: 0,
+        grace_days_remaining: 1,
+      });
+    }
+  } catch (e) {
+    console.warn("Streak update failed (chat):", e.message);
+  }
+}
+
 export default function Chat() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -78,7 +127,7 @@ export default function Chat() {
         if (sorted.length === 0) {
           setMessages([{
             role: "assistant",
-            content: `Bonjour ! 🐾 Je suis PawCoach, ton coach bien-être pour **${d.name}**.\n\nJe connais son profil : ${d.breed}${getAge(d.birth_date) ? `, ${getAge(d.birth_date)}` : ""}${d.weight ? `, ${d.weight} kg` : ""}.\n\nPose-moi n'importe quelle question sur sa nutrition, son comportement ou son dressage !`,
+            content: `Bonjour ! \ud83d\udc3e Je suis PawCoach, ton coach bien-\u00eatre pour **${d.name}**.\n\nJe connais son profil : ${d.breed}${getAge(d.birth_date) ? `, ${getAge(d.birth_date)}` : ""}${d.weight ? `, ${d.weight} kg` : ""}.\n\nPose-moi n'importe quelle question sur sa nutrition, son comportement ou son dressage !`,
             timestamp: new Date().toISOString(),
           }]);
         } else {
@@ -117,7 +166,7 @@ export default function Chat() {
 
     const userMsg = {
       role: "user",
-      content: content || "📷 Photo envoyée",
+      content: content || "\ud83d\udcf7 Photo envoy\u00e9e",
       timestamp: new Date().toISOString(),
       has_image: hasImage,
       image_url: imageToSend?.preview || null,
@@ -153,7 +202,7 @@ export default function Chat() {
         imageUrl: uploadedImageUrl || null,
       });
 
-      const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
+      const assistantContent = response.data?.content || "D\u00e9sol\u00e9, je n'ai pas pu r\u00e9pondre.";
       const assistantMsg = { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() };
 
       setMessages(prev => [...prev, assistantMsg]);
@@ -164,11 +213,14 @@ export default function Chat() {
         setMessagesRemaining(newRemaining);
         await base44.auth.updateMe({ messages_remaining: newRemaining, messages_daily_reset: getTodayString() });
       }
+
+      // --- STREAK UPDATE (once per day, after successful message) ---
+      await updateStreakSilently(dog.id, user.email);
     } catch (err) {
       console.error("Chat send error:", err);
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: "Oups, une erreur est survenue. Réessaie dans un instant.",
+        content: "Oups, une erreur est survenue. R\u00e9essaie dans un instant.",
         timestamp: new Date().toISOString(),
       }]);
     } finally {
@@ -180,7 +232,7 @@ export default function Chat() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-3">
-          <span className="text-4xl block animate-bounce">🐾</span>
+          <span className="text-4xl block animate-bounce">\ud83d\udc3e</span>
           <p className="text-muted-foreground text-sm">Chargement du chat...</p>
         </div>
       </div>
@@ -193,13 +245,13 @@ export default function Chat() {
     `Comment dresser ${dog.name} ?`,
     `Que peut manger ${dog.name} ?`,
     `Exercices pour ${dog.breed || "mon chien"}`,
-    `Signes de stress à surveiller`,
+    `Signes de stress \u00e0 surveiller`,
   ] : [];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <div className="fixed top-0 left-0 right-0 z-50 bg-amber-50 border-b border-amber-200 px-4 py-1.5 text-center">
-        <p className="text-xs text-amber-700 font-medium">🐾 PawCoach est un coach bien-être, pas un vétérinaire.</p>
+        <p className="text-xs text-amber-700 font-medium">\ud83d\udc3e PawCoach est un coach bien-\u00eatre, pas un v\u00e9t\u00e9rinaire.</p>
       </div>
 
       <div className="gradient-primary pt-10 pb-4 px-5 mt-7">
@@ -209,7 +261,7 @@ export default function Chat() {
           </div>
           <div>
             <h1 className="text-white font-bold text-lg">Assistant IA</h1>
-            {dog && <p className="text-white/70 text-xs">Personnalisé pour {dog.name} · {dog.breed}</p>}
+            {dog && <p className="text-white/70 text-xs">Personnalis\u00e9 pour {dog.name} \u00b7 {dog.breed}</p>}
           </div>
           {!user?.is_premium && messagesRemaining !== null && (
             <div className="ml-auto flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
@@ -232,7 +284,7 @@ export default function Chat() {
           <div key={i} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role === "assistant" && (
               <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
-                <span className="text-sm">🐾</span>
+                <span className="text-sm">\ud83d\udc3e</span>
               </div>
             )}
             <div className={`max-w-[82%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
@@ -265,7 +317,7 @@ export default function Chat() {
         {loading && (
           <div className="flex gap-2 justify-start">
             <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
-              <span className="text-sm">🐾</span>
+              <span className="text-sm">\ud83d\udc3e</span>
             </div>
             <div className="chat-bubble-assistant px-4 py-3.5 rounded-2xl rounded-bl-sm">
               <div className="flex gap-1.5 items-center">
@@ -300,10 +352,10 @@ export default function Chat() {
           <div className="mx-4 my-3 bg-muted rounded-2xl p-4 flex items-start gap-3">
             <Lock className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-foreground">Messages gratuits utilisés</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Tu as utilisé tes messages gratuits. Passe en Premium pour discuter sans limite, ou reviens demain (2 messages offerts).</p>
+              <p className="text-sm font-medium text-foreground">Messages gratuits utilis\u00e9s</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Tu as utilis\u00e9 tes messages gratuits. Passe en Premium pour discuter sans limite, ou reviens demain (2 messages offerts).</p>
               <Button size="sm" className="mt-2 gradient-primary border-0 text-white text-xs h-8">
-                Passer en Premium ✨
+                Passer en Premium \u2728
               </Button>
             </div>
           </div>
@@ -312,7 +364,7 @@ export default function Chat() {
             {pendingImage && (
               <div className="px-4 pt-2 flex items-center gap-2">
                 <img src={pendingImage.preview} alt="preview" className="w-12 h-12 rounded-lg object-cover border border-border" />
-                <span className="text-xs text-muted-foreground">Photo prête à envoyer</span>
+                <span className="text-xs text-muted-foreground">Photo pr\u00eate \u00e0 envoyer</span>
                 <button onClick={() => { if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview); setPendingImage(null); }} className="ml-auto text-xs text-destructive">Retirer</button>
               </div>
             )}
