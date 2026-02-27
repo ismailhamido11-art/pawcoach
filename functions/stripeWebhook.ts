@@ -21,6 +21,13 @@ Deno.serve(async (req) => {
 
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
+
+      // Only activate premium for actually paid sessions
+      if (session.payment_status !== "paid") {
+        console.log(`Skipping session with payment_status: ${session.payment_status}`);
+        return Response.json({ received: true });
+      }
+
       const userEmail = session.metadata?.user_email || session.customer_email;
       if (!userEmail) {
         console.error("No user email in session metadata");
@@ -56,6 +63,21 @@ Deno.serve(async (req) => {
         console.log(`Premium cancelled for customer: ${customerId}`);
       } else {
         console.error(`No user found for customer: ${customerId}`);
+      }
+    }
+
+    if (event.type === "invoice.payment_failed") {
+      const invoice = event.data.object;
+      const customerId = invoice.customer;
+
+      const users = await base44.asServiceRole.entities.User.filter({ stripe_customer_id: customerId });
+      if (users.length > 0) {
+        await base44.asServiceRole.entities.User.update(users[0].id, {
+          is_premium: false,
+        });
+        console.log(`Premium revoked (payment failed) for customer: ${customerId}`);
+      } else {
+        console.error(`No user found for failed payment customer: ${customerId}`);
       }
     }
 

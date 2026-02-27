@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import Stripe from 'npm:stripe@14.21.0';
+import Stripe from 'npm:stripe@17.3.1';
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY"));
 
