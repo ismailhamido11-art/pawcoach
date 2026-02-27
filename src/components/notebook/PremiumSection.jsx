@@ -23,7 +23,7 @@ export default function PremiumSection({ type, records, dogId, isPremium, onDele
         <p className="text-sm text-muted-foreground max-w-xs">
           Passe à Premium pour accéder à la section {config.label} et à toutes les fonctionnalités du carnet de santé.
         </p>
-        <Button className="rounded-xl gradient-warm border-0 text-white font-semibold px-6">
+        <Button onClick={() => window.location.href = '/Premium'} className="rounded-xl gradient-warm border-0 text-white font-semibold px-6">
           Passer Premium 🌟
         </Button>
       </div>
