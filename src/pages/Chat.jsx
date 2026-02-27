@@ -4,7 +4,8 @@ import { base44 } from "@/api/base44Client";
 import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Bot, Camera } from "lucide-react";
+import { Send, Bot, Camera, PawPrint } from "lucide-react";
+import IconBadge from "@/components/ui/IconBadge";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
@@ -186,11 +187,20 @@ export default function Chat() {
 
   if (initializing) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-3">
-          <span className="text-4xl block animate-bounce">🐾</span>
-          <p className="text-muted-foreground text-sm">Chargement du chat...</p>
+      <div className="min-h-screen bg-background flex flex-col">
+        <div className="h-7 bg-amber-50" />
+        <div className="gradient-primary pt-10 pb-4 px-5 mt-7">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-white/20 animate-pulse" />
+            <div className="space-y-2"><div className="h-4 w-24 bg-white/20 rounded animate-pulse" /><div className="h-3 w-32 bg-white/10 rounded animate-pulse" /></div>
+          </div>
         </div>
+        <div className="flex-1 px-4 py-4 space-y-4">
+          <div className="flex gap-2"><div className="w-8 h-8 rounded-xl bg-muted animate-pulse" /><div className="h-16 w-3/4 bg-muted animate-pulse rounded-2xl" /></div>
+          <div className="flex gap-2 justify-end"><div className="h-10 w-1/2 bg-muted animate-pulse rounded-2xl" /></div>
+          <div className="flex gap-2"><div className="w-8 h-8 rounded-xl bg-muted animate-pulse" /><div className="h-24 w-4/5 bg-muted animate-pulse rounded-2xl" /></div>
+        </div>
+        <BottomNav currentPage="Chat" />
       </div>
     );
   }
@@ -239,9 +249,7 @@ export default function Chat() {
         {messages.map((msg, i) => (
           <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role === "assistant" && (
-              <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
-                <span className="text-sm">🐾</span>
-              </div>
+              <IconBadge icon={PawPrint} color="#2d9f82" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
             )}
             <div className={`max-w-[82%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
               msg.role === "user"
@@ -272,9 +280,7 @@ export default function Chat() {
 
         {loading && (
           <div className="flex gap-2 justify-start">
-            <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
-              <span className="text-sm">🐾</span>
-            </div>
+            <IconBadge icon={PawPrint} color="#2d9f82" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
             <div className="chat-bubble-assistant px-4 py-3.5 rounded-2xl rounded-bl-sm">
               <div className="flex gap-1.5 items-center">
                 <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary rounded-full" />
@@ -309,9 +315,7 @@ export default function Chat() {
         {isLimitReached ? (
           <div className="px-4 py-3 space-y-3">
             <div className="flex gap-2 justify-start">
-              <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
-                <span className="text-sm">🐾</span>
-              </div>
+              <IconBadge icon={PawPrint} color="#2d9f82" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
               <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
                 <p className="text-sm leading-relaxed">
                   J'adorerais continuer à t'aider avec <strong>{dog?.name || "ton chien"}</strong> ! 🐾 Tes messages gratuits sont épuisés pour aujourd'hui. Reviens demain pour 2 messages offerts, ou passe en Premium pour qu'on discute sans limite !

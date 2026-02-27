@@ -5,7 +5,9 @@ import WellnessBanner from "../components/WellnessBanner";
 import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Salad } from "lucide-react";
+import { Send, Salad, MessageCircle, CalendarRange } from "lucide-react";
+import IconBadge from "@/components/ui/IconBadge";
+import { InlineIcon } from "@/components/ui/IconBadge";
 import ReactMarkdown from "react-markdown";
 import { motion } from "framer-motion";
 
@@ -115,8 +117,18 @@ export default function Nutrition() {
 
   if (initializing) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <span className="text-4xl block animate-bounce">🥗</span>
+      <div className="min-h-screen bg-background flex flex-col">
+        <div className="h-7 bg-muted" />
+        <div className="gradient-primary pt-10 pb-3 px-5 mt-7">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-2xl bg-white/20 animate-pulse" />
+            <div className="space-y-2"><div className="h-4 w-24 bg-white/20 rounded animate-pulse" /><div className="h-3 w-32 bg-white/10 rounded animate-pulse" /></div>
+          </div>
+        </div>
+        <div className="flex-1 px-4 py-4 space-y-4">
+          <div className="flex gap-2"><div className="w-8 h-8 rounded-xl bg-muted animate-pulse" /><div className="h-20 w-4/5 bg-muted animate-pulse rounded-2xl" /></div>
+        </div>
+        <BottomNav currentPage="Nutrition" />
       </div>
     );
   }
@@ -175,7 +187,7 @@ export default function Nutrition() {
             onClick={() => setActiveTab("chat")}
             className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-colors ${activeTab === "chat" ? "bg-white text-primary" : "bg-white/10 text-white"}`}
           >
-            💬 Chat Nutrition
+            <InlineIcon icon={MessageCircle} color={activeTab === "chat" ? "hsl(168,55%,38%)" : "#fff"} size={12} className="mr-1" /> Chat Nutrition
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.96 }}
@@ -183,7 +195,7 @@ export default function Nutrition() {
             onClick={() => setActiveTab("mealplan")}
             className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-colors ${activeTab === "mealplan" ? "bg-white text-primary" : "bg-white/10 text-white"}`}
           >
-            🗓️ Plan de repas IA
+            <InlineIcon icon={CalendarRange} color={activeTab === "mealplan" ? "hsl(168,55%,38%)" : "#fff"} size={12} className="mr-1" /> Plan de repas IA
           </motion.button>
         </div>
       </div>
@@ -199,7 +211,7 @@ export default function Nutrition() {
             {messages.map((msg, i) => (
               <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 {msg.role === "assistant" && (
-                  <div className="w-8 h-8 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0 mt-1 text-base">🥗</div>
+                  <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                 )}
                 <div className={`max-w-[82%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                   msg.role === "user" ? "chat-bubble-user text-white rounded-br-sm" : "chat-bubble-assistant text-foreground rounded-bl-sm"
@@ -225,7 +237,7 @@ export default function Nutrition() {
 
             {loading && (
               <div className="flex gap-2 justify-start">
-                <div className="w-8 h-8 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0 mt-1 text-base">🥗</div>
+                <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                 <div className="chat-bubble-assistant px-4 py-3.5 rounded-2xl rounded-bl-sm">
                   <div className="flex gap-1.5 items-center">
                     <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary rounded-full" />
@@ -243,7 +255,7 @@ export default function Nutrition() {
             {isNutriLimitReached ? (
               <div className="px-4 py-3 space-y-3">
                 <div className="flex gap-2 justify-start">
-                  <div className="w-8 h-8 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0 mt-1 text-base">🥗</div>
+                  <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                   <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
                     <p className="text-sm leading-relaxed">
                       J'adorerais continuer à conseiller <strong>{dog?.name || "ton chien"}</strong> sur sa nutrition ! 🥗 Tes messages gratuits sont épuisés pour aujourd'hui. Reviens demain pour 2 messages offerts, ou passe en Premium pour un coaching illimité !

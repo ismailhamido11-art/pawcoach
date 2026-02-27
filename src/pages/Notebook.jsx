@@ -8,7 +8,8 @@ import PremiumSection from "../components/notebook/PremiumSection";
 import UpcomingReminders from "../components/notebook/UpcomingReminders";
 import SmartHealthAssistant from "../components/notebook/SmartHealthAssistant";
 import { RecordRow } from "../components/notebook/SectionVaccins";
-import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2, HeartPulse } from "lucide-react";
+import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2, HeartPulse, ClipboardList } from "lucide-react";
+import IconBadge from "@/components/ui/IconBadge";
 import ShareVetModal from "../components/vet/ShareVetModal";
 import VetNotesList from "../components/vet/VetNotesList";
 import AIDiagnosisModal from "../components/vet/AIDiagnosisModal";
@@ -291,8 +292,10 @@ export default function Notebook() {
             {activeTab === "all" && (
               <div className="space-y-3">
                 {sortedRecords.length === 0 ? (
-                  <div className="text-center py-6">
-                    <p className="text-xs text-muted-foreground">Discute avec l'assistant pour ajouter des entrées</p>
+                  <div className="text-center py-8">
+                    <IconBadge icon={ClipboardList} color="#6366f1" size="lg" className="mx-auto mb-3" />
+                    <p className="text-sm font-semibold text-foreground">Le carnet de {dog?.name} est prêt</p>
+                    <p className="text-xs text-muted-foreground mt-1">Discute avec l'assistant pour ajouter des entrées</p>
                   </div>
                 ) : (
                   sortedRecords.map(r => (

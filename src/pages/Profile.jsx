@@ -4,8 +4,9 @@ import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import {
   User, Crown, Dog, Plus, ChevronRight, LogOut, Trash2,
-  Info, Mail, ShieldCheck, Star
+  Info, Mail, ShieldCheck, Star, PawPrint
 } from "lucide-react";
+import IconBadge from "@/components/ui/IconBadge";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import GamificationDashboard from "../components/gamification/GamificationDashboard";
@@ -54,8 +55,22 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <span className="text-3xl animate-bounce">🐾</span>
+      <div className="min-h-screen bg-background pb-24">
+        <div className="gradient-primary pt-12 pb-8 px-5">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-white/20 animate-pulse" />
+            <div className="space-y-2 flex-1">
+              <div className="h-5 w-32 bg-white/20 rounded animate-pulse" />
+              <div className="h-3 w-40 bg-white/10 rounded animate-pulse" />
+            </div>
+          </div>
+        </div>
+        <div className="px-5 pt-5 space-y-4">
+          <div className="h-16 bg-muted animate-pulse rounded-2xl" />
+          <div className="h-32 bg-muted animate-pulse rounded-2xl" />
+          <div className="h-24 bg-muted animate-pulse rounded-2xl" />
+        </div>
+        <BottomNav currentPage="Profile" />
       </div>
     );
   }
@@ -123,9 +138,7 @@ export default function Profile() {
               {dog.photo ? (
                 <img src={dog.photo} alt={dog.name} className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
               ) : (
-                <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0">
-                  <span className="text-lg">🐶</span>
-                </div>
+                <IconBadge icon={PawPrint} color="#2d9f82" size="sm" />
               )}
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm text-foreground">{dog.name}</p>

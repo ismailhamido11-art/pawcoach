@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera } from "lucide-react";
+import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera as CameraIcon, PawPrint, Dog as DogIcon, Cake, Users, Scale, PersonStanding, Home as HomeIcon, Hospital, HeartPulse, GraduationCap, Salad, Smile, Handshake } from "lucide-react";
+import IconBadge from "@/components/ui/IconBadge";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import WelcomeScreen from "../components/onboarding/WelcomeScreen";
@@ -11,24 +12,24 @@ import WelcomeScreen from "../components/onboarding/WelcomeScreen";
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
 const GOAL_OPTIONS = [
-  { emoji: "💪", label: "Qu'il soit en bonne santé" },
-  { emoji: "🎓", label: "Bien l'éduquer" },
-  { emoji: "🥗", label: "Qu'il mange bien" },
-  { emoji: "😊", label: "Son bonheur au quotidien" },
-  { emoji: "🤝", label: "Mieux le comprendre" },
+  { icon: HeartPulse, color: "#ef4444", label: "Qu'il soit en bonne santé" },
+  { icon: GraduationCap, color: "#6366f1", label: "Bien l'éduquer" },
+  { icon: Salad, color: "#10b981", label: "Qu'il mange bien" },
+  { icon: Smile, color: "#ec4899", label: "Son bonheur au quotidien" },
+  { icon: Handshake, color: "#10b981", label: "Mieux le comprendre" },
 ];
 
 const INTERVIEW_STEPS = [
-  { type: "choice", question: "Qu'est-ce qui compte le plus pour toi ?", emoji: "🐾" },
-  { type: "photo", question: "Une jolie photo pour commencer ?", emoji: "📸" },
-  { type: "voice", question: "Comment s'appelle votre chien ?", emoji: "🐶", placeholder: "Son prénom..." },
-  { type: "voice", question: "Quelle est sa race ?", emoji: "🐕", placeholder: "Ex: Beagle, Croisé..." },
-  { type: "voice", question: "Quel âge a-t-il ?", emoji: "🎂", placeholder: "Ex: 2 ans, 6 mois..." },
-  { type: "voice", question: "Est-ce un mâle ou une femelle ?", emoji: "⚧️", placeholder: "Mâle ou Femelle" },
-  { type: "voice", question: "Combien pèse-t-il environ ?", emoji: "⚖️", placeholder: "Ex: 15 kg" },
-  { type: "voice", question: "Quel est son niveau d'activité ?", emoji: "🏃", placeholder: "Calme, Modéré, Très actif..." },
-  { type: "voice", question: "Où vit-il principalement ?", emoji: "🏠", placeholder: "Appartement, Maison..." },
-  { type: "voice", question: "A-t-il des problèmes de santé ou allergies ?", emoji: "🏥", placeholder: "Non, ou préciser..." },
+  { type: "choice", question: "Qu'est-ce qui compte le plus pour toi ?", icon: PawPrint, iconColor: "#2d9f82" },
+  { type: "photo", question: "Une jolie photo pour commencer ?", icon: CameraIcon, iconColor: "#6366f1" },
+  { type: "voice", question: "Comment s'appelle votre chien ?", icon: DogIcon, iconColor: "#f59e0b", placeholder: "Son prénom..." },
+  { type: "voice", question: "Quelle est sa race ?", icon: DogIcon, iconColor: "#f59e0b", placeholder: "Ex: Beagle, Croisé..." },
+  { type: "voice", question: "Quel âge a-t-il ?", icon: Cake, iconColor: "#ec4899", placeholder: "Ex: 2 ans, 6 mois..." },
+  { type: "voice", question: "Est-ce un mâle ou une femelle ?", icon: Users, iconColor: "#3b82f6", placeholder: "Mâle ou Femelle" },
+  { type: "voice", question: "Combien pèse-t-il environ ?", icon: Scale, iconColor: "#f59e0b", placeholder: "Ex: 15 kg" },
+  { type: "voice", question: "Quel est son niveau d'activité ?", icon: PersonStanding, iconColor: "#10b981", placeholder: "Calme, Modéré, Très actif..." },
+  { type: "voice", question: "Où vit-il principalement ?", icon: HomeIcon, iconColor: "#6366f1", placeholder: "Appartement, Maison..." },
+  { type: "voice", question: "A-t-il des problèmes de santé ou allergies ?", icon: Hospital, iconColor: "#ef4444", placeholder: "Non, ou préciser..." },
 ];
 
 export default function Onboarding() {
@@ -258,7 +259,7 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
             transition={{ type: "spring", stiffness: 200, damping: 25 }}
             className="flex flex-col items-center w-full"
           >
-        <div className="text-7xl mb-8">{currentStepData.emoji}</div>
+        <div className="mb-8"><IconBadge icon={currentStepData.icon} color={currentStepData.iconColor} size="xl" /></div>
         <h1 className="text-3xl sm:text-4xl font-bold text-center text-foreground mb-12 leading-tight">
           {currentStepData.question}
         </h1>
@@ -279,7 +280,7 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
                     : "border-border bg-white hover:border-primary/40"
                 }`}
               >
-                <span className="text-2xl">{opt.emoji}</span>
+                <IconBadge icon={opt.icon} color={opt.color} size="sm" />
                 <span className="text-sm font-semibold text-foreground">{opt.label}</span>
               </motion.button>
             ))}
@@ -297,7 +298,7 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
               ) : uploading ? (
                 <div className="w-10 h-10 border-4 border-primary/40 border-t-primary rounded-full animate-spin" />
               ) : (
-                <Camera className="w-12 h-12 text-primary/60" />
+                <CameraIcon className="w-12 h-12 text-primary/60" />
               )}
             </motion.button>
             <input

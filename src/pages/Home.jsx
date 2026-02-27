@@ -7,8 +7,13 @@ import BottomNav from "../components/BottomNav";
 import {
   BookHeart, ChevronRight, UserCircle,
   Heart, Flame, Loader2,
-  ChevronDown, ChevronUp, Sparkles, Check, Salad, MapPin
+  ChevronDown, ChevronUp, Sparkles, Check, Salad, MapPin,
+  Frown, Meh, Smile, Laugh,
+  BatteryLow, BatteryMedium, BatteryFull,
+  Ban, Utensils, UtensilsCrossed,
+  PartyPopper, ClipboardList
 } from "lucide-react";
+import IconBadge from "@/components/ui/IconBadge";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -20,22 +25,22 @@ const listItem = {
 };
 
 const MOOD_OPTIONS = [
-  { value: 1, emoji: "😢", label: "Triste" },
-  { value: 2, emoji: "😐", label: "Bof" },
-  { value: 3, emoji: "😊", label: "Bien" },
-  { value: 4, emoji: "🤩", label: "Super" },
+  { value: 1, icon: Frown, color: "#ef4444", label: "Triste" },
+  { value: 2, icon: Meh, color: "#f59e0b", label: "Bof" },
+  { value: 3, icon: Smile, color: "#10b981", label: "Bien" },
+  { value: 4, icon: Laugh, color: "#ec4899", label: "Super" },
 ];
 
 const ENERGY_OPTIONS = [
-  { value: 1, emoji: "🔋", label: "Faible" },
-  { value: 2, emoji: "🔋🔋", label: "Moyen" },
-  { value: 3, emoji: "🔋🔋🔋", label: "A fond" },
+  { value: 1, icon: BatteryLow, color: "#ef4444", label: "Faible" },
+  { value: 2, icon: BatteryMedium, color: "#f59e0b", label: "Moyen" },
+  { value: 3, icon: BatteryFull, color: "#10b981", label: "A fond" },
 ];
 
 const APPETITE_OPTIONS = [
-  { value: 1, emoji: "🙅", label: "Rien" },
-  { value: 2, emoji: "😋", label: "Normal" },
-  { value: 3, emoji: "🤤", label: "Glouton" },
+  { value: 1, icon: Ban, color: "#ef4444", label: "Rien" },
+  { value: 2, icon: Utensils, color: "#10b981", label: "Normal" },
+  { value: 3, icon: UtensilsCrossed, color: "#f59e0b", label: "Glouton" },
 ];
 
 const MILESTONES = [
@@ -178,8 +183,25 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-primary/40 border-t-primary rounded-full animate-spin" />
+      <div className="min-h-screen bg-background pb-24">
+        <div className="h-8 bg-amber-50" />
+        <div className="pt-16 px-6 space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-14 h-14 rounded-full bg-muted animate-pulse" />
+            <div className="space-y-2 flex-1">
+              <div className="h-5 w-40 bg-muted animate-pulse rounded-lg" />
+              <div className="h-3 w-28 bg-muted animate-pulse rounded-lg" />
+            </div>
+          </div>
+          <div className="h-48 bg-muted animate-pulse rounded-2xl" />
+          <div className="space-y-3">
+            <div className="h-4 w-24 bg-muted animate-pulse rounded-lg" />
+            <div className="h-16 bg-muted animate-pulse rounded-2xl" />
+            <div className="h-16 bg-muted animate-pulse rounded-2xl" />
+            <div className="h-16 bg-muted animate-pulse rounded-2xl" />
+          </div>
+        </div>
+        <BottomNav currentPage="Home" />
       </div>
     );
   }
@@ -258,7 +280,7 @@ export default function Home() {
                       : "border-border/50 bg-white hover:border-border"
                       }`}
                   >
-                    <span className="text-2xl">{opt.emoji}</span>
+                    <IconBadge icon={opt.icon} color={opt.color} size="md" />
                     <span className="text-xs text-muted-foreground">{opt.label}</span>
                   </motion.button>
                 ))}
@@ -281,7 +303,7 @@ export default function Home() {
                       : "border-border/50 bg-white hover:border-border"
                       }`}
                   >
-                    <span className="text-lg">{opt.emoji}</span>
+                    <IconBadge icon={opt.icon} color={opt.color} size="sm" />
                     <span className="text-xs text-muted-foreground">{opt.label}</span>
                   </motion.button>
                 ))}
@@ -304,7 +326,7 @@ export default function Home() {
                       : "border-border/50 bg-white hover:border-border"
                       }`}
                   >
-                    <span className="text-2xl">{opt.emoji}</span>
+                    <IconBadge icon={opt.icon} color={opt.color} size="md" />
                     <span className="text-xs text-muted-foreground">{opt.label}</span>
                   </motion.button>
                 ))}
@@ -345,18 +367,22 @@ export default function Home() {
             )}
 
             {/* Badges du jour */}
-            <div className="flex gap-2">
-              <span className="px-3 py-1.5 bg-white border border-border/50 rounded-full text-xs font-medium">
-                {MOOD_OPTIONS.find(m => m.value === todayCheckin.mood)?.emoji}{" "}
-                {MOOD_OPTIONS.find(m => m.value === todayCheckin.mood)?.label}
-              </span>
-              <span className="px-3 py-1.5 bg-white border border-border/50 rounded-full text-xs font-medium">
-                {ENERGY_OPTIONS.find(e => e.value === todayCheckin.energy)?.emoji}
-              </span>
-              <span className="px-3 py-1.5 bg-white border border-border/50 rounded-full text-xs font-medium">
-                {APPETITE_OPTIONS.find(a => a.value === todayCheckin.appetite)?.emoji}{" "}
-                {APPETITE_OPTIONS.find(a => a.value === todayCheckin.appetite)?.label}
-              </span>
+            <div className="flex gap-2 flex-wrap">
+              {(() => { const m = MOOD_OPTIONS.find(x => x.value === todayCheckin.mood); return m ? (
+                <span className="px-3 py-1.5 bg-white border border-border/50 rounded-full text-xs font-medium flex items-center gap-1.5">
+                  <m.icon style={{ color: m.color, width: 14, height: 14 }} /> {m.label}
+                </span>
+              ) : null; })()}
+              {(() => { const e = ENERGY_OPTIONS.find(x => x.value === todayCheckin.energy); return e ? (
+                <span className="px-3 py-1.5 bg-white border border-border/50 rounded-full text-xs font-medium flex items-center gap-1.5">
+                  <e.icon style={{ color: e.color, width: 14, height: 14 }} /> {e.label}
+                </span>
+              ) : null; })()}
+              {(() => { const a = APPETITE_OPTIONS.find(x => x.value === todayCheckin.appetite); return a ? (
+                <span className="px-3 py-1.5 bg-white border border-border/50 rounded-full text-xs font-medium flex items-center gap-1.5">
+                  <a.icon style={{ color: a.color, width: 14, height: 14 }} /> {a.label}
+                </span>
+              ) : null; })()}
             </div>
           </div>
         )}
@@ -471,7 +497,7 @@ export default function Home() {
                     {weeklyInsight.avg_mood && (
                       <div className="bg-indigo-50 rounded-lg px-3 py-2 flex-1 text-center">
                         <p className="text-lg font-bold text-indigo-600">
-                          {MOOD_OPTIONS.find(m => m.value === Math.round(weeklyInsight.avg_mood))?.emoji || weeklyInsight.avg_mood.toFixed(1)}
+                          {weeklyInsight.avg_mood.toFixed(1)}
                         </p>
                         <p className="text-[10px] text-muted-foreground">humeur moy.</p>
                       </div>
@@ -516,7 +542,7 @@ export default function Home() {
                 const dateLabel = formatDateLabel(c.date);
                 return (
                   <motion.div key={i} variants={listItem} className="bg-white rounded-xl px-4 py-3 border border-border/30 flex items-center gap-3">
-                    <span className="text-xl">{moodOpt?.emoji || ""}</span>
+                    {moodOpt ? <IconBadge icon={moodOpt.icon} color={moodOpt.color} size="sm" /> : <div className="w-10 h-10" />}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">
                         {moodOpt?.label} - {energyOpt?.label}
@@ -527,6 +553,15 @@ export default function Home() {
                 );
               })}
             </motion.div>
+          </div>
+        )}
+
+        {/* EMPTY STATE - no check-in history */}
+        {recentCheckins.length <= 1 && !todayCheckin && (
+          <div className="text-center py-8 mb-4">
+            <IconBadge icon={Heart} color="#ec4899" size="lg" className="mx-auto mb-3" />
+            <p className="text-sm font-semibold text-foreground">Comment va {dog?.name} aujourd'hui ?</p>
+            <p className="text-xs text-muted-foreground mt-1">Fais ton premier check-in ci-dessus</p>
           </div>
         )}
 
@@ -624,11 +659,13 @@ function MilestoneCelebration({ milestone, onClose }) {
         transition={{ type: "spring", stiffness: 180, damping: 12 }}
         className="bg-white rounded-3xl p-8 text-center shadow-2xl max-w-[280px] mx-6"
       >
-        <motion.p
+        <motion.div
           animate={{ scale: [1, 1.08, 1] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="text-5xl mb-3"
-        >🎉</motion.p>
+          className="mb-3"
+        >
+          <IconBadge icon={PartyPopper} color="#ec4899" size="xl" />
+        </motion.div>
         <p className="text-xl font-bold text-foreground">{milestone.message}</p>
         <p className="text-sm text-muted-foreground mt-1">{milestone.sub}</p>
         <div className="mt-4 flex items-center justify-center gap-1.5">

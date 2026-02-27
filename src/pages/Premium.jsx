@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Check, Crown, Zap, Lock, ChevronRight, MessageCircle, ScanLine, Dumbbell, BookHeart, Salad } from "lucide-react";
+import { ArrowLeft, Check, Crown, Zap, Lock, ChevronRight, MessageCircle, ScanLine, Dumbbell, BookHeart, Salad, Search, Target, ClipboardList, Bell, BarChart3, Dog as DogIcon } from "lucide-react";
+import IconBadge from "@/components/ui/IconBadge";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
@@ -22,13 +23,13 @@ const FEATURES = [
 ];
 
 const PREMIUM_FEATURES = [
-  { text: "Chat IA illimité", emoji: "💬" },
-  { text: "Scans illimités", emoji: "🔍" },
-  { text: "10 exercices dressage", emoji: "🎯" },
-  { text: "Carnet santé complet", emoji: "📋" },
-  { text: "Rappels santé email", emoji: "🔔" },
-  { text: "Résumés mensuels", emoji: "📊" },
-  { text: "Jusqu'à 3 chiens", emoji: "🐕" },
+  { text: "Chat IA illimité", icon: MessageCircle, color: "#3b82f6" },
+  { text: "Scans illimités", icon: Search, color: "#f59e0b" },
+  { text: "10 exercices dressage", icon: Target, color: "#6366f1" },
+  { text: "Carnet santé complet", icon: ClipboardList, color: "#ef4444" },
+  { text: "Rappels santé email", icon: Bell, color: "#f59e0b" },
+  { text: "Résumés mensuels", icon: BarChart3, color: "#10b981" },
+  { text: "Jusqu'à 3 chiens", icon: DogIcon, color: "#ec4899" },
 ];
 
 export default function Premium() {
@@ -146,7 +147,7 @@ export default function Premium() {
                   transition={{ delay: 0.3 + i * 0.07 }}
                   className="flex items-center gap-3 px-4 py-3"
                 >
-                  <span className="text-lg">{f.emoji}</span>
+                  <IconBadge icon={f.icon} color={f.color} size="xs" />
                   <span className="text-sm font-medium text-foreground flex-1">{f.text}</span>
                   <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
                     <Check className="w-3.5 h-3.5 text-green-600" />
