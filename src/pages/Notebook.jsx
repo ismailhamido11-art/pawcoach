@@ -17,18 +17,18 @@ import { updateStreakSilently } from "../components/streakHelper";
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
   { id: "vaccine",    label: "Vaccins",  shortLabel: "Vaccins" },
-  { id: "vet_visit",  label: "Visites",  shortLabel: "V\u00e9t\u00e9rinaire" },
+  { id: "vet_visit",  label: "Visites",  shortLabel: "Vétérinaire" },
   { id: "weight",     label: "Poids",    shortLabel: "Poids" },
-  { id: "medication", label: "M\u00e9doc.",   shortLabel: "M\u00e9dicaments" },
+  { id: "medication", label: "Médoc.",   shortLabel: "Médicaments" },
   { id: "note",       label: "Notes",    shortLabel: "Notes" },
 ];
 
 const PREMIUM_CONFIGS = {
   vet_visit: {
-    label: "Visites v\u00e9t\u00e9rinaire",
-    emoji: "\ud83c\udfe5",
-    emptyText: "Aucune visite v\u00e9t\u00e9rinaire enregistr\u00e9e",
-    placeholder: "Ex: Visite de contr\u00f4le annuelle",
+    label: "Visites vétérinaire",
+    emoji: "🏥",
+    emptyText: "Aucune visite vétérinaire enregistrée",
+    placeholder: "Ex: Visite de contrôle annuelle",
     addLabel: "Ajouter une visite",
     showNextDate: true,
     Icon: Stethoscope,
@@ -38,9 +38,9 @@ const PREMIUM_CONFIGS = {
     btnClass: "bg-purple-600 hover:bg-purple-700",
   },
   medication: {
-    label: "M\u00e9dicaments",
-    emoji: "\ud83d\udc8a",
-    emptyText: "Aucun m\u00e9dicament enregistr\u00e9",
+    label: "Médicaments",
+    emoji: "💊",
+    emptyText: "Aucun médicament enregistré",
     placeholder: "Ex: Antiparasitaire Frontline",
     addLabel: "Ajouter un m\u00e9dicament",
     showNextDate: true,
@@ -52,8 +52,8 @@ const PREMIUM_CONFIGS = {
   },
   note: {
     label: "Notes",
-    emoji: "\ud83d\udcdd",
-    emptyText: "Aucune note enregistr\u00e9e",
+    emoji: "📝",
+    emptyText: "Aucune note enregistrée",
     placeholder: "Titre de la note",
     addLabel: "Ajouter une note",
     showNextDate: false,
@@ -74,15 +74,15 @@ function HealthStatusBar({ dog, records }) {
   const lastVet = records.find(r => r.type === 'vet_visit');
 
   const items = [
-    { label: "Poids", ok: !!lastWeight, value: lastWeight ? `${lastWeight.value}kg` : "\u2014", icon: <Weight className="w-3.5 h-3.5" /> },
-    { label: "Vaccins", ok: !!lastVaccine, value: lastVaccine ? "OK" : "\u2014", icon: <Syringe className="w-3.5 h-3.5" /> },
-    { label: "V\u00e9to", ok: !!lastVet, value: lastVet ? "OK" : "\u2014", icon: <Stethoscope className="w-3.5 h-3.5" /> },
+    { label: "Poids", ok: !!lastWeight, value: lastWeight ? `${lastWeight.value}kg` : "—", icon: <Weight className="w-3.5 h-3.5" /> },
+    { label: "Vaccins", ok: !!lastVaccine, value: lastVaccine ? "OK" : "—", icon: <Syringe className="w-3.5 h-3.5" /> },
+    { label: "Véto", ok: !!lastVet, value: lastVet ? "OK" : "—", icon: <Stethoscope className="w-3.5 h-3.5" /> },
   ];
 
   return (
     <div className="flex items-center gap-2 px-4 py-2.5 bg-white/80 backdrop-blur-sm border-b border-slate-100">
       <span className="text-sm font-bold text-foreground">{dog.name}</span>
-      <span className="text-xs text-muted-foreground">{dog.breed} \u00b7 {dog.weight}kg</span>
+      <span className="text-xs text-muted-foreground">{dog.breed} · {dog.weight}kg</span>
       <div className="flex-1" />
       <div className="flex items-center gap-1.5">
         {items.map((item, i) => (
@@ -152,7 +152,7 @@ export default function Notebook() {
       setRecords(prev => prev.filter(r => r.id !== id));
     } catch (err) {
       console.error("Delete error:", err);
-      alert("Erreur lors de la suppression. R\u00e9essaie.");
+      alert("Erreur lors de la suppression. Réessaie.");
     }
   };
 
@@ -279,7 +279,7 @@ export default function Notebook() {
               <div className="space-y-3">
                 {sortedRecords.length === 0 ? (
                   <div className="text-center py-6">
-                    <p className="text-xs text-muted-foreground">Discute avec l'assistant pour ajouter des entr\u00e9es</p>
+                    <p className="text-xs text-muted-foreground">Discute avec l'assistant pour ajouter des entrées</p>
                   </div>
                 ) : (
                   sortedRecords.map(r => (
