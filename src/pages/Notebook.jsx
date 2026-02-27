@@ -264,10 +264,12 @@ export default function Notebook() {
           <div className="bg-white border-b border-border sticky top-0 z-10 shadow-sm">
             <div className="flex overflow-x-auto">
               {TABS.map(tab => (
-                <button
+                <motion.button
                   key={tab.id}
+                  whileTap={{ scale: 0.96 }}
+                  transition={spring}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-shrink-0 flex flex-col items-center px-4 py-2.5 text-xs font-semibold border-b-2 transition-all relative ${
+                  className={`flex-shrink-0 flex flex-col items-center px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors relative ${
                     activeTab === tab.id
                       ? "border-primary text-primary"
                       : "border-transparent text-muted-foreground hover:text-foreground"
@@ -279,7 +281,7 @@ export default function Notebook() {
                       {countForTab(tab.id)}
                     </span>
                   )}
-                </button>
+                </motion.button>
               ))}
             </div>
           </div>

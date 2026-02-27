@@ -236,18 +236,22 @@ export default function Premium() {
         })()}
         {/* Plan selector */}
         <div className="bg-white rounded-2xl border border-border p-1.5 flex gap-1.5">
-          <button
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
             onClick={() => setPlan("monthly")}
-            className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-colors ${
               plan === "monthly" ? "gradient-primary text-white shadow" : "text-muted-foreground"
             }`}
           >
             Mensuel<br />
             <span className={`text-xs font-normal ${plan === "monthly" ? "text-white/80" : "text-muted-foreground"}`}>7,99 €/mois</span>
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
             onClick={() => setPlan("annual")}
-            className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all relative ${
+            className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-colors relative ${
               plan === "annual" ? "gradient-primary text-white shadow" : "text-muted-foreground"
             }`}
           >
@@ -256,7 +260,7 @@ export default function Premium() {
             </span>
             Annuel<br />
             <span className={`text-xs font-normal ${plan === "annual" ? "text-white/80" : "text-muted-foreground"}`}>59,99 €/an · 5 €/mois</span>
-          </button>
+          </motion.button>
         </div>
 
         {/* Feature comparison */}
