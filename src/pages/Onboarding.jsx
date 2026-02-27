@@ -107,6 +107,24 @@ export default function Onboarding() {
 
     try {
       const user = await base44.auth.me();
+
+      // Enforce dog limits: free = 1, premium = 3
+      const FREE_MAX = 1;
+      const PREMIUM_MAX = 3;
+      const existingDogs = await base44.entities.Dog.filter({ owner: user.email });
+      const maxDogs = user?.is_premium ? PREMIUM_MAX : FREE_MAX;
+
+      if (existingDogs.length >= maxDogs) {
+        setSaving(false);
+        savingRef.current = false;
+        if (!user?.is_premium) {
+          navigate(createPageUrl("Premium") + "?from=profile");
+        } else {
+          alert("Maximum 3 chiens atteint");
+          navigate(createPageUrl("Home"));
+        }
+        return;
+      }
       
       const photoUrl = answers[0];
       const textAnswers = answers.slice(1);
