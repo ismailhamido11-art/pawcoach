@@ -204,7 +204,7 @@ export default function Notebook() {
     }
   };
 
-  const isPremium = user?.role === "admin";
+  const isPremium = user?.is_premium;
   const countForTab = (id) => id === "all" ? records.length : records.filter(r => r.type === id).length;
 
   const sortedRecords = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
