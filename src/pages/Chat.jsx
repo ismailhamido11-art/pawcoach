@@ -105,7 +105,7 @@ export default function Chat() {
       if (!u.is_premium) {
         const today = getTodayString();
         const lastReset = u.messages_daily_reset;
-        const remaining = u.messages_remaining ?? 20;
+        const remaining = u.messages_remaining;
 
         if (remaining === null || remaining === undefined) {
           await base44.auth.updateMe({ messages_remaining: 20, messages_daily_reset: today });
