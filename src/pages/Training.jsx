@@ -11,22 +11,22 @@ import { createPageUrl } from "@/utils";
 import { updateStreakSilently } from "../components/streakHelper";
 
 const EXERCISES = [
-  { order_number: 1,  name: "Assis",              emoji: "\ud83d\udc15",  level: "debutant",      duration: "3 min",  is_premium: false, description: "La base de tout dressage \u2013 indispensable pour la s\u00e9curit\u00e9.", steps: ["Tenez une friandise devant le museau de votre chien.", "Remontez lentement la friandise au-dessus de sa t\u00eate.", "Quand il s'assoit naturellement, dites \u00ab Assis \u00bb et donnez la friandise.", "R\u00e9p\u00e9tez 5 fois, puis r\u00e9duisez progressivement la friandise.", "Pratiquez dans diff\u00e9rents endroits et situations."] },
-  { order_number: 2,  name: "Couch\u00e9",             emoji: "\ud83d\ude34",  level: "debutant",      duration: "5 min",  is_premium: false, description: "Parfait pour les moments de calme et les lieux publics.", steps: ["Demandez d'abord \u00ab Assis \u00bb.", "Placez une friandise devant son museau puis descendez-la vers le sol.", "D\u00e9placez-la lentement entre ses pattes.", "D\u00e8s qu'il se couche, dites \u00ab Couch\u00e9 \u00bb et r\u00e9compensez.", "Augmentez progressivement la dur\u00e9e avant la r\u00e9compense."] },
-  { order_number: 3,  name: "Pas bouger",         emoji: "\ud83e\uddf6",  level: "debutant",      duration: "5 min",  is_premium: false, description: "Un ordre de s\u00e9curit\u00e9 crucial dans toutes les situations.", steps: ["Demandez \u00ab Assis \u00bb ou \u00ab Couch\u00e9 \u00bb.", "Montrez votre paume ouverte et dites \u00ab Pas bouger \u00bb.", "Faites un pas en arri\u00e8re, revenez et r\u00e9compensez.", "Augmentez progressivement la distance et la dur\u00e9e.", "Introduisez des distractions pour solidifier l'ordre."] },
-  { order_number: 4,  name: "Viens ici (Rappel)", emoji: "\ud83d\udce3",  level: "debutant",      duration: "5 min",  is_premium: true,  description: "L'ordre le plus important pour la s\u00e9curit\u00e9 en ext\u00e9rieur.", steps: ["Commencez en int\u00e9rieur, \u00e0 courte distance.", "Appelez son pr\u00e9nom + \u00ab Viens \u00bb avec enthousiasme.", "R\u00e9compensez g\u00e9n\u00e9reusement \u00e0 chaque retour r\u00e9ussi.", "Augmentez progressivement la distance.", "Pratiquez en laisse longue avant le rappel sans laisse."] },
-  { order_number: 5,  name: "Donne la patte",     emoji: "\ud83e\udd1d",  level: "debutant",      duration: "3 min",  is_premium: true,  description: "Un tour sympathique qui renforce la complicit\u00e9.", steps: ["Demandez \u00ab Assis \u00bb \u00e0 votre chien.", "Pr\u00e9sentez votre main paume vers le haut, l\u00e9g\u00e8rement inclin\u00e9e.", "Quand il pose la patte, dites \u00ab Donne la patte \u00bb et r\u00e9compensez.", "R\u00e9p\u00e9tez sans la friandise en utilisant uniquement le geste.", "Alterner les deux pattes pour l'\u00e9quilibre."] },
-  { order_number: 6,  name: "L\u00e2che",              emoji: "\ud83c\udfbe",  level: "debutant",      duration: "5 min",  is_premium: true,  description: "Essentiel pour les jeux et la s\u00e9curit\u00e9.", steps: ["Jouez avec un jouet avec votre chien.", "Pr\u00e9sentez une friandise pr\u00e8s de son museau.", "Quand il l\u00e2che, dites \u00ab L\u00e2che \u00bb et donnez la friandise.", "Rendez le jouet imm\u00e9diatement pour qu'il comprenne.", "Pratiquez r\u00e9guli\u00e8rement sans friandise ensuite."] },
-  { order_number: 7,  name: "Au pied",            emoji: "\ud83d\udeb6",  level: "intermediaire", duration: "10 min", is_premium: true,  description: "Promenades agr\u00e9ables sans tirer sur la laisse.", steps: ["Commencez avec votre chien \u00e0 votre gauche.", "D\u00e8s qu'il tire, arr\u00eatez-vous compl\u00e8tement.", "Reprenez quand la laisse se d\u00e9tend.", "R\u00e9compensez fr\u00e9quemment quand il marche bien.", "Progressez vers des environnements plus distractifs."] },
-  { order_number: 8,  name: "Attends",            emoji: "\u23f3",  level: "intermediaire", duration: "5 min",  is_premium: true,  description: "Apprendre la patience avant une action.", steps: ["Demandez \u00ab Assis \u00bb et dites \u00ab Attends \u00bb.", "Posez sa gamelle ou son jouet devant lui.", "Dites \u00ab Ok \u00bb ou \u00ab Vas-y \u00bb pour lib\u00e9rer.", "Augmentez progressivement le temps d'attente.", "Pratiquez avant les repas, les jeux ou les sorties."] },
-  { order_number: 9,  name: "Tourne",             emoji: "\ud83d\udd04",  level: "intermediaire", duration: "5 min",  is_premium: true,  description: "Un tour sur lui-m\u00eame \u2013 pour stimuler et \u00e9pater !", steps: ["Tenez une friandise devant le museau de votre chien.", "Tracez lentement un cercle complet avec la friandise.", "Quand il compl\u00e8te le tour, r\u00e9compensez.", "Ajoutez le signal verbal \u00ab Tourne \u00bb.", "Remplacez ensuite la friandise par un geste de la main."] },
-  { order_number: 10, name: "Touche",             emoji: "\u270b",  level: "intermediaire", duration: "3 min",  is_premium: true,  description: "Toucher un objet ou une main sur commande.", steps: ["Pr\u00e9sentez votre main paume vers le chien.", "Quand il touche la paume avec son museau, dites \u00ab Touche \u00bb et r\u00e9compensez.", "D\u00e9placez votre main \u00e0 diff\u00e9rentes hauteurs et angles.", "Introduisez d'autres surfaces \u00e0 toucher.", "Utilisez \u00ab Touche \u00bb pour guider votre chien vers des endroits pr\u00e9cis."] },
+  { order_number: 1,  name: "Assis",              emoji: "🐕",  level: "debutant",      duration: "3 min",  is_premium: false, description: "La base de tout dressage – indispensable pour la sécurité.", steps: ["Tenez une friandise devant le museau de votre chien.", "Remontez lentement la friandise au-dessus de sa tête.", "Quand il s'assoit naturellement, dites « Assis » et donnez la friandise.", "Répétez 5 fois, puis réduisez progressivement la friandise.", "Pratiquez dans différents endroits et situations."] },
+  { order_number: 2,  name: "Couché",             emoji: "😴",  level: "debutant",      duration: "5 min",  is_premium: false, description: "Parfait pour les moments de calme et les lieux publics.", steps: ["Demandez d'abord « Assis ».", "Placez une friandise devant son museau puis descendez-la vers le sol.", "Déplacez-la lentement entre ses pattes.", "Dès qu'il se couche, dites « Couché » et récompensez.", "Augmentez progressivement la durée avant la récompense."] },
+  { order_number: 3,  name: "Pas bouger",         emoji: "🧶",  level: "debutant",      duration: "5 min",  is_premium: false, description: "Un ordre de sécurité crucial dans toutes les situations.", steps: ["Demandez « Assis » ou « Couché ».", "Montrez votre paume ouverte et dites « Pas bouger ».", "Faites un pas en arrière, revenez et récompensez.", "Augmentez progressivement la distance et la durée.", "Introduisez des distractions pour solidifier l'ordre."] },
+  { order_number: 4,  name: "Viens ici (Rappel)", emoji: "📣",  level: "debutant",      duration: "5 min",  is_premium: true,  description: "L'ordre le plus important pour la sécurité en extérieur.", steps: ["Commencez en intérieur, à courte distance.", "Appelez son prénom + « Viens » avec enthousiasme.", "Récompensez généreusement à chaque retour réussi.", "Augmentez progressivement la distance.", "Pratiquez en laisse longue avant le rappel sans laisse."] },
+  { order_number: 5,  name: "Donne la patte",     emoji: "🤝",  level: "debutant",      duration: "3 min",  is_premium: true,  description: "Un tour sympathique qui renforce la complicité.", steps: ["Demandez « Assis » à votre chien.", "Présentez votre main paume vers le haut, légèrement inclinée.", "Quand il pose la patte, dites « Donne la patte » et récompensez.", "Répétez sans la friandise en utilisant uniquement le geste.", "Alterner les deux pattes pour l'équilibre."] },
+  { order_number: 6,  name: "Lâche",              emoji: "🎾",  level: "debutant",      duration: "5 min",  is_premium: true,  description: "Essentiel pour les jeux et la sécurité.", steps: ["Jouez avec un jouet avec votre chien.", "Présentez une friandise près de son museau.", "Quand il lâche, dites « Lâche » et donnez la friandise.", "Rendez le jouet immédiatement pour qu'il comprenne.", "Pratiquez régulièrement sans friandise ensuite."] },
+  { order_number: 7,  name: "Au pied",            emoji: "🚶",  level: "intermediaire", duration: "10 min", is_premium: true,  description: "Promenades agréables sans tirer sur la laisse.", steps: ["Commencez avec votre chien à votre gauche.", "Dès qu'il tire, arrêtez-vous complètement.", "Reprenez quand la laisse se détend.", "Récompensez fréquemment quand il marche bien.", "Progressez vers des environnements plus distractifs."] },
+  { order_number: 8,  name: "Attends",            emoji: "⏳",  level: "intermediaire", duration: "5 min",  is_premium: true,  description: "Apprendre la patience avant une action.", steps: ["Demandez « Assis » et dites « Attends ».", "Posez sa gamelle ou son jouet devant lui.", "Dites « Ok » ou « Vas-y » pour libérer.", "Augmentez progressivement le temps d'attente.", "Pratiquez avant les repas, les jeux ou les sorties."] },
+  { order_number: 9,  name: "Tourne",             emoji: "🔄",  level: "intermediaire", duration: "5 min",  is_premium: true,  description: "Un tour sur lui-même – pour stimuler et épater !", steps: ["Tenez une friandise devant le museau de votre chien.", "Tracez lentement un cercle complet avec la friandise.", "Quand il complète le tour, récompensez.", "Ajoutez le signal verbal « Tourne ».", "Remplacez ensuite la friandise par un geste de la main."] },
+  { order_number: 10, name: "Touche",             emoji: "✋",  level: "intermediaire", duration: "3 min",  is_premium: true,  description: "Toucher un objet ou une main sur commande.", steps: ["Présentez votre main paume vers le chien.", "Quand il touche la paume avec son museau, dites « Touche » et récompensez.", "Déplacez votre main à différentes hauteurs et angles.", "Introduisez d'autres surfaces à toucher.", "Utilisez « Touche » pour guider votre chien vers des endroits précis."] },
 ];
 
 const MILESTONES = [3, 5, 10];
 const LEVEL_CONFIG = {
-  debutant:      { label: "D\u00e9butant",      color: "text-green-700 bg-green-50 border-green-200" },
-  intermediaire: { label: "Interm\u00e9diaire", color: "text-amber-600 bg-amber-50 border-amber-200" },
+  debutant:      { label: "Débutant",      color: "text-green-700 bg-green-50 border-green-200" },
+  intermediaire: { label: "Intermédiaire", color: "text-amber-600 bg-amber-50 border-amber-200" },
 };
 
 export default function Training() {
@@ -108,12 +108,12 @@ export default function Training() {
       }
     } catch (err) {
       console.error("Training complete error:", err);
-      alert("Erreur lors de la sauvegarde. R\u00e9essaie.");
+      alert("Erreur lors de la sauvegarde. Réessaie.");
     }
   };
 
   const handleHelp = (exercise) => {
-    const msg = `J'ai besoin d'aide avec l'exercice \u00ab ${exercise.name} \u00bb pour ${dog?.name || "mon chien"}. ${dog?.name || "Mon chien"} est un ${dog?.breed || "chien"} de ${dog?.weight || "?"} kg.`;
+    const msg = `J'ai besoin d'aide avec l'exercice « ${exercise.name} » pour ${dog?.name || "mon chien"}. ${dog?.name || "Mon chien"} est un ${dog?.breed || "chien"} de ${dog?.weight || "?"} kg.`;
     navigate(createPageUrl("Chat") + `?help=${encodeURIComponent(msg)}`);
   };
 
@@ -162,13 +162,13 @@ export default function Training() {
       <WellnessBanner />
 
       <div className="gradient-primary pt-10 pb-6 px-5">
-        <h1 className="text-white font-bold text-xl mb-0.5">Coach Dressage \ud83d\udc3e</h1>
+        <h1 className="text-white font-bold text-xl mb-0.5">Coach Dressage 🐾</h1>
         <p className="text-white/70 text-sm mb-4">
-          {dog ? `Entra\u00eene-toi avec ${dog.name}` : "Chargement..."}
+          {dog ? `Entraîne-toi avec ${dog.name}` : "Chargement..."}
         </p>
         <div className="bg-white/15 rounded-2xl p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-white text-sm font-semibold">{completedCount} / {EXERCISES.length} tours ma\u00eetris\u00e9s</span>
+            <span className="text-white text-sm font-semibold">{completedCount} / {EXERCISES.length} tours maîtrisés</span>
             <span className="text-white/80 text-sm">{Math.round((completedCount / EXERCISES.length) * 100)}%</span>
           </div>
           <div className="bg-white/25 rounded-full h-2.5">
