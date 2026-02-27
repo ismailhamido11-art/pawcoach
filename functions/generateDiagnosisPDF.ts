@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
   const user = await base44.auth.me();
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { report, dog_name, dog_breed, dog_weight, symptoms, duration, report_date } = await req.json();
+  const { report, dog_name, dog_breed, dog_weight, symptoms, duration, report_date, followup_questions, user_answers } = await req.json();
 
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -31,11 +31,11 @@ Deno.serve(async (req) => {
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  doc.text('PawCoach - Rapport de Pré-diagnostic IA', 15, 15);
+  doc.text('PawCoach - Rapport de Pre-diagnostic IA', 15, 15);
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
   doc.text(`Date du rapport: ${report_date || new Date().toLocaleDateString('fr-FR')}`, 15, 25);
-  doc.text('Ce document est un outil d\'aide, pas un diagnostic vétérinaire.', 15, 31);
+  doc.text("Ce document est un outil d'aide, pas un diagnostic veterinaire.", 15, 31);
 
   y = 45;
 
@@ -45,12 +45,24 @@ Deno.serve(async (req) => {
   y += 4;
 
   // Symptoms
-  addText('SYMPTÔMES RAPPORTÉS', 15, 12, 'bold', [22, 128, 108]);
-  addText(symptoms || 'Non renseignés', 15, 10, 'normal', [40, 40, 40]);
+  addText('SYMPTOMES RAPPORTES', 15, 12, 'bold', [22, 128, 108]);
+  addText(symptoms || 'Non renseignes', 15, 10, 'normal', [40, 40, 40]);
   if (duration) {
-    addText(`Durée: ${duration}`, 15, 10, 'italic', [80, 80, 80]);
+    addText(`Duree: ${duration}`, 15, 10, 'italic', [80, 80, 80]);
   }
   y += 4;
+
+  // Q&A Section
+  if (followup_questions?.length && user_answers) {
+    addText('QUESTIONS COMPLEMENTAIRES & REPONSES', 15, 12, 'bold', [22, 128, 108]);
+    followup_questions.forEach((q, i) => {
+      const answer = user_answers[q.id] || 'Non repondu';
+      addText(`Q${i + 1}: ${q.question}`, 15, 10, 'bold', [50, 50, 50]);
+      addText(`R: ${answer}`, 20, 10, 'normal', [40, 40, 40]);
+      y += 2;
+    });
+    y += 4;
+  }
 
   // Observations
   if (report.observations) {
@@ -62,7 +74,7 @@ Deno.serve(async (req) => {
   // Urgency
   if (report.urgency_level) {
     const urgencyColors = { low: [34, 139, 34], medium: [218, 165, 32], high: [220, 100, 20], emergency: [200, 30, 30] };
-    const urgencyLabels = { low: 'Faible', medium: 'Modéré', high: 'Élevé', emergency: 'Urgence' };
+    const urgencyLabels = { low: 'Faible', medium: 'Modere', high: 'Eleve', emergency: 'Urgence' };
     const color = urgencyColors[report.urgency_level] || [0, 0, 0];
     addText(`NIVEAU D'URGENCE: ${urgencyLabels[report.urgency_level] || report.urgency_level}`, 15, 12, 'bold', color);
     if (report.urgency_explanation) {
@@ -82,18 +94,9 @@ Deno.serve(async (req) => {
 
   // Immediate advice
   if (report.immediate_advice?.length) {
-    addText('CONSEILS IMMÉDIATS', 15, 12, 'bold', [22, 128, 108]);
+    addText('CONSEILS IMMEDIATS', 15, 12, 'bold', [22, 128, 108]);
     report.immediate_advice.forEach(advice => {
-      addText(`• ${advice}`, 20, 10, 'normal', [40, 40, 40]);
-    });
-    y += 4;
-  }
-
-  // Vet questions
-  if (report.vet_questions?.length) {
-    addText('QUESTIONS À PRÉPARER POUR LE VÉTÉRINAIRE', 15, 12, 'bold', [22, 128, 108]);
-    report.vet_questions.forEach(q => {
-      addText(`• ${q}`, 20, 10, 'normal', [40, 40, 40]);
+      addText(`- ${advice}`, 20, 10, 'normal', [40, 40, 40]);
     });
     y += 4;
   }
@@ -104,7 +107,7 @@ Deno.serve(async (req) => {
   doc.line(15, y, pageWidth - 15, y);
   y += 6;
   addText('AVERTISSEMENT', 15, 10, 'bold', [150, 50, 50]);
-  addText(report.important_note || 'Ce pré-diagnostic a été généré par une intelligence artificielle et ne remplace en aucun cas l\'avis d\'un vétérinaire professionnel. Consultez un vétérinaire pour un diagnostic définitif.', 15, 9, 'italic', [120, 120, 120]);
+  addText(report.important_note || "Ce pre-diagnostic a ete genere par une intelligence artificielle et ne remplace en aucun cas l'avis d'un veterinaire professionnel.", 15, 9, 'italic', [120, 120, 120]);
 
   const pdfBytes = doc.output('arraybuffer');
 

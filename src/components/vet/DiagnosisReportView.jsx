@@ -16,15 +16,13 @@ export default function DiagnosisReportView({ report, dogName, reportDate }) {
 
   return (
     <div className="space-y-3">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-sm">
-          Rapport pour {dogName || "votre chien"}
+          Rapport complet pour {dogName || "votre chien"}
         </h3>
         <span className="text-[10px] text-muted-foreground">{reportDate}</span>
       </div>
 
-      {/* Urgency */}
       <div className={`flex items-center gap-2 p-3 rounded-xl ${urgency.color}`}>
         <UrgencyIcon className="w-5 h-5 flex-shrink-0" />
         <div>
@@ -33,14 +31,12 @@ export default function DiagnosisReportView({ report, dogName, reportDate }) {
         </div>
       </div>
 
-      {/* Observations */}
       {report.observations && (
         <Section title="Observations cliniques">
           <p className="text-xs text-muted-foreground">{report.observations}</p>
         </Section>
       )}
 
-      {/* Possible causes */}
       {report.possible_causes?.length > 0 && (
         <Section title="Pistes diagnostiques">
           <ol className="space-y-1">
@@ -54,7 +50,6 @@ export default function DiagnosisReportView({ report, dogName, reportDate }) {
         </Section>
       )}
 
-      {/* Immediate advice */}
       {report.immediate_advice?.length > 0 && (
         <Section title="Conseils immédiats">
           <ul className="space-y-1">
@@ -65,18 +60,6 @@ export default function DiagnosisReportView({ report, dogName, reportDate }) {
         </Section>
       )}
 
-      {/* Vet questions */}
-      {report.vet_questions?.length > 0 && (
-        <Section title="Questions à préparer pour le véto">
-          <ul className="space-y-1">
-            {report.vet_questions.map((q, i) => (
-              <li key={i} className="text-xs text-muted-foreground">• {q}</li>
-            ))}
-          </ul>
-        </Section>
-      )}
-
-      {/* Important note */}
       {report.important_note && (
         <div className="p-2 bg-muted rounded-lg">
           <p className="text-[10px] text-muted-foreground italic">{report.important_note}</p>

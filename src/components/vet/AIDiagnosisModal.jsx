@@ -7,13 +7,24 @@ import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import DiagnosisReportView from "./DiagnosisReportView";
-import { Loader2, Stethoscope, AlertTriangle, Download, MapPin } from "lucide-react";
+import DiagnosisStep2Questions from "./DiagnosisStep2Questions";
+import { Loader2, Stethoscope, AlertTriangle, Download, MapPin, Camera, X, Image } from "lucide-react";
 
 export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
-  const [step, setStep] = useState("form"); // form | loading | report
+  // Steps: form → loading1 → questions → loading2 → report
+  const [step, setStep] = useState("form");
   const [symptoms, setSymptoms] = useState("");
   const [duration, setDuration] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  // Phase 1 results
+  const [phase1, setPhase1] = useState(null);
+
+  // Phase 2
+  const [userAnswers, setUserAnswers] = useState({});
   const [report, setReport] = useState(null);
   const [downloading, setDownloading] = useState(false);
 
@@ -24,24 +35,75 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
     setSymptoms("");
     setDuration("");
     setAdditionalInfo("");
+    setImageFile(null);
+    setImagePreview(null);
+    setImageUrl(null);
+    setPhase1(null);
+    setUserAnswers({});
     setReport(null);
     onOpenChange(false);
   };
 
-  const handleSubmit = async () => {
+  const dogAge = dog?.birth_date
+    ? `${Math.floor((Date.now() - new Date(dog.birth_date).getTime()) / (365.25 * 24 * 60 * 60 * 1000))} ans`
+    : null;
+
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    setImageUrl(null);
+  };
+
+  // STEP 1: Analyze symptoms → get followup questions
+  const handleStep1 = async () => {
     if (!symptoms.trim()) return;
-    setStep("loading");
+    setStep("loading1");
 
-    const dogAge = dog?.birth_date
-      ? `${Math.floor((Date.now() - new Date(dog.birth_date).getTime()) / (365.25 * 24 * 60 * 60 * 1000))} ans`
-      : null;
-
-    const user = await base44.auth.me();
+    let uploadedUrl = null;
+    if (imageFile) {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: imageFile });
+      uploadedUrl = file_url;
+      setImageUrl(uploadedUrl);
+    }
 
     const result = await base44.functions.invoke("preDiagnosis", {
       symptoms,
       duration,
       additional_info: additionalInfo,
+      image_url: uploadedUrl,
+      dog_name: dog?.name,
+      dog_breed: dog?.breed,
+      dog_weight: dog?.weight,
+      dog_age: dogAge,
+      health_issues: dog?.health_issues,
+      allergies: dog?.allergies,
+    });
+
+    setPhase1(result.data);
+    setStep("questions");
+  };
+
+  // STEP 2: Final diagnosis with answers
+  const handleStep2 = async () => {
+    setStep("loading2");
+
+    const user = await base44.auth.me();
+
+    const result = await base44.functions.invoke("finalDiagnosis", {
+      symptoms,
+      duration,
+      additional_info: additionalInfo,
+      image_url: imageUrl,
+      preliminary_observations: phase1.preliminary_observations,
+      followup_questions: phase1.followup_questions,
+      user_answers: userAnswers,
       dog_name: dog?.name,
       dog_breed: dog?.breed,
       dog_weight: dog?.weight,
@@ -53,7 +115,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
     const diagnosisData = result.data;
     setReport(diagnosisData);
 
-    // Save report to DB
+    // Save to DB
     await base44.entities.DiagnosisReport.create({
       dog_id: dog?.id,
       owner_email: user.email,
@@ -81,6 +143,8 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
       symptoms,
       duration,
       report_date: reportDate,
+      followup_questions: phase1?.followup_questions,
+      user_answers: userAnswers,
     });
     const blob = new Blob([res.data], { type: "application/pdf" });
     const url = window.URL.createObjectURL(blob);
@@ -100,15 +164,36 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-lg">
             <Stethoscope className="w-5 h-5 text-primary" />
-            Pré-diagnostic IA
+            {step === "form" || step === "loading1" ? "Décrire les symptômes" :
+             step === "questions" || step === "loading2" ? "Analyse approfondie" :
+             "Rapport complet"}
           </DialogTitle>
         </DialogHeader>
 
+        {/* ====== STEP 1: Symptom Form ====== */}
         {step === "form" && (
           <div className="space-y-4 mt-2">
             <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-              <span>Cet outil ne remplace pas un vétérinaire. Il prépare un rapport préliminaire pour faciliter votre consultation.</span>
+              <span>Cet outil ne remplace pas un vétérinaire. Il prépare un rapport pour faciliter votre consultation.</span>
+            </div>
+
+            {/* Step indicator */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
+                <div className="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">1</div>
+                <span className="text-xs font-medium text-primary">Symptômes</span>
+              </div>
+              <div className="flex-1 h-px bg-border" />
+              <div className="flex items-center gap-1.5">
+                <div className="w-6 h-6 rounded-full bg-muted text-muted-foreground text-xs font-bold flex items-center justify-center">2</div>
+                <span className="text-xs text-muted-foreground">Questions</span>
+              </div>
+              <div className="flex-1 h-px bg-border" />
+              <div className="flex items-center gap-1.5">
+                <div className="w-6 h-6 rounded-full bg-muted text-muted-foreground text-xs font-bold flex items-center justify-center">3</div>
+                <span className="text-xs text-muted-foreground">Rapport</span>
+              </div>
             </div>
 
             <div>
@@ -141,8 +226,35 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
               />
             </div>
 
+            {/* Photo upload */}
+            <div>
+              <label className="text-sm font-medium">Photo des symptômes (optionnel)</label>
+              {imagePreview ? (
+                <div className="mt-2 relative inline-block">
+                  <img src={imagePreview} alt="Symptômes" className="w-full max-h-48 object-cover rounded-xl border" />
+                  <button
+                    onClick={removeImage}
+                    className="absolute top-2 right-2 w-6 h-6 bg-black/60 rounded-full flex items-center justify-center"
+                  >
+                    <X className="w-3.5 h-3.5 text-white" />
+                  </button>
+                </div>
+              ) : (
+                <label className="mt-1 flex items-center gap-3 p-4 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary/50 hover:bg-muted/50 transition-all">
+                  <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                    <Camera className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium">Ajouter une photo</p>
+                    <p className="text-[10px] text-muted-foreground">Si visible, prenez une photo de la zone concernée</p>
+                  </div>
+                  <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                </label>
+              )}
+            </div>
+
             <Button
-              onClick={handleSubmit}
+              onClick={handleStep1}
               disabled={!symptoms.trim()}
               className="w-full gradient-primary text-white"
             >
@@ -151,22 +263,64 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
           </div>
         )}
 
-        {step === "loading" && (
+        {/* ====== LOADING 1 ====== */}
+        {step === "loading1" && (
           <div className="flex flex-col items-center justify-center py-12 gap-4">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
             <p className="text-sm text-muted-foreground text-center">
-              Analyse en cours...<br />
-              <span className="text-xs">L'IA examine les symptômes de {dog?.name || "votre chien"}</span>
+              Analyse des premiers symptômes...<br />
+              <span className="text-xs">L'IA prépare des questions ciblées pour {dog?.name || "votre chien"}</span>
             </p>
           </div>
         )}
 
+        {/* ====== STEP 2: Followup Questions ====== */}
+        {step === "questions" && phase1 && (
+          <DiagnosisStep2Questions
+            phase1={phase1}
+            userAnswers={userAnswers}
+            setUserAnswers={setUserAnswers}
+            onSubmit={handleStep2}
+            dogName={dog?.name}
+          />
+        )}
+
+        {/* ====== LOADING 2 ====== */}
+        {step === "loading2" && (
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
+            <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            <p className="text-sm text-muted-foreground text-center">
+              Analyse finale en cours...<br />
+              <span className="text-xs">Génération du rapport complet pour {dog?.name || "votre chien"}</span>
+            </p>
+          </div>
+        )}
+
+        {/* ====== STEP 3: Final Report ====== */}
         {step === "report" && report && (
           <div className="space-y-4 mt-2">
+            {/* Step indicator */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
+                <div className="w-6 h-6 rounded-full bg-green-600 text-white text-xs font-bold flex items-center justify-center">✓</div>
+                <span className="text-xs text-green-700">Symptômes</span>
+              </div>
+              <div className="flex-1 h-px bg-green-300" />
+              <div className="flex items-center gap-1.5">
+                <div className="w-6 h-6 rounded-full bg-green-600 text-white text-xs font-bold flex items-center justify-center">✓</div>
+                <span className="text-xs text-green-700">Questions</span>
+              </div>
+              <div className="flex-1 h-px bg-green-300" />
+              <div className="flex items-center gap-1.5">
+                <div className="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">3</div>
+                <span className="text-xs font-medium text-primary">Rapport</span>
+              </div>
+            </div>
+
             <DiagnosisReportView report={report} dogName={dog?.name} reportDate={reportDate} />
 
             <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800">
-              <strong>Conservez ce rapport !</strong> Il contient des informations datées qui aideront votre vétérinaire à mieux comprendre la situation lors de votre consultation.
+              <strong>Conservez ce rapport !</strong> Il contient vos symptômes, vos réponses et l'analyse complète. Votre vétérinaire aura tout en main.
             </div>
 
             <Button

@@ -5,13 +5,15 @@ Deno.serve(async (req) => {
   const user = await base44.auth.me();
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { symptoms, duration, additional_info, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies } = await req.json();
+  const { symptoms, duration, additional_info, image_url, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies } = await req.json();
 
   if (!symptoms) return Response.json({ error: 'Symptoms required' }, { status: 400 });
 
-  const prompt = `Tu es un assistant vétérinaire IA spécialisé dans la santé canine. Tu dois analyser les symptômes décrits et produire un pré-diagnostic structuré et professionnel.
+  const prompt = `Tu es un assistant vétérinaire IA spécialisé dans la santé canine.
 
-IMPORTANT: Tu n'es PAS un vétérinaire. Ton rôle est de préparer un rapport préliminaire qui aidera le vétérinaire lors de la consultation. Utilise un vocabulaire médical/vétérinaire approprié.
+PHASE 1: Tu reçois les premiers symptômes d'un chien. Tu dois:
+1. Faire une première analyse rapide des symptômes
+2. Générer une liste de questions CIBLÉES et PERTINENTES que le propriétaire devra renseigner pour affiner le diagnostic. Ces questions doivent être basées sur les symptômes décrits.
 
 INFORMATIONS SUR LE CHIEN:
 - Nom: ${dog_name || 'Non renseigné'}
@@ -21,37 +23,43 @@ INFORMATIONS SUR LE CHIEN:
 - Problèmes de santé connus: ${health_issues || 'Aucun'}
 - Allergies connues: ${allergies || 'Aucune'}
 
-SYMPTÔMES DÉCRITS PAR LE PROPRIÉTAIRE:
+SYMPTÔMES DÉCRITS:
 ${symptoms}
 
-DURÉE DES SYMPTÔMES:
-${duration || 'Non précisée'}
+DURÉE: ${duration || 'Non précisée'}
 
-INFORMATIONS SUPPLÉMENTAIRES:
-${additional_info || 'Aucune'}
+INFOS SUPPLÉMENTAIRES: ${additional_info || 'Aucune'}
 
-Génère un rapport structuré au format JSON avec les champs suivants:
-- observations: string (résumé clinique des symptômes rapportés, en termes vétérinaires)
-- possible_causes: array de strings (3 à 5 pistes diagnostiques possibles, de la plus probable à la moins probable)
-- urgency_level: "low" | "medium" | "high" | "emergency" (évaluation du niveau d'urgence)
-- urgency_explanation: string (explication du niveau d'urgence)
-- immediate_advice: array de strings (2 à 4 conseils immédiats pour le propriétaire en attendant la consultation)
-- vet_questions: array de strings (3 à 5 questions que le vétérinaire pourrait poser, pour que le propriétaire se prépare)
-- important_note: string (rappel que ceci n'est pas un diagnostic définitif)`;
+${image_url ? "NOTE: Le propriétaire a aussi envoyé une photo des symptômes. Analyse-la attentivement pour affiner tes questions." : ""}
+
+Génère un JSON avec:
+- preliminary_observations: string (première impression clinique courte, 2-3 phrases max)
+- preliminary_urgency: "low" | "medium" | "high" | "emergency" (première estimation d'urgence)
+- followup_questions: array d'objets avec { id: string (q1, q2...), question: string, type: "text" | "yes_no" | "choice", options?: array de strings (seulement si type=choice) }. Génère 4 à 6 questions pertinentes basées sur les symptômes. Par exemple si le chien se gratte l'oreille, demande s'il y a une odeur, un écoulement, etc.`;
+
+  const fileUrls = image_url ? [image_url] : undefined;
 
   const result = await base44.integrations.Core.InvokeLLM({
     prompt,
     add_context_from_internet: true,
+    file_urls: fileUrls,
     response_json_schema: {
       type: "object",
       properties: {
-        observations: { type: "string" },
-        possible_causes: { type: "array", items: { type: "string" } },
-        urgency_level: { type: "string", enum: ["low", "medium", "high", "emergency"] },
-        urgency_explanation: { type: "string" },
-        immediate_advice: { type: "array", items: { type: "string" } },
-        vet_questions: { type: "array", items: { type: "string" } },
-        important_note: { type: "string" }
+        preliminary_observations: { type: "string" },
+        preliminary_urgency: { type: "string", enum: ["low", "medium", "high", "emergency"] },
+        followup_questions: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              question: { type: "string" },
+              type: { type: "string", enum: ["text", "yes_no", "choice"] },
+              options: { type: "array", items: { type: "string" } }
+            }
+          }
+        }
       }
     }
   });
