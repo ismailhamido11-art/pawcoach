@@ -36,37 +36,52 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
 
   const loadAccesses = async () => {
     setLoadingAccesses(true);
-    const res = await base44.functions.invoke("vetAccess", { action: "listByDog", dogId });
-    setAccesses(res.data.accesses || []);
+    try {
+      const res = await base44.functions.invoke("vetAccess", { action: "listByDog", dogId });
+      setAccesses(res.data.accesses || []);
+    } catch (e) {
+      console.error("loadAccesses error:", e);
+      toast.error("Erreur de chargement des accès");
+    }
     setLoadingAccesses(false);
   };
 
   const handleInvite = async () => {
     if (!vetEmail.trim()) return;
     setLoading(true);
-    const res = await base44.functions.invoke("vetAccess", {
-      action: "invite",
-      dogId,
-      vetEmail: vetEmail.trim().toLowerCase(),
-      vetName: vetName.trim(),
-      sections: selectedSections,
-    });
-    if (res.data.success) {
-      toast.success(`Invitation envoyée à ${vetEmail}`);
-      setVetEmail("");
-      setVetName("");
-      loadAccesses();
-    } else {
-      toast.error(res.data.error || "Erreur lors de l'envoi");
+    try {
+      const res = await base44.functions.invoke("vetAccess", {
+        action: "invite",
+        dogId,
+        vetEmail: vetEmail.trim().toLowerCase(),
+        vetName: vetName.trim(),
+        sections: selectedSections,
+      });
+      if (res.data.success) {
+        toast.success(`Invitation envoyée à ${vetEmail}`);
+        setVetEmail("");
+        setVetName("");
+        loadAccesses();
+      } else {
+        toast.error(res.data.error || "Erreur lors de l'envoi");
+      }
+    } catch (e) {
+      console.error("handleInvite error:", e);
+      toast.error("Erreur lors de l'envoi de l'invitation");
     }
     setLoading(false);
   };
 
   const handleRevoke = async (accessId) => {
-    const res = await base44.functions.invoke("vetAccess", { action: "revoke", accessId });
-    if (res.data.success) {
-      toast.success("Accès révoqué");
-      loadAccesses();
+    try {
+      const res = await base44.functions.invoke("vetAccess", { action: "revoke", accessId });
+      if (res.data.success) {
+        toast.success("Accès révoqué");
+        loadAccesses();
+      }
+    } catch (e) {
+      console.error("handleRevoke error:", e);
+      toast.error("Erreur lors de la révocation");
     }
   };
 
@@ -128,7 +143,7 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
         {/* Invite form */}
         <div className="space-y-3">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Inviter un vétérinaire</p>
-          
+
           <div>
             <Label className="text-xs">Email du vétérinaire *</Label>
             <div className="flex gap-2 mt-1">
