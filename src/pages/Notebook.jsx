@@ -246,7 +246,7 @@ export default function Notebook() {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-medium transition-all"
             >
               <Stethoscope className="w-3.5 h-3.5" />
-              Envoyer au véto
+              Envoyer le dossier de {dog.name} au véto
             </button>
           )}
         </div>
