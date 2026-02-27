@@ -194,11 +194,11 @@ export default function Premium() {
   }
 
   const CONTEXTUAL_MESSAGES = {
-    chat:     { title: "Tes messages gratuits sont épuisés", desc: "Passe en Premium pour discuter sans limite avec PawCoach", Icon: MessageCircle, color: "bg-blue-50 border-blue-200 text-blue-700" },
-    scan:     { title: "Tu as utilisé tes scans gratuits", desc: "Passe en Premium pour scanner sans limite", Icon: ScanLine, color: "bg-orange-50 border-orange-200 text-orange-700" },
-    training: { title: "Tu as découvert les bases !", desc: "Débloque les 7 exercices avancés avec Premium", Icon: Dumbbell, color: "bg-purple-50 border-purple-200 text-purple-700" },
-    notebook: { title: "Accède au carnet complet", desc: "Visites véto, médicaments et notes avec Premium", Icon: BookHeart, color: "bg-red-50 border-red-200 text-red-700" },
-    nutrition:{ title: "Tes messages NutriCoach sont épuisés", desc: "Passe en Premium pour un coaching nutrition illimité", Icon: Salad, color: "bg-green-50 border-green-200 text-green-700" },
+    chat:     { title: "Tes messages gratuits sont épuisés", desc: "Passe en Premium pour discuter sans limite avec PawCoach", Icon: MessageCircle, color: "bg-primary/10 border-primary/20 text-primary" },
+    scan:     { title: "Tu as utilisé tes scans gratuits", desc: "Passe en Premium pour scanner sans limite", Icon: ScanLine, color: "bg-accent/10 border-accent/20 text-accent" },
+    training: { title: "Tu as découvert les bases !", desc: "Débloque les 7 exercices avancés avec Premium", Icon: Dumbbell, color: "bg-primary/10 border-primary/20 text-primary" },
+    notebook: { title: "Accède au carnet complet", desc: "Visites véto, médicaments et notes avec Premium", Icon: BookHeart, color: "bg-destructive/10 border-destructive/20 text-destructive" },
+    nutrition:{ title: "Tes messages NutriCoach sont épuisés", desc: "Passe en Premium pour un coaching nutrition illimité", Icon: Salad, color: "bg-safe/10 border-safe/20 text-safe" },
   };
 
   const urlParams = new URLSearchParams(window.location.search);

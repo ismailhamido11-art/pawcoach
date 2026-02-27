@@ -40,8 +40,8 @@ export default function ShareCard({ result, dogName, onClose }) {
         <div
           ref={cardRef}
           style={{ background: s.bg, border: `2px solid ${s.border}` }}
-          className="rounded-3xl p-6 text-center shadow-xl"
-        >
+          className="rounded-3xl p-6 text-center shadow-lg"
+          >
           <div className="text-5xl mb-3">🐾</div>
           <p style={{ color: s.color }} className="text-2xl font-extrabold mb-1">{s.label}</p>
           <p className="text-gray-800 font-bold text-lg mb-1">{result.food_name}</p>

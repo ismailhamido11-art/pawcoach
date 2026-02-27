@@ -351,7 +351,7 @@ export default function Home() {
               disabled={!mood || !energy || !appetite || submitting}
               className={`w-full py-3 rounded-xl font-semibold text-white transition-colors ${mood && energy && appetite && !submitting
                 ? "bg-primary hover:bg-primary/90"
-                : "bg-gray-300 cursor-not-allowed"
+                : "bg-muted cursor-not-allowed"
                 }`}
             >
               {submitting ? (
