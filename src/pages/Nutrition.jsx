@@ -5,7 +5,7 @@ import WellnessBanner from "../components/WellnessBanner";
 import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Salad, Lock } from "lucide-react";
+import { Send, Salad } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 export default function Nutrition() {
@@ -233,14 +233,29 @@ export default function Nutrition() {
           {/* Bottom input */}
           <div className="fixed bottom-16 left-0 right-0 bg-background border-t border-border">
             {isNutriLimitReached ? (
-              <div className="mx-4 my-3 bg-muted rounded-2xl p-4 flex items-start gap-3">
-                <Lock className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-foreground">Messages NutriCoach utilisés</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Tu as utilisé tes 20 messages gratuits. Passe en Premium pour un accès illimité à NutriCoach.</p>
-                  <Button onClick={() => window.location.href = '/Premium?from=nutrition'} size="sm" className="mt-2 bg-green-600 hover:bg-green-700 border-0 text-white text-xs h-8">
-                    Passer en Premium ✨
-                  </Button>
+              <div className="px-4 py-3 space-y-3">
+                <div className="flex gap-2 justify-start">
+                  <div className="w-8 h-8 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0 mt-1 text-base">🥗</div>
+                  <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
+                    <p className="text-sm leading-relaxed">
+                      J'adorerais continuer à conseiller <strong>{dog?.name || "ton chien"}</strong> sur sa nutrition ! 🥗 Tes messages gratuits sont épuisés pour aujourd'hui. Reviens demain pour 2 messages offerts, ou passe en Premium pour un coaching illimité !
+                    </p>
+                    <div className="flex gap-2 mt-3">
+                      <Button onClick={() => window.location.href = '/Premium?from=chat'} size="sm" className="bg-green-600 hover:bg-green-700 border-0 text-white text-xs h-8">
+                        Débloquer Premium ✨
+                      </Button>
+                      <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground">
+                        À demain ! 👋
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-2 px-0 py-0">
+                  <Input
+                    disabled
+                    placeholder="Reviens demain ou passe Premium..."
+                    className="flex-1 h-11 rounded-xl border-border bg-muted/30 opacity-60"
+                  />
                 </div>
               </div>
             ) : (

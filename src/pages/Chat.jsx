@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Bot, Camera, Lock } from "lucide-react";
+import { Send, Bot, Camera } from "lucide-react";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
@@ -301,14 +301,31 @@ export default function Chat() {
         )}
 
         {isLimitReached ? (
-          <div className="mx-4 my-3 bg-muted rounded-2xl p-4 flex items-start gap-3">
-            <Lock className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm font-medium text-foreground">Messages gratuits utilisés</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Tu as utilisé tes messages gratuits. Passe en Premium pour discuter sans limite, ou reviens demain (2 messages offerts).</p>
-              <Button onClick={() => window.location.href = '/Premium?from=chat'} size="sm" className="mt-2 gradient-primary border-0 text-white text-xs h-8">
-                Passer en Premium ✨
-              </Button>
+          <div className="px-4 py-3 space-y-3">
+            <div className="flex gap-2 justify-start">
+              <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
+                <span className="text-sm">🐾</span>
+              </div>
+              <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
+                <p className="text-sm leading-relaxed">
+                  J'adorerais continuer à t'aider avec <strong>{dog?.name || "ton chien"}</strong> ! 🐾 Tes messages gratuits sont épuisés pour aujourd'hui. Reviens demain pour 2 messages offerts, ou passe en Premium pour qu'on discute sans limite !
+                </p>
+                <div className="flex gap-2 mt-3">
+                  <Button onClick={() => navigate(createPageUrl("Premium") + "?from=chat")} size="sm" className="gradient-primary border-0 text-white text-xs h-8">
+                    Débloquer Premium ✨
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground">
+                    À demain ! 👋
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 px-0 py-0">
+              <Input
+                disabled
+                placeholder="Reviens demain ou passe Premium..."
+                className="flex-1 h-11 rounded-xl border-border bg-muted/30 opacity-60"
+              />
             </div>
           </div>
         ) : (
