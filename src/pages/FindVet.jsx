@@ -68,10 +68,15 @@ Pour chaque clinique, fournis: name, address, phone (format français), google_m
 
       <div className="gradient-primary pt-8 pb-6 px-5 relative overflow-hidden">
         <div className="relative z-10">
-          <h1 className="text-white font-bold text-xl flex items-center gap-2">
-            <Stethoscope className="w-5 h-5" />
-            Trouver un vétérinaire
-          </h1>
+          <div className="flex items-center gap-3">
+            <Link to={createPageUrl("Notebook")} className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">
+              <ArrowLeft className="w-4 h-4 text-white" />
+            </Link>
+            <h1 className="text-white font-bold text-xl flex items-center gap-2">
+              <Stethoscope className="w-5 h-5" />
+              Trouver un vétérinaire
+            </h1>
+          </div>
           <p className="text-white/80 text-xs mt-0.5">
             Recherchez une clinique vétérinaire près de chez vous
           </p>
