@@ -14,33 +14,6 @@ function getAge(birthDate) {
   return months < 12 ? `${months} mois` : `${Math.floor(months / 12)} ans`;
 }
 
-function buildSystemPrompt(d) {
-  const activityMap = { faible: "Faible", modere: "Modérée", eleve: "Élevée", tres_eleve: "Très élevée" };
-  const envMap = { appartement: "Appartement", maison_sans_jardin: "Maison sans jardin", maison_avec_jardin: "Maison avec jardin" };
-  return `Tu es PawCoach, le coach bien-être et dressage canin personnel de l'utilisateur.
-  PROFIL DU CHIEN:
-  Prénom: ${d.name}
-  Race: ${d.breed || "inconnue"}
-  Age: ${getAge(d.birth_date) || "inconnu"}
-  Poids: ${d.weight ? d.weight + " kg" : "inconnu"}
-  Sexe: ${d.sex === "male" ? "Mâle" : d.sex === "female" ? "Femelle" : "inconnu"}
-  Stérilisé: ${d.neutered ? "Oui" : "Non"}
-  Activité: ${activityMap[d.activity_level] || "inconnue"}
-  Environnement: ${envMap[d.environment] || "inconnu"}
-  Allergies: ${d.allergies || "aucune"}
-  Problèmes connus: ${d.health_issues || "aucun"}
-  Vétérinaire: ${d.vet_name || "Non renseigné"} (${d.vet_city || "Ville inconnue"})
-
-RÈGLES:
-1) Tu es un coach informatif, PAS vétérinaire.
-2) Tu ne diagnostiques JAMAIS.
-3) Tu ne prescris JAMAIS de médicaments.
-4) Si symptômes sérieux: recommande le vétérinaire ou le centre antipoison animal : 04 78 87 10 40
-5) Personnalise avec le prénom du chien.
-6) Tutoiement, chaleureux, concis.
-7) Si photo, décris ce que tu observes sans diagnostiquer.`;
-}
-
 function getTodayString() {
   return new Date().toISOString().split("T")[0];
 }
@@ -54,7 +27,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
   const [messagesRemaining, setMessagesRemaining] = useState(null);
-  const [pendingImage, setPendingImage] = useState(null); // { file, preview }
+  const [pendingImage, setPendingImage] = useState(null);
   const bottomRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -63,7 +36,6 @@ export default function Chat() {
   useEffect(() => { initChat(); }, []);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
-  // Auto-send help message from Training tab
   useEffect(() => {
     if (!initializing && dog && !helpSent.current) {
       const params = new URLSearchParams(window.location.search);
@@ -71,7 +43,6 @@ export default function Chat() {
       if (helpMsg) {
         helpSent.current = true;
         sendMessage(decodeURIComponent(helpMsg));
-        // Clean URL without reload
         window.history.replaceState({}, "", window.location.pathname);
       }
     }
@@ -82,7 +53,6 @@ export default function Chat() {
       const u = await base44.auth.me();
       setUser(u);
 
-      // Handle daily reset for non-premium
       if (!u.is_premium) {
         const today = getTodayString();
         const lastReset = u.messages_daily_reset;
@@ -125,7 +95,6 @@ export default function Chat() {
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    // Revoke previous preview URL to avoid memory leak
     if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview);
     const preview = URL.createObjectURL(file);
     setPendingImage({ file, preview });
@@ -137,7 +106,6 @@ export default function Chat() {
     if (!content && !hasImage) return;
     if (!dog) return;
 
-    // Check limit for free users
     if (!user?.is_premium) {
       const remaining = messagesRemaining ?? 0;
       if (remaining <= 0) return;
@@ -158,16 +126,13 @@ export default function Chat() {
     setLoading(true);
 
     try {
-      // Upload image if any
       let uploadedImageUrl = null;
       if (imageToSend) {
         const { file_url } = await base44.integrations.Core.UploadFile({ file: imageToSend.file });
         uploadedImageUrl = file_url;
-        // Revoke blob URL after upload
         if (imageToSend.preview) URL.revokeObjectURL(imageToSend.preview);
       }
 
-      // Save user message
       await base44.entities.ChatMessage.create({
         dog_id: dog.id,
         role: "user",
@@ -177,14 +142,13 @@ export default function Chat() {
         image_url: uploadedImageUrl || null,
       });
 
-      // Build context (last 10)
       const contextMsgs = messages
         .slice(-9)
         .map(m => ({ role: m.role, content: m.content }));
       contextMsgs.push({ role: "user", content: content || "Analyse cette photo." });
 
       const response = await base44.functions.invoke("pawcoachChat", {
-        systemPrompt: buildSystemPrompt(dog),
+        dogId: dog.id,
         messages: contextMsgs,
         imageUrl: uploadedImageUrl || null,
       });
@@ -195,7 +159,6 @@ export default function Chat() {
       setMessages(prev => [...prev, assistantMsg]);
       await base44.entities.ChatMessage.create({ dog_id: dog.id, ...assistantMsg });
 
-      // Decrement message count for free users
       if (!user?.is_premium) {
         const newRemaining = Math.max(0, (messagesRemaining ?? 0) - 1);
         setMessagesRemaining(newRemaining);
@@ -235,12 +198,10 @@ export default function Chat() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Wellness banner */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-amber-50 border-b border-amber-200 px-4 py-1.5 text-center">
         <p className="text-xs text-amber-700 font-medium">🐾 PawCoach est un coach bien-être, pas un vétérinaire.</p>
       </div>
 
-      {/* Header */}
       <div className="gradient-primary pt-10 pb-4 px-5 mt-7">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center">
@@ -250,7 +211,6 @@ export default function Chat() {
             <h1 className="text-white font-bold text-lg">Assistant IA</h1>
             {dog && <p className="text-white/70 text-xs">Personnalisé pour {dog.name} · {dog.breed}</p>}
           </div>
-          {/* Message counter for free users */}
           {!user?.is_premium && messagesRemaining !== null && (
             <div className="ml-auto flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
               <span className="text-white text-xs font-medium">
@@ -267,7 +227,6 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-44">
         {messages.map((msg, i) => (
           <div key={i} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
@@ -303,7 +262,6 @@ export default function Chat() {
           </div>
         ))}
 
-        {/* Typing indicator */}
         {loading && (
           <div className="flex gap-2 justify-start">
             <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
@@ -321,9 +279,7 @@ export default function Chat() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Bottom area */}
       <div className="fixed bottom-16 left-0 right-0 bg-background border-t border-border">
-        {/* Suggestions */}
         {showSuggestions && (
           <div className="px-4 pt-3 pb-1">
             <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
@@ -340,7 +296,6 @@ export default function Chat() {
           </div>
         )}
 
-        {/* Limit reached */}
         {isLimitReached ? (
           <div className="mx-4 my-3 bg-muted rounded-2xl p-4 flex items-start gap-3">
             <Lock className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
@@ -354,7 +309,6 @@ export default function Chat() {
           </div>
         ) : (
           <>
-            {/* Pending image preview */}
             {pendingImage && (
               <div className="px-4 pt-2 flex items-center gap-2">
                 <img src={pendingImage.preview} alt="preview" className="w-12 h-12 rounded-lg object-cover border border-border" />
@@ -362,7 +316,6 @@ export default function Chat() {
                 <button onClick={() => { if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview); setPendingImage(null); }} className="ml-auto text-xs text-destructive">Retirer</button>
               </div>
             )}
-            {/* Input row */}
             <div className="flex gap-2 px-4 py-3">
               <input
                 ref={fileInputRef}
