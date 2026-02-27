@@ -8,12 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Send, Salad } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
-function getAge(birthDate) {
-  if (!birthDate) return null;
-  const months = Math.floor((Date.now() - new Date(birthDate)) / (1000 * 60 * 60 * 24 * 30));
-  return months < 12 ? `${months} mois` : `${Math.floor(months / 12)} ans`;
-}
-
 export default function Nutrition() {
   const [dog, setDog] = useState(null);
   const [user, setUser] = useState(null);
