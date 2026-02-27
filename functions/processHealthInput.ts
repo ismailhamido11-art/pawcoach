@@ -31,6 +31,10 @@ Deno.serve(async (req) => {
         }
 
         if (dog) {
+          // Ownership check
+          if (dog.owner !== user.email) {
+            return Response.json({ error: 'Forbidden' }, { status: 403 });
+          }
           console.log(`[DEBUG] Dog found: ${dog.name}`);
           dogName = dog.name || "ton chien";
           if (dog.breed) dogDetails += dog.breed;
@@ -141,7 +145,6 @@ Retourne TOUJOURS du JSON valide :
     // Call Base44 native LLM
     const llmResult = await base44.integrations.Core.InvokeLLM({
       prompt: systemPrompt + "\n\n--- HISTORIQUE DE LA CONVERSATION ---\n" + conversationHistory,
-      add_context_from_internet: true,
       response_json_schema: {
         type: "object",
         properties: {

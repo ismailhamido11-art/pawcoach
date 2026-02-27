@@ -37,7 +37,16 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get("OPENROUTER_API_KEY");
     let generated = 0;
 
+    // Fetch all users upfront for premium check
+    const allUsers = await base44.asServiceRole.entities.User.list();
+    const userMap = {};
+    for (const u of allUsers || []) userMap[u.email] = u;
+
     for (const dog of dogs) {
+      // Premium gate: only generate insights for premium users
+      const owner = userMap[dog.owner];
+      if (!owner || !owner.is_premium) continue;
+
       // Filter DailyCheckins for this dog within the week
       const checkins = (allCheckins || []).filter(c =>
         c.dog_id === dog.id && c.date >= weekStart && c.date <= weekEnd

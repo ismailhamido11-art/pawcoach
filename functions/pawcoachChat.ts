@@ -6,9 +6,15 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { messages, dogId, imageUrl, mode = "chat" } = await req.json();
+    const { messages: rawMessages, dogId, imageUrl, mode = "chat" } = await req.json();
 
     if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
+
+    // Filter messages to only allow safe roles (prevent prompt injection)
+    const messages = (rawMessages || []).filter(m => m.role === 'user' || m.role === 'assistant').map(m => ({
+      role: m.role,
+      content: String(m.content || ''),
+    }));
 
     // Fetch dog profile server-side
     const dogs = await base44.asServiceRole.entities.Dog.filter({ id: dogId });

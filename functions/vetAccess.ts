@@ -153,7 +153,8 @@ Deno.serve(async (req) => {
             </div>
 
             <div style="text-align:center; margin:20px 0;">
-              <p style="font-size:13px; color:#777;">Accédez au portail vétérinaire pour voir l'historique complet, ajouter des notes professionnelles et suivre l'évolution de ${dog.name}.</p>
+              <a href="https://paw-coach-care.base44.app/VetPortal" style="display:inline-block; background:#2d8a70; color:white; text-decoration:none; padding:12px 28px; border-radius:8px; font-weight:bold; font-size:14px;">Accéder au Portail Vétérinaire</a>
+              <p style="font-size:13px; color:#777; margin-top:12px;">Connectez-vous sur le portail, puis entrez le code ci-dessus pour accéder au dossier complet de ${dog.name}.</p>
             </div>
 
             <hr style="border:none; border-top:1px solid #eee; margin:24px 0;" />

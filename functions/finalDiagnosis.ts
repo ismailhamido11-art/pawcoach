@@ -56,7 +56,6 @@ Génère un rapport COMPLET et DÉTAILLÉ au format JSON:
 
   const result = await base44.integrations.Core.InvokeLLM({
     prompt,
-    add_context_from_internet: true,
     file_urls: fileUrls,
     response_json_schema: {
       type: "object",
