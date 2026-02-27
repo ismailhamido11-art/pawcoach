@@ -8,7 +8,7 @@ import PremiumSection from "../components/notebook/PremiumSection";
 import UpcomingReminders from "../components/notebook/UpcomingReminders";
 import SmartHealthAssistant from "../components/notebook/SmartHealthAssistant";
 import { RecordRow } from "../components/notebook/SectionVaccins";
-import { Syringe, Stethoscope, Weight, Pill, FileText } from "lucide-react";
+import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle } from "lucide-react";
 
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
@@ -60,6 +60,99 @@ const PREMIUM_CONFIGS = {
     btnClass: "bg-gray-600 hover:bg-gray-700",
   },
 };
+
+// Mini Health Dashboard Component
+function HealthDashboard({ dog, records }) {
+  if (!dog) return null;
+
+  const lastWeight = records.find(r => r.type === 'weight');
+  const lastVaccine = records.find(r => r.type === 'vaccine');
+  const lastVet = records.find(r => r.type === 'vet_visit');
+  const totalRecords = records.length;
+
+  const getTimeSince = (dateStr) => {
+    if (!dateStr) return null;
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diffDays = Math.ceil(Math.abs(now - d) / (1000 * 60 * 60 * 24));
+    if (diffDays < 7) return `il y a ${diffDays}j`;
+    if (diffDays < 30) return `il y a ${Math.floor(diffDays / 7)} sem.`;
+    if (diffDays < 365) return `il y a ${Math.floor(diffDays / 30)} mois`;
+    return `il y a ${Math.floor(diffDays / 365)} an(s)`;
+  };
+
+  const stats = [
+    {
+      label: "Poids",
+      value: lastWeight ? `${lastWeight.value} kg` : "—",
+      sub: lastWeight ? getTimeSince(lastWeight.date) : "Non renseigné",
+      icon: <Weight className="w-4 h-4" />,
+      color: lastWeight ? "text-teal-600 bg-teal-50" : "text-orange-500 bg-orange-50",
+      missing: !lastWeight
+    },
+    {
+      label: "Vaccins",
+      value: lastVaccine ? "À jour" : "—",
+      sub: lastVaccine ? getTimeSince(lastVaccine.date) : "Aucun enregistré",
+      icon: <Syringe className="w-4 h-4" />,
+      color: lastVaccine ? "text-blue-600 bg-blue-50" : "text-orange-500 bg-orange-50",
+      missing: !lastVaccine
+    },
+    {
+      label: "Véto",
+      value: lastVet ? "OK" : "—",
+      sub: lastVet ? getTimeSince(lastVet.date) : "Aucune visite",
+      icon: <Stethoscope className="w-4 h-4" />,
+      color: lastVet ? "text-purple-600 bg-purple-50" : "text-orange-500 bg-orange-50",
+      missing: !lastVet
+    }
+  ];
+
+  const missingCount = stats.filter(s => s.missing).length;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
+      {/* Dog name + health score */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-bold text-foreground">{dog.name}</span>
+          <span className="text-xs text-muted-foreground">{dog.breed} · {dog.weight}kg</span>
+        </div>
+        {missingCount === 0 ? (
+          <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            Complet
+          </div>
+        ) : (
+          <div className="flex items-center gap-1 text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-full">
+            <AlertTriangle className="w-3.5 h-3.5" />
+            {missingCount} manquant{missingCount > 1 ? 's' : ''}
+          </div>
+        )}
+      </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-3 gap-2">
+        {stats.map((stat, i) => (
+          <div key={i} className={`rounded-xl p-2.5 text-center ${stat.missing ? 'bg-orange-50/50 border border-dashed border-orange-200' : 'bg-slate-50'}`}>
+            <div className={`w-7 h-7 rounded-full ${stat.color} flex items-center justify-center mx-auto mb-1`}>
+              {stat.icon}
+            </div>
+            <p className="text-xs font-semibold text-foreground">{stat.value}</p>
+            <p className="text-[10px] text-muted-foreground">{stat.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Empty state hint */}
+      {totalRecords === 0 && (
+        <p className="text-xs text-center text-muted-foreground mt-3 italic">
+          Utilise l'Assistant Santé ci-dessous pour commencer à remplir le carnet
+        </p>
+      )}
+    </div>
+  );
+}
 
 export default function Notebook() {
   const [dog, setDog] = useState(null);
@@ -121,14 +214,16 @@ export default function Notebook() {
         <div className="relative z-10">
           <h1 className="text-white font-bold text-2xl mb-2">Carnet de santé</h1>
           <p className="text-white/90 text-sm leading-relaxed">
-            {dog ? `L'Assistant Santé intelligent est là pour le suivi de ${dog.name}. Raconte-lui votre dernière visite, un nouveau vaccin, ou scanne un document !` : "Chargement..."}
+            {dog ? `Le suivi santé intelligent de ${dog.name}` : "Chargement..."}
           </p>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
       </div>
 
-      <div className="px-5 mt-[-28px] relative z-20 mb-6">
-         <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} inline={true} />
+      {/* Health Dashboard + Assistant - Overlapping header */}
+      <div className="px-4 mt-[-28px] relative z-20 space-y-3 mb-4">
+        <HealthDashboard dog={dog} records={records} />
+        <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} inline={true} />
       </div>
 
       <UpcomingReminders records={records} isPremium={isPremium} />
@@ -162,12 +257,20 @@ export default function Notebook() {
         {activeTab === "all" && (
           <div className="space-y-3">
             {sortedRecords.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground text-sm">Aucun événement enregistré</div>
+              <div className="text-center py-8">
+                <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
+                  <FileText className="w-7 h-7 text-slate-400" />
+                </div>
+                <p className="text-sm font-medium text-foreground mb-1">Le carnet est vide</p>
+                <p className="text-xs text-muted-foreground max-w-[250px] mx-auto">
+                  Utilise l'Assistant Santé ci-dessus pour enregistrer les premières infos de {dog?.name || "ton chien"}
+                </p>
+              </div>
             ) : (
               sortedRecords.map(r => (
-                <RecordRow 
-                  key={r.id} 
-                  record={r} 
+                <RecordRow
+                  key={r.id}
+                  record={r}
                   onDelete={handleDelete}
                   icon={getIconForType(r.type)}
                   accentClass={getAccentClassForType(r.type)}
