@@ -75,8 +75,6 @@ function HealthStatusBar({ dog, records }) {
     { label: "Véto", ok: !!lastVet, value: lastVet ? "OK" : "—", icon: <Stethoscope className="w-3.5 h-3.5" /> },
   ];
 
-  const missingCount = items.filter(i => !i.ok).length;
-
   return (
     <div className="flex items-center gap-2 px-4 py-2.5 bg-white/80 backdrop-blur-sm border-b border-slate-100">
       <span className="text-sm font-bold text-foreground">{dog.name}</span>
@@ -111,26 +109,34 @@ export default function Notebook() {
   useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
-    const u = await base44.auth.me();
-    setUser(u);
-    const dogs = await base44.entities.Dog.filter({ owner: u.email });
-    if (dogs.length > 0) {
-      setDog(dogs[0]);
-      const recs = await base44.entities.HealthRecord.filter({ dog_id: dogs[0].id });
-      setRecords(recs);
-      // Auto-expand records section if there are records
-      if (recs.length > 0) setShowRecords(true);
+    try {
+      const u = await base44.auth.me();
+      setUser(u);
+      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      if (dogs.length > 0) {
+        setDog(dogs[0]);
+        const recs = await base44.entities.HealthRecord.filter({ dog_id: dogs[0].id });
+        setRecords(recs);
+        if (recs.length > 0) setShowRecords(true);
+      }
+    } catch (err) {
+      console.error("Notebook load error:", err);
     }
   };
 
   const handleAdd = (rec) => {
     setRecords(prev => [...prev, rec]);
-    setShowRecords(true); // Show records when new ones are added
+    setShowRecords(true);
   };
 
   const handleDelete = async (id) => {
-    await base44.entities.HealthRecord.delete(id);
-    setRecords(prev => prev.filter(r => r.id !== id));
+    try {
+      await base44.entities.HealthRecord.delete(id);
+      setRecords(prev => prev.filter(r => r.id !== id));
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Erreur lors de la suppression. Réessaie.");
+    }
   };
 
   const isPremium = user?.role === "admin";
