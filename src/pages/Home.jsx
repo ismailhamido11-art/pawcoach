@@ -6,7 +6,8 @@ import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
 import {
   BookHeart, ChevronRight, Activity, Stethoscope, UserCircle,
-  Heart, Flame, Dumbbell, ScanLine, MessageCircle, Loader2
+  Heart, Flame, Dumbbell, ScanLine, MessageCircle, Loader2,
+  ChevronDown, ChevronUp, Sparkles, Check
 } from "lucide-react";
 
 const MOOD_OPTIONS = [
@@ -48,6 +49,11 @@ export default function Home() {
   const [appetite, setAppetite] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // Weekly insight state
+  const [weeklyInsight, setWeeklyInsight] = useState(null);
+  const [insightExpanded, setInsightExpanded] = useState(false);
+  const [markingRead, setMarkingRead] = useState(false);
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -60,11 +66,12 @@ export default function Home() {
 
           const today = getTodayString();
 
-          // Load today's check-in, streak, and recent check-ins in parallel
-          const [checkins, streaks, recent] = await Promise.all([
+          // Load today's check-in, streak, recent check-ins, and weekly insight in parallel
+          const [checkins, streaks, recent, insights] = await Promise.all([
             base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
             base44.entities.Streak.filter({ dog_id: d.id }),
             base44.entities.DailyCheckin.filter({ dog_id: d.id }),
+            base44.entities.WeeklyInsight.filter({ dog_id: d.id, is_read: false }),
           ]);
 
           if (checkins && checkins.length > 0) {
@@ -78,6 +85,12 @@ export default function Home() {
             .sort((a, b) => b.date.localeCompare(a.date))
             .slice(0, 7);
           setRecentCheckins(sorted);
+
+          // Show latest unread weekly insight
+          if (insights && insights.length > 0) {
+            const latestInsight = insights.sort((a, b) => (b.week_start || "").localeCompare(a.week_start || ""))[0];
+            setWeeklyInsight(latestInsight);
+          }
         } else {
           navigate(createPageUrl("Onboarding"));
         }
@@ -112,6 +125,20 @@ export default function Home() {
       console.error("Check-in error:", err);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleMarkInsightRead = async () => {
+    if (!weeklyInsight || markingRead) return;
+    setMarkingRead(true);
+    try {
+      await base44.entities.WeeklyInsight.update(weeklyInsight.id, { is_read: true });
+      setWeeklyInsight(null);
+      setInsightExpanded(false);
+    } catch (err) {
+      console.error("Mark read error:", err);
+    } finally {
+      setMarkingRead(false);
     }
   };
 
@@ -300,6 +327,116 @@ export default function Home() {
                 <p className="text-[10px] text-muted-foreground leading-tight">
                   {streak.grace_days_remaining} jour{streak.grace_days_remaining > 1 ? "s" : ""} de grace
                 </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* BILAN HEBDO */}
+        {weeklyInsight && (
+          <div className="bg-white rounded-2xl shadow-sm border border-indigo-200 mb-6 overflow-hidden">
+            {/* Header cliquable */}
+            <button
+              onClick={() => setInsightExpanded(!insightExpanded)}
+              className="w-full flex items-center gap-3 p-4 text-left"
+            >
+              <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-5 h-5 text-indigo-500" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-foreground text-sm">
+                  La semaine de {dog?.name}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Bilan IA — {weeklyInsight.week_start ? new Date(weeklyInsight.week_start + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "cette semaine"}
+                </p>
+              </div>
+              {insightExpanded ? (
+                <ChevronUp className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+              )}
+            </button>
+
+            {/* Contenu depliable */}
+            {insightExpanded && (
+              <div className="px-4 pb-4 space-y-3">
+                {/* Resume */}
+                {weeklyInsight.summary && (
+                  <p className="text-sm text-foreground leading-relaxed">
+                    {weeklyInsight.summary}
+                  </p>
+                )}
+
+                {/* Points cles */}
+                {weeklyInsight.highlights && weeklyInsight.highlights.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Points cles</p>
+                    <ul className="space-y-1">
+                      {weeklyInsight.highlights.map((h, i) => (
+                        <li key={i} className="text-sm text-foreground flex items-start gap-2">
+                          <span className="text-indigo-400 mt-0.5 flex-shrink-0">•</span>
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Recommandations */}
+                {weeklyInsight.recommendations && weeklyInsight.recommendations.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Recommandations</p>
+                    <ul className="space-y-1">
+                      {weeklyInsight.recommendations.map((r, i) => (
+                        <li key={i} className="text-sm text-foreground flex items-start gap-2">
+                          <span className="text-green-400 mt-0.5 flex-shrink-0">•</span>
+                          <span>{r}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Stats rapides */}
+                {(weeklyInsight.checkin_count > 0 || weeklyInsight.avg_mood) && (
+                  <div className="flex gap-3 pt-1">
+                    {weeklyInsight.checkin_count > 0 && (
+                      <div className="bg-indigo-50 rounded-lg px-3 py-2 flex-1 text-center">
+                        <p className="text-lg font-bold text-indigo-600">{weeklyInsight.checkin_count}</p>
+                        <p className="text-[10px] text-muted-foreground">check-ins</p>
+                      </div>
+                    )}
+                    {weeklyInsight.avg_mood && (
+                      <div className="bg-indigo-50 rounded-lg px-3 py-2 flex-1 text-center">
+                        <p className="text-lg font-bold text-indigo-600">
+                          {MOOD_OPTIONS.find(m => m.value === Math.round(weeklyInsight.avg_mood))?.emoji || weeklyInsight.avg_mood.toFixed(1)}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground">humeur moy.</p>
+                      </div>
+                    )}
+                    {weeklyInsight.avg_energy && (
+                      <div className="bg-indigo-50 rounded-lg px-3 py-2 flex-1 text-center">
+                        <p className="text-lg font-bold text-indigo-600">{weeklyInsight.avg_energy.toFixed(1)}</p>
+                        <p className="text-[10px] text-muted-foreground">energie moy.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Bouton J'ai lu */}
+                <button
+                  onClick={handleMarkInsightRead}
+                  disabled={markingRead}
+                  className="w-full mt-2 py-2.5 rounded-xl bg-indigo-50 text-indigo-600 font-semibold text-sm hover:bg-indigo-100 transition-colors flex items-center justify-center gap-2"
+                >
+                  {markingRead ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Check className="w-4 h-4" />
+                  )}
+                  J'ai lu
+                </button>
               </div>
             )}
           </div>
