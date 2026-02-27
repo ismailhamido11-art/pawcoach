@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, Stethoscope, KeyRound, LogOut } from "lucide-react";
+import { Loader2, Stethoscope, KeyRound, LogOut, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import VetDogCard from "../components/vet/VetDogCard";
 
 export default function VetPortal() {
@@ -33,36 +35,46 @@ export default function VetPortal() {
   };
 
   const loadAccesses = async () => {
-    const res = await base44.functions.invoke("vetAccess", { action: "listMyAccess" });
-    const accessList = res.data.accesses || [];
-    setAccesses(accessList);
+    try {
+      const res = await base44.functions.invoke("vetAccess", { action: "listMyAccess" });
+      const accessList = res.data.accesses || [];
+      setAccesses(accessList);
 
-    // Fetch dog info for each access
-    const dogPromises = accessList.map(async (a) => {
-      try {
-        const dogRes = await base44.functions.invoke("vetAccess", { action: "getDogData", dogId: a.dog_id });
-        return { ...dogRes.data.dog, _accessId: a.id };
-      } catch {
-        return null;
-      }
-    });
-    const dogResults = await Promise.all(dogPromises);
-    setDogs(dogResults.filter(Boolean));
+      // Fetch dog info for each access
+      const dogPromises = accessList.map(async (a) => {
+        try {
+          const dogRes = await base44.functions.invoke("vetAccess", { action: "getDogData", dogId: a.dog_id });
+          return { ...dogRes.data.dog, _accessId: a.id };
+        } catch {
+          return null;
+        }
+      });
+      const dogResults = await Promise.all(dogPromises);
+      setDogs(dogResults.filter(Boolean));
+    } catch (e) {
+      console.error("loadAccesses error:", e);
+      toast.error("Erreur de chargement des patients");
+    }
   };
 
   const handleAcceptInvite = async () => {
     if (!inviteCode.trim()) return;
     setAccepting(true);
-    const res = await base44.functions.invoke("vetAccess", {
-      action: "accept",
-      inviteCode: inviteCode.trim().toUpperCase(),
-    });
-    if (res.data.success) {
-      toast.success("Invitation acceptée !");
-      setInviteCode("");
-      await loadAccesses();
-    } else {
-      toast.error(res.data.error || "Code invalide");
+    try {
+      const res = await base44.functions.invoke("vetAccess", {
+        action: "accept",
+        inviteCode: inviteCode.trim().toUpperCase(),
+      });
+      if (res.data.success) {
+        toast.success("Invitation acceptée !");
+        setInviteCode("");
+        await loadAccesses();
+      } else {
+        toast.error(res.data.error || "Code invalide");
+      }
+    } catch (e) {
+      console.error("handleAcceptInvite error:", e);
+      toast.error("Erreur lors de la validation du code");
     }
     setAccepting(false);
   };
@@ -80,11 +92,14 @@ export default function VetPortal() {
       {/* Header */}
       <div className="gradient-primary pt-10 pb-8 px-5 relative overflow-hidden">
         <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-3 mb-1">
+            <Link to={createPageUrl("Home")} className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">
+              <ArrowLeft className="w-4 h-4 text-white" />
+            </Link>
             <Stethoscope className="w-6 h-6 text-white" />
             <h1 className="text-white font-bold text-xl">Portail Vétérinaire</h1>
           </div>
-          <p className="text-white/80 text-xs">
+          <p className="text-white/80 text-xs ml-11">
             {user?.full_name || user?.email} · Vos patients PawCoach
           </p>
         </div>
@@ -125,8 +140,8 @@ export default function VetPortal() {
             </div>
           ) : (
             <div className="space-y-3">
-              {dogs.map((dog, i) => (
-                <VetDogCard key={dog.id || i} dog={dog} access={accesses[i]} />
+              {dogs.map((dog) => (
+                <VetDogCard key={dog.id} dog={dog} access={accesses.find(a => a.dog_id === dog.id || a.id === dog._accessId)} />
               ))}
             </div>
           )}
