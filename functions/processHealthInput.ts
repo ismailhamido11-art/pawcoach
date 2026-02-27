@@ -13,6 +13,7 @@ Deno.serve(async (req) => {
     let ownerName = "toi";
     let dogDetails = "";
     let historyContext = "";
+    let missingInfos = [];
     
     console.log(`[DEBUG] Processing for dogId: ${dogId}`);
     
