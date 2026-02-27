@@ -17,16 +17,36 @@ export default function Nutrition() {
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
   const [activeTab, setActiveTab] = useState("chat");
-  const [msgCount, setMsgCount] = useState(0);
+  const [messagesRemaining, setMessagesRemaining] = useState(null);
   const bottomRef = useRef(null);
 
   useEffect(() => { init(); }, []);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
+  const getTodayString = () => new Date().toISOString().split("T")[0];
+
   const init = async () => {
     try {
       const u = await base44.auth.me();
       setUser(u);
+
+      // Shared quota pool with Chat
+      if (!u.is_premium) {
+        const today = getTodayString();
+        const lastReset = u.messages_daily_reset;
+        const remaining = u.messages_remaining ?? 20;
+
+        if (remaining === null || remaining === undefined) {
+          await base44.auth.updateMe({ messages_remaining: 20, messages_daily_reset: today });
+          setMessagesRemaining(20);
+        } else if (remaining <= 0 && lastReset !== today) {
+          await base44.auth.updateMe({ messages_remaining: 2, messages_daily_reset: today });
+          setMessagesRemaining(2);
+        } else {
+          setMessagesRemaining(remaining);
+        }
+      }
+
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
       if (dogs.length > 0) {
         const d = dogs[0];
@@ -50,7 +70,10 @@ export default function Nutrition() {
   const sendMessage = async (text) => {
     const content = (text || input).trim();
     if (!content || !dog || loading) return;
-    if (!user?.is_premium && msgCount >= 20) return;
+    if (!user?.is_premium) {
+      const remaining = messagesRemaining ?? 0;
+      if (remaining <= 0) return;
+    }
 
     setInput("");
     setMessages(prev => [...prev, { role: "user", content, timestamp: new Date().toISOString() }]);
@@ -68,7 +91,12 @@ export default function Nutrition() {
 
       const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
       setMessages(prev => [...prev, { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() }]);
-      if (!user?.is_premium) setMsgCount(prev => prev + 1);
+
+      if (!user?.is_premium) {
+        const newRemaining = Math.max(0, (messagesRemaining ?? 0) - 1);
+        setMessagesRemaining(newRemaining);
+        await base44.auth.updateMe({ messages_remaining: newRemaining, messages_daily_reset: getTodayString() });
+      }
     } catch (err) {
       console.error("Nutrition send error:", err);
       setMessages(prev => [...prev, {
@@ -96,7 +124,7 @@ export default function Nutrition() {
     `Aliments à éviter absolument`,
   ] : [];
 
-  const isNutriLimitReached = !user?.is_premium && msgCount >= 20;
+  const isNutriLimitReached = !user?.is_premium && (messagesRemaining ?? 0) <= 0;
   const showQuickActions = messages.length <= 1 && !isNutriLimitReached;
 
   return (
@@ -113,11 +141,26 @@ export default function Nutrition() {
             <h1 className="text-white font-bold text-lg">NutriCoach</h1>
             {dog && <p className="text-white/70 text-xs">Coach nutrition IA pour {dog.name}</p>}
           </div>
-          {recentScans.length > 0 && (
-            <div className="ml-auto bg-white/20 px-2.5 py-1 rounded-full">
-              <span className="text-white text-xs font-medium">🔍 {recentScans.length} scans</span>
-            </div>
-          )}
+          <div className="ml-auto flex items-center gap-2">
+            {!user?.is_premium && messagesRemaining !== null && (
+              <div className="bg-white/20 px-2.5 py-1 rounded-full">
+                <span className="text-white text-xs font-medium">
+                  {messagesRemaining} msg restant{messagesRemaining !== 1 ? "s" : ""}
+                </span>
+              </div>
+            )}
+            {user?.is_premium && (
+              <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
+                <span className="text-white text-xs font-medium">Premium</span>
+              </div>
+            )}
+            {recentScans.length > 0 && (
+              <div className="bg-white/20 px-2.5 py-1 rounded-full">
+                <span className="text-white text-xs font-medium">🔍 {recentScans.length} scans</span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Tabs */}
