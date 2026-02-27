@@ -417,34 +417,40 @@ export default function Home() {
                 )}
 
                 {/* Points cles */}
-                {weeklyInsight.highlights && weeklyInsight.highlights.length > 0 && (
-                  <div>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Points cles</p>
-                    <ul className="space-y-1">
-                      {weeklyInsight.highlights.map((h, i) => (
-                        <li key={i} className="text-sm text-foreground flex items-start gap-2">
-                          <span className="text-indigo-400 mt-0.5 flex-shrink-0">•</span>
-                          <span>{h}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {(() => {
+                  const hl = typeof weeklyInsight.highlights === "string" ? (() => { try { return JSON.parse(weeklyInsight.highlights); } catch { return []; } })() : weeklyInsight.highlights;
+                  return Array.isArray(hl) && hl.length > 0 ? (
+                    <div>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Points cles</p>
+                      <ul className="space-y-1">
+                        {hl.map((h, i) => (
+                          <li key={i} className="text-sm text-foreground flex items-start gap-2">
+                            <span className="text-indigo-400 mt-0.5 flex-shrink-0">•</span>
+                            <span>{h}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null;
+                })()}
 
                 {/* Recommandations */}
-                {weeklyInsight.recommendations && weeklyInsight.recommendations.length > 0 && (
-                  <div>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Recommandations</p>
-                    <ul className="space-y-1">
-                      {weeklyInsight.recommendations.map((r, i) => (
-                        <li key={i} className="text-sm text-foreground flex items-start gap-2">
-                          <span className="text-green-400 mt-0.5 flex-shrink-0">•</span>
-                          <span>{r}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {(() => {
+                  const recs = typeof weeklyInsight.recommendations === "string" ? (() => { try { return JSON.parse(weeklyInsight.recommendations); } catch { return []; } })() : weeklyInsight.recommendations;
+                  return Array.isArray(recs) && recs.length > 0 ? (
+                    <div>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Recommandations</p>
+                      <ul className="space-y-1">
+                        {recs.map((r, i) => (
+                          <li key={i} className="text-sm text-foreground flex items-start gap-2">
+                            <span className="text-green-400 mt-0.5 flex-shrink-0">•</span>
+                            <span>{r}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null;
+                })()}
 
                 {/* Stats rapides */}
                 {(weeklyInsight.checkin_count > 0 || weeklyInsight.avg_mood) && (
