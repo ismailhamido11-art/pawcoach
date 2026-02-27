@@ -182,10 +182,31 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
 
   const saveAllRecords = async () => {
     try {
+      // Fetch existing records to check for duplicates
+      const existingRecords = await base44.entities.HealthRecord.filter({ dog_id: dogId });
+      let savedCount = 0;
+      let skippedCount = 0;
+
       for (const rec of pendingRecords) {
+        // Duplicate check for vaccines: same type, title, and date
+        if (rec.type === "vaccine") {
+          const isDuplicate = existingRecords.some(
+            existing => existing.type === "vaccine" && existing.title === rec.title && existing.date === rec.date
+          );
+          if (isDuplicate) {
+            skippedCount++;
+            continue;
+          }
+        }
         const created = await base44.entities.HealthRecord.create({ dog_id: dogId, ...rec });
-        onRecordAdded(created); // Passe le record avec l'id BDD
+        onRecordAdded(created);
+        savedCount++;
       }
+
+      if (skippedCount > 0) {
+        alert(`${skippedCount} vaccin(s) déjà enregistré(s) pour cette date — ignoré(s).`);
+      }
+
       setPendingRecords([]);
       setIsFinished(false);
       setHasSaved(true);

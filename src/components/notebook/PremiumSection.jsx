@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Stethoscope, Pill, FileText } from "lucide-react";
-import { RecordRow } from "./SectionVaccins";
+import { RecordRow, isValidDate } from "./SectionVaccins";
 
 const GATE_CONTENT = {
   vet_visit: {
@@ -72,11 +72,11 @@ export default function PremiumSection({ type, records, dogId, isPremium, onDele
         <RecordRow key={r.id} record={r} onDelete={onDelete}
           icon={<config.Icon className={`w-4 h-4 ${config.textClass}`} />}
           accentClass={`${config.bgClass} ${config.borderClass}`}
-          extra={r.next_date && (
+          extra={isValidDate(r.next_date) ? (
             <span className="text-xs text-amber-600 font-medium">
               Prochain : {new Date(r.next_date).toLocaleDateString("fr-FR")}
             </span>
-          )}
+          ) : null}
         />
       ))}
     </div>

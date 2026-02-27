@@ -5,7 +5,11 @@ export default function UpcomingReminders({ records, isPremium }) {
   today.setHours(0, 0, 0, 0);
 
   const upcoming = records
-    .filter(r => r.next_date)
+    .filter(r => {
+      if (!r.next_date || r.next_date === "") return false;
+      const d = new Date(r.next_date);
+      return !isNaN(d.getTime());
+    })
     .map(r => {
       const due = new Date(r.next_date);
       due.setHours(0, 0, 0, 0);

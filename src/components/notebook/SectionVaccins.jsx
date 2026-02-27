@@ -16,8 +16,9 @@ export default function SectionVaccins({ records, dogId, onDelete }) {
     let dateToUse = record.next_date;
     let isEstimated = false;
     
-    if (!dateToUse) {
-      // Estimate 1 year later
+    if (!isValidDate(dateToUse)) {
+      // Estimate 1 year later if base date is valid
+      if (!isValidDate(record.date)) return null;
       const d = new Date(record.date);
       d.setFullYear(d.getFullYear() + 1);
       dateToUse = d.toISOString().split('T')[0];
@@ -25,6 +26,7 @@ export default function SectionVaccins({ records, dogId, onDelete }) {
     }
 
     const nextDateObj = new Date(dateToUse);
+    if (isNaN(nextDateObj.getTime())) return null;
     const isOverdue = nextDateObj < today;
     
     return {
@@ -46,11 +48,11 @@ export default function SectionVaccins({ records, dogId, onDelete }) {
             <RecordRow key={r.id} record={r} onDelete={onDelete}
               icon={<Syringe className="w-4 h-4 text-blue-600" />}
               accentClass="bg-blue-50 border-blue-100"
-              extra={
+              extra={reminder ? (
                 <span className={`text-xs font-medium flex items-center gap-1 mt-1 ${reminder.isOverdue ? 'text-destructive' : 'text-amber-600'}`}>
                   <Calendar className="w-3 h-3" /> {reminder.text} : {fmtDate(reminder.dateStr)}
                 </span>
-              }
+              ) : null}
             />
           );
         })
@@ -60,7 +62,16 @@ export default function SectionVaccins({ records, dogId, onDelete }) {
   );
 }
 
-function fmtDate(d) { return new Date(d).toLocaleDateString("fr-FR"); }
+export function isValidDate(d) {
+  if (!d || d === "") return false;
+  const parsed = new Date(d);
+  return !isNaN(parsed.getTime());
+}
+
+function fmtDate(d) {
+  if (!isValidDate(d)) return "";
+  return new Date(d).toLocaleDateString("fr-FR");
+}
 
 function EmptyState({ emoji, text }) {
   return (
