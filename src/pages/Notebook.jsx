@@ -8,9 +8,10 @@ import PremiumSection from "../components/notebook/PremiumSection";
 import UpcomingReminders from "../components/notebook/UpcomingReminders";
 import SmartHealthAssistant from "../components/notebook/SmartHealthAssistant";
 import { RecordRow } from "../components/notebook/SectionVaccins";
-import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2 } from "lucide-react";
+import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2, HeartPulse } from "lucide-react";
 import ShareVetModal from "../components/vet/ShareVetModal";
 import VetNotesList from "../components/vet/VetNotesList";
+import AIDiagnosisModal from "../components/vet/AIDiagnosisModal";
 
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
@@ -157,6 +158,7 @@ export default function Notebook() {
   const [activeTab, setActiveTab] = useState("all");
   const [showRecords, setShowRecords] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showDiagnosisModal, setShowDiagnosisModal] = useState(false);
   const [vetNotes, setVetNotes] = useState([]);
 
   useEffect(() => { loadData(); }, []);
@@ -255,6 +257,25 @@ export default function Notebook() {
 
       {/* Health Status Bar */}
       <HealthStatusBar dog={dog} records={records} />
+
+      {/* AI Pre-Diagnosis Button */}
+      {dog && (
+        <div className="px-4 mt-4">
+          <button
+            onClick={() => setShowDiagnosisModal(true)}
+            className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-2xl tap-scale transition-all hover:shadow-md"
+          >
+            <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
+              <HeartPulse className="w-5 h-5 text-red-600" />
+            </div>
+            <div className="text-left flex-1">
+              <p className="text-sm font-semibold text-foreground">Mon chien est malade ?</p>
+              <p className="text-[11px] text-muted-foreground">Pré-diagnostic IA & Trouver un véto</p>
+            </div>
+            <Stethoscope className="w-4 h-4 text-muted-foreground" />
+          </button>
+        </div>
+      )}
 
       {/* Main: Embedded Conversation */}
       <div className="px-4 mt-4 mb-4">
@@ -360,6 +381,15 @@ export default function Notebook() {
           onOpenChange={setShowShareModal}
           dogId={dog.id}
           dogName={dog.name}
+        />
+      )}
+
+      {/* AI Diagnosis Modal */}
+      {dog && (
+        <AIDiagnosisModal
+          open={showDiagnosisModal}
+          onOpenChange={setShowDiagnosisModal}
+          dog={dog}
         />
       )}
 

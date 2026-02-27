@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, ScanLine, MessageCircle, Dumbbell, Salad } from "lucide-react";
+import { Home, ScanLine, MessageCircle, Dumbbell, Stethoscope } from "lucide-react";
 
 const tabs = [
   { label: "Accueil", icon: Home, page: "Home" },
   { label: "Scanner", icon: ScanLine, page: "Scan" },
   { label: "Chat", icon: MessageCircle, page: "Chat" },
-  { label: "Nutrition", icon: Salad, page: "Nutrition" },
+  { label: "Vétos", icon: Stethoscope, page: "FindVet" },
   { label: "Dressage", icon: Dumbbell, page: "Training" },
 ];
 
