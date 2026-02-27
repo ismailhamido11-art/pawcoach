@@ -9,6 +9,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import GamificationDashboard from "../components/gamification/GamificationDashboard";
+import { motion } from "framer-motion";
+
+const spring = { type: "spring", stiffness: 400, damping: 30 };
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -58,7 +61,12 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 120, damping: 20 }}
+      className="min-h-screen bg-background pb-24"
+    >
       {/* Header */}
       <div className="gradient-primary pt-12 pb-8 px-5">
         <div className="flex items-center gap-4">
@@ -81,9 +89,11 @@ export default function Profile() {
       <div className="px-5 pt-5 space-y-4">
         {/* Premium banner (free users) */}
         {!user?.is_premium && (
-          <button
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            transition={spring}
             onClick={() => navigate(createPageUrl("Premium") + "?from=profile")}
-            className="w-full gradient-warm rounded-2xl p-4 flex items-center gap-3 shadow tap-scale"
+            className="w-full gradient-warm rounded-2xl p-4 flex items-center gap-3 shadow"
           >
             <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
               <Crown className="w-5 h-5 text-white" />
@@ -93,7 +103,7 @@ export default function Profile() {
               <p className="text-white/80 text-xs">Chat illimité, tous les exercices, carnet complet</p>
             </div>
             <ChevronRight className="w-5 h-5 text-white flex-shrink-0" />
-          </button>
+          </motion.button>
         )}
 
         <GamificationDashboard points={user?.points || 0} />
@@ -248,6 +258,6 @@ export default function Profile() {
       </div>
 
       <BottomNav currentPage="Profile" />
-    </div>
+    </motion.div>
   );
 }

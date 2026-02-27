@@ -11,6 +11,14 @@ import {
   AlertCircle, X, History, Share2, Phone, Crown
 } from "lucide-react";
 import { updateStreakSilently } from "../components/streakHelper";
+import { motion } from "framer-motion";
+
+const spring = { type: "spring", stiffness: 400, damping: 30 };
+const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
+const listItem = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 20 } }
+};
 
 const VERDICT_CONFIG = {
   safe: {
@@ -235,7 +243,12 @@ export default function Scan() {
   const isInTrial = user?.signup_date && ((Date.now() - new Date(user.signup_date)) / (1000 * 60 * 60 * 24)) <= FREE_TRIAL_DAYS;
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 120, damping: 20 }}
+      className="min-h-screen bg-background pb-24"
+    >
       {/* Emergency banner */}
       {result?.verdict === "toxic" && dogAteIt && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-red-600 px-4 py-3 text-white text-center shadow-xl">
@@ -300,9 +313,11 @@ export default function Scan() {
         {/* Upload zone */}
         {!result && !scanLimitReached && (
           <>
-            <button
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              transition={spring}
               onClick={() => fileRef.current.click()}
-              className="w-full rounded-3xl border-2 border-dashed border-primary/30 bg-secondary/30 py-10 flex flex-col items-center gap-4 tap-scale hover:border-primary hover:bg-secondary/50 transition-all"
+              className="w-full rounded-3xl border-2 border-dashed border-primary/30 bg-secondary/30 py-10 flex flex-col items-center gap-4 hover:border-primary hover:bg-secondary/50 transition-colors"
             >
               {preview ? (
                 <div className="relative w-full px-4">
@@ -326,7 +341,7 @@ export default function Scan() {
                   </div>
                 </>
               )}
-            </button>
+            </motion.button>
             <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden"
               onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
 
@@ -442,12 +457,12 @@ export default function Scan() {
             </button>
 
             {showHistory && (
-              <div className="space-y-2">
+              <motion.div className="space-y-2" variants={listContainer} initial="hidden" animate="show">
                 {history.slice(0, 10).map((scan, i) => {
                   const cfg = VERDICT_CONFIG[scan.verdict] || VERDICT_CONFIG.caution;
                   const Icon = cfg.icon;
                   return (
-                    <div key={i} className={`flex items-center gap-3 p-3 rounded-2xl border ${cfg.border} ${cfg.cardBg}`}>
+                    <motion.div key={i} variants={listItem} className={`flex items-center gap-3 p-3 rounded-2xl border ${cfg.border} ${cfg.cardBg}`}>
                       {scan.photo_url && (
                         <img src={scan.photo_url} alt="" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
                       )}
@@ -462,10 +477,10 @@ export default function Scan() {
                         <p className="text-xs text-muted-foreground">{new Date(scan.timestamp).toLocaleDateString("fr-FR")}</p>
                         {scan.score != null && <p className="text-sm font-bold text-foreground">{scan.score}/10</p>}
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
-              </div>
+              </motion.div>
             )}
           </div>
         )}
@@ -476,6 +491,6 @@ export default function Scan() {
       )}
 
       <BottomNav currentPage="Scan" />
-    </div>
+    </motion.div>
   );
 }

@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Salad } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { motion } from "framer-motion";
+
+const spring = { type: "spring", stiffness: 400, damping: 30 };
+const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { type: "spring", stiffness: 120, damping: 20 } };
 
 export default function Nutrition() {
   const [dog, setDog] = useState(null);
@@ -165,18 +169,22 @@ export default function Nutrition() {
 
         {/* Tabs */}
         <div className="flex gap-2">
-          <button
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            transition={spring}
             onClick={() => setActiveTab("chat")}
-            className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-all ${activeTab === "chat" ? "bg-white text-primary" : "bg-white/10 text-white"}`}
+            className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-colors ${activeTab === "chat" ? "bg-white text-primary" : "bg-white/10 text-white"}`}
           >
             💬 Chat Nutrition
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            transition={spring}
             onClick={() => setActiveTab("mealplan")}
-            className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-all ${activeTab === "mealplan" ? "bg-white text-primary" : "bg-white/10 text-white"}`}
+            className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-colors ${activeTab === "mealplan" ? "bg-white text-primary" : "bg-white/10 text-white"}`}
           >
             🗓️ Plan de repas IA
-          </button>
+          </motion.button>
         </div>
       </div>
 
@@ -189,7 +197,7 @@ export default function Nutrition() {
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-44">
             {messages.map((msg, i) => (
-              <div key={i} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+              <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 {msg.role === "assistant" && (
                   <div className="w-8 h-8 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0 mt-1 text-base">🥗</div>
                 )}
@@ -212,7 +220,7 @@ export default function Nutrition() {
                     <p className="whitespace-pre-wrap">{msg.content}</p>
                   )}
                 </div>
-              </div>
+              </motion.div>
             ))}
 
             {loading && (
@@ -220,9 +228,9 @@ export default function Nutrition() {
                 <div className="w-8 h-8 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0 mt-1 text-base">🥗</div>
                 <div className="chat-bubble-assistant px-4 py-3.5 rounded-2xl rounded-bl-sm">
                   <div className="flex gap-1.5 items-center">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary rounded-full" />
+                    <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }} className="w-2 h-2 bg-primary rounded-full" />
+                    <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }} className="w-2 h-2 bg-primary rounded-full" />
                   </div>
                 </div>
               </div>
@@ -264,13 +272,15 @@ export default function Nutrition() {
                   <div className="px-4 pt-3 pb-1">
                     <div className="flex gap-2 overflow-x-auto pb-1">
                       {quickActions.map((s, i) => (
-                        <button
+                        <motion.button
                           key={i}
+                          whileTap={{ scale: 0.96 }}
+                          transition={spring}
                           onClick={() => sendMessage(s)}
-                          className="flex-shrink-0 text-xs bg-secondary text-secondary-foreground px-3 py-2 rounded-xl border border-border hover:border-primary hover:text-primary transition-all tap-scale whitespace-nowrap"
+                          className="flex-shrink-0 text-xs bg-secondary text-secondary-foreground px-3 py-2 rounded-xl border border-border hover:border-primary hover:text-primary transition-colors whitespace-nowrap"
                         >
                           {s}
-                        </button>
+                        </motion.button>
                       ))}
                     </div>
                   </div>

@@ -10,6 +10,14 @@ import { CheckCircle, Timer, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { updateStreakSilently } from "../components/streakHelper";
+import { motion } from "framer-motion";
+
+const spring = { type: "spring", stiffness: 400, damping: 30 };
+const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
+const listItem = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 20 } }
+};
 
 const EXERCISES = [
   { order_number: 1,  name: "Assis",              emoji: "🐕",  level: "debutant",      duration: "3 min",  is_premium: false, description: "La base de tout dressage – indispensable pour la sécurité.", steps: ["Tenez une friandise devant le museau de votre chien.", "Remontez lentement la friandise au-dessus de sa tête.", "Quand il s'assoit naturellement, dites « Assis » et donnez la friandise.", "Répétez 5 fois, puis réduisez progressivement la friandise.", "Pratiquez dans différents endroits et situations."] },
@@ -175,7 +183,12 @@ export default function Training() {
 
   // List screen
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 120, damping: 20 }}
+      className="min-h-screen bg-background pb-24"
+    >
       <WellnessBanner />
 
       <div className="gradient-primary pt-10 pb-6 px-5">
@@ -194,17 +207,20 @@ export default function Training() {
         </div>
       </div>
 
-      <div className="px-4 pt-4 space-y-3">
+      <motion.div className="px-4 pt-4 space-y-3" variants={listContainer} initial="hidden" animate="show">
         {EXERCISES.map(exercise => {
           const done = isCompleted(exercise.order_number);
           const locked = exercise.is_premium && !isPremium;
           const lvl = LEVEL_CONFIG[exercise.level];
 
           return (
-            <button
+            <motion.button
               key={exercise.order_number}
+              variants={listItem}
+              whileTap={{ scale: 0.96 }}
+              transition={spring}
               onClick={() => setSelected(exercise.order_number)}
-              className={`w-full flex items-center gap-4 p-4 rounded-2xl border text-left tap-scale transition-all duration-200 shadow-sm bg-white
+              className={`w-full flex items-center gap-4 p-4 rounded-2xl border text-left transition-colors shadow-sm bg-white
                 ${done ? "border-green-200 bg-green-50/40" : "border-border"}`}
             >
               <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 ${done ? "bg-green-100" : "bg-secondary/50"}`}>
@@ -238,12 +254,12 @@ export default function Training() {
                   </div>
                 )}
               </div>
-            </button>
+            </motion.button>
           );
         })}
-      </div>
+      </motion.div>
 
       <BottomNav currentPage="Training" />
-    </div>
+    </motion.div>
   );
 }

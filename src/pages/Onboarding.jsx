@@ -5,8 +5,10 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import WelcomeScreen from "../components/onboarding/WelcomeScreen";
+
+const spring = { type: "spring", stiffness: 400, damping: 30 };
 
 const GOAL_OPTIONS = [
   { emoji: "💪", label: "Qu'il soit en bonne santé" },
@@ -231,9 +233,9 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
       {/* Header with progress */}
       <div className="pt-12 px-6 pb-4 flex items-center gap-4">
         {step > 0 ? (
-          <button onClick={() => setStep(s => s - 1)} className="w-10 h-10 flex items-center justify-center bg-secondary rounded-full tap-scale">
+          <motion.button whileTap={{ scale: 0.96 }} transition={spring} onClick={() => setStep(s => s - 1)} className="w-10 h-10 flex items-center justify-center bg-secondary rounded-full">
             <ChevronLeft className="w-5 h-5 text-foreground" />
-          </button>
+          </motion.button>
         ) : (
           <div className="w-10 h-10" />
         )}
@@ -247,7 +249,16 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 pb-12">
-        <div className="text-7xl mb-8 animate-bounce-soft">{currentStepData.emoji}</div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -40 }}
+            transition={{ type: "spring", stiffness: 200, damping: 25 }}
+            className="flex flex-col items-center w-full"
+          >
+        <div className="text-7xl mb-8">{currentStepData.emoji}</div>
         <h1 className="text-3xl sm:text-4xl font-bold text-center text-foreground mb-12 leading-tight">
           {currentStepData.question}
         </h1>
@@ -260,8 +271,9 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 + i * 0.08, duration: 0.3 }}
+                whileTap={{ scale: 0.96 }}
                 onClick={() => handleGoalSelect(opt.label)}
-                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all tap-scale text-left ${
+                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-colors text-left ${
                   currentAnswer === opt.label
                     ? "border-primary bg-primary/10"
                     : "border-border bg-white hover:border-primary/40"
@@ -274,9 +286,11 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
           </div>
         ) : currentStepData.type === "photo" ? (
           <div className="flex flex-col items-center mb-12">
-            <button
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              transition={spring}
               onClick={() => fileRef.current?.click()}
-              className="relative w-40 h-40 rounded-full border-4 border-dashed border-primary/40 bg-secondary/40 flex items-center justify-center overflow-hidden tap-scale transition-all hover:border-primary hover:bg-secondary mb-4"
+              className="relative w-40 h-40 rounded-full border-4 border-dashed border-primary/40 bg-secondary/40 flex items-center justify-center overflow-hidden transition-colors hover:border-primary hover:bg-secondary mb-4"
             >
               {currentAnswer ? (
                 <img src={currentAnswer} alt="Chien" className="w-full h-full object-cover" />
@@ -285,7 +299,7 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
               ) : (
                 <Camera className="w-12 h-12 text-primary/60" />
               )}
-            </button>
+            </motion.button>
             <input
               ref={fileRef}
               type="file"
@@ -298,9 +312,11 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
         ) : (
           <>
             {/* Big Mic Button */}
-            <button
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              transition={spring}
               onClick={toggleMic}
-              className={`relative w-36 h-36 sm:w-40 sm:h-40 rounded-full flex items-center justify-center transition-all tap-scale mb-12 ${
+              className={`relative w-36 h-36 sm:w-40 sm:h-40 rounded-full flex items-center justify-center transition-colors mb-12 ${
                 listening 
                   ? "bg-red-500 shadow-[0_0_50px_rgba(239,68,68,0.5)]" 
                   : "bg-primary shadow-2xl shadow-primary/30 hover:scale-105"
@@ -314,7 +330,7 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
               ) : (
                 <Mic className="w-16 h-16 text-white" />
               )}
-            </button>
+            </motion.button>
 
             <div className="text-center mb-8 w-full max-w-sm">
               <p className="text-sm font-medium text-muted-foreground mb-4">
@@ -352,6 +368,8 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
             </>
           )}
         </Button>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

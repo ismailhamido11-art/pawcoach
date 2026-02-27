@@ -13,6 +13,9 @@ import ShareVetModal from "../components/vet/ShareVetModal";
 import VetNotesList from "../components/vet/VetNotesList";
 import AIDiagnosisModal from "../components/vet/AIDiagnosisModal";
 import { updateStreakSilently } from "../components/streakHelper";
+import { motion } from "framer-motion";
+
+const spring = { type: "spring", stiffness: 400, damping: 30 };
 
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
@@ -183,7 +186,12 @@ export default function Notebook() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 120, damping: 20 }}
+      className="min-h-screen bg-background pb-24"
+    >
       <WellnessBanner />
 
       {/* Compact Header */}
@@ -214,9 +222,11 @@ export default function Notebook() {
       {/* AI Pre-Diagnosis Button */}
       {dog && (
         <div className="px-4 mt-4">
-          <button
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            transition={spring}
             onClick={() => setShowDiagnosisModal(true)}
-            className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-2xl tap-scale transition-all hover:shadow-md"
+            className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-2xl transition-colors hover:shadow-md"
           >
             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
               <HeartPulse className="w-5 h-5 text-red-600" />
@@ -226,7 +236,7 @@ export default function Notebook() {
               <p className="text-[11px] text-muted-foreground">Pré-diagnostic IA & Trouver un véto</p>
             </div>
             <Stethoscope className="w-4 h-4 text-muted-foreground" />
-          </button>
+          </motion.button>
         </div>
       )}
 
@@ -347,6 +357,6 @@ export default function Notebook() {
       )}
 
       <BottomNav currentPage="Notebook" />
-    </div>
+    </motion.div>
   );
 }
