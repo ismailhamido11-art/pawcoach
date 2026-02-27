@@ -211,12 +211,7 @@ export default function Home() {
   const longestStreak = streak?.longest_streak || 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 120, damping: 20 }}
-      className="min-h-screen bg-gradient-to-b from-background to-primary/[0.02] pb-24 relative"
-    >
+    <div className="min-h-screen bg-gradient-to-b from-background to-primary/[0.02] pb-24 relative">
       <WellnessBanner />
 
 
