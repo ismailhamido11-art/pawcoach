@@ -11,22 +11,22 @@ import {
 } from "lucide-react";
 
 const MOOD_OPTIONS = [
-  { value: 1, emoji: "\ud83d\ude22", label: "Triste" },
-  { value: 2, emoji: "\ud83d\ude10", label: "Bof" },
-  { value: 3, emoji: "\ud83d\ude0a", label: "Bien" },
-  { value: 4, emoji: "\ud83e\udd29", label: "Super" },
+  { value: 1, emoji: "😢", label: "Triste" },
+  { value: 2, emoji: "😐", label: "Bof" },
+  { value: 3, emoji: "😊", label: "Bien" },
+  { value: 4, emoji: "🤩", label: "Super" },
 ];
 
 const ENERGY_OPTIONS = [
-  { value: 1, emoji: "\ud83d\udd0b", label: "Faible" },
-  { value: 2, emoji: "\ud83d\udd0b\ud83d\udd0b", label: "Moyen" },
-  { value: 3, emoji: "\ud83d\udd0b\ud83d\udd0b\ud83d\udd0b", label: "A fond" },
+  { value: 1, emoji: "🔋", label: "Faible" },
+  { value: 2, emoji: "🔋🔋", label: "Moyen" },
+  { value: 3, emoji: "🔋🔋🔋", label: "A fond" },
 ];
 
 const APPETITE_OPTIONS = [
-  { value: 1, emoji: "\ud83d\ude45", label: "Rien" },
-  { value: 2, emoji: "\ud83d\ude0b", label: "Normal" },
-  { value: 3, emoji: "\ud83e\udd24", label: "Glouton" },
+  { value: 1, emoji: "🙅", label: "Rien" },
+  { value: 2, emoji: "😋", label: "Normal" },
+  { value: 3, emoji: "🤤", label: "Glouton" },
 ];
 
 const MILESTONES = [
@@ -616,7 +616,7 @@ export default function Home() {
             onClick={() => setMilestone(null)}
           >
             <div className="milestone-card bg-white rounded-3xl p-8 text-center shadow-2xl max-w-[280px] mx-6">
-              <p className="text-5xl mb-3">{"\ud83c\udf89"}</p>
+              <p className="text-5xl mb-3">🎉</p>
               <p className="text-xl font-bold text-foreground">{milestone.message}</p>
               <p className="text-sm text-muted-foreground mt-1">{milestone.sub}</p>
               <div className="mt-4 flex items-center justify-center gap-1.5">
