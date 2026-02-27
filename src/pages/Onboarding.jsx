@@ -252,7 +252,27 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
           {currentStepData.question}
         </h1>
 
-        {currentStepData.type === "photo" ? (
+        {currentStepData.type === "choice" ? (
+          <div className="w-full max-w-sm space-y-3 mb-12">
+            {GOAL_OPTIONS.map((opt, i) => (
+              <motion.button
+                key={opt.label}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + i * 0.08, duration: 0.3 }}
+                onClick={() => handleGoalSelect(opt.label)}
+                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all tap-scale text-left ${
+                  currentAnswer === opt.label
+                    ? "border-primary bg-primary/10"
+                    : "border-border bg-white hover:border-primary/40"
+                }`}
+              >
+                <span className="text-2xl">{opt.emoji}</span>
+                <span className="text-sm font-semibold text-foreground">{opt.label}</span>
+              </motion.button>
+            ))}
+          </div>
+        ) : currentStepData.type === "photo" ? (
           <div className="flex flex-col items-center mb-12">
             <button
               onClick={() => fileRef.current?.click()}
