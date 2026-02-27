@@ -33,12 +33,12 @@ export default function VetSearchCard({ vet }) {
 
       <div className="flex gap-2 mt-3">
         {vet.phone && (
-          <a href={`tel:${vet.phone}`} className="flex-1">
-            <Button size="sm" className="w-full text-xs gap-1.5 gradient-primary text-white">
+          <div className="flex-1">
+            <Button size="sm" variant="outline" className="w-full text-xs gap-1.5" onClick={() => navigator.clipboard.writeText(vet.phone)}>
               <Phone className="w-3.5 h-3.5" />
-              Appeler
+              {vet.phone}
             </Button>
-          </a>
+          </div>
         )}
         {safeGoogleMaps && (
           <a href={safeGoogleMaps} target="_blank" rel="noopener noreferrer" className="flex-1">

@@ -113,6 +113,11 @@ Pour chaque clinique, fournis: name, address, phone (format français), google_m
       </div>
 
       <div className="px-4 mt-4 space-y-3">
+        {/* AI disclaimer */}
+        <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+          <p className="text-xs text-amber-700 font-medium">⚠️ Ces résultats sont générés par IA et peuvent contenir des erreurs. Vérifiez les adresses et numéros avant de vous déplacer ou d'appeler.</p>
+        </div>
+
         {loading && (
           <div className="flex flex-col items-center py-12 gap-3">
             <Loader2 className="w-8 h-8 text-primary animate-spin" />

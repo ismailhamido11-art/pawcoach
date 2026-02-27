@@ -7,7 +7,7 @@ import BottomNav from "../components/BottomNav";
 import {
   BookHeart, ChevronRight, Activity, Stethoscope, UserCircle,
   Heart, Flame, Dumbbell, ScanLine, MessageCircle, Loader2,
-  ChevronDown, ChevronUp, Sparkles, Check
+  ChevronDown, ChevronUp, Sparkles, Check, Salad
 } from "lucide-react";
 
 const MOOD_OPTIONS = [
@@ -574,6 +574,20 @@ export default function Home() {
               <p className="font-medium text-foreground text-xs text-center">Dressage</p>
             </Link>
           </div>
+
+          <Link
+            to={createPageUrl("Nutrition")}
+            className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 group hover:border-primary/30 transition-all"
+          >
+            <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-green-500 group-hover:scale-110 transition-transform">
+              <Salad className="w-5 h-5" />
+            </div>
+            <div className="text-left flex-1">
+              <p className="font-semibold text-foreground text-sm">NutriCoach</p>
+              <p className="text-xs text-muted-foreground">Conseils nutrition, plan repas IA</p>
+            </div>
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+          </Link>
         </div>
       </div>
 
