@@ -29,6 +29,17 @@ const APPETITE_OPTIONS = [
   { value: 3, emoji: "\ud83e\udd24", label: "Glouton" },
 ];
 
+const MILESTONES = [
+  { days: 3, message: "3 jours de suite !", sub: "Le debut d'une belle habitude" },
+  { days: 7, message: "1 semaine complete !", sub: "Tu es sur la bonne voie" },
+  { days: 14, message: "2 semaines !", sub: "La regularite paie" },
+  { days: 30, message: "1 mois de suivi !", sub: "Champion du suivi" },
+  { days: 60, message: "2 mois !", sub: "Engagement exceptionnel" },
+  { days: 100, message: "100 jours !", sub: "Legende absolue" },
+];
+
+const CONFETTI_COLORS = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#FF8C00", "#7B68EE", "#FF69B4", "#00CED1"];
+
 function getTodayString() {
   const d = new Date();
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
@@ -53,6 +64,9 @@ export default function Home() {
   const [weeklyInsight, setWeeklyInsight] = useState(null);
   const [insightExpanded, setInsightExpanded] = useState(false);
   const [markingRead, setMarkingRead] = useState(false);
+
+  // Milestone celebration state
+  const [milestone, setMilestone] = useState(null);
 
   useEffect(() => {
     async function loadData() {
@@ -121,6 +135,16 @@ export default function Home() {
         { mood, energy, appetite, ai_response: result.aiResponse, date: getTodayString() },
         ...prev,
       ].slice(0, 7));
+
+      // Check for milestone celebration
+      const newStreak = result.streak?.current_streak;
+      if (newStreak) {
+        const ms = MILESTONES.find(m => m.days === newStreak);
+        if (ms) {
+          setMilestone(ms);
+          setTimeout(() => setMilestone(null), 5000);
+        }
+      }
     } catch (err) {
       console.error("Check-in error:", err);
     } finally {
@@ -156,6 +180,34 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background pb-24 relative">
       <WellnessBanner />
+
+      {/* Confetti + milestone styles */}
+      <style>{`
+        @keyframes confetti-fall {
+          0% { transform: translateY(-20px) rotate(0deg) scale(0); opacity: 0; }
+          10% { opacity: 1; transform: translateY(0) rotate(36deg) scale(1); }
+          100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
+        }
+        @keyframes bounce-in {
+          0% { transform: scale(0.3); opacity: 0; }
+          50% { transform: scale(1.08); }
+          70% { transform: scale(0.95); }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        .confetti-particle {
+          position: fixed;
+          width: 8px;
+          height: 8px;
+          border-radius: 1px;
+          top: -10px;
+          animation: confetti-fall 3.5s ease-in forwards;
+          z-index: 60;
+          pointer-events: none;
+        }
+        .milestone-card {
+          animation: bounce-in 0.5s ease-out;
+        }
+      `}</style>
 
       {/* Bouton Profil */}
       <Link
@@ -202,11 +254,10 @@ export default function Home() {
                   <button
                     key={opt.value}
                     onClick={() => setMood(opt.value)}
-                    className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-all ${
-                      mood === opt.value
-                        ? "border-primary bg-primary/5 scale-105"
-                        : "border-border/50 bg-white hover:border-border"
-                    }`}
+                    className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-all ${mood === opt.value
+                      ? "border-primary bg-primary/5 scale-105"
+                      : "border-border/50 bg-white hover:border-border"
+                      }`}
                   >
                     <span className="text-2xl">{opt.emoji}</span>
                     <span className="text-xs text-muted-foreground">{opt.label}</span>
@@ -223,11 +274,10 @@ export default function Home() {
                   <button
                     key={opt.value}
                     onClick={() => setEnergy(opt.value)}
-                    className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-all ${
-                      energy === opt.value
-                        ? "border-primary bg-primary/5 scale-105"
-                        : "border-border/50 bg-white hover:border-border"
-                    }`}
+                    className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-all ${energy === opt.value
+                      ? "border-primary bg-primary/5 scale-105"
+                      : "border-border/50 bg-white hover:border-border"
+                      }`}
                   >
                     <span className="text-lg">{opt.emoji}</span>
                     <span className="text-xs text-muted-foreground">{opt.label}</span>
@@ -244,11 +294,10 @@ export default function Home() {
                   <button
                     key={opt.value}
                     onClick={() => setAppetite(opt.value)}
-                    className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-all ${
-                      appetite === opt.value
-                        ? "border-primary bg-primary/5 scale-105"
-                        : "border-border/50 bg-white hover:border-border"
-                    }`}
+                    className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-all ${appetite === opt.value
+                      ? "border-primary bg-primary/5 scale-105"
+                      : "border-border/50 bg-white hover:border-border"
+                      }`}
                   >
                     <span className="text-2xl">{opt.emoji}</span>
                     <span className="text-xs text-muted-foreground">{opt.label}</span>
@@ -261,11 +310,10 @@ export default function Home() {
             <button
               onClick={handleCheckin}
               disabled={!mood || !energy || !appetite || submitting}
-              className={`w-full py-3 rounded-xl font-semibold text-white transition-all ${
-                mood && energy && appetite && !submitting
-                  ? "bg-primary hover:bg-primary/90 active:scale-[0.98]"
-                  : "bg-gray-300 cursor-not-allowed"
-              }`}
+              className={`w-full py-3 rounded-xl font-semibold text-white transition-all ${mood && energy && appetite && !submitting
+                ? "bg-primary hover:bg-primary/90 active:scale-[0.98]"
+                : "bg-gray-300 cursor-not-allowed"
+                }`}
             >
               {submitting ? (
                 <span className="flex items-center justify-center gap-2">
@@ -522,6 +570,44 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* MILESTONE CELEBRATION OVERLAY */}
+      {milestone && (
+        <>
+          {/* Confetti particles */}
+          {[...Array(24)].map((_, i) => (
+            <div
+              key={i}
+              className="confetti-particle"
+              style={{
+                left: `${4 + (i * 4) % 92}%`,
+                animationDelay: `${(i * 0.15) % 2}s`,
+                backgroundColor: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+                width: `${6 + (i % 3) * 3}px`,
+                height: `${6 + (i % 3) * 3}px`,
+                borderRadius: i % 2 === 0 ? "50%" : "1px",
+              }}
+            />
+          ))}
+
+          {/* Overlay + card */}
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
+            onClick={() => setMilestone(null)}
+          >
+            <div className="milestone-card bg-white rounded-3xl p-8 text-center shadow-2xl max-w-[280px] mx-6">
+              <p className="text-5xl mb-3">{"\ud83c\udf89"}</p>
+              <p className="text-xl font-bold text-foreground">{milestone.message}</p>
+              <p className="text-sm text-muted-foreground mt-1">{milestone.sub}</p>
+              <div className="mt-4 flex items-center justify-center gap-1.5">
+                <Flame className="w-4 h-4 text-orange-500" />
+                <span className="text-sm font-bold text-orange-600">{milestone.days} jours</span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-4">Touche pour fermer</p>
+            </div>
+          </div>
+        </>
+      )}
 
       <BottomNav currentPage="Home" />
     </div>
