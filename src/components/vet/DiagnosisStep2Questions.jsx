@@ -14,8 +14,9 @@ export default function DiagnosisStep2Questions({ phase1, userAnswers, setUserAn
   const urgency = URGENCY_CONFIG[phase1.preliminary_urgency] || URGENCY_CONFIG.medium;
   const UrgencyIcon = urgency.icon;
 
-  const answeredCount = phase1.followup_questions.filter(q => userAnswers[q.id]?.trim()).length;
-  const totalCount = phase1.followup_questions.length;
+  const questions = Array.isArray(phase1.followup_questions) ? phase1.followup_questions : [];
+  const answeredCount = questions.filter(q => userAnswers[q.id]?.trim()).length;
+  const totalCount = questions.length;
 
   const handleAnswer = (id, value) => {
     setUserAnswers(prev => ({ ...prev, [id]: value }));
@@ -62,7 +63,7 @@ export default function DiagnosisStep2Questions({ phase1, userAnswers, setUserAn
 
       {/* Questions */}
       <div className="space-y-4">
-        {phase1.followup_questions.map((q, index) => (
+        {questions.map((q, index) => (
           <div key={q.id} className="space-y-1.5">
             <label className="text-xs font-medium flex items-start gap-2">
               <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">

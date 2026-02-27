@@ -138,6 +138,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
         report_date: reportDate,
       });
 
+      toast.success("Rapport sauvegardé dans votre historique ✅");
       setStep("report");
     } catch (e) {
       console.error("handleStep2 error:", e);

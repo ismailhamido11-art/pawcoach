@@ -1,15 +1,16 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
-  const base44 = createClientFromRequest(req);
-  const user = await base44.auth.me();
-  if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { symptoms, duration, additional_info, image_url, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies } = await req.json();
+    const { symptoms, duration, additional_info, image_url, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies } = await req.json();
 
-  if (!symptoms) return Response.json({ error: 'Symptoms required' }, { status: 400 });
+    if (!symptoms) return Response.json({ error: 'Symptoms required' }, { status: 400 });
 
-  const prompt = `Tu es un assistant vétérinaire IA spécialisé dans la santé canine.
+    const prompt = `Tu es un assistant vétérinaire IA spécialisé dans la santé canine.
 
 PHASE 1: Tu reçois les premiers symptômes d'un chien. Tu dois:
 1. Faire une première analyse rapide des symptômes
@@ -39,31 +40,46 @@ Génère un JSON avec:
 - preliminary_urgency: "low" | "medium" | "high" | "emergency" (première estimation d'urgence)
 - followup_questions: array d'objets avec { id: string (q1, q2...), question: string, type: "text" | "yes_no" | "choice", options?: array de strings (seulement si type=choice) }. Génère 4 à 6 questions pertinentes basées sur les symptômes. Par exemple si le chien se gratte l'oreille, demande s'il y a une odeur, un écoulement, etc.`;
 
-  const fileUrls = image_url ? [image_url] : undefined;
+    const fileUrls = image_url ? [image_url] : undefined;
 
-  const result = await base44.integrations.Core.InvokeLLM({
-    prompt,
-    file_urls: fileUrls,
-    response_json_schema: {
-      type: "object",
-      properties: {
-        preliminary_observations: { type: "string" },
-        preliminary_urgency: { type: "string", enum: ["low", "medium", "high", "emergency"] },
-        followup_questions: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              id: { type: "string" },
-              question: { type: "string" },
-              type: { type: "string", enum: ["text", "yes_no", "choice"] },
-              options: { type: "array", items: { type: "string" } }
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt,
+      file_urls: fileUrls,
+      response_json_schema: {
+        type: "object",
+        properties: {
+          preliminary_observations: { type: "string" },
+          preliminary_urgency: { type: "string", enum: ["low", "medium", "high", "emergency"] },
+          followup_questions: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                id: { type: "string" },
+                question: { type: "string" },
+                type: { type: "string", enum: ["text", "yes_no", "choice"] },
+                options: { type: "array", items: { type: "string" } }
+              }
             }
           }
         }
       }
-    }
-  });
+    });
 
-  return Response.json(result);
+    // Null safety: ensure followup_questions is always an array
+    if (!result.followup_questions) {
+      result.followup_questions = [];
+    }
+
+    return Response.json(result);
+
+  } catch (error) {
+    console.error("preDiagnosis error:", error.message);
+    return Response.json({
+      error: "Une erreur est survenue lors de l'analyse. Veuillez réessayer.",
+      preliminary_observations: "L'analyse n'a pas pu être effectuée. Veuillez réessayer ou consulter directement un vétérinaire.",
+      preliminary_urgency: "medium",
+      followup_questions: []
+    }, { status: 500 });
+  }
 });

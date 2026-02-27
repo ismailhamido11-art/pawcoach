@@ -27,11 +27,13 @@ function sanitize(text) {
 }
 
 Deno.serve(async (req) => {
+  try {
   const base44 = createClientFromRequest(req);
   const user = await base44.auth.me();
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { report, dog_name, dog_breed, dog_weight, symptoms, duration, report_date, followup_questions, user_answers } = await req.json();
+  if (!report) return Response.json({ error: 'Report data required' }, { status: 400 });
 
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -144,4 +146,8 @@ Deno.serve(async (req) => {
       'Content-Disposition': `attachment; filename=prediagnostic-${sanitize(dog_name) || 'chien'}-${report_date || 'rapport'}.pdf`
     }
   });
+  } catch (error) {
+    console.error("generateDiagnosisPDF error:", error.message);
+    return Response.json({ error: "Erreur lors de la génération du PDF. Veuillez réessayer." }, { status: 500 });
+  }
 });

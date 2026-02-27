@@ -103,6 +103,13 @@ export default function VetPortal() {
             {user?.full_name || user?.email} · Vos patients PawCoach
           </p>
         </div>
+        <button
+          onClick={() => base44.auth.logout()}
+          className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-medium transition-all z-10"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          Déconnexion
+        </button>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
       </div>
 
