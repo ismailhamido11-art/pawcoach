@@ -78,51 +78,55 @@ export default function Chat() {
   }, [initializing, dog]);
 
   const initChat = async () => {
-    const u = await base44.auth.me();
-    setUser(u);
+    try {
+      const u = await base44.auth.me();
+      setUser(u);
 
-    // Handle daily reset for non-premium
-    if (!u.is_premium) {
-      const today = getTodayString();
-      const lastReset = u.messages_daily_reset;
-      const remaining = u.messages_remaining ?? 20;
+      // Handle daily reset for non-premium
+      if (!u.is_premium) {
+        const today = getTodayString();
+        const lastReset = u.messages_daily_reset;
+        const remaining = u.messages_remaining ?? 20;
 
-      // If never set up, initialize with 20
-      if (remaining === null || remaining === undefined) {
-        await base44.auth.updateMe({ messages_remaining: 20, messages_daily_reset: today });
-        setMessagesRemaining(20);
-      } else if (remaining <= 0 && lastReset !== today) {
-        // New day, give 2 messages
-        await base44.auth.updateMe({ messages_remaining: 2, messages_daily_reset: today });
-        setMessagesRemaining(2);
-      } else {
-        setMessagesRemaining(remaining);
+        if (remaining === null || remaining === undefined) {
+          await base44.auth.updateMe({ messages_remaining: 20, messages_daily_reset: today });
+          setMessagesRemaining(20);
+        } else if (remaining <= 0 && lastReset !== today) {
+          await base44.auth.updateMe({ messages_remaining: 2, messages_daily_reset: today });
+          setMessagesRemaining(2);
+        } else {
+          setMessagesRemaining(remaining);
+        }
       }
-    }
 
-    const dogs = await base44.entities.Dog.filter({ owner: u.email });
-    if (dogs.length > 0) {
-      const d = dogs[0];
-      setDog(d);
-      // Load history
-      const history = await base44.entities.ChatMessage.filter({ dog_id: d.id });
-      const sorted = history.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-      if (sorted.length === 0) {
-        setMessages([{
-          role: "assistant",
-          content: `Bonjour ! 🐾 Je suis PawCoach, ton coach bien-être pour **${d.name}**.\n\nJe connais son profil : ${d.breed}${getAge(d.birth_date) ? `, ${getAge(d.birth_date)}` : ""}${d.weight ? `, ${d.weight} kg` : ""}.\n\nPose-moi n'importe quelle question sur sa nutrition, son comportement ou son dressage !`,
-          timestamp: new Date().toISOString(),
-        }]);
-      } else {
-        setMessages(sorted);
+      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      if (dogs.length > 0) {
+        const d = dogs[0];
+        setDog(d);
+        const history = await base44.entities.ChatMessage.filter({ dog_id: d.id });
+        const sorted = history.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        if (sorted.length === 0) {
+          setMessages([{
+            role: "assistant",
+            content: `Bonjour ! 🐾 Je suis PawCoach, ton coach bien-être pour **${d.name}**.\n\nJe connais son profil : ${d.breed}${getAge(d.birth_date) ? `, ${getAge(d.birth_date)}` : ""}${d.weight ? `, ${d.weight} kg` : ""}.\n\nPose-moi n'importe quelle question sur sa nutrition, son comportement ou son dressage !`,
+            timestamp: new Date().toISOString(),
+          }]);
+        } else {
+          setMessages(sorted);
+        }
       }
+    } catch (err) {
+      console.error("Chat init error:", err);
+    } finally {
+      setInitializing(false);
     }
-    setInitializing(false);
   };
 
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    // Revoke previous preview URL to avoid memory leak
+    if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview);
     const preview = URL.createObjectURL(file);
     setPendingImage({ file, preview });
   };
@@ -153,49 +157,60 @@ export default function Chat() {
     setMessages(prev => [...prev, userMsg]);
     setLoading(true);
 
-    // Upload image if any
-    let uploadedImageUrl = null;
-    if (imageToSend) {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: imageToSend.file });
-      uploadedImageUrl = file_url;
+    try {
+      // Upload image if any
+      let uploadedImageUrl = null;
+      if (imageToSend) {
+        const { file_url } = await base44.integrations.Core.UploadFile({ file: imageToSend.file });
+        uploadedImageUrl = file_url;
+        // Revoke blob URL after upload
+        if (imageToSend.preview) URL.revokeObjectURL(imageToSend.preview);
+      }
+
+      // Save user message
+      await base44.entities.ChatMessage.create({
+        dog_id: dog.id,
+        role: "user",
+        content: userMsg.content,
+        timestamp: userMsg.timestamp,
+        has_image: hasImage,
+        image_url: uploadedImageUrl || null,
+      });
+
+      // Build context (last 10)
+      const contextMsgs = messages
+        .slice(-9)
+        .map(m => ({ role: m.role, content: m.content }));
+      contextMsgs.push({ role: "user", content: content || "Analyse cette photo." });
+
+      const response = await base44.functions.invoke("pawcoachChat", {
+        systemPrompt: buildSystemPrompt(dog),
+        messages: contextMsgs,
+        imageUrl: uploadedImageUrl || null,
+      });
+
+      const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
+      const assistantMsg = { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() };
+
+      setMessages(prev => [...prev, assistantMsg]);
+      await base44.entities.ChatMessage.create({ dog_id: dog.id, ...assistantMsg });
+
+      // Decrement message count for free users
+      if (!user?.is_premium) {
+        const newRemaining = Math.max(0, (messagesRemaining ?? 0) - 1);
+        setMessagesRemaining(newRemaining);
+        await base44.auth.updateMe({ messages_remaining: newRemaining, messages_daily_reset: getTodayString() });
+      }
+    } catch (err) {
+      console.error("Chat send error:", err);
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "Oups, une erreur est survenue. Réessaie dans un instant.",
+        timestamp: new Date().toISOString(),
+      }]);
+    } finally {
+      setLoading(false);
     }
-
-    // Save user message
-    await base44.entities.ChatMessage.create({
-      dog_id: dog.id,
-      role: "user",
-      content: userMsg.content,
-      timestamp: userMsg.timestamp,
-      has_image: hasImage,
-      image_url: uploadedImageUrl || null,
-    });
-
-    // Build context (last 10)
-    const contextMsgs = messages
-      .slice(-9)
-      .map(m => ({ role: m.role, content: m.content }));
-    contextMsgs.push({ role: "user", content: content || "Analyse cette photo." });
-
-    const response = await base44.functions.invoke("pawcoachChat", {
-      systemPrompt: buildSystemPrompt(dog),
-      messages: contextMsgs,
-      imageUrl: uploadedImageUrl || null,
-    });
-
-    const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
-    const assistantMsg = { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() };
-
-    setMessages(prev => [...prev, assistantMsg]);
-    await base44.entities.ChatMessage.create({ dog_id: dog.id, ...assistantMsg });
-
-    // Decrement message count for free users
-    if (!user?.is_premium) {
-      const newRemaining = Math.max(0, (messagesRemaining ?? 0) - 1);
-      setMessagesRemaining(newRemaining);
-      await base44.auth.updateMe({ messages_remaining: newRemaining, messages_daily_reset: getTodayString() });
-    }
-
-    setLoading(false);
   };
 
   if (initializing) {
@@ -344,7 +359,7 @@ export default function Chat() {
               <div className="px-4 pt-2 flex items-center gap-2">
                 <img src={pendingImage.preview} alt="preview" className="w-12 h-12 rounded-lg object-cover border border-border" />
                 <span className="text-xs text-muted-foreground">Photo prête à envoyer</span>
-                <button onClick={() => setPendingImage(null)} className="ml-auto text-xs text-destructive">Retirer</button>
+                <button onClick={() => { if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview); setPendingImage(null); }} className="ml-auto text-xs text-destructive">Retirer</button>
               </div>
             )}
             {/* Input row */}
