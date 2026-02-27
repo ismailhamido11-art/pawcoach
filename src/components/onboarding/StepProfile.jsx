@@ -11,7 +11,8 @@ const ACTIVITY_LEVELS = [
 
 const ENVIRONMENTS = [
   { value: "appartement", emoji: "🏢", label: "Appartement" },
-  { value: "maison_sans_jardin", emoji: "🏠", label: "Maison avec jardin" },
+  { value: "maison_sans_jardin", emoji: "🏠", label: "Maison sans jardin" },
+  { value: "maison_avec_jardin", emoji: "🏡", label: "Maison avec jardin" },
   { value: "ferme", emoji: "🌾", label: "Ferme / Campagne" },
 ];
 
@@ -85,7 +86,7 @@ export default function StepProfile({ data, onChange }) {
         <Label className="text-sm font-semibold text-foreground mb-3 block">
           Environnement de vie
         </Label>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {ENVIRONMENTS.map(e => (
             <button
               key={e.value}
