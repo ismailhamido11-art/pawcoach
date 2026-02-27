@@ -5,9 +5,19 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { motion } from "framer-motion";
 import WelcomeScreen from "../components/onboarding/WelcomeScreen";
 
+const GOAL_OPTIONS = [
+  { emoji: "💪", label: "Qu'il soit en bonne santé" },
+  { emoji: "🎓", label: "Bien l'éduquer" },
+  { emoji: "🥗", label: "Qu'il mange bien" },
+  { emoji: "😊", label: "Son bonheur au quotidien" },
+  { emoji: "🤝", label: "Mieux le comprendre" },
+];
+
 const INTERVIEW_STEPS = [
+  { type: "choice", question: "Qu'est-ce qui compte le plus pour toi ?", emoji: "🐾" },
   { type: "photo", question: "Une jolie photo pour commencer ?", emoji: "📸" },
   { type: "voice", question: "Comment s'appelle votre chien ?", emoji: "🐶", placeholder: "Son prénom..." },
   { type: "voice", question: "Quelle est sa race ?", emoji: "🐕", placeholder: "Ex: Beagle, Croisé..." },
