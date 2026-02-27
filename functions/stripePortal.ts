@@ -9,8 +9,6 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { returnUrl } = await req.json();
-
     // Get user with stripe_customer_id
     const users = await base44.asServiceRole.entities.User.filter({ email: user.email });
     const customerId = users[0]?.stripe_customer_id;
@@ -18,7 +16,7 @@ Deno.serve(async (req) => {
 
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: returnUrl,
+      return_url: "https://paw-coach-care.base44.app/Profile",
     });
 
     return Response.json({ url: session.url });

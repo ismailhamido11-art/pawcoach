@@ -12,7 +12,10 @@ Deno.serve(async (req) => {
     const { priceId } = await req.json();
     if (!priceId) return Response.json({ error: 'priceId required' }, { status: 400 });
 
-    const origin = req.headers.get("origin") || "https://paw-coach-care.base44.app";
+    const ALLOWED_PRICES = ["price_1T4tkFDuhaIxY4PGpnhDTx5L", "price_1T4tkFDuhaIxY4PGWLeWApDL"];
+    if (!ALLOWED_PRICES.includes(priceId)) return Response.json({ error: 'Invalid price ID' }, { status: 400 });
+
+    const origin = "https://paw-coach-care.base44.app";
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",

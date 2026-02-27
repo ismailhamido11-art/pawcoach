@@ -6,7 +6,49 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { messages, systemPrompt, imageUrl } = await req.json();
+    const { messages, dogId, imageUrl } = await req.json();
+
+    if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
+
+    // Fetch dog profile server-side
+    const dogs = await base44.asServiceRole.entities.Dog.filter({ id: dogId });
+    const dog = dogs?.[0];
+    if (!dog) return Response.json({ error: 'Dog not found' }, { status: 400 });
+
+    // Build system prompt server-side
+    const getAge = (birthDate) => {
+      if (!birthDate) return null;
+      const months = Math.floor((Date.now() - new Date(birthDate)) / (1000 * 60 * 60 * 24 * 30));
+      if (months < 1) return "moins d'un mois";
+      if (months < 12) return `${months} mois`;
+      const years = Math.floor(months / 12);
+      const rem = months % 12;
+      return rem > 0 ? `${years} an${years > 1 ? 's' : ''} et ${rem} mois` : `${years} an${years > 1 ? 's' : ''}`;
+    };
+
+    const ageStr = getAge(dog.birth_date);
+    const systemPrompt = `Tu es PawCoach, un assistant IA spécialisé dans le bien-être canin. Tu donnes des conseils personnalisés sur la nutrition, le comportement et le dressage.
+
+PROFIL DU CHIEN :
+- Nom : ${dog.name}
+- Race : ${dog.breed || "Non renseignée"}
+${ageStr ? `- Âge : ${ageStr}` : ""}
+${dog.weight ? `- Poids : ${dog.weight} kg` : ""}
+${dog.sex ? `- Sexe : ${dog.sex === "male" ? "Mâle" : "Femelle"}` : ""}
+${dog.neutered !== undefined ? `- Stérilisé : ${dog.neutered ? "Oui" : "Non"}` : ""}
+${dog.activity_level ? `- Niveau d'activité : ${dog.activity_level}` : ""}
+${dog.environment ? `- Environnement : ${dog.environment}` : ""}
+${dog.allergies ? `- Allergies : ${dog.allergies}` : ""}
+${dog.health_issues ? `- Problèmes de santé : ${dog.health_issues}` : ""}
+${dog.vet_name ? `- Vétérinaire : ${dog.vet_name}${dog.vet_city ? ` (${dog.vet_city})` : ""}` : ""}
+
+RÈGLES :
+- Réponds en français, avec le tutoiement
+- Sois chaleureux, utilise des émojis 🐾
+- Personnalise tes réponses en fonction du profil ci-dessus
+- Ne pose JAMAIS de diagnostic médical
+- En cas de symptôme inquiétant, recommande toujours de consulter un vétérinaire
+- Sois concis (2-3 paragraphes max)`;
 
     const apiKey = Deno.env.get("OPENROUTER_API_KEY");
     if (!apiKey) return Response.json({ error: 'Missing OPENROUTER_API_KEY' }, { status: 500 });
