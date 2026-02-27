@@ -136,9 +136,10 @@ export default function Onboarding() {
         return;
       }
       
-      const photoUrl = answers[0];
-      const textAnswers = answers.slice(1);
-      const textSteps = INTERVIEW_STEPS.slice(1);
+      const ownerGoal = answers[0];
+      const photoUrl = answers[1];
+      const textAnswers = answers.slice(2);
+      const textSteps = INTERVIEW_STEPS.slice(2);
       
       const prompt = `Voici les réponses d'un utilisateur concernant son chien :
 ${textSteps.map((s, i) => `- ${s.question} : ${textAnswers[i]}`).join('\n')}
@@ -183,6 +184,7 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
         allergies: extracted.allergies || null,
         health_issues: extracted.health_issues || null,
         owner: user.email,
+        owner_goal: ownerGoal || null,
         onboarding_completed: true,
       });
 
@@ -216,7 +218,13 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
     );
   }
 
-  const canNext = (currentStepData.type === "photo" && !uploading) || currentAnswer.trim().length > 0;
+  const handleGoalSelect = (label) => {
+    setCurrentAnswer(label);
+    // Auto-advance after a brief moment for visual feedback
+    setTimeout(() => setStep(s => s + 1), 250);
+  };
+
+  const canNext = currentStepData.type === "choice" ? currentAnswer.length > 0 : (currentStepData.type === "photo" && !uploading) || currentAnswer.trim().length > 0;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
