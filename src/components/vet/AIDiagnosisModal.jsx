@@ -9,6 +9,7 @@ import { createPageUrl } from "@/utils";
 import DiagnosisReportView from "./DiagnosisReportView";
 import DiagnosisStep2Questions from "./DiagnosisStep2Questions";
 import { Loader2, Stethoscope, AlertTriangle, Download, MapPin, Camera, X, Image } from "lucide-react";
+import { toast } from "sonner";
 
 export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
   // Steps: form → loading1 → questions → loading2 → report
@@ -66,95 +67,112 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
     if (!symptoms.trim()) return;
     setStep("loading1");
 
-    let uploadedUrl = null;
-    if (imageFile) {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: imageFile });
-      uploadedUrl = file_url;
-      setImageUrl(uploadedUrl);
+    try {
+      let uploadedUrl = null;
+      if (imageFile) {
+        const { file_url } = await base44.integrations.Core.UploadFile({ file: imageFile });
+        uploadedUrl = file_url;
+        setImageUrl(uploadedUrl);
+      }
+
+      const result = await base44.functions.invoke("preDiagnosis", {
+        symptoms,
+        duration,
+        additional_info: additionalInfo,
+        image_url: uploadedUrl,
+        dog_name: dog?.name,
+        dog_breed: dog?.breed,
+        dog_weight: dog?.weight,
+        dog_age: dogAge,
+        health_issues: dog?.health_issues,
+        allergies: dog?.allergies,
+      });
+
+      setPhase1(result.data);
+      setStep("questions");
+    } catch (e) {
+      console.error("handleStep1 error:", e);
+      toast.error("Erreur lors de l'analyse. Veuillez réessayer.");
+      setStep("form");
     }
-
-    const result = await base44.functions.invoke("preDiagnosis", {
-      symptoms,
-      duration,
-      additional_info: additionalInfo,
-      image_url: uploadedUrl,
-      dog_name: dog?.name,
-      dog_breed: dog?.breed,
-      dog_weight: dog?.weight,
-      dog_age: dogAge,
-      health_issues: dog?.health_issues,
-      allergies: dog?.allergies,
-    });
-
-    setPhase1(result.data);
-    setStep("questions");
   };
 
   // STEP 2: Final diagnosis with answers
   const handleStep2 = async () => {
     setStep("loading2");
 
-    const user = await base44.auth.me();
+    try {
+      const user = await base44.auth.me();
 
-    const result = await base44.functions.invoke("finalDiagnosis", {
-      symptoms,
-      duration,
-      additional_info: additionalInfo,
-      image_url: imageUrl,
-      preliminary_observations: phase1.preliminary_observations,
-      followup_questions: phase1.followup_questions,
-      user_answers: userAnswers,
-      dog_name: dog?.name,
-      dog_breed: dog?.breed,
-      dog_weight: dog?.weight,
-      dog_age: dogAge,
-      health_issues: dog?.health_issues,
-      allergies: dog?.allergies,
-    });
+      const result = await base44.functions.invoke("finalDiagnosis", {
+        symptoms,
+        duration,
+        additional_info: additionalInfo,
+        image_url: imageUrl,
+        preliminary_observations: phase1.preliminary_observations,
+        followup_questions: phase1.followup_questions,
+        user_answers: userAnswers,
+        dog_name: dog?.name,
+        dog_breed: dog?.breed,
+        dog_weight: dog?.weight,
+        dog_age: dogAge,
+        health_issues: dog?.health_issues,
+        allergies: dog?.allergies,
+      });
 
-    const diagnosisData = result.data;
-    setReport(diagnosisData);
+      const diagnosisData = result.data;
+      setReport(diagnosisData);
 
-    // Save to DB
-    await base44.entities.DiagnosisReport.create({
-      dog_id: dog?.id,
-      owner_email: user.email,
-      dog_name: dog?.name,
-      dog_breed: dog?.breed,
-      dog_weight: dog?.weight,
-      symptoms,
-      duration,
-      additional_info: additionalInfo,
-      diagnosis_text: JSON.stringify(diagnosisData),
-      urgency_level: diagnosisData.urgency_level,
-      report_date: reportDate,
-    });
+      // Save to DB
+      await base44.entities.DiagnosisReport.create({
+        dog_id: dog?.id,
+        owner_email: user.email,
+        dog_name: dog?.name,
+        dog_breed: dog?.breed,
+        dog_weight: dog?.weight,
+        symptoms,
+        duration,
+        additional_info: additionalInfo,
+        diagnosis_text: JSON.stringify(diagnosisData),
+        urgency_level: diagnosisData.urgency_level,
+        report_date: reportDate,
+      });
 
-    setStep("report");
+      setStep("report");
+    } catch (e) {
+      console.error("handleStep2 error:", e);
+      toast.error("Erreur lors du diagnostic final. Veuillez réessayer.");
+      setStep("questions");
+    }
   };
 
   const handleDownloadPDF = async () => {
     setDownloading(true);
-    const res = await base44.functions.invoke("generateDiagnosisPDF", {
-      report,
-      dog_name: dog?.name,
-      dog_breed: dog?.breed,
-      dog_weight: dog?.weight,
-      symptoms,
-      duration,
-      report_date: reportDate,
-      followup_questions: phase1?.followup_questions,
-      user_answers: userAnswers,
-    });
-    const blob = new Blob([res.data], { type: "application/pdf" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `prediagnostic-${dog?.name || "chien"}-${reportDate}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    a.remove();
+    try {
+      const res = await base44.functions.invoke("generateDiagnosisPDF", {
+        report,
+        dog_name: dog?.name,
+        dog_breed: dog?.breed,
+        dog_weight: dog?.weight,
+        symptoms,
+        duration,
+        report_date: reportDate,
+        followup_questions: phase1?.followup_questions,
+        user_answers: userAnswers,
+      });
+      const blob = new Blob([res.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `prediagnostic-${dog?.name || "chien"}-${reportDate}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (e) {
+      console.error("PDF download error:", e);
+      toast.error("Erreur lors du téléchargement du PDF");
+    }
     setDownloading(false);
   };
 
