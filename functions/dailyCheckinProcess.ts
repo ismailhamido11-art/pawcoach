@@ -19,6 +19,23 @@ Deno.serve(async (req) => {
     if (!dogs || !dogs.length) return Response.json({ error: 'Dog not found' }, { status: 400 });
     const dog = dogs[0];
 
+    // Calculate age segment
+    let ageSegment = "adulte";
+    const birthDate = dog.birth_date || dog.date_of_birth;
+    if (birthDate) {
+      const birth = new Date(birthDate);
+      const now = new Date();
+      const ageMonths = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
+      if (ageMonths < 12) ageSegment = "chiot";
+      else if (ageMonths >= 96) ageSegment = "senior"; // 8 years = 96 months
+    }
+
+    const segmentContext = ageSegment === "chiot"
+      ? "C'est un chiot, insiste sur la socialisation, les dents de lait, la croissance, et les premiers vaccins."
+      : ageSegment === "senior"
+      ? "C'est un senior, sois attentif aux articulations, a la fatigue, au sommeil, et aux controles veterinaires reguliers."
+      : "C'est un adulte, concentre-toi sur l'equilibre exercice/alimentation et le maintien du poids.";
+
     // Today's date
     const today = new Date().toISOString().slice(0, 10);
 
@@ -95,7 +112,7 @@ Deno.serve(async (req) => {
     let aiResponse = "";
 
     if (apiKey) {
-      const systemPrompt = `Tu es PawCoach, le compagnon quotidien de ${dog.name} (${dog.breed}). Tu commentes le check-in du jour de maniere chaleureuse et personnalisee. Tutoiement, 2-3 phrases max, emojis doux. Adapte ton message selon l'humeur (${mood}/4), l'energie (${energy}/3) et l'appetit (${appetite}/3). Si energie haute, suggere un exercice de dressage. Si appetit faible, suggere de surveiller ou scanner les croquettes. Si le streak depasse 3 jours, felicite fierement. Ne diagnostique jamais, ne prescris jamais.`;
+      const systemPrompt = `Tu es PawCoach, le compagnon quotidien de ${dog.name} (${dog.breed}). Tu commentes le check-in du jour de maniere chaleureuse et personnalisee. Tutoiement, 2-3 phrases max, emojis doux. Adapte ton message selon l'humeur (${mood}/4), l'energie (${energy}/3) et l'appetit (${appetite}/3). Si energie haute, suggere un exercice de dressage. Si appetit faible, suggere de surveiller ou scanner les croquettes. Si le streak depasse 3 jours, felicite fierement. ${segmentContext} Ne diagnostique jamais, ne prescris jamais.`;
       const userMessage = `Check-in de ${dog.name}: humeur ${mood}/4, energie ${energy}/3, appetit ${appetite}/3. Streak actuel: ${streak.current_streak} jours.${notes ? ' Notes: ' + notes : ''}`;
 
       const llmResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
