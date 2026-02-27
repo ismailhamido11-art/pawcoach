@@ -336,6 +336,6 @@ export default function Training() {
       </motion.div>
 
       <BottomNav currentPage="Training" />
-    </motion.div>
-  );
-}
+      </div>
+      );
+      }
