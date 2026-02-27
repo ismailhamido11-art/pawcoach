@@ -4,28 +4,57 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Lock, Plus, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { Stethoscope, Pill, FileText } from "lucide-react";
 import { RecordRow } from "./SectionVaccins";
+
+const GATE_CONTENT = {
+  vet_visit: {
+    Icon: Stethoscope,
+    title: "Suivi vétérinaire complet",
+    description: "Note chaque visite, garde l'historique et partage-le avec ton véto en un tap. Plus jamais de « c'était quand déjà ? »",
+    color: "bg-blue-50 border-blue-200",
+    iconBg: "bg-blue-100",
+    iconColor: "text-blue-600",
+  },
+  medication: {
+    Icon: Pill,
+    title: "Gestion des traitements",
+    description: "Enregistre les médicaments, doses et fréquences. Reçois des rappels pour ne jamais oublier un traitement.",
+    color: "bg-purple-50 border-purple-200",
+    iconBg: "bg-purple-100",
+    iconColor: "text-purple-600",
+  },
+  note: {
+    Icon: FileText,
+    title: "Notes libres",
+    description: "Consigne tout ce qui compte : comportements inhabituels, questions pour le véto, observations quotidiennes.",
+    color: "bg-teal-50 border-teal-200",
+    iconBg: "bg-teal-100",
+    iconColor: "text-teal-600",
+  },
+};
 
 export default function PremiumSection({ type, records, dogId, isPremium, onDelete, config }) {
 
   const filtered = records.filter(r => r.type === type).sort((a, b) => new Date(b.date) - new Date(a.date));
 
   if (!isPremium) {
+    const gate = GATE_CONTENT[type] || GATE_CONTENT.note;
+    const GateIcon = gate.Icon;
     return (
-      <div className="flex flex-col items-center justify-center py-12 px-4 text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
-          <Lock className="w-7 h-7 text-amber-500" />
+      <div className={`rounded-2xl border p-6 mx-1 mt-2 ${gate.color}`}>
+        <div className="flex flex-col items-center text-center space-y-3">
+          <div className={`w-14 h-14 rounded-2xl ${gate.iconBg} flex items-center justify-center`}>
+            <GateIcon className={`w-7 h-7 ${gate.iconColor}`} />
+          </div>
+          <p className="font-bold text-foreground text-base">{gate.title}</p>
+          <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
+            {gate.description}
+          </p>
+          <Button onClick={() => window.location.href = '/Premium?from=notebook'} className="rounded-xl gradient-warm border-0 text-white font-semibold px-6 h-11 mt-1">
+            Débloquer avec Premium ✨
+          </Button>
         </div>
-        <p className="font-bold text-foreground">Fonctionnalité Premium</p>
-        <p className="text-sm text-muted-foreground max-w-xs">
-          Passe à Premium pour accéder à la section {config.label} et à toutes les fonctionnalités du carnet de santé.
-        </p>
-        <Button onClick={() => window.location.href = '/Premium?from=notebook'} className="rounded-xl gradient-warm border-0 text-white font-semibold px-6">
-          Passer Premium 🌟
-        </Button>
       </div>
     );
   }
