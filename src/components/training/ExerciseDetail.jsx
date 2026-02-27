@@ -1,11 +1,13 @@
+
 import { ArrowLeft, Timer, CheckCircle, HelpCircle, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { motion } from "framer-motion";
 
 const LEVEL_CONFIG = {
-  debutant: { label: "Débutant", color: "text-green-700 bg-green-50 border-green-200" },
-  intermediaire: { label: "Intermédiaire", color: "text-amber-600 bg-amber-50 border-amber-200" },
+  debutant: { label: "Débutant", color: "text-safe bg-safe/10 border-safe/20" },
+  intermediaire: { label: "Intermédiaire", color: "text-accent bg-accent/10 border-accent/20" },
 };
 
 import VideoCoaching from "./VideoCoaching";
@@ -17,15 +19,17 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
     <div className="min-h-screen bg-background flex flex-col">
       {/* Hero image */}
       <div className="relative bg-gradient-to-br from-primary/80 to-primary h-52 flex items-center justify-center flex-shrink-0">
-        <button
+        <motion.button
           onClick={onBack}
-          className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/20 flex items-center justify-center tap-scale"
+          whileTap={{ scale: 0.96 }}
+          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+          className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/20 flex items-center justify-center"
         >
           <ArrowLeft className="w-5 h-5 text-white" />
-        </button>
+        </motion.button>
         <span className="text-7xl select-none">{exercise.emoji}</span>
         {isCompleted && (
-          <div className="absolute top-4 right-4 bg-green-500 rounded-full p-1.5">
+          <div className="absolute top-4 right-4 bg-safe rounded-full p-1.5">
             <CheckCircle className="w-4 h-4 text-white" />
           </div>
         )}
@@ -93,7 +97,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border px-5 py-4 space-y-2">
           <Button
             onClick={onComplete}
-            className="w-full h-12 rounded-2xl bg-green-500 hover:bg-green-600 text-white font-bold text-base gap-2 shadow-lg shadow-green-200"
+            className="w-full h-12 rounded-2xl bg-safe hover:bg-safe/90 text-white font-bold text-base gap-2 shadow-lg shadow-safe/30"
           >
             <CheckCircle className="w-5 h-5" />
             {isCompleted ? "Marquer comme non fait" : "J'ai réussi ! 🎉"}
