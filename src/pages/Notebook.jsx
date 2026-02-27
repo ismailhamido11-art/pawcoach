@@ -8,7 +8,9 @@ import PremiumSection from "../components/notebook/PremiumSection";
 import UpcomingReminders from "../components/notebook/UpcomingReminders";
 import SmartHealthAssistant from "../components/notebook/SmartHealthAssistant";
 import { RecordRow } from "../components/notebook/SectionVaccins";
-import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
+import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2 } from "lucide-react";
+import ShareVetModal from "../components/vet/ShareVetModal";
+import VetNotesList from "../components/vet/VetNotesList";
 
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
@@ -154,6 +156,8 @@ export default function Notebook() {
   const [records, setRecords] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
   const [showRecords, setShowRecords] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [vetNotes, setVetNotes] = useState([]);
 
   useEffect(() => { loadData(); }, []);
 
@@ -167,6 +171,11 @@ export default function Notebook() {
         const recs = await base44.entities.HealthRecord.filter({ dog_id: dogs[0].id });
         setRecords(recs);
         if (recs.length > 0) setShowRecords(true);
+        // Load vet notes for this dog
+        try {
+          const notes = await base44.entities.VetNote.filter({ dog_id: dogs[0].id });
+          setVetNotes(notes);
+        } catch (e) { /* no vet notes yet */ }
       }
     } catch (err) {
       console.error("Notebook load error:", err);
@@ -320,6 +329,27 @@ export default function Notebook() {
             )}
           </div>
         </>
+      )}
+
+      {/* Vet Notes Section */}
+      {vetNotes.length > 0 && (
+        <div className="px-4 mt-4 mb-4">
+          <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+            <Stethoscope className="w-4 h-4 text-primary" />
+            Notes de votre vétérinaire ({vetNotes.length})
+          </h3>
+          <VetNotesList notes={vetNotes} />
+        </div>
+      )}
+
+      {/* Share Modal */}
+      {dog && (
+        <ShareVetModal
+          open={showShareModal}
+          onOpenChange={setShowShareModal}
+          dogId={dog.id}
+          dogName={dog.name}
+        />
       )}
 
       <BottomNav currentPage="Notebook" />
