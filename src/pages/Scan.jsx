@@ -67,7 +67,7 @@ function CircleScore({ score, color }) {
 function getWeekStart() {
   const d = new Date();
   d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() - d.getDay() + 1); // Monday
+  d.setDate(d.getDate() - d.getDay() + 1);
   return d.toISOString().slice(0, 10);
 }
 
@@ -85,30 +85,34 @@ export default function Scan() {
   const [showShare, setShowShare] = useState(false);
   const [dogAteIt, setDogAteIt] = useState(false);
   const [scanLimitReached, setScanLimitReached] = useState(false);
+  const [error, setError] = useState(null);
   const fileRef = useRef();
 
   useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
-    const u = await base44.auth.me();
-    setUser(u);
-    const dogs = await base44.entities.Dog.filter({ owner: u.email });
-    if (dogs.length > 0) {
-      setDog(dogs[0]);
-      const scans = await base44.entities.FoodScan.filter({ dog_id: dogs[0].id });
-      setHistory(scans.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
+    try {
+      const u = await base44.auth.me();
+      setUser(u);
+      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      if (dogs.length > 0) {
+        setDog(dogs[0]);
+        const scans = await base44.entities.FoodScan.filter({ dog_id: dogs[0].id });
+        setHistory(scans.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
+      }
+    } catch (e) {
+      console.error(e);
+      setError("Impossible de charger les données. Vérifie ta connexion.");
     }
   };
 
   const checkScanLimit = (u) => {
     if (u?.is_premium) return false;
-    // Free trial: 14 days from signup
     if (u?.signup_date) {
       const signupDate = new Date(u.signup_date);
       const daysSince = (Date.now() - signupDate) / (1000 * 60 * 60 * 24);
       if (daysSince <= FREE_TRIAL_DAYS) return false;
     }
-    // Check weekly scans
     const weekStart = getWeekStart();
     const isSameWeek = u?.scans_week_start === weekStart;
     const count = isSameWeek ? (u?.scans_this_week || 0) : 0;
@@ -123,13 +127,13 @@ export default function Scan() {
   };
 
   const handleFile = (f) => {
-    // Check limit before even showing file
     if (checkScanLimit(user)) { setScanLimitReached(true); return; }
     setScanLimitReached(false);
     setFile(f);
     setResult(null);
     setSaved(false);
     setDogAteIt(false);
+    setError(null);
     const reader = new FileReader();
     reader.onload = e => setPreview(e.target.result);
     reader.readAsDataURL(f);
@@ -142,72 +146,82 @@ export default function Scan() {
     setScanning(true);
     setShowDetails(false);
     setDogAteIt(false);
+    setError(null);
 
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
 
-    const ageText = dog.birth_date
-      ? (() => {
-          const months = Math.floor((Date.now() - new Date(dog.birth_date)) / (1000 * 60 * 60 * 24 * 30));
-          return months < 12 ? `${months} mois` : `${Math.floor(months / 12)} ans`;
-        })()
-      : "âge inconnu";
+      const ageText = dog.birth_date
+        ? (() => {
+            const months = Math.floor((Date.now() - new Date(dog.birth_date)) / (1000 * 60 * 60 * 24 * 30));
+            return months < 12 ? `${months} mois` : `${Math.floor(months / 12)} ans`;
+          })()
+        : "âge inconnu";
 
-    const prompt = `Tu es PawCoach, un analyseur de sécurité alimentaire pour chiens. Analyse cette image. Si c'est un aliment brut, identifie-le et classe-le en : TOXIQUE (avec emoji crâne), AVEC PRECAUTION (avec emoji avertissement), ou SANS DANGER (avec emoji coche verte). Si c'est une étiquette de croquettes/aliment pour animaux, analyse la composition nutritionnelle et donne un score sur 10. Personnalise pour ce chien : ${dog.name}, ${dog.breed || "race inconnue"}, ${ageText}, ${dog.weight ? dog.weight + "kg" : "poids inconnu"}, allergies : ${dog.allergies || "aucune"}. Réponds en français. Utilise le tutoiement. Formate ta réponse en JSON avec ces champs : food_name (string), verdict ("toxic", "caution", ou "safe"), score (number 1-10, null si aliment brut), summary (résumé de 2-3 lignes), details (analyse nutritionnelle ou explication détaillée), recommendation (conseil personnalisé pour ${dog.name}). Sois concis et chaleureux.`;
+      const prompt = `Tu es PawCoach, un analyseur de sécurité alimentaire pour chiens. Analyse cette image. Si c'est un aliment brut, identifie-le et classe-le en : TOXIQUE (avec emoji crâne), AVEC PRECAUTION (avec emoji avertissement), ou SANS DANGER (avec emoji coche verte). Si c'est une étiquette de croquettes/aliment pour animaux, analyse la composition nutritionnelle et donne un score sur 10. Personnalise pour ce chien : ${dog.name}, ${dog.breed || "race inconnue"}, ${ageText}, ${dog.weight ? dog.weight + "kg" : "poids inconnu"}, allergies : ${dog.allergies || "aucune"}. Réponds en français. Utilise le tutoiement. Formate ta réponse en JSON avec ces champs : food_name (string), verdict ("toxic", "caution", ou "safe"), score (number 1-10, null si aliment brut), summary (résumé de 2-3 lignes), details (analyse nutritionnelle ou explication détaillée), recommendation (conseil personnalisé pour ${dog.name}). Sois concis et chaleureux.`;
 
-    const aiResult = await base44.integrations.Core.InvokeLLM({
-      prompt,
-      file_urls: [file_url],
-      response_json_schema: {
-        type: "object",
-        properties: {
-          food_name: { type: "string" },
-          verdict: { type: "string" },
-          score: { type: "number" },
-          summary: { type: "string" },
-          details: { type: "string" },
-          recommendation: { type: "string" },
+      const aiResult = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        file_urls: [file_url],
+        response_json_schema: {
+          type: "object",
+          properties: {
+            food_name: { type: "string" },
+            verdict: { type: "string" },
+            score: { type: "number" },
+            summary: { type: "string" },
+            details: { type: "string" },
+            recommendation: { type: "string" },
+          },
         },
-      },
-    });
+      });
 
-    await incrementScanCount(user);
-    // Refresh user data
-    const updatedUser = await base44.auth.me();
-    setUser(updatedUser);
+      await incrementScanCount(user);
+      const updatedUser = await base44.auth.me();
+      setUser(updatedUser);
 
-    setResult({ ...aiResult, photo_url: file_url, timestamp: new Date().toISOString() });
-    setScanning(false);
+      setResult({ ...aiResult, photo_url: file_url, timestamp: new Date().toISOString() });
+    } catch (e) {
+      console.error(e);
+      setError("L'analyse a échoué. Vérifie ta connexion et réessaie.");
+    } finally {
+      setScanning(false);
+    }
   };
 
   const saveResult = async () => {
-    if (!result || !dog) return;
-    await base44.entities.FoodScan.create({
-      dog_id: dog.id,
-      photo_url: result.photo_url,
-      food_name: result.food_name,
-      verdict: result.verdict,
-      score: result.score,
-      details: result.details,
-      recommendation: result.recommendation,
-      timestamp: result.timestamp,
-    });
-    setSaved(true);
-    setHistory(prev => [result, ...prev]);
+    if (!result || !dog || !user) return;
+    try {
+      await base44.entities.FoodScan.create({
+        dog_id: dog.id,
+        photo_url: result.photo_url,
+        food_name: result.food_name,
+        verdict: result.verdict,
+        score: result.score,
+        details: result.details,
+        recommendation: result.recommendation,
+        timestamp: result.timestamp,
+      });
+      setSaved(true);
+      setHistory(prev => [result, ...prev]);
 
-    const newPoints = (user.points || 0) + 10;
-    await base44.auth.updateMe({ points: newPoints });
-    setUser(prev => ({ ...prev, points: newPoints }));
+      const newPoints = (user.points || 0) + 10;
+      await base44.auth.updateMe({ points: newPoints });
+      setUser(prev => ({ ...prev, points: newPoints }));
+    } catch (e) {
+      console.error(e);
+      alert("Impossible de sauvegarder. Réessaie.");
+    }
   };
 
   const reset = () => {
     setResult(null); setPreview(null); setFile(null);
     setSaved(false); setShowDetails(false); setDogAteIt(false);
-    setScanLimitReached(false);
+    setScanLimitReached(false); setError(null);
   };
 
   const verdictCfg = result ? VERDICT_CONFIG[result.verdict] || VERDICT_CONFIG.caution : null;
 
-  // Freemium info
   const weekStart = getWeekStart();
   const isSameWeek = user?.scans_week_start === weekStart;
   const scansUsed = isSameWeek ? (user?.scans_this_week || 0) : 0;
@@ -238,6 +252,17 @@ export default function Scan() {
       </div>
 
       <div className="px-5 pt-5 space-y-4">
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-center">
+            <p className="text-sm text-red-700 font-medium">{error}</p>
+            <button onClick={() => { setError(null); loadData(); }}
+              className="mt-2 text-xs text-red-600 font-bold underline">
+              Réessayer
+            </button>
+          </div>
+        )}
+
         {/* Freemium limit reached */}
         {scanLimitReached && (
           <Card className="shadow-none border-2 border-amber-200 bg-amber-50">
@@ -255,7 +280,7 @@ export default function Scan() {
           </Card>
         )}
 
-        {/* Freemium counter (only when not in trial, not premium, no result) */}
+        {/* Freemium counter */}
         {!result && !scanLimitReached && !user?.is_premium && !isInTrial && (
           <div className="flex items-center justify-between text-xs text-muted-foreground bg-muted/40 rounded-xl px-3 py-2">
             <span>Scans cette semaine : <strong className="text-foreground">{scansUsed}/{FREE_SCAN_LIMIT}</strong></span>
@@ -368,15 +393,18 @@ export default function Scan() {
               </CardContent>
             </Card>
 
-            <div className="bg-white rounded-2xl border border-border p-4 flex items-center justify-between shadow-sm">
-              <div>
-                <p className="text-xs font-bold text-foreground">Disponible chez nos partenaires</p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">Lien partenaire</p>
+            {/* Partner link — only shown for safe/caution, NEVER for toxic */}
+            {result.verdict !== "toxic" && (
+              <div className="bg-white rounded-2xl border border-border p-4 flex items-center justify-between shadow-sm">
+                <div>
+                  <p className="text-xs font-bold text-foreground">Disponible chez nos partenaires</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Lien partenaire</p>
+                </div>
+                <Button onClick={() => window.open("https://zooplus.fr", "_blank")} size="sm" variant="outline" className="rounded-xl h-8 text-xs font-semibold">
+                  Voir l'offre
+                </Button>
               </div>
-              <Button onClick={() => window.open("https://zooplus.fr", "_blank")} size="sm" variant="outline" className="rounded-xl h-8 text-xs font-semibold">
-                Voir l'offre
-              </Button>
-            </div>
+            )}
 
             <div className="grid grid-cols-3 gap-2">
               <Button variant="outline" onClick={reset} className="h-12 rounded-2xl font-semibold text-sm">
