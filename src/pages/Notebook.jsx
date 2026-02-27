@@ -245,8 +245,8 @@ export default function Notebook() {
               onClick={() => setShowShareModal(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-medium transition-all"
             >
-              <Share2 className="w-3.5 h-3.5" />
-              Partager
+              <Stethoscope className="w-3.5 h-3.5" />
+              Envoyer au véto
             </button>
           )}
         </div>
