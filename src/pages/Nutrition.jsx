@@ -5,7 +5,7 @@ import WellnessBanner from "../components/WellnessBanner";
 import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Salad } from "lucide-react";
+import { Send, Salad, Lock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 export default function Nutrition() {
@@ -17,6 +17,7 @@ export default function Nutrition() {
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
   const [activeTab, setActiveTab] = useState("chat");
+  const [msgCount, setMsgCount] = useState(0);
   const bottomRef = useRef(null);
 
   useEffect(() => { init(); }, []);
@@ -49,7 +50,7 @@ export default function Nutrition() {
   const sendMessage = async (text) => {
     const content = (text || input).trim();
     if (!content || !dog || loading) return;
-    if (!user?.is_premium && messages.length > 20) return;
+    if (!user?.is_premium && msgCount >= 20) return;
 
     setInput("");
     setMessages(prev => [...prev, { role: "user", content, timestamp: new Date().toISOString() }]);
@@ -67,6 +68,7 @@ export default function Nutrition() {
 
       const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
       setMessages(prev => [...prev, { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() }]);
+      if (!user?.is_premium) setMsgCount(prev => prev + 1);
     } catch (err) {
       console.error("Nutrition send error:", err);
       setMessages(prev => [...prev, {
@@ -94,7 +96,8 @@ export default function Nutrition() {
     `Aliments à éviter absolument`,
   ] : [];
 
-  const showQuickActions = messages.length <= 1;
+  const isNutriLimitReached = !user?.is_premium && msgCount >= 20;
+  const showQuickActions = messages.length <= 1 && !isNutriLimitReached;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -186,37 +189,52 @@ export default function Nutrition() {
 
           {/* Bottom input */}
           <div className="fixed bottom-16 left-0 right-0 bg-background border-t border-border">
-            {showQuickActions && (
-              <div className="px-4 pt-3 pb-1">
-                <div className="flex gap-2 overflow-x-auto pb-1">
-                  {quickActions.map((s, i) => (
-                    <button
-                      key={i}
-                      onClick={() => sendMessage(s)}
-                      className="flex-shrink-0 text-xs bg-secondary text-secondary-foreground px-3 py-2 rounded-xl border border-border hover:border-primary hover:text-primary transition-all tap-scale whitespace-nowrap"
-                    >
-                      {s}
-                    </button>
-                  ))}
+            {isNutriLimitReached ? (
+              <div className="mx-4 my-3 bg-muted rounded-2xl p-4 flex items-start gap-3">
+                <Lock className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">Messages NutriCoach utilisés</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Tu as utilisé tes 20 messages gratuits. Passe en Premium pour un accès illimité à NutriCoach.</p>
+                  <Button onClick={() => window.location.href = '/Premium'} size="sm" className="mt-2 bg-green-600 hover:bg-green-700 border-0 text-white text-xs h-8">
+                    Passer en Premium ✨
+                  </Button>
                 </div>
               </div>
+            ) : (
+              <>
+                {showQuickActions && (
+                  <div className="px-4 pt-3 pb-1">
+                    <div className="flex gap-2 overflow-x-auto pb-1">
+                      {quickActions.map((s, i) => (
+                        <button
+                          key={i}
+                          onClick={() => sendMessage(s)}
+                          className="flex-shrink-0 text-xs bg-secondary text-secondary-foreground px-3 py-2 rounded-xl border border-border hover:border-primary hover:text-primary transition-all tap-scale whitespace-nowrap"
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div className="flex gap-2 px-4 py-3">
+                  <Input
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && !e.shiftKey && sendMessage()}
+                    placeholder={dog ? `Question nutrition pour ${dog.name}...` : "Posez votre question..."}
+                    className="flex-1 h-11 rounded-xl border-border bg-muted/30"
+                  />
+                  <Button
+                    onClick={() => sendMessage()}
+                    disabled={!input.trim() || loading}
+                    className="h-11 w-11 rounded-xl bg-green-600 hover:bg-green-700 border-0 shadow-lg p-0"
+                  >
+                    <Send className="w-4 h-4 text-white" />
+                  </Button>
+                </div>
+              </>
             )}
-            <div className="flex gap-2 px-4 py-3">
-              <Input
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && !e.shiftKey && sendMessage()}
-                placeholder={dog ? `Question nutrition pour ${dog.name}...` : "Posez votre question..."}
-                className="flex-1 h-11 rounded-xl border-border bg-muted/30"
-              />
-              <Button
-                onClick={() => sendMessage()}
-                disabled={!input.trim() || loading}
-                className="h-11 w-11 rounded-xl bg-green-600 hover:bg-green-700 border-0 shadow-lg p-0"
-              >
-                <Send className="w-4 h-4 text-white" />
-              </Button>
-            </div>
           </div>
         </>
       )}
