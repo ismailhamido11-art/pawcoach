@@ -183,9 +183,9 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pb-24">
-        <div className="h-8 bg-amber-50" />
-        <div className="pt-16 px-6 space-y-6">
+      <div className="min-h-screen bg-gradient-to-b from-background to-primary/[0.02] pb-24">
+        <div className="h-8 bg-accent/10" />
+        <div className="pt-16 px-5 space-y-6">
           <div className="flex items-center gap-3">
             <div className="w-14 h-14 rounded-full bg-muted animate-pulse" />
             <div className="space-y-2 flex-1">
@@ -214,7 +214,7 @@ export default function Home() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 120, damping: 20 }}
-      className="min-h-screen bg-background pb-24 relative"
+      className="min-h-screen bg-gradient-to-b from-background to-primary/[0.02] pb-24 relative"
     >
       <WellnessBanner />
 
@@ -230,7 +230,7 @@ export default function Home() {
       </Link>
       </motion.div>
 
-      <div className="pt-24 px-6">
+      <div className="pt-24 px-5">
         {/* Header avec streak */}
         <header className="mb-6">
           <div className="flex items-center justify-between">
@@ -248,9 +248,9 @@ export default function Home() {
               </div>
             </div>
             {currentStreak > 0 && (
-              <div className="flex items-center gap-1.5 bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-full">
-                <Flame className="w-4 h-4 text-orange-500" />
-                <span className="text-sm font-bold text-orange-600">{currentStreak}j</span>
+              <div className="flex items-center gap-1.5 bg-accent/10 border border-accent/20 px-3 py-1.5 rounded-full">
+                <Flame className="w-4 h-4 text-accent" />
+                <span className="text-sm font-bold text-accent">{currentStreak}j</span>
               </div>
             )}
           </div>
@@ -390,8 +390,8 @@ export default function Home() {
         {/* STREAK */}
         {currentStreak > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-border/50 mb-6 flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center flex-shrink-0">
-              <Heart className="w-7 h-7 text-orange-500 fill-orange-500" />
+            <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
+              <Heart className="w-7 h-7 text-accent fill-accent" />
             </div>
             <div className="flex-1">
               <p className="font-bold text-foreground">
@@ -415,14 +415,14 @@ export default function Home() {
 
         {/* BILAN HEBDO */}
         {weeklyInsight && (
-          <div className="bg-white rounded-2xl shadow-sm border border-indigo-200 mb-6 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-sm border border-primary/20 mb-6 overflow-hidden">
             {/* Header cliquable */}
             <button
               onClick={() => setInsightExpanded(!insightExpanded)}
               className="w-full flex items-center gap-3 p-4 text-left"
             >
-              <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-5 h-5 text-indigo-500" />
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-foreground text-sm">
@@ -458,7 +458,7 @@ export default function Home() {
                       <ul className="space-y-1">
                         {hl.map((h, i) => (
                           <li key={i} className="text-sm text-foreground flex items-start gap-2">
-                            <span className="text-indigo-400 mt-0.5 flex-shrink-0">•</span>
+                            <span className="text-primary/60 mt-0.5 flex-shrink-0">•</span>
                             <span>{h}</span>
                           </li>
                         ))}
@@ -489,22 +489,22 @@ export default function Home() {
                 {(weeklyInsight.checkin_count > 0 || weeklyInsight.avg_mood) && (
                   <div className="flex gap-3 pt-1">
                     {weeklyInsight.checkin_count > 0 && (
-                      <div className="bg-indigo-50 rounded-lg px-3 py-2 flex-1 text-center">
-                        <p className="text-lg font-bold text-indigo-600">{weeklyInsight.checkin_count}</p>
+                      <div className="bg-primary/5 rounded-xl px-3 py-2 flex-1 text-center">
+                        <p className="text-lg font-bold text-primary">{weeklyInsight.checkin_count}</p>
                         <p className="text-[10px] text-muted-foreground">check-ins</p>
                       </div>
                     )}
                     {weeklyInsight.avg_mood && (
-                      <div className="bg-indigo-50 rounded-lg px-3 py-2 flex-1 text-center">
-                        <p className="text-lg font-bold text-indigo-600">
+                      <div className="bg-primary/5 rounded-xl px-3 py-2 flex-1 text-center">
+                        <p className="text-lg font-bold text-primary">
                           {weeklyInsight.avg_mood.toFixed(1)}
                         </p>
                         <p className="text-[10px] text-muted-foreground">humeur moy.</p>
                       </div>
                     )}
                     {weeklyInsight.avg_energy && (
-                      <div className="bg-indigo-50 rounded-lg px-3 py-2 flex-1 text-center">
-                        <p className="text-lg font-bold text-indigo-600">{weeklyInsight.avg_energy.toFixed(1)}</p>
+                      <div className="bg-primary/5 rounded-xl px-3 py-2 flex-1 text-center">
+                        <p className="text-lg font-bold text-primary">{weeklyInsight.avg_energy.toFixed(1)}</p>
                         <p className="text-[10px] text-muted-foreground">energie moy.</p>
                       </div>
                     )}
@@ -515,7 +515,7 @@ export default function Home() {
                 <button
                   onClick={handleMarkInsightRead}
                   disabled={markingRead}
-                  className="w-full mt-2 py-2.5 rounded-xl bg-indigo-50 text-indigo-600 font-semibold text-sm hover:bg-indigo-100 transition-colors flex items-center justify-center gap-2"
+                  className="w-full mt-2 py-2.5 rounded-xl bg-primary/10 text-primary font-semibold text-sm hover:bg-primary/20 transition-colors flex items-center justify-center gap-2"
                 >
                   {markingRead ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -576,7 +576,7 @@ export default function Home() {
               to={createPageUrl("Notebook")}
               className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 group hover:border-primary/30 transition-colors"
             >
-              <div className="w-11 h-11 rounded-full bg-red-50 flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform">
+              <div className="w-11 h-11 rounded-full bg-destructive/10 flex items-center justify-center text-destructive group-hover:scale-110 transition-transform">
                 <BookHeart className="w-5 h-5" />
               </div>
               <div className="text-left flex-1">
@@ -592,7 +592,7 @@ export default function Home() {
               to={createPageUrl("Nutrition")}
               className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 group hover:border-primary/30 transition-colors"
             >
-              <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-green-500 group-hover:scale-110 transition-transform">
+              <div className="w-11 h-11 rounded-full bg-safe/10 flex items-center justify-center text-safe group-hover:scale-110 transition-transform">
                 <Salad className="w-5 h-5" />
               </div>
               <div className="text-left flex-1">
@@ -608,7 +608,7 @@ export default function Home() {
               to={createPageUrl("FindVet")}
               className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 group hover:border-primary/30 transition-colors"
             >
-              <div className="w-11 h-11 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
+              <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                 <MapPin className="w-5 h-5" />
               </div>
               <div className="text-left flex-1">
@@ -657,7 +657,7 @@ function MilestoneCelebration({ milestone, onClose }) {
         animate={{ scale: 1, y: 0, rotate: 0 }}
         exit={{ scale: 0, opacity: 0 }}
         transition={{ type: "spring", stiffness: 180, damping: 12 }}
-        className="bg-white rounded-3xl p-8 text-center shadow-2xl max-w-[280px] mx-6"
+        className="bg-white rounded-2xl p-8 text-center shadow-lg max-w-[280px] mx-5"
       >
         <motion.div
           animate={{ scale: [1, 1.08, 1] }}
@@ -669,8 +669,8 @@ function MilestoneCelebration({ milestone, onClose }) {
         <p className="text-xl font-bold text-foreground">{milestone.message}</p>
         <p className="text-sm text-muted-foreground mt-1">{milestone.sub}</p>
         <div className="mt-4 flex items-center justify-center gap-1.5">
-          <Flame className="w-4 h-4 text-orange-500" />
-          <span className="text-sm font-bold text-orange-600">{milestone.days} jours</span>
+          <Flame className="w-4 h-4 text-accent" />
+          <span className="text-sm font-bold text-accent">{milestone.days} jours</span>
         </div>
         <p className="text-xs text-muted-foreground mt-4">Touche pour fermer</p>
       </motion.div>

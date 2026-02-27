@@ -84,7 +84,7 @@ function HealthStatusBar({ dog, records }) {
   ];
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2.5 bg-white/80 backdrop-blur-sm border-b border-slate-100">
+    <div className="flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-sm border-b border-slate-100">
       <span className="text-sm font-bold text-foreground">{dog.name}</span>
       <span className="text-xs text-muted-foreground">{dog.breed} · {dog.weight}kg</span>
       <div className="flex-1" />
@@ -167,21 +167,21 @@ export default function Notebook() {
   const sortedRecords = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
   const getIconForType = (type) => {
     switch (type) {
-      case 'vaccine': return <Syringe className="w-4 h-4 text-blue-600" />;
-      case 'weight': return <Weight className="w-4 h-4 text-teal-600" />;
-      case 'vet_visit': return <Stethoscope className="w-4 h-4 text-purple-600" />;
-      case 'medication': return <Pill className="w-4 h-4 text-amber-600" />;
-      case 'note': return <FileText className="w-4 h-4 text-gray-600" />;
-      default: return <FileText className="w-4 h-4" />;
+      case 'vaccine': return <Syringe className="w-4 h-4 text-primary" />;
+      case 'weight': return <Weight className="w-4 h-4 text-primary" />;
+      case 'vet_visit': return <Stethoscope className="w-4 h-4 text-primary" />;
+      case 'medication': return <Pill className="w-4 h-4 text-accent-foreground" />;
+      case 'note': return <FileText className="w-4 h-4 text-muted-foreground" />;
+      default: return <FileText className="w-4 h-4 text-muted-foreground" />;
     }
   };
   const getAccentClassForType = (type) => {
     switch (type) {
-      case 'vaccine': return "bg-blue-50 border-blue-100";
-      case 'weight': return "bg-teal-50 border-teal-100";
-      case 'vet_visit': return "bg-purple-50 border-purple-100";
-      case 'medication': return "bg-amber-50 border-amber-100";
-      case 'note': return "bg-gray-50 border-gray-200";
+      case 'vaccine': return "bg-primary/10 border-primary/20";
+      case 'weight': return "bg-primary/5 border-primary/20";
+      case 'vet_visit': return "bg-primary/10 border-primary/20";
+      case 'medication': return "bg-accent/10 border-accent/20";
+      case 'note': return "bg-muted border-border";
       default: return "bg-muted border-border";
     }
   };
@@ -222,7 +222,7 @@ export default function Notebook() {
 
       {/* AI Pre-Diagnosis Button */}
       {dog && (
-        <div className="px-4 mt-4">
+        <div className="px-5 mt-4">
           <motion.button
             whileTap={{ scale: 0.96 }}
             transition={spring}
@@ -242,14 +242,14 @@ export default function Notebook() {
       )}
 
       {/* Main: Embedded Conversation */}
-      <div className="px-4 mt-4 mb-4">
+      <div className="px-5 mt-4 mb-4">
         <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} />
       </div>
 
       <UpcomingReminders records={records} isPremium={isPremium} />
 
       {/* Records Section - Collapsible */}
-      <div className="px-4 mt-2">
+      <div className="px-5 mt-2">
         <button
           onClick={() => setShowRecords(!showRecords)}
           className="w-full flex items-center justify-between py-3 px-1 text-sm font-semibold text-foreground"
@@ -262,7 +262,7 @@ export default function Notebook() {
       {showRecords && (
         <>
           {/* Tab bar */}
-          <div className="bg-white border-b border-border sticky top-0 z-10 shadow-sm">
+          <div className="bg-white/80 backdrop-blur-md border-b border-border sticky top-0 z-10 shadow-sm">
             <div className="flex overflow-x-auto">
               {TABS.map(tab => (
                 <motion.button
@@ -288,7 +288,7 @@ export default function Notebook() {
           </div>
 
           {/* Section content */}
-          <div className="px-4 pt-4">
+          <div className="px-5 pt-4">
             {activeTab === "all" && (
               <div className="space-y-3">
                 {sortedRecords.length === 0 ? (
@@ -333,7 +333,7 @@ export default function Notebook() {
 
       {/* Vet Notes Section */}
       {vetNotes.length > 0 && (
-        <div className="px-4 mt-4 mb-4">
+        <div className="px-5 mt-4 mb-4">
           <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
             <Stethoscope className="w-4 h-4 text-primary" />
             Notes de votre vétérinaire ({vetNotes.length})

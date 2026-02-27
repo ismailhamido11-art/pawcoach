@@ -125,7 +125,7 @@ export default function Nutrition() {
             <div className="space-y-2"><div className="h-4 w-24 bg-white/20 rounded animate-pulse" /><div className="h-3 w-32 bg-white/10 rounded animate-pulse" /></div>
           </div>
         </div>
-        <div className="flex-1 px-4 py-4 space-y-4">
+        <div className="flex-1 px-5 py-4 space-y-4">
           <div className="flex gap-2"><div className="w-8 h-8 rounded-xl bg-muted animate-pulse" /><div className="h-20 w-4/5 bg-muted animate-pulse rounded-2xl" /></div>
         </div>
         <BottomNav currentPage="Nutrition" />
@@ -201,13 +201,13 @@ export default function Nutrition() {
       </div>
 
       {activeTab === "mealplan" ? (
-        <div className="flex-1 overflow-y-auto px-4 py-4 pb-24">
+        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
           <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={user?.is_premium} />
         </div>
       ) : (
         <>
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-44">
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 pb-44">
             {messages.map((msg, i) => (
               <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 {msg.role === "assistant" && (
@@ -251,9 +251,9 @@ export default function Nutrition() {
           </div>
 
           {/* Bottom input */}
-          <div className="fixed bottom-16 left-0 right-0 bg-background border-t border-border">
+          <div className="fixed bottom-16 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-border">
             {isNutriLimitReached ? (
-              <div className="px-4 py-3 space-y-3">
+              <div className="px-5 py-3 space-y-3">
                 <div className="flex gap-2 justify-start">
                   <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                   <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
@@ -261,7 +261,7 @@ export default function Nutrition() {
                       J'adorerais continuer à conseiller <strong>{dog?.name || "ton chien"}</strong> sur sa nutrition ! 🥗 Tes messages gratuits sont épuisés pour aujourd'hui. Reviens demain pour 2 messages offerts, ou passe en Premium pour un coaching illimité !
                     </p>
                     <div className="flex gap-2 mt-3">
-                      <Button onClick={() => window.location.href = '/Premium?from=chat'} size="sm" className="bg-green-600 hover:bg-green-700 border-0 text-white text-xs h-8">
+                      <Button onClick={() => window.location.href = '/Premium?from=chat'} size="sm" className="bg-safe hover:bg-safe/90 border-0 text-white text-xs h-8">
                         Débloquer Premium ✨
                       </Button>
                       <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground">
@@ -281,7 +281,7 @@ export default function Nutrition() {
             ) : (
               <>
                 {showQuickActions && (
-                  <div className="px-4 pt-3 pb-1">
+                  <div className="px-5 pt-3 pb-1">
                     <div className="flex gap-2 overflow-x-auto pb-1">
                       {quickActions.map((s, i) => (
                         <motion.button
@@ -297,7 +297,7 @@ export default function Nutrition() {
                     </div>
                   </div>
                 )}
-                <div className="flex gap-2 px-4 py-3">
+                <div className="flex gap-2 px-5 py-3">
                   <Input
                     value={input}
                     onChange={e => setInput(e.target.value)}
@@ -308,7 +308,7 @@ export default function Nutrition() {
                   <Button
                     onClick={() => sendMessage()}
                     disabled={!input.trim() || loading}
-                    className="h-11 w-11 rounded-xl bg-green-600 hover:bg-green-700 border-0 shadow-lg p-0"
+                    className="h-11 w-11 rounded-xl bg-safe hover:bg-safe/90 border-0 shadow-lg p-0"
                   >
                     <Send className="w-4 h-4 text-white" />
                   </Button>

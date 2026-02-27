@@ -188,14 +188,14 @@ export default function Chat() {
   if (initializing) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
-        <div className="h-7 bg-amber-50" />
+        <div className="h-7 bg-accent/10" />
         <div className="gradient-primary pt-10 pb-4 px-5 mt-7">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-white/20 animate-pulse" />
             <div className="space-y-2"><div className="h-4 w-24 bg-white/20 rounded animate-pulse" /><div className="h-3 w-32 bg-white/10 rounded animate-pulse" /></div>
           </div>
         </div>
-        <div className="flex-1 px-4 py-4 space-y-4">
+        <div className="flex-1 px-5 py-4 space-y-4">
           <div className="flex gap-2"><div className="w-8 h-8 rounded-xl bg-muted animate-pulse" /><div className="h-16 w-3/4 bg-muted animate-pulse rounded-2xl" /></div>
           <div className="flex gap-2 justify-end"><div className="h-10 w-1/2 bg-muted animate-pulse rounded-2xl" /></div>
           <div className="flex gap-2"><div className="w-8 h-8 rounded-xl bg-muted animate-pulse" /><div className="h-24 w-4/5 bg-muted animate-pulse rounded-2xl" /></div>
@@ -216,8 +216,8 @@ export default function Chat() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <div className="fixed top-0 left-0 right-0 z-50 bg-amber-50 border-b border-amber-200 px-4 py-1.5 text-center">
-        <p className="text-xs text-amber-700 font-medium">🐾 PawCoach est un coach bien-être, pas un vétérinaire.</p>
+      <div className="fixed top-0 left-0 right-0 z-50 bg-accent/10 backdrop-blur-sm border-b border-accent/20 px-5 py-1.5 text-center">
+        <p className="text-xs text-accent-foreground font-medium">🐾 PawCoach est un coach bien-être, pas un vétérinaire.</p>
       </div>
 
       <div className="gradient-primary pt-10 pb-4 px-5 mt-7">
@@ -245,7 +245,7 @@ export default function Chat() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-44">
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 pb-44">
         {messages.map((msg, i) => (
           <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role === "assistant" && (
@@ -293,9 +293,9 @@ export default function Chat() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="fixed bottom-16 left-0 right-0 bg-background border-t border-border">
+      <div className="fixed bottom-16 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-border">
         {showSuggestions && (
-          <div className="px-4 pt-3 pb-1">
+          <div className="px-5 pt-3 pb-1">
             <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
               {suggestions.map((s, i) => (
                 <motion.button
@@ -313,7 +313,7 @@ export default function Chat() {
         )}
 
         {isLimitReached ? (
-          <div className="px-4 py-3 space-y-3">
+          <div className="px-5 py-3 space-y-3">
             <div className="flex gap-2 justify-start">
               <IconBadge icon={PawPrint} color="#2d9f82" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
               <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
@@ -341,13 +341,13 @@ export default function Chat() {
         ) : (
           <>
             {pendingImage && (
-              <div className="px-4 pt-2 flex items-center gap-2">
+              <div className="px-5 pt-2 flex items-center gap-2">
                 <img src={pendingImage.preview} alt="preview" className="w-12 h-12 rounded-lg object-cover border border-border" />
                 <span className="text-xs text-muted-foreground">Photo prête à envoyer</span>
                 <button onClick={() => { if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview); setPendingImage(null); }} className="ml-auto text-xs text-destructive">Retirer</button>
               </div>
             )}
-            <div className="flex gap-2 px-4 py-3">
+            <div className="flex gap-2 px-5 py-3">
               <input
                 ref={fileInputRef}
                 type="file"
