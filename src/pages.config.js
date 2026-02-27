@@ -48,6 +48,7 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Chat from './pages/Chat';
+import FindVet from './pages/FindVet';
 import Home from './pages/Home';
 import Notebook from './pages/Notebook';
 import Nutrition from './pages/Nutrition';
@@ -58,12 +59,12 @@ import Scan from './pages/Scan';
 import Training from './pages/Training';
 import VetDogView from './pages/VetDogView';
 import VetPortal from './pages/VetPortal';
-import FindVet from './pages/FindVet';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Chat": Chat,
+    "FindVet": FindVet,
     "Home": Home,
     "Notebook": Notebook,
     "Nutrition": Nutrition,
@@ -74,7 +75,6 @@ export const PAGES = {
     "Training": Training,
     "VetDogView": VetDogView,
     "VetPortal": VetPortal,
-    "FindVet": FindVet,
 }
 
 export const pagesConfig = {
