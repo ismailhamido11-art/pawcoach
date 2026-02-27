@@ -162,12 +162,20 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
     <Dialog open={open} onOpenChange={resetAndClose}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-lg">
-            <Stethoscope className="w-5 h-5 text-primary" />
-            {step === "form" || step === "loading1" ? "Décrire les symptômes" :
-             step === "questions" || step === "loading2" ? "Analyse approfondie" :
-             "Rapport complet"}
-          </DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="flex items-center gap-2 text-lg">
+              <Stethoscope className="w-5 h-5 text-primary" />
+              {step === "form" || step === "loading1" ? "Décrire les symptômes" :
+               step === "questions" || step === "loading2" ? "Analyse approfondie" :
+               "Rapport complet"}
+            </DialogTitle>
+            <button
+              onClick={resetAndClose}
+              className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-muted transition-colors"
+            >
+              <X className="w-5 h-5 text-muted-foreground" />
+            </button>
+          </div>
         </DialogHeader>
 
         {/* ====== STEP 1: Symptom Form ====== */}
