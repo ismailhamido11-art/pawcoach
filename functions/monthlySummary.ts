@@ -2,6 +2,12 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
   try {
+    // Authentication: verify cron secret
+    const cronSecret = req.headers.get("x-cron-secret");
+    if (cronSecret !== Deno.env.get("CRON_SECRET")) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const base44 = createClientFromRequest(req);
 
     const now = new Date();
@@ -10,19 +16,22 @@ Deno.serve(async (req) => {
     const monthName = lastMonth.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
     const monthStr = lastMonth.toISOString().slice(0, 7); // "YYYY-MM"
 
-    // Get all dogs
+    // Fetch all data upfront to avoid N+1 queries
     const dogs = await base44.asServiceRole.entities.Dog.list();
+    const allUsers = await base44.asServiceRole.entities.User.list();
+    const allRecords = await base44.asServiceRole.entities.HealthRecord.list();
+
+    const userMap = new Map(allUsers.map(u => [u.email, u]));
 
     for (const dog of dogs) {
       // Get owner – premium only
-      const users = await base44.asServiceRole.entities.User.filter({ email: dog.owner });
-      if (!users.length) continue;
-      const user = users[0];
+      const user = userMap.get(dog.owner);
+      if (!user) continue;
       if (user.role !== "admin") continue;
 
-      // Get health records for last month
-      const allRecords = await base44.asServiceRole.entities.HealthRecord.filter({ dog_id: dog.id });
-      const lastMonthRecords = allRecords.filter(r => r.date && r.date.startsWith(monthStr));
+      // Filter health records in memory for this dog
+      const dogRecords = allRecords.filter(r => r.dog_id === dog.id);
+      const lastMonthRecords = dogRecords.filter(r => r.date && r.date.startsWith(monthStr));
 
       const vetVisits = lastMonthRecords.filter(r => r.type === "vet_visit").length;
       const notes = lastMonthRecords.filter(r => r.type === "note").length;

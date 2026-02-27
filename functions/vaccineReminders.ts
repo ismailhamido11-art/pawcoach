@@ -2,14 +2,26 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
   try {
+    // Authentication: verify cron secret
+    const cronSecret = req.headers.get("x-cron-secret");
+    if (cronSecret !== Deno.env.get("CRON_SECRET")) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const base44 = createClientFromRequest(req);
 
     // This is a scheduled function — use service role
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Get all vaccine records with next_date
+    // Fetch all data upfront to avoid N+1 queries
     const vaccines = await base44.asServiceRole.entities.HealthRecord.filter({ type: "vaccine" });
+    const allDogs = await base44.asServiceRole.entities.Dog.list();
+    const allUsers = await base44.asServiceRole.entities.User.list();
+
+    const dogMap = new Map(allDogs.map(d => [d.id, d]));
+    const userMap = new Map(allUsers.map(u => [u.email, u]));
+
     const upcoming = vaccines.filter(v => {
       if (!v.next_date) return false;
       const due = new Date(v.next_date);
@@ -21,14 +33,12 @@ Deno.serve(async (req) => {
     let sent = 0;
     for (const vaccine of upcoming) {
       // Get the dog
-      const dogs = await base44.asServiceRole.entities.Dog.filter({ id: vaccine.dog_id });
-      if (!dogs.length) continue;
-      const dog = dogs[0];
+      const dog = dogMap.get(vaccine.dog_id);
+      if (!dog) continue;
 
       // Get the owner's user record
-      const users = await base44.asServiceRole.entities.User.filter({ email: dog.owner });
-      if (!users.length) continue;
-      const user = users[0];
+      const user = userMap.get(dog.owner);
+      if (!user) continue;
 
       // Only send for premium users (role === "admin")
       if (user.role !== "admin") continue;
