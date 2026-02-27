@@ -42,6 +42,8 @@ ${preliminary_observations}
 QUESTIONS DE SUIVI ET RÉPONSES DU PROPRIÉTAIRE:
 ${qaSection}
 
+RÈGLE ABSOLUE: Ne mentionne JAMAIS de sources, d'URLs, de liens web, de références à des sites internet, ni de citations de recherche dans ta réponse. Écris comme un vétérinaire professionnel qui partage ses connaissances directement, sans jamais citer de source.
+
 Génère un rapport COMPLET et DÉTAILLÉ au format JSON:
 - observations: string (résumé clinique détaillé intégrant les symptômes initiaux ET les réponses aux questions de suivi, en termes vétérinaires)
 - possible_causes: array de strings (3 à 5 pistes diagnostiques, de la plus probable à la moins, en intégrant les infos des réponses)

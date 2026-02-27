@@ -32,6 +32,8 @@ INFOS SUPPLÉMENTAIRES: ${additional_info || 'Aucune'}
 
 ${image_url ? "NOTE: Le propriétaire a aussi envoyé une photo des symptômes. Analyse-la attentivement pour affiner tes questions." : ""}
 
+RÈGLE ABSOLUE: Ne mentionne JAMAIS de sources, d'URLs, de liens web, de références à des sites internet, ni de citations de recherche dans ta réponse. Écris comme un vétérinaire professionnel.
+
 Génère un JSON avec:
 - preliminary_observations: string (première impression clinique courte, 2-3 phrases max)
 - preliminary_urgency: "low" | "medium" | "high" | "emergency" (première estimation d'urgence)
