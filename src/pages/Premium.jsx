@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Check, Crown, Zap, Lock } from "lucide-react";
+import { ArrowLeft, Check, Crown, Zap, Lock, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import BottomNav from "../components/BottomNav";
+import confetti from "canvas-confetti";
+import { motion } from "framer-motion";
 
 const MONTHLY_PRICE_ID = "price_1T4tkFDuhaIxY4PGpnhDTx5L";
 const ANNUAL_PRICE_ID = "price_1T4tkFDuhaIxY4PGWLeWApDL";
@@ -18,15 +21,51 @@ const FEATURES = [
   { text: "Jusqu'à 3 profils de chiens", premium: true, free: "1 chien" },
 ];
 
+const PREMIUM_FEATURES = [
+  { text: "Chat IA illimité", emoji: "💬" },
+  { text: "Scans illimités", emoji: "🔍" },
+  { text: "10 exercices dressage", emoji: "🎯" },
+  { text: "Carnet santé complet", emoji: "📋" },
+  { text: "Rappels santé email", emoji: "🔔" },
+  { text: "Résumés mensuels", emoji: "📊" },
+  { text: "Jusqu'à 3 chiens", emoji: "🐕" },
+];
+
 export default function Premium() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [plan, setPlan] = useState("annual"); // "monthly" | "annual"
+  const [dog, setDog] = useState(null);
+  const [plan, setPlan] = useState("annual");
   const [loading, setLoading] = useState(false);
+  const confettiFired = useRef(false);
+  const [isFirstVisit, setIsFirstVisit] = useState(false);
 
   useEffect(() => {
-    base44.auth.me().then(setUser);
+    const init = async () => {
+      const u = await base44.auth.me();
+      setUser(u);
+      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      if (dogs.length > 0) setDog(dogs[0]);
+
+      if (u.is_premium && !u.premium_welcome_seen) {
+        setIsFirstVisit(true);
+        await base44.auth.updateMe({ premium_welcome_seen: true });
+      }
+    };
+    init();
   }, []);
+
+  useEffect(() => {
+    if (user?.is_premium && !confettiFired.current) {
+      confettiFired.current = true;
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { x: 0.5, y: 1 },
+        colors: ["#f59e0b", "#3db87a", "#ffffff"],
+      });
+    }
+  }, [user]);
 
   const handleSubscribe = async () => {
     // Block if in iframe (preview)
@@ -50,15 +89,100 @@ export default function Premium() {
 
   if (user?.is_premium) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center space-y-4">
-        <div className="w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center">
-          <Crown className="w-10 h-10 text-amber-500" />
+      <div className="min-h-screen bg-background pb-24">
+        <div className="gradient-primary pt-14 pb-10 px-5 text-center">
+          {/* Avatar */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.1 }}
+            className="mx-auto mb-4"
+          >
+            {dog?.photo ? (
+              <img
+                src={dog.photo}
+                alt={dog.name}
+                className="w-24 h-24 rounded-full object-cover border-4 border-amber-400 shadow-lg mx-auto"
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-full bg-white/20 border-4 border-amber-400 flex items-center justify-center mx-auto shadow-lg">
+                <Crown className="w-10 h-10 text-white" />
+              </div>
+            )}
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-white font-bold text-2xl"
+          >
+            {isFirstVisit ? "Bienvenue dans le club Premium !" : "Tu es Premium !"}
+          </motion.h1>
+          {dog && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-white/70 text-sm mt-1"
+            >
+              {dog.name} a accès à tout, sans limite 🐾
+            </motion.p>
+          )}
         </div>
-        <h1 className="text-2xl font-bold text-foreground">Tu es déjà Premium ! 🎉</h1>
-        <p className="text-muted-foreground">Profite de toutes les fonctionnalités sans limite.</p>
-        <Button onClick={() => navigate(-1)} variant="outline" className="rounded-2xl h-12 px-6">
-          Retour
-        </Button>
+
+        <div className="px-5 -mt-4">
+          {/* Unlocked features */}
+          <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-muted/30">
+              <p className="text-xs font-bold text-foreground">✨ Tes avantages débloqués</p>
+            </div>
+            <div className="divide-y divide-border">
+              {PREMIUM_FEATURES.map((f, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + i * 0.07 }}
+                  className="flex items-center gap-3 px-4 py-3"
+                >
+                  <span className="text-lg">{f.emoji}</span>
+                  <span className="text-sm font-medium text-foreground flex-1">{f.text}</span>
+                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                    <Check className="w-3.5 h-3.5 text-green-600" />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9 }}
+            className="mt-6"
+          >
+            <Button
+              onClick={() => navigate(createPageUrl("Home"))}
+              className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
+            >
+              Commencer <ChevronRight className="w-5 h-5" />
+            </Button>
+          </motion.div>
+
+          {/* Reassurance */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+            className="text-center text-xs text-muted-foreground mt-4"
+          >
+            Tu peux gérer ton abonnement à tout moment depuis ton Profil.
+          </motion.p>
+        </div>
+
+        <BottomNav currentPage="Premium" />
       </div>
     );
   }
@@ -161,6 +285,8 @@ export default function Premium() {
           Sans engagement · Résiliation à tout moment · Paiement sécurisé Stripe
         </p>
       </div>
+
+      <BottomNav currentPage="Premium" />
     </div>
   );
 }
