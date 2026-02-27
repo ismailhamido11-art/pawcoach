@@ -10,6 +10,7 @@ import {
   Camera, ChevronDown, ChevronUp, CheckCircle, AlertTriangle,
   AlertCircle, X, History, Share2, Phone, Crown
 } from "lucide-react";
+import { updateStreakSilently } from "../components/streakHelper";
 
 const VERDICT_CONFIG = {
   safe: {
@@ -70,8 +71,6 @@ function getWeekStart() {
   d.setDate(d.getDate() - d.getDay() + 1);
   return d.toISOString().slice(0, 10);
 }
-
-import { updateStreakSilently } from "../components/streakHelper";
 
 export default function Scan() {
   const [user, setUser] = useState(null);

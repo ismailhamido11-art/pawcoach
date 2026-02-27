@@ -12,6 +12,7 @@ import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangl
 import ShareVetModal from "../components/vet/ShareVetModal";
 import VetNotesList from "../components/vet/VetNotesList";
 import AIDiagnosisModal from "../components/vet/AIDiagnosisModal";
+import { updateStreakSilently } from "../components/streakHelper";
 
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
@@ -63,8 +64,6 @@ const PREMIUM_CONFIGS = {
     btnClass: "bg-gray-600 hover:bg-gray-700",
   },
 };
-
-import { updateStreakSilently } from "../components/streakHelper";
 
 // Compact Health Status Bar
 function HealthStatusBar({ dog, records }) {

@@ -8,6 +8,7 @@ import MilestoneScreen from "../components/training/MilestoneScreen";
 import { CheckCircle, Timer, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { updateStreakSilently } from "../components/streakHelper";
 
 const EXERCISES = [
   { order_number: 1,  name: "Assis",              emoji: "\ud83d\udc15",  level: "debutant",      duration: "3 min",  is_premium: false, description: "La base de tout dressage \u2013 indispensable pour la s\u00e9curit\u00e9.", steps: ["Tenez une friandise devant le museau de votre chien.", "Remontez lentement la friandise au-dessus de sa t\u00eate.", "Quand il s'assoit naturellement, dites \u00ab Assis \u00bb et donnez la friandise.", "R\u00e9p\u00e9tez 5 fois, puis r\u00e9duisez progressivement la friandise.", "Pratiquez dans diff\u00e9rents endroits et situations."] },
@@ -27,8 +28,6 @@ const LEVEL_CONFIG = {
   debutant:      { label: "D\u00e9butant",      color: "text-green-700 bg-green-50 border-green-200" },
   intermediaire: { label: "Interm\u00e9diaire", color: "text-amber-600 bg-amber-50 border-amber-200" },
 };
-
-import { updateStreakSilently } from "../components/streakHelper";
 
 export default function Training() {
   const navigate = useNavigate();
