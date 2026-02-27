@@ -25,37 +25,22 @@ export default function VideoCoaching({ exerciseName, dogName }) {
     setError(null);
 
     try {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64data = reader.result;
-        
-        try {
-          const uploadRes = await base44.integrations.Core.UploadFile({ file: base64data });
-          if (!uploadRes || !uploadRes.file_url) {
-            throw new Error("Erreur lors de l'upload de la vidéo.");
-          }
+      const uploadRes = await base44.integrations.Core.UploadFile({ file: file });
+      if (!uploadRes || !uploadRes.file_url) {
+        throw new Error("Erreur lors de l'upload de la vidéo.");
+      }
 
-          const prompt = `Agis comme un éducateur canin professionnel. Analyse cette courte vidéo de l'exercice "${exerciseName}" effectué par le chien ${dogName || "du propriétaire"}. Donne un feedback personnalisé, constructif et bienveillant. Structure ta réponse avec :\n1. Ce qui est bien fait\n2. Ce qui peut être amélioré\n3. Un conseil pratique pour la prochaine fois.`;
-          
-          const llmRes = await base44.integrations.Core.InvokeLLM({
-            prompt: prompt,
-            file_urls: [uploadRes.file_url]
-          });
+      const prompt = `Agis comme un éducateur canin professionnel. Analyse cette courte vidéo de l'exercice "${exerciseName}" effectué par le chien ${dogName || "du propriétaire"}. Donne un feedback personnalisé, constructif et bienveillant. Structure ta réponse avec :\n1. Ce qui est bien fait\n2. Ce qui peut être amélioré\n3. Un conseil pratique pour la prochaine fois.`;
 
-          setFeedback(llmRes);
-        } catch (err) {
-          setError(err.message || "Une erreur est survenue lors de l'analyse.");
-        } finally {
-          setLoading(false);
-        }
-      };
-      reader.onerror = () => {
-        setError("Erreur lors de la lecture du fichier.");
-        setLoading(false);
-      };
-      reader.readAsDataURL(file);
+      const llmRes = await base44.integrations.Core.InvokeLLM({
+        prompt: prompt,
+        file_urls: [uploadRes.file_url]
+      });
+
+      setFeedback(llmRes);
     } catch (err) {
-      setError("Erreur inattendue.");
+      setError(err.message || "Une erreur est survenue lors de l'analyse.");
+    } finally {
       setLoading(false);
     }
   };
@@ -68,24 +53,24 @@ export default function VideoCoaching({ exerciseName, dogName }) {
         </div>
         <h3 className="font-bold text-foreground">Coaching Vidéo IA</h3>
       </div>
-      
+
       {!feedback && !loading && (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
             Filme {dogName ? `ton chien ${dogName}` : "ton chien"} en train de faire l'exercice <strong>{exerciseName}</strong> et reçois un feedback personnalisé de notre IA coach !
           </p>
-          
-          <input 
-            type="file" 
-            accept="video/*" 
+
+          <input
+            type="file"
+            accept="video/*"
             capture="environment"
-            className="hidden" 
+            className="hidden"
             ref={fileInputRef}
             onChange={handleFileChange}
           />
-          
+
           {!file ? (
-            <Button 
+            <Button
               onClick={() => fileInputRef.current?.click()}
               className="w-full h-12 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold gap-2"
             >
@@ -99,15 +84,15 @@ export default function VideoCoaching({ exerciseName, dogName }) {
                 <span className="text-xs font-semibold text-purple-500">{(file.size / (1024 * 1024)).toFixed(1)} MB</span>
               </div>
               <div className="flex gap-2">
-                <Button 
-                  onClick={() => setFile(null)} 
-                  variant="outline" 
+                <Button
+                  onClick={() => setFile(null)}
+                  variant="outline"
                   className="flex-1 rounded-xl text-muted-foreground border-border"
                 >
                   Annuler
                 </Button>
-                <Button 
-                  onClick={handleAnalyze} 
+                <Button
+                  onClick={handleAnalyze}
                   className="flex-1 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold"
                 >
                   Analyser
@@ -142,7 +127,7 @@ export default function VideoCoaching({ exerciseName, dogName }) {
               {typeof feedback === 'string' ? feedback : JSON.stringify(feedback)}
             </ReactMarkdown>
           </div>
-          <Button 
+          <Button
             onClick={() => { setFeedback(null); setFile(null); }}
             variant="outline"
             className="w-full h-10 rounded-xl border-purple-200 text-purple-700 font-semibold"
