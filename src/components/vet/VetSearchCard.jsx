@@ -1,7 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Phone, Navigation, Globe, Star } from "lucide-react";
 
+function sanitizeUrl(url) {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === "https:" || parsed.protocol === "http:") return url;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export default function VetSearchCard({ vet }) {
+  const safeGoogleMaps = sanitizeUrl(vet.google_maps_url);
+  const safeWebsite = sanitizeUrl(vet.website);
+
   return (
     <div className="p-4 bg-white rounded-2xl border border-border shadow-sm">
       <div className="flex items-start justify-between gap-2">
@@ -26,16 +40,16 @@ export default function VetSearchCard({ vet }) {
             </Button>
           </a>
         )}
-        {vet.google_maps_url && (
-          <a href={vet.google_maps_url} target="_blank" rel="noopener noreferrer" className="flex-1">
+        {safeGoogleMaps && (
+          <a href={safeGoogleMaps} target="_blank" rel="noopener noreferrer" className="flex-1">
             <Button size="sm" variant="outline" className="w-full text-xs gap-1.5">
               <Navigation className="w-3.5 h-3.5" />
               Itinéraire
             </Button>
           </a>
         )}
-        {vet.website && (
-          <a href={vet.website} target="_blank" rel="noopener noreferrer">
+        {safeWebsite && (
+          <a href={safeWebsite} target="_blank" rel="noopener noreferrer">
             <Button size="sm" variant="ghost" className="text-xs">
               <Globe className="w-3.5 h-3.5" />
             </Button>
