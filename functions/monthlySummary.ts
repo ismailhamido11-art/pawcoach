@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
       const notes = lastMonthRecords.filter(r => r.type === "note").length;
 
       // Weight change
-      const weightRecords = allRecords.filter(r => r.type === "weight" && r.value)
+      const weightRecords = dogRecords.filter(r => r.type === "weight" && r.value)
         .sort((a, b) => new Date(a.date) - new Date(b.date));
       const lastMonthWeights = weightRecords.filter(r => r.date && r.date.startsWith(monthStr));
       let weightChange = null;
