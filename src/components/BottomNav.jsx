@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, ScanLine, MessageCircle, Dumbbell, Stethoscope } from "lucide-react";
+import { Home, ScanLine, MessageCircle, BookHeart, Dumbbell } from "lucide-react";
+import { motion } from "framer-motion";
 
 const tabs = [
   { label: "Accueil", icon: Home, page: "Home" },
   { label: "Scanner", icon: ScanLine, page: "Scan" },
   { label: "Chat", icon: MessageCircle, page: "Chat" },
-  { label: "Vétos", icon: Stethoscope, page: "FindVet" },
+  { label: "Carnet", icon: BookHeart, page: "Notebook" },
   { label: "Dressage", icon: Dumbbell, page: "Training" },
 ];
 
@@ -20,7 +21,7 @@ export default function BottomNav({ currentPage }) {
             <Link
               key={page}
               to={createPageUrl(page)}
-              className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl tap-scale transition-all duration-200 ${
+              className={`relative flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl tap-scale transition-all duration-200 ${
                 active
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"
@@ -38,6 +39,13 @@ export default function BottomNav({ currentPage }) {
               <span className={`text-[10px] font-medium ${active ? "font-semibold" : ""}`}>
                 {label}
               </span>
+              {active && (
+                <motion.div
+                  layoutId="bottomNavIndicator"
+                  className="absolute -bottom-1 w-5 h-[3px] rounded-full bg-primary"
+                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                />
+              )}
             </Link>
           );
         })}
