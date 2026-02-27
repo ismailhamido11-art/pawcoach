@@ -1,9 +1,10 @@
+
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera as CameraIcon, PawPrint, Dog as DogIcon, Cake, Users, Scale, PersonStanding, Home as HomeIcon, Hospital, HeartPulse, GraduationCap, Salad, Smile, Handshake } from "lucide-react";
+import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera as CameraIcon, PawPrint, Dog as DogIcon, Cake, Users, Scale, PersonStanding, Home as HomeIcon, Hospital, HeartPulse, GraduationCap, Salad, Smile, Handshake, Loader2 } from "lucide-react";
 import IconBadge from "@/components/ui/IconBadge";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
@@ -354,7 +355,7 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
         >
           {saving ? (
             <>
-              <span className="animate-spin text-xl">🪄</span>
+              <Loader2 className="w-5 h-5 animate-spin" />
               Analyse magique...
             </>
           ) : step === INTERVIEW_STEPS.length - 1 ? (
