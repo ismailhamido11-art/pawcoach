@@ -290,7 +290,7 @@ export default function Scan() {
               <Crown className="w-10 h-10 text-amber-500 mx-auto" />
               <p className="font-bold text-foreground">Tu as utilisé tes {FREE_SCAN_LIMIT} scans gratuits cette semaine.</p>
               <p className="text-sm text-muted-foreground">Passe en Premium pour scanner sans limite.</p>
-              <Button onClick={() => window.location.href = '/Premium?from=scan'} className="w-full h-12 rounded-2xl gradient-warm border-0 text-white font-bold">
+              <Button onClick={() => window.location.href = '/Premium?from=scan'} className="w-full h-12 rounded-xl gradient-warm border-0 text-white font-bold">
                 👑 Voir Premium
               </Button>
               <button onClick={() => setScanLimitReached(false)} className="text-xs text-muted-foreground underline">
@@ -347,7 +347,7 @@ export default function Scan() {
 
             {preview && (
               <Button onClick={analyzeFood} disabled={scanning}
-                className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold text-base shadow-lg shadow-primary/30">
+                className="w-full h-14 rounded-xl gradient-primary border-0 text-white font-bold text-base shadow-lg shadow-primary/30">
                 {scanning ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -429,15 +429,15 @@ export default function Scan() {
             )}
 
             <div className="grid grid-cols-3 gap-2">
-              <Button variant="outline" onClick={reset} className="h-12 rounded-2xl font-semibold text-sm">
+              <Button variant="outline" onClick={reset} className="h-12 rounded-xl font-semibold text-sm">
                 Nouveau
               </Button>
               <Button onClick={() => setShowShare(true)} variant="outline"
-                className="h-12 rounded-2xl font-semibold text-sm gap-1">
+                className="h-12 rounded-xl font-semibold text-sm gap-1">
                 <Share2 className="w-3.5 h-3.5" /> Partager
               </Button>
               <Button onClick={saveResult} disabled={saved}
-                className="h-12 rounded-2xl gradient-primary border-0 text-white font-semibold text-sm">
+                className="h-12 rounded-xl gradient-primary border-0 text-white font-semibold text-sm">
                 {saved ? "✅ Ok" : "Sauvegarder"}
               </Button>
             </div>

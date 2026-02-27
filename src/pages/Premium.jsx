@@ -166,7 +166,7 @@ export default function Premium() {
           >
             <Button
               onClick={() => navigate(createPageUrl("Home"))}
-              className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
+              className="w-full h-14 rounded-xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
             >
               Commencer <ChevronRight className="w-5 h-5" />
             </Button>
@@ -298,7 +298,7 @@ export default function Premium() {
         <Button
           onClick={handleSubscribe}
           disabled={loading}
-          className="w-full h-14 rounded-2xl gradient-warm border-0 text-white font-bold text-base shadow-lg"
+          className="w-full h-14 rounded-xl gradient-warm border-0 text-white font-bold text-base shadow-lg"
         >
           {loading ? (
             <span className="flex items-center gap-2">

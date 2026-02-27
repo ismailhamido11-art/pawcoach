@@ -235,7 +235,7 @@ export default function Profile() {
         <Button
           onClick={handleLogout}
           variant="outline"
-          className="w-full h-12 rounded-2xl border-border text-foreground font-semibold gap-2"
+          className="w-full h-12 rounded-xl border-border text-foreground font-semibold gap-2"
         >
           <LogOut className="w-4 h-4" />
           Se déconnecter
@@ -261,7 +261,7 @@ export default function Profile() {
               <Button
                 onClick={() => setShowDeleteConfirm(false)}
                 variant="outline"
-                className="w-full h-12 rounded-2xl font-semibold"
+                className="w-full h-12 rounded-xl font-semibold"
               >
                 Annuler
               </Button>

@@ -350,7 +350,7 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
         <Button
           onClick={handleNext}
           disabled={!canNext || saving}
-          className={`w-full max-w-sm h-14 rounded-2xl gradient-primary text-white font-bold text-lg shadow-lg shadow-primary/30 gap-2 mt-auto ${currentStepData.type === "choice" ? "hidden" : ""}`}
+          className={`w-full max-w-sm h-14 rounded-xl gradient-primary text-white font-bold text-lg shadow-lg shadow-primary/30 gap-2 mt-auto ${currentStepData.type === "choice" ? "hidden" : ""}`}
         >
           {saving ? (
             <>
