@@ -90,7 +90,12 @@ export default function Premium() {
 
   if (user?.is_premium) {
     return (
-      <div className="min-h-screen bg-background pb-24">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 120, damping: 20 }}
+        className="min-h-screen bg-background pb-24"
+      >
         <div className="gradient-primary pt-14 pb-10 px-5 text-center">
           {/* Avatar */}
           <motion.div
@@ -184,7 +189,7 @@ export default function Premium() {
         </div>
 
         <BottomNav currentPage="Premium" />
-      </div>
+      </motion.div>
     );
   }
 
@@ -201,7 +206,12 @@ export default function Premium() {
   const contextMsg = fromParam ? CONTEXTUAL_MESSAGES[fromParam] : null;
 
   return (
-    <div className="min-h-screen bg-background pb-10">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 120, damping: 20 }}
+      className="min-h-screen bg-background pb-10"
+    >
       {/* Header */}
       <div className="gradient-primary pt-12 pb-8 px-5 relative">
         <button
@@ -319,6 +329,6 @@ export default function Premium() {
       </div>
 
       <BottomNav currentPage="Premium" />
-    </div>
+    </motion.div>
   );
 }
