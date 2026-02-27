@@ -35,8 +35,8 @@ const EXERCISES = [
 
 const MILESTONES = [3, 5, 10];
 const LEVEL_CONFIG = {
-  debutant:      { label: "Débutant",      color: "text-green-700 bg-green-50 border-green-200" },
-  intermediaire: { label: "Intermédiaire", color: "text-amber-600 bg-amber-50 border-amber-200" },
+  debutant:      { label: "Débutant",      color: "text-safe bg-safe/10 border-safe/20" },
+  intermediaire: { label: "Intermédiaire", color: "text-accent bg-accent/10 border-accent/20" },
 };
 
 export default function Training() {
@@ -182,6 +182,93 @@ export default function Training() {
     );
   }
 
+  // Empty state when no exercises completed
+  if (completedCount === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 120, damping: 20 }}
+        className="min-h-screen bg-background pb-24"
+      >
+        <WellnessBanner />
+        <div className="gradient-primary pt-10 pb-6 px-5">
+          <h1 className="text-white font-bold text-xl mb-0.5">Coach Dressage</h1>
+          <p className="text-white/70 text-sm mb-4">
+            {dog ? `Entraîne-toi avec ${dog.name}` : "Chargement..."}
+          </p>
+          <div className="bg-white/15 rounded-2xl p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-white text-sm font-semibold">{completedCount} / {EXERCISES.length} tours maîtrisés</span>
+              <span className="text-white/80 text-sm">0%</span>
+            </div>
+            <div className="bg-white/25 rounded-full h-2.5">
+              <div className="bg-white rounded-full h-2.5 transition-all duration-700" style={{ width: "0%" }} />
+            </div>
+          </div>
+        </div>
+
+        <motion.div className="px-5 py-12 text-center space-y-4">
+          <IconBadge icon={Trophy} color="#f59e0b" size="lg" className="mx-auto" />
+          <p className="text-lg font-bold text-foreground">Commence ton premier exercice !</p>
+          <p className="text-sm text-muted-foreground">Déverrouille tous les tours en les complétant les uns après les autres.</p>
+        </motion.div>
+
+        <motion.div className="px-4 pt-4 space-y-3" variants={listContainer} initial="hidden" animate="show">
+          {EXERCISES.map(exercise => {
+            const done = isCompleted(exercise.order_number);
+            const locked = exercise.is_premium && !isPremium;
+            const lvl = LEVEL_CONFIG[exercise.level];
+
+            return (
+              <motion.button
+                key={exercise.order_number}
+                variants={listItem}
+                whileTap={{ scale: 0.96 }}
+                transition={spring}
+                onClick={() => setSelected(exercise.order_number)}
+                className={`w-full flex items-center gap-4 p-4 rounded-2xl border text-left transition-colors shadow-sm bg-white
+                  ${done ? "border-safe/20 bg-safe/5" : "border-border"}`}
+              >
+                <IconBadge icon={exercise.icon} color={done ? "#10b981" : exercise.iconColor} size="md" />
+                <div className="flex-1 min-w-0">
+                  <p className={`font-semibold text-sm leading-tight ${done ? "text-safe" : "text-foreground"}`}>
+                    {exercise.name}
+                  </p>
+                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full border font-semibold ${lvl.color}`}>
+                      {lvl.label}
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Timer className="w-3 h-3" /> {exercise.duration}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex-shrink-0">
+                  {done ? (
+                    <div className="w-7 h-7 rounded-full bg-safe flex items-center justify-center">
+                      <CheckCircle className="w-4 h-4 text-white" />
+                    </div>
+                  ) : locked ? (
+                    <div className="w-7 h-7 rounded-full bg-accent/10 flex items-center justify-center">
+                      <Lock className="w-4 h-4 text-accent" />
+                    </div>
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center">
+                      <span className="text-xs font-bold text-muted-foreground">{exercise.order_number}</span>
+                    </div>
+                  )}
+                </div>
+              </motion.button>
+            );
+          })}
+        </motion.div>
+
+        <BottomNav currentPage="Training" />
+      </motion.div>
+    );
+  }
+
   // List screen
   return (
     <motion.div
@@ -193,10 +280,10 @@ export default function Training() {
       <WellnessBanner />
 
       <div className="gradient-primary pt-10 pb-6 px-5">
-        <h1 className="text-white font-bold text-xl mb-0.5">Coach Dressage 🐾</h1>
-        <p className="text-white/70 text-sm mb-4">
-          {dog ? `Entraîne-toi avec ${dog.name}` : "Chargement..."}
-        </p>
+         <h1 className="text-white font-bold text-xl mb-0.5">Coach Dressage</h1>
+         <p className="text-white/70 text-sm mb-4">
+           {dog ? `Entraîne-toi avec ${dog.name}` : "Chargement..."}
+         </p>
         <div className="bg-white/15 rounded-2xl p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-white text-sm font-semibold">{completedCount} / {EXERCISES.length} tours maîtrisés</span>
@@ -222,11 +309,11 @@ export default function Training() {
               transition={spring}
               onClick={() => setSelected(exercise.order_number)}
               className={`w-full flex items-center gap-4 p-4 rounded-2xl border text-left transition-colors shadow-sm bg-white
-                ${done ? "border-green-200 bg-green-50/40" : "border-border"}`}
+                ${done ? "border-safe/20 bg-safe/5" : "border-border"}`}
             >
               <IconBadge icon={exercise.icon} color={done ? "#10b981" : exercise.iconColor} size="md" />
               <div className="flex-1 min-w-0">
-                <p className={`font-semibold text-sm leading-tight ${done ? "text-green-700" : "text-foreground"}`}>
+                <p className={`font-semibold text-sm leading-tight ${done ? "text-safe" : "text-foreground"}`}>
                   {exercise.name}
                 </p>
                 <div className="flex items-center gap-2 mt-1.5 flex-wrap">
@@ -240,12 +327,12 @@ export default function Training() {
               </div>
               <div className="flex-shrink-0">
                 {done ? (
-                  <div className="w-7 h-7 rounded-full bg-green-500 flex items-center justify-center">
+                  <div className="w-7 h-7 rounded-full bg-safe flex items-center justify-center">
                     <CheckCircle className="w-4 h-4 text-white" />
                   </div>
                 ) : locked ? (
-                  <div className="w-7 h-7 rounded-full bg-amber-100 flex items-center justify-center">
-                    <Lock className="w-4 h-4 text-amber-500" />
+                  <div className="w-7 h-7 rounded-full bg-accent/10 flex items-center justify-center">
+                    <Lock className="w-4 h-4 text-accent" />
                   </div>
                 ) : (
                   <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center">
