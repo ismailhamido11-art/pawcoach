@@ -76,12 +76,7 @@ export default function Profile() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 120, damping: 20 }}
-      className="min-h-screen bg-gradient-to-b from-background to-primary/[0.02] pb-24"
-    >
+    <div className="min-h-screen bg-gradient-to-b from-background to-primary/[0.02] pb-24">
       {/* Header */}
       <div className="gradient-primary pt-12 pb-8 px-5">
         <div className="flex items-center gap-4">
@@ -271,6 +266,6 @@ export default function Profile() {
       </div>
 
       <BottomNav currentPage="Profile" />
-    </motion.div>
+    </div>
   );
 }

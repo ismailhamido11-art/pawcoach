@@ -144,12 +144,7 @@ export default function Nutrition() {
   const showQuickActions = messages.length <= 1 && !isNutriLimitReached;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 120, damping: 20 }}
-      className="min-h-screen bg-background flex flex-col"
-    >
+    <div className="min-h-screen bg-background flex flex-col">
       <WellnessBanner />
 
       {/* Header */}
@@ -325,6 +320,6 @@ export default function Nutrition() {
       )}
 
       <BottomNav currentPage="Nutrition" />
-    </motion.div>
+    </div>
   );
 }

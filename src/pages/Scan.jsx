@@ -243,12 +243,7 @@ export default function Scan() {
   const isInTrial = user?.signup_date && ((Date.now() - new Date(user.signup_date)) / (1000 * 60 * 60 * 24)) <= FREE_TRIAL_DAYS;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 120, damping: 20 }}
-      className="min-h-screen bg-background pb-24"
-    >
+    <div className="min-h-screen bg-background pb-24">
       {/* Emergency banner */}
       {result?.verdict === "toxic" && dogAteIt && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-red-600 px-4 py-3 text-white text-center shadow-lg">
@@ -491,6 +486,6 @@ export default function Scan() {
       )}
 
       <BottomNav currentPage="Scan" />
-    </motion.div>
+    </div>
   );
 }

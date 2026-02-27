@@ -639,7 +639,7 @@ export default function Home() {
       </AnimatePresence>
 
       <BottomNav currentPage="Home" />
-    </motion.div>
+    </div>
   );
 }
 

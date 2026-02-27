@@ -185,12 +185,7 @@ export default function Training() {
   // Empty state when no exercises completed
   if (completedCount === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 120, damping: 20 }}
-        className="min-h-screen bg-background pb-24"
-      >
+      <div className="min-h-screen bg-background pb-24">
         <WellnessBanner />
         <div className="gradient-primary pt-10 pb-6 px-5">
           <h1 className="text-white font-bold text-xl mb-0.5">Coach Dressage</h1>
@@ -265,18 +260,13 @@ export default function Training() {
         </motion.div>
 
         <BottomNav currentPage="Training" />
-      </motion.div>
+      </div>
     );
   }
 
   // List screen
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 120, damping: 20 }}
-      className="min-h-screen bg-background pb-24"
-    >
+    <div className="min-h-screen bg-background pb-24">
       <WellnessBanner />
 
       <div className="gradient-primary pt-10 pb-6 px-5">

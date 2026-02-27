@@ -187,12 +187,7 @@ export default function Notebook() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 120, damping: 20 }}
-      className="min-h-screen bg-background pb-24"
-    >
+    <div className="min-h-screen bg-background pb-24">
       <WellnessBanner />
 
       {/* Compact Header */}
@@ -362,6 +357,6 @@ export default function Notebook() {
       )}
 
       <BottomNav currentPage="Notebook" />
-    </motion.div>
+    </div>
   );
 }
