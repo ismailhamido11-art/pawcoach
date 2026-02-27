@@ -80,7 +80,7 @@ export default function Profile() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 120, damping: 20 }}
-      className="min-h-screen bg-background pb-24"
+      className="min-h-screen bg-gradient-to-b from-background to-primary/[0.02] pb-24"
     >
       {/* Header */}
       <div className="gradient-primary pt-12 pb-8 px-5">
@@ -160,14 +160,14 @@ export default function Profile() {
           ) : !user?.is_premium ? (
             <button
               onClick={() => navigate(createPageUrl("Premium") + "?from=profile")}
-              className="w-full flex items-center gap-3 px-4 py-3 border-t border-border text-amber-600 hover:bg-amber-50 transition-all"
-            >
-              <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
-                <Crown className="w-4 h-4 text-amber-500" />
+              className="w-full flex items-center gap-3 px-4 py-3 border-t border-border text-accent hover:bg-accent/10 transition-all"
+              >
+              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                <Crown className="w-4 h-4 text-accent" />
               </div>
               <div className="text-left">
-                <p className="text-sm font-semibold text-amber-700">Ajouter d'autres chiens</p>
-                <p className="text-xs text-amber-600">Premium : jusqu'à 3 chiens</p>
+                <p className="text-sm font-semibold text-accent">Ajouter d'autres chiens</p>
+                <p className="text-xs text-accent/70">Premium : jusqu'à 3 chiens</p>
               </div>
             </button>
           ) : null}
@@ -175,12 +175,12 @@ export default function Profile() {
 
         {/* Subscription info for premium */}
         {user?.is_premium && (
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-3">
-            <Star className="w-5 h-5 text-amber-500 flex-shrink-0" />
+          <div className="bg-accent/10 border border-accent/20 rounded-2xl p-4 flex items-center gap-3">
+            <Star className="w-5 h-5 text-accent flex-shrink-0" />
             <div className="flex-1">
-              <p className="text-sm font-bold text-amber-800">Abonnement Premium actif</p>
+              <p className="text-sm font-bold text-accent">Abonnement Premium actif</p>
               {user?.premium_since && (
-                <p className="text-xs text-amber-600 mt-0.5">
+                <p className="text-xs text-accent/70 mt-0.5">
                   Depuis le {new Date(user.premium_since).toLocaleDateString("fr-FR")}
                 </p>
               )}

@@ -251,7 +251,7 @@ export default function Scan() {
     >
       {/* Emergency banner */}
       {result?.verdict === "toxic" && dogAteIt && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-red-600 px-4 py-3 text-white text-center shadow-xl">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-red-600 px-4 py-3 text-white text-center shadow-lg">
           <p className="font-bold text-sm">🚨 URGENCE — Appelle immédiatement ton vétérinaire</p>
           <a href="tel:0478871040" className="flex items-center justify-center gap-2 mt-1 text-white font-extrabold text-base">
             <Phone className="w-4 h-4" /> Centre antipoison : 04 78 87 10 40
@@ -314,11 +314,11 @@ export default function Scan() {
         {!result && !scanLimitReached && (
           <>
             <motion.button
-              whileTap={{ scale: 0.96 }}
-              transition={spring}
-              onClick={() => fileRef.current.click()}
-              className="w-full rounded-3xl border-2 border-dashed border-primary/30 bg-secondary/30 py-10 flex flex-col items-center gap-4 hover:border-primary hover:bg-secondary/50 transition-colors"
-            >
+                whileTap={{ scale: 0.96 }}
+                transition={spring}
+                onClick={() => fileRef.current.click()}
+                className="w-full rounded-2xl border-2 border-dashed border-primary/30 bg-secondary/30 py-10 flex flex-col items-center gap-4 hover:border-primary hover:bg-secondary/50 transition-colors"
+              >
               {preview ? (
                 <div className="relative w-full px-4">
                   <img src={preview} alt="Aperçu" className="w-full max-h-56 object-contain rounded-2xl" />
