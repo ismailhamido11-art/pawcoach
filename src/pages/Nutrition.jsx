@@ -59,22 +59,27 @@ export default function Nutrition() {
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
   const init = async () => {
-    const u = await base44.auth.me();
-    setUser(u);
-    const dogs = await base44.entities.Dog.filter({ owner: u.email });
-    if (dogs.length > 0) {
-      const d = dogs[0];
-      setDog(d);
-      const scans = await base44.entities.FoodScan.filter({ dog_id: d.id }, "-timestamp", 5);
-      setRecentScans(scans);
+    try {
+      const u = await base44.auth.me();
+      setUser(u);
+      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      if (dogs.length > 0) {
+        const d = dogs[0];
+        setDog(d);
+        const scans = await base44.entities.FoodScan.filter({ dog_id: d.id }, "-timestamp", 5);
+        setRecentScans(scans);
 
-      setMessages([{
-        role: "assistant",
-        content: `Bonjour ! 🥗 Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies ? ` avec des allergies à ${d.allergies}` : ""} et j'ai accès à ses derniers scans alimentaires.\n\nPose-moi une question, génère un **plan de repas personnalisé**, ou demande une **recommandation de croquettes** ! 🍖`,
-        timestamp: new Date().toISOString(),
-      }]);
+        setMessages([{
+          role: "assistant",
+          content: `Bonjour ! 🥗 Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies ? ` avec des allergies à ${d.allergies}` : ""} et j'ai accès à ses derniers scans alimentaires.\n\nPose-moi une question, génère un **plan de repas personnalisé**, ou demande une **recommandation de croquettes** ! 🍖`,
+          timestamp: new Date().toISOString(),
+        }]);
+      }
+    } catch (err) {
+      console.error("Nutrition init error:", err);
+    } finally {
+      setInitializing(false);
     }
-    setInitializing(false);
   };
 
   const sendMessage = async (text) => {
@@ -86,17 +91,27 @@ export default function Nutrition() {
     setMessages(prev => [...prev, { role: "user", content, timestamp: new Date().toISOString() }]);
     setLoading(true);
 
-    const contextMsgs = messages.slice(-8).map(m => ({ role: m.role, content: m.content }));
-    contextMsgs.push({ role: "user", content });
+    try {
+      const contextMsgs = messages.slice(-8).map(m => ({ role: m.role, content: m.content }));
+      contextMsgs.push({ role: "user", content });
 
-    const response = await base44.functions.invoke("pawcoachChat", {
-      systemPrompt: buildNutritionPrompt(dog, recentScans),
-      messages: contextMsgs,
-    });
+      const response = await base44.functions.invoke("pawcoachChat", {
+        systemPrompt: buildNutritionPrompt(dog, recentScans),
+        messages: contextMsgs,
+      });
 
-    const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
-    setMessages(prev => [...prev, { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() }]);
-    setLoading(false);
+      const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
+      setMessages(prev => [...prev, { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() }]);
+    } catch (err) {
+      console.error("Nutrition send error:", err);
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "Oups, une erreur est survenue. Réessaie dans un instant.",
+        timestamp: new Date().toISOString(),
+      }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (initializing) {
