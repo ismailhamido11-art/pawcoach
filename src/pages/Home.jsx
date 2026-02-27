@@ -5,10 +5,11 @@ import { base44 } from "@/api/base44Client";
 import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
 import {
-  BookHeart, ChevronRight, Activity, Stethoscope, UserCircle,
-  Heart, Flame, Dumbbell, ScanLine, MessageCircle, Loader2,
-  ChevronDown, ChevronUp, Sparkles, Check, Salad
+  BookHeart, ChevronRight, UserCircle,
+  Heart, Flame, Loader2,
+  ChevronDown, ChevronUp, Sparkles, Check, Salad, MapPin
 } from "lucide-react";
+import confetti from "canvas-confetti";
 
 const MOOD_OPTIONS = [
   { value: 1, emoji: "😢", label: "Triste" },
@@ -38,7 +39,7 @@ const MILESTONES = [
   { days: 100, message: "100 jours !", sub: "Legende absolue" },
 ];
 
-const CONFETTI_COLORS = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#FF8C00", "#7B68EE", "#FF69B4", "#00CED1"];
+
 
 function getTodayString() {
   const d = new Date();
@@ -181,33 +182,7 @@ export default function Home() {
     <div className="min-h-screen bg-background pb-24 relative">
       <WellnessBanner />
 
-      {/* Confetti + milestone styles */}
-      <style>{`
-        @keyframes confetti-fall {
-          0% { transform: translateY(-20px) rotate(0deg) scale(0); opacity: 0; }
-          10% { opacity: 1; transform: translateY(0) rotate(36deg) scale(1); }
-          100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
-        }
-        @keyframes bounce-in {
-          0% { transform: scale(0.3); opacity: 0; }
-          50% { transform: scale(1.08); }
-          70% { transform: scale(0.95); }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        .confetti-particle {
-          position: fixed;
-          width: 8px;
-          height: 8px;
-          border-radius: 1px;
-          top: -10px;
-          animation: confetti-fall 3.5s ease-in forwards;
-          z-index: 60;
-          pointer-events: none;
-        }
-        .milestone-card {
-          animation: bounce-in 0.5s ease-out;
-        }
-      `}</style>
+
 
       {/* Bouton Profil */}
       <Link
@@ -221,13 +196,18 @@ export default function Home() {
         {/* Header avec streak */}
         <header className="mb-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                Bonjour, {user?.full_name?.split(" ")[0] || "l'ami"}
-              </h1>
-              <p className="text-muted-foreground mt-0.5">
-                Comment va {dog?.name || "ton chien"} ?
-              </p>
+            <div className="flex items-center gap-3">
+              {dog?.photo && (
+                <img src={dog.photo} alt={dog.name} className="w-14 h-14 rounded-full border-2 border-primary/20 object-cover flex-shrink-0" />
+              )}
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">
+                  Bonjour, {user?.full_name?.split(" ")[0] || "l'ami"}
+                </h1>
+                <p className="text-muted-foreground mt-0.5">
+                  Comment va {dog?.name || "ton chien"} ?
+                </p>
+              </div>
             </div>
             {currentStreak > 0 && (
               <div className="flex items-center gap-1.5 bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-full">
@@ -537,43 +517,11 @@ export default function Home() {
               <BookHeart className="w-5 h-5" />
             </div>
             <div className="text-left flex-1">
-              <p className="font-semibold text-foreground text-sm">Carnet de sante</p>
+              <p className="font-semibold text-foreground text-sm">Carnet de santé</p>
               <p className="text-xs text-muted-foreground">Vaccins, poids, suivi</p>
             </div>
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
           </Link>
-
-          <div className="grid grid-cols-3 gap-3">
-            <Link
-              to={createPageUrl("Scan")}
-              className="bg-white rounded-2xl p-3 shadow-sm border border-border/50 flex flex-col items-center gap-2 group hover:border-primary/30 transition-all"
-            >
-              <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform">
-                <ScanLine className="w-5 h-5" />
-              </div>
-              <p className="font-medium text-foreground text-xs text-center">Scanner</p>
-            </Link>
-
-            <Link
-              to={createPageUrl("Chat")}
-              className="bg-white rounded-2xl p-3 shadow-sm border border-border/50 flex flex-col items-center gap-2 group hover:border-primary/30 transition-all"
-            >
-              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
-                <MessageCircle className="w-5 h-5" />
-              </div>
-              <p className="font-medium text-foreground text-xs text-center">Chat IA</p>
-            </Link>
-
-            <Link
-              to={createPageUrl("Training")}
-              className="bg-white rounded-2xl p-3 shadow-sm border border-border/50 flex flex-col items-center gap-2 group hover:border-primary/30 transition-all"
-            >
-              <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500 group-hover:scale-110 transition-transform">
-                <Dumbbell className="w-5 h-5" />
-              </div>
-              <p className="font-medium text-foreground text-xs text-center">Dressage</p>
-            </Link>
-          </div>
 
           <Link
             to={createPageUrl("Nutrition")}
@@ -588,48 +536,58 @@ export default function Home() {
             </div>
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
           </Link>
+
+          <Link
+            to={createPageUrl("FindVet")}
+            className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 group hover:border-primary/30 transition-all"
+          >
+            <div className="w-11 h-11 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
+              <MapPin className="w-5 h-5" />
+            </div>
+            <div className="text-left flex-1">
+              <p className="font-semibold text-foreground text-sm">Trouver un véto</p>
+              <p className="text-xs text-muted-foreground">Cliniques vétérinaires proches</p>
+            </div>
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+          </Link>
         </div>
       </div>
 
       {/* MILESTONE CELEBRATION OVERLAY */}
       {milestone && (
-        <>
-          {/* Confetti particles */}
-          {[...Array(24)].map((_, i) => (
-            <div
-              key={i}
-              className="confetti-particle"
-              style={{
-                left: `${4 + (i * 4) % 92}%`,
-                animationDelay: `${(i * 0.15) % 2}s`,
-                backgroundColor: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
-                width: `${6 + (i % 3) * 3}px`,
-                height: `${6 + (i % 3) * 3}px`,
-                borderRadius: i % 2 === 0 ? "50%" : "1px",
-              }}
-            />
-          ))}
-
-          {/* Overlay + card */}
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
-            onClick={() => setMilestone(null)}
-          >
-            <div className="milestone-card bg-white rounded-3xl p-8 text-center shadow-2xl max-w-[280px] mx-6">
-              <p className="text-5xl mb-3">🎉</p>
-              <p className="text-xl font-bold text-foreground">{milestone.message}</p>
-              <p className="text-sm text-muted-foreground mt-1">{milestone.sub}</p>
-              <div className="mt-4 flex items-center justify-center gap-1.5">
-                <Flame className="w-4 h-4 text-orange-500" />
-                <span className="text-sm font-bold text-orange-600">{milestone.days} jours</span>
-              </div>
-              <p className="text-xs text-muted-foreground mt-4">Touche pour fermer</p>
-            </div>
-          </div>
-        </>
+        <MilestoneCelebration milestone={milestone} onClose={() => setMilestone(null)} />
       )}
 
       <BottomNav currentPage="Home" />
+    </div>
+  );
+}
+
+function MilestoneCelebration({ milestone, onClose }) {
+  useEffect(() => {
+    confetti({
+      particleCount: 80,
+      spread: 70,
+      origin: { x: 0.5, y: 0.6 },
+      colors: ["#FF6B6B", "#4ECDC4", "#45B7D1", "#FFEAA7", "#DDA0DD"],
+    });
+  }, []);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
+      onClick={onClose}
+    >
+      <div className="bg-white rounded-3xl p-8 text-center shadow-2xl max-w-[280px] mx-6 animate-bounce-soft">
+        <p className="text-5xl mb-3">🎉</p>
+        <p className="text-xl font-bold text-foreground">{milestone.message}</p>
+        <p className="text-sm text-muted-foreground mt-1">{milestone.sub}</p>
+        <div className="mt-4 flex items-center justify-center gap-1.5">
+          <Flame className="w-4 h-4 text-orange-500" />
+          <span className="text-sm font-bold text-orange-600">{milestone.days} jours</span>
+        </div>
+        <p className="text-xs text-muted-foreground mt-4">Touche pour fermer</p>
+      </div>
     </div>
   );
 }
