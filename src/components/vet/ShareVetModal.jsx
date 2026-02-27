@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Share2, Mail, Copy, Check, Trash2, Loader2, UserCheck, Clock, XCircle } from "lucide-react";
 import { toast } from "sonner";
+import DownloadHealthPDF from "./DownloadHealthPDF";
 
 const SECTIONS = [
   { id: "vaccine", label: "Vaccins", emoji: "💉" },
@@ -170,6 +171,11 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
             {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Share2 className="w-4 h-4 mr-2" />}
             Envoyer l'invitation
           </Button>
+
+          <div className="pt-3 border-t border-border mt-3">
+            <p className="text-xs text-muted-foreground mb-2">Ou téléchargez le carnet pour l'imprimer / l'envoyer vous-même</p>
+            <DownloadHealthPDF dogId={dogId} dogName={dogName} />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
