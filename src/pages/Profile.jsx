@@ -20,11 +20,16 @@ export default function Profile() {
   useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
-    const u = await base44.auth.me();
-    setUser(u);
-    const d = await base44.entities.Dog.filter({ owner: u.email });
-    setDogs(d);
-    setLoading(false);
+    try {
+      const u = await base44.auth.me();
+      setUser(u);
+      const d = await base44.entities.Dog.filter({ owner: u.email });
+      setDogs(d);
+    } catch (err) {
+      console.error("Profile load error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogout = () => {
