@@ -9,10 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Sound utility (clean beep/pop using Web Audio API)
+// Sound utility — reuse AudioContext to prevent memory leak
+let _audioCtx = null;
 const playPop = () => {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = _audioCtx;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.connect(gain);
@@ -54,6 +56,15 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isProcessing]);
+
+  // Cleanup SpeechRecognition on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.abort(); } catch(e) {}
+      }
+    };
+  }, []);
 
   const addMessage = (msg) => {
     setMessages(prev => [...prev, msg]);
@@ -145,6 +156,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    e.target.value = ""; // Reset pour pouvoir re-scanner le même fichier
 
     addMessage({ role: "user", content: "Analyse du document...", type: "loading_image" });
 
@@ -159,25 +171,33 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       await processConversation(history);
     } catch(err) {
       console.error(err);
-      addMessage({ role: "system", content: "Erreur lors de l'envoi de l'image." });
+      setMessages(prev => {
+        const next = [...prev];
+        next.pop();
+        return next;
+      });
+      addMessage({ role: "assistant", content: "Erreur lors de l'envoi de l'image. Réessaie." });
     }
   };
 
   const saveAllRecords = async () => {
-    for (const rec of pendingRecords) {
-      await base44.entities.HealthRecord.create({ dog_id: dogId, ...rec });
-      onRecordAdded(rec);
+    try {
+      for (const rec of pendingRecords) {
+        const created = await base44.entities.HealthRecord.create({ dog_id: dogId, ...rec });
+        onRecordAdded(created); // Passe le record avec l'id BDD
+      }
+      setPendingRecords([]);
+      setIsFinished(false);
+      setHasSaved(true);
+      setTimeout(() => {
+        setMessages([]);
+        setHasSaved(false);
+        processConversation([]);
+      }, 2000);
+    } catch (e) {
+      console.error(e);
+      alert("Erreur lors de la sauvegarde. Réessaie.");
     }
-    setPendingRecords([]);
-    setIsFinished(false);
-    setHasSaved(true);
-    // Reset after save so user can start a new conversation
-    setTimeout(() => {
-      setMessages([]);
-      setHasSaved(false);
-      // Re-trigger greeting
-      processConversation([]);
-    }, 2000);
   };
 
   const startNewConversation = () => {
@@ -247,7 +267,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
 
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => (
-            <div key={i} className="flex flex-col w-full">
+            <div key={`msg-${i}-${msg.role}`} className="flex flex-col w-full">
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -441,16 +461,4 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       </div>
     </div>
   );
-}
-
-function getEmoji(type) {
-  const map = {
-    vaccine: "💉",
-    vet_visit: "🏥",
-    weight: "⚖️",
-    medication: "💊",
-    allergy: "⚠️",
-    note: "📝"
-  };
-  return map[type] || "📄";
 }
