@@ -34,19 +34,23 @@ export default function Training() {
   const [user, setUser] = useState(null);
   const [progresses, setProgresses] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [celebration, setCelebration] = useState(null); // exercise name
-  const [milestone, setMilestone] = useState(null); // count
+  const [celebration, setCelebration] = useState(null);
+  const [milestone, setMilestone] = useState(null);
 
   useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
-    const u = await base44.auth.me();
-    setUser(u);
-    const dogs = await base44.entities.Dog.filter({ owner: u.email });
-    if (dogs.length > 0) {
-      setDog(dogs[0]);
-      const progs = await base44.entities.UserProgress.filter({ user_email: u.email, dog_id: dogs[0].id });
-      setProgresses(progs);
+    try {
+      const u = await base44.auth.me();
+      setUser(u);
+      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      if (dogs.length > 0) {
+        setDog(dogs[0]);
+        const progs = await base44.entities.UserProgress.filter({ user_email: u.email, dog_id: dogs[0].id });
+        setProgresses(progs);
+      }
+    } catch (err) {
+      console.error("Training load error:", err);
     }
   };
 
@@ -63,39 +67,44 @@ export default function Training() {
     const existing = progresses.find(p => p.exercise_id === key);
     const wasCompleted = existing?.completed;
 
-    let newProgresses;
-    if (existing && existing.completed) {
-      await base44.entities.UserProgress.update(existing.id, { completed: false, completed_date: null });
-      newProgresses = progresses.map(p => p.id === existing.id ? { ...p, completed: false } : p);
-    } else if (existing) {
-      await base44.entities.UserProgress.update(existing.id, { completed: true, completed_date: new Date().toISOString().split("T")[0] });
-      newProgresses = progresses.map(p => p.id === existing.id ? { ...p, completed: true } : p);
-    } else {
-      const newP = await base44.entities.UserProgress.create({
-        user_email: user.email,
-        dog_id: dog.id,
-        exercise_id: key,
-        completed: true,
-        completed_date: new Date().toISOString().split("T")[0],
-      });
-      newProgresses = [...progresses, newP];
-      
-      const newPoints = (user.points || 0) + 50;
-      await base44.auth.updateMe({ points: newPoints });
-      setUser(prev => ({ ...prev, points: newPoints }));
-    }
-
-    setProgresses(newProgresses);
-    setSelected(null);
-
-    // Only show celebration if we just completed (not un-completing)
-    if (!wasCompleted) {
-      const newCount = newProgresses.filter(p => p.completed).length;
-      if (MILESTONES.includes(newCount)) {
-        setMilestone(newCount);
+    try {
+      let newProgresses;
+      if (existing && existing.completed) {
+        await base44.entities.UserProgress.update(existing.id, { completed: false, completed_date: null });
+        newProgresses = progresses.map(p => p.id === existing.id ? { ...p, completed: false } : p);
+      } else if (existing) {
+        await base44.entities.UserProgress.update(existing.id, { completed: true, completed_date: new Date().toISOString().split("T")[0] });
+        newProgresses = progresses.map(p => p.id === existing.id ? { ...p, completed: true } : p);
       } else {
-        setCelebration(exercise.name);
+        const newP = await base44.entities.UserProgress.create({
+          user_email: user.email,
+          dog_id: dog.id,
+          exercise_id: key,
+          completed: true,
+          completed_date: new Date().toISOString().split("T")[0],
+        });
+        newProgresses = [...progresses, newP];
+        
+        const newPoints = (user.points || 0) + 50;
+        await base44.auth.updateMe({ points: newPoints });
+        setUser(prev => ({ ...prev, points: newPoints }));
       }
+
+      setProgresses(newProgresses);
+      setSelected(null);
+
+      // Only show celebration if we just completed (not un-completing)
+      if (!wasCompleted) {
+        const newCount = newProgresses.filter(p => p.completed).length;
+        if (MILESTONES.includes(newCount)) {
+          setMilestone(newCount);
+        } else {
+          setCelebration(exercise.name);
+        }
+      }
+    } catch (err) {
+      console.error("Training complete error:", err);
+      alert("Erreur lors de la sauvegarde. Réessaie.");
     }
   };
 
@@ -155,11 +164,11 @@ export default function Training() {
         </p>
         <div className="bg-white/15 rounded-2xl p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-white text-sm font-semibold">{completedCount} / 10 tours maîtrisés</span>
-            <span className="text-white/80 text-sm">{Math.round((completedCount / 10) * 100)}%</span>
+            <span className="text-white text-sm font-semibold">{completedCount} / {EXERCISES.length} tours maîtrisés</span>
+            <span className="text-white/80 text-sm">{Math.round((completedCount / EXERCISES.length) * 100)}%</span>
           </div>
           <div className="bg-white/25 rounded-full h-2.5">
-            <div className="bg-white rounded-full h-2.5 transition-all duration-700" style={{ width: `${(completedCount / 10) * 100}%` }} />
+            <div className="bg-white rounded-full h-2.5 transition-all duration-700" style={{ width: `${(completedCount / EXERCISES.length) * 100}%` }} />
           </div>
         </div>
       </div>
