@@ -94,12 +94,13 @@ export default function Home() {
     if (!mood || !energy || !appetite || submitting) return;
     setSubmitting(true);
     try {
-      const result = await base44.backendFunctions.dailyCheckinProcess({
+      const response = await base44.functions.invoke("dailyCheckinProcess", {
         dogId: dog.id,
         mood,
         energy,
         appetite,
       });
+      const result = response.data || {};
       setTodayCheckin(result.checkin || { mood, energy, appetite, ai_response: result.aiResponse, date: getTodayString() });
       setStreak(result.streak || streak);
       // Add to recent check-ins
