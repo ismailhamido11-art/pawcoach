@@ -31,6 +31,7 @@ export default function Onboarding() {
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef(null);
   const fileRef = useRef(null);
+  const savingRef = useRef(false);
 
   const currentAnswer = answers[step];
   const setCurrentAnswer = (val) => {
@@ -50,6 +51,7 @@ export default function Onboarding() {
       setCurrentAnswer(file_url);
     } catch (e) {
       console.error(e);
+      alert("Impossible d'envoyer la photo. Réessaie.");
     } finally {
       setUploading(false);
     }
@@ -98,12 +100,15 @@ export default function Onboarding() {
       return;
     }
 
-    // Final step, process with AI
+    // Guard against double-tap
+    if (savingRef.current) return;
+    savingRef.current = true;
     setSaving(true);
+
     try {
       const user = await base44.auth.me();
       
-      const photoUrl = answers[0]; // Step 0 is photo
+      const photoUrl = answers[0];
       const textAnswers = answers.slice(1);
       const textSteps = INTERVIEW_STEPS.slice(1);
       
@@ -166,9 +171,10 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
       setDone(true);
     } catch (e) {
       console.error(e);
-      alert("Une erreur est survenue lors de la création.");
+      alert("Une erreur est survenue lors de la création du profil. Réessaie.");
     } finally {
       setSaving(false);
+      savingRef.current = false;
     }
   };
 
@@ -182,7 +188,7 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
     );
   }
 
-  const canNext = currentStepData.type === "photo" || currentAnswer.trim().length > 0;
+  const canNext = (currentStepData.type === "photo" && !uploading) || currentAnswer.trim().length > 0;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
