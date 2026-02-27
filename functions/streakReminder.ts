@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
       const dog = dogMap[s.dog_id];
       if (!dog) continue;
 
-      const user = userMap[s.owner_email];
+      const user = userMap[dog.owner];
       if (!user || !user.email) continue;
 
       const graceNote = s.grace_days_remaining > 0
