@@ -13,7 +13,7 @@ const tabs = [
 
 export default function BottomNav({ currentPage }) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bottom-nav bg-white/80 backdrop-blur-lg border-t border-border shadow-lg">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bottom-nav bg-gradient-to-t from-white via-white/95 to-white/90 backdrop-blur-xl border-t border-border shadow-2xl">
       <div className="flex items-center justify-around px-2 py-2">
         {tabs.map(({ label, icon: Icon, page }) => {
           const active = currentPage === page;
@@ -21,28 +21,32 @@ export default function BottomNav({ currentPage }) {
             <Link
               key={page}
               to={createPageUrl(page)}
-              className={`relative flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl tap-scale transition-all duration-200 ${
+              className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl tap-scale transition-all duration-300 ${
                 active
                   ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground hover:text-primary"
               }`}
             >
-              <div
-                className={`p-1.5 rounded-xl transition-all duration-200 ${
-                  active ? "bg-secondary" : ""
+              <motion.div
+                className={`p-2 rounded-xl transition-all duration-300 ${
+                  active 
+                    ? "bg-gradient-to-br from-secondary to-secondary/70 shadow-md" 
+                    : "hover:bg-secondary/40"
                 }`}
+                whileHover={{ scale: active ? 1 : 1.1 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <Icon
-                  className={`w-5 h-5 ${active ? "stroke-[2.5]" : "stroke-[1.75]"}`}
+                  className={`w-5 h-5 icon-animate ${active ? "stroke-[2.5]" : "stroke-[1.75]"}`}
                 />
-              </div>
-              <span className={`text-[10px] font-medium ${active ? "font-semibold" : ""}`}>
+              </motion.div>
+              <span className={`text-[10px] font-semibold transition-all duration-200 ${active ? "text-primary" : "text-muted-foreground"}`}>
                 {label}
               </span>
               {active && (
                 <motion.div
                   layoutId="bottomNavIndicator"
-                  className="absolute -bottom-1 w-5 h-[3px] rounded-full bg-primary"
+                  className="absolute -bottom-1.5 w-6 h-1 rounded-full bg-gradient-to-r from-primary to-accent"
                   transition={{ type: "spring", stiffness: 500, damping: 35 }}
                 />
               )}
