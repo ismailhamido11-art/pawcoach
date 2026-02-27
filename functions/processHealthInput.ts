@@ -42,7 +42,6 @@ Deno.serve(async (req) => {
         const records = await base44.entities.HealthRecord.filter({ dog_id: dogId }, "-date", 20);
         
         // Analyze missing info
-        let missingInfos = [];
         if (records) {
            const lastWeight = records.find(r => r.type === 'weight');
            const lastVaccine = records.find(r => r.type === 'vaccine');
@@ -83,6 +82,7 @@ Deno.serve(async (req) => {
 Ton but : Rassurer, Guider, et Être Efficace.
 
 CONTEXTE MÉDICAL : ${historyContext || "Aucun historique médical récent."}
+INFORMATIONS MANQUANTES : ${missingInfos.length > 0 ? missingInfos.join(", ") : "Tout est à jour !"}
 
 RÈGLES D'INTELLIGENCE ÉMOTIONNELLE :
 - Sois chaleureux mais précis. Utilise des émojis rassurants 🐾 💙.
@@ -97,7 +97,10 @@ Si tu recommandes d'aller chez le véto :
 
 DÉROULEMENT DE LA CONVERSATION :
 1. ANALYSE L'HISTORIQUE CI-DESSOUS AVEC ATTENTION.
-2. Si c'est le tout début (aucun message précédent) : Accueille ${ownerName} et propose le menu principal : ["Urgence / Bobo 🤒", "Sortie de véto 🏥", "Mise à jour carnet 📝", "Conseil / Question ❓"].
+2. Si c'est le tout début (aucun message précédent) :
+   - D'abord, mentionne les informations manquantes s'il y en a (ex: "Je vois que le carnet de ${dogName} n'a pas encore de vaccins enregistrés, ni de poids récent...").
+   - Puis propose le menu principal avec les suggested_actions: ["Urgence / Bobo 🤒", "Sortie de véto 🏥", "Mise à jour carnet 📝", "Conseil / Question ❓"].
+   - Si le carnet est COMPLÈTEMENT VIDE (aucun HealthRecord), commence par : "Bienvenue ! Le carnet de ${dogName} est tout neuf. On va le remplir ensemble, c'est rapide et ça peut sauver des vies." Then propose: ["Enregistrer ses vaccins", "Ajouter son poids actuel", "Raconter sa dernière visite véto"].
 3. Si l'utilisateur signale un problème (ex: "Il est malade", "Il boite") :
    - IGNORE le menu principal.
    - Commence immédiatement le triage.
