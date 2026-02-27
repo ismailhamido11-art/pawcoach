@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Search, MapPin, Loader2, Stethoscope, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { toast } from "sonner";
 
 export default function FindVet() {
   const [query, setQuery] = useState("");
@@ -18,11 +19,15 @@ export default function FindVet() {
 
   useEffect(() => {
     (async () => {
-      const u = await base44.auth.me();
-      const dogs = await base44.entities.Dog.filter({ owner: u.email });
-      if (dogs.length > 0) {
-        setDog(dogs[0]);
-        if (dogs[0].vet_city) setQuery(dogs[0].vet_city);
+      try {
+        const u = await base44.auth.me();
+        const dogs = await base44.entities.Dog.filter({ owner: u.email });
+        if (dogs.length > 0) {
+          setDog(dogs[0]);
+          if (dogs[0].vet_city) setQuery(dogs[0].vet_city);
+        }
+      } catch (e) {
+        console.error("FindVet init error:", e);
       }
     })();
   }, []);
@@ -32,33 +37,38 @@ export default function FindVet() {
     setLoading(true);
     setSearched(true);
 
-    const res = await base44.integrations.Core.InvokeLLM({
-      prompt: `Recherche les cliniques vétérinaires proches de "${query}" en France.
+    try {
+      const res = await base44.integrations.Core.InvokeLLM({
+        prompt: `Recherche les cliniques vétérinaires proches de "${query}" en France.
 Retourne les 5 meilleures cliniques avec leurs informations.
 Pour chaque clinique, fournis: name, address, phone (format français), google_maps_url (lien Google Maps basé sur le nom et l'adresse), website (si connu, sinon null), rating (note sur 5 si connue, sinon null).`,
-      add_context_from_internet: true,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          vets: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                name: { type: "string" },
-                address: { type: "string" },
-                phone: { type: "string" },
-                google_maps_url: { type: "string" },
-                website: { type: "string" },
-                rating: { type: "number" },
+        add_context_from_internet: true,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            vets: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  address: { type: "string" },
+                  phone: { type: "string" },
+                  google_maps_url: { type: "string" },
+                  website: { type: "string" },
+                  rating: { type: "number" },
+                },
               },
             },
           },
         },
-      },
-    });
+      });
 
-    setResults(res.vets || []);
+      setResults(res.vets || []);
+    } catch (e) {
+      console.error("handleSearch error:", e);
+      toast.error("Erreur lors de la recherche. Veuillez réessayer.");
+    }
     setLoading(false);
   };
 
