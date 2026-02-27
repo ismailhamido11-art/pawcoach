@@ -108,7 +108,7 @@ export default function Training() {
   const completedExercises = EXERCISES.filter(e => isCompleted(e.order_number));
   const completedCount = completedExercises.length;
 
-  const isPremium = user?.role === "admin";
+  const isPremium = user?.is_premium;
 
   const handleComplete = async (exercise) => {
     if (!dog || !user) return;
