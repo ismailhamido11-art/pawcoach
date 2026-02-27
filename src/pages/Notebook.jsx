@@ -8,7 +8,7 @@ import PremiumSection from "../components/notebook/PremiumSection";
 import UpcomingReminders from "../components/notebook/UpcomingReminders";
 import SmartHealthAssistant from "../components/notebook/SmartHealthAssistant";
 import { RecordRow } from "../components/notebook/SectionVaccins";
-import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle } from "lucide-react";
+import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
 
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
@@ -61,95 +61,42 @@ const PREMIUM_CONFIGS = {
   },
 };
 
-// Mini Health Dashboard Component
-function HealthDashboard({ dog, records }) {
+// Compact Health Status Bar
+function HealthStatusBar({ dog, records }) {
   if (!dog) return null;
 
   const lastWeight = records.find(r => r.type === 'weight');
   const lastVaccine = records.find(r => r.type === 'vaccine');
   const lastVet = records.find(r => r.type === 'vet_visit');
-  const totalRecords = records.length;
 
-  const getTimeSince = (dateStr) => {
-    if (!dateStr) return null;
-    const d = new Date(dateStr);
-    const now = new Date();
-    const diffDays = Math.ceil(Math.abs(now - d) / (1000 * 60 * 60 * 24));
-    if (diffDays < 7) return `il y a ${diffDays}j`;
-    if (diffDays < 30) return `il y a ${Math.floor(diffDays / 7)} sem.`;
-    if (diffDays < 365) return `il y a ${Math.floor(diffDays / 30)} mois`;
-    return `il y a ${Math.floor(diffDays / 365)} an(s)`;
-  };
-
-  const stats = [
-    {
-      label: "Poids",
-      value: lastWeight ? `${lastWeight.value} kg` : "—",
-      sub: lastWeight ? getTimeSince(lastWeight.date) : "Non renseigné",
-      icon: <Weight className="w-4 h-4" />,
-      color: lastWeight ? "text-teal-600 bg-teal-50" : "text-orange-500 bg-orange-50",
-      missing: !lastWeight
-    },
-    {
-      label: "Vaccins",
-      value: lastVaccine ? "À jour" : "—",
-      sub: lastVaccine ? getTimeSince(lastVaccine.date) : "Aucun enregistré",
-      icon: <Syringe className="w-4 h-4" />,
-      color: lastVaccine ? "text-blue-600 bg-blue-50" : "text-orange-500 bg-orange-50",
-      missing: !lastVaccine
-    },
-    {
-      label: "Véto",
-      value: lastVet ? "OK" : "—",
-      sub: lastVet ? getTimeSince(lastVet.date) : "Aucune visite",
-      icon: <Stethoscope className="w-4 h-4" />,
-      color: lastVet ? "text-purple-600 bg-purple-50" : "text-orange-500 bg-orange-50",
-      missing: !lastVet
-    }
+  const items = [
+    { label: "Poids", ok: !!lastWeight, value: lastWeight ? `${lastWeight.value}kg` : "—", icon: <Weight className="w-3.5 h-3.5" /> },
+    { label: "Vaccins", ok: !!lastVaccine, value: lastVaccine ? "OK" : "—", icon: <Syringe className="w-3.5 h-3.5" /> },
+    { label: "Véto", ok: !!lastVet, value: lastVet ? "OK" : "—", icon: <Stethoscope className="w-3.5 h-3.5" /> },
   ];
 
-  const missingCount = stats.filter(s => s.missing).length;
+  const missingCount = items.filter(i => !i.ok).length;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
-      {/* Dog name + health score */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-foreground">{dog.name}</span>
-          <span className="text-xs text-muted-foreground">{dog.breed} · {dog.weight}kg</span>
-        </div>
-        {missingCount === 0 ? (
-          <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            Complet
-          </div>
-        ) : (
-          <div className="flex items-center gap-1 text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-full">
-            <AlertTriangle className="w-3.5 h-3.5" />
-            {missingCount} manquant{missingCount > 1 ? 's' : ''}
-          </div>
-        )}
-      </div>
-
-      {/* Stats row */}
-      <div className="grid grid-cols-3 gap-2">
-        {stats.map((stat, i) => (
-          <div key={i} className={`rounded-xl p-2.5 text-center ${stat.missing ? 'bg-orange-50/50 border border-dashed border-orange-200' : 'bg-slate-50'}`}>
-            <div className={`w-7 h-7 rounded-full ${stat.color} flex items-center justify-center mx-auto mb-1`}>
-              {stat.icon}
-            </div>
-            <p className="text-xs font-semibold text-foreground">{stat.value}</p>
-            <p className="text-[10px] text-muted-foreground">{stat.sub}</p>
+    <div className="flex items-center gap-2 px-4 py-2.5 bg-white/80 backdrop-blur-sm border-b border-slate-100">
+      <span className="text-sm font-bold text-foreground">{dog.name}</span>
+      <span className="text-xs text-muted-foreground">{dog.breed} · {dog.weight}kg</span>
+      <div className="flex-1" />
+      <div className="flex items-center gap-1.5">
+        {items.map((item, i) => (
+          <div
+            key={i}
+            className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold ${
+              item.ok
+                ? "bg-green-50 text-green-700"
+                : "bg-orange-50 text-orange-600"
+            }`}
+          >
+            {item.icon}
+            {item.value}
           </div>
         ))}
       </div>
-
-      {/* Empty state hint */}
-      {totalRecords === 0 && (
-        <p className="text-xs text-center text-muted-foreground mt-3 italic">
-          Utilise l'Assistant Santé ci-dessous pour commencer à remplir le carnet
-        </p>
-      )}
     </div>
   );
 }
@@ -159,6 +106,7 @@ export default function Notebook() {
   const [user, setUser] = useState(null);
   const [records, setRecords] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
+  const [showRecords, setShowRecords] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
@@ -170,17 +118,22 @@ export default function Notebook() {
       setDog(dogs[0]);
       const recs = await base44.entities.HealthRecord.filter({ dog_id: dogs[0].id });
       setRecords(recs);
+      // Auto-expand records section if there are records
+      if (recs.length > 0) setShowRecords(true);
     }
   };
 
-  const handleAdd = (rec) => setRecords(prev => [...prev, rec]);
+  const handleAdd = (rec) => {
+    setRecords(prev => [...prev, rec]);
+    setShowRecords(true); // Show records when new ones are added
+  };
+
   const handleDelete = async (id) => {
     await base44.entities.HealthRecord.delete(id);
     setRecords(prev => prev.filter(r => r.id !== id));
   };
 
   const isPremium = user?.role === "admin";
-  const activeTabLabel = TABS.find(t => t.id === activeTab)?.shortLabel;
   const countForTab = (id) => id === "all" ? records.length : records.filter(r => r.type === id).length;
 
   const sortedRecords = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -209,94 +162,105 @@ export default function Notebook() {
     <div className="min-h-screen bg-background pb-24">
       <WellnessBanner />
 
-      {/* Header */}
-      <div className="gradient-primary pt-10 pb-10 px-5 relative overflow-hidden">
+      {/* Compact Header */}
+      <div className="gradient-primary pt-8 pb-6 px-5 relative overflow-hidden">
         <div className="relative z-10">
-          <h1 className="text-white font-bold text-2xl mb-2">Carnet de santé</h1>
-          <p className="text-white/90 text-sm leading-relaxed">
-            {dog ? `Le suivi santé intelligent de ${dog.name}` : "Chargement..."}
+          <h1 className="text-white font-bold text-xl">Carnet de santé</h1>
+          <p className="text-white/80 text-xs mt-0.5">
+            {dog ? `Le suivi intelligent de ${dog.name}` : "Chargement..."}
           </p>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
       </div>
 
-      {/* Health Dashboard + Assistant - Overlapping header */}
-      <div className="px-4 mt-[-28px] relative z-20 space-y-3 mb-4">
-        <HealthDashboard dog={dog} records={records} />
-        <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} inline={true} />
+      {/* Health Status Bar */}
+      <HealthStatusBar dog={dog} records={records} />
+
+      {/* Main: Embedded Conversation */}
+      <div className="px-4 mt-4 mb-4">
+        <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} />
       </div>
 
       <UpcomingReminders records={records} isPremium={isPremium} />
 
-      {/* Tab bar */}
-      <div className="bg-white border-b border-border sticky top-0 z-10 shadow-sm">
-        <div className="flex overflow-x-auto">
-          {TABS.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-shrink-0 flex flex-col items-center px-4 py-2.5 text-xs font-semibold border-b-2 transition-all relative ${
-                activeTab === tab.id
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {tab.label}
-              {countForTab(tab.id) > 0 && (
-                <span className={`text-[9px] font-bold mt-0.5 ${activeTab === tab.id ? "text-primary" : "text-muted-foreground"}`}>
-                  {countForTab(tab.id)}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
+      {/* Records Section - Collapsible */}
+      <div className="px-4 mt-2">
+        <button
+          onClick={() => setShowRecords(!showRecords)}
+          className="w-full flex items-center justify-between py-3 px-1 text-sm font-semibold text-foreground"
+        >
+          <span>Historique ({records.length})</span>
+          {showRecords ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+        </button>
       </div>
 
-      {/* Section content */}
-      <div className="px-4 pt-4">
-        {activeTab === "all" && (
-          <div className="space-y-3">
-            {sortedRecords.length === 0 ? (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
-                  <FileText className="w-7 h-7 text-slate-400" />
-                </div>
-                <p className="text-sm font-medium text-foreground mb-1">Le carnet est vide</p>
-                <p className="text-xs text-muted-foreground max-w-[250px] mx-auto">
-                  Utilise l'Assistant Santé ci-dessus pour enregistrer les premières infos de {dog?.name || "ton chien"}
-                </p>
+      {showRecords && (
+        <>
+          {/* Tab bar */}
+          <div className="bg-white border-b border-border sticky top-0 z-10 shadow-sm">
+            <div className="flex overflow-x-auto">
+              {TABS.map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-shrink-0 flex flex-col items-center px-4 py-2.5 text-xs font-semibold border-b-2 transition-all relative ${
+                    activeTab === tab.id
+                      ? "border-primary text-primary"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {tab.label}
+                  {countForTab(tab.id) > 0 && (
+                    <span className={`text-[9px] font-bold mt-0.5 ${activeTab === tab.id ? "text-primary" : "text-muted-foreground"}`}>
+                      {countForTab(tab.id)}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Section content */}
+          <div className="px-4 pt-4">
+            {activeTab === "all" && (
+              <div className="space-y-3">
+                {sortedRecords.length === 0 ? (
+                  <div className="text-center py-6">
+                    <p className="text-xs text-muted-foreground">Discute avec l'assistant pour ajouter des entrées</p>
+                  </div>
+                ) : (
+                  sortedRecords.map(r => (
+                    <RecordRow
+                      key={r.id}
+                      record={r}
+                      onDelete={handleDelete}
+                      icon={getIconForType(r.type)}
+                      accentClass={getAccentClassForType(r.type)}
+                      extra={r.type === 'weight' ? <span className="text-xs font-bold text-teal-600 mt-1 block">{r.value} kg</span> : null}
+                    />
+                  ))
+                )}
               </div>
-            ) : (
-              sortedRecords.map(r => (
-                <RecordRow
-                  key={r.id}
-                  record={r}
-                  onDelete={handleDelete}
-                  icon={getIconForType(r.type)}
-                  accentClass={getAccentClassForType(r.type)}
-                  extra={r.type === 'weight' ? <span className="text-xs font-bold text-teal-600 mt-1 block">{r.value} kg</span> : null}
-                />
-              ))
+            )}
+            {activeTab === "vaccine" && (
+              <SectionVaccins records={records} dogId={dog?.id} onDelete={handleDelete} />
+            )}
+            {activeTab === "weight" && (
+              <SectionPoids records={records} dogId={dog?.id} onDelete={handleDelete} />
+            )}
+            {(activeTab === "vet_visit" || activeTab === "medication" || activeTab === "note") && (
+              <PremiumSection
+                type={activeTab}
+                records={records}
+                dogId={dog?.id}
+                isPremium={isPremium}
+                onDelete={handleDelete}
+                config={PREMIUM_CONFIGS[activeTab]}
+              />
             )}
           </div>
-        )}
-        {activeTab === "vaccine" && (
-          <SectionVaccins records={records} dogId={dog?.id} onDelete={handleDelete} />
-        )}
-        {activeTab === "weight" && (
-          <SectionPoids records={records} dogId={dog?.id} onDelete={handleDelete} />
-        )}
-        {(activeTab === "vet_visit" || activeTab === "medication" || activeTab === "note") && (
-          <PremiumSection
-            type={activeTab}
-            records={records}
-            dogId={dog?.id}
-            isPremium={isPremium}
-            onDelete={handleDelete}
-            config={PREMIUM_CONFIGS[activeTab]}
-          />
-        )}
-      </div>
+        </>
+      )}
 
       <BottomNav currentPage="Notebook" />
     </div>
