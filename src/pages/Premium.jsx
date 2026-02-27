@@ -13,7 +13,7 @@ const FEATURES = [
   { text: "Scans alimentaires illimités", premium: true, free: "3/semaine" },
   { text: "Tous les exercices de dressage (10)", premium: true, free: "3 exercices" },
   { text: "Carnet santé complet (visites, médicaments, notes)", premium: true, free: false },
-  { text: "Rappels de rappels de vaccins par email", premium: true, free: false },
+  { text: "Rappels de santé par email", premium: true, free: false },
   { text: "Résumés mensuels bien-être", premium: true, free: false },
   { text: "Jusqu'à 3 profils de chiens", premium: true, free: "1 chien" },
 ];
@@ -35,11 +35,17 @@ export default function Premium() {
       return;
     }
     setLoading(true);
-    const priceId = plan === "annual" ? ANNUAL_PRICE_ID : MONTHLY_PRICE_ID;
-    const response = await base44.functions.invoke("stripeCheckout", { priceId });
-    const { url } = response.data;
-    if (url) window.location.href = url;
-    else setLoading(false);
+    try {
+      const priceId = plan === "annual" ? ANNUAL_PRICE_ID : MONTHLY_PRICE_ID;
+      const response = await base44.functions.invoke("stripeCheckout", { priceId });
+      const { url } = response.data;
+      if (url) window.location.href = url;
+    } catch (err) {
+      console.error("Stripe checkout error:", err);
+      alert("Erreur lors du paiement. Réessaie dans un instant.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (user?.is_premium) {
