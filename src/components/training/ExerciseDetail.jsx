@@ -55,7 +55,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
             </div>
             <p className="font-semibold text-amber-700">Exercice Premium</p>
             <p className="text-amber-600 text-sm">Passe à Premium pour débloquer toutes les fiches d'entraînement détaillées.</p>
-            <Button onClick={() => window.location.href = '/Premium'} className="rounded-xl gradient-warm border-0 text-white font-semibold mt-1">
+            <Button onClick={() => window.location.href = '/Premium?from=training'} className="rounded-xl gradient-warm border-0 text-white font-semibold mt-1">
               Passer Premium 🌟
             </Button>
           </div>

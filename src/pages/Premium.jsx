@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Check, Crown, Zap, Lock, ChevronRight } from "lucide-react";
+import { ArrowLeft, Check, Crown, Zap, Lock, ChevronRight, MessageCircle, ScanLine, Dumbbell, BookHeart, Salad } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
@@ -187,6 +187,18 @@ export default function Premium() {
     );
   }
 
+  const CONTEXTUAL_MESSAGES = {
+    chat:     { title: "Tes messages gratuits sont épuisés", desc: "Passe en Premium pour discuter sans limite avec PawCoach", Icon: MessageCircle, color: "bg-blue-50 border-blue-200 text-blue-700" },
+    scan:     { title: "Tu as utilisé tes scans gratuits", desc: "Passe en Premium pour scanner sans limite", Icon: ScanLine, color: "bg-orange-50 border-orange-200 text-orange-700" },
+    training: { title: "Tu as découvert les bases !", desc: "Débloque les 7 exercices avancés avec Premium", Icon: Dumbbell, color: "bg-purple-50 border-purple-200 text-purple-700" },
+    notebook: { title: "Accède au carnet complet", desc: "Visites véto, médicaments et notes avec Premium", Icon: BookHeart, color: "bg-red-50 border-red-200 text-red-700" },
+    nutrition:{ title: "Tes messages NutriCoach sont épuisés", desc: "Passe en Premium pour un coaching nutrition illimité", Icon: Salad, color: "bg-green-50 border-green-200 text-green-700" },
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromParam = urlParams.get("from");
+  const contextMsg = fromParam ? CONTEXTUAL_MESSAGES[fromParam] : null;
+
   return (
     <div className="min-h-screen bg-background pb-10">
       {/* Header */}
@@ -207,6 +219,21 @@ export default function Premium() {
       </div>
 
       <div className="px-5 pt-6 space-y-5">
+        {/* Contextual banner */}
+        {contextMsg && (() => {
+          const CtxIcon = contextMsg.Icon;
+          return (
+            <div className={`rounded-2xl border p-4 flex items-start gap-3 ${contextMsg.color}`}>
+              <div className="w-10 h-10 rounded-xl bg-white/80 flex items-center justify-center flex-shrink-0">
+                <CtxIcon className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="font-bold text-sm">{contextMsg.title}</p>
+                <p className="text-xs mt-0.5 opacity-80">{contextMsg.desc}</p>
+              </div>
+            </div>
+          );
+        })()}
         {/* Plan selector */}
         <div className="bg-white rounded-2xl border border-border p-1.5 flex gap-1.5">
           <button

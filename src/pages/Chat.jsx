@@ -306,7 +306,7 @@ export default function Chat() {
             <div>
               <p className="text-sm font-medium text-foreground">Messages gratuits utilisés</p>
               <p className="text-xs text-muted-foreground mt-0.5">Tu as utilisé tes messages gratuits. Passe en Premium pour discuter sans limite, ou reviens demain (2 messages offerts).</p>
-              <Button onClick={() => window.location.href = '/Premium'} size="sm" className="mt-2 gradient-primary border-0 text-white text-xs h-8">
+              <Button onClick={() => window.location.href = '/Premium?from=chat'} size="sm" className="mt-2 gradient-primary border-0 text-white text-xs h-8">
                 Passer en Premium ✨
               </Button>
             </div>

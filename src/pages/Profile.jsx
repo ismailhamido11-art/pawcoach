@@ -38,7 +38,7 @@ export default function Profile() {
 
   const handleAddDog = () => {
     if (!user?.is_premium && dogs.length >= 1) {
-      navigate(createPageUrl("Premium"));
+      navigate(createPageUrl("Premium") + "?from=profile");
     } else if (user?.is_premium && dogs.length >= 3) {
       // already at max
     } else {
@@ -82,7 +82,7 @@ export default function Profile() {
         {/* Premium banner (free users) */}
         {!user?.is_premium && (
           <button
-            onClick={() => navigate(createPageUrl("Premium"))}
+            onClick={() => navigate(createPageUrl("Premium") + "?from=profile")}
             className="w-full gradient-warm rounded-2xl p-4 flex items-center gap-3 shadow tap-scale"
           >
             <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -136,7 +136,7 @@ export default function Profile() {
             </button>
           ) : !user?.is_premium ? (
             <button
-              onClick={() => navigate(createPageUrl("Premium"))}
+              onClick={() => navigate(createPageUrl("Premium") + "?from=profile")}
               className="w-full flex items-center gap-3 px-4 py-3 border-t border-border text-amber-600 hover:bg-amber-50 transition-all"
             >
               <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">

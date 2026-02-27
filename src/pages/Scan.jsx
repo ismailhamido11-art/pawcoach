@@ -274,7 +274,7 @@ export default function Scan() {
               <Crown className="w-10 h-10 text-amber-500 mx-auto" />
               <p className="font-bold text-foreground">Tu as utilisé tes {FREE_SCAN_LIMIT} scans gratuits cette semaine.</p>
               <p className="text-sm text-muted-foreground">Passe en Premium pour scanner sans limite.</p>
-              <Button onClick={() => window.location.href = '/Premium'} className="w-full h-12 rounded-2xl gradient-warm border-0 text-white font-bold">
+              <Button onClick={() => window.location.href = '/Premium?from=scan'} className="w-full h-12 rounded-2xl gradient-warm border-0 text-white font-bold">
                 👑 Voir Premium
               </Button>
               <button onClick={() => setScanLimitReached(false)} className="text-xs text-muted-foreground underline">
@@ -288,7 +288,7 @@ export default function Scan() {
         {!result && !scanLimitReached && !user?.is_premium && !isInTrial && (
           <div className="flex items-center justify-between text-xs text-muted-foreground bg-muted/40 rounded-xl px-3 py-2">
             <span>Scans cette semaine : <strong className="text-foreground">{scansUsed}/{FREE_SCAN_LIMIT}</strong></span>
-            <button onClick={() => window.location.href = '/Premium'} className="flex items-center gap-1 text-amber-600 font-semibold">
+            <button onClick={() => window.location.href = '/Premium?from=scan'} className="flex items-center gap-1 text-amber-600 font-semibold">
               <Crown className="w-3 h-3" /> Premium
             </button>
           </div>

@@ -238,7 +238,7 @@ export default function Nutrition() {
                 <div>
                   <p className="text-sm font-medium text-foreground">Messages NutriCoach utilisés</p>
                   <p className="text-xs text-muted-foreground mt-0.5">Tu as utilisé tes 20 messages gratuits. Passe en Premium pour un accès illimité à NutriCoach.</p>
-                  <Button onClick={() => window.location.href = '/Premium'} size="sm" className="mt-2 bg-green-600 hover:bg-green-700 border-0 text-white text-xs h-8">
+                  <Button onClick={() => window.location.href = '/Premium?from=nutrition'} size="sm" className="mt-2 bg-green-600 hover:bg-green-700 border-0 text-white text-xs h-8">
                     Passer en Premium ✨
                   </Button>
                 </div>
