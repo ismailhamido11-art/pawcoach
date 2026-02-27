@@ -5,6 +5,7 @@ import BottomNav from "../components/BottomNav";
 import ExerciseDetail from "../components/training/ExerciseDetail";
 import CelebrationScreen from "../components/training/CelebrationScreen";
 import MilestoneScreen from "../components/training/MilestoneScreen";
+import FreeExercisesGate from "../components/training/FreeExercisesGate";
 import { CheckCircle, Timer, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -37,6 +38,7 @@ export default function Training() {
   const [selected, setSelected] = useState(null);
   const [celebration, setCelebration] = useState(null);
   const [milestone, setMilestone] = useState(null);
+  const [showFreeGate, setShowFreeGate] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
@@ -99,8 +101,13 @@ export default function Training() {
         // --- STREAK UPDATE ---
         await updateStreakSilently(dog.id, user.email);
 
+        const prevCount = progresses.filter(p => p.completed).length;
         const newCount = newProgresses.filter(p => p.completed).length;
-        if (MILESTONES.includes(newCount)) {
+
+        // Free exercises gate: exactly when going from 2→3 completed and user is free
+        if (prevCount === 2 && newCount === 3 && !user?.is_premium) {
+          setShowFreeGate(true);
+        } else if (MILESTONES.includes(newCount)) {
           setMilestone(newCount);
         } else {
           setCelebration(exercise.name);
@@ -125,6 +132,15 @@ export default function Training() {
         dogName={dog?.name || "Ton chien"}
         completedExercises={completedUpTo}
         onContinue={() => setMilestone(null)}
+      />
+    );
+  }
+
+  if (showFreeGate) {
+    return (
+      <FreeExercisesGate
+        dogName={dog?.name}
+        onDismiss={() => setShowFreeGate(false)}
       />
     );
   }
