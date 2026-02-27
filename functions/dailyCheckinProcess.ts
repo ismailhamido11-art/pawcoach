@@ -18,6 +18,7 @@ Deno.serve(async (req) => {
     const dogs = await base44.asServiceRole.entities.Dog.filter({ id: dogId });
     if (!dogs || !dogs.length) return Response.json({ error: 'Dog not found' }, { status: 400 });
     const dog = dogs[0];
+    if (dog.owner !== user.email) return Response.json({ error: 'Forbidden' }, { status: 403 });
 
     // Calculate age segment
     let ageSegment = "adulte";

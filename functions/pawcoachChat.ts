@@ -14,6 +14,7 @@ Deno.serve(async (req) => {
     const dogs = await base44.asServiceRole.entities.Dog.filter({ id: dogId });
     const dog = dogs?.[0];
     if (!dog) return Response.json({ error: 'Dog not found' }, { status: 400 });
+    if (dog.owner !== user.email) return Response.json({ error: 'Forbidden' }, { status: 403 });
 
     // Build system prompt server-side
     const getAge = (birthDate) => {
