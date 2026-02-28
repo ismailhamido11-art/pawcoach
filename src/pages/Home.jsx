@@ -13,6 +13,7 @@ import JournalLog from "../components/home/JournalLog";
 import QuickActions from "../components/home/QuickActions";
 import IconBadge from "@/components/ui/IconBadge";
 import { Heart, PartyPopper, Flame } from "lucide-react";
+import { DogTrophy } from "../components/ui/PawIllustrations";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 
