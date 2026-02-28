@@ -188,18 +188,26 @@ export default function Training() {
     return (
       <div className="min-h-screen bg-background pb-24">
         <WellnessBanner />
-        <div className="gradient-primary pt-10 pb-6 px-5">
-          <h1 className="text-white font-bold text-xl mb-0.5">Coach Dressage</h1>
-          <p className="text-white/70 text-sm mb-4">
-            {dog ? `Entraîne-toi avec ${dog.name}` : "Chargement..."}
-          </p>
-          <div className="bg-white/15 rounded-2xl p-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-white text-sm font-semibold">{completedCount} / {EXERCISES.length} tours maîtrisés</span>
-              <span className="text-white/80 text-sm">0%</span>
+        <div className="gradient-primary pt-10 pb-0 px-5 overflow-hidden relative">
+          <div className="flex items-start justify-between">
+            <div className="pb-6 flex-1">
+              <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-2">PawCoach</p>
+              <h1 className="text-white font-black text-2xl leading-tight">Coach Dressage</h1>
+              <p className="text-white/70 text-sm mt-1 mb-4">
+                {dog ? `Entraîne-toi avec ${dog.name}` : "Chargement..."}
+              </p>
+              <div className="bg-white/15 rounded-2xl p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white text-sm font-semibold">{completedCount} / {EXERCISES.length} tours maîtrisés</span>
+                  <span className="text-white/80 text-sm">0%</span>
+                </div>
+                <div className="bg-white/25 rounded-full h-2.5">
+                  <div className="bg-white rounded-full h-2.5 transition-all duration-700" style={{ width: "0%" }} />
+                </div>
+              </div>
             </div>
-            <div className="bg-white/25 rounded-full h-2.5">
-              <div className="bg-white rounded-full h-2.5 transition-all duration-700" style={{ width: "0%" }} />
+            <div className="w-28 h-28 flex-shrink-0 ml-2">
+              <DogGrad color="#ddd6fe" />
             </div>
           </div>
         </div>
@@ -270,18 +278,26 @@ export default function Training() {
     <div className="min-h-screen bg-background pb-24">
       <WellnessBanner />
 
-      <div className="gradient-primary pt-10 pb-6 px-5">
-         <h1 className="text-white font-bold text-xl mb-0.5">Coach Dressage</h1>
-         <p className="text-white/70 text-sm mb-4">
-           {dog ? `Entraîne-toi avec ${dog.name}` : "Chargement..."}
-         </p>
-        <div className="bg-white/15 rounded-2xl p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-white text-sm font-semibold">{completedCount} / {EXERCISES.length} tours maîtrisés</span>
-            <span className="text-white/80 text-sm">{Math.round((completedCount / EXERCISES.length) * 100)}%</span>
+      <div className="gradient-primary pt-10 pb-0 px-5 overflow-hidden relative">
+        <div className="flex items-start justify-between">
+          <div className="pb-6 flex-1">
+            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-2">PawCoach</p>
+            <h1 className="text-white font-black text-2xl leading-tight">Coach Dressage</h1>
+            <p className="text-white/70 text-sm mt-1 mb-4">
+              {dog ? `Entraîne-toi avec ${dog.name}` : "Chargement..."}
+            </p>
+            <div className="bg-white/15 rounded-2xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white text-sm font-semibold">{completedCount} / {EXERCISES.length} tours maîtrisés</span>
+                <span className="text-white/80 text-sm">{Math.round((completedCount / EXERCISES.length) * 100)}%</span>
+              </div>
+              <div className="bg-white/25 rounded-full h-2.5">
+                <div className="bg-white rounded-full h-2.5 transition-all duration-700" style={{ width: `${(completedCount / EXERCISES.length) * 100}%` }} />
+              </div>
+            </div>
           </div>
-          <div className="bg-white/25 rounded-full h-2.5">
-            <div className="bg-white rounded-full h-2.5 transition-all duration-700" style={{ width: `${(completedCount / EXERCISES.length) * 100}%` }} />
+          <div className="w-28 h-28 flex-shrink-0 -mb-2 ml-2">
+            <DogGrad color="#ddd6fe" />
           </div>
         </div>
       </div>

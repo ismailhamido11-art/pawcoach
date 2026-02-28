@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { updateStreakSilently } from "../components/streakHelper";
 import { motion } from "framer-motion";
+import { DogDetective } from "../components/ui/PawIllustrations";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
@@ -255,15 +256,19 @@ export default function Scan() {
       )}
 
       {/* Header */}
-      <div className={`gradient-primary pb-6 px-5 ${result?.verdict === "toxic" && dogAteIt ? "pt-24" : "pt-12"}`}>
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-xl">🐾</span>
-          <span className="text-white font-bold text-base tracking-tight">PawCoach</span>
+      <div className={`gradient-primary pb-0 px-5 ${result?.verdict === "toxic" && dogAteIt ? "pt-24" : "pt-12"} overflow-hidden relative`}>
+        <div className="flex items-start justify-between">
+          <div className="pb-6">
+            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-3">PawCoach</p>
+            <h1 className="text-white font-black text-2xl leading-tight">Scan Bouffe</h1>
+            <p className="text-white/70 text-sm mt-1">
+              {dog ? `Analyse pour ${dog.name}` : "Chargement..."}
+            </p>
+          </div>
+          <div className="w-28 h-28 flex-shrink-0 -mb-2 opacity-90">
+            <DogDetective color="#c7d2fe" />
+          </div>
         </div>
-        <h1 className="text-white font-bold text-2xl mt-3">Scan Bouffe</h1>
-        <p className="text-white/70 text-sm mt-0.5">
-          {dog ? `Analyse pour ${dog.name}` : "Chargement..."}
-        </p>
       </div>
 
       <div className="px-5 pt-5 space-y-4">

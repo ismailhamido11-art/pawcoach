@@ -149,14 +149,15 @@ export default function Nutrition() {
       <WellnessBanner />
 
       {/* Header */}
-      <div className="gradient-primary pt-10 pb-3 px-5 mt-7">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center">
-            <Salad className="w-5 h-5 text-white" />
+      <div className="gradient-primary pt-10 pb-3 px-5 mt-7 overflow-hidden">
+        <div className="flex items-start gap-3 mb-3">
+          <div className="flex-1">
+            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
+            <h1 className="text-white font-black text-2xl leading-tight">NutriCoach</h1>
+            {dog && <p className="text-white/70 text-xs mt-0.5">Coach nutrition IA pour {dog.name}</p>}
           </div>
-          <div>
-            <h1 className="text-white font-bold text-lg">NutriCoach</h1>
-            {dog && <p className="text-white/70 text-xs">Coach nutrition IA pour {dog.name}</p>}
+          <div className="w-20 h-20 flex-shrink-0 -mt-2">
+            <DogChef color="#a7f3d0" />
           </div>
           <div className="ml-auto flex items-center gap-2">
             {!user?.is_premium && messagesRemaining !== null && (
