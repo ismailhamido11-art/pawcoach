@@ -59,6 +59,7 @@ import Scan from './pages/Scan';
 import Training from './pages/Training';
 import VetDogView from './pages/VetDogView';
 import VetPortal from './pages/VetPortal';
+import HealthImport from './pages/HealthImport';
 import __Layout from './Layout.jsx';
 
 
@@ -75,6 +76,7 @@ export const PAGES = {
     "Training": Training,
     "VetDogView": VetDogView,
     "VetPortal": VetPortal,
+    "HealthImport": HealthImport,
 }
 
 export const pagesConfig = {
