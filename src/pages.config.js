@@ -50,7 +50,6 @@
 import Chat from './pages/Chat';
 import FindVet from './pages/FindVet';
 import Home from './pages/Home';
-import Notebook from './pages/Notebook';
 import Nutrition from './pages/Nutrition';
 import Onboarding from './pages/Onboarding';
 import Premium from './pages/Premium';
@@ -61,6 +60,7 @@ import VetDogView from './pages/VetDogView';
 import VetPortal from './pages/VetPortal';
 import HealthImport from './pages/HealthImport';
 import Dashboard from './pages/Dashboard';
+import Notebook from './pages/Notebook';
 import __Layout from './Layout.jsx';
 
 
@@ -68,7 +68,6 @@ export const PAGES = {
     "Chat": Chat,
     "FindVet": FindVet,
     "Home": Home,
-    "Notebook": Notebook,
     "Nutrition": Nutrition,
     "Onboarding": Onboarding,
     "Premium": Premium,
@@ -79,6 +78,7 @@ export const PAGES = {
     "VetPortal": VetPortal,
     "HealthImport": HealthImport,
     "Dashboard": Dashboard,
+    "Notebook": Notebook,
 }
 
 export const pagesConfig = {
