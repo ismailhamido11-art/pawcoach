@@ -18,6 +18,7 @@ import AIDiagnosisModal from "../components/vet/AIDiagnosisModal";
 import { updateStreakSilently } from "../components/streakHelper";
 import QRCodeCard from "../components/notebook/QRCodeCard";
 import { motion } from "framer-motion";
+import { DogDoctor } from "../components/ui/PawIllustrations";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
