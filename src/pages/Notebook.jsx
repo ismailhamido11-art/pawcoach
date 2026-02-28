@@ -7,6 +7,7 @@ import SectionPoids from "../components/notebook/SectionPoids";
 import PremiumSection from "../components/notebook/PremiumSection";
 import UpcomingReminders from "../components/notebook/UpcomingReminders";
 import SmartHealthAssistant from "../components/notebook/SmartHealthAssistant";
+import NutriCoach from "../components/notebook/NutriCoach";
 import { RecordRow } from "../components/notebook/SectionVaccins";
 import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2, HeartPulse, ClipboardList, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
