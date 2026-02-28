@@ -217,9 +217,31 @@ export default function Notebook() {
       {/* Health Status Bar */}
       <HealthStatusBar dog={dog} records={records} />
 
-      {/* AI Pre-Diagnosis Button */}
+      {/* Import IA Button */}
       {dog && (
         <div className="px-5 mt-4">
+          <Link to={createPageUrl("HealthImport")}>
+            <motion.div
+              whileTap={{ scale: 0.96 }}
+              transition={spring}
+              className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-2xl hover:shadow-md transition-all mb-3"
+            >
+              <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-5 h-5 text-primary" />
+              </div>
+              <div className="text-left flex-1">
+                <p className="text-sm font-semibold text-foreground">Importer des données de santé</p>
+                <p className="text-[11px] text-muted-foreground">Photo, PDF, email véto — l'IA extrait tout automatiquement</p>
+              </div>
+              <FileText className="w-4 h-4 text-muted-foreground" />
+            </motion.div>
+          </Link>
+        </div>
+      )}
+
+      {/* AI Pre-Diagnosis Button */}
+      {dog && (
+        <div className="px-5 mt-0">
           <motion.button
             whileTap={{ scale: 0.96 }}
             transition={spring}
