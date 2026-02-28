@@ -326,11 +326,10 @@ function OptionButton({ opt, selected, onSelect, type }) {
 
         {type === "energy" && (
           <motion.div
-            className="flex flex-col items-center gap-1"
-            animate={isSelected ? { y: [0, -4, 0] } : {}}
-            transition={{ duration: 0.3 }}
+            animate={isSelected ? { scale: [1, 1.15, 1], rotate: opt.value === 3 ? [0, -5, 5, 0] : [] } : { scale: 1 }}
+            transition={{ duration: 0.4 }}
           >
-            <EnergyBar fill={opt.fill} selected={isSelected} />
+            <opt.face selected={isSelected} />
           </motion.div>
         )}
 
