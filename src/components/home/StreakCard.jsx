@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Trophy, Flame } from "lucide-react";
+import { DogTrophy } from "../ui/PawIllustrations";
 
 const STREAK_LEVELS = [
   { min: 1,  max: 2,  label: "Débutant",   color: "#94a3b8", emoji: "🌱" },

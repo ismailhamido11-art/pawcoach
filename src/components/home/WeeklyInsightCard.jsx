@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ChevronDown, ChevronUp, Check, Loader2 } from "lucide-react";
+import { DogCurious } from "../ui/PawIllustrations";
 
 export default function WeeklyInsightCard({ insight, dog, expanded, onToggle, onMarkRead, markingRead }) {
   if (!insight) return null;
