@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, ScanLine, MessageCircle, BookHeart, Dumbbell } from "lucide-react";
+import { Home, ScanLine, MessageCircle, BookHeart, LayoutDashboard } from "lucide-react";
 import { motion } from "framer-motion";
 
 const tabs = [
@@ -8,7 +8,7 @@ const tabs = [
   { label: "Scanner", icon: ScanLine, page: "Scan" },
   { label: "Chat", icon: MessageCircle, page: "Chat" },
   { label: "Carnet", icon: BookHeart, page: "Notebook" },
-  { label: "Dressage", icon: Dumbbell, page: "Training" },
+  { label: "Bilan", icon: LayoutDashboard, page: "Dashboard" },
 ];
 
 export default function BottomNav({ currentPage }) {
