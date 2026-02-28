@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Flame, UserCircle, Bell } from "lucide-react";
+import { Flame, UserCircle } from "lucide-react";
+import HealthScore from "./HealthScore";
 
-export default function HeroHeader({ user, dog, streak }) {
+export default function HeroHeader({ user, dog, streak, checkins, records, exercises, scans }) {
   const currentStreak = streak?.current_streak || 0;
   const firstName = user?.full_name?.split(" ")[0] || "l'ami";
   const hour = new Date().getHours();
