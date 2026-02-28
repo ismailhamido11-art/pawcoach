@@ -8,7 +8,7 @@ import PremiumSection from "../components/notebook/PremiumSection";
 import UpcomingReminders from "../components/notebook/UpcomingReminders";
 import SmartHealthAssistant from "../components/notebook/SmartHealthAssistant";
 import { RecordRow } from "../components/notebook/SectionVaccins";
-import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2, HeartPulse, ClipboardList, Sparkles, Salad } from "lucide-react";
+import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2, HeartPulse, ClipboardList, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import IconBadge from "@/components/ui/IconBadge";
@@ -115,8 +115,6 @@ export default function Notebook() {
   const [records, setRecords] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
   const [showRecords, setShowRecords] = useState(false);
-  const [showNutriCoach, setShowNutriCoach] = useState(false);
-  const [checkins, setCheckins] = useState([]);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showDiagnosisModal, setShowDiagnosisModal] = useState(false);
   const [vetNotes, setVetNotes] = useState([]);
@@ -130,12 +128,8 @@ export default function Notebook() {
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
       if (dogs.length > 0) {
         setDog(dogs[0]);
-        const [recs, cks] = await Promise.all([
-          base44.entities.HealthRecord.filter({ dog_id: dogs[0].id }),
-          base44.entities.DailyCheckin.filter({ dog_id: dogs[0].id }),
-        ]);
+        const recs = await base44.entities.HealthRecord.filter({ dog_id: dogs[0].id });
         setRecords(recs);
-        setCheckins(cks);
         if (recs.length > 0) setShowRecords(true);
         // Load vet notes for this dog
         try {
@@ -266,32 +260,8 @@ export default function Notebook() {
         </div>
       )}
 
-      {/* NutriCoach Section */}
-      {dog && (
-        <div className="px-5 mt-3">
-          <button
-            onClick={() => setShowNutriCoach(!showNutriCoach)}
-            className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl transition-all hover:shadow-md mb-3"
-          >
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-xl">🥗</span>
-            </div>
-            <div className="text-left flex-1">
-              <p className="text-sm font-semibold text-foreground">NutriCoach IA</p>
-              <p className="text-[11px] text-muted-foreground">Plan repas & suivi calorique personnalisé</p>
-            </div>
-            {showNutriCoach ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
-          </button>
-          {showNutriCoach && (
-            <div className="mb-3">
-              <NutriCoach dog={dog} checkins={checkins} />
-            </div>
-          )}
-        </div>
-      )}
-
       {/* Main: Embedded Conversation */}
-      <div className="px-5 mt-1 mb-4">
+      <div className="px-5 mt-4 mb-4">
         <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} />
       </div>
 
