@@ -25,9 +25,7 @@ export const APPETITE_OPTIONS = [
   { value: 3, label: "Glouton", color: "#10b981" },
 ];
 
-// ─── Dog SVGs (clean, large format) ──────────────────────────────────────────
-
-function DogSad({ color = "#64748b" }) {
+// ─── Step config ───────────────────────────────────────────────────────────────
   return (
     <svg viewBox="0 0 120 120" width="100%" height="100%" fill="none">
       {/* body */}
