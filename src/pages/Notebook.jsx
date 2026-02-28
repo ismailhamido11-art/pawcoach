@@ -223,6 +223,13 @@ export default function Notebook() {
       {/* Health Status Bar */}
       <HealthStatusBar dog={dog} records={records} />
 
+      {/* QR Code urgence */}
+      {dog && (
+        <div className="px-5 mt-4">
+          <QRCodeCard dog={dog} />
+        </div>
+      )}
+
       {/* Import IA Button */}
       {dog && (
         <div className="px-5 mt-4">
