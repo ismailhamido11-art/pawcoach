@@ -267,8 +267,32 @@ export default function Notebook() {
         </div>
       )}
 
+      {/* NutriCoach Section */}
+      {dog && (
+        <div className="px-5 mt-3">
+          <button
+            onClick={() => setShowNutriCoach(!showNutriCoach)}
+            className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl transition-all hover:shadow-md mb-3"
+          >
+            <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+              <span className="text-xl">🥗</span>
+            </div>
+            <div className="text-left flex-1">
+              <p className="text-sm font-semibold text-foreground">NutriCoach IA</p>
+              <p className="text-[11px] text-muted-foreground">Plan repas & suivi calorique personnalisé</p>
+            </div>
+            {showNutriCoach ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+          </button>
+          {showNutriCoach && (
+            <div className="mb-3">
+              <NutriCoach dog={dog} checkins={checkins} />
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Main: Embedded Conversation */}
-      <div className="px-5 mt-4 mb-4">
+      <div className="px-5 mt-1 mb-4">
         <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} />
       </div>
 
