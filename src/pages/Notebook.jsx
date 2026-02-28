@@ -8,7 +8,7 @@ import PremiumSection from "../components/notebook/PremiumSection";
 import UpcomingReminders from "../components/notebook/UpcomingReminders";
 import SmartHealthAssistant from "../components/notebook/SmartHealthAssistant";
 import { RecordRow } from "../components/notebook/SectionVaccins";
-import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2, HeartPulse, ClipboardList, Sparkles, Salad } from "lucide-react";
+import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2, HeartPulse, ClipboardList, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import IconBadge from "@/components/ui/IconBadge";
