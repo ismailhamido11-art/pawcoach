@@ -131,8 +131,12 @@ export default function Notebook() {
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
       if (dogs.length > 0) {
         setDog(dogs[0]);
-        const recs = await base44.entities.HealthRecord.filter({ dog_id: dogs[0].id });
+        const [recs, cks] = await Promise.all([
+          base44.entities.HealthRecord.filter({ dog_id: dogs[0].id }),
+          base44.entities.DailyCheckin.filter({ dog_id: dogs[0].id }),
+        ]);
         setRecords(recs);
+        setCheckins(cks);
         if (recs.length > 0) setShowRecords(true);
         // Load vet notes for this dog
         try {
