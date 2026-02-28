@@ -4,7 +4,8 @@ import { base44 } from "@/api/base44Client";
 import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Bot, Camera, PawPrint } from "lucide-react";
+import { Send, Camera } from "lucide-react";
+import { DogChat } from "../components/ui/PawIllustrations";
 import IconBadge from "@/components/ui/IconBadge";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
@@ -220,14 +221,15 @@ export default function Chat() {
         <p className="text-xs text-accent-foreground font-medium">🐾 PawCoach est un coach bien-être, pas un vétérinaire.</p>
       </div>
 
-      <div className="gradient-primary pt-10 pb-4 px-5 mt-7">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center">
-            <Bot className="w-5 h-5 text-white" />
+      <div className="gradient-primary pt-10 pb-0 px-5 mt-7 overflow-hidden">
+        <div className="flex items-end gap-3">
+          <div className="flex-1 pb-4">
+            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
+            <h1 className="text-white font-black text-2xl leading-tight">Assistant IA</h1>
+            {dog && <p className="text-white/70 text-xs mt-0.5">Personnalisé pour {dog.name} · {dog.breed}</p>}
           </div>
-          <div>
-            <h1 className="text-white font-bold text-lg">Assistant IA</h1>
-            {dog && <p className="text-white/70 text-xs">Personnalisé pour {dog.name} · {dog.breed}</p>}
+          <div className="w-20 h-20 flex-shrink-0">
+            <DogChat color="#bfdbfe" />
           </div>
           {!user?.is_premium && messagesRemaining !== null && (
             <div className="ml-auto flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
@@ -237,7 +239,7 @@ export default function Chat() {
             </div>
           )}
           {user?.is_premium && (
-            <div className="ml-auto flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
+            <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
               <div className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
               <span className="text-white text-xs font-medium">Premium</span>
             </div>
@@ -249,7 +251,9 @@ export default function Chat() {
         {messages.map((msg, i) => (
           <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role === "assistant" && (
-              <IconBadge icon={PawPrint} color="#2d9f82" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
+              <div className="w-8 h-8 flex-shrink-0 mt-1">
+                <DogChat color="#2d9f82" />
+              </div>
             )}
             <div className={`max-w-[82%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
               msg.role === "user"
@@ -280,7 +284,9 @@ export default function Chat() {
 
         {loading && (
           <div className="flex gap-2 justify-start">
-            <IconBadge icon={PawPrint} color="#2d9f82" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
+            <div className="w-8 h-8 flex-shrink-0 mt-1">
+              <DogChat color="#2d9f82" />
+            </div>
             <div className="chat-bubble-assistant px-4 py-3.5 rounded-2xl rounded-bl-sm">
               <div className="flex gap-1.5 items-center">
                 <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary rounded-full" />
@@ -315,7 +321,9 @@ export default function Chat() {
         {isLimitReached ? (
           <div className="px-5 py-3 space-y-3">
             <div className="flex gap-2 justify-start">
-              <IconBadge icon={PawPrint} color="#2d9f82" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
+              <div className="w-8 h-8 flex-shrink-0 mt-1">
+                <DogChat color="#2d9f82" />
+              </div>
               <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
                 <p className="text-sm leading-relaxed">
                   J'adorerais continuer à t'aider avec <strong>{dog?.name || "ton chien"}</strong> ! 🐾 Tes messages gratuits sont épuisés pour aujourd'hui. Reviens demain pour 2 messages offerts, ou passe en Premium pour qu'on discute sans limite !
