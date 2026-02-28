@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera as CameraIcon, PawPrint, Dog as DogIcon, Cake, Users, Scale, PersonStanding, Home as HomeIcon, Hospital, HeartPulse, GraduationCap, Salad, Smile, Handshake, Loader2 } from "lucide-react";
-import IconBadge from "@/components/ui/IconBadge";
+import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera as CameraIcon, PawPrint, Dog as DogIcon, Cake, Users, Scale, PersonStanding, Home as HomeIcon, Hospital, HeartPulse, GraduationCap, Salad, Smile, Handshake, Loader2, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import WelcomeScreen from "../components/onboarding/WelcomeScreen";
@@ -12,28 +11,97 @@ import WelcomeScreen from "../components/onboarding/WelcomeScreen";
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
 const GOAL_OPTIONS = [
-  { icon: HeartPulse, color: "#ef4444", label: "Qu'il soit en bonne santé" },
-  { icon: GraduationCap, color: "#6366f1", label: "Bien l'éduquer" },
-  { icon: Salad, color: "#10b981", label: "Qu'il mange bien" },
-  { icon: Smile, color: "#ec4899", label: "Son bonheur au quotidien" },
-  { icon: Handshake, color: "#10b981", label: "Mieux le comprendre" },
+  { icon: HeartPulse, color: "#ef4444", label: "Qu'il soit en bonne santé", bg: "#ef444415" },
+  { icon: GraduationCap, color: "#6366f1", label: "Bien l'éduquer", bg: "#6366f115" },
+  { icon: Salad, color: "#10b981", label: "Qu'il mange bien", bg: "#10b98115" },
+  { icon: Smile, color: "#ec4899", label: "Son bonheur au quotidien", bg: "#ec489915" },
+  { icon: Handshake, color: "#f59e0b", label: "Mieux le comprendre", bg: "#f59e0b15" },
 ];
 
 const INTERVIEW_STEPS = [
   { type: "choice", question: "Qu'est-ce qui compte le plus pour toi ?", icon: PawPrint, iconColor: "#2d9f82" },
-  { type: "photo", question: "Une jolie photo pour commencer ?", icon: CameraIcon, iconColor: "#6366f1" },
-  { type: "voice", question: "Comment s'appelle votre chien ?", icon: DogIcon, iconColor: "#f59e0b", placeholder: "Son prénom..." },
+  { type: "photo", question: "Une photo de ton chien ?", icon: CameraIcon, iconColor: "#6366f1" },
+  { type: "voice", question: "Comment s'appelle-t-il ?", icon: DogIcon, iconColor: "#f59e0b", placeholder: "Son prénom..." },
   { type: "voice", question: "Quelle est sa race ?", icon: DogIcon, iconColor: "#f59e0b", placeholder: "Ex: Beagle, Croisé..." },
   { type: "voice", question: "Quel âge a-t-il ?", icon: Cake, iconColor: "#ec4899", placeholder: "Ex: 2 ans, 6 mois..." },
-  { type: "voice", question: "Est-ce un mâle ou une femelle ?", icon: Users, iconColor: "#3b82f6", placeholder: "Mâle ou Femelle" },
+  { type: "voice", question: "Mâle ou femelle ?", icon: Users, iconColor: "#3b82f6", placeholder: "Mâle ou Femelle" },
   { type: "voice", question: "Combien pèse-t-il environ ?", icon: Scale, iconColor: "#f59e0b", placeholder: "Ex: 15 kg" },
-  { type: "voice", question: "Quel est son niveau d'activité ?", icon: PersonStanding, iconColor: "#10b981", placeholder: "Calme, Modéré, Très actif..." },
+  { type: "voice", question: "Son niveau d'activité ?", icon: PersonStanding, iconColor: "#10b981", placeholder: "Calme, Modéré, Très actif..." },
   { type: "voice", question: "Où vit-il principalement ?", icon: HomeIcon, iconColor: "#6366f1", placeholder: "Appartement, Maison..." },
-  { type: "voice", question: "A-t-il des problèmes de santé ou allergies ?", icon: Hospital, iconColor: "#ef4444", placeholder: "Non, ou préciser..." },
+  { type: "voice", question: "Des problèmes de santé ou allergies ?", icon: Hospital, iconColor: "#ef4444", placeholder: "Non, ou préciser..." },
 ];
+
+// Welcome splash shown before the form
+function OnboardingWelcome({ onStart }) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden"
+      style={{ background: "linear-gradient(160deg, #0a2a1e, #0f4c3a, #1a6b52)" }}>
+      {/* Decorative orbs */}
+      <motion.div
+        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 6, repeat: Infinity }}
+        className="absolute top-[-80px] right-[-60px] w-80 h-80 rounded-full bg-white/10 blur-3xl"
+      />
+      <motion.div
+        animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
+        transition={{ duration: 8, repeat: Infinity, delay: 2 }}
+        className="absolute bottom-[-60px] left-[-40px] w-60 h-60 rounded-full bg-accent/20 blur-3xl"
+      />
+
+      <motion.div
+        initial={{ opacity: 0, y: 32 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="relative z-10 flex flex-col items-center text-center"
+      >
+        {/* Logo paw */}
+        <motion.div
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          className="w-24 h-24 rounded-3xl bg-white/15 backdrop-blur border border-white/20 flex items-center justify-center mb-8 shadow-2xl"
+        >
+          <span className="text-5xl">🐾</span>
+        </motion.div>
+
+        <p className="text-white/60 text-xs font-bold tracking-widest uppercase mb-3">PawCoach</p>
+        <h1 className="text-4xl font-black text-white leading-tight mb-4">
+          Bienvenue dans<br />
+          <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(90deg, #2dd4bf, #34d399)" }}>
+            l'aventure
+          </span>
+        </h1>
+        <p className="text-white/60 text-base leading-relaxed max-w-xs mb-12">
+          En 2 minutes, crée le profil de ton chien et commence à suivre son bien-être au quotidien.
+        </p>
+
+        {/* Feature pills */}
+        <div className="flex flex-wrap gap-2 justify-center mb-12">
+          {["🤖 IA personnalisée", "📊 Suivi quotidien", "🏥 Carnet santé", "🍽️ NutriCoach"].map(f => (
+            <span key={f} className="px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-white/70 text-xs font-medium">
+              {f}
+            </span>
+          ))}
+        </div>
+
+        <motion.button
+          whileTap={{ scale: 0.96 }}
+          onClick={onStart}
+          className="w-full max-w-xs h-14 rounded-2xl font-black text-white flex items-center justify-center gap-2 shadow-2xl text-base"
+          style={{ background: "linear-gradient(135deg, #10b981, #2dd4bf)" }}
+        >
+          Créer le profil de mon chien
+          <ArrowRight className="w-5 h-5" />
+        </motion.button>
+
+        <p className="text-white/30 text-xs mt-6">Gratuit · Pas de carte bancaire requise</p>
+      </motion.div>
+    </div>
+  );
+}
 
 export default function Onboarding() {
   const navigate = useNavigate();
+  const [started, setStarted] = useState(false);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState(Array(INTERVIEW_STEPS.length).fill(""));
   const [done, setDone] = useState(false);
@@ -75,124 +143,75 @@ export default function Onboarding() {
       alert("La dictée vocale n'est pas supportée sur ce navigateur. Utilise Chrome.");
       return;
     }
-
-    if (listening) {
-      recognitionRef.current?.stop();
-      setListening(false);
-      return;
-    }
-
+    if (listening) { recognitionRef.current?.stop(); setListening(false); return; }
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     recognition.lang = "fr-FR";
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
-
     recognition.onresult = (e) => {
       const transcript = e.results[0][0].transcript;
       setCurrentAnswer(currentAnswer ? currentAnswer + " " + transcript : transcript);
       setListening(false);
     };
-
     recognition.onerror = () => setListening(false);
     recognition.onend = () => setListening(false);
-
     recognitionRef.current = recognition;
     recognition.start();
     setListening(true);
   };
 
   const handleNext = async () => {
-    if (listening) {
-      recognitionRef.current?.stop();
-      setListening(false);
-    }
-
-    if (step < INTERVIEW_STEPS.length - 1) {
-      setStep(s => s + 1);
-      return;
-    }
-
-    // Guard against double-tap
+    if (listening) { recognitionRef.current?.stop(); setListening(false); }
+    if (step < INTERVIEW_STEPS.length - 1) { setStep(s => s + 1); return; }
     if (savingRef.current) return;
     savingRef.current = true;
     setSaving(true);
-
     try {
       const user = await base44.auth.me();
-
-      // Enforce dog limits: free = 1, premium = 3
-      const FREE_MAX = 1;
-      const PREMIUM_MAX = 3;
+      const FREE_MAX = 1, PREMIUM_MAX = 3;
       const existingDogs = await base44.entities.Dog.filter({ owner: user.email });
       const maxDogs = user?.is_premium ? PREMIUM_MAX : FREE_MAX;
-
       if (existingDogs.length >= maxDogs) {
-        setSaving(false);
-        savingRef.current = false;
-        if (!user?.is_premium) {
-          navigate(createPageUrl("Premium") + "?from=profile");
-        } else {
-          alert("Maximum 3 chiens atteint");
-          navigate(createPageUrl("Home"));
-        }
+        setSaving(false); savingRef.current = false;
+        if (!user?.is_premium) navigate(createPageUrl("Premium") + "?from=profile");
+        else { alert("Maximum 3 chiens atteint"); navigate(createPageUrl("Home")); }
         return;
       }
-      
       const ownerGoal = answers[0];
       const photoUrl = answers[1];
       const textAnswers = answers.slice(2);
       const textSteps = INTERVIEW_STEPS.slice(2);
-      
       const prompt = `Voici les réponses d'un utilisateur concernant son chien :
 ${textSteps.map((s, i) => `- ${s.question} : ${textAnswers[i]}`).join('\n')}
-
-Extrais ces informations et renvoie un objet JSON correspondant au schéma fourni.
+Extrais ces informations et renvoie un objet JSON.
 - Calcule une "birth_date" (YYYY-MM-DD) approximative si l'âge est donné (l'année actuelle est ${new Date().getFullYear()}).
 - Pour le sexe: "male" ou "female".
 - Pour le niveau d'activité: "faible", "modere", "eleve", ou "tres_eleve".
 - Pour l'environnement: "appartement", "maison_sans_jardin", ou "maison_avec_jardin".
-- Si une info est inconnue, manquante ou que l'utilisateur a dit "non" / rien dit, mets null.`;
-
+- Si une info est inconnue, mets null.`;
       const aiResponse = await base44.integrations.Core.InvokeLLM({
         prompt,
         response_json_schema: {
           type: "object",
           properties: {
-            name: { type: "string" },
-            breed: { type: "string" },
-            birth_date: { type: "string" },
-            sex: { type: "string" },
-            weight: { type: "number" },
-            activity_level: { type: "string" },
-            environment: { type: "string" },
-            allergies: { type: "string" },
-            health_issues: { type: "string" }
+            name: { type: "string" }, breed: { type: "string" }, birth_date: { type: "string" },
+            sex: { type: "string" }, weight: { type: "number" }, activity_level: { type: "string" },
+            environment: { type: "string" }, allergies: { type: "string" }, health_issues: { type: "string" }
           },
           required: ["name"]
         }
       });
-
       const extracted = typeof aiResponse === "string" ? JSON.parse(aiResponse) : aiResponse;
-
       const dog = await base44.entities.Dog.create({
-        name: extracted.name || "Mon chien",
-        photo: photoUrl || null,
-        breed: extracted.breed || null,
-        birth_date: extracted.birth_date || null,
-        sex: extracted.sex || null,
-        weight: extracted.weight || null,
-        activity_level: extracted.activity_level || null,
-        environment: extracted.environment || null,
-        allergies: extracted.allergies || null,
-        health_issues: extracted.health_issues || null,
-        owner: user.email,
-        owner_goal: ownerGoal || null,
-        onboarding_completed: true,
+        name: extracted.name || "Mon chien", photo: photoUrl || null,
+        breed: extracted.breed || null, birth_date: extracted.birth_date || null,
+        sex: extracted.sex || null, weight: extracted.weight || null,
+        activity_level: extracted.activity_level || null, environment: extracted.environment || null,
+        allergies: extracted.allergies || null, health_issues: extracted.health_issues || null,
+        owner: user.email, owner_goal: ownerGoal || null, onboarding_completed: true,
       });
-
       setDogData(dog);
-      
       try {
         await base44.integrations.Core.SendEmail({
           to: user.email,
@@ -200,55 +219,48 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
           body: `${dog.name} est maintenant inscrit ! Profitez de l'application !`,
         });
       } catch (e) {}
-
       setDone(true);
     } catch (e) {
       console.error(e);
       alert("Une erreur est survenue lors de la création du profil. Réessaie.");
     } finally {
-      setSaving(false);
-      savingRef.current = false;
+      setSaving(false); savingRef.current = false;
     }
   };
 
-  if (done && dogData) {
-    return (
-      <WelcomeScreen
-        dogName={dogData.name}
-        dogPhoto={dogData.photo}
-        onDiscover={() => navigate(createPageUrl("Home"))}
-      />
-    );
-  }
+  if (!started) return <OnboardingWelcome onStart={() => setStarted(true)} />;
+  if (done && dogData) return <WelcomeScreen dogName={dogData.name} dogPhoto={dogData.photo} onDiscover={() => navigate(createPageUrl("Home"))} />;
 
   const handleGoalSelect = (label) => {
     setCurrentAnswer(label);
-    // Auto-advance after a brief moment for visual feedback
     setTimeout(() => setStep(s => s + 1), 250);
   };
 
   const canNext = currentStepData.type === "choice" ? currentAnswer.length > 0 : (currentStepData.type === "photo" && !uploading) || currentAnswer.trim().length > 0;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header with progress */}
-      <div className="pt-12 px-6 pb-4 flex items-center gap-4">
+    <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg, #0a2a1e 0%, #f0fdf4 30%)" }}>
+      {/* Progress header */}
+      <div className="pt-12 px-6 pb-6 flex items-center gap-4">
         {step > 0 ? (
-          <motion.button whileTap={{ scale: 0.96 }} transition={spring} onClick={() => setStep(s => s - 1)} className="w-10 h-10 flex items-center justify-center bg-secondary rounded-full">
-            <ChevronLeft className="w-5 h-5 text-foreground" />
+          <motion.button whileTap={{ scale: 0.96 }} transition={spring} onClick={() => setStep(s => s - 1)}
+            className="w-10 h-10 flex items-center justify-center bg-white/20 backdrop-blur rounded-full border border-white/30">
+            <ChevronLeft className="w-5 h-5 text-white" />
           </motion.button>
         ) : (
           <div className="w-10 h-10" />
         )}
-        <div className="flex-1 bg-secondary h-2 rounded-full overflow-hidden">
-          <div className="bg-primary h-full transition-all duration-500" style={{ width: `${progress}%` }} />
+        <div className="flex-1 bg-white/20 backdrop-blur h-1.5 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full rounded-full bg-white"
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+          />
         </div>
-        <div className="w-10 flex items-center justify-end font-bold text-sm text-muted-foreground">
-          {step + 1}/{INTERVIEW_STEPS.length}
-        </div>
+        <span className="text-white/70 font-bold text-sm w-10 text-right">{step + 1}/{INTERVIEW_STEPS.length}</span>
       </div>
 
-      {/* Main Content */}
+      {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 pb-12">
         <AnimatePresence mode="wait">
           <motion.div
@@ -259,116 +271,120 @@ Extrais ces informations et renvoie un objet JSON correspondant au schéma fourn
             transition={{ type: "spring", stiffness: 200, damping: 25 }}
             className="flex flex-col items-center w-full"
           >
-        <div className="mb-8"><IconBadge icon={currentStepData.icon} color={currentStepData.iconColor} size="xl" /></div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-center text-foreground mb-12 leading-tight">
-          {currentStepData.question}
-        </h1>
-
-        {currentStepData.type === "choice" ? (
-          <div className="w-full max-w-sm space-y-3 mb-12">
-            {GOAL_OPTIONS.map((opt, i) => (
-              <motion.button
-                key={opt.label}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.08, duration: 0.3 }}
-                whileTap={{ scale: 0.96 }}
-                onClick={() => handleGoalSelect(opt.label)}
-                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-colors text-left ${
-                  currentAnswer === opt.label
-                    ? "border-primary bg-primary/10"
-                    : "border-border bg-white hover:border-primary/40"
-                }`}
-              >
-                <IconBadge icon={opt.icon} color={opt.color} size="sm" />
-                <span className="text-sm font-semibold text-foreground">{opt.label}</span>
-              </motion.button>
-            ))}
-          </div>
-        ) : currentStepData.type === "photo" ? (
-          <div className="flex flex-col items-center mb-12">
-            <motion.button
-              whileTap={{ scale: 0.96 }}
-              transition={spring}
-              onClick={() => fileRef.current?.click()}
-              className="relative w-40 h-40 rounded-full border-4 border-dashed border-primary/40 bg-secondary/40 flex items-center justify-center overflow-hidden transition-colors hover:border-primary hover:bg-secondary mb-4"
+            {/* Step icon */}
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg"
+              style={{ background: `${currentStepData.iconColor}20`, border: `1.5px solid ${currentStepData.iconColor}30` }}
             >
-              {currentAnswer ? (
-                <img src={currentAnswer} alt="Chien" className="w-full h-full object-cover" />
-              ) : uploading ? (
-                <div className="w-10 h-10 border-4 border-primary/40 border-t-primary rounded-full animate-spin" />
-              ) : (
-                <CameraIcon className="w-12 h-12 text-primary/60" />
-              )}
-            </motion.button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={e => e.target.files[0] && handlePhoto(e.target.files[0])}
-            />
-            <p className="text-sm font-medium text-muted-foreground">Appuie pour choisir (Optionnel)</p>
-          </div>
-        ) : (
-          <>
-            {/* Big Mic Button */}
-            <motion.button
-              whileTap={{ scale: 0.96 }}
-              transition={spring}
-              onClick={toggleMic}
-              className={`relative w-36 h-36 sm:w-40 sm:h-40 rounded-full flex items-center justify-center transition-colors mb-12 ${
-                listening 
-                  ? "bg-red-500 shadow-[0_0_50px_rgba(239,68,68,0.5)]" 
-                  : "bg-primary shadow-lg shadow-primary/30 hover:scale-105"
-              }`}
-            >
-              {listening ? (
-                <>
-                  <div className="absolute inset-0 rounded-full border-4 border-red-400 animate-ping" />
-                  <MicOff className="w-16 h-16 text-white" />
-                </>
-              ) : (
-                <Mic className="w-16 h-16 text-white" />
-              )}
-            </motion.button>
-
-            <div className="text-center mb-8 w-full max-w-sm">
-              <p className="text-sm font-medium text-muted-foreground mb-4">
-                {listening ? "Je t'écoute..." : "Appuie pour parler ou tape ta réponse"}
-              </p>
-              <Input 
-                value={currentAnswer}
-                onChange={(e) => setCurrentAnswer(e.target.value)}
-                placeholder={currentStepData.placeholder}
-                className="h-14 text-center text-lg rounded-2xl border-2 border-border focus-visible:ring-primary shadow-sm w-full"
-              />
+              <currentStepData.icon style={{ color: currentStepData.iconColor, width: 28, height: 28 }} />
             </div>
-          </>
-        )}
 
-        <Button
-          onClick={handleNext}
-          disabled={!canNext || saving}
-          className={`w-full max-w-sm h-14 rounded-xl gradient-primary text-white font-bold text-lg shadow-lg shadow-primary/30 gap-2 mt-auto ${currentStepData.type === "choice" ? "hidden" : ""}`}
-        >
-          {saving ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Analyse magique...
-            </>
-          ) : step === INTERVIEW_STEPS.length - 1 ? (
-            <>
-              <Sparkles className="w-5 h-5" />
-              Créer le profil
-            </>
-          ) : (
-            <>
-              Suivant
-              <ChevronRight className="w-5 h-5" />
-            </>
-          )}
-        </Button>
+            <h1 className="text-3xl font-black text-center text-foreground mb-10 leading-tight">
+              {currentStepData.question}
+            </h1>
+
+            {/* Goal choice */}
+            {currentStepData.type === "choice" && (
+              <div className="w-full max-w-sm space-y-2.5 mb-10">
+                {GOAL_OPTIONS.map((opt, i) => (
+                  <motion.button
+                    key={opt.label}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 + i * 0.07 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => handleGoalSelect(opt.label)}
+                    className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all text-left"
+                    style={{
+                      background: currentAnswer === opt.label ? opt.bg : "white",
+                      borderColor: currentAnswer === opt.label ? opt.color : "#e2e8f0",
+                      boxShadow: currentAnswer === opt.label ? `0 4px 20px ${opt.color}25` : "none",
+                    }}
+                  >
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: opt.bg }}>
+                      <opt.icon style={{ color: opt.color, width: 20, height: 20 }} />
+                    </div>
+                    <span className="text-sm font-semibold text-foreground">{opt.label}</span>
+                    {currentAnswer === opt.label && (
+                      <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="ml-auto text-lg">✓</motion.span>
+                    )}
+                  </motion.button>
+                ))}
+              </div>
+            )}
+
+            {/* Photo */}
+            {currentStepData.type === "photo" && (
+              <div className="flex flex-col items-center mb-10">
+                <motion.button
+                  whileTap={{ scale: 0.96 }}
+                  onClick={() => fileRef.current?.click()}
+                  className="relative w-44 h-44 rounded-3xl border-2 border-dashed bg-white flex items-center justify-center overflow-hidden shadow-md mb-4 transition-all"
+                  style={{ borderColor: currentAnswer ? "#10b981" : "#cbd5e1" }}
+                >
+                  {currentAnswer ? (
+                    <img src={currentAnswer} alt="Chien" className="w-full h-full object-cover" />
+                  ) : uploading ? (
+                    <Loader2 className="w-10 h-10 text-primary animate-spin" />
+                  ) : (
+                    <div className="flex flex-col items-center gap-2">
+                      <CameraIcon className="w-10 h-10 text-muted-foreground/50" />
+                      <span className="text-xs text-muted-foreground font-medium">Appuyer pour choisir</span>
+                    </div>
+                  )}
+                </motion.button>
+                <input ref={fileRef} type="file" accept="image/*" className="hidden"
+                  onChange={e => e.target.files[0] && handlePhoto(e.target.files[0])} />
+                <p className="text-sm text-muted-foreground">Optionnel — tu pourras le changer</p>
+              </div>
+            )}
+
+            {/* Voice + text */}
+            {currentStepData.type === "voice" && (
+              <>
+                <motion.button
+                  whileTap={{ scale: 0.96 }}
+                  onClick={toggleMic}
+                  className="relative w-32 h-32 rounded-full flex items-center justify-center mb-8 transition-all"
+                  style={{
+                    background: listening ? "#ef4444" : "linear-gradient(135deg, #10b981, #2dd4bf)",
+                    boxShadow: listening ? "0 0 50px rgba(239,68,68,0.45)" : "0 12px 40px rgba(16,185,129,0.35)",
+                  }}
+                >
+                  {listening && <div className="absolute inset-0 rounded-full border-4 border-red-400 animate-ping" />}
+                  {listening ? <MicOff className="w-14 h-14 text-white" /> : <Mic className="w-14 h-14 text-white" />}
+                </motion.button>
+
+                <p className="text-sm text-muted-foreground mb-4 font-medium">
+                  {listening ? "🎙️ Je t'écoute..." : "Appuie pour dicter ou tape ci-dessous"}
+                </p>
+                <Input
+                  value={currentAnswer}
+                  onChange={(e) => setCurrentAnswer(e.target.value)}
+                  placeholder={currentStepData.placeholder}
+                  className="h-14 text-center text-lg rounded-2xl border-2 focus-visible:ring-primary shadow-sm w-full max-w-sm mb-8"
+                />
+              </>
+            )}
+
+            {/* Next button (not for choice) */}
+            {currentStepData.type !== "choice" && (
+              <Button
+                onClick={handleNext}
+                disabled={!canNext || saving}
+                className="w-full max-w-sm h-14 rounded-2xl font-black text-base gap-2"
+                style={{ background: "linear-gradient(135deg, #10b981, #2dd4bf)" }}
+              >
+                {saving ? (
+                  <><Loader2 className="w-5 h-5 animate-spin" /> Création en cours...</>
+                ) : step === INTERVIEW_STEPS.length - 1 ? (
+                  <><Sparkles className="w-5 h-5" /> Créer le profil</>
+                ) : (
+                  <>Suivant <ChevronRight className="w-5 h-5" /></>
+                )}
+              </Button>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
