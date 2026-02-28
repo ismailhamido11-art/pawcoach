@@ -1,0 +1,80 @@
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { BookHeart, Salad, MapPin, Dumbbell, ChevronRight } from "lucide-react";
+
+const ACTIONS = [
+  {
+    page: "Notebook",
+    icon: BookHeart,
+    label: "Carnet santé",
+    sub: "Vaccins, poids, visites",
+    gradient: "from-rose-500 to-pink-400",
+    bg: "bg-rose-50",
+    iconColor: "#f43f5e",
+  },
+  {
+    page: "Nutrition",
+    icon: Salad,
+    label: "NutriCoach",
+    sub: "Nutrition & repas IA",
+    gradient: "from-emerald-500 to-teal-400",
+    bg: "bg-emerald-50",
+    iconColor: "#10b981",
+  },
+  {
+    page: "Training",
+    icon: Dumbbell,
+    label: "Dressage",
+    sub: "Exercices guidés",
+    gradient: "from-violet-500 to-purple-400",
+    bg: "bg-violet-50",
+    iconColor: "#8b5cf6",
+  },
+  {
+    page: "FindVet",
+    icon: MapPin,
+    label: "Trouver un véto",
+    sub: "Cliniques proches",
+    gradient: "from-blue-500 to-sky-400",
+    bg: "bg-blue-50",
+    iconColor: "#3b82f6",
+  },
+];
+
+const stagger = { show: { transition: { staggerChildren: 0.07 } } };
+const item = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } },
+};
+
+export default function QuickActions() {
+  return (
+    <div className="mx-5">
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3 px-1">
+        Accès rapide
+      </p>
+      <motion.div className="grid grid-cols-2 gap-3" variants={stagger} initial="hidden" animate="show">
+        {ACTIONS.map(({ page, icon: Icon, label, sub, bg, iconColor, gradient }) => (
+          <motion.div key={page} variants={item} whileTap={{ scale: 0.96 }}>
+            <Link
+              to={createPageUrl(page)}
+              className={`flex flex-col gap-3 p-4 rounded-2xl ${bg} border border-white/60 shadow-sm hover:shadow-md transition-all`}
+            >
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{ background: `${iconColor}18` }}
+              >
+                <Icon style={{ color: iconColor, width: 20, height: 20 }} strokeWidth={2} />
+              </div>
+              <div>
+                <p className="font-bold text-foreground text-sm leading-tight">{label}</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5 leading-tight">{sub}</p>
+              </div>
+            </Link>
+          </motion.div>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
