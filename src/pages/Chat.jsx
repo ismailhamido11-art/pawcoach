@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Camera } from "lucide-react";
 import { DogChat } from "../components/ui/PawIllustrations";
-import IconBadge from "@/components/ui/IconBadge";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
