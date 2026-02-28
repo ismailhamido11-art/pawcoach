@@ -61,6 +61,7 @@ import VetPortal from './pages/VetPortal';
 import HealthImport from './pages/HealthImport';
 import Dashboard from './pages/Dashboard';
 import Notebook from './pages/Notebook';
+import DogPublicProfile from './pages/DogPublicProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -79,6 +80,7 @@ export const PAGES = {
     "HealthImport": HealthImport,
     "Dashboard": Dashboard,
     "Notebook": Notebook,
+    "DogPublicProfile": DogPublicProfile,
 }
 
 export const pagesConfig = {
