@@ -1,23 +1,28 @@
-import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Loader2, ChevronLeft, Sparkles } from "lucide-react";
+import {
+  DogSad, DogMeh, DogHappy, DogLove,
+  DogSleep, DogTrot, DogRun,
+  BowlEmpty, BowlHalf, BowlFull,
+} from "./DogIllustrations";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 export const MOOD_OPTIONS = [
-  { value: 1, label: "Triste",  color: "#f43f5e", bg: "from-rose-400 to-pink-500" },
-  { value: 2, label: "Bof",     color: "#f59e0b", bg: "from-amber-300 to-orange-400" },
-  { value: 3, label: "Bien",    color: "#10b981", bg: "from-emerald-400 to-teal-500" },
-  { value: 4, label: "Super !", color: "#8b5cf6", bg: "from-violet-400 to-fuchsia-500" },
+  { value: 1, label: "Triste",  color: "#f43f5e" },
+  { value: 2, label: "Bof",     color: "#f59e0b" },
+  { value: 3, label: "Bien",    color: "#10b981" },
+  { value: 4, label: "Super !", color: "#8b5cf6" },
 ];
 export const ENERGY_OPTIONS = [
-  { value: 1, label: "Épuisé", color: "#f43f5e", bg: "from-rose-400 to-pink-500" },
-  { value: 2, label: "Moyen",  color: "#f59e0b", bg: "from-amber-300 to-orange-400" },
-  { value: 3, label: "À fond", color: "#10b981", bg: "from-emerald-400 to-teal-500" },
+  { value: 1, label: "Épuisé", color: "#f43f5e" },
+  { value: 2, label: "Moyen",  color: "#f59e0b" },
+  { value: 3, label: "À fond", color: "#10b981" },
 ];
 export const APPETITE_OPTIONS = [
-  { value: 1, label: "Rien",    color: "#f43f5e", bg: "from-rose-400 to-pink-500" },
-  { value: 2, label: "Normal",  color: "#f59e0b", bg: "from-amber-300 to-orange-400" },
-  { value: 3, label: "Glouton", color: "#10b981", bg: "from-emerald-400 to-teal-500" },
+  { value: 1, label: "Rien",    color: "#f43f5e" },
+  { value: 2, label: "Normal",  color: "#f59e0b" },
+  { value: 3, label: "Glouton", color: "#10b981" },
 ];
 
 // ─── Dog SVGs (clean, large format) ──────────────────────────────────────────
