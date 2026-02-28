@@ -116,6 +116,8 @@ export default function Notebook() {
   const [records, setRecords] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
   const [showRecords, setShowRecords] = useState(false);
+  const [showNutriCoach, setShowNutriCoach] = useState(false);
+  const [checkins, setCheckins] = useState([]);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showDiagnosisModal, setShowDiagnosisModal] = useState(false);
   const [vetNotes, setVetNotes] = useState([]);
