@@ -3,79 +3,22 @@ import { Loader2, Sparkles } from "lucide-react";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const MOOD_OPTIONS = [
-  {
-    value: 1,
-    label: "Triste",
-    bg: "from-slate-100 to-slate-200",
-    selectedBg: "from-rose-400 to-rose-500",
-    face: MoodSad,
-  },
-  {
-    value: 2,
-    label: "Bof",
-    bg: "from-slate-100 to-slate-200",
-    selectedBg: "from-amber-300 to-amber-400",
-    face: MoodMeh,
-  },
-  {
-    value: 3,
-    label: "Bien",
-    bg: "from-slate-100 to-slate-200",
-    selectedBg: "from-emerald-400 to-emerald-500",
-    face: MoodHappy,
-  },
-  {
-    value: 4,
-    label: "Super !",
-    bg: "from-slate-100 to-slate-200",
-    selectedBg: "from-violet-400 to-pink-400",
-    face: MoodLove,
-  },
+  { value: 1, label: "Triste",  selectedBg: "from-rose-400 to-rose-500",   face: MoodSad },
+  { value: 2, label: "Bof",     selectedBg: "from-amber-300 to-amber-400",  face: MoodMeh },
+  { value: 3, label: "Bien",    selectedBg: "from-emerald-400 to-emerald-500", face: MoodHappy },
+  { value: 4, label: "Super !", selectedBg: "from-violet-400 to-pink-400",  face: MoodLove },
 ];
 
 const ENERGY_OPTIONS = [
-  {
-    value: 1,
-    label: "Épuisé",
-    icon: "🔋",
-    selectedBg: "from-rose-400 to-rose-500",
-    fill: 25,
-  },
-  {
-    value: 2,
-    label: "Moyen",
-    icon: "⚡",
-    selectedBg: "from-amber-300 to-amber-400",
-    fill: 60,
-  },
-  {
-    value: 3,
-    label: "À fond",
-    icon: "🚀",
-    selectedBg: "from-emerald-400 to-teal-500",
-    fill: 100,
-  },
+  { value: 1, label: "Épuisé", selectedBg: "from-rose-400 to-rose-500",      face: DogSleep },
+  { value: 2, label: "Moyen",  selectedBg: "from-amber-300 to-amber-400",    face: DogTrot },
+  { value: 3, label: "À fond", selectedBg: "from-emerald-400 to-teal-500",   face: DogRun },
 ];
 
 const APPETITE_OPTIONS = [
-  {
-    value: 1,
-    label: "Rien",
-    selectedBg: "from-rose-400 to-rose-500",
-    bowl: 0,
-  },
-  {
-    value: 2,
-    label: "Normal",
-    selectedBg: "from-amber-300 to-amber-400",
-    bowl: 50,
-  },
-  {
-    value: 3,
-    label: "Glouton",
-    selectedBg: "from-emerald-400 to-emerald-500",
-    bowl: 100,
-  },
+  { value: 1, label: "Rien",    selectedBg: "from-rose-400 to-rose-500",     bowl: 0 },
+  { value: 2, label: "Normal",  selectedBg: "from-amber-300 to-amber-400",   bowl: 50 },
+  { value: 3, label: "Glouton", selectedBg: "from-emerald-400 to-emerald-500", bowl: 100 },
 ];
 
 export { MOOD_OPTIONS, ENERGY_OPTIONS, APPETITE_OPTIONS };
