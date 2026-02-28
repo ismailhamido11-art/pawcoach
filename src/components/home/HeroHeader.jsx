@@ -47,6 +47,15 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
                 <span className="text-white text-xs font-bold">{currentStreak}j</span>
               </motion.div>
             )}
+            {/* Health Score Ring */}
+            <HealthScore
+              dog={dog}
+              streak={streak}
+              checkins={checkins}
+              records={records}
+              exercises={exercises}
+              scans={scans}
+            />
             <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }}>
               <Link
                 to={createPageUrl("Profile")}
