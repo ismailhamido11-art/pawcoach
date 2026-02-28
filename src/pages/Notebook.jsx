@@ -16,6 +16,7 @@ import ShareVetModal from "../components/vet/ShareVetModal";
 import VetNotesList from "../components/vet/VetNotesList";
 import AIDiagnosisModal from "../components/vet/AIDiagnosisModal";
 import { updateStreakSilently } from "../components/streakHelper";
+import QRCodeCard from "../components/notebook/QRCodeCard";
 import { motion } from "framer-motion";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
