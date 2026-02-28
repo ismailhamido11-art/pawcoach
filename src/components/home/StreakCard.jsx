@@ -3,12 +3,12 @@ import { Trophy, Flame } from "lucide-react";
 import { DogTrophy } from "../ui/PawIllustrations";
 
 const STREAK_LEVELS = [
-  { min: 1,  max: 2,  label: "Débutant",   color: "#94a3b8", emoji: "🌱" },
-  { min: 3,  max: 6,  label: "Régulier",   color: "#10b981", emoji: "🌿" },
-  { min: 7,  max: 13, label: "Assidu",     color: "#3b82f6", emoji: "⚡" },
-  { min: 14, max: 29, label: "Champion",   color: "#8b5cf6", emoji: "🏆" },
-  { min: 30, max: 99, label: "Légendaire", color: "#f59e0b", emoji: "🔥" },
-  { min: 100, max: Infinity, label: "Mythique", color: "#ef4444", emoji: "🚀" },
+  { min: 1,  max: 2,  label: "Débutant",   color: "#94a3b8" },
+  { min: 3,  max: 6,  label: "Régulier",   color: "#10b981" },
+  { min: 7,  max: 13, label: "Assidu",     color: "#3b82f6" },
+  { min: 14, max: 29, label: "Champion",   color: "#8b5cf6" },
+  { min: 30, max: 99, label: "Légendaire", color: "#f59e0b" },
+  { min: 100, max: Infinity, label: "Mythique", color: "#ef4444" },
 ];
 
 export default function StreakCard({ streak }) {
@@ -62,7 +62,7 @@ export default function StreakCard({ streak }) {
         {nextLevel && (
           <div className="mb-3">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[11px] text-muted-foreground">Prochain niveau : {nextLevel.emoji} {nextLevel.label}</span>
+              <span className="text-[11px] text-muted-foreground">Prochain niveau : {nextLevel.label}</span>
               <span className="text-[11px] font-bold" style={{ color: level.color }}>{nextLevel.min - current}j</span>
             </div>
             <div className="h-2 bg-muted rounded-full overflow-hidden">

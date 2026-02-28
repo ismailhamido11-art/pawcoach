@@ -34,7 +34,7 @@ export default function WeeklyInsightCard({ insight, dog, expanded, onToggle, on
           <DogCurious color="#2d9f82" />
         </motion.div>
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-foreground text-sm">Bilan de la semaine ✨</p>
+          <p className="font-bold text-foreground text-sm">Bilan de la semaine</p>
           <p className="text-xs text-muted-foreground">Semaine du {dateLabel} · {insight.checkin_count || 0} check-ins</p>
         </div>
         {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
@@ -97,7 +97,7 @@ export default function WeeklyInsightCard({ insight, dog, expanded, onToggle, on
                   <div className="space-y-1.5">
                     {recommendations.map((r, i) => (
                       <div key={i} className="flex items-start gap-2 text-sm text-foreground">
-                        <span className="text-emerald-500 mt-0.5 flex-shrink-0 text-xs">✓</span>
+                        <span className="text-emerald-500 mt-0.5 flex-shrink-0">•</span>
                         <span>{r}</span>
                       </div>
                     ))}

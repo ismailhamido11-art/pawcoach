@@ -77,7 +77,7 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
               transition={{ delay: 0.15 }}
               className="text-white/70 text-sm font-medium mb-1"
             >
-              {greeting}, {firstName} 👋
+              {greeting}, {firstName}
             </motion.p>
             <motion.h1
               initial={{ opacity: 0, y: 16 }}
