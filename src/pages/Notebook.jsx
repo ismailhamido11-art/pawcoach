@@ -200,23 +200,27 @@ export default function Notebook() {
       <WellnessBanner />
 
       {/* Compact Header */}
-      <div className="gradient-primary pt-8 pb-6 px-5 relative overflow-hidden">
-        <div className="relative z-10 flex items-start justify-between">
-          <div>
-            <h1 className="text-white font-bold text-xl">Carnet de santé</h1>
-            <p className="text-white/80 text-xs mt-0.5">
+      <div className="gradient-primary pt-8 pb-0 px-5 relative overflow-hidden">
+        <div className="relative z-10 flex items-end justify-between">
+          <div className="pb-5">
+            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
+            <h1 className="text-white font-black text-2xl leading-tight">Carnet de santé</h1>
+            <p className="text-white/70 text-xs mt-1">
               {dog ? `Le suivi intelligent de ${dog.name}` : "Chargement..."}
             </p>
+            {dog && (
+              <button
+                onClick={() => setShowShareModal(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-medium transition-all mt-3"
+              >
+                <Stethoscope className="w-3.5 h-3.5" />
+                Partager avec le véto
+              </button>
+            )}
           </div>
-          {dog && (
-            <button
-              onClick={() => setShowShareModal(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-medium transition-all"
-            >
-              <Stethoscope className="w-3.5 h-3.5" />
-              Envoyer au véto de {dog.name}
-            </button>
-          )}
+          <div className="w-28 h-28 flex-shrink-0">
+            <DogDoctor color="#fca5a5" />
+          </div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
       </div>
