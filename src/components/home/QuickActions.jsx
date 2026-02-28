@@ -52,17 +52,23 @@ export default function QuickActions() {
         Accès rapide
       </p>
       <motion.div className="grid grid-cols-2 gap-3" variants={stagger} initial="hidden" animate="show">
-        {ACTIONS.map(({ page, icon: Icon, label, sub, bg, iconColor, gradient }) => (
+        {ACTIONS.map(({ page, Illustration, icon: Icon, label, sub, bg, iconColor }) => (
           <motion.div key={page} variants={item} whileTap={{ scale: 0.96 }}>
             <Link
               to={createPageUrl(page)}
-              className={`flex flex-col gap-3 p-4 rounded-2xl ${bg} border border-white/60 shadow-sm hover:shadow-md transition-all`}
+              className={`flex flex-col gap-2 p-4 rounded-2xl ${bg} border border-white/60 shadow-sm hover:shadow-md transition-all`}
             >
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: `${iconColor}18` }}
-              >
-                <Icon style={{ color: iconColor, width: 20, height: 20 }} strokeWidth={2} />
+              <div className="w-12 h-12">
+                {Illustration ? (
+                  <Illustration color={iconColor} />
+                ) : (
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{ background: `${iconColor}18` }}
+                  >
+                    <Icon style={{ color: iconColor, width: 20, height: 20 }} strokeWidth={2} />
+                  </div>
+                )}
               </div>
               <div>
                 <p className="font-bold text-foreground text-sm leading-tight">{label}</p>
