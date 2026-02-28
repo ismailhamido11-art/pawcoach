@@ -155,7 +155,15 @@ export default function Home() {
 
       {/* HERO */}
       <div className="pt-6">
-        <HeroHeader user={user} dog={dog} streak={streak} />
+        <HeroHeader
+          user={user}
+          dog={dog}
+          streak={streak}
+          checkins={recentCheckins}
+          records={records}
+          exercises={exercises}
+          scans={scans}
+        />
       </div>
 
       {/* MAIN CONTENT */}
