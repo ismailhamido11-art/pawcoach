@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { BookHeart, Salad, MapPin, Dumbbell, ChevronRight } from "lucide-react";
+import { MapPin } from "lucide-react";
+import { DogDoctor, DogChef, DogGrad, DogDetective } from "../ui/PawIllustrations";
 
 const ACTIONS = [
   {
