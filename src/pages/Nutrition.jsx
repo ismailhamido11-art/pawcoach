@@ -6,6 +6,7 @@ import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Salad, MessageCircle, CalendarRange } from "lucide-react";
+import { DogChef } from "../components/ui/PawIllustrations";
 import IconBadge from "@/components/ui/IconBadge";
 import { InlineIcon } from "@/components/ui/IconBadge";
 import ReactMarkdown from "react-markdown";

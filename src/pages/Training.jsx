@@ -7,6 +7,7 @@ import CelebrationScreen from "../components/training/CelebrationScreen";
 import MilestoneScreen from "../components/training/MilestoneScreen";
 import FreeExercisesGate from "../components/training/FreeExercisesGate";
 import { CheckCircle, Timer, Lock, Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw, Trophy } from "lucide-react";
+import { DogGrad } from "../components/ui/PawIllustrations";
 import IconBadge from "@/components/ui/IconBadge";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
