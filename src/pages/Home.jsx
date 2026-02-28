@@ -44,6 +44,10 @@ export default function Home() {
   const [appetite, setAppetite] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const [records, setRecords] = useState([]);
+  const [exercises, setExercises] = useState([]);
+  const [scans, setScans] = useState([]);
+
   const [weeklyInsight, setWeeklyInsight] = useState(null);
   const [insightExpanded, setInsightExpanded] = useState(false);
   const [markingRead, setMarkingRead] = useState(false);

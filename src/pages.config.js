@@ -48,8 +48,12 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Chat from './pages/Chat';
+import Dashboard from './pages/Dashboard';
+import DogPublicProfile from './pages/DogPublicProfile';
 import FindVet from './pages/FindVet';
+import HealthImport from './pages/HealthImport';
 import Home from './pages/Home';
+import Notebook from './pages/Notebook';
 import Nutrition from './pages/Nutrition';
 import Onboarding from './pages/Onboarding';
 import Premium from './pages/Premium';
@@ -58,17 +62,17 @@ import Scan from './pages/Scan';
 import Training from './pages/Training';
 import VetDogView from './pages/VetDogView';
 import VetPortal from './pages/VetPortal';
-import HealthImport from './pages/HealthImport';
-import Dashboard from './pages/Dashboard';
-import Notebook from './pages/Notebook';
-import DogPublicProfile from './pages/DogPublicProfile';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Chat": Chat,
+    "Dashboard": Dashboard,
+    "DogPublicProfile": DogPublicProfile,
     "FindVet": FindVet,
+    "HealthImport": HealthImport,
     "Home": Home,
+    "Notebook": Notebook,
     "Nutrition": Nutrition,
     "Onboarding": Onboarding,
     "Premium": Premium,
@@ -77,10 +81,6 @@ export const PAGES = {
     "Training": Training,
     "VetDogView": VetDogView,
     "VetPortal": VetPortal,
-    "HealthImport": HealthImport,
-    "Dashboard": Dashboard,
-    "Notebook": Notebook,
-    "DogPublicProfile": DogPublicProfile,
 }
 
 export const pagesConfig = {
