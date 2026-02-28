@@ -27,11 +27,11 @@ export default function WeeklyInsightCard({ insight, dog, expanded, onToggle, on
       {/* Header */}
       <button onClick={onToggle} className="w-full flex items-center gap-3 p-4 text-left">
         <motion.div
-          animate={{ rotate: [0, 10, -10, 0] }}
+          animate={{ scale: [1, 1.05, 1] }}
           transition={{ duration: 3, repeat: Infinity, repeatDelay: 4 }}
-          className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0"
+          className="w-12 h-12 flex-shrink-0"
         >
-          <Sparkles className="w-5 h-5 text-primary" />
+          <DogCurious color="#2d9f82" />
         </motion.div>
         <div className="flex-1 min-w-0">
           <p className="font-bold text-foreground text-sm">Bilan de la semaine ✨</p>

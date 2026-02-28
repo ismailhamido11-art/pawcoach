@@ -122,9 +122,9 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
               initial={{ opacity: 0, scale: 0.7 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, type: "spring" }}
-              className="w-24 h-24 rounded-3xl bg-white/10 border-2 border-white/20 flex items-center justify-center text-5xl flex-shrink-0"
+              className="w-28 h-28 flex-shrink-0"
             >
-              🐾
+              <DogWave color="#a7f3d0" />
             </motion.div>
           )}
         </div>

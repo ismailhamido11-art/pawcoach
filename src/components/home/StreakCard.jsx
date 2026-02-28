@@ -34,9 +34,11 @@ export default function StreakCard({ streak }) {
       <div className="p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
               style={{ background: `${level.color}15` }}>
-              {level.emoji}
+              <div className="w-10 h-10">
+                <DogTrophy color={level.color} />
+              </div>
             </div>
             <div>
               <p className="font-black text-foreground text-sm">{level.label}</p>
@@ -84,7 +86,7 @@ export default function StreakCard({ streak }) {
             </span>
             {current >= longest && current > 0 && (
               <span className="ml-auto text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">
-                🏆 Nouveau record !
+                Nouveau record !
               </span>
             )}
           </div>
