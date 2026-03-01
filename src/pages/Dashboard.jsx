@@ -120,15 +120,29 @@ export default function Dashboard() {
 
   // --- Computed data ---
 
-  // Weight chart (last 10 entries)
-  const weightData = records
+  // Weight chart: merge HealthRecord weights + DailyLog weights
+  const weightFromRecords = records
     .filter(r => r.type === "weight" && r.value)
+    .map(r => ({ date: r.date, poids: r.value }));
+  const weightFromLogs = dailyLogs
+    .filter(l => l.weight)
+    .map(l => ({ date: l.date, poids: l.weight }));
+  const weightData = [...weightFromRecords, ...weightFromLogs]
     .sort((a, b) => a.date > b.date ? 1 : -1)
-    .slice(-10)
-    .map(r => ({
-      date: r.date ? r.date.slice(5) : "",
-      poids: r.value,
-    }));
+    .reduce((acc, cur) => {
+      // deduplicate by date, prefer latest
+      const idx = acc.findIndex(x => x.date === cur.date);
+      if (idx >= 0) { acc[idx] = { date: cur.date.slice(5), poids: cur.poids }; }
+      else { acc.push({ date: cur.date.slice(5), poids: cur.poids }); }
+      return acc;
+    }, [])
+    .slice(-12);
+
+  // Walk chart (last 14 DailyLogs)
+  const walkData = dailyLogs
+    .filter(l => l.walk_minutes)
+    .slice(-14)
+    .map(l => ({ date: l.date.slice(5), minutes: l.walk_minutes }));
 
   const weightTrend = weightData.length >= 2
     ? weightData[weightData.length - 1].poids - weightData[weightData.length - 2].poids
