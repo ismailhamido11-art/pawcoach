@@ -207,8 +207,17 @@ export default function Home() {
         {/* Journal */}
         <JournalLog checkins={recentCheckins} todayCheckin={todayCheckin} />
 
-        {/* Accès rapide */}
-        <QuickActions />
+        {/* Actions recommandées */}
+        <SmartRecommendations
+          records={records}
+          exercises={exercises}
+          scans={scans}
+          checkins={recentCheckins}
+          dailyLogs={dailyLogs}
+          todayCheckin={todayCheckin}
+          streak={streak}
+          onOpenFAB={() => setFabOpen(true)}
+        />
       </div>
 
       {/* MILESTONE */}
