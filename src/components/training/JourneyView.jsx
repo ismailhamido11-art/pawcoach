@@ -1,10 +1,10 @@
-import { ArrowLeft, CheckCircle, Lock, Timer, Trophy } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowLeft, CheckCircle, Lock, Timer } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import IconBadge from "@/components/ui/IconBadge";
 
-const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
+const listContainer = { show: { transition: { staggerChildren: 0.07 } } };
 const listItem = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 14 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 20 } },
 };
 
@@ -13,7 +13,7 @@ const LEVEL_CONFIG = {
   intermediaire: { label: "Intermédiaire", color: "text-accent bg-accent/10 border-accent/20" },
 };
 
-export default function JourneyView({ journey, exercises, progresses, isPremium, dogName, onBack, onSelectExercise }) {
+export default function JourneyView({ journey, exercises, progresses, isPremium, onBack, onSelectExercise }) {
   const isCompleted = (order) => progresses.some(p => p.exercise_id === String(order) && p.completed);
   const completedCount = exercises.filter(e => isCompleted(e.order_number)).length;
   const total = exercises.length;
@@ -61,8 +61,8 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
         </div>
       </div>
 
-      {/* Exercise list */}
-      <motion.div className="px-4 pt-4 space-y-3" variants={listContainer} initial="hidden" animate="show">
+      {/* Checklist */}
+      <motion.div className="px-4 pt-5 space-y-2.5" variants={listContainer} initial="hidden" animate="show">
         {exercises.map((exercise, idx) => {
           const done = isCompleted(exercise.order_number);
           const exerciseLocked = locked || (exercise.is_premium && !isPremium);
@@ -72,43 +72,49 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
             <motion.button
               key={exercise.order_number}
               variants={listItem}
-              whileTap={{ scale: 0.96 }}
+              whileTap={exerciseLocked ? {} : { scale: 0.97 }}
               onClick={() => onSelectExercise(exercise.order_number)}
-              className={`w-full flex items-center gap-4 p-4 rounded-2xl border text-left transition-colors shadow-sm ${
-                done ? "bg-safe/5 border-safe/20" : exerciseLocked ? "bg-muted/30 border-border opacity-60" : "bg-white border-border"
+              className={`w-full flex items-center gap-3 p-3.5 rounded-2xl border text-left transition-all ${
+                done
+                  ? "bg-white border-safe/30 shadow-sm"
+                  : exerciseLocked
+                  ? "bg-muted/30 border-border opacity-50"
+                  : "bg-white border-border shadow-sm"
               }`}
             >
-              <div className="relative">
-                <IconBadge icon={exercise.icon} color={done ? "#10b981" : exerciseLocked ? "#9ca3af" : exercise.iconColor} size="md" />
-                <div className="absolute -top-1 -left-1 w-4 h-4 bg-muted rounded-full flex items-center justify-center">
-                  <span className="text-[8px] font-black text-muted-foreground">{idx + 1}</span>
-                </div>
+              {/* Number/emoji badge */}
+              <div
+                className={`w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0 ${
+                  done ? "bg-safe/10" : exerciseLocked ? "bg-muted" : "bg-secondary"
+                }`}
+              >
+                <span>{exercise.emoji || "🐾"}</span>
               </div>
+
               <div className="flex-1 min-w-0">
-                <p className={`font-semibold text-sm leading-tight ${done ? "text-safe" : exerciseLocked ? "text-muted-foreground" : "text-foreground"}`}>
+                <p className={`font-semibold text-sm ${done ? "text-safe line-through decoration-safe/50" : exerciseLocked ? "text-muted-foreground" : "text-foreground"}`}>
                   {exercise.name}
                 </p>
-                <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full border font-semibold ${lvl.color}`}>
-                    {lvl.label}
-                  </span>
+                <div className="flex items-center gap-2 mt-0.5">
                   <span className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Timer className="w-3 h-3" /> {exercise.duration}
                   </span>
                 </div>
               </div>
+
+              {/* Status icon */}
               <div className="flex-shrink-0">
                 {done ? (
-                  <div className="w-7 h-7 rounded-full bg-safe flex items-center justify-center">
-                    <CheckCircle className="w-4 h-4 text-white" />
+                  <div className="w-8 h-8 rounded-xl bg-safe flex items-center justify-center">
+                    <CheckCircle className="w-4.5 h-4.5 text-white" />
                   </div>
                 ) : exerciseLocked ? (
-                  <div className="w-7 h-7 rounded-full bg-accent/10 flex items-center justify-center">
-                    <Lock className="w-4 h-4 text-accent" />
+                  <div className="w-8 h-8 rounded-xl bg-muted flex items-center justify-center">
+                    <Lock className="w-4 h-4 text-muted-foreground/50" />
                   </div>
                 ) : (
-                  <div className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center">
-                    <span className="text-xs font-bold text-primary">{idx + 1}</span>
+                  <div className="w-8 h-8 rounded-xl border-2 border-border flex items-center justify-center">
+                    <span className="text-xs font-bold text-muted-foreground">{idx + 1}</span>
                   </div>
                 )}
               </div>
