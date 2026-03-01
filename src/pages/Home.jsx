@@ -212,6 +212,7 @@ export default function Home() {
         {milestone && <MilestoneCelebration milestone={milestone} onClose={() => setMilestone(null)} />}
       </AnimatePresence>
 
+      <QuickLogFAB dog={dog} user={user} />
       <BottomNav currentPage="Home" />
     </div>
   );
