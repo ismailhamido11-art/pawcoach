@@ -92,16 +92,16 @@ export default function Home() {
           if (insights?.length > 0) {
             setWeeklyInsight(insights.sort((a, b) => (b.week_start || "").localeCompare(a.week_start || ""))[0]);
           }
-        // Post-onboarding premium nudge (first visit, non-premium)
-        if (!u.is_premium) {
-          try {
-            const isFirstVisit = localStorage.getItem("pawcoach_first_visit");
-            if (isFirstVisit === "1") {
-              localStorage.removeItem("pawcoach_first_visit");
-              setShowPremiumNudge(true);
-            }
-          } catch(e) {}
-        }
+          // Post-onboarding premium nudge (first visit, non-premium)
+          if (!u.is_premium) {
+            try {
+              const isFirstVisit = localStorage.getItem("pawcoach_first_visit");
+              if (isFirstVisit === "1") {
+                localStorage.removeItem("pawcoach_first_visit");
+                setShowPremiumNudge(true);
+              }
+            } catch(e) {}
+          }
         } else {
           navigate(createPageUrl("Onboarding"));
         }
