@@ -93,14 +93,9 @@ export default function Home() {
             setWeeklyInsight(insights.sort((a, b) => (b.week_start || "").localeCompare(a.week_start || ""))[0]);
           }
           // Post-onboarding premium nudge (first visit, non-premium)
-          if (!u.is_premium) {
-            try {
-              const isFirstVisit = localStorage.getItem("pawcoach_first_visit");
-              if (isFirstVisit === "1") {
-                localStorage.removeItem("pawcoach_first_visit");
-                setShowPremiumNudge(true);
-              }
-            } catch(e) {}
+          if (!u.is_premium && u.premium_onboarding_nudge_shown === false) {
+            setShowPremiumNudge(true);
+            try { await base44.auth.updateMe({ premium_onboarding_nudge_shown: true }); } catch(e) {}
           }
         } else {
           navigate(createPageUrl("Onboarding"));
