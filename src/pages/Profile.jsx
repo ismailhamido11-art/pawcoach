@@ -4,7 +4,7 @@ import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import {
   User, Crown, Dog, Plus, ChevronRight, LogOut, Trash2,
-  Info, Mail, ShieldCheck, Star, PawPrint
+  Info, Mail, ShieldCheck, Star, PawPrint, BookMarked
 } from "lucide-react";
 import IconBadge from "@/components/ui/IconBadge";
 import { useNavigate } from "react-router-dom";
