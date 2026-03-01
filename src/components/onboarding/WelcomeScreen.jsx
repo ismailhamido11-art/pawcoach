@@ -40,7 +40,13 @@ export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium
 
       {/* CTA */}
       <Button
-        onClick={onDiscover}
+        onClick={() => {
+          if (!isPremium) {
+            setShowNudge(true);
+          } else {
+            onDiscover();
+          }
+        }}
         className="w-full max-w-xs h-14 rounded-2xl bg-white text-primary font-bold text-base shadow-xl gap-2 hover:bg-white/90 border-0"
       >
         <Sparkles className="w-5 h-5" />
@@ -51,6 +57,12 @@ export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium
       <div className="absolute bottom-0 left-0 right-0 h-32 opacity-10">
         <div className="w-full h-full bg-white rounded-t-[80px]" />
       </div>
+
+      <PremiumNudgeSheet
+        visible={showNudge}
+        onClose={() => { setShowNudge(false); onDiscover(); }}
+        dogName={dogName}
+      />
     </div>
   );
 }
