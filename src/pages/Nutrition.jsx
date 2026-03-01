@@ -11,6 +11,7 @@ import IconBadge from "@/components/ui/IconBadge";
 import { InlineIcon } from "@/components/ui/IconBadge";
 import ReactMarkdown from "react-markdown";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { type: "spring", stiffness: 120, damping: 20 } };
