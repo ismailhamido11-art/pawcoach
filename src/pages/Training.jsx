@@ -8,7 +8,7 @@ import MilestoneScreen from "../components/training/MilestoneScreen";
 import FreeExercisesGate from "../components/training/FreeExercisesGate";
 import JourneyCard from "../components/training/JourneyCard";
 import JourneyView from "../components/training/JourneyView";
-import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw, Trophy } from "lucide-react";
+import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw } from "lucide-react";
 import { DogGrad } from "../components/ui/PawIllustrations";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
