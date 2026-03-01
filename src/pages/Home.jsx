@@ -55,6 +55,7 @@ export default function Home() {
   const [markingRead, setMarkingRead] = useState(false);
 
   const [milestone, setMilestone] = useState(null);
+  const [showQuickLog, setShowQuickLog] = useState(false);
 
   useEffect(() => {
     async function loadData() {
