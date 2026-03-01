@@ -183,6 +183,23 @@ export default function Profile() {
           </div>
         )}
 
+        {/* Library */}
+        <motion.button
+          whileTap={{ scale: 0.96 }}
+          transition={spring}
+          onClick={() => navigate(createPageUrl("Library"))}
+          className="w-full bg-white rounded-2xl border border-border p-4 flex items-center gap-3 shadow-sm"
+        >
+          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+            <BookMarked className="w-5 h-5 text-primary" />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-sm font-bold text-foreground">Ma Bibliothèque</p>
+            <p className="text-xs text-muted-foreground">Conseils IA sauvegardés</p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+        </motion.button>
+
         {/* App info */}
         <div className="bg-white rounded-2xl border border-border overflow-hidden">
           <div className="px-4 py-3 border-b border-border">
