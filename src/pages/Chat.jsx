@@ -37,7 +37,22 @@ export default function Chat() {
   const bottomRef = useRef(null);
   const fileInputRef = useRef(null);
 
+  const [bookmarked, setBookmarked] = useState({});
   const helpSent = useRef(false);
+
+  const handleBookmark = async (msg) => {
+    if (!dog || !user) return;
+    const title = msg.content.replace(/[#*_`]/g, "").split("\n")[0].slice(0, 60);
+    await base44.entities.Bookmark.create({
+      dog_id: dog.id,
+      owner: user.email,
+      content: msg.content,
+      source: "chat",
+      title,
+      created_at: new Date().toISOString(),
+    });
+    setBookmarked(prev => ({ ...prev, [msg.timestamp]: true }));
+  };
 
   useEffect(() => { initChat(); }, []);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
