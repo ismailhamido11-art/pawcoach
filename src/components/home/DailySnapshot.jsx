@@ -16,10 +16,11 @@ function getWeekStart() {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
 
-function WeightCard({ records }) {
-  const weightRecords = records
-    .filter(r => r.type === "weight" && r.value)
-    .sort((a, b) => b.date.localeCompare(a.date));
+function WeightCard({ records, dailyLogs }) {
+  // Merge HealthRecord weights + DailyLog weights, pick most recent
+  const fromRecords = records.filter(r => r.type === "weight" && r.value).map(r => ({ date: r.date, value: r.value }));
+  const fromLogs = (dailyLogs || []).filter(l => l.weight_kg).map(l => ({ date: l.date, value: l.weight_kg }));
+  const weightRecords = [...fromRecords, ...fromLogs].sort((a, b) => b.date.localeCompare(a.date));
 
   const last = weightRecords[0];
   const prev = weightRecords[1];
@@ -119,6 +120,35 @@ function TrainingCard({ exercises }) {
             transition={{ delay: 0.4, duration: 0.7, ease: "easeOut" }}
           />
         </div>
+      </div>
+    </Link>
+  );
+}
+
+function WalkCard({ dailyLogs }) {
+  const today = getTodayString();
+  const todayLog = (dailyLogs || []).find(l => l.date === today);
+  const mins = todayLog?.walk_minutes;
+
+  return (
+    <Link to={createPageUrl("Home")} className="block">
+      <div className="bg-white rounded-2xl p-4 border border-border/30 shadow-sm h-full">
+        <div className="flex items-center justify-between mb-2">
+          <div className="w-7 h-7 rounded-xl bg-emerald-50 flex items-center justify-center">
+            <Footprints className="w-3.5 h-3.5 text-emerald-500" />
+          </div>
+        </div>
+        {mins ? (
+          <>
+            <p className="text-2xl font-black text-emerald-600 leading-none">{mins}<span className="text-sm font-medium text-muted-foreground ml-1">min</span></p>
+            <p className="text-[11px] text-muted-foreground mt-1">Balade aujourd'hui</p>
+          </>
+        ) : (
+          <>
+            <p className="text-sm font-bold text-muted-foreground">—</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Balade non loggée</p>
+          </>
+        )}
       </div>
     </Link>
   );
