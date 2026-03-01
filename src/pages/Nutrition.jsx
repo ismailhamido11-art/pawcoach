@@ -25,7 +25,22 @@ export default function Nutrition() {
   const [initializing, setInitializing] = useState(true);
   const [activeTab, setActiveTab] = useState("chat");
   const [messagesRemaining, setMessagesRemaining] = useState(null);
+  const [bookmarked, setBookmarked] = useState({});
   const bottomRef = useRef(null);
+
+  const handleBookmark = async (msg) => {
+    if (!dog || !user) return;
+    const title = msg.content.replace(/[#*_`]/g, "").split("\n")[0].slice(0, 60);
+    await base44.entities.Bookmark.create({
+      dog_id: dog.id,
+      owner: user.email,
+      content: msg.content,
+      source: "nutrition",
+      title,
+      created_at: new Date().toISOString(),
+    });
+    setBookmarked(prev => ({ ...prev, [msg.timestamp]: true }));
+  };
 
   useEffect(() => { init(); }, []);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
