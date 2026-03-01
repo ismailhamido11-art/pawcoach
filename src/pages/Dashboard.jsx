@@ -9,7 +9,7 @@ import {
   Syringe, Weight, Stethoscope, Dumbbell, Salad,
   AlertTriangle, CheckCircle, ChevronRight, Flame,
   TrendingUp, TrendingDown, Minus, ArrowLeft, Heart,
-  Sparkles, Activity, Calendar, Star
+  Sparkles, Activity, Calendar, Star, Footprints
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
