@@ -239,6 +239,13 @@ export default function Home() {
 
       <QuickLogFAB dog={dog} user={user} open={fabOpen} onOpenChange={setFabOpen} />
       <BottomNav currentPage="Home" />
+
+      {/* Post-onboarding premium nudge */}
+      <PremiumNudgeSheet
+        visible={showPremiumNudge}
+        onClose={() => setShowPremiumNudge(false)}
+        dogName={dog?.name}
+      />
     </div>
   );
 }
