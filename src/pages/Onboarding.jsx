@@ -231,7 +231,10 @@ Extrais ces informations et renvoie un objet JSON.
   };
 
   if (!started) return <OnboardingWelcome onStart={() => setStarted(true)} />;
-  if (done && dogData) return <WelcomeScreen dogName={dogData.name} dogPhoto={dogData.photo} onDiscover={() => navigate(createPageUrl("Home"))} />;
+  if (done && dogData) {
+    const savedUser = dogData._user;
+    return <WelcomeScreen dogName={dogData.name} dogPhoto={dogData.photo} isPremium={false} onDiscover={() => navigate(createPageUrl("Home"))} />;
+  }
 
   const handleGoalSelect = (label) => {
     setCurrentAnswer(label);
