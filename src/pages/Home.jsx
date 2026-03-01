@@ -207,6 +207,7 @@ export default function Home() {
           records={records}
           exercises={exercises}
           dog={dog}
+          dailyLogs={dailyLogs}
         />
 
         {/* Journal */}
