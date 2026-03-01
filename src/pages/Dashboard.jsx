@@ -91,6 +91,8 @@ export default function Dashboard() {
   const [progress, setProgress] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [dailyLogs, setDailyLogs] = useState([]);
+
   useEffect(() => {
     (async () => {
       const u = await base44.auth.me();
@@ -100,16 +102,18 @@ export default function Dashboard() {
       const d = dogs[0];
       setDog(d);
 
-      const [recs, cks, stk, prog] = await Promise.all([
+      const [recs, cks, stk, prog, logs] = await Promise.all([
         base44.entities.HealthRecord.filter({ dog_id: d.id }),
         base44.entities.DailyCheckin.filter({ dog_id: d.id }),
         base44.entities.Streak.filter({ dog_id: d.id }),
         base44.entities.UserProgress.filter({ dog_id: d.id }),
+        base44.entities.DailyLog.filter({ dog_id: d.id }),
       ]);
       setRecords(recs);
       setCheckins(cks.sort((a, b) => a.date > b.date ? 1 : -1));
       setStreak(stk[0] || null);
       setProgress(prog);
+      setDailyLogs(logs.sort((a, b) => a.date > b.date ? 1 : -1));
       setLoading(false);
     })();
   }, []);
