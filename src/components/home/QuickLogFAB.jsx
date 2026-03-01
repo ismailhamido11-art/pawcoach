@@ -79,9 +79,15 @@ export default function QuickLogFAB({ dog, user, open: controlledOpen, onOpenCha
       }
     });
 
-    await base44.entities.DailyLog.create(payload);
+    const existing = await base44.entities.DailyLog.filter({ dog_id: dog.id, date: payload.date });
+    if (existing && existing.length > 0) {
+      await base44.entities.DailyLog.update(existing[0].id, payload);
+    } else {
+      await base44.entities.DailyLog.create(payload);
+    }
     setSaving(false);
     setSaved(true);
+    onLogSaved?.();
     setTimeout(() => {
       setSaved(false);
       setOpen(false);
