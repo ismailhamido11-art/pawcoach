@@ -70,9 +70,13 @@ function EmptyState({ label, to }) {
   );
 }
 
-export default function DailySnapshot({ todayCheckin, records, exercises, dog }) {
+export default function DailySnapshot({ todayCheckin, records, exercises, dog, dailyLogs }) {
   const moodInfo = todayCheckin ? getMoodLabel(todayCheckin.mood) : null;
-  const weightRecord = getLatestWeight(records);
+
+  // Prefer DailyLog weight (most recent), fallback to HealthRecord
+  const todayLog = dailyLogs?.sort((a, b) => b.date.localeCompare(a.date))[0];
+  const weightFromLog = todayLog?.weight ? { value: todayLog.weight, date: todayLog.date } : null;
+  const weightRecord = weightFromLog || getLatestWeight(records);
   const nextVaccine = getNextVaccine(records);
   const daysUntilVaccine = nextVaccine ? getDaysUntil(nextVaccine.next_date) : null;
   const todayExerciseCount = getTodayExercises(exercises);
