@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
+import PremiumNudgeSheet from "../premium/PremiumNudgeSheet";
 
-export default function WelcomeScreen({ dogName, dogPhoto, onDiscover }) {
+export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium }) {
+  const [showNudge, setShowNudge] = useState(false);
   return (
     <div className="min-h-screen gradient-primary flex flex-col items-center justify-center px-6 text-center">
       {/* Confetti-like decorative dots */}
