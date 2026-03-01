@@ -173,15 +173,7 @@ export default function Training() {
     return <FreeExercisesGate dogName={dog?.name} onDismiss={() => setShowFreeGate(false)} />;
   }
 
-  if (celebration) {
-    return (
-      <CelebrationScreen
-        dogName={dog?.name || "Ton chien"}
-        exerciseName={celebration}
-        onContinue={() => setCelebration(null)}
-      />
-    );
-  }
+  // celebration is shown as overlay (handled below)
 
   // Exercise detail screen
   if (selected) {
