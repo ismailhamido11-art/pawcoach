@@ -51,8 +51,13 @@ const FIELDS = [
   },
 ];
 
-export default function QuickLogFAB({ dog, user }) {
-  const [open, setOpen] = useState(false);
+export default function QuickLogFAB({ dog, user, open: controlledOpen, onOpenChange }) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const setOpen = (val) => {
+    setInternalOpen(val);
+    onOpenChange?.(val);
+  };
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
