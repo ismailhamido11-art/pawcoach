@@ -220,6 +220,11 @@ export default function Home() {
         {/* Journal */}
         <JournalLog checkins={recentCheckins} todayCheckin={todayCheckin} />
 
+        {/* Premium value banner (free users with activity) */}
+        {user && !user.is_premium && (
+          <PremiumValueBanner streak={streak} checkins={recentCheckins} />
+        )}
+
         {/* Actions recommandées */}
         <SmartRecommendations
           records={records}
