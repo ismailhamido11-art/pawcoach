@@ -196,6 +196,14 @@ export default function Home() {
           markingRead={markingRead}
         />
 
+        {/* Snapshot du jour */}
+        <DailySnapshot
+          todayCheckin={todayCheckin}
+          records={records}
+          exercises={exercises}
+          dog={dog}
+        />
+
         {/* Journal */}
         <JournalLog checkins={recentCheckins} todayCheckin={todayCheckin} />
 
