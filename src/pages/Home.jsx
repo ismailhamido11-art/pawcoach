@@ -188,7 +188,7 @@ export default function Home() {
         )}
 
         {/* Snapshot du jour */}
-        <DailySnapshot records={records} exercises={exercises} checkins={recentCheckins} />
+        <DailySnapshot records={records} exercises={exercises} checkins={recentCheckins} dailyLogs={dailyLogs} />
 
         {/* Streak */}
         <StreakCard streak={streak} />
