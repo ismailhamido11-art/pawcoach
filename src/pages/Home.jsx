@@ -17,6 +17,7 @@ import { Heart, PartyPopper, Flame } from "lucide-react";
 import { DogTrophy } from "../components/ui/PawIllustrations";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
+import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
 
 const MILESTONES = [
   { days: 3,   message: "3 jours de suite !",    sub: "Le début d'une belle habitude" },
