@@ -58,6 +58,7 @@ export default function Home() {
 
   const [milestone, setMilestone] = useState(null);
   const [fabOpen, setFabOpen] = useState(false);
+  const [showPremiumNudge, setShowPremiumNudge] = useState(false);
 
   useEffect(() => {
     async function loadData() {
