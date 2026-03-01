@@ -343,6 +343,36 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Walk chart */}
+        {walkData.length >= 2 && (
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-border/40">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="font-bold text-foreground text-sm">Balades quotidiennes</p>
+                <p className="text-xs text-muted-foreground">{walkData.length} jours enregistrés</p>
+              </div>
+              <div className="px-2 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-semibold">
+                {Math.round(walkData.reduce((s, d) => s + d.minutes, 0) / walkData.length)} min / jour
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={130}>
+              <BarChart data={walkData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
+                <defs>
+                  <linearGradient id="walkGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.9} />
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0.5} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 8 }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 9 }} tickLine={false} axisLine={false} unit="m" />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="minutes" name="Balade" fill="url(#walkGrad)" radius={[5, 5, 0, 0]} maxBarSize={24} unit=" min" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
         {/* Mood/energy chart */}
         {checkinChart.length >= 3 && (
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-border/40">
