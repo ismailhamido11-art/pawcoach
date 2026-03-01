@@ -11,6 +11,7 @@ import StreakCard from "../components/home/StreakCard";
 import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
 import JournalLog from "../components/home/JournalLog";
 import SmartRecommendations from "../components/home/SmartRecommendations";
+import PremiumValueBanner from "../components/home/PremiumValueBanner";
 import DailySnapshot from "../components/home/DailySnapshot";
 import QuickLogFAB from "../components/home/QuickLogFAB";
 import { Heart, PartyPopper, Flame } from "lucide-react";
