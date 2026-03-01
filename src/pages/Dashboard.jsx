@@ -188,12 +188,15 @@ export default function Dashboard() {
   }
 
   // Health score (0-100)
+  const recentLogs = dailyLogs.filter(l => l.date >= new Date(Date.now() - 7 * 864e5).toISOString().split("T")[0]);
   let score = 40;
   if (vaccines.length > 0 && overdueVaccines.length === 0) score += 20;
-  if (checkins.length >= 3) score += 15;
-  if (weightData.length >= 2) score += 10;
-  if (streak?.current_streak >= 3) score += 10;
-  if (progress.length >= 2) score += 5;
+  if (checkins.length >= 3) score += 10;
+  if (weightData.length >= 2) score += 8;
+  if (streak?.current_streak >= 3) score += 8;
+  if (progress.length >= 2) score += 4;
+  if (recentLogs.length >= 3) score += 5; // bonus daily tracking
+  if (recentLogs.some(l => l.walk_minutes >= 20)) score += 5; // bonus activity
   score = Math.min(100, score);
 
   const scoreColor = score >= 80 ? "#10b981" : score >= 60 ? "#f59e0b" : "#ef4444";
