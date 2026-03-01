@@ -183,6 +183,9 @@ export default function Home() {
           <CheckinResult checkin={todayCheckin} dog={dog} />
         )}
 
+        {/* Snapshot du jour */}
+        <DailySnapshot records={records} exercises={exercises} checkins={recentCheckins} />
+
         {/* Streak */}
         <StreakCard streak={streak} />
 
