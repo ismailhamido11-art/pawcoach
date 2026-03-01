@@ -67,7 +67,7 @@ export default function Home() {
           const d = dogs[0];
           setDog(d);
           const today = getTodayString();
-          const [checkins, streaks, recent, insights, recs, exs, scs] = await Promise.all([
+          const [checkins, streaks, recent, insights, recs, exs, scs, logs] = await Promise.all([
             base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
             base44.entities.Streak.filter({ dog_id: d.id }),
             base44.entities.DailyCheckin.filter({ dog_id: d.id }),
@@ -75,10 +75,12 @@ export default function Home() {
             base44.entities.HealthRecord.filter({ dog_id: d.id }),
             base44.entities.UserProgress.filter({ dog_id: d.id }),
             base44.entities.FoodScan.filter({ dog_id: d.id }),
+            base44.entities.DailyLog.filter({ dog_id: d.id }),
           ]);
           setRecords(recs || []);
           setExercises(exs || []);
           setScans(scs || []);
+          setDailyLogs(logs || []);
           if (checkins?.length > 0) setTodayCheckin(checkins[0]);
           if (streaks?.length > 0) setStreak(streaks[0]);
           const sorted = (recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7);
