@@ -54,6 +54,7 @@ export default function Home() {
   const [insightExpanded, setInsightExpanded] = useState(false);
   const [markingRead, setMarkingRead] = useState(false);
 
+  const [dailyLogs, setDailyLogs] = useState([]);
   const [milestone, setMilestone] = useState(null);
   const [showQuickLog, setShowQuickLog] = useState(false);
 
