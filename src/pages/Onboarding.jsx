@@ -220,6 +220,8 @@ Extrais ces informations et renvoie un objet JSON.
         });
       } catch (e) {}
       setDone(true);
+      // Store flag so Home can show premium nudge on first visit
+      try { localStorage.setItem("pawcoach_first_visit", "1"); } catch(e) {}
     } catch (e) {
       console.error(e);
       alert("Une erreur est survenue lors de la création du profil. Réessaie.");
