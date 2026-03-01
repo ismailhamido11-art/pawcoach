@@ -10,7 +10,7 @@ import JourneyCard from "../components/training/JourneyCard";
 import JourneyView from "../components/training/JourneyView";
 import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw } from "lucide-react";
 import { DogGrad } from "../components/ui/PawIllustrations";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { updateStreakSilently } from "../components/streakHelper";
 import { motion } from "framer-motion";
