@@ -230,23 +230,36 @@ export default function Nutrition() {
                 {msg.role === "assistant" && (
                   <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                 )}
-                <div className={`max-w-[82%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
-                  msg.role === "user" ? "chat-bubble-user text-white rounded-br-sm" : "chat-bubble-assistant text-foreground rounded-bl-sm"
-                }`}>
-                  {msg.role === "assistant" ? (
-                    <ReactMarkdown
-                      className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
-                      components={{
-                        p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
-                        ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
-                        li: ({ children }) => <li className="my-0.5">{children}</li>,
-                        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                      }}
+                <div className="flex flex-col gap-1 max-w-[82%]">
+                  <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                    msg.role === "user" ? "chat-bubble-user text-white rounded-br-sm" : "chat-bubble-assistant text-foreground rounded-bl-sm"
+                  }`}>
+                    {msg.role === "assistant" ? (
+                      <ReactMarkdown
+                        className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                        components={{
+                          p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
+                          ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
+                          li: ({ children }) => <li className="my-0.5">{children}</li>,
+                          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                        }}
+                      >
+                        {msg.content}
+                      </ReactMarkdown>
+                    ) : (
+                      <p className="whitespace-pre-wrap">{msg.content}</p>
+                    )}
+                  </div>
+                  {msg.role === "assistant" && (
+                    <button
+                      onClick={() => handleBookmark(msg)}
+                      className="self-start ml-1 flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
                     >
-                      {msg.content}
-                    </ReactMarkdown>
-                  ) : (
-                    <p className="whitespace-pre-wrap">{msg.content}</p>
+                      {bookmarked[msg.timestamp]
+                        ? <BookmarkCheck className="w-3.5 h-3.5 text-primary" />
+                        : <Bookmark className="w-3.5 h-3.5" />}
+                      {bookmarked[msg.timestamp] ? "Sauvegardé" : "Sauvegarder"}
+                    </button>
                   )}
                 </div>
               </motion.div>
