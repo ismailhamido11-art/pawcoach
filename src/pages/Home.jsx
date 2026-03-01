@@ -213,6 +213,29 @@ export default function Home() {
         <QuickActions />
       </div>
 
+      {/* FAB Quick Log */}
+      <motion.button
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
+        whileTap={{ scale: 0.92 }}
+        onClick={() => setShowQuickLog(true)}
+        className="fixed bottom-24 right-5 z-40 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center"
+        style={{ background: "linear-gradient(135deg, #0f4c3a, #2d9f82)" }}
+      >
+        <Plus className="w-7 h-7 text-white stroke-[2.5]" />
+      </motion.button>
+
+      {/* Quick Log Modal */}
+      {showQuickLog && (
+        <QuickLogModal
+          dog={dog}
+          user={user}
+          onClose={() => setShowQuickLog(false)}
+          onSaved={() => {}}
+        />
+      )}
+
       {/* MILESTONE */}
       <AnimatePresence>
         {milestone && <MilestoneCelebration milestone={milestone} onClose={() => setMilestone(null)} />}
