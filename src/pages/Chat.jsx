@@ -100,8 +100,16 @@ export default function Chat() {
       if (dogs.length > 0) {
         const d = dogs[0];
         setDog(d);
-        const history = await base44.entities.ChatMessage.filter({ dog_id: d.id });
+        const [history, existingBookmarks] = await Promise.all([
+          base44.entities.ChatMessage.filter({ dog_id: d.id }),
+          base44.entities.Bookmark.filter({ dog_id: d.id, owner: u.email, source: "chat" }),
+        ]);
+        const bookmarkSet = {};
+        (existingBookmarks || []).forEach(b => { bookmarkSet[b.content] = true; });
         const sorted = history.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        const initialBookmarked = {};
+        sorted.forEach(m => { if (m.role === "assistant" && bookmarkSet[m.content]) initialBookmarked[m.timestamp] = true; });
+        setBookmarked(initialBookmarked);
         if (sorted.length === 0) {
           setMessages([{
             role: "assistant",
