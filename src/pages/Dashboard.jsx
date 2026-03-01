@@ -302,6 +302,12 @@ export default function Dashboard() {
             value={progress.length}
             sub="tours maîtrisés"
           />
+          <StatCard
+            icon={Activity} color="#10b981"
+            label="Balades (7j)"
+            value={recentLogs.filter(l => l.walk_minutes).reduce((s, l) => s + l.walk_minutes, 0) || 0}
+            sub="minutes de marche"
+          />
         </div>
 
         {/* Weight chart */}
