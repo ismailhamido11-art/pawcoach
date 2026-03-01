@@ -2,7 +2,7 @@ import { Lock, ChevronRight, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function JourneyCard({ journey, completedCount, isPremium, onClick }) {
-  const total = journey.exercises.length;
+  const total = journey.exerciseOrders?.length ?? 0;
   const done = completedCount;
   const locked = journey.isPremium && !isPremium;
   const pct = total > 0 ? done / total : 0;
