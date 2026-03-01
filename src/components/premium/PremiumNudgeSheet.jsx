@@ -70,7 +70,7 @@ export default function PremiumNudgeSheet({ visible, onClose, dogName, context =
                   : "Débloquez tout PawCoach"}
               </h2>
               <p className="text-sm text-center text-muted-foreground mb-5">
-                Débloque toutes les fonctionnalités premium pour <strong>5 €/mois</strong>
+                Débloque toutes les fonctionnalités premium à partir de <strong>7,99 €/mois</strong> (ou 5 €/mois en annuel)
               </p>
 
               {/* Feature list */}

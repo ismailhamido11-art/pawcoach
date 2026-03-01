@@ -5,7 +5,7 @@ import { Flame, UserCircle } from "lucide-react";
 import HealthScore from "./HealthScore";
 import { DogWave } from "../ui/PawIllustrations";
 
-export default function HeroHeader({ user, dog, streak, checkins, records, exercises, scans }) {
+export default function HeroHeader({ user, dog, streak, checkins, records, exercises, scans, dailyLogs }) {
   const currentStreak = streak?.current_streak || 0;
   const firstName = user?.full_name?.split(" ")[0] || "l'ami";
   const hour = new Date().getHours();
@@ -56,6 +56,7 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
               records={records}
               exercises={exercises}
               scans={scans}
+              dailyLogs={dailyLogs}
             />
             <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }}>
               <Link

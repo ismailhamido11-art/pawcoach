@@ -94,26 +94,31 @@ export default function Dashboard() {
 
   useEffect(() => {
     (async () => {
-      const u = await base44.auth.me();
-      setUser(u);
-      const dogs = await base44.entities.Dog.filter({ owner: u.email });
-      if (!dogs.length) { setLoading(false); return; }
-      const d = dogs[0];
-      setDog(d);
+      try {
+        const u = await base44.auth.me();
+        setUser(u);
+        const dogs = await base44.entities.Dog.filter({ owner: u.email });
+        if (!dogs.length) return;
+        const d = dogs[0];
+        setDog(d);
 
-      const [recs, cks, stk, prog, logs] = await Promise.all([
-        base44.entities.HealthRecord.filter({ dog_id: d.id }),
-        base44.entities.DailyCheckin.filter({ dog_id: d.id }),
-        base44.entities.Streak.filter({ dog_id: d.id }),
-        base44.entities.UserProgress.filter({ dog_id: d.id }),
-        base44.entities.DailyLog.filter({ dog_id: d.id }),
-      ]);
-      setRecords(recs);
-      setCheckins(cks.sort((a, b) => a.date > b.date ? 1 : -1));
-      setStreak(stk[0] || null);
-      setProgress(prog);
-      setDailyLogs(logs || []);
-      setLoading(false);
+        const [recs, cks, stk, prog, logs] = await Promise.all([
+          base44.entities.HealthRecord.filter({ dog_id: d.id }),
+          base44.entities.DailyCheckin.filter({ dog_id: d.id }),
+          base44.entities.Streak.filter({ dog_id: d.id }),
+          base44.entities.UserProgress.filter({ dog_id: d.id }),
+          base44.entities.DailyLog.filter({ dog_id: d.id }),
+        ]);
+        setRecords(recs);
+        setCheckins(cks.sort((a, b) => a.date > b.date ? 1 : -1));
+        setStreak(stk[0] || null);
+        setProgress(prog);
+        setDailyLogs(logs || []);
+      } catch (err) {
+        console.error("Dashboard load error:", err);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 

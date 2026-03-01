@@ -79,7 +79,7 @@ export default function Home() {
             base44.entities.HealthRecord.filter({ dog_id: d.id }),
             base44.entities.UserProgress.filter({ dog_id: d.id }),
             base44.entities.FoodScan.filter({ dog_id: d.id }),
-            base44.entities.DailyLog.filter({ dog_id: d.id }),
+            base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30),
           ]);
           setRecords(recs || []);
           setExercises(exs || []);
@@ -177,6 +177,7 @@ export default function Home() {
           records={records}
           exercises={exercises}
           scans={scans}
+          dailyLogs={dailyLogs}
         />
       </div>
 
@@ -245,7 +246,7 @@ export default function Home() {
         onOpenChange={setFabOpen}
         onLogSaved={async () => {
           if (!dog) return;
-          const logs = await base44.entities.DailyLog.filter({ dog_id: dog.id });
+          const logs = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 30);
           setDailyLogs(logs || []);
         }}
       />

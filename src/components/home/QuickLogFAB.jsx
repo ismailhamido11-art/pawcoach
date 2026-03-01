@@ -191,7 +191,7 @@ export default function QuickLogFAB({ dog, user, open: controlledOpen, onOpenCha
         whileTap={{ scale: 0.9 }}
         animate={{ scale: open ? 0 : 1, opacity: open ? 0 : 1 }}
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
-        className="fixed bottom-24 right-5 z-40 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center"
+        className="fixed bottom-24 right-5 z-[45] w-14 h-14 rounded-full shadow-2xl flex items-center justify-center"
         style={{ background: "linear-gradient(135deg, #0f4c3a, #2d9f82)" }}
       >
         <Plus className="w-6 h-6 text-white" strokeWidth={2.5} />

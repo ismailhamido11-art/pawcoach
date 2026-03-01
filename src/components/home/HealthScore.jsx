@@ -62,7 +62,16 @@ function calcScore(data) {
   const vaccines = records.filter(r => r.type === "vaccine");
   const weights = records.filter(r => r.type === "weight");
   const vetVisits = records.filter(r => r.type === "vet_visit");
-  const lastWeight = weights.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
+  // Merge weight sources: HealthRecord (type=weight) + DailyLog (weight_kg)
+  const dailyLogWeights = (data.dailyLogs || [])
+    .filter(l => l.weight_kg && l.date)
+    .map(l => ({ date: l.date }));
+  const allWeightEntries = [
+    ...weights.map(r => ({ date: r.date })),
+    ...dailyLogWeights,
+  ].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const lastWeight = allWeightEntries[0];
   const daysSinceWeight = lastWeight ? daysBetween(lastWeight.date) : 9999;
   const lastVaccine = vaccines.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
   const lastVet = vetVisits.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
@@ -79,7 +88,7 @@ function calcScore(data) {
     label: "Suivi médical",
     score: carnetScore,
     max: 20,
-    detail: `${vaccines.length} vaccin${vaccines.length > 1 ? "s" : ""} · ${weights.length} pesée${weights.length > 1 ? "s" : ""} · ${vetVisits.length} visite${vetVisits.length > 1 ? "s" : ""}`,
+    detail: `${vaccines.length} vaccin${vaccines.length > 1 ? "s" : ""} · ${allWeightEntries.length} pesée${allWeightEntries.length > 1 ? "s" : ""} · ${vetVisits.length} visite${vetVisits.length > 1 ? "s" : ""}`,
     status: carnetScore >= 16 ? "great" : carnetScore >= 8 ? "ok" : "low",
     tip: vaccines.length === 0 ? "Ajoutez les vaccins dans le Carnet" : daysSinceWeight > 30 ? "Mettez le poids à jour" : null,
   });
@@ -218,15 +227,15 @@ function PillarRow({ pillar, delay }) {
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-export default function HealthScore({ dog, streak, checkins, records, exercises, scans }) {
+export default function HealthScore({ dog, streak, checkins, records, exercises, scans, dailyLogs }) {
   const [showDetail, setShowDetail] = useState(false);
   const [scoreData, setScoreData] = useState(null);
 
   useEffect(() => {
     if (!dog) return;
-    const data = { dog, streak, checkins: checkins || [], records: records || [], exercises: exercises || [], scans: scans || [] };
+    const data = { dog, streak, checkins: checkins || [], records: records || [], exercises: exercises || [], scans: scans || [], dailyLogs: dailyLogs || [] };
     setScoreData(calcScore(data));
-  }, [dog, streak, checkins, records, exercises, scans]);
+  }, [dog, streak, checkins, records, exercises, scans, dailyLogs]);
 
   if (!scoreData) return null;
 
