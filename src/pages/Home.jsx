@@ -11,9 +11,7 @@ import StreakCard from "../components/home/StreakCard";
 import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
 import JournalLog from "../components/home/JournalLog";
 import QuickActions from "../components/home/QuickActions";
-import DailySnapshot from "../components/home/DailySnapshot";
-import QuickLogModal from "../components/home/QuickLogModal";
-import { Heart, PartyPopper, Flame, Plus } from "lucide-react";
+import { Heart, PartyPopper, Flame } from "lucide-react";
 import { DogTrophy } from "../components/ui/PawIllustrations";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
@@ -54,9 +52,7 @@ export default function Home() {
   const [insightExpanded, setInsightExpanded] = useState(false);
   const [markingRead, setMarkingRead] = useState(false);
 
-  const [dailyLogs, setDailyLogs] = useState([]);
   const [milestone, setMilestone] = useState(null);
-  const [showQuickLog, setShowQuickLog] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -68,7 +64,7 @@ export default function Home() {
           const d = dogs[0];
           setDog(d);
           const today = getTodayString();
-          const [checkins, streaks, recent, insights, recs, exs, scs, logs] = await Promise.all([
+          const [checkins, streaks, recent, insights, recs, exs, scs] = await Promise.all([
             base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
             base44.entities.Streak.filter({ dog_id: d.id }),
             base44.entities.DailyCheckin.filter({ dog_id: d.id }),
@@ -76,12 +72,10 @@ export default function Home() {
             base44.entities.HealthRecord.filter({ dog_id: d.id }),
             base44.entities.UserProgress.filter({ dog_id: d.id }),
             base44.entities.FoodScan.filter({ dog_id: d.id }),
-            base44.entities.DailyLog.filter({ dog_id: d.id }),
           ]);
           setRecords(recs || []);
           setExercises(exs || []);
           setScans(scs || []);
-          setDailyLogs(logs || []);
           if (checkins?.length > 0) setTodayCheckin(checkins[0]);
           if (streaks?.length > 0) setStreak(streaks[0]);
           const sorted = (recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7);
@@ -201,44 +195,12 @@ export default function Home() {
           markingRead={markingRead}
         />
 
-        {/* Snapshot du jour */}
-        <DailySnapshot
-          todayCheckin={todayCheckin}
-          records={records}
-          exercises={exercises}
-          dog={dog}
-          dailyLogs={dailyLogs}
-        />
-
         {/* Journal */}
         <JournalLog checkins={recentCheckins} todayCheckin={todayCheckin} />
 
         {/* Accès rapide */}
         <QuickActions />
       </div>
-
-      {/* FAB Quick Log */}
-      <motion.button
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
-        whileTap={{ scale: 0.92 }}
-        onClick={() => setShowQuickLog(true)}
-        className="fixed bottom-24 right-5 z-40 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center"
-        style={{ background: "linear-gradient(135deg, #0f4c3a, #2d9f82)" }}
-      >
-        <Plus className="w-7 h-7 text-white stroke-[2.5]" />
-      </motion.button>
-
-      {/* Quick Log Modal */}
-      {showQuickLog && (
-        <QuickLogModal
-          dog={dog}
-          user={user}
-          onClose={() => setShowQuickLog(false)}
-          onSaved={() => {}}
-        />
-      )}
 
       {/* MILESTONE */}
       <AnimatePresence>

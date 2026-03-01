@@ -91,8 +91,6 @@ export default function Dashboard() {
   const [progress, setProgress] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [dailyLogs, setDailyLogs] = useState([]);
-
   useEffect(() => {
     (async () => {
       const u = await base44.auth.me();
@@ -102,47 +100,31 @@ export default function Dashboard() {
       const d = dogs[0];
       setDog(d);
 
-      const [recs, cks, stk, prog, logs] = await Promise.all([
+      const [recs, cks, stk, prog] = await Promise.all([
         base44.entities.HealthRecord.filter({ dog_id: d.id }),
         base44.entities.DailyCheckin.filter({ dog_id: d.id }),
         base44.entities.Streak.filter({ dog_id: d.id }),
         base44.entities.UserProgress.filter({ dog_id: d.id }),
-        base44.entities.DailyLog.filter({ dog_id: d.id }),
       ]);
       setRecords(recs);
       setCheckins(cks.sort((a, b) => a.date > b.date ? 1 : -1));
       setStreak(stk[0] || null);
       setProgress(prog);
-      setDailyLogs(logs.sort((a, b) => a.date > b.date ? 1 : -1));
       setLoading(false);
     })();
   }, []);
 
   // --- Computed data ---
 
-  // Weight chart: merge HealthRecord weights + DailyLog weights
-  const weightFromRecords = records
+  // Weight chart (last 10 entries)
+  const weightData = records
     .filter(r => r.type === "weight" && r.value)
-    .map(r => ({ date: r.date, poids: r.value }));
-  const weightFromLogs = dailyLogs
-    .filter(l => l.weight)
-    .map(l => ({ date: l.date, poids: l.weight }));
-  const weightData = [...weightFromRecords, ...weightFromLogs]
     .sort((a, b) => a.date > b.date ? 1 : -1)
-    .reduce((acc, cur) => {
-      // deduplicate by date, prefer latest
-      const idx = acc.findIndex(x => x.date === cur.date);
-      if (idx >= 0) { acc[idx] = { date: cur.date.slice(5), poids: cur.poids }; }
-      else { acc.push({ date: cur.date.slice(5), poids: cur.poids }); }
-      return acc;
-    }, [])
-    .slice(-12);
-
-  // Walk chart (last 14 DailyLogs)
-  const walkData = dailyLogs
-    .filter(l => l.walk_minutes)
-    .slice(-14)
-    .map(l => ({ date: l.date.slice(5), minutes: l.walk_minutes }));
+    .slice(-10)
+    .map(r => ({
+      date: r.date ? r.date.slice(5) : "",
+      poids: r.value,
+    }));
 
   const weightTrend = weightData.length >= 2
     ? weightData[weightData.length - 1].poids - weightData[weightData.length - 2].poids
@@ -188,15 +170,12 @@ export default function Dashboard() {
   }
 
   // Health score (0-100)
-  const recentLogs = dailyLogs.filter(l => l.date >= new Date(Date.now() - 7 * 864e5).toISOString().split("T")[0]);
   let score = 40;
   if (vaccines.length > 0 && overdueVaccines.length === 0) score += 20;
-  if (checkins.length >= 3) score += 10;
-  if (weightData.length >= 2) score += 8;
-  if (streak?.current_streak >= 3) score += 8;
-  if (progress.length >= 2) score += 4;
-  if (recentLogs.length >= 3) score += 5; // bonus daily tracking
-  if (recentLogs.some(l => l.walk_minutes >= 20)) score += 5; // bonus activity
+  if (checkins.length >= 3) score += 15;
+  if (weightData.length >= 2) score += 10;
+  if (streak?.current_streak >= 3) score += 10;
+  if (progress.length >= 2) score += 5;
   score = Math.min(100, score);
 
   const scoreColor = score >= 80 ? "#10b981" : score >= 60 ? "#f59e0b" : "#ef4444";
@@ -302,12 +281,6 @@ export default function Dashboard() {
             value={progress.length}
             sub="tours maîtrisés"
           />
-          <StatCard
-            icon={Activity} color="#10b981"
-            label="Balades (7j)"
-            value={recentLogs.filter(l => l.walk_minutes).reduce((s, l) => s + l.walk_minutes, 0) || 0}
-            sub="minutes de marche"
-          />
         </div>
 
         {/* Weight chart */}
@@ -339,36 +312,6 @@ export default function Dashboard() {
                 <Tooltip content={<CustomTooltip />} />
                 <Area type="monotone" dataKey="poids" name="Poids" stroke="#2d9f82" strokeWidth={2.5} fill="url(#weightGrad)" unit=" kg" dot={{ r: 3, fill: "#2d9f82" }} />
               </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-
-        {/* Walk chart */}
-        {walkData.length >= 2 && (
-          <div className="bg-white rounded-2xl p-4 shadow-sm border border-border/40">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <p className="font-bold text-foreground text-sm">Balades quotidiennes</p>
-                <p className="text-xs text-muted-foreground">{walkData.length} jours enregistrés</p>
-              </div>
-              <div className="px-2 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-semibold">
-                {Math.round(walkData.reduce((s, d) => s + d.minutes, 0) / walkData.length)} min / jour
-              </div>
-            </div>
-            <ResponsiveContainer width="100%" height={130}>
-              <BarChart data={walkData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
-                <defs>
-                  <linearGradient id="walkGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.9} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0.5} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                <XAxis dataKey="date" tick={{ fontSize: 8 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 9 }} tickLine={false} axisLine={false} unit="m" />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="minutes" name="Balade" fill="url(#walkGrad)" radius={[5, 5, 0, 0]} maxBarSize={24} unit=" min" />
-              </BarChart>
             </ResponsiveContainer>
           </div>
         )}
