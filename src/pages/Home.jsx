@@ -56,6 +56,7 @@ export default function Home() {
   const [markingRead, setMarkingRead] = useState(false);
 
   const [milestone, setMilestone] = useState(null);
+  const [fabOpen, setFabOpen] = useState(false);
 
   useEffect(() => {
     async function loadData() {
