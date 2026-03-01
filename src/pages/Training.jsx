@@ -175,20 +175,28 @@ export default function Training() {
 
   // celebration is shown as overlay (handled below)
 
-  // Exercise detail screen (wrapped so celebration can overlay)
   if (selected) {
     const exercise = EXERCISES.find(e => e.order_number === selected);
     const locked = exercise.is_premium && !isPremium;
     return (
-      <ExerciseDetail
-        exercise={exercise}
-        isCompleted={isCompleted(exercise.order_number)}
-        isPremiumLocked={locked}
-        dogName={dog?.name}
-        onBack={() => setSelected(null)}
-        onComplete={() => handleComplete(exercise)}
-        onHelp={() => handleHelp(exercise)}
-      />
+      <>
+        <ExerciseDetail
+          exercise={exercise}
+          isCompleted={isCompleted(exercise.order_number)}
+          isPremiumLocked={locked}
+          dogName={dog?.name}
+          onBack={() => setSelected(null)}
+          onComplete={() => handleComplete(exercise)}
+          onHelp={() => handleHelp(exercise)}
+        />
+        {celebration && (
+          <CelebrationScreen
+            dogName={dog?.name || "Ton chien"}
+            exerciseName={celebration}
+            onContinue={() => { setCelebration(null); setSelected(null); }}
+          />
+        )}
+      </>
     );
   }
 
