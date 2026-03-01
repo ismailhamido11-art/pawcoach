@@ -329,6 +329,28 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Walk chart */}
+        {walkData.length >= 2 && (
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-border/40">
+            <div className="flex items-center gap-2 mb-4">
+              <Footprints className="w-4 h-4 text-emerald-500" />
+              <div>
+                <p className="font-bold text-foreground text-sm">Balades quotidiennes</p>
+                <p className="text-xs text-muted-foreground">{walkData.length} jours enregistrés</p>
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={130}>
+              <BarChart data={walkData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 9 }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 9 }} tickLine={false} axisLine={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="min" name="Minutes" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={20} unit=" min" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
         {/* Mood/energy chart */}
         {checkinChart.length >= 3 && (
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-border/40">
