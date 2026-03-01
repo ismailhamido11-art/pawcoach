@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Minus, Dumbbell, Syringe, Scale, Smile } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Dumbbell, Syringe, Scale, Smile, Footprints } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
@@ -197,16 +197,16 @@ function VaccineCard({ records }) {
 const stagger = { show: { transition: { staggerChildren: 0.07 } } };
 const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120 } } };
 
-export default function DailySnapshot({ records, exercises, checkins }) {
+export default function DailySnapshot({ records, exercises, checkins, dailyLogs }) {
   return (
     <div className="mx-5">
       <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3 px-1">
         Snapshot du jour
       </p>
       <motion.div className="grid grid-cols-2 gap-3" variants={stagger} initial="hidden" animate="show">
-        <motion.div variants={item}><WeightCard records={records} /></motion.div>
+        <motion.div variants={item}><WeightCard records={records} dailyLogs={dailyLogs} /></motion.div>
+        <motion.div variants={item}><WalkCard dailyLogs={dailyLogs} /></motion.div>
         <motion.div variants={item}><MoodCard checkins={checkins} /></motion.div>
-        <motion.div variants={item}><TrainingCard exercises={exercises} /></motion.div>
         <motion.div variants={item}><VaccineCard records={records} /></motion.div>
       </motion.div>
     </div>
