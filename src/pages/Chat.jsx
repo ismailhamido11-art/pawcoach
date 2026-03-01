@@ -42,17 +42,22 @@ export default function Chat() {
   const helpSent = useRef(false);
 
   const handleBookmark = async (msg) => {
-    if (!dog || !user) return;
+    if (!dog || !user || bookmarked[msg.timestamp]) return;
     const title = msg.content.replace(/[#*_`]/g, "").split("\n")[0].slice(0, 60);
-    await base44.entities.Bookmark.create({
-      dog_id: dog.id,
-      owner: user.email,
-      content: msg.content,
-      source: "chat",
-      title,
-      created_at: new Date().toISOString(),
-    });
-    setBookmarked(prev => ({ ...prev, [msg.timestamp]: true }));
+    try {
+      await base44.entities.Bookmark.create({
+        dog_id: dog.id,
+        owner: user.email,
+        content: msg.content,
+        source: "chat",
+        title,
+        created_at: new Date().toISOString(),
+      });
+      setBookmarked(prev => ({ ...prev, [msg.timestamp]: true }));
+      toast.success("Sauvegardé !", { description: "Conseil ajouté à ta bibliothèque" });
+    } catch {
+      toast.error("Erreur", { description: "Impossible de sauvegarder", variant: "destructive" });
+    }
   };
 
   useEffect(() => { initChat(); }, []);
