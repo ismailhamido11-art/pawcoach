@@ -254,15 +254,25 @@ export default function Training() {
       {/* Journey cards */}
       <div className="px-4 pt-5 space-y-3">
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1 mb-1">Mes parcours</p>
-        {JOURNEYS.map((journey) => (
-          <JourneyCard
-            key={journey.id}
-            journey={journey}
-            completedCount={getJourneyCompleted(journey)}
-            isPremium={isPremium}
-            onClick={() => setSelectedJourney(journey.id)}
-          />
-        ))}
+        {JOURNEYS.map((journey, idx) => {
+          const locked = journey.isPremium && !isPremium;
+          const done = getJourneyCompleted(journey);
+          const total = journey.exerciseOrders.length;
+          const isNext = !locked && done < total && JOURNEYS.slice(0, idx).every(j => {
+            const d = getJourneyCompleted(j);
+            return d === j.exerciseOrders.length || j.isPremium;
+          });
+          return (
+            <JourneyCard
+              key={journey.id}
+              journey={journey}
+              completedCount={done}
+              isPremium={isPremium}
+              isNext={isNext}
+              onClick={() => locked ? navigate(createPageUrl("Premium")) : setSelectedJourney(journey.id)}
+            />
+          );
+        })}
       </div>
 
       <BottomNav currentPage="Training" />
