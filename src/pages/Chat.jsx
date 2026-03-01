@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Camera } from "lucide-react";
+import { Send, Camera, Bookmark, BookmarkCheck } from "lucide-react";
 import { DogChat } from "../components/ui/PawIllustrations";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
