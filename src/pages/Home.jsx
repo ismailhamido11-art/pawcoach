@@ -238,7 +238,17 @@ export default function Home() {
         {milestone && <MilestoneCelebration milestone={milestone} onClose={() => setMilestone(null)} />}
       </AnimatePresence>
 
-      <QuickLogFAB dog={dog} user={user} open={fabOpen} onOpenChange={setFabOpen} />
+      <QuickLogFAB
+        dog={dog}
+        user={user}
+        open={fabOpen}
+        onOpenChange={setFabOpen}
+        onLogSaved={async () => {
+          if (!dog) return;
+          const logs = await base44.entities.DailyLog.filter({ dog_id: dog.id });
+          setDailyLogs(logs || []);
+        }}
+      />
       <BottomNav currentPage="Home" />
 
       {/* Post-onboarding premium nudge */}
