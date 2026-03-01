@@ -49,6 +49,7 @@ export default function Home() {
   const [records, setRecords] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [scans, setScans] = useState([]);
+  const [dailyLogs, setDailyLogs] = useState([]);
 
   const [weeklyInsight, setWeeklyInsight] = useState(null);
   const [insightExpanded, setInsightExpanded] = useState(false);

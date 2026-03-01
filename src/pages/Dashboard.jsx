@@ -89,6 +89,7 @@ export default function Dashboard() {
   const [checkins, setCheckins] = useState([]);
   const [streak, setStreak] = useState(null);
   const [progress, setProgress] = useState([]);
+  const [dailyLogs, setDailyLogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
