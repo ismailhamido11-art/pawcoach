@@ -175,7 +175,7 @@ export default function Training() {
 
   // celebration is shown as overlay (handled below)
 
-  // Exercise detail screen
+  // Exercise detail screen (wrapped so celebration can overlay)
   if (selected) {
     const exercise = EXERCISES.find(e => e.order_number === selected);
     const locked = exercise.is_premium && !isPremium;
