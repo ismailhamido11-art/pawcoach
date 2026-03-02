@@ -44,7 +44,7 @@ function StatCard({ icon: Icon, color, label, value, sub, trend }) {
 
 function AlertCard({ type, title, desc, cta, to }) {
   const colors = {
-    warning: { bg: "bg-amber-50", border: "border-amber-200", icon: AlertTriangle, color: "#f59e0b" },
+    warning: { bg: "bg-caution/5", border: "border-caution/20", icon: AlertTriangle, color: "hsl(38,92%,55%)" },
     ok:      { bg: "bg-emerald-50", border: "border-emerald-200", icon: CheckCircle, color: "#10b981" },
     info:    { bg: "bg-blue-50", border: "border-blue-200", icon: Sparkles, color: "#3b82f6" },
   };
@@ -258,7 +258,7 @@ export default function Dashboard() {
                 <p className="text-white/70 text-xs">Score de santé global de {dog.name}</p>
                 {streak?.current_streak > 0 && (
                   <div className="flex items-center gap-1 mt-1">
-                    <Flame className="w-3.5 h-3.5 text-amber-300" />
+                    <Flame className="w-3.5 h-3.5 text-emerald-300" />
                     <span className="text-white/90 text-xs font-semibold">{streak.current_streak} jours de streak</span>
                   </div>
                 )}
@@ -288,7 +288,7 @@ export default function Dashboard() {
             sub="jours enregistrés"
           />
           <StatCard
-            icon={Star} color="#f59e0b"
+            icon={Star} color="#2d9f82"
             label="Humeur moy. (7j)"
             value={avgMood ? `${avgMood}/4` : "—"}
             sub="basé sur les check-ins"
@@ -310,7 +310,7 @@ export default function Dashboard() {
                 <p className="text-xs text-muted-foreground">{weightData.length} mesures</p>
               </div>
               <div className={`flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${
-                weightTrend > 0.5 ? "bg-amber-50 text-amber-600" : weightTrend < -0.5 ? "bg-blue-50 text-blue-600" : "bg-emerald-50 text-emerald-600"
+                weightTrend > 0.5 ? "bg-primary/10 text-primary" : weightTrend < -0.5 ? "bg-blue-50 text-blue-600" : "bg-emerald-50 text-emerald-600"
               }`}>
                 {weightTrend > 0 ? <TrendingUp className="w-3 h-3" /> : weightTrend < 0 ? <TrendingDown className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
                 {weightTrend > 0 ? "+" : ""}{weightTrend.toFixed(1)} kg
@@ -366,7 +366,7 @@ export default function Dashboard() {
               </div>
               <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-primary inline-block" />Humeur</span>
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />Énergie</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-teal-400 inline-block" />Énergie</span>
               </div>
             </div>
             <ResponsiveContainer width="100%" height={140}>
@@ -376,7 +376,7 @@ export default function Dashboard() {
                 <YAxis tick={{ fontSize: 9 }} tickLine={false} axisLine={false} domain={[0, 4]} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="humeur" name="Humeur" fill="#2d9f82" radius={[4, 4, 0, 0]} maxBarSize={16} />
-                <Bar dataKey="energie" name="Énergie" fill="#f59e0b" radius={[4, 4, 0, 0]} maxBarSize={16} />
+                <Bar dataKey="energie" name="Énergie" fill="#2dd4bf" radius={[4, 4, 0, 0]} maxBarSize={16} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -385,7 +385,7 @@ export default function Dashboard() {
         {/* Alerts */}
         <div>
           <p className="font-bold text-foreground text-sm mb-3 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-amber-500" />
+            <AlertTriangle className="w-4 h-4 text-caution" />
             Alertes de santé
           </p>
           <div className="space-y-2.5">
