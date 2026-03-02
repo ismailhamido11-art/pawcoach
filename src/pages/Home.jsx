@@ -168,7 +168,7 @@ export default function Home() {
       <WellnessBanner />
 
       {/* HERO */}
-      <div className="pt-6">
+      <div className="pt-7">
         <HeroHeader
           user={user}
           dog={dog}

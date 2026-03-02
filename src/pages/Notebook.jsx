@@ -200,7 +200,7 @@ export default function Notebook() {
       <WellnessBanner />
 
       {/* Compact Header */}
-      <div className="gradient-primary pt-8 pb-0 px-5 relative overflow-hidden">
+      <div className="gradient-primary pt-14 pb-0 px-5 relative overflow-hidden">
         <div className="relative z-10 flex items-end justify-between">
           <div className="pb-5">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>

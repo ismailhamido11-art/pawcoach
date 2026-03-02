@@ -249,7 +249,7 @@ export default function Chat() {
         <p className="text-xs text-accent-foreground font-medium">🐾 PawCoach est un coach bien-être, pas un vétérinaire.</p>
       </div>
 
-      <div className="gradient-primary pt-10 pb-0 px-5 mt-7 overflow-hidden">
+      <div className="gradient-primary pt-10 pb-0 px-5 mt-8 overflow-hidden">
         <div className="flex items-end gap-3">
           <div className="flex-1 pb-4">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>

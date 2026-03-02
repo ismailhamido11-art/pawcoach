@@ -256,7 +256,7 @@ export default function Scan() {
       )}
 
       {/* Header */}
-      <div className={`gradient-primary pb-0 px-5 ${result?.verdict === "toxic" && dogAteIt ? "pt-24" : "pt-12"} overflow-hidden relative`}>
+      <div className={`gradient-primary pb-0 px-5 ${result?.verdict === "toxic" && dogAteIt ? "pt-24" : "pt-14"} overflow-hidden relative`}>
         <div className="flex items-start justify-between">
           <div className="pb-6">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-3">PawCoach</p>
