@@ -434,7 +434,7 @@ export default function Chat() {
               <Button
                 onClick={() => sendMessage()}
                 disabled={(!input.trim() && !pendingImage) || loading}
-                className="h-11 w-11 rounded-xl gradient-primary border-0 shadow-lg shadow-primary/30 p-0"
+                className="h-11 w-11 rounded-xl gradient-primary border-0 shadow-lg shadow-primary/30 p-0 flex-shrink-0 self-end"
               >
                 <Send className="w-4 h-4 text-white" />
               </Button>
