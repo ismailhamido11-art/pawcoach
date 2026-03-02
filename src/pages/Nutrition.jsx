@@ -51,6 +51,12 @@ export default function Nutrition() {
 
   useEffect(() => { init(); }, []);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+  useEffect(() => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    ta.style.height = "auto";
+    ta.style.height = Math.min(ta.scrollHeight, 120) + "px";
+  }, [input]);
 
   const getTodayString = () => new Date().toISOString().split("T")[0];
 
