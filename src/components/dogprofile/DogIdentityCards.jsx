@@ -1,5 +1,5 @@
 import { Weight, Activity, Home, TrendingUp, TrendingDown, Minus } from "lucide-react";
-import InlineEditCard from "./InlineEditCard";
+import InlineEditCard from "./InlineEditCard.jsx";
 
 const ACTIVITY_LABELS = {
   faible: "Faible", modere: "Modéré", eleve: "Élevé", tres_eleve: "Très élevé"

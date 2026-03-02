@@ -10,13 +10,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BottomNav from "../components/BottomNav";
-import DogProfileHero from "../components/dogprofile/DogProfileHero";
-import DogIdentityCards from "../components/dogprofile/DogIdentityCards";
-import DogHealthSection from "../components/dogprofile/DogHealthSection";
-import DogDietSection from "../components/dogprofile/DogDietSection";
-import DogPersonalitySection from "../components/dogprofile/DogPersonalitySection";
-import DogTrophiesRow from "../components/dogprofile/DogTrophiesRow";
-import DogEditModal from "../components/dogprofile/DogEditModal";
+import DogProfileHero from "../components/dogprofile/DogProfileHero.jsx";
+import DogIdentityCards from "../components/dogprofile/DogIdentityCards.jsx";
+import DogHealthSection from "../components/dogprofile/DogHealthSection.jsx";
+import DogDietSection from "../components/dogprofile/DogDietSection.jsx";
+import DogPersonalitySection from "../components/dogprofile/DogPersonalitySection.jsx";
+import DogTrophiesRow from "../components/dogprofile/DogTrophiesRow.jsx";
+import DogEditModal from "../components/dogprofile/DogEditModal.jsx";
 
 export default function DogProfile() {
   const navigate = useNavigate();
