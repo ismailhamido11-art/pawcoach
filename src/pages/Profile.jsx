@@ -129,7 +129,11 @@ export default function Profile() {
           </div>
 
           {dogs.map((dog, i) => (
-            <div key={dog.id} className={`flex items-center gap-3 px-4 py-3 ${i < dogs.length - 1 ? "border-b border-border" : ""}`}>
+            <button
+              key={dog.id}
+              onClick={() => navigate(createPageUrl("DogProfile") + `?dogId=${dog.id}`)}
+              className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/20 transition-all ${i < dogs.length - 1 ? "border-b border-border" : ""}`}
+            >
               {dog.photo ? (
                 <img src={dog.photo} alt={dog.name} className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
               ) : (
@@ -139,7 +143,8 @@ export default function Profile() {
                 <p className="font-semibold text-sm text-foreground">{dog.name}</p>
                 <p className="text-xs text-muted-foreground">{dog.breed}</p>
               </div>
-            </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+            </button>
           ))}
 
           {canAddDog ? (
