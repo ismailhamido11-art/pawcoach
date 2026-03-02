@@ -24,10 +24,10 @@ const FEATURES = [
 
 const PREMIUM_FEATURES = [
   { text: "Chat IA illimité", icon: MessageCircle, color: "#3b82f6" },
-  { text: "Scans illimités", icon: Search, color: "#f59e0b" },
+  { text: "Scans illimités", icon: Search, color: "#2d9f82" },
   { text: "10 exercices dressage", icon: Target, color: "#6366f1" },
   { text: "Carnet santé complet", icon: ClipboardList, color: "#ef4444" },
-  { text: "Rappels santé email", icon: Bell, color: "#f59e0b" },
+  { text: "Rappels santé email", icon: Bell, color: "#14b8a6" },
   { text: "Résumés mensuels", icon: BarChart3, color: "#10b981" },
   { text: "Jusqu'à 3 chiens", icon: DogIcon, color: "#ec4899" },
 ];
@@ -63,7 +63,7 @@ export default function Premium() {
         particleCount: 100,
         spread: 70,
         origin: { x: 0.5, y: 1 },
-        colors: ["#f59e0b", "#3db87a", "#ffffff"],
+        colors: ["#2d9f82", "#3db87a", "#ffffff"],
       });
     }
   }, [user]);
@@ -103,10 +103,10 @@ export default function Premium() {
               <img
                 src={dog.photo}
                 alt={dog.name}
-                className="w-24 h-24 rounded-full object-cover border-4 border-amber-400 shadow-lg mx-auto"
+                className="w-24 h-24 rounded-full object-cover border-4 border-white/40 shadow-md mx-auto"
               />
             ) : (
-              <div className="w-24 h-24 rounded-full bg-white/20 border-4 border-amber-400 flex items-center justify-center mx-auto shadow-lg">
+              <div className="w-24 h-24 rounded-full bg-white/20 border-4 border-white/40 flex items-center justify-center mx-auto shadow-md">
                 <Crown className="w-10 h-10 text-white" />
               </div>
             )}
@@ -256,7 +256,7 @@ export default function Premium() {
               plan === "annual" ? "gradient-primary text-white shadow" : "text-muted-foreground"
             }`}
           >
-            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-amber-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
+            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
               -37% 🔥
             </span>
             Annuel<br />
