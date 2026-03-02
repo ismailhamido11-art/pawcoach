@@ -64,6 +64,12 @@ export default function Chat() {
 
   useEffect(() => { initChat(); }, []);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+  useEffect(() => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    ta.style.height = "auto";
+    ta.style.height = Math.min(ta.scrollHeight, 120) + "px";
+  }, [input]);
 
   useEffect(() => {
     if (!initializing && dog && !helpSent.current) {
