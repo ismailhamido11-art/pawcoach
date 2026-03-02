@@ -354,7 +354,7 @@ export default function Nutrition() {
                   <Button
                     onClick={() => sendMessage()}
                     disabled={!input.trim() || loading}
-                    className="h-11 w-11 rounded-xl bg-safe hover:bg-safe/90 border-0 shadow-lg p-0"
+                    className="h-11 w-11 rounded-xl bg-safe hover:bg-safe/90 border-0 shadow-lg p-0 flex-shrink-0 self-end"
                   >
                     <Send className="w-4 h-4 text-white" />
                   </Button>
