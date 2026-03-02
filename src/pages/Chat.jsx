@@ -41,6 +41,7 @@ export default function Chat() {
 
   const [bookmarked, setBookmarked] = useState({});
   const helpSent = useRef(false);
+  const textareaRef = useRef(null);
 
   const handleBookmark = async (msg) => {
     if (!dog || !user || bookmarked[msg.timestamp]) return;
