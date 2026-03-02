@@ -50,13 +50,13 @@ function buildRecommendations({ records, exercises, scans, checkins, dailyLogs, 
         id: "vaccine_soon",
         priority: 2,
         icon: Syringe,
-        iconBg: "bg-amber-50",
-        iconColor: "#f59e0b",
+        iconBg: "bg-primary/10",
+        iconColor: "#2d9f82",
         label: "Vaccin à prévoir bientôt",
         sub: `${soonVaccine.title} — le ${soonVaccine.next_date}`,
         page: "Notebook",
         cta: "Voir le carnet",
-        accent: "border-l-amber-400",
+        accent: "border-l-primary",
       });
     }
   }

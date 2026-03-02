@@ -5,7 +5,7 @@ import { Crown, MessageCircle, ScanLine, Dumbbell, Bell, X, ChevronRight, Star }
 
 const FEATURES = [
   { icon: MessageCircle, label: "Chat IA illimité avec PawCoach", color: "#3b82f6" },
-  { icon: ScanLine, label: "Scans alimentaires illimités", color: "#f59e0b" },
+  { icon: ScanLine, label: "Scans alimentaires illimités", color: "#2d9f82" },
   { icon: Dumbbell, label: "Tous les exercices de dressage", color: "#6366f1" },
   { icon: Bell, label: "Rappels santé & résumés mensuels", color: "#ef4444" },
 ];
@@ -53,7 +53,7 @@ export default function PremiumNudgeSheet({ visible, onClose, dogName, context =
               {/* Social proof */}
               <div className="flex items-center justify-center gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <Star key={i} className="w-4 h-4 fill-primary text-primary" />
                 ))}
                 <span className="text-xs text-muted-foreground ml-1.5 font-medium">4,9 · +2 000 familles</span>
               </div>
