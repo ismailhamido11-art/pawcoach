@@ -36,7 +36,7 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
           <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
             <p className="text-white/60 text-xs font-medium tracking-widest uppercase">PawCoach</p>
           </motion.div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {currentStreak > 0 && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -48,7 +48,7 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
                 <span className="text-white text-xs font-bold">{currentStreak}j</span>
               </motion.div>
             )}
-            {/* Health Score Ring */}
+            {/* Health Score Ring — séparé avec son espace */}
             <HealthScore
               dog={dog}
               streak={streak}
@@ -58,12 +58,14 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
               scans={scans}
               dailyLogs={dailyLogs}
             />
+            {/* Profil — bouton plus visible */}
             <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }}>
               <Link
                 to={createPageUrl("Profile")}
-                className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center"
+                className="flex items-center gap-1.5 bg-white/20 backdrop-blur-md border border-white/30 px-3 py-1.5 rounded-full hover:bg-white/30 transition-colors"
               >
-                <UserCircle className="w-5 h-5 text-white" />
+                <UserCircle className="w-4 h-4 text-white" />
+                <span className="text-white text-xs font-semibold">Profil</span>
               </Link>
             </motion.div>
           </div>
