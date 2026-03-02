@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Flame, UserCircle } from "lucide-react";
+import { Flame, UserCircle, ChevronRight } from "lucide-react";
 import HealthScore from "./HealthScore";
 import { DogWave } from "../ui/PawIllustrations";
 

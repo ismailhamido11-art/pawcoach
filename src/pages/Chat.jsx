@@ -10,6 +10,7 @@ import { DogChat } from "../components/ui/PawIllustrations";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
+import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
