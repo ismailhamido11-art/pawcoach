@@ -22,6 +22,38 @@ Deno.serve(async (req) => {
     if (!dog) return Response.json({ error: 'Dog not found' }, { status: 400 });
     if (dog.owner !== user.email) return Response.json({ error: 'Forbidden' }, { status: 403 });
 
+    // Build personalization context from user preferences
+    const toneInstructions = {
+      encouraging: "Adopte un ton chaleureux, encourageant et bienveillant. Félicite le propriétaire pour ses efforts, mets en valeur les progrès, et donne espoir même dans les situations difficiles.",
+      direct: "Adopte un ton direct, factuel et concis. Va à l'essentiel sans fioritures. Donne les informations importantes en premier, évite les formules de politesse inutiles.",
+      pedagogical: "Adopte un ton pédagogue. Explique le raisonnement derrière chaque conseil. Aide le propriétaire à comprendre le 'pourquoi' pour qu'il puisse appliquer les principes seuls.",
+    };
+    const toneInstruction = user.coach_tone ? (toneInstructions[user.coach_tone] || "") : "";
+
+    const topicLabels = { health: "santé", nutrition: "nutrition", training: "dressage", behavior: "comportement" };
+    let topicsInstruction = "";
+    try {
+      const topics = JSON.parse(user.coach_topics || "[]");
+      if (Array.isArray(topics) && topics.length > 0) {
+        topicsInstruction = `Le propriétaire s'intéresse particulièrement à : ${topics.map(t => topicLabels[t] || t).join(", ")}. Priorise ces sujets quand c'est pertinent.`;
+      }
+    } catch {}
+
+    // Dog personality & status context
+    let personalityContext = "";
+    try {
+      const tags = JSON.parse(dog.personality_tags || "[]");
+      if (Array.isArray(tags) && tags.length > 0) {
+        personalityContext = `Personnalité du chien : ${tags.join(", ")}.`;
+      }
+    } catch {}
+
+    const statusMessages = {
+      recovering: "⚠️ Ce chien est en convalescence. Évite les exercices intenses. Priorise le repos, l'alimentation douce et le suivi vétérinaire.",
+      traveling: "Ce chien est en déplacement/voyage. Tiens compte du stress potentiel, des changements de routine et des précautions sanitaires de voyage.",
+    };
+    const statusContext = dog.status && dog.status !== "healthy" ? (statusMessages[dog.status] || "") : "";
+
     // Build system prompt server-side
     const getAge = (birthDate) => {
       if (!birthDate) return null;
@@ -66,6 +98,8 @@ ${dog.neutered !== undefined ? `- Stérilisé : ${dog.neutered ? "Oui" : "Non"}`
 ${dog.activity_level ? `- Niveau d'activité : ${dog.activity_level}` : ""}
 ${dog.allergies ? `- Allergies : ${dog.allergies || "aucune"}` : "- Allergies : aucune"}
 ${dog.health_issues ? `- Problèmes de santé : ${dog.health_issues}` : "- Problèmes de santé : aucun"}
+${personalityContext ? `- ${personalityContext}` : ""}
+${statusContext ? `- Statut : ${statusContext}` : ""}
 ${scansContext}
 
 RÈGLES :
@@ -75,7 +109,9 @@ RÈGLES :
 4) Quand tu recommandes des marques, mentionne "Disponible sur Amazon/Zooplus".
 5) Personnalise avec le prénom du chien.
 6) Tutoiement, chaleureux, concis et structuré.
-7) Utilise des emojis alimentaires.`;
+7) Utilise des emojis alimentaires.
+${toneInstruction ? `\nTON : ${toneInstruction}` : ""}
+${topicsInstruction ? `\nPRIORITÉS : ${topicsInstruction}` : ""}`;
     } else {
       systemPrompt = `Tu es PawCoach, un assistant IA spécialisé dans le bien-être canin. Tu donnes des conseils personnalisés sur la nutrition, le comportement et le dressage.
 
@@ -91,6 +127,8 @@ ${dog.environment ? `- Environnement : ${dog.environment}` : ""}
 ${dog.allergies ? `- Allergies : ${dog.allergies}` : ""}
 ${dog.health_issues ? `- Problèmes de santé : ${dog.health_issues}` : ""}
 ${dog.vet_name ? `- Vétérinaire : ${dog.vet_name}${dog.vet_city ? ` (${dog.vet_city})` : ""}` : ""}
+${personalityContext ? `- ${personalityContext}` : ""}
+${statusContext ? `- Statut : ${statusContext}` : ""}
 
 RÈGLES :
 - Réponds en français, avec le tutoiement
@@ -98,7 +136,9 @@ RÈGLES :
 - Personnalise tes réponses en fonction du profil ci-dessus
 - Ne pose JAMAIS de diagnostic médical
 - En cas de symptôme inquiétant, recommande toujours de consulter un vétérinaire
-- Sois concis (2-3 paragraphes max)`;
+- Sois concis (2-3 paragraphes max)
+${toneInstruction ? `\nTON : ${toneInstruction}` : ""}
+${topicsInstruction ? `\nPRIORITÉS : ${topicsInstruction}` : ""}`;
     }
 
     const apiKey = Deno.env.get("OPENROUTER_API_KEY");

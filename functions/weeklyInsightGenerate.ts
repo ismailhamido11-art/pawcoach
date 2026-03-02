@@ -78,7 +78,23 @@ Deno.serve(async (req) => {
       let recommendations = "";
 
       if (apiKey) {
-        const systemPrompt = `Tu es PawCoach. Genere un bilan hebdomadaire pour ${dog.name} (${dog.breed}). Sois chaleureux, tutoie, 3-5 phrases max. Reponds en JSON avec: summary (bilan general), highlights (2-3 points cles), recommendations (2-3 conseils pour la semaine prochaine).`;
+        // Personalization context
+        const toneInstructions = {
+          encouraging: "Ton chaleureux et encourageant, félicite les efforts, mets en valeur les progrès.",
+          direct: "Ton direct et factuel, va à l'essentiel sans fioritures.",
+          pedagogical: "Ton pédagogue, explique le raisonnement derrière chaque observation et conseil.",
+        };
+        const toneInstruction = owner.coach_tone ? (toneInstructions[owner.coach_tone] || "") : "Sois chaleureux et bienveillant.";
+
+        let personalityNote = "";
+        try {
+          const tags = JSON.parse(dog.personality_tags || "[]");
+          if (Array.isArray(tags) && tags.length > 0) personalityNote = ` Ce chien est décrit comme : ${tags.join(", ")}.`;
+        } catch {}
+
+        const statusNote = dog.status === "recovering" ? " Il est en convalescence." : dog.status === "traveling" ? " Il était en voyage cette semaine." : "";
+
+        const systemPrompt = `Tu es PawCoach. Génère un bilan hebdomadaire pour ${dog.name} (${dog.breed}).${personalityNote}${statusNote} ${toneInstruction} Tutoie. 3-5 phrases max. Réponds en JSON avec: summary (bilan général), highlights (2-3 points clés), recommendations (2-3 conseils pour la semaine prochaine).`;
         const userMessage = `Bilan de la semaine du ${weekStart} au ${weekEnd} pour ${dog.name}: ${checkinCount} check-ins, humeur moyenne ${avgMood}/4, energie moyenne ${avgEnergy}/3, appetit moyen ${avgAppetite}/3, ${exercisesCompleted} exercices completes, ${scansDone} scans alimentaires.`;
 
         try {

@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { symptoms, duration, additional_info, image_url, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies } = await req.json();
+    const { symptoms, duration, additional_info, image_url, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies, personality_tags, dog_status } = await req.json();
 
     if (!symptoms) return Response.json({ error: 'Symptoms required' }, { status: 400 });
 
@@ -23,6 +23,8 @@ INFORMATIONS SUR LE CHIEN:
 - Âge approximatif: ${dog_age || 'Non renseigné'}
 - Problèmes de santé connus: ${health_issues || 'Aucun'}
 - Allergies connues: ${allergies || 'Aucune'}
+${(() => { try { const tags = JSON.parse(personality_tags || "[]"); return tags.length > 0 ? `- Personnalité : ${tags.join(", ")}` : ""; } catch { return ""; } })()}
+${dog_status && dog_status !== "healthy" ? `- Statut actuel : ${dog_status === "recovering" ? "En convalescence (tenir compte pour les recommandations)" : dog_status === "traveling" ? "En voyage/déplacement" : dog_status}` : ""}
 
 SYMPTÔMES DÉCRITS:
 ${symptoms}

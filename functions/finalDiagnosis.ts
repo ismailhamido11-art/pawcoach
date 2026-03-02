@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { symptoms, duration, additional_info, image_url, preliminary_observations, followup_questions, user_answers, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies } = await req.json();
+    const { symptoms, duration, additional_info, image_url, preliminary_observations, followup_questions, user_answers, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies, personality_tags, dog_status } = await req.json();
 
     if (!symptoms) return Response.json({ error: 'Symptoms required' }, { status: 400 });
 
@@ -33,6 +33,8 @@ INFORMATIONS SUR LE CHIEN:
 - Âge approximatif: ${dog_age || 'Non renseigné'}
 - Problèmes de santé connus: ${health_issues || 'Aucun'}
 - Allergies connues: ${allergies || 'Aucune'}
+${(() => { try { const tags = JSON.parse(personality_tags || "[]"); return tags.length > 0 ? `- Personnalité : ${tags.join(", ")} (ex: un chien anxieux peut avoir des symptômes liés au stress)` : ""; } catch { return ""; } })()}
+${dog_status && dog_status !== "healthy" ? `- Statut actuel : ${dog_status === "recovering" ? "En convalescence (adapter les recommandations en conséquence, pas d'exercice intense)" : dog_status === "traveling" ? "En voyage/déplacement (stress potentiel)" : dog_status}` : ""}
 
 SYMPTÔMES INITIAUX:
 ${symptoms}
