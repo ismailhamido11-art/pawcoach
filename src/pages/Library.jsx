@@ -56,7 +56,7 @@ export default function Library() {
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <div className="gradient-primary pt-12 pb-6 px-5">
+      <div className="gradient-primary pt-16 pb-6 px-5">
         <div className="flex items-center gap-3 mb-4">
           <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
             <ArrowLeft className="w-4 h-4 text-white" />
