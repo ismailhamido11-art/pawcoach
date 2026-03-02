@@ -420,12 +420,15 @@ export default function Chat() {
               >
                 <Camera className="w-5 h-5 text-secondary-foreground" />
               </motion.button>
-              <Input
+              <textarea
+                ref={textareaRef}
                 value={input}
                 onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && !e.shiftKey && sendMessage()}
+                onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())}
                 placeholder={dog ? `Question sur ${dog.name}...` : "Posez votre question..."}
-                className="flex-1 h-11 rounded-xl border-border bg-muted/30"
+                rows={1}
+                className="flex-1 min-h-[44px] max-h-[120px] rounded-xl border border-border bg-muted/30 px-3 py-2.5 text-sm resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-ring"
+                style={{ lineHeight: "1.5" }}
               />
               <VoiceInput onTranscript={(text) => setInput(text)} className="h-11 w-11 !rounded-xl border border-border" />
               <Button
