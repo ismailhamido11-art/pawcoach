@@ -404,7 +404,7 @@ export default function Chat() {
                 <button onClick={() => { if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview); setPendingImage(null); }} className="ml-auto text-xs text-destructive">Retirer</button>
               </div>
             )}
-            <div className="flex gap-2 px-5 py-3">
+            <div className="flex gap-2 px-5 py-3 items-end">
               <input
                 ref={fileInputRef}
                 type="file"
