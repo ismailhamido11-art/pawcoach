@@ -28,6 +28,7 @@ export default function Nutrition() {
   const [messagesRemaining, setMessagesRemaining] = useState(null);
   const [bookmarked, setBookmarked] = useState({});
   const bottomRef = useRef(null);
+  const textareaRef = useRef(null);
 
   const handleBookmark = async (msg) => {
     if (!dog || !user || bookmarked[msg.timestamp]) return;
@@ -237,7 +238,7 @@ export default function Nutrition() {
                   <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                 )}
                 <div className="flex flex-col gap-1 max-w-[82%]">
-                  <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                  <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
                     msg.role === "user" ? "chat-bubble-user text-white rounded-br-sm" : "chat-bubble-assistant text-foreground rounded-bl-sm"
                   }`}>
                     {msg.role === "assistant" ? (

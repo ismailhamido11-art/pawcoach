@@ -292,7 +292,7 @@ export default function Chat() {
               </div>
             )}
             <div className="flex flex-col gap-1 max-w-[82%]">
-              <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+              <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
                 msg.role === "user"
                   ? "chat-bubble-user text-white rounded-br-sm"
                   : "chat-bubble-assistant text-foreground rounded-bl-sm"
