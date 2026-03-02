@@ -153,7 +153,7 @@ function ScoreRing({ score, size = 88 }) {
 
   const color =
     score >= 80 ? "#22c55e" :
-    score >= 55 ? "#f59e0b" :
+    score >= 55 ? "#2d9f82" :
     "#ef4444";
 
   return (
@@ -187,7 +187,7 @@ function PillarRow({ pillar, delay }) {
   const pct = Math.round((pillar.score / pillar.max) * 100);
   const barColor =
     pillar.status === "great" ? "bg-green-400" :
-    pillar.status === "ok" ? "bg-amber-400" :
+    pillar.status === "ok" ? "bg-teal-400" :
     "bg-red-400";
 
   const StatusIcon =
@@ -195,7 +195,7 @@ function PillarRow({ pillar, delay }) {
     pillar.status === "ok" ? AlertCircle : Circle;
   const iconColor =
     pillar.status === "great" ? "text-green-500" :
-    pillar.status === "ok" ? "text-amber-500" : "text-red-400";
+    pillar.status === "ok" ? "text-teal-500" : "text-red-400";
 
   return (
     <motion.div
@@ -220,7 +220,7 @@ function PillarRow({ pillar, delay }) {
         />
       </div>
       {pillar.tip && (
-        <p className="text-[10px] text-amber-600 font-medium">↗ {pillar.tip}</p>
+        <p className="text-[10px] text-teal-600 font-medium">↗ {pillar.tip}</p>
       )}
     </motion.div>
   );
@@ -241,7 +241,7 @@ export default function HealthScore({ dog, streak, checkins, records, exercises,
 
   const { total, pillars } = scoreData;
   const label = total >= 80 ? "Excellent" : total >= 60 ? "Bien" : total >= 40 ? "À améliorer" : "Attention";
-  const labelColor = total >= 80 ? "text-green-300" : total >= 60 ? "text-amber-300" : "text-red-300";
+  const labelColor = total >= 80 ? "text-green-300" : total >= 60 ? "text-teal-300" : "text-red-300";
 
   const tips = pillars.filter(p => p.tip).slice(0, 2);
 

@@ -34,7 +34,7 @@ export default function PremiumValueBanner({ streak, checkins }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 mb-0.5">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-2.5 h-2.5 fill-amber-300 text-amber-300" />
+                <Star key={i} className="w-2.5 h-2.5 fill-white/70 text-white/70" />
               ))}
               <span className="text-white/60 text-[10px] font-medium ml-0.5">4,9</span>
             </div>

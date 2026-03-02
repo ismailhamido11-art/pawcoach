@@ -22,7 +22,7 @@ export default function WeeklyInsightCard({ insight, dog, expanded, onToggle, on
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4, type: "spring" }}
       className="mx-5 rounded-3xl overflow-hidden border border-primary/15 shadow-sm"
-      style={{ background: "linear-gradient(135deg, #f0fdf9, #fefce8)" }}
+      style={{ background: "linear-gradient(135deg, #f0fdf9, #ecfdf5)" }}
     >
       {/* Header */}
       <button onClick={onToggle} className="w-full flex items-center gap-3 p-4 text-left">
