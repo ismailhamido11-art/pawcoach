@@ -340,13 +340,16 @@ export default function Nutrition() {
                     </div>
                   </div>
                 )}
-                <div className="flex gap-2 px-5 py-3">
-                  <Input
+                <div className="flex gap-2 px-5 py-3 items-end">
+                  <textarea
+                    ref={textareaRef}
                     value={input}
                     onChange={e => setInput(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && !e.shiftKey && sendMessage()}
+                    onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())}
                     placeholder={dog ? `Question nutrition pour ${dog.name}...` : "Posez votre question..."}
-                    className="flex-1 h-11 rounded-xl border-border bg-muted/30"
+                    rows={1}
+                    className="flex-1 min-h-[44px] max-h-[120px] rounded-xl border border-border bg-muted/30 px-3 py-2.5 text-sm resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-ring"
+                    style={{ lineHeight: "1.5" }}
                   />
                   <Button
                     onClick={() => sendMessage()}
