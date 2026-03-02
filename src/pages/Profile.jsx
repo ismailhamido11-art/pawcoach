@@ -63,7 +63,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background pb-24">
-        <div className="gradient-primary pt-12 pb-8 px-5">
+        <div className="gradient-primary pt-16 pb-8 px-5">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-white/20 animate-pulse" />
             <div className="space-y-2 flex-1">

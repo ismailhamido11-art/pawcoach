@@ -170,7 +170,7 @@ export default function Nutrition() {
       <WellnessBanner />
 
       {/* Header */}
-      <div className="gradient-primary pt-10 pb-3 px-5 mt-7 overflow-hidden">
+      <div className="gradient-primary pt-10 pb-3 px-5 mt-8 overflow-hidden">
         <div className="flex items-start gap-3 mb-3">
           <div className="flex-1">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
