@@ -44,7 +44,7 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
                 transition={{ delay: 0.2, type: "spring" }}
                 className="flex items-center gap-1.5 bg-white/15 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full"
               >
-                <Flame className="w-3.5 h-3.5 text-orange-300" />
+                <Flame className="w-3.5 h-3.5 text-emerald-300" />
                 <span className="text-white text-xs font-bold">{currentStreak}j</span>
               </motion.div>
             )}
@@ -113,7 +113,7 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
                 <img src={dog.photo} alt={dog.name} className="w-full h-full object-cover" />
               </div>
               {currentStreak >= 7 && (
-                <div className="absolute -top-2 -right-2 w-7 h-7 bg-orange-400 rounded-full flex items-center justify-center shadow-lg">
+                <div className="absolute -top-2 -right-2 w-7 h-7 bg-emerald-500 rounded-full flex items-center justify-center shadow-md">
                   <Flame className="w-4 h-4 text-white" />
                 </div>
               )}
