@@ -61,7 +61,7 @@ export default function PremiumNudgeSheet({ visible, onClose, dogName, context =
 
               {/* Illustration */}
               <div className="w-24 h-24 mx-auto mb-4">
-                <Illustration name="qualityTime" alt="PawCoach Premium" className="w-full h-full drop-shadow-lg" />
+                <Illustration name="goodDoggy" alt="PawCoach Premium" className="w-full h-full drop-shadow-lg" />
               </div>
 
               {/* Title */}

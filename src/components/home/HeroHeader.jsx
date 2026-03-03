@@ -127,7 +127,7 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
               transition={{ delay: 0.2, type: "spring" }}
               className="w-28 h-28 flex-shrink-0"
             >
-              <Illustration name="goodDoggy" alt={dog?.name || "Chien"} className="w-full h-full drop-shadow-lg" />
+              <Illustration name="dogPaw" alt={dog?.name || "Chien"} className="w-full h-full drop-shadow-lg" />
             </motion.div>
           )}
         </div>

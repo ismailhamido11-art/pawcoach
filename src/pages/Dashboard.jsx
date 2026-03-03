@@ -16,6 +16,7 @@ import { createPageUrl, getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
 import IconBadge from "@/components/ui/IconBadge";
+import Illustration from "../components/illustrations/Illustration";
 
 const spring = { type: "spring", stiffness: 300, damping: 25 };
 
@@ -256,8 +257,12 @@ export default function Dashboard() {
               <h1 className="text-white font-bold text-xl">Tableau de bord</h1>
               <p className="text-white/70 text-sm">{dog ? `Bilan de santé de ${dog.name}` : "Aperçu général"}</p>
             </div>
-            {dog?.photo && (
+            {dog?.photo ? (
               <img src={dog.photo} alt={dog.name} className="w-14 h-14 rounded-full border-2 border-white/40 object-cover shadow-lg" />
+            ) : (
+              <div className="w-16 h-16 flex-shrink-0">
+                <Illustration name="cautiousDog" alt={dog?.name || "Chien"} className="w-full h-full drop-shadow-lg" />
+              </div>
             )}
           </div>
 

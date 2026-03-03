@@ -10,6 +10,9 @@ const ILLUSTRATIONS = {
   petCare: "pet-care.svg",
   qualityTime: "quality-time-in-nature.svg",
   cautiousDog: "cautious-dog.svg",
+  dogPaw: "dog-paw.svg",
+  petGrooming: "pet-grooming.svg",
+  walkingAround: "walking-around.svg",
 };
 
 export default function Illustration({ name, className = "", alt = "" }) {

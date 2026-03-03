@@ -186,7 +186,7 @@ export default function Nutrition() {
             {dog && <p className="text-white/70 text-xs mt-0.5">Coach nutrition IA pour {dog.name}</p>}
           </div>
           <div className="w-20 h-20 flex-shrink-0 -mt-2">
-            <Illustration name="petFood" alt="NutriCoach" className="w-full h-full drop-shadow-lg" />
+            <Illustration name="petGrooming" alt="NutriCoach" className="w-full h-full drop-shadow-lg" />
           </div>
           <div className="ml-auto flex items-center gap-2">
             {!user?.is_premium && messagesRemaining !== null && (
