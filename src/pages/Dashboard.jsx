@@ -214,9 +214,32 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-3">
-        <div className="w-10 h-10 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
-        <p className="text-sm text-muted-foreground">Chargement du tableau de bord...</p>
+      <div className="min-h-screen bg-background pb-24">
+        {/* Header skeleton */}
+        <div className="gradient-primary pt-16 pb-8 px-5">
+          <div className="space-y-2 mb-4">
+            <div className="h-6 w-40 bg-white/20 rounded animate-pulse" />
+            <div className="h-4 w-56 bg-white/10 rounded animate-pulse" />
+          </div>
+          <div className="bg-white/15 rounded-2xl p-4 flex items-center gap-4">
+            <div className="w-16 h-16 rounded-full bg-white/20 animate-pulse" />
+            <div className="space-y-2 flex-1">
+              <div className="h-5 w-24 bg-white/20 rounded animate-pulse" />
+              <div className="h-3 w-40 bg-white/10 rounded animate-pulse" />
+            </div>
+          </div>
+        </div>
+        {/* Stats skeleton */}
+        <div className="px-5 pt-5 space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map(i => (
+              <div key={i} className="bg-white rounded-2xl p-4 border border-border/40 h-20 animate-pulse" />
+            ))}
+          </div>
+          <div className="bg-white rounded-2xl p-4 border border-border/40 h-44 animate-pulse" />
+          <div className="bg-white rounded-2xl p-4 border border-border/40 h-32 animate-pulse" />
+        </div>
+        <BottomNav currentPage="Dashboard" />
       </div>
     );
   }

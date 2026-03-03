@@ -152,11 +152,26 @@ export default function Home() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background pb-24">
-        <div className="h-64 bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] animate-pulse" />
-        <div className="px-5 space-y-4 -mt-6">
-          <div className="h-48 bg-white rounded-3xl animate-pulse shadow-xl" />
-          <div className="h-24 bg-white rounded-3xl animate-pulse" />
-          <div className="h-32 bg-white rounded-3xl animate-pulse" />
+        {/* Hero skeleton */}
+        <div className="h-64 bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] relative overflow-hidden">
+          <div className="absolute bottom-6 left-5 space-y-2">
+            <div className="h-4 w-20 bg-white/20 rounded animate-pulse" />
+            <div className="h-7 w-48 bg-white/20 rounded animate-pulse" />
+            <div className="h-4 w-36 bg-white/10 rounded animate-pulse" />
+          </div>
+        </div>
+        {/* Checkin card skeleton */}
+        <div className="px-4 -mt-8 relative z-10">
+          <div className="h-[340px] rounded-3xl bg-gradient-to-br from-[#0f2027] to-[#1a3a4a] animate-pulse shadow-2xl" />
+        </div>
+        {/* Snapshot skeleton */}
+        <div className="px-5 mt-5 space-y-3">
+          <div className="h-3 w-28 bg-muted rounded animate-pulse" />
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map(i => (
+              <div key={i} className="bg-white rounded-2xl p-4 border border-border/30 h-24 animate-pulse" />
+            ))}
+          </div>
         </div>
         <BottomNav currentPage="Home" />
       </div>
