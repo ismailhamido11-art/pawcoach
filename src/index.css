@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    /* PawCoach – Warm Teal/Green + Amber palette */
-    --background: 45 30% 97%;
+    /* PawCoach – Nature Premium: Serene Cream + Forest Green */
+    --background: 37 33% 95%;
     --foreground: 200 25% 15%;
 
     --card: 0 0% 100%;
@@ -22,13 +22,13 @@
     --secondary: 155 30% 90%;
     --secondary-foreground: 168 40% 25%;
 
-    /* Muted */
-    --muted: 40 20% 93%;
+    /* Muted: green-tinted */
+    --muted: 160 15% 93%;
     --muted-foreground: 200 15% 50%;
 
-    /* Accent: warm amber */
-    --accent: 38 92% 55%;
-    --accent-foreground: 38 50% 15%;
+    /* Accent: emerald green (replaces amber) */
+    --accent: 162 55% 42%;
+    --accent-foreground: 162 40% 10%;
 
     /* Destructive */
     --destructive: 0 72% 51%;
@@ -43,7 +43,7 @@
 
     /* Custom tokens */
     --safe: 145 60% 42%;
-    --caution: 38 92% 55%;
+    --caution: 38 92% 55%; /* stays amber — semantic warning color */
     --toxic: 0 72% 51%;
 
     --gradient-start: 168 55% 38%;
@@ -51,7 +51,7 @@
   }
 
   .dark {
-    --background: 200 25% 10%;
+    --background: 170 20% 8%;
     --foreground: 45 30% 95%;
     --card: 200 20% 13%;
     --card-foreground: 45 30% 95%;
@@ -63,8 +63,8 @@
     --secondary-foreground: 168 30% 80%;
     --muted: 200 20% 18%;
     --muted-foreground: 200 15% 60%;
-    --accent: 38 85% 55%;
-    --accent-foreground: 38 50% 10%;
+    --accent: 162 50% 50%;
+    --accent-foreground: 162 40% 10%;
     --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
     --border: 200 20% 22%;
@@ -92,10 +92,10 @@
   background: linear-gradient(135deg, hsl(var(--gradient-start)), hsl(var(--gradient-end)));
 }
 .gradient-warm {
-  background: linear-gradient(135deg, hsl(38, 92%, 55%), hsl(28, 90%, 60%));
+  background: linear-gradient(135deg, hsl(162, 55%, 38%), hsl(155, 50%, 48%));
 }
 .gradient-card {
-  background: linear-gradient(145deg, hsl(0,0%,100%), hsl(168,30%,97%));
+  background: linear-gradient(145deg, hsl(0,0%,100%), hsl(160,25%,97%));
 }
 
 /* Smooth tap animations */

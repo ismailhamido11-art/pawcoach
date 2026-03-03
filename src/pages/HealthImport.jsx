@@ -29,7 +29,7 @@ const SOURCES = [
     icon: Camera,
     label: "Photo d'un document",
     desc: "Prends en photo une ordonnance ou un document papier",
-    color: "#f59e0b",
+    color: "#10b981",
     accept: "image/*",
     capture: "environment"
   },
@@ -46,7 +46,7 @@ const SOURCES = [
 const TYPE_CONFIG = {
   vaccine:   { icon: Syringe,      color: "#2d9f82", label: "Vaccin",       bg: "#2d9f8218" },
   vet_visit: { icon: Stethoscope,  color: "#3b82f6", label: "Visite véto",  bg: "#3b82f618" },
-  weight:    { icon: Weight,       color: "#f59e0b", label: "Poids",        bg: "#f59e0b18" },
+  weight:    { icon: Weight,       color: "#10b981", label: "Poids",        bg: "#10b98118" },
   medication:{ icon: Pill,         color: "#8b5cf6", label: "Médicament",   bg: "#8b5cf618" },
   allergy:   { icon: AlertCircle,  color: "#ef4444", label: "Allergie",     bg: "#ef444418" },
   note:      { icon: StickyNote,   color: "#64748b", label: "Note",         bg: "#64748b18" },

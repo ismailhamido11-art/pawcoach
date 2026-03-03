@@ -39,7 +39,7 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
 
           {locked ? (
             <div className="mt-3 bg-white/15 rounded-2xl px-4 py-2 inline-flex items-center gap-2">
-              <Lock className="w-4 h-4 text-amber-300" />
+              <Lock className="w-4 h-4 text-emerald-300" />
               <span className="text-white/90 text-sm font-semibold">Parcours Premium</span>
             </div>
           ) : (

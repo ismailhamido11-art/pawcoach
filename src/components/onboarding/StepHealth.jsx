@@ -18,9 +18,9 @@ export default function StepHealth({ data, onChange, dogName, onVetDataExtracted
       </div>
 
       {/* Optional notice */}
-      <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4">
-        <Info className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-        <p className="text-sm text-amber-700">
+      <div className="flex items-start gap-3 bg-emerald-50 border border-emerald-200 rounded-2xl p-4">
+        <Info className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+        <p className="text-sm text-emerald-700">
           Ces informations sont <strong>optionnelles</strong>. Tu pourras les compléter plus tard depuis le carnet de santé.
         </p>
       </div>

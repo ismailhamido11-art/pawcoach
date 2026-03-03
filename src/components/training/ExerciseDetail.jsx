@@ -53,12 +53,12 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
 
         {/* Steps */}
         {isPremiumLocked ? (
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 flex flex-col items-center gap-3 text-center">
-            <div className="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center">
-              <Lock className="w-7 h-7 text-amber-500" />
+          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 flex flex-col items-center gap-3 text-center">
+            <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center">
+              <Lock className="w-7 h-7 text-emerald-500" />
             </div>
-            <p className="font-semibold text-amber-700">Exercice Premium</p>
-            <p className="text-amber-600 text-sm">Passe à Premium pour débloquer toutes les fiches d'entraînement détaillées.</p>
+            <p className="font-semibold text-emerald-700">Exercice Premium</p>
+            <p className="text-emerald-600 text-sm">Passe à Premium pour débloquer toutes les fiches d'entraînement détaillées.</p>
             <Button onClick={() => window.location.href = '/Premium?from=training'} className="rounded-xl gradient-warm border-0 text-white font-semibold mt-1">
               Passer Premium 🌟
             </Button>

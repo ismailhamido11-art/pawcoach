@@ -24,11 +24,11 @@ export default function UpcomingReminders({ records, isPremium }) {
   return (
     <div className="mx-4 mt-3 mb-1">
       <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm">
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-amber-50">
-          <Bell className="w-4 h-4 text-amber-500" />
-          <span className="text-xs font-bold text-amber-700">Rappels à venir</span>
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-emerald-50">
+          <Bell className="w-4 h-4 text-emerald-500" />
+          <span className="text-xs font-bold text-emerald-700">Rappels à venir</span>
           {!isPremium && (
-            <span className="ml-auto flex items-center gap-1 text-[10px] text-amber-600 font-medium bg-amber-100 px-2 py-0.5 rounded-full">
+            <span className="ml-auto flex items-center gap-1 text-[10px] text-emerald-600 font-medium bg-emerald-100 px-2 py-0.5 rounded-full">
               <Lock className="w-2.5 h-2.5" /> Emails Premium
             </span>
           )}
@@ -46,7 +46,7 @@ export default function UpcomingReminders({ records, isPremium }) {
                 r.daysLeft <= 7
                   ? "bg-red-100 text-red-600"
                   : r.daysLeft <= 14
-                  ? "bg-amber-100 text-amber-600"
+                  ? "bg-emerald-100 text-emerald-600"
                   : "bg-secondary text-secondary-foreground"
               }`}>
                 {r.daysLeft === 0 ? "Aujourd'hui !" : `dans ${r.daysLeft}j`}

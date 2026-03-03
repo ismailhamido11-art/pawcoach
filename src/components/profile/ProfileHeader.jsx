@@ -2,7 +2,7 @@ import { Crown, Star, Medal, Award, Trophy } from "lucide-react";
 
 const BADGES = [
   { name: "Novice", threshold: 0, icon: Star, color: "bg-slate-100 text-slate-500" },
-  { name: "Apprenti", threshold: 50, icon: Medal, color: "bg-amber-100 text-amber-600" },
+  { name: "Apprenti", threshold: 50, icon: Medal, color: "bg-emerald-100 text-emerald-600" },
   { name: "Expert", threshold: 200, icon: Award, color: "bg-emerald-100 text-emerald-600" },
   { name: "Maître", threshold: 500, icon: Trophy, color: "bg-purple-100 text-purple-600" },
 ];
@@ -35,7 +35,7 @@ export default function ProfileHeader({ user }) {
           {/* Subscription badge */}
           <div className="flex items-center gap-2 mt-2">
             {user?.is_premium ? (
-              <span className="flex items-center gap-1 bg-amber-400/30 border border-amber-300/40 px-2.5 py-1 rounded-full text-xs font-bold text-white">
+              <span className="flex items-center gap-1 bg-emerald-400/30 border border-emerald-300/40 px-2.5 py-1 rounded-full text-xs font-bold text-white">
                 <Crown className="w-3 h-3" /> Premium
               </span>
             ) : (

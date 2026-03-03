@@ -42,7 +42,7 @@ export default function JourneyCard({ journey, completedCount, isPremium, isNext
               {journey.name}
             </p>
             {locked && (
-              <span className="text-[10px] bg-accent/15 text-amber-600 font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border border-amber-200">
+              <span className="text-[10px] bg-accent/15 text-emerald-600 font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-200">
                 <Lock className="w-2.5 h-2.5" /> Premium
               </span>
             )}

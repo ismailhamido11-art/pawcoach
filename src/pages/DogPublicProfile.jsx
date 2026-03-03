@@ -22,7 +22,7 @@ const TYPE_CONFIG = {
   vaccine:    { icon: Syringe,    label: "Vaccin",      color: "#2d9f82", bg: "#2d9f8215" },
   weight:     { icon: Weight,     label: "Poids",       color: "#3b82f6", bg: "#3b82f615" },
   vet_visit:  { icon: Stethoscope,label: "Visite véto", color: "#8b5cf6", bg: "#8b5cf615" },
-  medication: { icon: Pill,       label: "Médicament",  color: "#f59e0b", bg: "#f59e0b15" },
+  medication: { icon: Pill,       label: "Médicament",  color: "#10b981", bg: "#10b98115" },
   note:       { icon: FileText,   label: "Note",        color: "#6b7280", bg: "#6b728015" },
 };
 
@@ -167,7 +167,7 @@ export default function DogPublicProfile() {
         <div className="grid grid-cols-3 gap-2">
           <StatPill icon={Syringe} value={vaccines.length} label="Vaccins" color="#2d9f82" />
           <StatPill icon={Stethoscope} value={vetVisits.length} label="Visites" color="#8b5cf6" />
-          <StatPill icon={Pill} value={meds.length} label="Médoc." color="#f59e0b" />
+          <StatPill icon={Pill} value={meds.length} label="Médoc." color="#10b981" />
         </div>
       </div>
 

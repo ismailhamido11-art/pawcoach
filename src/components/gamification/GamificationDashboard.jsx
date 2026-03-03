@@ -4,7 +4,7 @@ import { Progress } from "@/components/ui/progress";
 
 const BADGES = [
   { id: "novice", name: "Novice", threshold: 0, icon: Star, color: "text-slate-400 bg-slate-100" },
-  { id: "apprenti", name: "Apprenti", threshold: 50, icon: Medal, color: "text-amber-600 bg-amber-100" },
+  { id: "apprenti", name: "Apprenti", threshold: 50, icon: Medal, color: "text-emerald-600 bg-emerald-100" },
   { id: "expert", name: "Expert", threshold: 200, icon: Award, color: "text-emerald-600 bg-emerald-100" },
   { id: "maitre", name: "Maître Canin", threshold: 500, icon: Trophy, color: "text-purple-600 bg-purple-100" },
 ];
@@ -66,7 +66,7 @@ export default function GamificationDashboard({ points = 0 }) {
         </div>
         <div>
           <p className="text-[10px] text-muted-foreground">Scan</p>
-          <p className="text-xs font-semibold text-amber-600">+10 pts</p>
+          <p className="text-xs font-semibold text-emerald-600">+10 pts</p>
         </div>
       </div>
     </div>

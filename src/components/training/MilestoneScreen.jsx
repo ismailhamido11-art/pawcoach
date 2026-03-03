@@ -17,7 +17,7 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
   useEffect(() => {
     if (fired.current) return;
     fired.current = true;
-    confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 }, colors: ["#3db87a", "#f59e0b", "#fff", "#6366f1"] });
+    confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 }, colors: ["#3db87a", "#10b981", "#fff", "#6366f1"] });
   }, []);
 
   const handleShare = async () => {

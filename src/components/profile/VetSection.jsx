@@ -6,7 +6,7 @@ import { Stethoscope, Plus, CheckCircle, Clock, XCircle } from "lucide-react";
 
 const STATUS_CONFIG = {
   active:  { label: "Actif", icon: CheckCircle, color: "text-emerald-600" },
-  pending: { label: "En attente", icon: Clock, color: "text-amber-500" },
+  pending: { label: "En attente", icon: Clock, color: "text-emerald-500" },
   revoked: { label: "Révoqué", icon: XCircle, color: "text-red-400" },
 };
 

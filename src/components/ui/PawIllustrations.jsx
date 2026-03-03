@@ -61,7 +61,7 @@ export function DogWave({ color = "#2d9f82" }) {
       <ellipse cx="70" cy="97" rx="10" ry="7" fill="#fca5a5" fillOpacity="0.38" />
       <ellipse cx="130" cy="97" rx="10" ry="7" fill="#fca5a5" fillOpacity="0.38" />
       {/* sparkles */}
-      <path d="M20 52 L22 44 L24 52 L32 54 L24 56 L22 64 L20 56 L12 54Z" fill="#fbbf24" fillOpacity="0.7" />
+      <path d="M20 52 L22 44 L24 52 L32 54 L24 56 L22 64 L20 56 L12 54Z" fill="#34d399" fillOpacity="0.7" />
     </svg>
   );
 }
@@ -147,8 +147,8 @@ export function DogGrad({ color = "#8b5cf6" }) {
       <rect x="68" y="56" width="64" height="8" rx="4" fill="#1a0a0a" fillOpacity="0.5" />
       <polygon points="100,38 138,54 100,58 62,54" fill="#1a0a0a" fillOpacity="0.45" />
       {/* tassel */}
-      <line x1="138" y1="54" x2="148" y2="62" stroke="#fbbf24" strokeWidth="2" />
-      <circle cx="150" cy="64" r="4" fill="#fbbf24" />
+      <line x1="138" y1="54" x2="148" y2="62" stroke="#34d399" strokeWidth="2" />
+      <circle cx="150" cy="64" r="4" fill="#34d399" />
       {/* ears */}
       <path d="M58 64 Q36 48 42 70 Q50 64 58 70Z" fill={color} />
       <path d="M142 64 Q164 48 158 70 Q150 64 142 70Z" fill={color} />
@@ -326,7 +326,7 @@ export function DogChat({ color = "#3b82f6" }) {
 }
 
 /** Dog with trophy — Milestone / streak */
-export function DogTrophy({ color = "#f59e0b" }) {
+export function DogTrophy({ color = "#10b981" }) {
   return (
     <svg viewBox="0 0 200 200" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="100" cy="190" rx="55" ry="9" fill="black" fillOpacity="0.1" />
@@ -340,10 +340,10 @@ export function DogTrophy({ color = "#f59e0b" }) {
       {/* arm holding trophy */}
       <path d="M58 148 Q36 130 26 108" stroke={color} strokeWidth="13" strokeLinecap="round" fill="none" />
       {/* trophy cup */}
-      <path d="M16 88 Q16 106 28 110 L28 118 L20 122 L36 122 L28 118 L28 110 Q40 106 40 88Z" fill="#fbbf24" fillOpacity="0.9" />
-      <rect x="16" y="84" width="24" height="8" rx="4" fill="#fbbf24" fillOpacity="0.9" />
-      <path d="M16 88 Q8 88 8 96 Q8 104 16 104" stroke="#fbbf24" strokeWidth="4" strokeLinecap="round" fill="none" fillOpacity="0.8" />
-      <path d="M40 88 Q48 88 48 96 Q48 104 40 104" stroke="#fbbf24" strokeWidth="4" strokeLinecap="round" fill="none" fillOpacity="0.8" />
+      <path d="M16 88 Q16 106 28 110 L28 118 L20 122 L36 122 L28 118 L28 110 Q40 106 40 88Z" fill="#34d399" fillOpacity="0.9" />
+      <rect x="16" y="84" width="24" height="8" rx="4" fill="#34d399" fillOpacity="0.9" />
+      <path d="M16 88 Q8 88 8 96 Q8 104 16 104" stroke="#34d399" strokeWidth="4" strokeLinecap="round" fill="none" fillOpacity="0.8" />
+      <path d="M40 88 Q48 88 48 96 Q48 104 40 104" stroke="#34d399" strokeWidth="4" strokeLinecap="round" fill="none" fillOpacity="0.8" />
       {/* star on trophy */}
       <path d="M28 90 L29.5 94.5 L34 94.5 L30.5 97 L31.8 102 L28 99 L24.2 102 L25.5 97 L22 94.5 L26.5 94.5Z" fill="white" fillOpacity="0.8" />
       {/* other arm raised */}
@@ -373,8 +373,8 @@ export function DogTrophy({ color = "#f59e0b" }) {
       <ellipse cx="68" cy="70" rx="2.5" ry="3" fill="white" fillOpacity="0.5" />
       <ellipse cx="122" cy="70" rx="2.5" ry="3" fill="white" fillOpacity="0.5" />
       {/* sparkles */}
-      <path d="M22 46 L24 38 L26 46 L34 48 L26 50 L24 58 L22 50 L14 48Z" fill="#fbbf24" fillOpacity="0.8" />
-      <path d="M168 30 L170 24 L172 30 L178 32 L172 34 L170 40 L168 34 L162 32Z" fill="#fbbf24" fillOpacity="0.7" />
+      <path d="M22 46 L24 38 L26 46 L34 48 L26 50 L24 58 L22 50 L14 48Z" fill="#34d399" fillOpacity="0.8" />
+      <path d="M168 30 L170 24 L172 30 L178 32 L172 34 L170 40 L168 34 L162 32Z" fill="#34d399" fillOpacity="0.7" />
     </svg>
   );
 }

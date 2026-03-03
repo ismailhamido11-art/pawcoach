@@ -153,7 +153,7 @@ export default function VetDogView() {
                   {s.photo_url && <img src={s.photo_url} alt="" className="w-12 h-12 rounded-lg object-cover" />}
                   <div className="flex-1">
                     <p className="text-sm font-medium">{s.food_name || "Aliment scanné"}</p>
-                    <Badge className={`text-[10px] mt-1 ${s.verdict === "safe" ? "bg-green-100 text-green-700" : s.verdict === "caution" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"}`}>
+                    <Badge className={`text-[10px] mt-1 ${s.verdict === "safe" ? "bg-green-100 text-green-700" : s.verdict === "caution" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
                       {s.verdict === "safe" ? "✅ Sûr" : s.verdict === "caution" ? "⚠️ Précaution" : "🚫 Toxique"} — {s.score}/10
                     </Badge>
                     {s.details && <p className="text-xs text-muted-foreground mt-1">{s.details}</p>}

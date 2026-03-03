@@ -265,7 +265,7 @@ export default function Home() {
 function MilestoneCelebration({ milestone, onClose }) {
   useEffect(() => {
     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-    confetti({ particleCount: 100, spread: 80, origin: { x: 0.5, y: 0.55 }, colors: ["#2d9f82", "#f59e0b", "#ec4899", "#3b82f6"] });
+    confetti({ particleCount: 100, spread: 80, origin: { x: 0.5, y: 0.55 }, colors: ["#2d9f82", "#10b981", "#ec4899", "#3b82f6"] });
   }, []);
 
   return (

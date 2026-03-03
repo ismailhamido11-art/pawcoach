@@ -13,7 +13,7 @@ export default function CelebrationScreen({ dogName, exerciseName, onContinue })
       particleCount: 80,
       spread: 70,
       origin: { y: 0.5 },
-      colors: ["#3db87a", "#f59e0b", "#6366f1", "#ec4899"],
+      colors: ["#3db87a", "#10b981", "#6366f1", "#ec4899"],
     });
   }, []);
 
@@ -51,7 +51,7 @@ export default function CelebrationScreen({ dogName, exerciseName, onContinue })
         </motion.div>
 
         {/* Points badge */}
-        <div className="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200 text-amber-600 font-bold text-sm rounded-full px-4 py-2 mb-6">
+        <div className="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-600 font-bold text-sm rounded-full px-4 py-2 mb-6">
           <Zap className="w-4 h-4" />
           +50 points gagnés !
         </div>

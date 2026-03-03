@@ -5,7 +5,7 @@ import { base44 } from "@/api/base44Client";
 
 const STATUS_OPTIONS = [
   { value: "healthy", label: "En pleine forme", emoji: "💪", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-  { value: "recovering", label: "En convalescence", emoji: "🩹", color: "bg-amber-100 text-amber-700 border-amber-200" },
+  { value: "recovering", label: "En convalescence", emoji: "🩹", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
   { value: "traveling", label: "En voyage", emoji: "✈️", color: "bg-blue-100 text-blue-700 border-blue-200" },
 ];
 

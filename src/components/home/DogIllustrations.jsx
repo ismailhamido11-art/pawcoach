@@ -61,7 +61,7 @@ export function DogSad({ color = "#f43f5e" }) {
   );
 }
 
-export function DogMeh({ color = "#f59e0b" }) {
+export function DogMeh({ color = "#10b981" }) {
   return (
     <svg viewBox="0 0 200 200" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="100" cy="185" rx="52" ry="9" fill="black" fillOpacity="0.12" />
@@ -194,8 +194,8 @@ export function DogLove({ color = "#8b5cf6" }) {
       <ellipse cx="64" cy="98" rx="12" ry="8" fill="#fca5a5" fillOpacity="0.5" />
       <ellipse cx="136" cy="98" rx="12" ry="8" fill="#fca5a5" fillOpacity="0.5" />
       {/* sparkles */}
-      <path d="M24 40 L26 34 L28 40 L34 42 L28 44 L26 50 L24 44 L18 42Z" fill="#fbbf24" fillOpacity="0.8" />
-      <path d="M168 28 L170 24 L172 28 L176 30 L172 32 L170 36 L168 32 L164 30Z" fill="#fbbf24" fillOpacity="0.7" />
+      <path d="M24 40 L26 34 L28 40 L34 42 L28 44 L26 50 L24 44 L18 42Z" fill="#34d399" fillOpacity="0.8" />
+      <path d="M168 28 L170 24 L172 28 L176 30 L172 32 L170 36 L168 32 L164 30Z" fill="#34d399" fillOpacity="0.7" />
     </svg>
   );
 }
@@ -238,7 +238,7 @@ export function DogSleep({ color = "#f43f5e" }) {
   );
 }
 
-export function DogTrot({ color = "#f59e0b" }) {
+export function DogTrot({ color = "#10b981" }) {
   return (
     <svg viewBox="0 0 200 200" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="100" cy="187" rx="56" ry="8" fill="black" fillOpacity="0.12" />
@@ -376,7 +376,7 @@ export function BowlEmpty({ color = "#f43f5e" }) {
   );
 }
 
-export function BowlHalf({ color = "#f59e0b" }) {
+export function BowlHalf({ color = "#10b981" }) {
   return (
     <svg viewBox="0 0 200 200" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="100" cy="192" rx="70" ry="8" fill="black" fillOpacity="0.1" />
@@ -451,8 +451,8 @@ export function BowlFull({ color = "#10b981" }) {
       <ellipse cx="66" cy="106" rx="12" ry="8" fill="#fca5a5" fillOpacity="0.5" />
       <ellipse cx="134" cy="106" rx="12" ry="8" fill="#fca5a5" fillOpacity="0.5" />
       {/* star sparkles */}
-      <path d="M22 60 L24 52 L26 60 L34 62 L26 64 L24 72 L22 64 L14 62Z" fill="#fbbf24" fillOpacity="0.85" />
-      <path d="M172 44 L174 38 L176 44 L182 46 L176 48 L174 54 L172 48 L166 46Z" fill="#fbbf24" fillOpacity="0.75" />
+      <path d="M22 60 L24 52 L26 60 L34 62 L26 64 L24 72 L22 64 L14 62Z" fill="#34d399" fillOpacity="0.85" />
+      <path d="M172 44 L174 38 L176 44 L182 46 L176 48 L174 54 L172 48 L166 46Z" fill="#34d399" fillOpacity="0.75" />
     </svg>
   );
 }

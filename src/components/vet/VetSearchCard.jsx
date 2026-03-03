@@ -24,7 +24,7 @@ export default function VetSearchCard({ vet }) {
           <p className="text-xs text-muted-foreground mt-0.5">{vet.address}</p>
           {vet.rating && (
             <div className="flex items-center gap-1 mt-1">
-              <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+              <Star className="w-3 h-3 text-emerald-500 fill-emerald-500" />
               <span className="text-xs font-medium">{vet.rating}/5</span>
             </div>
           )}

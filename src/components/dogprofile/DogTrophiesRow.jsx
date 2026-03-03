@@ -4,7 +4,7 @@ import { Trophy } from "lucide-react";
 function Trophy_({ emoji, label, earned }) {
   return (
     <div className={`flex-shrink-0 flex flex-col items-center gap-1.5 w-20 ${!earned ? "opacity-35" : ""}`}>
-      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm border ${earned ? "bg-amber-50 border-amber-200" : "bg-muted border-border"}`}>
+      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm border ${earned ? "bg-emerald-50 border-emerald-200" : "bg-muted border-border"}`}>
         {emoji}
       </div>
       <p className="text-[10px] text-center text-muted-foreground font-medium leading-tight">{label}</p>
@@ -34,8 +34,8 @@ export default function DogTrophiesRow({ streak, progress, scansCount }) {
   return (
     <div className="bg-white rounded-2xl border border-border p-4">
       <div className="flex items-center gap-2 mb-3">
-        <div className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center">
-          <Trophy className="w-4 h-4 text-amber-500" />
+        <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center">
+          <Trophy className="w-4 h-4 text-emerald-500" />
         </div>
         <p className="font-bold text-sm text-foreground">Trophées</p>
         <span className="ml-auto text-xs text-muted-foreground">{earnedCount}/{trophies.length}</span>

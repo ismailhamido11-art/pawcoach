@@ -73,7 +73,7 @@ export default function PremiumSection({ type, records, dogId, isPremium, onDele
           icon={<config.Icon className={`w-4 h-4 ${config.textClass}`} />}
           accentClass={`${config.bgClass} ${config.borderClass}`}
           extra={isValidDate(r.next_date) ? (
-            <span className="text-xs text-amber-600 font-medium">
+            <span className="text-xs text-emerald-600 font-medium">
               Prochain : {new Date(r.next_date).toLocaleDateString("fr-FR")}
             </span>
           ) : null}

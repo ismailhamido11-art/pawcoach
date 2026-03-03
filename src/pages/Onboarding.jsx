@@ -15,17 +15,17 @@ const GOAL_OPTIONS = [
   { icon: GraduationCap, color: "#6366f1", label: "Bien l'éduquer", bg: "#6366f115" },
   { icon: Salad, color: "#10b981", label: "Qu'il mange bien", bg: "#10b98115" },
   { icon: Smile, color: "#ec4899", label: "Son bonheur au quotidien", bg: "#ec489915" },
-  { icon: Handshake, color: "#f59e0b", label: "Mieux le comprendre", bg: "#f59e0b15" },
+  { icon: Handshake, color: "#10b981", label: "Mieux le comprendre", bg: "#10b98115" },
 ];
 
 const INTERVIEW_STEPS = [
   { type: "choice", question: "Qu'est-ce qui compte le plus pour toi ?", icon: PawPrint, iconColor: "#2d9f82" },
   { type: "photo", question: "Une photo de ton chien ?", icon: CameraIcon, iconColor: "#6366f1" },
-  { type: "voice", question: "Comment s'appelle-t-il ?", icon: DogIcon, iconColor: "#f59e0b", placeholder: "Son prénom..." },
-  { type: "voice", question: "Quelle est sa race ?", icon: DogIcon, iconColor: "#f59e0b", placeholder: "Ex: Beagle, Croisé..." },
+  { type: "voice", question: "Comment s'appelle-t-il ?", icon: DogIcon, iconColor: "#10b981", placeholder: "Son prénom..." },
+  { type: "voice", question: "Quelle est sa race ?", icon: DogIcon, iconColor: "#10b981", placeholder: "Ex: Beagle, Croisé..." },
   { type: "voice", question: "Quel âge a-t-il ?", icon: Cake, iconColor: "#ec4899", placeholder: "Ex: 2 ans, 6 mois..." },
   { type: "voice", question: "Mâle ou femelle ?", icon: Users, iconColor: "#3b82f6", placeholder: "Mâle ou Femelle" },
-  { type: "voice", question: "Combien pèse-t-il environ ?", icon: Scale, iconColor: "#f59e0b", placeholder: "Ex: 15 kg" },
+  { type: "voice", question: "Combien pèse-t-il environ ?", icon: Scale, iconColor: "#10b981", placeholder: "Ex: 15 kg" },
   { type: "voice", question: "Son niveau d'activité ?", icon: PersonStanding, iconColor: "#10b981", placeholder: "Calme, Modéré, Très actif..." },
   { type: "voice", question: "Où vit-il principalement ?", icon: HomeIcon, iconColor: "#6366f1", placeholder: "Appartement, Maison..." },
   { type: "voice", question: "Des problèmes de santé ou allergies ?", icon: Hospital, iconColor: "#ef4444", placeholder: "Non, ou préciser..." },

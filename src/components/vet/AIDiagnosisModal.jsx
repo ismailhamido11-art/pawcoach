@@ -200,7 +200,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
         {/* ====== STEP 1: Symptom Form ====== */}
         {step === "form" && (
           <div className="space-y-4 mt-2">
-            <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-start gap-2">
+            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <span>Cet outil ne remplace pas un vétérinaire. Il prépare un rapport pour faciliter votre consultation.</span>
             </div>

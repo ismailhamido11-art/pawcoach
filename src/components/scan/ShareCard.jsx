@@ -4,7 +4,7 @@ import { X, Download, Share2 } from "lucide-react";
 
 const VERDICT_STYLE = {
   safe:    { label: "✅ SANS DANGER",       bg: "#f0fdf4", color: "#16a34a", border: "#86efac" },
-  caution: { label: "⚠️ AVEC PRÉCAUTION",   bg: "#fffbeb", color: "#d97706", border: "#fcd34d" },
+  caution: { label: "⚠️ AVEC PRÉCAUTION",   bg: "#ecfdf5", color: "#047857", border: "#6ee7b7" },
   toxic:   { label: "💀 TOXIQUE",           bg: "#fef2f2", color: "#dc2626", border: "#fca5a5" },
 };
 

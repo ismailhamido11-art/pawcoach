@@ -16,7 +16,7 @@ export default function DogIdentityCards({ dog, dailyLogs, onSave }) {
   const prevWeight = weightLogs[1]?.weight_kg;
   const trend = latestWeight && prevWeight ? latestWeight - prevWeight : 0;
 
-  const trendColor = trend > 0 ? "text-amber-500" : trend < 0 ? "text-blue-500" : "text-muted-foreground";
+  const trendColor = trend > 0 ? "text-emerald-500" : trend < 0 ? "text-blue-500" : "text-muted-foreground";
 
   const sexLabel = dog.sex === "male" ? "🐾 Mâle" : dog.sex === "female" ? "🐾 Femelle" : "—";
 
@@ -73,7 +73,7 @@ export default function DogIdentityCards({ dog, dailyLogs, onSave }) {
       {/* Environment */}
       <InlineEditCard
         icon={Home}
-        iconColor="#f59e0b"
+        iconColor="#10b981"
         label="Environnement"
         value={ENV_LABELS[dog.environment] || "—"}
         editField="environment"

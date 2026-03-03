@@ -96,7 +96,7 @@ export default function QRCodeCard({ dog }) {
               {/* Value props */}
               <div className="grid grid-cols-3 gap-2 mb-5">
                 {[
-                  { icon: Zap, label: "Instantané", sub: "Scan & accès direct", color: "#f59e0b" },
+                  { icon: Zap, label: "Instantané", sub: "Scan & accès direct", color: "#10b981" },
                   { icon: Shield, label: "Sécurisé", sub: "Lecture seule", color: "#2d9f82" },
                   { icon: Smartphone, label: "Universel", sub: "Tout smartphone", color: "#3b82f6" },
                 ].map(({ icon: Icon, label, sub, color }) => (

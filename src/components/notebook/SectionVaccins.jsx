@@ -49,7 +49,7 @@ export default function SectionVaccins({ records, dogId, onDelete }) {
               icon={<Syringe className="w-4 h-4 text-blue-600" />}
               accentClass="bg-blue-50 border-blue-100"
               extra={reminder ? (
-                <span className={`text-xs font-medium flex items-center gap-1 mt-1 ${reminder.isOverdue ? 'text-destructive' : 'text-amber-600'}`}>
+                <span className={`text-xs font-medium flex items-center gap-1 mt-1 ${reminder.isOverdue ? 'text-destructive' : 'text-emerald-600'}`}>
                   <Calendar className="w-3 h-3" /> {reminder.text} : {fmtDate(reminder.dateStr)}
                 </span>
               ) : null}
