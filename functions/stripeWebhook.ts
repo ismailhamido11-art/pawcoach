@@ -22,8 +22,8 @@ Deno.serve(async (req) => {
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
 
-      // Only activate premium for actually paid sessions
-      if (session.payment_status !== "paid") {
+      // Activate premium for paid sessions AND trials
+      if (!["paid", "no_payment_required"].includes(session.payment_status)) {
         console.log(`Skipping session with payment_status: ${session.payment_status}`);
         return Response.json({ received: true });
       }

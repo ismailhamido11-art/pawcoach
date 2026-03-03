@@ -146,7 +146,7 @@ export default function QRCodeCard({ dog }) {
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   onClick={handleShare}
-                  className="flex items-center justify-center gap-2 bg-teal-600 text-white rounded-2xl py-3.5 font-bold text-sm"
+                  className="flex items-center justify-center gap-2 bg-emerald-600 text-white rounded-2xl py-3.5 font-bold text-sm"
                 >
                   <Share2 className="w-4 h-4" />
                   {copied ? "Copié !" : "Partager"}

@@ -9,18 +9,18 @@ import {
 
 export const MOOD_OPTIONS = [
   { value: 1, label: "Triste",  color: "#f43f5e" },
-  { value: 2, label: "Bof",     color: "#f97316" },
+  { value: 2, label: "Bof",     color: "#d97706" },
   { value: 3, label: "Bien",    color: "#10b981" },
   { value: 4, label: "Super !", color: "#8b5cf6" },
 ];
 export const ENERGY_OPTIONS = [
   { value: 1, label: "Épuisé", color: "#f43f5e" },
-  { value: 2, label: "Moyen",  color: "#f97316" },
+  { value: 2, label: "Moyen",  color: "#d97706" },
   { value: 3, label: "À fond", color: "#10b981" },
 ];
 export const APPETITE_OPTIONS = [
   { value: 1, label: "Rien",    color: "#f43f5e" },
-  { value: 2, label: "Normal",  color: "#f97316" },
+  { value: 2, label: "Normal",  color: "#d97706" },
   { value: 3, label: "Glouton", color: "#10b981" },
 ];
 

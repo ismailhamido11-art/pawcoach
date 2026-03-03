@@ -280,7 +280,7 @@ export default function Premium() {
             }`}
           >
             Mensuel<br />
-            <span className={`text-xs font-normal ${plan === "monthly" ? "text-white/80" : "text-muted-foreground"}`}>7,99 €/mois</span>
+            <span className={`text-xs font-normal ${plan === "monthly" ? "text-white/80" : "text-muted-foreground"}`}>7j gratuit puis 7,99 €/mois</span>
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.96 }}
@@ -294,7 +294,7 @@ export default function Premium() {
               -37% 🔥
             </span>
             Annuel<br />
-            <span className={`text-xs font-normal ${plan === "annual" ? "text-white/80" : "text-muted-foreground"}`}>59,99 €/an · 5 €/mois</span>
+            <span className={`text-xs font-normal ${plan === "annual" ? "text-white/80" : "text-muted-foreground"}`}>7j gratuit puis 59,99 €/an</span>
           </motion.button>
         </div>
 
@@ -342,13 +342,13 @@ export default function Premium() {
           ) : (
             <>
               <Zap className="w-5 h-5" />
-              {plan === "annual" ? "Commencer pour 59,99 €/an" : "Commencer pour 7,99 €/mois"}
+              {plan === "annual" ? "Essai gratuit 7 jours — 59,99 €/an" : "Essai gratuit 7 jours — 7,99 €/mois"}
             </>
           )}
         </Button>
 
         <p className="text-center text-xs text-muted-foreground">
-          Sans engagement · Résiliation à tout moment · Paiement sécurisé Stripe
+          7 jours gratuits · Aucun prélèvement pendant l'essai · Résiliation à tout moment
         </p>
       </div>
 

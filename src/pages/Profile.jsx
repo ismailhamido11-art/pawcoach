@@ -10,6 +10,7 @@ import DogSwitcher from "../components/profile/DogSwitcher.jsx";
 import CoachSettings from "../components/profile/CoachSettings.jsx";
 import VetSection from "../components/profile/VetSection.jsx";
 import SubscriptionSection from "../components/profile/SubscriptionSection.jsx";
+import ReferralSection from "../components/profile/ReferralSection.jsx";
 import SettingsSection from "../components/profile/SettingsSection.jsx";
 
 export default function Profile() {
@@ -98,6 +99,8 @@ export default function Profile() {
         <VetSection dogs={dogs} activeDogId={activeDogId} />
 
         <SubscriptionSection user={user} />
+
+        <ReferralSection user={user} onSave={handleSaveUser} />
 
         <SettingsSection />
       </div>

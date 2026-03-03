@@ -1,11 +1,27 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Gift, Check } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 import PremiumNudgeSheet from "../premium/PremiumNudgeSheet";
 import Illustration from "../illustrations/Illustration";
 
 export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium }) {
   const [showNudge, setShowNudge] = useState(false);
+  const [referralCode, setReferralCode] = useState("");
+  const [referralSaved, setReferralSaved] = useState(false);
+  const [showReferral, setShowReferral] = useState(false);
+
+  const handleReferralSubmit = async () => {
+    const code = referralCode.trim().toUpperCase();
+    if (!code) return;
+    try {
+      await base44.auth.updateMe({ referred_by: code });
+      setReferralSaved(true);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <div className="min-h-screen gradient-primary flex flex-col items-center justify-center px-6 text-center">
       {/* Confetti-like decorative dots */}
@@ -35,9 +51,47 @@ export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium
       <p className="text-white/80 text-base mb-2 leading-relaxed max-w-xs">
         Le profil de {dogName} est créé. PawCoach est prêt à vous accompagner au quotidien 🐾
       </p>
-      <p className="text-white/60 text-sm mb-12">
+      <p className="text-white/60 text-sm mb-6">
         Alimentation · Bien-être · Dressage
       </p>
+
+      {/* Referral code input */}
+      {!showReferral ? (
+        <button
+          onClick={() => setShowReferral(true)}
+          className="flex items-center gap-2 text-white/50 text-xs font-medium mb-8 hover:text-white/70 transition-colors"
+        >
+          <Gift className="w-3.5 h-3.5" />
+          Tu as un code parrain ?
+        </button>
+      ) : (
+        <div className="w-full max-w-xs mb-8">
+          {referralSaved ? (
+            <div className="flex items-center justify-center gap-2 text-white/80 text-sm font-medium">
+              <Check className="w-4 h-4" />
+              Code enregistré !
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={referralCode}
+                onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                placeholder="CODE PARRAIN"
+                maxLength={12}
+                className="flex-1 h-11 rounded-xl bg-white/15 border border-white/20 text-white text-center text-sm font-bold tracking-wider placeholder:text-white/30 focus:outline-none focus:border-white/40"
+              />
+              <button
+                onClick={handleReferralSubmit}
+                disabled={!referralCode.trim()}
+                className="h-11 px-4 rounded-xl bg-white/20 text-white font-semibold text-sm border border-white/20 disabled:opacity-30 hover:bg-white/30 transition-colors"
+              >
+                OK
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* CTA */}
       <Button

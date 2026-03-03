@@ -29,7 +29,7 @@ function WeightCard({ records, dailyLogs }) {
     : null;
 
   const TrendIcon = trend === "up" ? TrendingUp : trend === "down" ? TrendingDown : Minus;
-  const trendColor = trend === "up" ? "#f97316" : trend === "down" ? "#f97316" : "#94a3b8";
+  const trendColor = trend === "up" ? "#d97706" : trend === "down" ? "#d97706" : "#94a3b8";
 
   return (
     <Link to={createPageUrl("Notebook")} className="block">
@@ -64,7 +64,7 @@ function MoodCard({ checkins }) {
     : null;
 
   const MOOD_LABELS = { 1: "Triste", 2: "Bof", 3: "Bien", 4: "Super" };
-  const color = avg >= 3.5 ? "#10b981" : avg >= 2.5 ? "#f97316" : avg ? "#ef4444" : "#94a3b8";
+  const color = avg >= 3.5 ? "#10b981" : avg >= 2.5 ? "#d97706" : avg ? "#ef4444" : "#94a3b8";
 
   return (
     <Link to={createPageUrl("Dashboard")} className="block">
@@ -97,7 +97,7 @@ function TrainingCard({ exercises }) {
   const completed = exercises.filter(e => e.completed).length;
   const total = Math.max(exercises.length, 10);
   const pct = Math.round((completed / total) * 100);
-  const color = pct >= 70 ? "#10b981" : pct >= 30 ? "#f97316" : "#3b82f6";
+  const color = pct >= 70 ? "#10b981" : pct >= 30 ? "#d97706" : "#3b82f6";
 
   return (
     <Link to={createPageUrl("Training")} className="block">
@@ -174,11 +174,11 @@ function VaccineCard({ records }) {
           <div className="w-7 h-7 rounded-xl bg-emerald-50 flex items-center justify-center">
             <Syringe className="w-3.5 h-3.5 text-emerald-500" />
           </div>
-          {urgent && <span className="text-[9px] font-bold bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded-full">Bientôt</span>}
+          {urgent && <span className="text-[9px] font-bold bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded-full">Bientôt</span>}
         </div>
         {next ? (
           <>
-            <p className="text-2xl font-black leading-none" style={{ color: urgent ? "#f97316" : "#10b981" }}>
+            <p className="text-2xl font-black leading-none" style={{ color: urgent ? "#d97706" : "#10b981" }}>
               {daysUntil}<span className="text-sm font-medium text-muted-foreground ml-1">j</span>
             </p>
             <p className="text-[11px] text-muted-foreground mt-1 truncate">{next.title}</p>

@@ -7,7 +7,7 @@ const STREAK_LEVELS = [
   { min: 3,  max: 6,  label: "Régulier",   color: "#10b981" },
   { min: 7,  max: 13, label: "Assidu",     color: "#3b82f6" },
   { min: 14, max: 29, label: "Champion",   color: "#8b5cf6" },
-  { min: 30, max: 99, label: "Légendaire", color: "#f97316" },
+  { min: 30, max: 99, label: "Légendaire", color: "#d97706" },
   { min: 100, max: Infinity, label: "Mythique", color: "#ef4444" },
 ];
 

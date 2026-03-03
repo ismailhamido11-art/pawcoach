@@ -45,8 +45,8 @@ function RecordItem({ record }) {
         )}
         {record.next_date && (
           <div className="flex items-center gap-1 mt-1">
-            <Calendar className="w-3 h-3 text-orange-500" />
-            <span className="text-[10px] text-orange-600 font-medium">Rappel : {record.next_date}</span>
+            <Calendar className="w-3 h-3 text-amber-500" />
+            <span className="text-[10px] text-amber-600 font-medium">Rappel : {record.next_date}</span>
           </div>
         )}
       </div>
@@ -95,7 +95,7 @@ export default function DogPublicProfile() {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 text-teal-600 animate-spin" />
+          <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
           <p className="text-sm text-slate-500">Chargement du dossier…</p>
         </div>
       </div>
@@ -260,9 +260,9 @@ export default function DogPublicProfile() {
         {/* Footer PawCoach */}
         <div className="text-center pt-2">
           <div className="inline-flex items-center gap-2 bg-white border border-slate-100 rounded-full px-4 py-2 shadow-sm">
-            <PawPrint className="w-4 h-4 text-teal-600" />
+            <PawPrint className="w-4 h-4 text-emerald-600" />
             <span className="text-xs font-bold text-slate-600">Dossier géré via</span>
-            <span className="text-xs font-black text-teal-700">PawCoach</span>
+            <span className="text-xs font-black text-emerald-700">PawCoach</span>
           </div>
           <p className="text-[10px] text-slate-400 mt-2">Ce dossier est partagé par le propriétaire. PawCoach n'est pas un service vétérinaire.</p>
         </div>

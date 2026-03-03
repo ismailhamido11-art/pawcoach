@@ -120,13 +120,13 @@ function buildRecommendations({ records, exercises, scans, checkins, dailyLogs, 
       id: "daily_log",
       priority: 4,
       icon: Footprints,
-      iconBg: "bg-teal-50",
-      iconColor: "#14b8a6",
+      iconBg: "bg-emerald-50",
+      iconColor: "#10b981",
       label: "Log de la journée manquant",
       sub: "Poids, balade, hydratation — 30 sec",
       page: "Home",
       cta: "Logger maintenant",
-      accent: "border-l-teal-400",
+      accent: "border-l-emerald-400",
       fab: true, // signal to scroll/open FAB
     });
   }

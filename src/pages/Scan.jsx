@@ -33,12 +33,12 @@ const VERDICT_CONFIG = {
   },
   caution: {
     label: "⚠️ Avec précaution",
-    badgeBg: "bg-orange-100 text-orange-700",
-    cardBg: "bg-orange-50",
-    border: "border-orange-200",
-    ring: "#f97316",
+    badgeBg: "bg-amber-100 text-amber-700",
+    cardBg: "bg-amber-50",
+    border: "border-amber-200",
+    ring: "#d97706",
     icon: AlertTriangle,
-    iconColor: "text-orange-500",
+    iconColor: "text-amber-600",
   },
   toxic: {
     label: "💀 TOXIQUE",

@@ -24,6 +24,9 @@ Deno.serve(async (req) => {
       customer_email: user.email,
       success_url: `${origin}/?premium=success`,
       cancel_url: `${origin}/Premium`,
+      subscription_data: {
+        trial_period_days: 7,
+      },
       metadata: {
         base44_app_id: Deno.env.get("BASE44_APP_ID"),
         user_email: user.email,

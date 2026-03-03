@@ -28,9 +28,9 @@ const GATE_CONTENT = {
     Icon: FileText,
     title: "Notes libres",
     description: "Consigne tout ce qui compte : comportements inhabituels, questions pour le véto, observations quotidiennes.",
-    color: "bg-teal-50 border-teal-200",
-    iconBg: "bg-teal-100",
-    iconColor: "text-teal-600",
+    color: "bg-emerald-50 border-emerald-200",
+    iconBg: "bg-emerald-100",
+    iconColor: "text-emerald-600",
   },
 };
 

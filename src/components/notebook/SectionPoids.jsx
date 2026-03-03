@@ -77,7 +77,7 @@ export default function SectionPoids({ records, dogId, onDelete }) {
 
       {weights.slice().reverse().map(r => (
         <div key={r.id} className="flex items-center gap-3 p-3.5 rounded-xl border border-border bg-white">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 border bg-teal-50 border-teal-100">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 border bg-emerald-50 border-emerald-100">
             <Weight className="w-4 h-4 text-primary" />
           </div>
           <div className="flex-1">

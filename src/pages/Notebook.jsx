@@ -99,7 +99,7 @@ function HealthStatusBar({ dog, records }) {
             className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold ${
               item.ok
                 ? "bg-green-50 text-green-700"
-                : "bg-orange-50 text-orange-600"
+                : "bg-amber-50 text-amber-600"
             }`}
           >
             {item.icon}
@@ -296,7 +296,7 @@ export default function Notebook() {
             whileTap={{ scale: 0.96 }}
             transition={spring}
             onClick={() => setShowDiagnosisModal(true)}
-            className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-2xl transition-colors hover:shadow-md"
+            className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-red-50 to-amber-50 border border-red-200 rounded-2xl transition-colors hover:shadow-md"
           >
             <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
               <HeartPulse className="w-5 h-5 text-red-600" />
@@ -378,7 +378,7 @@ export default function Notebook() {
                       onDelete={handleDelete}
                       icon={getIconForType(r.type)}
                       accentClass={getAccentClassForType(r.type)}
-                      extra={r.type === 'weight' ? <span className="text-xs font-bold text-teal-600 mt-1 block">{r.value} kg</span> : null}
+                      extra={r.type === 'weight' ? <span className="text-xs font-bold text-emerald-600 mt-1 block">{r.value} kg</span> : null}
                     />
                   ))
                 )}

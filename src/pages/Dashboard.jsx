@@ -197,7 +197,7 @@ export default function Dashboard() {
   if (progress.length >= 2) score += 5;
   score = Math.min(100, score);
 
-  const scoreColor = score >= 80 ? "#10b981" : score >= 60 ? "#f97316" : "#ef4444";
+  const scoreColor = score >= 80 ? "#10b981" : score >= 60 ? "#d97706" : "#ef4444";
   const scoreLabel = score >= 80 ? "Excellent" : score >= 60 ? "Bon" : "À améliorer";
 
   // Next steps
@@ -404,7 +404,7 @@ export default function Dashboard() {
               </div>
               <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-primary inline-block" />Humeur</span>
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-teal-400 inline-block" />Énergie</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />Énergie</span>
               </div>
             </div>
             <ResponsiveContainer width="100%" height={140}>
