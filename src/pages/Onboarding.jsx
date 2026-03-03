@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { isUserPremium } from "@/utils/premium";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera as CameraIcon, PawPrint, Dog as DogIcon, Cake, Users, Scale, PersonStanding, Home as HomeIcon, Hospital, HeartPulse, GraduationCap, Salad, Smile, Handshake, Loader2, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -174,10 +175,10 @@ export default function Onboarding() {
       const user = await base44.auth.me();
       const FREE_MAX = 1, PREMIUM_MAX = 3;
       const existingDogs = await base44.entities.Dog.filter({ owner: user.email });
-      const maxDogs = user?.is_premium ? PREMIUM_MAX : FREE_MAX;
+      const maxDogs = isUserPremium(user) ? PREMIUM_MAX : FREE_MAX;
       if (existingDogs.length >= maxDogs) {
         setSaving(false); savingRef.current = false;
-        if (!user?.is_premium) navigate(createPageUrl("Premium") + "?from=profile");
+        if (!isUserPremium(user)) navigate(createPageUrl("Premium") + "?from=profile");
         else { alert("Maximum 3 chiens atteint"); navigate(createPageUrl("Home")); }
         return;
       }
@@ -225,8 +226,11 @@ Extrais ces informations et renvoie un objet JSON.
             body: `${dog.name} est maintenant inscrit ! Profitez de l'application !`,
           });
         } catch (e) {}
-        // Store flag server-side so Home can show premium nudge on first visit
-        try { await base44.auth.updateMe({ premium_onboarding_nudge_shown: false }); } catch(e) {}
+        // Activate 7-day free trial + store nudge flag
+        try {
+          const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+          await base44.auth.updateMe({ premium_onboarding_nudge_shown: false, trial_expires_at: trialEnd });
+        } catch(e) {}
       }
       setDone(true);
     } catch (e) {

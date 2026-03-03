@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { isUserPremium } from "@/utils/premium";
 import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
 import HeroHeader from "../components/home/HeroHeader";
@@ -93,7 +94,7 @@ export default function Home() {
             setWeeklyInsight(insights.sort((a, b) => (b.week_start || "").localeCompare(a.week_start || ""))[0]);
           }
           // Post-onboarding premium nudge (first visit, non-premium)
-          if (!u.is_premium && u.premium_onboarding_nudge_shown === false) {
+          if (!isUserPremium(u) && u.premium_onboarding_nudge_shown === false) {
             setShowPremiumNudge(true);
             try { await base44.auth.updateMe({ premium_onboarding_nudge_shown: true }); } catch(e) {}
           }
@@ -232,7 +233,7 @@ export default function Home() {
         <JournalLog checkins={recentCheckins} todayCheckin={todayCheckin} />
 
         {/* Premium value banner (free users with activity) */}
-        {user && !user.is_premium && (
+        {user && !isUserPremium(user) && (
           <PremiumValueBanner streak={streak} checkins={recentCheckins} />
         )}
 

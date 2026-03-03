@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { Crown, ChevronRight, Zap } from "lucide-react";
+import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
 
 export default function SubscriptionSection({ user }) {
   const navigate = useNavigate();
@@ -24,28 +25,50 @@ export default function SubscriptionSection({ user }) {
       </div>
 
       <div className="px-4 py-4">
-        {user?.is_premium ? (
+        {isUserPremium(user) ? (
           <div className="space-y-3">
-            <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
-              <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                <Crown className="w-4 h-4 text-emerald-600" />
+            {getTrialDaysLeft(user) > 0 ? (
+              <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl p-3">
+                <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                  <Crown className="w-4 h-4 text-amber-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-amber-800">Essai gratuit · {getTrialDaysLeft(user)}j restants</p>
+                  <p className="text-xs text-amber-600/80">Profite de tous les avantages Premium</p>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-bold text-emerald-800">Premium actif ✓</p>
-                {user.premium_since && (
-                  <p className="text-xs text-emerald-600/80">
-                    Depuis le {new Date(user.premium_since).toLocaleDateString("fr-FR")}
-                  </p>
-                )}
+            ) : (
+              <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <Crown className="w-4 h-4 text-emerald-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-emerald-800">Premium actif</p>
+                  {user.premium_since && (
+                    <p className="text-xs text-emerald-600/80">
+                      Depuis le {new Date(user.premium_since).toLocaleDateString("fr-FR")}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-            <button
-              onClick={handlePortal}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-muted/30 transition-all"
-            >
-              Gérer mon abonnement
-              <ChevronRight className="w-4 h-4 text-muted-foreground" />
-            </button>
+            )}
+            {user?.is_premium ? (
+              <button
+                onClick={handlePortal}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-muted/30 transition-all"
+              >
+                Gerer mon abonnement
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate(createPageUrl("Premium"))}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-accent text-sm font-semibold text-accent hover:bg-accent/5 transition-all"
+              >
+                S'abonner maintenant
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
           </div>
         ) : (
           <div className="space-y-3">

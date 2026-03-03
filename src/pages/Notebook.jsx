@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { isUserPremium } from "@/utils/premium";
 import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
 import SectionVaccins from "../components/notebook/SectionVaccins";
@@ -7,8 +8,9 @@ import SectionPoids from "../components/notebook/SectionPoids";
 import PremiumSection from "../components/notebook/PremiumSection";
 import UpcomingReminders from "../components/notebook/UpcomingReminders";
 import SmartHealthAssistant from "../components/notebook/SmartHealthAssistant";
+import GuidanceTip from "../components/notebook/GuidanceTip";
 import { RecordRow } from "../components/notebook/SectionVaccins";
-import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2, HeartPulse, ClipboardList, Sparkles } from "lucide-react";
+import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2, HeartPulse, ClipboardList, Sparkles, PawPrint, Shield, TrendingUp, Camera } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import IconBadge from "@/components/ui/IconBadge";
@@ -20,23 +22,26 @@ import QRCodeCard from "../components/notebook/QRCodeCard";
 import { motion } from "framer-motion";
 import Illustration from "../components/illustrations/Illustration";
 
+import heroDogImg from "../assets/images/hero-dog.jpg";
+import vetCareImg from "../assets/images/vet-care.jpg";
+
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
   { id: "vaccine",    label: "Vaccins",  shortLabel: "Vaccins" },
-  { id: "vet_visit",  label: "Visites",  shortLabel: "Vétérinaire" },
+  { id: "vet_visit",  label: "Visites",  shortLabel: "Veterinaire" },
   { id: "weight",     label: "Poids",    shortLabel: "Poids" },
-  { id: "medication", label: "Médoc.",   shortLabel: "Médicaments" },
+  { id: "medication", label: "Medoc.",   shortLabel: "Medicaments" },
   { id: "note",       label: "Notes",    shortLabel: "Notes" },
 ];
 
 const PREMIUM_CONFIGS = {
   vet_visit: {
-    label: "Visites vétérinaire",
-    emoji: "🏥",
-    emptyText: "Aucune visite vétérinaire enregistrée",
-    placeholder: "Ex: Visite de contrôle annuelle",
+    label: "Visites veterinaire",
+    emoji: "",
+    emptyText: "Aucune visite veterinaire enregistree",
+    placeholder: "Ex: Visite de controle annuelle",
     addLabel: "Ajouter une visite",
     showNextDate: true,
     Icon: Stethoscope,
@@ -46,11 +51,11 @@ const PREMIUM_CONFIGS = {
     btnClass: "bg-purple-600 hover:bg-purple-700",
   },
   medication: {
-    label: "Médicaments",
-    emoji: "💊",
-    emptyText: "Aucun médicament enregistré",
+    label: "Medicaments",
+    emoji: "",
+    emptyText: "Aucun medicament enregistre",
     placeholder: "Ex: Antiparasitaire Frontline",
-    addLabel: "Ajouter un m\u00e9dicament",
+    addLabel: "Ajouter un medicament",
     showNextDate: true,
     Icon: Pill,
     bgClass: "bg-emerald-50",
@@ -60,8 +65,8 @@ const PREMIUM_CONFIGS = {
   },
   note: {
     label: "Notes",
-    emoji: "📝",
-    emptyText: "Aucune note enregistrée",
+    emoji: "",
+    emptyText: "Aucune note enregistree",
     placeholder: "Titre de la note",
     addLabel: "Ajouter une note",
     showNextDate: false,
@@ -73,37 +78,60 @@ const PREMIUM_CONFIGS = {
   },
 };
 
-// Compact Health Status Bar
+// Health Status Bar — design v0 enrichi
 function HealthStatusBar({ dog, records }) {
   if (!dog) return null;
 
   const lastWeight = records.find(r => r.type === 'weight');
   const lastVaccine = records.find(r => r.type === 'vaccine');
   const lastVet = records.find(r => r.type === 'vet_visit');
+  const allGood = !!lastWeight && !!lastVaccine && !!lastVet;
 
   const items = [
-    { label: "Poids", ok: !!lastWeight, value: lastWeight ? `${lastWeight.value}kg` : "—", icon: <Weight className="w-3.5 h-3.5" /> },
-    { label: "Vaccins", ok: !!lastVaccine, value: lastVaccine ? "OK" : "—", icon: <Syringe className="w-3.5 h-3.5" /> },
-    { label: "Véto", ok: !!lastVet, value: lastVet ? "OK" : "—", icon: <Stethoscope className="w-3.5 h-3.5" /> },
+    { label: "Poids", ok: !!lastWeight, value: lastWeight ? `${lastWeight.value}kg` : "--", icon: <Weight className="w-3.5 h-3.5" /> },
+    { label: "Vaccins", ok: !!lastVaccine, value: lastVaccine ? "OK" : "--", icon: <ShieldCheck className="w-3.5 h-3.5" /> },
+    { label: "Veto", ok: !!lastVet, value: lastVet ? "OK" : "--", icon: <Stethoscope className="w-3.5 h-3.5" /> },
   ];
 
   return (
-    <div className="flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-sm border-b border-slate-100">
-      <span className="text-sm font-bold text-foreground">{dog.name}</span>
-      <span className="text-xs text-muted-foreground">{dog.breed} · {dog.weight}kg</span>
-      <div className="flex-1" />
-      <div className="flex items-center gap-1.5">
-        {items.map((item, i) => (
+    <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden mx-4 -mt-4 relative z-10">
+      <div className="flex items-center gap-3.5 p-4">
+        <div className="relative w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 border-2 border-primary/20 shadow-sm">
+          {dog.photo ? (
+            <img src={dog.photo} alt={dog.name} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full bg-primary/10 flex items-center justify-center">
+              <PawPrint className="w-6 h-6 text-primary" />
+            </div>
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <p className="font-bold text-foreground text-base truncate">{dog.name}</p>
+            {allGood && (
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
+                <HeartPulse className="w-2.5 h-2.5" />
+                En forme
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground mt-0.5">{dog.breed} · {dog.weight}kg</p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 px-4 pb-4">
+        {items.map((item) => (
           <div
-            key={i}
-            className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold ${
+            key={item.label}
+            className={`flex-1 flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-medium transition-colors ${
               item.ok
-                ? "bg-green-50 text-green-700"
-                : "bg-amber-50 text-amber-600"
+                ? "bg-primary/10 text-primary border border-primary/10"
+                : "bg-muted text-muted-foreground border border-transparent"
             }`}
           >
             {item.icon}
-            {item.value}
+            <span>{item.label}</span>
+            <span className="font-bold">{item.value}</span>
           </div>
         ))}
       </div>
@@ -140,7 +168,6 @@ export default function Notebook() {
         setRecords(recs);
         setCheckins(cks);
         if (recs.length > 0) setShowRecords(true);
-        // Load vet notes for this dog
         try {
           const notes = await base44.entities.VetNote.filter({ dog_id: activeDog.id });
           setVetNotes(notes);
@@ -157,8 +184,6 @@ export default function Notebook() {
     setRecords(prev => [...prev, rec]);
     setShowRecords(true);
     if (navigator.vibrate) navigator.vibrate(30);
-
-    // --- STREAK UPDATE ---
     if (dog && user) {
       await updateStreakSilently(dog.id, user.email);
     }
@@ -170,11 +195,11 @@ export default function Notebook() {
       setRecords(prev => prev.filter(r => r.id !== id));
     } catch (err) {
       console.error("Delete error:", err);
-      alert("Erreur lors de la suppression. Réessaie.");
+      alert("Erreur lors de la suppression. Reessaie.");
     }
   };
 
-  const isPremium = user?.is_premium;
+  const isPremium = isUserPremium(user);
   const countForTab = (id) => id === "all" ? records.length : records.filter(r => r.type === id).length;
 
   const sortedRecords = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -202,18 +227,10 @@ export default function Notebook() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background pb-24">
-        <div className="gradient-primary pt-14 pb-0 px-5 relative overflow-hidden">
-          <div className="relative z-10 flex items-end justify-between">
-            <div className="pb-5">
-              <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-1" />
-              <div className="h-7 w-40 bg-white/20 rounded animate-pulse" />
-              <div className="h-4 w-48 bg-white/10 rounded animate-pulse mt-2" />
-            </div>
-            <div className="w-28 h-28 flex-shrink-0 bg-white/10 rounded-full animate-pulse" />
-          </div>
-        </div>
-        <div className="px-5 pt-5 space-y-3">
-          <div className="h-12 bg-white rounded-2xl border border-border animate-pulse" />
+        {/* Skeleton hero */}
+        <div className="relative h-52 bg-muted animate-pulse" />
+        <div className="px-4 -mt-4 relative z-10 space-y-4">
+          <div className="h-28 bg-white rounded-2xl border border-border animate-pulse" />
           <div className="h-20 bg-white rounded-2xl border border-border animate-pulse" />
           <div className="h-20 bg-white rounded-2xl border border-border animate-pulse" />
         </div>
@@ -226,101 +243,168 @@ export default function Notebook() {
     <div className="min-h-screen bg-background pb-24">
       <WellnessBanner />
 
-      {/* Compact Header */}
-      <div className="gradient-primary pt-14 pb-0 px-5 relative overflow-hidden">
-        <div className="relative z-10 flex items-end justify-between">
-          <div className="pb-5">
-            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
-            <h1 className="text-white font-black text-2xl leading-tight">Carnet de santé</h1>
-            <p className="text-white/70 text-xs mt-1">
-              {dog ? `Le suivi intelligent de ${dog.name}` : "Chargement..."}
-            </p>
-            {dog && (
-              <button
-                onClick={() => setShowShareModal(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-medium transition-all mt-3"
-              >
-                <Stethoscope className="w-3.5 h-3.5" />
-                Partager avec le véto
-              </button>
-            )}
+      {/* Hero Header avec photo du chien — design v0 */}
+      <header className="relative overflow-hidden">
+        <div className="relative h-52">
+          <img
+            src={dog?.photo || heroDogImg}
+            alt={dog ? `Photo de ${dog.name}` : "PawCoach"}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/60 via-primary/40 to-primary/90" />
+
+          <div className="absolute inset-0 flex flex-col justify-between p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <PawPrint className="w-5 h-5 text-white/90" />
+                  <h1 className="text-lg font-bold text-white tracking-wide">PawCoach</h1>
+                </div>
+                <p className="text-xs text-white/70 mt-0.5 ml-7">Carnet de sante</p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                <HeartPulse className="w-5 h-5 text-white" />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-end justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-white">{dog?.name || "Mon chien"}</h2>
+                  <p className="text-sm text-white/80 mt-0.5">
+                    {dog?.breed} · {dog?.age || ""} · {dog?.weight}kg
+                  </p>
+                </div>
+                {dog && (
+                  <button
+                    onClick={() => setShowShareModal(true)}
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white text-xs font-medium transition-all"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
+                    Partager au veto
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 mt-3">
+                {records.find(r => r.type === 'vaccine') && (
+                  <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/30 backdrop-blur-sm text-[11px] font-medium text-white">
+                    <Shield className="w-3 h-3" />
+                    Vaccins a jour
+                  </span>
+                )}
+                {records.find(r => r.type === 'weight') && (
+                  <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-400/30 backdrop-blur-sm text-[11px] font-medium text-white">
+                    <TrendingUp className="w-3 h-3" />
+                    Poids suivi
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
-          <motion.div
-            animate={{ scale: [1, 1.03, 1] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="w-28 h-28 flex-shrink-0"
-          >
-            <Illustration name="veterinary" alt="Carnet de santé" className="w-full h-full drop-shadow-lg" />
-          </motion.div>
         </div>
-        <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
-      </div>
+        <div className="h-5 bg-primary/90 rounded-b-[28px] -mt-1" />
+      </header>
 
       {/* Health Status Bar */}
       <HealthStatusBar dog={dog} records={records} />
 
-      {/* QR Code urgence */}
-      {dog && (
-        <div className="px-5 mt-4">
-          <QRCodeCard dog={dog} />
-        </div>
-      )}
+      {/* Content */}
+      <div className="px-4 mt-4 space-y-4">
+        {/* Guidance Tip */}
+        {records.length === 0 && (
+          <GuidanceTip
+            id="welcome"
+            title={`Bienvenue dans le carnet de ${dog?.name || "votre chien"}`}
+            description="Suivez la sante de votre compagnon : vaccins, poids, visites veto, medicaments. Tout est centralise et accessible en un coup d'oeil."
+            icon={<PawPrint className="w-5 h-5" />}
+            variant="primary"
+          />
+        )}
 
-      {/* Import IA Button */}
-      {dog && (
-        <div className="px-5 mt-4">
+        {/* Upcoming Reminders */}
+        <UpcomingReminders records={records} isPremium={isPremium} />
+
+        {/* QR Code urgence */}
+        {dog && (
+          <div>
+            <QRCodeCard dog={dog} />
+            <GuidanceTip
+              id="qr"
+              title="Protegez votre compagnon"
+              description="Le QR code d'urgence permet a quiconque trouve votre animal d'acceder a son dossier medical. Imprimez-le et attachez-le au collier."
+              icon={<Shield className="w-5 h-5" />}
+              variant="subtle"
+              className="mt-2"
+            />
+          </div>
+        )}
+
+        {/* Image emotionnelle vet-care — design v0 */}
+        <div className="relative overflow-hidden rounded-2xl shadow-sm border border-border">
+          <div className="relative h-32">
+            <img
+              src={vetCareImg}
+              alt="Soins veterinaires"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-transparent" />
+            <div className="absolute inset-0 flex items-center p-5">
+              <div>
+                <p className="text-xs font-semibold text-primary uppercase tracking-wider">Suivi veterinaire</p>
+                <p className="text-base font-bold text-foreground mt-1">Chaque visite compte</p>
+                <p className="text-xs text-muted-foreground mt-1 max-w-[200px]">
+                  Gardez un historique complet pour un suivi optimal de {dog?.name || "votre chien"}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Import IA Button */}
+        {dog && (
           <Link to={createPageUrl("HealthImport")}>
             <motion.div
               whileTap={{ scale: 0.96 }}
               transition={spring}
-              className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-2xl hover:shadow-md transition-all mb-3"
+              className="w-full flex items-center gap-3 p-4 bg-white border border-border rounded-2xl shadow-sm hover:shadow-md transition-all group"
             >
-              <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-5 h-5 text-primary" />
+              <div className="w-11 h-11 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:bg-accent/15 transition-colors">
+                <Camera className="w-5 h-5 text-accent" />
               </div>
-              <div className="text-left flex-1">
-                <p className="text-sm font-semibold text-foreground">Importer des données de santé</p>
-                <p className="text-[11px] text-muted-foreground">Photo, PDF, email véto — l'IA extrait tout automatiquement</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-foreground">Importer des donnees de sante</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Photo, PDF, email veto — l'IA extrait tout automatiquement</p>
               </div>
-              <FileText className="w-4 h-4 text-muted-foreground" />
+              <Sparkles className="w-4 h-4 text-accent flex-shrink-0" />
             </motion.div>
           </Link>
-        </div>
-      )}
+        )}
 
-      {/* AI Pre-Diagnosis Button */}
-      {dog && (
-        <div className="px-5 mt-0">
+        {/* AI Pre-Diagnosis Button */}
+        {dog && (
           <motion.button
             whileTap={{ scale: 0.96 }}
             transition={spring}
             onClick={() => setShowDiagnosisModal(true)}
-            className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-red-50 to-amber-50 border border-red-200 rounded-2xl transition-colors hover:shadow-md"
+            className="w-full flex items-center gap-3 p-4 bg-destructive/5 border border-destructive/15 rounded-2xl transition-all hover:shadow-md active:scale-[0.99]"
           >
-            <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
-              <HeartPulse className="w-5 h-5 text-red-600" />
+            <div className="w-11 h-11 rounded-xl bg-destructive/10 flex items-center justify-center flex-shrink-0">
+              <AlertTriangle className="w-5 h-5 text-destructive" />
             </div>
-            <div className="text-left flex-1">
+            <div className="flex-1 min-w-0 text-left">
               <p className="text-sm font-semibold text-foreground">Mon chien est malade ?</p>
-              <p className="text-[11px] text-muted-foreground">Pré-diagnostic IA & Trouver un véto</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Pre-diagnostic IA & Trouver un veto</p>
             </div>
-            <Stethoscope className="w-4 h-4 text-muted-foreground" />
           </motion.button>
-        </div>
-      )}
+        )}
 
-
-
-      {/* Main: Embedded Conversation */}
-      <div className="px-5 mt-1 mb-4">
+        {/* Smart Health Assistant */}
         <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} />
       </div>
 
-      <UpcomingReminders records={records} isPremium={isPremium} />
-
       {/* Records Section - Collapsible */}
-      <div className="px-5 mt-2">
+      <div className="px-4 mt-4">
         <button
           onClick={() => setShowRecords(!showRecords)}
           className="w-full flex items-center justify-between py-3 px-1 text-sm font-semibold text-foreground"
@@ -359,16 +443,14 @@ export default function Notebook() {
           </div>
 
           {/* Section content */}
-          <div className="px-5 pt-4">
+          <div className="px-4 pt-4">
             {activeTab === "all" && (
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {sortedRecords.length === 0 ? (
-                  <div className="text-center py-8">
-                    <div className="w-24 h-24 mx-auto mb-3">
-                      <Illustration name="veterinary" alt="Carnet vide" className="w-full h-full drop-shadow-md opacity-80" />
-                    </div>
-                    <p className="text-sm font-semibold text-foreground">Le carnet de {dog?.name} est prêt</p>
-                    <p className="text-xs text-muted-foreground mt-1">Discute avec l'assistant pour ajouter des entrées</p>
+                  <div className="flex flex-col items-center py-10 text-center">
+                    <Illustration name="goodDoggy" className="w-28 h-28 mb-4 opacity-80" alt="Chien content" />
+                    <p className="text-sm font-semibold text-foreground">Le carnet de {dog?.name} est pret</p>
+                    <p className="text-xs text-muted-foreground mt-1">Discute avec l'assistant pour ajouter des entrees</p>
                   </div>
                 ) : (
                   sortedRecords.map(r => (
@@ -406,12 +488,18 @@ export default function Notebook() {
 
       {/* Vet Notes Section */}
       {vetNotes.length > 0 && (
-        <div className="px-5 mt-4 mb-4">
-          <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-            <Stethoscope className="w-4 h-4 text-primary" />
-            Notes de votre vétérinaire ({vetNotes.length})
-          </h3>
-          <VetNotesList notes={vetNotes} />
+        <div className="px-4 mt-4 mb-4">
+          <div className="bg-white rounded-2xl border border-border shadow-sm p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Stethoscope className="w-4 h-4 text-primary" />
+              </div>
+              <h3 className="text-sm font-semibold text-foreground">
+                Notes de votre veterinaire ({vetNotes.length})
+              </h3>
+            </div>
+            <VetNotesList notes={vetNotes} />
+          </div>
         </div>
       )}
 

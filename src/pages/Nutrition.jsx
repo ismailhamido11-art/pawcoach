@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Salad, MessageCircle, CalendarRange, Bookmark, BookmarkCheck } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
+import { isUserPremium } from "@/utils/premium";
 import IconBadge from "@/components/ui/IconBadge";
 import { InlineIcon } from "@/components/ui/IconBadge";
 import ReactMarkdown from "react-markdown";
@@ -67,7 +68,7 @@ export default function Nutrition() {
       setUser(u);
 
       // Shared quota pool with Chat
-      if (!u.is_premium) {
+      if (!isUserPremium(u)) {
         const today = getTodayString();
         const lastReset = u.messages_daily_reset;
         const remaining = u.messages_remaining ?? 20;
@@ -106,7 +107,7 @@ export default function Nutrition() {
   const sendMessage = async (text) => {
     const content = (text || input).trim();
     if (!content || !dog || loading) return;
-    if (!user?.is_premium) {
+    if (!isUserPremium(user)) {
       const remaining = messagesRemaining ?? 0;
       if (remaining <= 0) return;
     }
@@ -128,7 +129,7 @@ export default function Nutrition() {
       const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
       setMessages(prev => [...prev, { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() }]);
 
-      if (!user?.is_premium) {
+      if (!isUserPremium(user)) {
         const newRemaining = Math.max(0, (messagesRemaining ?? 0) - 1);
         setMessagesRemaining(newRemaining);
         await base44.auth.updateMe({ messages_remaining: newRemaining, messages_daily_reset: getTodayString() });
@@ -170,7 +171,7 @@ export default function Nutrition() {
     `Aliments à éviter absolument`,
   ] : [];
 
-  const isNutriLimitReached = !user?.is_premium && (messagesRemaining ?? 0) <= 0;
+  const isNutriLimitReached = !isUserPremium(user) && (messagesRemaining ?? 0) <= 0;
   const showQuickActions = messages.length <= 1 && !isNutriLimitReached;
 
   return (
@@ -185,14 +186,14 @@ export default function Nutrition() {
             <h1 className="text-white font-black text-2xl leading-tight">NutriCoach</h1>
             {dog && <p className="text-white/70 text-xs mt-0.5">Coach nutrition IA pour {dog.name}</p>}
             <div className="flex items-center gap-2 mt-2 flex-wrap">
-              {!user?.is_premium && messagesRemaining !== null && (
+              {!isUserPremium(user) && messagesRemaining !== null && (
                 <div className="bg-white/20 px-2.5 py-1 rounded-full">
                   <span className="text-white text-xs font-medium">
                     {messagesRemaining} msg restant{messagesRemaining !== 1 ? "s" : ""}
                   </span>
                 </div>
               )}
-              {user?.is_premium && (
+              {isUserPremium(user) && (
                 <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
                   <span className="text-white text-xs font-medium">Premium</span>
@@ -239,7 +240,7 @@ export default function Nutrition() {
 
       {activeTab === "mealplan" ? (
         <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
-          <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={user?.is_premium} />
+          <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={isUserPremium(user)} />
         </div>
       ) : (
         <>

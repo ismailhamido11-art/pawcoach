@@ -1,4 +1,5 @@
 import { Crown, Star, Medal, Award, Trophy } from "lucide-react";
+import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
 
 const BADGES = [
   { name: "Novice", threshold: 0, icon: Star, color: "bg-slate-100 text-slate-500" },
@@ -34,9 +35,9 @@ export default function ProfileHeader({ user }) {
 
           {/* Subscription badge */}
           <div className="flex items-center gap-2 mt-2">
-            {user?.is_premium ? (
+            {isUserPremium(user) ? (
               <span className="flex items-center gap-1 bg-emerald-400/30 border border-emerald-300/40 px-2.5 py-1 rounded-full text-xs font-bold text-white">
-                <Crown className="w-3 h-3" /> Premium
+                <Crown className="w-3 h-3" /> {getTrialDaysLeft(user) > 0 ? `Essai · ${getTrialDaysLeft(user)}j` : "Premium"}
               </span>
             ) : (
               <span className="flex items-center gap-1 bg-white/10 border border-white/20 px-2.5 py-1 rounded-full text-xs font-semibold text-white/70">

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Check, Crown, Zap, Lock, ChevronRight, MessageCircle, ScanLine, Dumbbell, BookHeart, Salad, Search, Target, ClipboardList, Bell, BarChart3, Dog as DogIcon } from "lucide-react";
 import IconBadge from "@/components/ui/IconBadge";
@@ -51,7 +52,7 @@ export default function Premium() {
         const dogs = await base44.entities.Dog.filter({ owner: u.email });
         if (dogs.length > 0) setDog(getActiveDog(dogs));
 
-        if (u.is_premium && !u.premium_welcome_seen) {
+        if (isUserPremium(u) && !u.premium_welcome_seen) {
           setIsFirstVisit(true);
           await base44.auth.updateMe({ premium_welcome_seen: true });
         }
@@ -65,7 +66,7 @@ export default function Premium() {
   }, []);
 
   useEffect(() => {
-    if (user?.is_premium && !confettiFired.current) {
+    if (isUserPremium(user) && !confettiFired.current) {
       confettiFired.current = true;
       confetti({
         particleCount: 100,
@@ -116,7 +117,10 @@ export default function Premium() {
     );
   }
 
-  if (user?.is_premium) {
+  const trialDays = getTrialDaysLeft(user);
+  const isOnTrial = trialDays > 0 && !user?.is_premium;
+
+  if (isUserPremium(user)) {
     return (
       <div className="min-h-screen bg-background pb-24">
         <div className="gradient-primary pt-14 pb-10 px-5 text-center">
@@ -146,8 +150,20 @@ export default function Premium() {
             transition={{ delay: 0.2 }}
             className="text-white font-bold text-2xl"
           >
-            {isFirstVisit ? "Bienvenue dans le club Premium !" : "Tu es Premium !"}
+            {isOnTrial
+              ? "Essai gratuit actif"
+              : isFirstVisit ? "Bienvenue dans le club Premium !" : "Tu es Premium !"}
           </motion.h1>
+          {isOnTrial && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.25 }}
+              className="text-white/90 text-sm mt-1 font-semibold"
+            >
+              {trialDays} jour{trialDays > 1 ? "s" : ""} restant{trialDays > 1 ? "s" : ""}
+            </motion.p>
+          )}
           {dog && (
             <motion.p
               initial={{ opacity: 0 }}
@@ -155,16 +171,33 @@ export default function Premium() {
               transition={{ delay: 0.3 }}
               className="text-white/70 text-sm mt-1"
             >
-              {dog.name} a accès à tout, sans limite 🐾
+              {dog.name} a acces a tout, sans limite
             </motion.p>
           )}
         </div>
 
         <div className="px-5 -mt-4">
+          {/* Trial countdown banner */}
+          {isOnTrial && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 text-center"
+            >
+              <p className="text-sm font-semibold text-amber-800">
+                Ton essai se termine dans {trialDays} jour{trialDays > 1 ? "s" : ""}
+              </p>
+              <p className="text-xs text-amber-600 mt-1">
+                Abonne-toi pour garder tous tes avantages Premium
+              </p>
+            </motion.div>
+          )}
+
           {/* Unlocked features */}
           <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
             <div className="px-4 py-3 border-b border-border bg-muted/30">
-              <p className="text-xs font-bold text-foreground">✨ Tes avantages débloqués</p>
+              <p className="text-xs font-bold text-foreground">Tes avantages debloques</p>
             </div>
             <div className="divide-y divide-border">
               {PREMIUM_FEATURES.map((f, i) => (
@@ -192,12 +225,22 @@ export default function Premium() {
             transition={{ delay: 0.9 }}
             className="mt-6"
           >
-            <Button
-              onClick={() => navigate(createPageUrl("Home"))}
-              className="w-full h-14 rounded-xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
-            >
-              Commencer <ChevronRight className="w-5 h-5" />
-            </Button>
+            {isOnTrial ? (
+              <Button
+                onClick={handleSubscribe}
+                disabled={loading}
+                className="w-full h-14 rounded-xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
+              >
+                {loading ? "Chargement..." : `S'abonner — ${plan === "annual" ? "59,99 €/an" : "7,99 €/mois"}`}
+              </Button>
+            ) : (
+              <Button
+                onClick={() => navigate(createPageUrl("Home"))}
+                className="w-full h-14 rounded-xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
+              >
+                Commencer <ChevronRight className="w-5 h-5" />
+              </Button>
+            )}
           </motion.div>
 
           {/* Reassurance */}
@@ -207,7 +250,9 @@ export default function Premium() {
             transition={{ delay: 1 }}
             className="text-center text-xs text-muted-foreground mt-4"
           >
-            Tu peux gérer ton abonnement à tout moment depuis ton Profil.
+            {isOnTrial
+              ? "Sans engagement · Resiliation a tout moment · Paiement securise Stripe"
+              : "Tu peux gerer ton abonnement a tout moment depuis ton Profil."}
           </motion.p>
         </div>
 
@@ -280,7 +325,7 @@ export default function Premium() {
             }`}
           >
             Mensuel<br />
-            <span className={`text-xs font-normal ${plan === "monthly" ? "text-white/80" : "text-muted-foreground"}`}>7j gratuit puis 7,99 €/mois</span>
+            <span className={`text-xs font-normal ${plan === "monthly" ? "text-white/80" : "text-muted-foreground"}`}>7,99 €/mois</span>
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.96 }}
@@ -294,7 +339,7 @@ export default function Premium() {
               -37% 🔥
             </span>
             Annuel<br />
-            <span className={`text-xs font-normal ${plan === "annual" ? "text-white/80" : "text-muted-foreground"}`}>7j gratuit puis 59,99 €/an</span>
+            <span className={`text-xs font-normal ${plan === "annual" ? "text-white/80" : "text-muted-foreground"}`}>59,99 €/an · 5 €/mois</span>
           </motion.button>
         </div>
 
@@ -342,13 +387,13 @@ export default function Premium() {
           ) : (
             <>
               <Zap className="w-5 h-5" />
-              {plan === "annual" ? "Essai gratuit 7 jours — 59,99 €/an" : "Essai gratuit 7 jours — 7,99 €/mois"}
+              {plan === "annual" ? "Commencer pour 59,99 €/an" : "Commencer pour 7,99 €/mois"}
             </>
           )}
         </Button>
 
         <p className="text-center text-xs text-muted-foreground">
-          7 jours gratuits · Aucun prélèvement pendant l'essai · Résiliation à tout moment
+          Sans engagement · Résiliation à tout moment · Paiement sécurisé Stripe
         </p>
       </div>
 

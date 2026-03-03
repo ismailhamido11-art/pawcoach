@@ -10,6 +10,7 @@ import JourneyCard from "../components/training/JourneyCard";
 import JourneyView from "../components/training/JourneyView";
 import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
+import { isUserPremium } from "@/utils/premium";
 import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { updateStreakSilently } from "../components/streakHelper";
@@ -99,7 +100,7 @@ export default function Training() {
 
   const isCompleted = (order) => progresses.some(p => p.exercise_id === String(order) && p.completed);
   const completedCount = EXERCISES.filter(e => isCompleted(e.order_number)).length;
-  const isPremium = user?.is_premium;
+  const isPremium = isUserPremium(user);
 
   const getJourneyExercises = (journey) =>
     journey.exerciseOrders.map(o => EXERCISES.find(e => e.order_number === o)).filter(Boolean);
@@ -143,7 +144,7 @@ export default function Training() {
         await updateStreakSilently(dog.id, user.email);
         const prevCount = progresses.filter(p => p.completed).length;
         const newCount = newProgresses.filter(p => p.completed).length;
-        if (prevCount === 2 && newCount === 3 && !user?.is_premium) {
+        if (prevCount === 2 && newCount === 3 && !isUserPremium(user)) {
           setShowFreeGate(true);
         } else if (MILESTONES.includes(newCount)) {
           setMilestone(newCount);

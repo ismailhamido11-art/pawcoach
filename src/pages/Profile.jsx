@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { isUserPremium } from "@/utils/premium";
 import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -47,9 +48,9 @@ export default function Profile() {
   };
 
   const handleAddDog = () => {
-    if (!user?.is_premium && dogs.length >= 1) {
+    if (!isUserPremium(user) && dogs.length >= 1) {
       navigate(createPageUrl("Premium") + "?from=profile");
-    } else if (user?.is_premium && dogs.length >= 3) {
+    } else if (isUserPremium(user) && dogs.length >= 3) {
       return;
     } else {
       navigate(createPageUrl("Onboarding") + "?addDog=true");
@@ -91,7 +92,7 @@ export default function Profile() {
           activeDogId={activeDogId}
           onSwitch={handleSwitchDog}
           onAdd={handleAddDog}
-          isPremium={user?.is_premium}
+          isPremium={isUserPremium(user)}
         />
 
         <CoachSettings user={user} onSave={handleSaveUser} />

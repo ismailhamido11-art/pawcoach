@@ -13,6 +13,7 @@ import {
 import { updateStreakSilently } from "../components/streakHelper";
 import { motion } from "framer-motion";
 import Illustration from "../components/illustrations/Illustration";
+import { isUserPremium } from "@/utils/premium";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
@@ -121,7 +122,7 @@ export default function Scan() {
   };
 
   const checkScanLimit = (u) => {
-    if (u?.is_premium) return false;
+    if (isUserPremium(u)) return false;
     if (u?.signup_date) {
       const signupDate = new Date(u.signup_date);
       const daysSince = (Date.now() - signupDate) / (1000 * 60 * 60 * 24);
@@ -334,7 +335,7 @@ export default function Scan() {
         )}
 
         {/* Freemium counter */}
-        {!result && !scanLimitReached && !user?.is_premium && !isInTrial && (
+        {!result && !scanLimitReached && !isUserPremium(user) && !isInTrial && (
           <div className="flex items-center justify-between text-xs text-muted-foreground bg-muted/40 rounded-xl px-3 py-2">
             <span>Scans cette semaine : <strong className="text-foreground">{scansUsed}/{FREE_SCAN_LIMIT}</strong></span>
             <button onClick={() => window.location.href = '/Premium?from=scan'} className="flex items-center gap-1 text-primary font-semibold">

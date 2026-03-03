@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Send, Camera, Bookmark, BookmarkCheck } from "lucide-react";
 import { DogChat } from "../components/ui/PawIllustrations";
 import Illustration from "../components/illustrations/Illustration";
+import { isUserPremium } from "@/utils/premium";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
@@ -89,7 +90,7 @@ export default function Chat() {
       const u = await base44.auth.me();
       setUser(u);
 
-      if (!u.is_premium) {
+      if (!isUserPremium(u)) {
         const today = getTodayString();
         const lastReset = u.messages_daily_reset;
         const remaining = u.messages_remaining ?? 20;
@@ -150,7 +151,7 @@ export default function Chat() {
     if (!content && !hasImage) return;
     if (!dog) return;
 
-    if (!user?.is_premium) {
+    if (!isUserPremium(user)) {
       const remaining = messagesRemaining ?? 0;
       if (remaining <= 0) return;
     }
@@ -203,7 +204,7 @@ export default function Chat() {
       setMessages(prev => [...prev, assistantMsg]);
       await base44.entities.ChatMessage.create({ dog_id: dog.id, ...assistantMsg });
 
-      if (!user?.is_premium) {
+      if (!isUserPremium(user)) {
         const newRemaining = Math.max(0, (messagesRemaining ?? 0) - 1);
         setMessagesRemaining(newRemaining);
         await base44.auth.updateMe({ messages_remaining: newRemaining, messages_daily_reset: getTodayString() });
@@ -243,7 +244,7 @@ export default function Chat() {
     );
   }
 
-  const isLimitReached = !user?.is_premium && (messagesRemaining ?? 0) <= 0;
+  const isLimitReached = !isUserPremium(user) && (messagesRemaining ?? 0) <= 0;
   const showSuggestions = messages.length <= 1 && !isLimitReached;
   const suggestions = dog ? [
     `Comment dresser ${dog.name} ?`,
@@ -265,14 +266,14 @@ export default function Chat() {
             <h1 className="text-white font-black text-2xl leading-tight">Assistant IA</h1>
             {dog && <p className="text-white/70 text-xs mt-0.5">Personnalisé pour {dog.name} · {dog.breed}</p>}
             <div className="flex items-center gap-2 mt-2">
-              {!user?.is_premium && messagesRemaining !== null && (
+              {!isUserPremium(user) && messagesRemaining !== null && (
                 <div className="bg-white/20 px-2.5 py-1 rounded-full">
                   <span className="text-white text-xs font-medium">
                     {messagesRemaining} msg restant{messagesRemaining !== 1 ? "s" : ""}
                   </span>
                 </div>
               )}
-              {user?.is_premium && (
+              {isUserPremium(user) && (
                 <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
                   <span className="text-white text-xs font-medium">Premium</span>
