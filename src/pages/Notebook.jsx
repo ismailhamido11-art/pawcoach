@@ -114,6 +114,7 @@ function HealthStatusBar({ dog, records }) {
 export default function Notebook() {
   const [dog, setDog] = useState(null);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [records, setRecords] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
   const [showRecords, setShowRecords] = useState(false);
@@ -146,6 +147,8 @@ export default function Notebook() {
       }
     } catch (err) {
       console.error("Notebook load error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -194,6 +197,29 @@ export default function Notebook() {
       default: return "bg-muted border-border";
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background pb-24">
+        <div className="gradient-primary pt-14 pb-0 px-5 relative overflow-hidden">
+          <div className="relative z-10 flex items-end justify-between">
+            <div className="pb-5">
+              <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-1" />
+              <div className="h-7 w-40 bg-white/20 rounded animate-pulse" />
+              <div className="h-4 w-48 bg-white/10 rounded animate-pulse mt-2" />
+            </div>
+            <div className="w-28 h-28 flex-shrink-0 bg-white/10 rounded-full animate-pulse" />
+          </div>
+        </div>
+        <div className="px-5 pt-5 space-y-3">
+          <div className="h-12 bg-white rounded-2xl border border-border animate-pulse" />
+          <div className="h-20 bg-white rounded-2xl border border-border animate-pulse" />
+          <div className="h-20 bg-white rounded-2xl border border-border animate-pulse" />
+        </div>
+        <BottomNav currentPage="Notebook" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-24">

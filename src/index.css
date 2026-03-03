@@ -102,7 +102,7 @@
   box-shadow:
     0 1px 3px rgba(0,0,0,0.04),
     0 4px 12px rgba(0,0,0,0.03);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition: box-shadow 0.2s ease;
 }
 
 /* Interactive card hover */
@@ -126,14 +126,7 @@
 
 /* ======= SMOOTH INTERACTIONS ======= */
 
-.tap-scale {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.tap-scale:active {
-  transform: scale(0.97);
-}
-
-/* All buttons — smooth transitions (specific props to avoid breaking framer-motion) */
+/* All buttons — smooth transitions (specific props only, never transform/opacity) */
 button, [role="button"], a[class*="btn"] {
   transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
@@ -179,6 +172,15 @@ input:focus-visible, textarea:focus-visible, select:focus-visible,
 .sheet-overlay {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+}
+
+/* ======= PAGE TRANSITION (CSS-only, no framer-motion) ======= */
+
+@keyframes pageEnter {
+  from { opacity: 0.4; }
+}
+.page-enter {
+  animation: pageEnter 0.18s ease-out;
 }
 
 /* Progress bars — rounded + smooth */

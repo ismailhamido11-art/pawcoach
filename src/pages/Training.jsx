@@ -69,6 +69,7 @@ export default function Training() {
   const navigate = useNavigate();
   const [dog, setDog] = useState(null);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [progresses, setProgresses] = useState([]);
   const [selectedJourney, setSelectedJourney] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -90,6 +91,8 @@ export default function Training() {
       }
     } catch (err) {
       console.error("Training load error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -157,6 +160,34 @@ export default function Training() {
     const msg = `J'ai besoin d'aide avec l'exercice « ${exercise.name} » pour ${dog?.name || "mon chien"}. ${dog?.name || "Mon chien"} est un ${dog?.breed || "chien"} de ${dog?.weight || "?"} kg.`;
     navigate(createPageUrl("Chat") + `?help=${encodeURIComponent(msg)}`);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background pb-24">
+        <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] pt-16 pb-0 px-5 overflow-hidden relative">
+          <div className="flex items-start justify-between">
+            <div className="pb-6 flex-1">
+              <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-2" />
+              <div className="h-7 w-28 bg-white/20 rounded animate-pulse" />
+              <div className="h-4 w-36 bg-white/10 rounded animate-pulse mt-2 mb-4" />
+              <div className="bg-white/15 rounded-2xl p-4">
+                <div className="h-3 w-32 bg-white/20 rounded animate-pulse mb-2" />
+                <div className="bg-white/25 rounded-full h-2.5 w-full" />
+              </div>
+            </div>
+            <div className="w-28 h-28 flex-shrink-0 bg-white/10 rounded-full animate-pulse" />
+          </div>
+        </div>
+        <div className="px-4 pt-5 space-y-3">
+          <div className="h-3 w-24 bg-muted rounded animate-pulse mb-1" />
+          {[0, 1, 2, 3].map(i => (
+            <div key={i} className="h-24 rounded-2xl bg-white border border-border animate-pulse" />
+          ))}
+        </div>
+        <BottomNav currentPage="Training" />
+      </div>
+    );
+  }
 
   // Overlay screens
   if (milestone !== null) {

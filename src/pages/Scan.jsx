@@ -84,6 +84,7 @@ function getWeekStart() {
 export default function Scan() {
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [preview, setPreview] = useState(null);
   const [file, setFile] = useState(null);
   const [scanning, setScanning] = useState(false);
@@ -113,6 +114,8 @@ export default function Scan() {
     } catch (e) {
       console.error(e);
       setError("Impossible de charger les données. Vérifie ta connexion.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -235,6 +238,27 @@ export default function Scan() {
     setSaved(false); setShowDetails(false); setDogAteIt(false);
     setScanLimitReached(false); setError(null);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background pb-24">
+        <div className="gradient-primary pb-0 px-5 pt-14 overflow-hidden relative">
+          <div className="flex items-start justify-between">
+            <div className="pb-6">
+              <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-3" />
+              <div className="h-7 w-32 bg-white/20 rounded animate-pulse" />
+              <div className="h-4 w-40 bg-white/10 rounded animate-pulse mt-2" />
+            </div>
+            <div className="w-28 h-28 flex-shrink-0 bg-white/10 rounded-full animate-pulse" />
+          </div>
+        </div>
+        <div className="px-5 pt-5 space-y-4">
+          <div className="h-52 rounded-2xl border-2 border-dashed border-muted bg-muted/20 animate-pulse" />
+        </div>
+        <BottomNav currentPage="Scan" />
+      </div>
+    );
+  }
 
   const verdictCfg = result ? VERDICT_CONFIG[result.verdict] || VERDICT_CONFIG.caution : null;
 

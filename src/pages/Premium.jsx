@@ -38,19 +38,26 @@ export default function Premium() {
   const [dog, setDog] = useState(null);
   const [plan, setPlan] = useState("annual");
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
   const confettiFired = useRef(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
 
   useEffect(() => {
     const init = async () => {
-      const u = await base44.auth.me();
-      setUser(u);
-      const dogs = await base44.entities.Dog.filter({ owner: u.email });
-      if (dogs.length > 0) setDog(dogs[0]);
+      try {
+        const u = await base44.auth.me();
+        setUser(u);
+        const dogs = await base44.entities.Dog.filter({ owner: u.email });
+        if (dogs.length > 0) setDog(dogs[0]);
 
-      if (u.is_premium && !u.premium_welcome_seen) {
-        setIsFirstVisit(true);
-        await base44.auth.updateMe({ premium_welcome_seen: true });
+        if (u.is_premium && !u.premium_welcome_seen) {
+          setIsFirstVisit(true);
+          await base44.auth.updateMe({ premium_welcome_seen: true });
+        }
+      } catch (err) {
+        console.error("Premium load error:", err);
+      } finally {
+        setPageLoading(false);
       }
     };
     init();
@@ -87,6 +94,26 @@ export default function Premium() {
       setLoading(false);
     }
   };
+
+  if (pageLoading) {
+    return (
+      <div className="min-h-screen bg-background pb-10">
+        <div className="gradient-primary pt-12 pb-8 px-5">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-white/20 rounded-3xl mx-auto mb-3 animate-pulse" />
+            <div className="h-7 w-48 bg-white/20 rounded mx-auto animate-pulse" />
+            <div className="h-4 w-56 bg-white/10 rounded mx-auto animate-pulse mt-2" />
+          </div>
+        </div>
+        <div className="px-5 pt-6 space-y-5">
+          <div className="h-16 bg-white rounded-2xl border border-border animate-pulse" />
+          <div className="h-64 bg-white rounded-2xl border border-border animate-pulse" />
+          <div className="h-14 rounded-xl bg-muted animate-pulse" />
+        </div>
+        <BottomNav currentPage="Premium" />
+      </div>
+    );
+  }
 
   if (user?.is_premium) {
     return (
