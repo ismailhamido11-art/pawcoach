@@ -24,6 +24,7 @@ import Illustration from "../components/illustrations/Illustration";
 
 import heroDogImg from "../assets/images/hero-dog.jpg";
 import vetCareImg from "../assets/images/vet-care.jpg";
+import happyWalkImg from "../assets/images/happy-walk.jpg";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
@@ -399,19 +400,56 @@ export default function Notebook() {
           </motion.button>
         )}
 
+        {/* Guidance avant assistant — design v0 */}
+        <GuidanceTip
+          id="assistant"
+          title="Votre assistant personnel"
+          description="Parlez-lui comme a un ami : 'Max a ete vaccine aujourd'hui' ou 'Il pese 32kg'. Il s'occupe de tout enregistrer pour vous."
+          icon={<Sparkles className="w-5 h-5" />}
+          variant="accent"
+        />
+
         {/* Smart Health Assistant */}
         <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} />
+
+        {/* Image emotionnelle happy-walk — design v0 */}
+        <div className="relative overflow-hidden rounded-2xl shadow-sm border border-border">
+          <div className="relative h-28">
+            <img
+              src={happyWalkImg}
+              alt="Promenade joyeuse avec votre chien"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-transparent" />
+            <div className="absolute inset-0 flex items-center p-5">
+              <div>
+                <p className="text-xs font-semibold text-accent uppercase tracking-wider">Bien-etre</p>
+                <p className="text-base font-bold text-foreground mt-1">Des moments de bonheur</p>
+                <p className="text-xs text-muted-foreground mt-1 max-w-[200px]">
+                  Suivez l'activite et le bien-etre de {dog?.name || "votre chien"} au quotidien
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Records Section - Collapsible */}
+      {/* Records Section - Collapsible — design v0 (wrappé en card) */}
       <div className="px-4 mt-4">
-        <button
-          onClick={() => setShowRecords(!showRecords)}
-          className="w-full flex items-center justify-between py-3 px-1 text-sm font-semibold text-foreground"
-        >
-          <span>Historique ({records.length})</span>
-          {showRecords ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
-        </button>
+        <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
+          <button
+            onClick={() => setShowRecords(!showRecords)}
+            className="w-full flex items-center justify-between px-4 py-3.5 text-sm font-semibold text-foreground hover:bg-muted/30 transition-colors"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                <ClipboardList className="w-4 h-4 text-primary" />
+              </div>
+              <span>Historique ({records.length})</span>
+            </div>
+            {showRecords ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+          </button>
+        </div>
       </div>
 
       {showRecords && (
