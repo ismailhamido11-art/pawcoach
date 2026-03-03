@@ -196,7 +196,7 @@ export default function Dashboard() {
   if (progress.length >= 2) score += 5;
   score = Math.min(100, score);
 
-  const scoreColor = score >= 80 ? "#10b981" : score >= 60 ? "#10b981" : "#ef4444";
+  const scoreColor = score >= 80 ? "#10b981" : score >= 60 ? "#f97316" : "#ef4444";
   const scoreLabel = score >= 80 ? "Excellent" : score >= 60 ? "Bon" : "À améliorer";
 
   // Next steps
