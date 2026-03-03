@@ -101,7 +101,9 @@ function OnboardingWelcome({ onStart }) {
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const [started, setStarted] = useState(false);
+  const urlParams = new URLSearchParams(window.location.search);
+  const isAddDog = urlParams.get("addDog") === "true";
+  const [started, setStarted] = useState(isAddDog); // skip welcome splash when adding a dog
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState(Array(INTERVIEW_STEPS.length).fill(""));
   const [done, setDone] = useState(false);
@@ -212,16 +214,20 @@ Extrais ces informations et renvoie un objet JSON.
         owner: user.email, owner_goal: ownerGoal || null, onboarding_completed: true,
       });
       setDogData(dog);
-      try {
-        await base44.integrations.Core.SendEmail({
-          to: user.email,
-          subject: `Bienvenue sur PawCoach, ${user.full_name || "l'ami"} !`,
-          body: `${dog.name} est maintenant inscrit ! Profitez de l'application !`,
-        });
-      } catch (e) {}
+      // Set new dog as active
+      localStorage.setItem("activeDogId", dog.id);
+      if (!isAddDog) {
+        try {
+          await base44.integrations.Core.SendEmail({
+            to: user.email,
+            subject: `Bienvenue sur PawCoach, ${user.full_name || "l'ami"} !`,
+            body: `${dog.name} est maintenant inscrit ! Profitez de l'application !`,
+          });
+        } catch (e) {}
+        // Store flag server-side so Home can show premium nudge on first visit
+        try { await base44.auth.updateMe({ premium_onboarding_nudge_shown: false }); } catch(e) {}
+      }
       setDone(true);
-      // Store flag server-side so Home can show premium nudge on first visit
-      try { await base44.auth.updateMe({ premium_onboarding_nudge_shown: false }); } catch(e) {}
     } catch (e) {
       console.error(e);
       alert("Une erreur est survenue lors de la création du profil. Réessaie.");
@@ -232,8 +238,8 @@ Extrais ces informations et renvoie un objet JSON.
 
   if (!started) return <OnboardingWelcome onStart={() => setStarted(true)} />;
   if (done && dogData) {
-    const savedUser = dogData._user;
-    return <WelcomeScreen dogName={dogData.name} dogPhoto={dogData.photo} isPremium={false} onDiscover={() => navigate(createPageUrl("Home"))} />;
+    const destination = isAddDog ? "Profile" : "Home";
+    return <WelcomeScreen dogName={dogData.name} dogPhoto={dogData.photo} isPremium={false} onDiscover={() => navigate(createPageUrl(destination))} />;
   }
 
   const handleGoalSelect = (label) => {

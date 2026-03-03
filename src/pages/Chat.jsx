@@ -10,7 +10,7 @@ import { DogChat } from "../components/ui/PawIllustrations";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
-import { createPageUrl } from "@/utils";
+import { createPageUrl, getActiveDog } from "@/utils";
 import { motion } from "framer-motion";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
@@ -106,7 +106,7 @@ export default function Chat() {
 
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
       if (dogs.length > 0) {
-        const d = dogs[0];
+        const d = getActiveDog(dogs);
         setDog(d);
         const [history, existingBookmarks] = await Promise.all([
           base44.entities.ChatMessage.filter({ dog_id: d.id }),

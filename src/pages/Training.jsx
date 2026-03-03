@@ -11,7 +11,7 @@ import JourneyView from "../components/training/JourneyView";
 import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw } from "lucide-react";
 import { DogGrad } from "../components/ui/PawIllustrations";
 import { useNavigate, Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { createPageUrl, getActiveDog } from "@/utils";
 import { updateStreakSilently } from "../components/streakHelper";
 import { motion } from "framer-motion";
 
@@ -85,8 +85,9 @@ export default function Training() {
       setUser(u);
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
       if (dogs.length > 0) {
-        setDog(dogs[0]);
-        const progs = await base44.entities.UserProgress.filter({ user_email: u.email, dog_id: dogs[0].id });
+        const activeDog = getActiveDog(dogs);
+        setDog(activeDog);
+        const progs = await base44.entities.UserProgress.filter({ user_email: u.email, dog_id: activeDog.id });
         setProgresses(progs);
       }
     } catch (err) {

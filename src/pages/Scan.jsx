@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { createPageUrl, getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import ShareCard from "../components/scan/ShareCard";
 import { Button } from "@/components/ui/button";
@@ -107,8 +107,9 @@ export default function Scan() {
       setUser(u);
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
       if (dogs.length > 0) {
-        setDog(dogs[0]);
-        const scans = await base44.entities.FoodScan.filter({ dog_id: dogs[0].id });
+        const activeDog = getActiveDog(dogs);
+        setDog(activeDog);
+        const scans = await base44.entities.FoodScan.filter({ dog_id: activeDog.id });
         setHistory(scans.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
       }
     } catch (e) {

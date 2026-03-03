@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Pencil, ChevronDown, ChevronUp,
   QrCode, Share2, Download, Syringe, Dumbbell, ScanLine,
-  Weight, Flame, Trophy, Utensils, Heart, MapPin, Check, X
+  Weight, Flame, Trophy, Utensils, Heart, MapPin, Check, X,
+  Trash2, AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BottomNav from "../components/BottomNav";
@@ -28,6 +29,8 @@ export default function DogProfile() {
   const [streak, setStreak] = useState(null);
   const [scansCount, setScansCount] = useState(0);
   const [editModal, setEditModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const urlParams = new URLSearchParams(window.location.search);
   const dogId = urlParams.get("dogId");
@@ -44,7 +47,7 @@ export default function DogProfile() {
           d = results[0];
         } else {
           const dogs = await base44.entities.Dog.filter({ owner: u.email });
-          d = dogs[0];
+          d = getActiveDog(dogs);
         }
 
         if (!d) { navigate(createPageUrl("Profile")); return; }
@@ -102,6 +105,24 @@ export default function DogProfile() {
     a.download = `fiche-${dog.name}.txt`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handleDeleteDog = async () => {
+    if (!dog || deleting) return;
+    setDeleting(true);
+    try {
+      await base44.entities.Dog.delete(dog.id);
+      // Clean up activeDogId if this was the active dog
+      const storedId = localStorage.getItem("activeDogId");
+      if (storedId === dog.id) {
+        localStorage.removeItem("activeDogId");
+      }
+      navigate(createPageUrl("Profile"));
+    } catch (err) {
+      console.error("Delete dog error:", err);
+      alert("Erreur lors de la suppression. Réessaie.");
+      setDeleting(false);
+    }
   };
 
   if (loading) {
@@ -197,9 +218,62 @@ export default function DogProfile() {
               </div>
               <ChevronDown className="w-4 h-4 text-muted-foreground rotate-[-90deg]" />
             </button>
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-red-50/50 transition-all"
+            >
+              <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+                <Trash2 className="w-4 h-4 text-red-500" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-red-600">Supprimer ce profil</p>
+                <p className="text-xs text-muted-foreground">Supprime {dog.name} et ses données</p>
+              </div>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Delete confirmation */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-red-500" />
+              </div>
+              <div>
+                <p className="font-bold text-foreground">Supprimer {dog.name} ?</p>
+                <p className="text-xs text-muted-foreground">Cette action est irréversible</p>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground mb-6">
+              Le profil de {dog.name} et toutes ses données associées (check-ins, scans, messages) seront supprimés définitivement.
+            </p>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 rounded-xl"
+                disabled={deleting}
+              >
+                Annuler
+              </Button>
+              <Button
+                onClick={handleDeleteDog}
+                disabled={deleting}
+                className="flex-1 rounded-xl bg-red-500 hover:bg-red-600 text-white border-0"
+              >
+                {deleting ? "Suppression..." : "Supprimer"}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       {/* Edit modal */}
       {editModal && (

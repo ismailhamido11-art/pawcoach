@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
 import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
@@ -84,7 +85,7 @@ export default function Nutrition() {
 
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
       if (dogs.length > 0) {
-        const d = dogs[0];
+        const d = getActiveDog(dogs);
         setDog(d);
         const scans = await base44.entities.FoodScan.filter({ dog_id: d.id }, "-timestamp", 5);
         setRecentScans(scans);

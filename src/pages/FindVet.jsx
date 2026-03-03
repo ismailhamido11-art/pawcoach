@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, Loader2, Stethoscope, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { createPageUrl, getActiveDog } from "@/utils";
 import { toast } from "sonner";
 
 export default function FindVet() {
@@ -23,8 +23,9 @@ export default function FindVet() {
         const u = await base44.auth.me();
         const dogs = await base44.entities.Dog.filter({ owner: u.email });
         if (dogs.length > 0) {
-          setDog(dogs[0]);
-          if (dogs[0].vet_city) setQuery(dogs[0].vet_city);
+          const activeDog = getActiveDog(dogs);
+          setDog(activeDog);
+          if (activeDog.vet_city) setQuery(activeDog.vet_city);
         }
       } catch (e) {
         console.error("FindVet init error:", e);

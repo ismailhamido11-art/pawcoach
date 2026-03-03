@@ -12,7 +12,7 @@ import {
   Sparkles, Activity, Calendar, Star, Footprints
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { createPageUrl, getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
 import IconBadge from "@/components/ui/IconBadge";
@@ -99,7 +99,7 @@ export default function Dashboard() {
         setUser(u);
         const dogs = await base44.entities.Dog.filter({ owner: u.email });
         if (!dogs.length) return;
-        const d = dogs[0];
+        const d = getActiveDog(dogs);
         setDog(d);
 
         const [recs, cks, stk, prog, logs] = await Promise.all([

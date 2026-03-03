@@ -51,7 +51,7 @@ export default function Profile() {
     } else if (user?.is_premium && dogs.length >= 3) {
       return;
     } else {
-      navigate(createPageUrl("Onboarding"));
+      navigate(createPageUrl("Onboarding") + "?addDog=true");
     }
   };
 

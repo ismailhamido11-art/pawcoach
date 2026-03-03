@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Check, Crown, Zap, Lock, ChevronRight, MessageCircle, ScanLine, Dumbbell, BookHeart, Salad, Search, Target, ClipboardList, Bell, BarChart3, Dog as DogIcon } from "lucide-react";
 import IconBadge from "@/components/ui/IconBadge";
 import { useNavigate } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { createPageUrl, getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import confetti from "canvas-confetti";
 import { motion } from "framer-motion";
@@ -48,7 +48,7 @@ export default function Premium() {
         const u = await base44.auth.me();
         setUser(u);
         const dogs = await base44.entities.Dog.filter({ owner: u.email });
-        if (dogs.length > 0) setDog(dogs[0]);
+        if (dogs.length > 0) setDog(getActiveDog(dogs));
 
         if (u.is_premium && !u.premium_welcome_seen) {
           setIsFirstVisit(true);

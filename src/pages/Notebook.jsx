@@ -10,7 +10,7 @@ import SmartHealthAssistant from "../components/notebook/SmartHealthAssistant";
 import { RecordRow } from "../components/notebook/SectionVaccins";
 import { Syringe, Stethoscope, Weight, Pill, FileText, ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Share2, HeartPulse, ClipboardList, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { createPageUrl, getActiveDog } from "@/utils";
 import IconBadge from "@/components/ui/IconBadge";
 import ShareVetModal from "../components/vet/ShareVetModal";
 import VetNotesList from "../components/vet/VetNotesList";
@@ -131,17 +131,18 @@ export default function Notebook() {
       setUser(u);
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
       if (dogs.length > 0) {
-        setDog(dogs[0]);
+        const activeDog = getActiveDog(dogs);
+        setDog(activeDog);
         const [recs, cks] = await Promise.all([
-          base44.entities.HealthRecord.filter({ dog_id: dogs[0].id }),
-          base44.entities.DailyCheckin.filter({ dog_id: dogs[0].id }),
+          base44.entities.HealthRecord.filter({ dog_id: activeDog.id }),
+          base44.entities.DailyCheckin.filter({ dog_id: activeDog.id }),
         ]);
         setRecords(recs);
         setCheckins(cks);
         if (recs.length > 0) setShowRecords(true);
         // Load vet notes for this dog
         try {
-          const notes = await base44.entities.VetNote.filter({ dog_id: dogs[0].id });
+          const notes = await base44.entities.VetNote.filter({ dog_id: activeDog.id });
           setVetNotes(notes);
         } catch (e) { /* no vet notes yet */ }
       }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
@@ -68,7 +68,7 @@ export default function Home() {
         setUser(u);
         const dogs = await base44.entities.Dog.filter({ owner: u.email });
         if (dogs && dogs.length > 0) {
-          const d = dogs[0];
+          const d = getActiveDog(dogs);
           setDog(d);
           const today = getTodayString();
           const [checkins, streaks, recent, insights, recs, exs, scs, logs] = await Promise.all([

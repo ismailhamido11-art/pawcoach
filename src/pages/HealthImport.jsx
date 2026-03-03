@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { createPageUrl, getActiveDog } from "@/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
@@ -75,7 +75,7 @@ export default function HealthImport() {
     (async () => {
       const u = await base44.auth.me();
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
-      if (dogs.length > 0) setDog(dogs[0]);
+      if (dogs.length > 0) setDog(getActiveDog(dogs));
     })();
   }, []);
 
