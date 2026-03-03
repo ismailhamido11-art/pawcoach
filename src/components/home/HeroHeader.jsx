@@ -122,12 +122,18 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
             </motion.div>
           ) : (
             <motion.div
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, type: "spring" }}
+              animate={{ scale: [1, 1.03, 1] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               className="w-28 h-28 flex-shrink-0"
             >
-              <Illustration name="dogPaw" alt={dog?.name || "Chien"} className="w-full h-full drop-shadow-lg" />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, type: "spring" }}
+                className="w-full h-full"
+              >
+                <Illustration name="dogPaw" alt={dog?.name || "Chien"} className="w-full h-full drop-shadow-lg" />
+              </motion.div>
             </motion.div>
           )}
         </div>

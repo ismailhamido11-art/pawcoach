@@ -55,6 +55,10 @@ export default function DogProfileHero({ dog, dailyLogs, onSave }) {
         {/* Photo */}
         <div className="relative">
           <motion.div
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          >
+          <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 18 }}
@@ -66,6 +70,7 @@ export default function DogProfileHero({ dog, dailyLogs, onSave }) {
             ) : (
               <Illustration name="petCare" alt={dog.name} className="w-full h-full object-cover" />
             )}
+          </motion.div>
           </motion.div>
           <label className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer">
             <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />

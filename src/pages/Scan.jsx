@@ -282,7 +282,7 @@ export default function Scan() {
 
       {/* Header */}
       <div className={`gradient-primary pb-0 px-5 ${result?.verdict === "toxic" && dogAteIt ? "pt-24" : "pt-14"} overflow-hidden relative`}>
-        <div className="flex items-start justify-between">
+        <div className="relative z-10 flex items-start justify-between">
           <div className="pb-6">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-3">PawCoach</p>
             <h1 className="text-white font-black text-2xl leading-tight">Scan Bouffe</h1>
@@ -290,10 +290,16 @@ export default function Scan() {
               {dog ? `Analyse pour ${dog.name}` : "Chargement..."}
             </p>
           </div>
-          <div className="w-28 h-28 flex-shrink-0 -mb-2 opacity-90">
+          <motion.div
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-28 h-28 flex-shrink-0 -mb-2"
+          >
             <Illustration name="petFood" alt="Scan alimentaire" className="w-full h-full drop-shadow-lg" />
-          </div>
+          </motion.div>
         </div>
+        <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
       <div className="px-5 pt-5 space-y-4">

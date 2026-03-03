@@ -178,37 +178,43 @@ export default function Nutrition() {
       <WellnessBanner />
 
       {/* Header */}
-      <div className="gradient-primary pt-10 pb-3 px-5 mt-8 overflow-hidden">
-        <div className="flex items-start gap-3 mb-3">
-          <div className="flex-1">
+      <div className="gradient-primary pt-14 pb-3 px-5 mt-8 overflow-hidden relative">
+        <div className="relative z-10 flex items-end gap-3 mb-3">
+          <div className="flex-1 pb-1">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
             <h1 className="text-white font-black text-2xl leading-tight">NutriCoach</h1>
             {dog && <p className="text-white/70 text-xs mt-0.5">Coach nutrition IA pour {dog.name}</p>}
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
+              {!user?.is_premium && messagesRemaining !== null && (
+                <div className="bg-white/20 px-2.5 py-1 rounded-full">
+                  <span className="text-white text-xs font-medium">
+                    {messagesRemaining} msg restant{messagesRemaining !== 1 ? "s" : ""}
+                  </span>
+                </div>
+              )}
+              {user?.is_premium && (
+                <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
+                  <span className="text-white text-xs font-medium">Premium</span>
+                </div>
+              )}
+              {recentScans.length > 0 && (
+                <div className="bg-white/20 px-2.5 py-1 rounded-full">
+                  <span className="text-white text-xs font-medium">🔍 {recentScans.length} scans</span>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="w-20 h-20 flex-shrink-0 -mt-2">
+          <motion.div
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-28 h-28 flex-shrink-0"
+          >
             <Illustration name="petGrooming" alt="NutriCoach" className="w-full h-full drop-shadow-lg" />
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            {!user?.is_premium && messagesRemaining !== null && (
-              <div className="bg-white/20 px-2.5 py-1 rounded-full">
-                <span className="text-white text-xs font-medium">
-                  {messagesRemaining} msg restant{messagesRemaining !== 1 ? "s" : ""}
-                </span>
-              </div>
-            )}
-            {user?.is_premium && (
-              <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
-                <span className="text-white text-xs font-medium">Premium</span>
-              </div>
-            )}
-            {recentScans.length > 0 && (
-              <div className="bg-white/20 px-2.5 py-1 rounded-full">
-                <span className="text-white text-xs font-medium">🔍 {recentScans.length} scans</span>
-              </div>
-            )}
-          </div>
+          </motion.div>
         </div>
+        <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
 
         {/* Tabs */}
         <div className="flex gap-2">

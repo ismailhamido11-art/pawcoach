@@ -231,20 +231,26 @@ export default function Premium() {
   return (
     <div className="min-h-screen bg-background pb-10">
       {/* Header */}
-      <div className="gradient-primary pt-12 pb-8 px-5 relative">
+      <div className="gradient-primary pt-12 pb-8 px-5 relative overflow-hidden">
         <button
           onClick={() => navigate(-1)}
-          className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/20 flex items-center justify-center"
+          className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/20 flex items-center justify-center z-20"
         >
           <ArrowLeft className="w-5 h-5 text-white" />
         </button>
-        <div className="text-center">
-          <div className="mx-auto mb-3">
+        <div className="relative z-10 text-center">
+          <motion.div
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="mx-auto mb-3"
+          >
             <Illustration name="qualityTime" alt="PawCoach Premium" className="w-32 h-32 mx-auto drop-shadow-lg" />
-          </div>
+          </motion.div>
           <h1 className="text-white font-bold text-2xl">PawCoach Premium</h1>
           <p className="text-white/70 text-sm mt-1">Le meilleur pour ton chien, sans limite</p>
         </div>
+        <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
       <div className="px-5 pt-6 space-y-5">

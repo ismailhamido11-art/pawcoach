@@ -245,11 +245,16 @@ export default function Notebook() {
               </button>
             )}
           </div>
-          <div className="w-28 h-28 flex-shrink-0">
+          <motion.div
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-28 h-28 flex-shrink-0"
+          >
             <Illustration name="veterinary" alt="Carnet de santé" className="w-full h-full drop-shadow-lg" />
-          </div>
+          </motion.div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
       {/* Health Status Bar */}

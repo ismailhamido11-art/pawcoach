@@ -260,7 +260,7 @@ export default function Training() {
 
       {/* Hero header */}
       <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] pt-16 pb-0 px-5 overflow-hidden relative">
-        <div className="flex items-start justify-between">
+        <div className="relative z-10 flex items-start justify-between">
           <div className="pb-6 flex-1">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-2">PawCoach</p>
             <h1 className="text-white font-black text-2xl leading-tight">Dressage</h1>
@@ -277,10 +277,16 @@ export default function Training() {
               </div>
             </div>
           </div>
-          <div className="w-28 h-28 flex-shrink-0 -mb-2 ml-2">
+          <motion.div
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-28 h-28 flex-shrink-0 -mb-2 ml-2"
+          >
             <Illustration name="dogWalking" alt="Dressage" className="w-full h-full drop-shadow-lg" />
-          </div>
+          </motion.div>
         </div>
+        <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
       {/* Journey cards */}

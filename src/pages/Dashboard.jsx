@@ -258,11 +258,17 @@ export default function Dashboard() {
               <p className="text-white/70 text-sm">{dog ? `Bilan de santé de ${dog.name}` : "Aperçu général"}</p>
             </div>
             {dog?.photo ? (
-              <img src={dog.photo} alt={dog.name} className="w-14 h-14 rounded-full border-2 border-white/40 object-cover shadow-lg" />
-            ) : (
-              <div className="w-16 h-16 flex-shrink-0">
-                <Illustration name="cautiousDog" alt={dog?.name || "Chien"} className="w-full h-full drop-shadow-lg" />
+              <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-white/30 shadow-lg flex-shrink-0">
+                <img src={dog.photo} alt={dog.name} className="w-full h-full object-cover" />
               </div>
+            ) : (
+              <motion.div
+                animate={{ scale: [1, 1.03, 1] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                className="w-28 h-28 flex-shrink-0"
+              >
+                <Illustration name="cautiousDog" alt={dog?.name || "Chien"} className="w-full h-full drop-shadow-lg" />
+              </motion.div>
             )}
           </div>
 
