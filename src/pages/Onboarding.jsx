@@ -7,6 +7,7 @@ import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera as CameraIcon,
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import WelcomeScreen from "../components/onboarding/WelcomeScreen";
+import Illustration from "../components/illustrations/Illustration";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
@@ -54,13 +55,13 @@ function OnboardingWelcome({ onStart }) {
         transition={{ duration: 0.7, ease: "easeOut" }}
         className="relative z-10 flex flex-col items-center text-center"
       >
-        {/* Logo paw */}
+        {/* Illustration */}
         <motion.div
-          animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="w-24 h-24 rounded-3xl bg-white/15 backdrop-blur border border-white/20 flex items-center justify-center mb-8 shadow-2xl"
+          animate={{ scale: [1, 1.03, 1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="mb-6"
         >
-          <span className="text-5xl">🐾</span>
+          <Illustration name="adoptAPet" alt="Adopte un compagnon" className="w-48 h-48 drop-shadow-2xl" />
         </motion.div>
 
         <p className="text-white/60 text-xs font-bold tracking-widest uppercase mb-3">PawCoach</p>

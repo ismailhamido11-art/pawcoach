@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Camera, Bookmark, BookmarkCheck } from "lucide-react";
 import { DogChat } from "../components/ui/PawIllustrations";
+import Illustration from "../components/illustrations/Illustration";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
@@ -265,7 +266,7 @@ export default function Chat() {
             {dog && <p className="text-white/70 text-xs mt-0.5">Personnalisé pour {dog.name} · {dog.breed}</p>}
           </div>
           <div className="w-20 h-20 flex-shrink-0">
-            <DogChat color="#bfdbfe" />
+            <Illustration name="dogHighFive" alt="Assistant IA" className="w-full h-full drop-shadow-lg" />
           </div>
           {!user?.is_premium && messagesRemaining !== null && (
             <div className="ml-auto flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">

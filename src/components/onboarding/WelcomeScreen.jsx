@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 import PremiumNudgeSheet from "../premium/PremiumNudgeSheet";
+import Illustration from "../illustrations/Illustration";
 
 export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium }) {
   const [showNudge, setShowNudge] = useState(false);
@@ -18,7 +19,7 @@ export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium
           {dogPhoto ? (
             <img src={dogPhoto} alt={dogName} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-7xl">🐶</div>
+            <Illustration name="goodDoggy" alt={dogName} className="w-full h-full object-cover" />
           )}
         </div>
         {/* Badge */}

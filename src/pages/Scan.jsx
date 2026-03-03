@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { updateStreakSilently } from "../components/streakHelper";
 import { motion } from "framer-motion";
-import { DogDetective } from "../components/ui/PawIllustrations";
+import Illustration from "../components/illustrations/Illustration";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
@@ -291,7 +291,7 @@ export default function Scan() {
             </p>
           </div>
           <div className="w-28 h-28 flex-shrink-0 -mb-2 opacity-90">
-            <DogDetective color="#c7d2fe" />
+            <Illustration name="petFood" alt="Scan alimentaire" className="w-full h-full drop-shadow-lg" />
           </div>
         </div>
       </div>

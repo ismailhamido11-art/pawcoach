@@ -18,7 +18,7 @@ import AIDiagnosisModal from "../components/vet/AIDiagnosisModal";
 import { updateStreakSilently } from "../components/streakHelper";
 import QRCodeCard from "../components/notebook/QRCodeCard";
 import { motion } from "framer-motion";
-import { DogDoctor } from "../components/ui/PawIllustrations";
+import Illustration from "../components/illustrations/Illustration";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
@@ -246,7 +246,7 @@ export default function Notebook() {
             )}
           </div>
           <div className="w-28 h-28 flex-shrink-0">
-            <DogDoctor color="#fca5a5" />
+            <Illustration name="veterinary" alt="Carnet de santé" className="w-full h-full drop-shadow-lg" />
           </div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />

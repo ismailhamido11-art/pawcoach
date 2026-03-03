@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Camera, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import Illustration from "../illustrations/Illustration";
 
 const STATUS_OPTIONS = [
   { value: "healthy", label: "En pleine forme", emoji: "💪", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
@@ -63,7 +64,7 @@ export default function DogProfileHero({ dog, dailyLogs, onSave }) {
             {dog.photo ? (
               <img src={dog.photo} alt={dog.name} className="w-full h-full object-cover" />
             ) : (
-              <span className="text-5xl">🐕</span>
+              <Illustration name="petCare" alt={dog.name} className="w-full h-full object-cover" />
             )}
           </motion.div>
           <label className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer">

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Flame, UserCircle, ChevronRight } from "lucide-react";
 import HealthScore from "./HealthScore";
-import { DogWave } from "../ui/PawIllustrations";
+import Illustration from "../illustrations/Illustration";
 
 export default function HeroHeader({ user, dog, streak, checkins, records, exercises, scans, dailyLogs }) {
   const currentStreak = streak?.current_streak || 0;
@@ -127,7 +127,7 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
               transition={{ delay: 0.2, type: "spring" }}
               className="w-28 h-28 flex-shrink-0"
             >
-              <DogWave color="#a7f3d0" />
+              <Illustration name="goodDoggy" alt={dog?.name || "Chien"} className="w-full h-full drop-shadow-lg" />
             </motion.div>
           )}
         </div>

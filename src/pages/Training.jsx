@@ -9,7 +9,7 @@ import FreeExercisesGate from "../components/training/FreeExercisesGate";
 import JourneyCard from "../components/training/JourneyCard";
 import JourneyView from "../components/training/JourneyView";
 import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw } from "lucide-react";
-import { DogGrad } from "../components/ui/PawIllustrations";
+import Illustration from "../components/illustrations/Illustration";
 import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { updateStreakSilently } from "../components/streakHelper";
@@ -278,7 +278,7 @@ export default function Training() {
             </div>
           </div>
           <div className="w-28 h-28 flex-shrink-0 -mb-2 ml-2">
-            <DogGrad color="#ddd6fe" />
+            <Illustration name="dogWalking" alt="Dressage" className="w-full h-full drop-shadow-lg" />
           </div>
         </div>
       </div>

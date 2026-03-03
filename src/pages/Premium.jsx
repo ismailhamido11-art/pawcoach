@@ -8,6 +8,7 @@ import { createPageUrl, getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import confetti from "canvas-confetti";
 import { motion } from "framer-motion";
+import Illustration from "../components/illustrations/Illustration";
 
 const MONTHLY_PRICE_ID = "price_1T4tkFDuhaIxY4PGpnhDTx5L";
 const ANNUAL_PRICE_ID = "price_1T4tkFDuhaIxY4PGWLeWApDL";
@@ -133,8 +134,8 @@ export default function Premium() {
                 className="w-24 h-24 rounded-full object-cover border-4 border-white/40 shadow-md mx-auto"
               />
             ) : (
-              <div className="w-24 h-24 rounded-full bg-white/20 border-4 border-white/40 flex items-center justify-center mx-auto shadow-md">
-                <Crown className="w-10 h-10 text-white" />
+              <div className="w-24 h-24 rounded-full bg-white/10 border-4 border-white/30 flex items-center justify-center mx-auto shadow-md overflow-hidden">
+                <Illustration name="qualityTime" alt="Premium" className="w-full h-full object-cover" />
               </div>
             )}
           </motion.div>
@@ -238,8 +239,8 @@ export default function Premium() {
           <ArrowLeft className="w-5 h-5 text-white" />
         </button>
         <div className="text-center">
-          <div className="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-3">
-            <Crown className="w-9 h-9 text-white" />
+          <div className="mx-auto mb-3">
+            <Illustration name="qualityTime" alt="PawCoach Premium" className="w-32 h-32 mx-auto drop-shadow-lg" />
           </div>
           <h1 className="text-white font-bold text-2xl">PawCoach Premium</h1>
           <p className="text-white/70 text-sm mt-1">Le meilleur pour ton chien, sans limite</p>
