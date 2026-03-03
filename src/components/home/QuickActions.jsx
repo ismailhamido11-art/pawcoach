@@ -2,32 +2,29 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { MapPin } from "lucide-react";
-import { DogDoctor, DogChef, DogGrad, DogDetective } from "../ui/PawIllustrations";
+import IllustrationImg from "../illustrations/Illustration";
 
 const ACTIONS = [
   {
     page: "Notebook",
-    Illustration: DogDoctor,
+    illustration: "veterinary",
     label: "Carnet santé",
     sub: "Vaccins, poids, visites",
     bg: "bg-rose-50",
-    iconColor: "#f43f5e",
   },
   {
     page: "Nutrition",
-    Illustration: DogChef,
+    illustration: "petFood",
     label: "NutriCoach",
     sub: "Nutrition & repas IA",
     bg: "bg-emerald-50",
-    iconColor: "#10b981",
   },
   {
     page: "Training",
-    Illustration: DogGrad,
+    illustration: "dogWalking",
     label: "Dressage",
     sub: "Exercices guidés",
     bg: "bg-violet-50",
-    iconColor: "#8b5cf6",
   },
   {
     page: "FindVet",
@@ -52,15 +49,15 @@ export default function QuickActions() {
         Accès rapide
       </p>
       <motion.div className="grid grid-cols-2 gap-3" variants={stagger} initial="hidden" animate="show">
-        {ACTIONS.map(({ page, Illustration, icon: Icon, label, sub, bg, iconColor }) => (
+        {ACTIONS.map(({ page, illustration, icon: Icon, label, sub, bg, iconColor }) => (
           <motion.div key={page} variants={item} whileTap={{ scale: 0.96 }}>
             <Link
               to={createPageUrl(page)}
               className={`flex flex-col gap-2 p-4 rounded-2xl ${bg} border border-white/60 shadow-sm hover:shadow-md transition-all`}
             >
               <div className="w-12 h-12">
-                {Illustration ? (
-                  <Illustration color={iconColor} />
+                {illustration ? (
+                  <IllustrationImg name={illustration} alt={label} className="w-full h-full" />
                 ) : (
                   <div
                     className="w-10 h-10 rounded-xl flex items-center justify-center"

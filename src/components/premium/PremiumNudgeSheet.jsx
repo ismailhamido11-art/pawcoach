@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Crown, MessageCircle, ScanLine, Dumbbell, Bell, X, ChevronRight, Star } from "lucide-react";
+import Illustration from "../illustrations/Illustration";
 
 const FEATURES = [
   { icon: MessageCircle, label: "Chat IA illimité avec PawCoach", color: "#3b82f6" },
@@ -58,9 +59,9 @@ export default function PremiumNudgeSheet({ visible, onClose, dogName, context =
                 <span className="text-xs text-muted-foreground ml-1.5 font-medium">4,9 · +2 000 familles</span>
               </div>
 
-              {/* Crown icon */}
-              <div className="w-14 h-14 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Crown className="w-7 h-7 text-white" />
+              {/* Illustration */}
+              <div className="w-24 h-24 mx-auto mb-4">
+                <Illustration name="qualityTime" alt="PawCoach Premium" className="w-full h-full drop-shadow-lg" />
               </div>
 
               {/* Title */}

@@ -15,7 +15,7 @@ import PremiumValueBanner from "../components/home/PremiumValueBanner";
 import DailySnapshot from "../components/home/DailySnapshot";
 import QuickLogFAB from "../components/home/QuickLogFAB";
 import { Heart, PartyPopper, Flame } from "lucide-react";
-import { DogTrophy } from "../components/ui/PawIllustrations";
+import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
@@ -304,7 +304,7 @@ function MilestoneCelebration({ milestone, onClose }) {
           transition={{ duration: 2, repeat: Infinity }}
           className="w-24 h-24 mx-auto mb-2"
         >
-          <DogTrophy color="#2d9f82" />
+          <Illustration name="goodDoggy" alt="Bravo !" className="w-full h-full drop-shadow-lg" />
         </motion.div>
         <p className="text-2xl font-black text-foreground">{milestone.message}</p>
         <p className="text-sm text-muted-foreground mt-1.5">{milestone.sub}</p>

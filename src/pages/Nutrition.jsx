@@ -7,7 +7,7 @@ import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Salad, MessageCircle, CalendarRange, Bookmark, BookmarkCheck } from "lucide-react";
-import { DogChef } from "../components/ui/PawIllustrations";
+import Illustration from "../components/illustrations/Illustration";
 import IconBadge from "@/components/ui/IconBadge";
 import { InlineIcon } from "@/components/ui/IconBadge";
 import ReactMarkdown from "react-markdown";
@@ -186,7 +186,7 @@ export default function Nutrition() {
             {dog && <p className="text-white/70 text-xs mt-0.5">Coach nutrition IA pour {dog.name}</p>}
           </div>
           <div className="w-20 h-20 flex-shrink-0 -mt-2">
-            <DogChef color="#a7f3d0" />
+            <Illustration name="petFood" alt="NutriCoach" className="w-full h-full drop-shadow-lg" />
           </div>
           <div className="ml-auto flex items-center gap-2">
             {!user?.is_premium && messagesRemaining !== null && (

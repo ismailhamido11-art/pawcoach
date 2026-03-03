@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Crown } from "lucide-react";
+import Illustration from "../illustrations/Illustration";
 import confetti from "canvas-confetti";
 
 const NEXT_EXERCISES = [
@@ -25,7 +26,9 @@ export default function FreeExercisesGate({ dogName, onDismiss }) {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center">
-      <span className="text-6xl mb-4">🏆</span>
+      <div className="w-36 h-36 mb-4">
+        <Illustration name="dogHighFive" alt="Bravo !" className="w-full h-full drop-shadow-lg" />
+      </div>
       <h1 className="text-2xl font-bold text-foreground">
         Bravo ! Tu maîtrises les bases !
       </h1>
