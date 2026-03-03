@@ -210,7 +210,7 @@ export default function Nutrition() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-28 h-28 flex-shrink-0"
           >
-            <Illustration name="petGrooming" alt="NutriCoach" className="w-full h-full drop-shadow-lg" />
+            <Illustration name="petFood" alt="NutriCoach" className="w-full h-full drop-shadow-lg" />
           </motion.div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />

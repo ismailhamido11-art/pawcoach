@@ -9,6 +9,8 @@ import { Search, MapPin, Loader2, Stethoscope, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
+import Illustration from "../components/illustrations/Illustration";
 
 export default function FindVet() {
   const [query, setQuery] = useState("");
@@ -77,22 +79,27 @@ Pour chaque clinique, fournis: name, address, phone (format français), google_m
     <div className="min-h-screen bg-background pb-24">
       <WellnessBanner />
 
-      <div className="gradient-primary pt-8 pb-6 px-5 relative overflow-hidden">
-        <div className="relative z-10">
-          <div className="flex items-center gap-3">
-            <Link to={createPageUrl("Notebook")} className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">
-              <ArrowLeft className="w-4 h-4 text-white" />
-            </Link>
-            <h1 className="text-white font-bold text-xl flex items-center gap-2">
-              <Stethoscope className="w-5 h-5" />
-              Trouver un vétérinaire
-            </h1>
+      <div className="gradient-primary pt-14 pb-6 px-5 relative overflow-hidden">
+        <Link to={createPageUrl("Notebook")} className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-3 hover:bg-white/30 transition-colors">
+          <ArrowLeft className="w-4 h-4 text-white" />
+        </Link>
+        <div className="relative z-10 flex items-end gap-3">
+          <div className="flex-1 pb-1">
+            <h1 className="text-white font-bold text-xl">Trouver un vétérinaire</h1>
+            <p className="text-white/70 text-xs mt-0.5">
+              Recherchez une clinique près de chez vous
+            </p>
           </div>
-          <p className="text-white/80 text-xs mt-0.5">
-            Recherchez une clinique vétérinaire près de chez vous
-          </p>
+          <motion.div
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-28 h-28 flex-shrink-0"
+          >
+            <Illustration name="veterinary" alt="Vétérinaire" className="w-full h-full drop-shadow-lg" />
+          </motion.div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
       <div className="px-4 mt-4">
@@ -121,13 +128,23 @@ Pour chaque clinique, fournis: name, address, phone (format français), google_m
 
         {loading && (
           <div className="flex flex-col items-center py-12 gap-3">
-            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            <motion.div
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-24 h-24 mb-2"
+            >
+              <Illustration name="veterinary" alt="Recherche..." className="w-full h-full drop-shadow-md" />
+            </motion.div>
+            <Loader2 className="w-6 h-6 text-primary animate-spin" />
             <p className="text-sm text-muted-foreground">Recherche en cours...</p>
           </div>
         )}
 
         {!loading && searched && results.length === 0 && (
           <div className="text-center py-12">
+            <div className="w-24 h-24 mx-auto mb-3 opacity-60">
+              <Illustration name="cautiousDog" alt="Aucun résultat" className="w-full h-full" />
+            </div>
             <p className="text-sm text-muted-foreground">Aucun résultat trouvé. Essayez une autre ville.</p>
           </div>
         )}

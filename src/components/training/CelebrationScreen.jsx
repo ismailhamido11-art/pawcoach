@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import confetti from "canvas-confetti";
 import { motion } from "framer-motion";
 import { Zap } from "lucide-react";
+import Illustration from "../illustrations/Illustration";
 
 export default function CelebrationScreen({ dogName, exerciseName, onContinue }) {
   const fired = useRef(false);
@@ -41,13 +42,13 @@ export default function CelebrationScreen({ dogName, exerciseName, onContinue })
           <span className="font-semibold text-primary">« {exerciseName} »</span>
         </p>
 
-        {/* Mascot / celebration visual */}
+        {/* Celebration illustration */}
         <motion.div
           animate={{ scale: [1, 1.12, 1], rotate: [-4, 4, -4, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="text-7xl my-4 select-none"
+          className="w-28 h-28 my-4"
         >
-          🐾
+          <Illustration name="dogHighFive" alt="Bravo !" className="w-full h-full drop-shadow-lg" />
         </motion.div>
 
         {/* Points badge */}

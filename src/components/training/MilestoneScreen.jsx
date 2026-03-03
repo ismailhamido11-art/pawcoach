@@ -3,6 +3,7 @@ import confetti from "canvas-confetti";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
+import Illustration from "../illustrations/Illustration";
 
 const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
 const listItem = {
@@ -43,11 +44,13 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
         animate={{ scale: 1, y: 0, rotate: 0 }}
         transition={{ type: "spring", stiffness: 180, damping: 12 }}
       >
-        <motion.span
+        <motion.div
           animate={{ scale: [1, 1.08, 1] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="text-7xl block mb-4"
-        >{milestoneEmoji}</motion.span>
+          className="w-32 h-32 mb-4"
+        >
+          <Illustration name="goodDoggy" alt="Milestone !" className="w-full h-full drop-shadow-lg" />
+        </motion.div>
       </motion.div>
       <h1 className="text-2xl font-extrabold text-primary mb-1">{dogName} a maîtrisé</h1>
       <p className="text-4xl font-extrabold text-foreground mb-6">{count} tours !</p>

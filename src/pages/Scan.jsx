@@ -318,7 +318,9 @@ export default function Scan() {
         {scanLimitReached && (
           <Card className="shadow-none border-2 border-primary/20 bg-primary/5">
             <CardContent className="p-5 text-center space-y-3">
-              <Crown className="w-10 h-10 text-primary mx-auto" />
+              <div className="w-24 h-24 mx-auto">
+                <Illustration name="petFood" alt="Limite atteinte" className="w-full h-full drop-shadow-md" />
+              </div>
               <p className="font-bold text-foreground">Tu as utilisé tes {FREE_SCAN_LIMIT} scans gratuits cette semaine.</p>
               <p className="text-sm text-muted-foreground">Passe en Premium pour scanner sans limite.</p>
               <Button onClick={() => window.location.href = '/Premium?from=scan'} className="w-full h-12 rounded-xl gradient-warm border-0 text-white font-bold">

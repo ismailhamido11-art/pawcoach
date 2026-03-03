@@ -364,7 +364,9 @@ export default function Notebook() {
               <div className="space-y-3">
                 {sortedRecords.length === 0 ? (
                   <div className="text-center py-8">
-                    <IconBadge icon={ClipboardList} color="#6366f1" size="lg" className="mx-auto mb-3" />
+                    <div className="w-24 h-24 mx-auto mb-3">
+                      <Illustration name="veterinary" alt="Carnet vide" className="w-full h-full drop-shadow-md opacity-80" />
+                    </div>
                     <p className="text-sm font-semibold text-foreground">Le carnet de {dog?.name} est prêt</p>
                     <p className="text-xs text-muted-foreground mt-1">Discute avec l'assistant pour ajouter des entrées</p>
                   </div>

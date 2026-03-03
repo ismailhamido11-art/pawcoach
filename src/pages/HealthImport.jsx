@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import Illustration from "../components/illustrations/Illustration";
 
 const STEPS = { SELECT: "select", INPUT: "input", ANALYZING: "analyzing", REVIEW: "review", SUCCESS: "success" };
 
@@ -192,21 +193,27 @@ export default function HealthImport() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background">
       {/* Header */}
-      <div className="gradient-primary px-5 pt-12 pb-8">
-        <Link to={createPageUrl("Notebook")} className="inline-flex items-center gap-2 text-white/80 text-sm mb-5 hover:text-white transition-colors">
+      <div className="gradient-primary px-5 pt-14 pb-6 relative overflow-hidden">
+        <Link to={createPageUrl("Notebook")} className="relative z-20 inline-flex items-center gap-2 text-white/80 text-sm mb-4 hover:text-white transition-colors">
           <ArrowLeft className="w-4 h-4" /> Carnet de santé
         </Link>
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-            <Sparkles className="w-6 h-6 text-white" />
-          </div>
-          <div>
+        <div className="relative z-10 flex items-end gap-3">
+          <div className="flex-1 pb-1">
             <h1 className="text-white font-bold text-xl">Import IA</h1>
             <p className="text-white/70 text-sm">
               {dog ? `Données de santé pour ${dog.name}` : "Importe des données de santé"}
             </p>
           </div>
+          <motion.div
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-28 h-28 flex-shrink-0"
+          >
+            <Illustration name="veterinary" alt="Import IA" className="w-full h-full drop-shadow-lg" />
+          </motion.div>
         </div>
+        <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
       <div className="px-5 py-6">
@@ -351,7 +358,9 @@ export default function HealthImport() {
 
               {records.length === 0 ? (
                 <div className="text-center py-10 bg-white rounded-2xl border border-border/30">
-                  <Upload className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+                  <div className="w-24 h-24 mx-auto mb-3 opacity-70">
+                    <Illustration name="cautiousDog" alt="Aucune donnée" className="w-full h-full" />
+                  </div>
                   <p className="text-muted-foreground text-sm mb-1">Aucune donnée de santé trouvée</p>
                   <p className="text-xs text-muted-foreground mb-4">Essaie avec un document plus détaillé</p>
                   <Button variant="outline" size="sm" onClick={reset}>
@@ -417,9 +426,9 @@ export default function HealthImport() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 250, damping: 12, delay: 0.15 }}
-                className="w-28 h-28 rounded-full bg-primary/10 flex items-center justify-center mb-6"
+                className="w-32 h-32 mb-6"
               >
-                <CheckCircle className="w-14 h-14 text-primary" />
+                <Illustration name="veterinary" alt="Import réussi" className="w-full h-full drop-shadow-lg" />
               </motion.div>
 
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>

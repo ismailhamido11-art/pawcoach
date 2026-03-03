@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
+import Illustration from "../illustrations/Illustration";
 
 const LEVEL_CONFIG = {
   debutant: { label: "Débutant", color: "text-safe bg-safe/10 border-safe/20" },
@@ -18,21 +19,30 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Hero image */}
-      <div className="relative bg-gradient-to-br from-primary/80 to-primary h-52 flex items-center justify-center flex-shrink-0">
+      <div className="relative bg-gradient-to-br from-primary/80 to-primary h-52 flex items-center justify-center flex-shrink-0 overflow-hidden">
         <motion.button
           onClick={onBack}
           whileTap={{ scale: 0.96 }}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/20 flex items-center justify-center"
+          className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/20 flex items-center justify-center z-20"
         >
           <ArrowLeft className="w-5 h-5 text-white" />
         </motion.button>
-        <span className="text-7xl select-none">{exercise.emoji}</span>
+        <motion.div
+          animate={{ scale: [1, 1.03, 1] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 flex items-center justify-center opacity-15"
+        >
+          <Illustration name="dogWalking" alt="" className="w-64 h-64" />
+        </motion.div>
+        <span className="relative z-10 text-7xl select-none drop-shadow-lg">{exercise.emoji}</span>
         {isCompleted && (
-          <div className="absolute top-4 right-4 bg-safe rounded-full p-1.5">
+          <div className="absolute top-4 right-4 bg-safe rounded-full p-1.5 z-20">
             <CheckCircle className="w-4 h-4 text-white" />
           </div>
         )}
+        <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
       {/* Content */}
@@ -54,9 +64,13 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
         {/* Steps */}
         {isPremiumLocked ? (
           <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 flex flex-col items-center gap-3 text-center">
-            <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center">
-              <Lock className="w-7 h-7 text-emerald-500" />
-            </div>
+            <motion.div
+              animate={{ scale: [1, 1.03, 1] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="w-24 h-24"
+            >
+              <Illustration name="goodDoggy" alt="Premium" className="w-full h-full drop-shadow-md" />
+            </motion.div>
             <p className="font-semibold text-emerald-700">Exercice Premium</p>
             <p className="text-emerald-600 text-sm">Passe à Premium pour débloquer toutes les fiches d'entraînement détaillées.</p>
             <Button onClick={() => window.location.href = '/Premium?from=training'} className="rounded-xl gradient-warm border-0 text-white font-semibold mt-1">

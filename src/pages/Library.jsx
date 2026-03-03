@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
+import Illustration from "../components/illustrations/Illustration";
 
 const SOURCE_LABELS = {
   chat: { label: "Chat IA", icon: MessageCircle, color: "#8b5cf6", bg: "bg-violet-50" },
@@ -56,22 +57,26 @@ export default function Library() {
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <div className="gradient-primary pt-16 pb-6 px-5">
-        <div className="flex items-center gap-3 mb-4">
-          <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
-            <ArrowLeft className="w-4 h-4 text-white" />
-          </button>
-          <div className="flex-1">
+      <div className="gradient-primary pt-14 pb-6 px-5 relative overflow-hidden">
+        <button onClick={() => navigate(-1)} className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-3">
+          <ArrowLeft className="w-4 h-4 text-white" />
+        </button>
+        <div className="relative z-10 flex items-end gap-3 mb-4">
+          <div className="flex-1 pb-1">
             <h1 className="text-white font-black text-xl leading-tight">Ma Bibliothèque</h1>
-            <p className="text-white/70 text-xs">{bookmarks.length} conseil{bookmarks.length !== 1 ? "s" : ""} sauvegardé{bookmarks.length !== 1 ? "s" : ""}</p>
+            <p className="text-white/70 text-xs mt-0.5">{bookmarks.length} conseil{bookmarks.length !== 1 ? "s" : ""} sauvegardé{bookmarks.length !== 1 ? "s" : ""}</p>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
-            <Bookmark className="w-4 h-4 text-white" />
-          </div>
+          <motion.div
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-28 h-28 flex-shrink-0"
+          >
+            <Illustration name="qualityTime" alt="Bibliothèque" className="w-full h-full drop-shadow-lg" />
+          </motion.div>
         </div>
 
         {/* Search */}
-        <div className="flex items-center gap-2 bg-white/15 rounded-xl px-3 py-2">
+        <div className="relative z-10 flex items-center gap-2 bg-white/15 rounded-xl px-3 py-2">
           <Search className="w-4 h-4 text-white/60 flex-shrink-0" />
           <input
             className="flex-1 bg-transparent text-white placeholder:text-white/50 text-sm outline-none"
@@ -80,6 +85,8 @@ export default function Library() {
             onChange={e => setSearch(e.target.value)}
           />
         </div>
+        <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
       {/* Filter chips */}
@@ -106,10 +113,14 @@ export default function Library() {
             <div key={i} className="h-24 bg-muted animate-pulse rounded-2xl" />
           ))
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mx-auto mb-3">
-              <Bookmark className="w-8 h-8 text-muted-foreground" />
-            </div>
+          <div className="text-center py-12">
+            <motion.div
+              animate={{ scale: [1, 1.03, 1] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="w-28 h-28 mx-auto mb-4"
+            >
+              <Illustration name="adoptAPet" alt="Aucun bookmark" className="w-full h-full drop-shadow-lg opacity-80" />
+            </motion.div>
             <p className="font-bold text-foreground">
               {search ? "Aucun résultat" : "Aucun bookmark"}
             </p>
