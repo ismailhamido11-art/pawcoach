@@ -1,4 +1,4 @@
-const BASE_URL = "https://raw.githubusercontent.com/ismailhamido11-art/pawcoach/main/src/assets/illustrations/";
+const BASE_URL = "https://raw.githubusercontent.com/ismailhamido11-art/pawcoach-assets/main/illustrations/";
 
 const ILLUSTRATIONS = {
   adoptAPet: "adopt-a-pet.svg",
