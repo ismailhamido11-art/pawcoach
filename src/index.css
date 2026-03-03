@@ -4,72 +4,72 @@
 
 @layer base {
   :root {
-    /* PawCoach – Nature Premium: Serene Cream + Forest Green */
-    --background: 37 33% 95%;
-    --foreground: 200 25% 15%;
+    /* PawCoach – Premium Clean: White + Deep Forest Green */
+    --background: 0 0% 98%;
+    --foreground: 160 30% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 200 25% 15%;
+    --card-foreground: 160 30% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 200 25% 15%;
+    --popover-foreground: 160 30% 10%;
 
-    /* Primary: teal-green */
-    --primary: 168 55% 38%;
+    /* Primary: deep forest green */
+    --primary: 160 50% 22%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary: soft sage */
-    --secondary: 155 30% 90%;
-    --secondary-foreground: 168 40% 25%;
+    /* Secondary: light sage */
+    --secondary: 150 20% 95%;
+    --secondary-foreground: 160 30% 25%;
 
-    /* Muted: green-tinted */
-    --muted: 160 15% 93%;
-    --muted-foreground: 200 15% 50%;
+    /* Muted */
+    --muted: 150 10% 94%;
+    --muted-foreground: 160 10% 45%;
 
-    /* Accent: emerald green (replaces amber) */
+    /* Accent: vivid emerald */
     --accent: 162 55% 42%;
-    --accent-foreground: 162 40% 10%;
+    --accent-foreground: 0 0% 100%;
 
     /* Destructive */
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
     /* Border, input, ring */
-    --border: 168 20% 88%;
-    --input: 168 20% 88%;
-    --ring: 168 55% 38%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 160 50% 22%;
 
-    --radius: 1rem;
+    --radius: 0.875rem;
 
     /* Custom tokens */
     --safe: 145 60% 42%;
-    --caution: 38 92% 55%; /* stays amber — semantic warning color */
+    --caution: 38 92% 55%;
     --toxic: 0 72% 51%;
 
-    --gradient-start: 168 55% 38%;
-    --gradient-end: 155 50% 55%;
+    --gradient-start: 160 50% 22%;
+    --gradient-end: 162 45% 35%;
   }
 
   .dark {
-    --background: 170 20% 8%;
-    --foreground: 45 30% 95%;
-    --card: 200 20% 13%;
-    --card-foreground: 45 30% 95%;
-    --popover: 200 20% 13%;
-    --popover-foreground: 45 30% 95%;
-    --primary: 168 50% 48%;
+    --background: 160 20% 6%;
+    --foreground: 0 0% 95%;
+    --card: 160 15% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 160 15% 10%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 162 45% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 200 20% 20%;
-    --secondary-foreground: 168 30% 80%;
-    --muted: 200 20% 18%;
-    --muted-foreground: 200 15% 60%;
+    --secondary: 160 15% 15%;
+    --secondary-foreground: 162 30% 80%;
+    --muted: 160 10% 14%;
+    --muted-foreground: 0 0% 55%;
     --accent: 162 50% 50%;
-    --accent-foreground: 162 40% 10%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 200 20% 22%;
-    --input: 200 20% 22%;
-    --ring: 168 50% 48%;
+    --border: 160 10% 18%;
+    --input: 160 10% 18%;
+    --ring: 162 45% 50%;
   }
 }
 
@@ -79,43 +79,113 @@
     @apply bg-background text-foreground;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.011em;
+  }
+
+  /* Premium heading style */
+  h1, h2, h3 {
+    letter-spacing: -0.025em;
+    font-weight: 700;
   }
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 99px; }
 
-/* Gradient utilities */
+/* ======= PREMIUM CARD SYSTEM ======= */
+
+/* Elevated card — subtle shadow + clean border */
+.card, [class*="rounded"][class*="border"][class*="bg-card"],
+[class*="rounded"][class*="bg-white"] {
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.04),
+    0 4px 12px rgba(0,0,0,0.03);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Interactive card hover */
+.card:hover, [class*="rounded"][class*="border"][class*="bg-card"]:hover {
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.06),
+    0 8px 24px rgba(0,0,0,0.05);
+}
+
+/* ======= GRADIENT UTILITIES ======= */
+
 .gradient-primary {
-  background: linear-gradient(135deg, hsl(var(--gradient-start)), hsl(var(--gradient-end)));
+  background: linear-gradient(135deg, hsl(160, 50%, 22%), hsl(162, 45%, 32%));
 }
 .gradient-warm {
-  background: linear-gradient(135deg, hsl(162, 55%, 38%), hsl(155, 50%, 48%));
+  background: linear-gradient(135deg, hsl(160, 50%, 22%), hsl(162, 50%, 38%));
 }
 .gradient-card {
-  background: linear-gradient(145deg, hsl(0,0%,100%), hsl(160,25%,97%));
+  background: linear-gradient(145deg, hsl(0,0%,100%), hsl(150,15%,97%));
 }
 
-/* Smooth tap animations */
+/* ======= SMOOTH INTERACTIONS ======= */
+
 .tap-scale {
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .tap-scale:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
-/* Chat bubbles */
+/* All buttons — smooth transitions */
+button, [role="button"], a[class*="btn"] {
+  transition: all 0.15s ease;
+}
+
+/* ======= CHAT BUBBLES ======= */
+
 .chat-bubble-user {
-  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gradient-end)));
+  background: linear-gradient(135deg, hsl(160, 50%, 22%), hsl(162, 45%, 32%));
+  box-shadow: 0 2px 8px rgba(22, 78, 62, 0.15);
 }
 .chat-bubble-assistant {
   background: hsl(0, 0%, 100%);
   border: 1px solid hsl(var(--border));
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 
-/* Bottom nav safe area */
+/* ======= BOTTOM NAV ======= */
+
 .bottom-nav {
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+/* ======= PREMIUM DETAILS ======= */
+
+/* Input focus rings */
+input:focus, textarea:focus, select:focus,
+[role="combobox"]:focus {
+  box-shadow: 0 0 0 3px rgba(22, 78, 62, 0.1);
+}
+
+/* Badge refinement */
+[class*="rounded-full"][class*="px-"][class*="text-xs"],
+[class*="rounded-full"][class*="px-"][class*="text-\\[10px\\]"] {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Sheet/Modal backdrop */
+[data-state="open"][class*="overlay"],
+.sheet-overlay {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Progress bars — rounded + smooth */
+[role="progressbar"] > div,
+.progress-fill {
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
