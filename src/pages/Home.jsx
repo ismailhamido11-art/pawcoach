@@ -268,6 +268,7 @@ export default function Home() {
           setDailyLogs(logs || []);
         }}
       />
+      <ChatFAB />
       <BottomNav currentPage="Home" />
 
       {/* Post-onboarding premium nudge */}
