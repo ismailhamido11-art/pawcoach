@@ -2,25 +2,21 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
-import TrackerConnect from "../components/tracker/TrackerConnect.jsx";
-import TrackerImportCSV from "../components/tracker/TrackerImportCSV.jsx";
-import TrackerVoiceLog from "../components/tracker/TrackerVoiceLog.jsx";
+import WalkMode from "../components/tracker/WalkMode.jsx";
 import TrackerHistory from "../components/tracker/TrackerHistory.jsx";
-import { ArrowLeft, Bluetooth, Upload, Mic, History } from "lucide-react";
+import { ArrowLeft, Footprints, History } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const TABS = [
-  { id: "connect", label: "Connecter", icon: Bluetooth },
-  { id: "import", label: "Importer", icon: Upload },
-  { id: "voice", label: "Dicter", icon: Mic },
+  { id: "walk", label: "Balade", icon: Footprints },
   { id: "history", label: "Historique", icon: History },
 ];
 
 export default function Tracker() {
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
-  const [activeTab, setActiveTab] = useState("connect");
+  const [activeTab, setActiveTab] = useState("walk");
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
@@ -52,8 +48,8 @@ export default function Tracker() {
             <ArrowLeft className="w-4 h-4 text-white" />
           </Link>
           <div>
-            <h1 className="text-white font-black text-xl">Tracker d'activité</h1>
-            <p className="text-white/70 text-xs">Synchronise n'importe quel collier ou GPS</p>
+            <h1 className="text-white font-black text-xl">Mode Balade 🐾</h1>
+            <p className="text-white/70 text-xs">Lance le chrono et profite du moment</p>
           </div>
         </div>
 
@@ -62,7 +58,7 @@ export default function Tracker() {
             <span className="text-lg">🐕</span>
             <div>
               <p className="text-white font-bold text-sm">{dog.name}</p>
-              <p className="text-white/60 text-xs">{logs.length} logs ce mois</p>
+              <p className="text-white/60 text-xs">{logs.length} balades ce mois</p>
             </div>
           </div>
         )}
@@ -96,9 +92,7 @@ export default function Tracker() {
         transition={{ duration: 0.2 }}
         className="px-4 mt-3"
       >
-        {activeTab === "connect" && <TrackerConnect dog={dog} user={user} onSynced={refreshLogs} />}
-        {activeTab === "import" && <TrackerImportCSV dog={dog} user={user} onImported={refreshLogs} />}
-        {activeTab === "voice" && <TrackerVoiceLog dog={dog} user={user} onLogged={refreshLogs} />}
+        {activeTab === "walk" && <WalkMode dog={dog} user={user} onLogged={() => { refreshLogs(); setActiveTab("history"); }} />}
         {activeTab === "history" && <TrackerHistory logs={logs} dog={dog} />}
       </motion.div>
 

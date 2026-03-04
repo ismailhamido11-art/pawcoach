@@ -51,6 +51,7 @@ import Chat from './pages/Chat';
 import Dashboard from './pages/Dashboard';
 import DogProfile from './pages/DogProfile';
 import DogPublicProfile from './pages/DogPublicProfile';
+import DogTwin from './pages/DogTwin';
 import FindVet from './pages/FindVet';
 import HealthImport from './pages/HealthImport';
 import Home from './pages/Home';
@@ -61,11 +62,10 @@ import Onboarding from './pages/Onboarding';
 import Premium from './pages/Premium';
 import Profile from './pages/Profile';
 import Scan from './pages/Scan';
+import Tracker from './pages/Tracker';
 import Training from './pages/Training';
 import VetDogView from './pages/VetDogView';
 import VetPortal from './pages/VetPortal';
-import DogTwin from './pages/DogTwin';
-import Tracker from './pages/Tracker';
 import __Layout from './Layout.jsx';
 
 
@@ -74,6 +74,7 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "DogProfile": DogProfile,
     "DogPublicProfile": DogPublicProfile,
+    "DogTwin": DogTwin,
     "FindVet": FindVet,
     "HealthImport": HealthImport,
     "Home": Home,
@@ -84,11 +85,10 @@ export const PAGES = {
     "Premium": Premium,
     "Profile": Profile,
     "Scan": Scan,
+    "Tracker": Tracker,
     "Training": Training,
     "VetDogView": VetDogView,
     "VetPortal": VetPortal,
-    "DogTwin": DogTwin,
-    "Tracker": Tracker,
 }
 
 export const pagesConfig = {
