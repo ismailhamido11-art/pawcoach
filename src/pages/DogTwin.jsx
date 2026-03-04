@@ -501,7 +501,7 @@ export default function DogTwin() {
         )}
       </AnimatePresence>
 
-      {/* Bottom sheet */}
+      {/* Bottom sheet — 4 layers */}
       <div className="absolute bottom-0 left-0 right-0 z-20">
         {/* Sheet handle */}
         <div
@@ -513,79 +513,118 @@ export default function DogTwin() {
             className="bg-white/20 backdrop-blur-md rounded-full px-5 py-1.5 flex items-center gap-2 border border-white/10"
           >
             <ChevronUp className="w-4 h-4 text-white/60" />
-            <span className="text-white/60 text-[11px] font-semibold">Zones de santé</span>
+            <span className="text-white/60 text-[11px] font-semibold">Jumeau Digital</span>
           </motion.div>
         </div>
 
         <motion.div
-          animate={{ height: sheetOpen ? "auto" : 100 }}
+          animate={{ height: sheetOpen ? 420 : 108 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className="overflow-hidden"
         >
-          <div className="bg-black/60 backdrop-blur-2xl border-t border-white/10 px-5 pt-4 pb-10">
-            {/* Zone pills */}
-            <div className="grid grid-cols-4 gap-2 mb-4">
-              {ZONES.map((z) => {
-                const c = scoreColor(z.score);
-                const active = selectedZone?.id === z.id;
-                return (
-                  <motion.button
-                    key={z.id}
-                    whileTap={{ scale: 0.92 }}
-                    onClick={() => setSelectedZone(active ? null : z)}
-                    className="flex flex-col items-center gap-1.5 py-2.5 rounded-2xl border transition-all"
-                    style={{
-                      background: active ? z.color + "22" : "rgba(255,255,255,0.05)",
-                      borderColor: active ? z.color + "66" : "rgba(255,255,255,0.08)",
-                      boxShadow: active ? `0 0 16px ${z.color}33` : "none",
-                    }}
-                  >
-                    <span className="text-lg">{z.emoji}</span>
-                    <span className="text-[9px] text-white/50 font-semibold">{z.label}</span>
-                    <span className="text-xs font-black" style={{ color: c }}>{z.score}</span>
-                  </motion.button>
-                );
-              })}
+          <div className="bg-black/70 backdrop-blur-2xl border-t border-white/10 flex flex-col" style={{ height: 420 }}>
+            {/* Layer tabs */}
+            <div className="flex gap-1.5 px-4 pt-3 pb-2 flex-shrink-0">
+              {[
+                { label: "Corps", icon: "🐾", id: 0 },
+                { label: "Cerveau", icon: "🧠", id: 1 },
+                { label: "Mémoire", icon: "📖", id: 2 },
+                { label: "Voix", icon: "💬", id: 3 },
+              ].map(tab => (
+                <motion.button
+                  key={tab.id}
+                  whileTap={{ scale: 0.92 }}
+                  onClick={() => setActiveLayer(tab.id)}
+                  className="flex-1 flex flex-col items-center gap-0.5 py-2 rounded-xl transition-all"
+                  style={{
+                    background: activeLayer === tab.id ? "rgba(45,159,130,0.25)" : "rgba(255,255,255,0.05)",
+                    border: `1px solid ${activeLayer === tab.id ? "rgba(45,159,130,0.5)" : "rgba(255,255,255,0.08)"}`,
+                    boxShadow: activeLayer === tab.id ? "0 0 12px rgba(45,159,130,0.2)" : "none",
+                  }}
+                >
+                  <span className="text-base">{tab.icon}</span>
+                  <span className="text-[9px] font-bold" style={{ color: activeLayer === tab.id ? "#2d9f82" : "rgba(255,255,255,0.4)" }}>
+                    {tab.label}
+                  </span>
+                </motion.button>
+              ))}
             </div>
 
-            {/* Detail */}
-            <AnimatePresence mode="wait">
-              {selectedZone && (
+            {/* Layer content */}
+            <div className="flex-1 overflow-hidden">
+              <AnimatePresence mode="wait">
                 <motion.div
-                  key={selectedZone.id}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
+                  key={activeLayer}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.2 }}
-                  className="rounded-2xl p-4 flex items-center gap-4"
-                  style={{ background: selectedZone.color + "18", border: `1px solid ${selectedZone.color}33` }}
+                  className="h-full overflow-y-auto"
                 >
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
-                    style={{ background: selectedZone.color + "25" }}>
-                    {selectedZone.emoji}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-white font-bold text-sm">{selectedZone.label}</p>
-                    <p className="text-white/55 text-xs mt-0.5 leading-relaxed">{selectedZone.detail}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-3xl font-black" style={{ color: scoreColor(selectedZone.score) }}>
-                      {selectedZone.score}
-                    </p>
-                    <p className="text-white/30 text-[10px]">/100</p>
-                  </div>
+                  {activeLayer === 0 && (
+                    <div className="px-4 pt-3 pb-8 space-y-3">
+                      {/* Zone pills */}
+                      <div className="grid grid-cols-4 gap-2">
+                        {ZONES.map((z) => {
+                          const c = scoreColor(z.score);
+                          const active = selectedZone?.id === z.id;
+                          return (
+                            <motion.button
+                              key={z.id}
+                              whileTap={{ scale: 0.92 }}
+                              onClick={() => setSelectedZone(active ? null : z)}
+                              className="flex flex-col items-center gap-1.5 py-2.5 rounded-2xl border transition-all"
+                              style={{
+                                background: active ? z.color + "22" : "rgba(255,255,255,0.05)",
+                                borderColor: active ? z.color + "66" : "rgba(255,255,255,0.08)",
+                                boxShadow: active ? `0 0 16px ${z.color}33` : "none",
+                              }}
+                            >
+                              <span className="text-lg">{z.emoji}</span>
+                              <span className="text-[9px] text-white/50 font-semibold">{z.label}</span>
+                              <span className="text-xs font-black" style={{ color: c }}>{z.score}</span>
+                            </motion.button>
+                          );
+                        })}
+                      </div>
+                      <AnimatePresence mode="wait">
+                        {selectedZone ? (
+                          <motion.div
+                            key={selectedZone.id}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -8 }}
+                            className="rounded-2xl p-4 flex items-center gap-4"
+                            style={{ background: selectedZone.color + "18", border: `1px solid ${selectedZone.color}33` }}
+                          >
+                            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
+                              style={{ background: selectedZone.color + "25" }}>
+                              {selectedZone.emoji}
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-white font-bold text-sm">{selectedZone.label}</p>
+                              <p className="text-white/55 text-xs mt-0.5 leading-relaxed">{selectedZone.detail}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-3xl font-black" style={{ color: scoreColor(selectedZone.score) }}>{selectedZone.score}</p>
+                              <p className="text-white/30 text-[10px]">/100</p>
+                            </div>
+                          </motion.div>
+                        ) : (
+                          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                            className="text-center text-white/25 text-xs py-2">
+                            Appuie sur une zone pour voir les détails
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  )}
+                  {activeLayer === 1 && <TwinIA />}
+                  {activeLayer === 2 && <TwinMemoire />}
+                  {activeLayer === 3 && <TwinVoix />}
                 </motion.div>
-              )}
-              {!selectedZone && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-center text-white/25 text-xs py-2"
-                >
-                  Appuie sur une zone pour voir les détails
-                </motion.p>
-              )}
-            </AnimatePresence>
+              </AnimatePresence>
+            </div>
           </div>
         </motion.div>
       </div>
