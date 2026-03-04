@@ -35,9 +35,13 @@ export default function ProfileHeader({ user }) {
 
           {/* Subscription badge */}
           <div className="flex items-center gap-2 mt-2">
-            {isUserPremium(user) ? (
+            {user?.is_premium ? (
               <span className="flex items-center gap-1 bg-emerald-400/30 border border-emerald-300/40 px-2.5 py-1 rounded-full text-xs font-bold text-white">
-                <Crown className="w-3 h-3" /> {getTrialDaysLeft(user) > 0 ? `Essai · ${getTrialDaysLeft(user)}j` : "Premium"}
+                <Crown className="w-3 h-3" /> Premium
+              </span>
+            ) : getTrialDaysLeft(user) > 0 ? (
+              <span className="flex items-center gap-1 bg-emerald-400/30 border border-emerald-300/40 px-2.5 py-1 rounded-full text-xs font-bold text-white">
+                <Crown className="w-3 h-3" /> Essai · {getTrialDaysLeft(user)}j
               </span>
             ) : (
               <span className="flex items-center gap-1 bg-white/10 border border-white/20 px-2.5 py-1 rounded-full text-xs font-semibold text-white/70">

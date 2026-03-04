@@ -18,6 +18,8 @@ const FIELDS = [
     placeholder: "Ex: 12.5",
     color: "#3b82f6",
     bg: "bg-blue-50",
+    min: 0.1,
+    max: 200,
   },
   {
     key: "walk_minutes",
@@ -28,6 +30,8 @@ const FIELDS = [
     placeholder: "Ex: 30",
     color: "#10b981",
     bg: "bg-emerald-50",
+    min: 0,
+    max: 1440,
   },
   {
     key: "water_bowls",
@@ -38,6 +42,8 @@ const FIELDS = [
     placeholder: "Ex: 3",
     color: "#06b6d4",
     bg: "bg-cyan-50",
+    min: 0,
+    max: 20,
   },
   {
     key: "notes",
@@ -62,10 +68,36 @@ export default function QuickLogFAB({ dog, user, open: controlledOpen, onOpenCha
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const [errors, setErrors] = useState({});
+
+  const validateFields = () => {
+    const newErrors = {};
+    FIELDS.forEach(f => {
+      if (f.type === "number" && form[f.key] !== "" && form[f.key] !== undefined) {
+        const val = parseFloat(form[f.key]);
+        if (isNaN(val)) {
+          newErrors[f.key] = "Valeur invalide";
+        } else if (f.min !== undefined && val < f.min) {
+          newErrors[f.key] = `Min ${f.min} ${f.unit}`;
+        } else if (f.max !== undefined && val > f.max) {
+          newErrors[f.key] = `Max ${f.max} ${f.unit}`;
+        }
+      }
+    });
+    return newErrors;
+  };
+
   const handleSave = async () => {
     if (!dog || saving) return;
     const hasData = Object.values(form).some(v => v !== "" && v !== undefined && v !== null);
     if (!hasData) { setOpen(false); return; }
+
+    const validationErrors = validateFields();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+    setErrors({});
 
     setSaving(true);
     const payload = {
@@ -136,8 +168,8 @@ export default function QuickLogFAB({ dog, user, open: controlledOpen, onOpenCha
 
             {/* Fields */}
             <div className="px-5 space-y-3">
-              {FIELDS.map(({ key, icon: Icon, label, unit, type, placeholder, color, bg }) => (
-                <div key={key} className={`flex items-center gap-3 ${bg} rounded-2xl px-4 py-3`}>
+              {FIELDS.map(({ key, icon: Icon, label, unit, type, placeholder, color, bg, min, max }) => (
+                <div key={key} className={`flex items-center gap-3 ${bg} rounded-2xl px-4 py-3 ${errors[key] ? "ring-2 ring-red-400" : ""}`}>
                   <div className="w-8 h-8 rounded-xl bg-white/70 flex items-center justify-center flex-shrink-0">
                     <Icon className="w-4 h-4" style={{ color }} />
                   </div>
@@ -158,12 +190,15 @@ export default function QuickLogFAB({ dog, user, open: controlledOpen, onOpenCha
                           type="number"
                           placeholder={placeholder}
                           value={form[key] || ""}
-                          onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                          onChange={e => { setForm(f => ({ ...f, [key]: e.target.value })); setErrors(prev => { const n = {...prev}; delete n[key]; return n; }); }}
                           inputMode="decimal"
+                          min={min}
+                          max={max}
                         />
                         {unit && <span className="text-xs text-muted-foreground">{unit}</span>}
                       </div>
                     )}
+                    {errors[key] && <p className="text-[10px] text-red-500 font-semibold mt-0.5">{errors[key]}</p>}
                   </div>
                 </div>
               ))}

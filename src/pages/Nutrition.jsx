@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
@@ -19,6 +20,7 @@ const spring = { type: "spring", stiffness: 400, damping: 30 };
 const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { type: "spring", stiffness: 120, damping: 20 } };
 
 export default function Nutrition() {
+  const navigate = useNavigate();
   const [dog, setDog] = useState(null);
   const [user, setUser] = useState(null);
   const [recentScans, setRecentScans] = useState([]);
@@ -126,16 +128,26 @@ export default function Nutrition() {
         messages: contextMsgs,
       });
 
+      // Handle server-side quota exceeded
+      if (response.data?.error === 'quota_exceeded') {
+        setMessagesRemaining(0);
+        return;
+      }
+
       const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
       setMessages(prev => [...prev, { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() }]);
 
-      if (!isUserPremium(user)) {
-        const newRemaining = Math.max(0, (messagesRemaining ?? 0) - 1);
-        setMessagesRemaining(newRemaining);
-        await base44.auth.updateMe({ messages_remaining: newRemaining, messages_daily_reset: getTodayString() });
+      // Sync quota from server (authoritative — prevents multi-tab bypass)
+      if (!isUserPremium(user) && response.data?.messages_remaining !== undefined) {
+        setMessagesRemaining(response.data.messages_remaining);
       }
     } catch (err) {
       console.error("Nutrition send error:", err);
+      // Handle quota exceeded thrown by SDK
+      if (err?.message?.includes?.('quota_exceeded') || err?.status === 429) {
+        setMessagesRemaining(0);
+        return;
+      }
       setMessages(prev => [...prev, {
         role: "assistant",
         content: "Oups, une erreur est survenue. Réessaie dans un instant.",
@@ -189,7 +201,7 @@ export default function Nutrition() {
               {!isUserPremium(user) && messagesRemaining !== null && (
                 <div className="bg-white/20 px-2.5 py-1 rounded-full">
                   <span className="text-white text-xs font-medium">
-                    {messagesRemaining} msg restant{messagesRemaining !== 1 ? "s" : ""}
+                    {messagesRemaining} credit{messagesRemaining !== 1 ? "s" : ""} IA (Chat + Nutri)
                   </span>
                 </div>
               )}
@@ -312,7 +324,7 @@ export default function Nutrition() {
                       J'adorerais continuer à conseiller <strong>{dog?.name || "ton chien"}</strong> sur sa nutrition ! 🥗 Tes messages gratuits sont épuisés pour aujourd'hui. Reviens demain pour 2 messages offerts, ou passe en Premium pour un coaching illimité !
                     </p>
                     <div className="flex gap-2 mt-3">
-                      <Button onClick={() => window.location.href = '/Premium?from=chat'} size="sm" className="bg-safe hover:bg-safe/90 border-0 text-white text-xs h-8">
+                      <Button onClick={() => navigate('/Premium?from=nutrition')} size="sm" className="bg-safe hover:bg-safe/90 border-0 text-white text-xs h-8">
                         Débloquer Premium ✨
                       </Button>
                       <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground">
@@ -353,8 +365,9 @@ export default function Nutrition() {
                     ref={textareaRef}
                     value={input}
                     onChange={e => setInput(e.target.value)}
+                    maxLength={2000}
                     onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())}
-                    placeholder={dog ? `Question nutrition pour ${dog.name}...` : "Posez votre question..."}
+                    placeholder={dog ? `Question nutrition pour ${dog.name}...` : "Pose ta question..."}
                     rows={1}
                     className="flex-1 min-h-[44px] max-h-[120px] rounded-xl border border-border bg-muted/30 px-3 py-2.5 text-sm resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-ring"
                     style={{ lineHeight: "1.5" }}

@@ -12,8 +12,9 @@ const ENV_LABELS = {
 
 export default function DogIdentityCards({ dog, dailyLogs, onSave }) {
   const weightLogs = (dailyLogs || []).filter(l => l.weight_kg).sort((a, b) => b.date > a.date ? 1 : -1);
-  const latestWeight = weightLogs[0]?.weight_kg || dog.weight;
-  const prevWeight = weightLogs[1]?.weight_kg;
+  const latestLogWeight = weightLogs[0]?.weight_kg;
+  const latestWeight = latestLogWeight || dog.weight;
+  const prevWeight = latestLogWeight && dog.weight && latestLogWeight !== dog.weight ? latestLogWeight : weightLogs[1]?.weight_kg;
   const trend = latestWeight && prevWeight ? latestWeight - prevWeight : 0;
 
   const trendColor = trend > 0 ? "text-emerald-500" : trend < 0 ? "text-blue-500" : "text-muted-foreground";

@@ -45,7 +45,8 @@ Deno.serve(async (req) => {
     for (const dog of dogs) {
       // Premium gate: only generate insights for premium users
       const owner = userMap[dog.owner];
-      if (!owner || !owner.is_premium) continue;
+      const ownerIsPremium = owner.is_premium || (owner.trial_expires_at && new Date(owner.trial_expires_at) > new Date());
+      if (!owner || !ownerIsPremium) continue;
 
       // Filter DailyCheckins for this dog within the week
       const checkins = (allCheckins || []).filter(c =>
@@ -141,6 +142,10 @@ Deno.serve(async (req) => {
       // Stringify arrays if needed
       if (typeof highlights === "object") highlights = JSON.stringify(highlights);
       if (typeof recommendations === "object") recommendations = JSON.stringify(recommendations);
+
+      // Dedup: skip if insight already exists for this dog + week
+      const existing = await base44.asServiceRole.entities.WeeklyInsight.filter({ dog_id: dog.id, week_start: weekStart });
+      if (existing && existing.length > 0) continue;
 
       // Create WeeklyInsight
       await base44.asServiceRole.entities.WeeklyInsight.create({

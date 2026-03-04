@@ -124,7 +124,7 @@ function HealthStatusBar({ dog, records }) {
         {items.map((item) => (
           <div
             key={item.label}
-            className={`flex-1 flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-medium transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-medium cursor-default ${
               item.ok
                 ? "bg-primary/10 text-primary border border-primary/10"
                 : "bg-muted text-muted-foreground border border-transparent"
@@ -151,8 +151,30 @@ export default function Notebook() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showDiagnosisModal, setShowDiagnosisModal] = useState(false);
   const [vetNotes, setVetNotes] = useState([]);
+  const [dailyLogs, setDailyLogs] = useState([]);
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    loadData();
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab === "qr") {
+      setTimeout(() => {
+        const qrEl = document.getElementById("qr-code-section");
+        if (qrEl) qrEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 600);
+    }
+    if (tab === "vet") {
+      setTimeout(() => setShowShareModal(true), 500);
+    }
+    // Handle direct tab links (weight, vaccine, etc.)
+    const validTabs = ["all", "vaccine", "vet_visit", "weight", "medication", "note"];
+    if (tab && validTabs.includes(tab)) {
+      setTimeout(() => {
+        setShowRecords(true);
+        setActiveTab(tab);
+      }, 400);
+    }
+  }, []);
 
   const loadData = async () => {
     try {
@@ -162,13 +184,15 @@ export default function Notebook() {
       if (dogs.length > 0) {
         const activeDog = getActiveDog(dogs);
         setDog(activeDog);
-        const [recs, cks] = await Promise.all([
+        const [recs, cks, logs] = await Promise.all([
           base44.entities.HealthRecord.filter({ dog_id: activeDog.id }),
           base44.entities.DailyCheckin.filter({ dog_id: activeDog.id }),
+          base44.entities.DailyLog.filter({ dog_id: activeDog.id }),
         ]);
         setRecords(recs);
         setCheckins(cks);
-        if (recs.length > 0) setShowRecords(true);
+        setDailyLogs(logs || []);
+        if (recs.length > 0 || (logs || []).some(l => l.weight_kg > 0)) setShowRecords(true);
         try {
           const notes = await base44.entities.VetNote.filter({ dog_id: activeDog.id });
           setVetNotes(notes);
@@ -191,6 +215,7 @@ export default function Notebook() {
   };
 
   const handleDelete = async (id) => {
+    if (typeof id === "string" && id.startsWith("dl-")) return; // DailyLog pseudo-records cannot be deleted here
     try {
       await base44.entities.HealthRecord.delete(id);
       setRecords(prev => prev.filter(r => r.id !== id));
@@ -201,9 +226,27 @@ export default function Notebook() {
   };
 
   const isPremium = isUserPremium(user);
-  const countForTab = (id) => id === "all" ? records.length : records.filter(r => r.type === id).length;
 
-  const sortedRecords = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
+  // Build pseudo-records from DailyLog weight entries (to show in "all" and "weight" tabs)
+  const dailyLogRecords = dailyLogs
+    .filter(l => l.weight_kg && l.weight_kg > 0)
+    .map(l => ({
+      id: `dl-${l.id}`,
+      type: "weight",
+      title: "Poids (log rapide)",
+      date: l.date,
+      value: l.weight_kg,
+      _fromDailyLog: true,
+    }));
+
+  // Merge and deduplicate — if a HealthRecord weight exists for the same date, skip the DailyLog one
+  const hrWeightDates = new Set(records.filter(r => r.type === "weight").map(r => r.date));
+  const uniqueDailyLogRecords = dailyLogRecords.filter(r => !hrWeightDates.has(r.date));
+  const allRecords = [...records, ...uniqueDailyLogRecords];
+
+  const countForTab = (id) => id === "all" ? allRecords.length : allRecords.filter(r => r.type === id).length;
+
+  const sortedRecords = [...allRecords].sort((a, b) => new Date(b.date) - new Date(a.date));
   const getIconForType = (type) => {
     switch (type) {
       case 'vaccine': return <Syringe className="w-4 h-4 text-primary" />;
@@ -316,8 +359,8 @@ export default function Notebook() {
         {records.length === 0 && (
           <GuidanceTip
             id="welcome"
-            title={`Bienvenue dans le carnet de ${dog?.name || "votre chien"}`}
-            description="Suivez la sante de votre compagnon : vaccins, poids, visites veto, medicaments. Tout est centralise et accessible en un coup d'oeil."
+            title={`Bienvenue dans le carnet de ${dog?.name || "ton chien"}`}
+            description="Suis la sante de ton compagnon : vaccins, poids, visites veto, medicaments. Tout est centralise et accessible en un coup d'oeil."
             icon={<PawPrint className="w-5 h-5" />}
             variant="primary"
           />
@@ -328,12 +371,12 @@ export default function Notebook() {
 
         {/* QR Code urgence */}
         {dog && (
-          <div>
+          <div id="qr-code-section">
             <QRCodeCard dog={dog} />
             <GuidanceTip
               id="qr"
-              title="Protegez votre compagnon"
-              description="Le QR code d'urgence permet a quiconque trouve votre animal d'acceder a son dossier medical. Imprimez-le et attachez-le au collier."
+              title="Protege ton compagnon"
+              description="Le QR code d'urgence permet a quiconque trouve ton animal d'acceder a son dossier medical. Imprime-le et attache-le au collier."
               icon={<Shield className="w-5 h-5" />}
               variant="subtle"
               className="mt-2"
@@ -355,7 +398,7 @@ export default function Notebook() {
                 <p className="text-xs font-semibold text-primary uppercase tracking-wider">Suivi veterinaire</p>
                 <p className="text-base font-bold text-foreground mt-1">Chaque visite compte</p>
                 <p className="text-xs text-muted-foreground mt-1 max-w-[200px]">
-                  Gardez un historique complet pour un suivi optimal de {dog?.name || "votre chien"}
+                  Garde un historique complet pour un suivi optimal de {dog?.name || "ton chien"}
                 </p>
               </div>
             </div>
@@ -403,8 +446,8 @@ export default function Notebook() {
         {/* Guidance avant assistant — design v0 */}
         <GuidanceTip
           id="assistant"
-          title="Votre assistant personnel"
-          description="Parlez-lui comme a un ami : 'Max a ete vaccine aujourd'hui' ou 'Il pese 32kg'. Il s'occupe de tout enregistrer pour vous."
+          title="Ton assistant personnel"
+          description={`Parle-lui comme a un ami : '${dog?.name || "Mon chien"} a ete vaccine aujourd'hui' ou 'Il pese 32kg'. Il s'occupe de tout enregistrer pour toi.`}
           icon={<Sparkles className="w-5 h-5" />}
           variant="accent"
         />
@@ -417,7 +460,7 @@ export default function Notebook() {
           <div className="relative h-28">
             <img
               src={happyWalkImg}
-              alt="Promenade joyeuse avec votre chien"
+              alt="Promenade joyeuse avec ton chien"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-transparent" />
@@ -426,7 +469,7 @@ export default function Notebook() {
                 <p className="text-xs font-semibold text-accent uppercase tracking-wider">Bien-etre</p>
                 <p className="text-base font-bold text-foreground mt-1">Des moments de bonheur</p>
                 <p className="text-xs text-muted-foreground mt-1 max-w-[200px]">
-                  Suivez l'activite et le bien-etre de {dog?.name || "votre chien"} au quotidien
+                  Suis l'activite et le bien-etre de {dog?.name || "ton chien"} au quotidien
                 </p>
               </div>
             </div>
@@ -445,9 +488,14 @@ export default function Notebook() {
               <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
                 <ClipboardList className="w-4 h-4 text-primary" />
               </div>
-              <span>Historique ({records.length})</span>
+              <div>
+                <span>Historique ({allRecords.length})</span>
+                {allRecords.length === 0 && (
+                  <p className="text-[10px] text-muted-foreground font-normal mt-0.5">Utilise l'assistant ou l'import IA pour ajouter des entrees</p>
+                )}
+              </div>
             </div>
-            {showRecords ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+            {allRecords.length > 0 && (showRecords ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />)}
           </button>
         </div>
       </div>
@@ -508,7 +556,7 @@ export default function Notebook() {
               <SectionVaccins records={records} dogId={dog?.id} onDelete={handleDelete} />
             )}
             {activeTab === "weight" && (
-              <SectionPoids records={records} dogId={dog?.id} onDelete={handleDelete} />
+              <SectionPoids records={allRecords} dogId={dog?.id} onDelete={handleDelete} />
             )}
             {(activeTab === "vet_visit" || activeTab === "medication" || activeTab === "note") && (
               <PremiumSection
@@ -533,7 +581,7 @@ export default function Notebook() {
                 <Stethoscope className="w-4 h-4 text-primary" />
               </div>
               <h3 className="text-sm font-semibold text-foreground">
-                Notes de votre veterinaire ({vetNotes.length})
+                Notes de ton veterinaire ({vetNotes.length})
               </h3>
             </div>
             <VetNotesList notes={vetNotes} />

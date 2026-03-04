@@ -245,7 +245,7 @@ export default function DogPublicProfile() {
               <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest">Historique médical</h2>
             </div>
             <div className="px-4">
-              {records.slice(0, 15).map(r => <RecordItem key={r.id} record={r} />)}
+              {records.filter(r => r.type === 'vaccine' || r.type === 'weight').slice(0, 15).map(r => <RecordItem key={r.id} record={r} />)}
             </div>
           </div>
         )}

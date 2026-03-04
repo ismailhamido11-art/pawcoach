@@ -10,6 +10,9 @@ Deno.serve(async (req) => {
 
     if (!symptoms) return Response.json({ error: 'Symptoms required' }, { status: 400 });
 
+    // Sanitize user inputs to prevent prompt injection and limit length
+    const sanitize = (s, max = 2000) => String(s || '').substring(0, max).replace(/[<>]/g, '');
+
     const prompt = `Tu es un assistant vétérinaire IA spécialisé dans la santé canine.
 
 PHASE 1: Tu reçois les premiers symptômes d'un chien. Tu dois:
@@ -17,21 +20,21 @@ PHASE 1: Tu reçois les premiers symptômes d'un chien. Tu dois:
 2. Générer une liste de questions CIBLÉES et PERTINENTES que le propriétaire devra renseigner pour affiner le diagnostic. Ces questions doivent être basées sur les symptômes décrits.
 
 INFORMATIONS SUR LE CHIEN:
-- Nom: ${dog_name || 'Non renseigné'}
-- Race: ${dog_breed || 'Non renseignée'}
+- Nom: ${sanitize(dog_name, 100) || 'Non renseigné'}
+- Race: ${sanitize(dog_breed, 100) || 'Non renseignée'}
 - Poids: ${dog_weight ? dog_weight + ' kg' : 'Non renseigné'}
-- Âge approximatif: ${dog_age || 'Non renseigné'}
-- Problèmes de santé connus: ${health_issues || 'Aucun'}
-- Allergies connues: ${allergies || 'Aucune'}
+- Âge approximatif: ${sanitize(dog_age, 100) || 'Non renseigné'}
+- Problèmes de santé connus: ${sanitize(health_issues, 500) || 'Aucun'}
+- Allergies connues: ${sanitize(allergies, 500) || 'Aucune'}
 ${(() => { try { const tags = JSON.parse(personality_tags || "[]"); return tags.length > 0 ? `- Personnalité : ${tags.join(", ")}` : ""; } catch { return ""; } })()}
 ${dog_status && dog_status !== "healthy" ? `- Statut actuel : ${dog_status === "recovering" ? "En convalescence (tenir compte pour les recommandations)" : dog_status === "traveling" ? "En voyage/déplacement" : dog_status}` : ""}
 
 SYMPTÔMES DÉCRITS:
-${symptoms}
+${sanitize(symptoms)}
 
-DURÉE: ${duration || 'Non précisée'}
+DURÉE: ${sanitize(duration, 500) || 'Non précisée'}
 
-INFOS SUPPLÉMENTAIRES: ${additional_info || 'Aucune'}
+INFOS SUPPLÉMENTAIRES: ${sanitize(additional_info) || 'Aucune'}
 
 ${image_url ? "NOTE: Le propriétaire a aussi envoyé une photo des symptômes. Analyse-la attentivement pour affiner tes questions." : ""}
 

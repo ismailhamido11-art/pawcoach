@@ -111,6 +111,18 @@ export default function DogProfile() {
     if (!dog || deleting) return;
     setDeleting(true);
     try {
+      // Cascade delete: clean up all related entities using deleteMany
+      const entityNames = [
+        "HealthRecord", "DailyCheckin", "DailyLog", "Streak",
+        "FoodScan", "Bookmark", "UserProgress", "WeeklyInsight",
+        "ChatMessage", "SharedVetAccess", "VetNote", "DiagnosisReport"
+      ];
+      await Promise.all(
+        entityNames.map(name =>
+          base44.entities[name].deleteMany({ dog_id: dog.id }).catch(() => {})
+        )
+      );
+
       await base44.entities.Dog.delete(dog.id);
       // Clean up activeDogId if this was the active dog
       const storedId = localStorage.getItem("activeDogId");

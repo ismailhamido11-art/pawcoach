@@ -10,7 +10,7 @@ export async function updateStreakSilently(dogId, ownerEmail) {
     const streaks = await base44.entities.Streak.filter({ dog_id: dogId });
     if (streaks.length > 0) {
       const s = streaks[0];
-      if (s.last_activity_date === today) return;
+      if (s.last_activity_date === today) return; // Already updated today — dedup guard
       const lastDate = new Date(s.last_activity_date + "T12:00:00");
       const todayDate = new Date(today + "T12:00:00");
       const diffDays = Math.round((todayDate - lastDate) / (1000 * 60 * 60 * 24));

@@ -13,6 +13,7 @@ import { createPageUrl, getActiveDog } from "@/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import Illustration from "../components/illustrations/Illustration";
+import BottomNav from "../components/BottomNav";
 
 const STEPS = { SELECT: "select", INPUT: "input", ANALYZING: "analyzing", REVIEW: "review", SUCCESS: "success" };
 
@@ -87,12 +88,34 @@ export default function HealthImport() {
     }
   };
 
+  const isSuspiciousRecord = (record) => {
+    if (record.value != null && (record.value < 0 || record.value > 500)) return true;
+    if (record.title && /<[^>]*script/i.test(record.title)) return true;
+    if (record.details && /<[^>]*script/i.test(record.details)) return true;
+    if (record.date && /^(9999|0000)/.test(record.date)) return true;
+    if (record.next_date && /^(9999|0000)/.test(record.next_date)) return true;
+    // Flag dates more than 1 year in the future (for main date, not next_date which is expected future)
+    if (record.date) {
+      const d = new Date(record.date + "T12:00:00");
+      const oneYearFromNow = new Date();
+      oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+      if (d > oneYearFromNow) return true;
+      // Flag dates before 1990 (likely fabricated)
+      if (d.getFullYear() < 1990) return true;
+    }
+    return false;
+  };
+
   const processResult = (data) => {
     const extracted = (data?.records || []).filter(r => r.title && r.date);
     setRecords(extracted);
     setSummary(data?.summary || "");
     setDocType(data?.document_type || "");
-    setSelected(new Set(extracted.map((_, i) => i)));
+    // Only auto-select records that are NOT suspicious
+    const safeIndexes = extracted
+      .map((r, i) => isSuspiciousRecord(r) ? null : i)
+      .filter(i => i !== null);
+    setSelected(new Set(safeIndexes));
     setStep(STEPS.REVIEW);
   };
 
@@ -191,7 +214,7 @@ export default function HealthImport() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background pb-24">
       {/* Header */}
       <div className="gradient-primary px-5 pt-14 pb-6 relative overflow-hidden">
         <Link to={createPageUrl("Notebook")} className="relative z-20 inline-flex items-center gap-2 text-white/80 text-sm mb-4 hover:text-white transition-colors">
@@ -373,6 +396,7 @@ export default function HealthImport() {
                     const cfg = TYPE_CONFIG[record.type] || TYPE_CONFIG.note;
                     const Icon = cfg.icon;
                     const isSelected = selected.has(idx);
+                    const suspicious = isSuspiciousRecord(record);
                     return (
                       <motion.button
                         key={idx}
@@ -382,7 +406,9 @@ export default function HealthImport() {
                         whileTap={{ scale: 0.98 }}
                         onClick={() => toggleRecord(idx)}
                         className={`w-full flex items-center gap-3 p-4 rounded-2xl border text-left transition-all ${
-                          isSelected
+                          suspicious
+                            ? "bg-red-50 border-red-300"
+                            : isSelected
                             ? "bg-white border-primary/30 shadow-sm"
                             : "bg-white/40 border-border/20 opacity-45"
                         }`}
@@ -404,6 +430,9 @@ export default function HealthImport() {
                           )}
                           {record.next_date && (
                             <p className="text-xs text-primary mt-1 font-medium">📅 Prochain : {record.next_date}</p>
+                          )}
+                          {suspicious && (
+                            <p className="text-xs text-red-600 font-bold mt-1">⚠️ Donnee suspecte — verifier avant import</p>
                           )}
                         </div>
                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
@@ -476,6 +505,7 @@ export default function HealthImport() {
 
       {/* Hidden file input */}
       <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} />
+      <BottomNav currentPage="Notebook" />
     </div>
   );
 }

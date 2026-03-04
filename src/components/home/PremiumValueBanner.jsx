@@ -36,7 +36,7 @@ export default function PremiumValueBanner({ streak, checkins }) {
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-2.5 h-2.5 fill-white/70 text-white/70" />
               ))}
-              <span className="text-white/60 text-[10px] font-medium ml-0.5">4,9</span>
+              <span className="text-white/60 text-[10px] font-medium ml-0.5">Premium</span>
             </div>
             <p className="text-white text-xs font-semibold leading-snug line-clamp-2">{getMessage()}</p>
           </div>

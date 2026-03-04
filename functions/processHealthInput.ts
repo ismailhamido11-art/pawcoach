@@ -8,6 +8,9 @@ Deno.serve(async (req) => {
 
     const { messages, text, imageUrl, dogId } = await req.json();
 
+    // Sanitize user inputs to prevent prompt injection and limit length
+    const sanitize = (s, max = 2000) => String(s || '').substring(0, max).replace(/[<>]/g, '');
+
     // Fetch dog info and health records for context
     let dogName = "ton chien";
     let ownerName = "toi";
@@ -134,11 +137,11 @@ Retourne TOUJOURS du JSON valide :
     let fileUrls = [];
 
     if (messages && Array.isArray(messages)) {
-      conversationHistory = messages.map(m => `${m.role === 'user' ? 'Utilisateur' : 'Assistant'} : ${m.content}`).join("\n");
+      conversationHistory = messages.map(m => `[${m.role === 'user' ? 'UTILISATEUR' : 'ASSISTANT'}] ${sanitize(m.content)}`).join("\n");
       const lastMsg = messages[messages.length - 1];
       if (lastMsg?.image_url) fileUrls.push(lastMsg.image_url);
     } else if (text || imageUrl) {
-      conversationHistory = `Utilisateur : ${text || "Document à analyser"}`;
+      conversationHistory = `[UTILISATEUR] ${sanitize(text) || "Document à analyser"}`;
       if (imageUrl) fileUrls.push(imageUrl);
     }
 

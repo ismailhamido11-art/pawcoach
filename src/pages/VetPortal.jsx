@@ -22,7 +22,7 @@ export default function VetPortal() {
     try {
       const isAuth = await base44.auth.isAuthenticated();
       if (!isAuth) {
-        base44.auth.redirectToLogin("VetPortal");
+        base44.auth.redirectToLogin(window.location.href);
         return;
       }
       const u = await base44.auth.me();
@@ -126,7 +126,7 @@ export default function VetPortal() {
               onChange={e => setInviteCode(e.target.value)}
               placeholder="Entrez le code..."
               className="flex-1 uppercase tracking-widest text-center font-mono"
-              maxLength={6}
+              maxLength={12}
             />
             <Button onClick={handleAcceptInvite} disabled={accepting || !inviteCode.trim()}>
               {accepting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Valider"}

@@ -14,9 +14,13 @@ export default function DogEditModal({ dog, onClose, onSave }) {
   const [saving, setSaving] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
+  const sanitizeName = (name) => name.replace(/<[^>]*>/g, "").replace(/[^\p{L}\p{N}\s\-'.]/gu, "").trim().slice(0, 50);
+
   const handleSave = async () => {
+    if (form.birth_date && new Date(form.birth_date) > new Date()) return;
     setSaving(true);
-    await onSave(form);
+    const cleanForm = { ...form, name: sanitizeName(form.name) };
+    await onSave(cleanForm);
     setSaving(false);
     onClose();
   };
@@ -90,7 +94,11 @@ export default function DogEditModal({ dog, onClose, onSave }) {
                 value={form[field]}
                 onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
                 className="w-full border border-border rounded-xl px-4 py-3 text-sm bg-background outline-none focus:ring-1 focus:ring-primary"
+                {...(type === "date" ? { max: new Date().toISOString().split("T")[0] } : {})}
               />
+              {field === "birth_date" && form.birth_date && new Date(form.birth_date) > new Date() && (
+                <p className="text-[11px] text-red-500 font-semibold mt-1">La date de naissance ne peut pas etre dans le futur</p>
+              )}
             </div>
           ))}
 

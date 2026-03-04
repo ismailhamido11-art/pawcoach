@@ -1,5 +1,9 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+function escapeHtml(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function formatDate(d) {
   if (!d) return '—';
   try { return new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); }
@@ -18,8 +22,8 @@ function buildHealthSummaryHTML(dog, records) {
   let html = `
     <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse; font-family:Arial,sans-serif;">
       <tr><td style="background:#2d8a70; padding:20px 24px; border-radius:12px 12px 0 0;">
-        <h2 style="color:white; margin:0;">🐾 Fiche santé — ${dog.name}</h2>
-        <p style="color:rgba(255,255,255,0.85); margin:4px 0 0; font-size:14px;">${dog.breed || ''} · ${age} · ${dog.sex === 'male' ? 'Mâle' : dog.sex === 'female' ? 'Femelle' : ''} ${dog.neutered ? '(stérilisé)' : ''}</p>
+        <h2 style="color:white; margin:0;">🐾 Fiche santé — ${escapeHtml(dog.name)}</h2>
+        <p style="color:rgba(255,255,255,0.85); margin:4px 0 0; font-size:14px;">${escapeHtml(dog.breed) || ''} · ${age} · ${dog.sex === 'male' ? 'Mâle' : dog.sex === 'female' ? 'Femelle' : ''} ${dog.neutered ? '(stérilisé)' : ''}</p>
       </td></tr>
       <tr><td style="background:#f8faf9; padding:16px 24px;">
         <table width="100%" cellpadding="8" cellspacing="0" style="border-collapse:collapse;">
@@ -50,8 +54,8 @@ function buildHealthSummaryHTML(dog, records) {
     html += `<tr><td style="background:#f8faf9; padding:0 24px 12px;">
       <div style="background:#fff3f3; border:1px solid #fecaca; border-radius:8px; padding:12px;">
         <strong style="color:#dc2626; font-size:12px;">⚠️ Alertes santé</strong>
-        ${dog.allergies ? `<p style="margin:4px 0 0; font-size:13px; color:#333;">Allergies : ${dog.allergies}</p>` : ''}
-        ${dog.health_issues ? `<p style="margin:4px 0 0; font-size:13px; color:#333;">Problèmes : ${dog.health_issues}</p>` : ''}
+        ${dog.allergies ? `<p style="margin:4px 0 0; font-size:13px; color:#333;">Allergies : ${escapeHtml(dog.allergies)}</p>` : ''}
+        ${dog.health_issues ? `<p style="margin:4px 0 0; font-size:13px; color:#333;">Problèmes : ${escapeHtml(dog.health_issues)}</p>` : ''}
       </div>
     </td></tr>`;
   }
@@ -62,7 +66,7 @@ function buildHealthSummaryHTML(dog, records) {
       <p style="font-size:12px; font-weight:bold; color:#555; margin:0 0 6px;">💉 Derniers vaccins</p>`;
     vaccines.slice(0, 5).forEach(v => {
       html += `<div style="background:white; border:1px solid #e8ede9; border-radius:6px; padding:8px 12px; margin-bottom:4px; font-size:13px;">
-        <strong>${v.title}</strong> — ${formatDate(v.date)}${v.next_date ? ` · <span style="color:#d97706;">Rappel: ${formatDate(v.next_date)}</span>` : ''}
+        <strong>${escapeHtml(v.title)}</strong> — ${formatDate(v.date)}${v.next_date ? ` · <span style="color:#d97706;">Rappel: ${formatDate(v.next_date)}</span>` : ''}
       </div>`;
     });
     html += `</td></tr>`;
@@ -74,7 +78,7 @@ function buildHealthSummaryHTML(dog, records) {
       <p style="font-size:12px; font-weight:bold; color:#555; margin:0 0 6px;">💊 Médicaments récents</p>`;
     meds.slice(0, 5).forEach(m => {
       html += `<div style="background:white; border:1px solid #e8ede9; border-radius:6px; padding:8px 12px; margin-bottom:4px; font-size:13px;">
-        <strong>${m.title}</strong> — ${formatDate(m.date)}${m.details ? ` · ${m.details}` : ''}
+        <strong>${escapeHtml(m.title)}</strong> — ${formatDate(m.date)}${m.details ? ` · ${escapeHtml(m.details)}` : ''}
       </div>`;
     });
     html += `</td></tr>`;
@@ -118,7 +122,7 @@ Deno.serve(async (req) => {
         if (active) return Response.json({ error: 'Access already exists', access: active }, { status: 409 });
       }
 
-      const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const code = (Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8)).toUpperCase();
       const dog = dogs[0];
 
       const access = await base44.asServiceRole.entities.SharedVetAccess.create({
@@ -129,6 +133,7 @@ Deno.serve(async (req) => {
         status: 'pending',
         shared_sections: JSON.stringify(sections || ['vaccine', 'weight', 'vet_visit', 'medication', 'note']),
         invite_code: code,
+        invite_expires_at: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
       });
 
       // Fetch health records for summary
@@ -137,11 +142,11 @@ Deno.serve(async (req) => {
 
       await base44.integrations.Core.SendEmail({
         to: vetEmail,
-        subject: `PawCoach — Carnet de santé de ${dog.name} (${dog.breed})`,
+        subject: `PawCoach — Carnet de santé de ${escapeHtml(dog.name)} (${escapeHtml(dog.breed)})`,
         body: `
           <div style="font-family:Arial,sans-serif; max-width:600px; margin:0 auto;">
-            <p style="font-size:15px; color:#333;">Bonjour${vetName ? ` Dr. ${vetName}` : ''},</p>
-            <p style="font-size:14px; color:#555;"><strong>${user.full_name || user.email}</strong> vous partage le carnet de santé de son chien via PawCoach.</p>
+            <p style="font-size:15px; color:#333;">Bonjour${vetName ? ` Dr. ${escapeHtml(vetName)}` : ''},</p>
+            <p style="font-size:14px; color:#555;"><strong>${escapeHtml(user.full_name || user.email)}</strong> vous partage le carnet de santé de son chien via PawCoach.</p>
             
             <div style="margin:20px 0;">
               ${healthSummary}
@@ -154,7 +159,7 @@ Deno.serve(async (req) => {
 
             <div style="text-align:center; margin:20px 0;">
               <a href="https://paw-coach-care.base44.app/VetPortal" style="display:inline-block; background:#2d8a70; color:white; text-decoration:none; padding:12px 28px; border-radius:8px; font-weight:bold; font-size:14px;">Accéder au Portail Vétérinaire</a>
-              <p style="font-size:13px; color:#777; margin-top:12px;">Connectez-vous sur le portail, puis entrez le code ci-dessus pour accéder au dossier complet de ${dog.name}.</p>
+              <p style="font-size:13px; color:#777; margin-top:12px;">Connectez-vous sur le portail, puis entrez le code ci-dessus pour accéder au dossier complet de ${escapeHtml(dog.name)}.</p>
             </div>
 
             <hr style="border:none; border-top:1px solid #eee; margin:24px 0;" />
@@ -172,6 +177,9 @@ Deno.serve(async (req) => {
       const accesses = await base44.asServiceRole.entities.SharedVetAccess.filter({ invite_code: inviteCode, status: 'pending' });
       if (!accesses || accesses.length === 0) return Response.json({ error: 'Invalid or expired invite code' }, { status: 404 });
       const access = accesses[0];
+      if (access.invite_expires_at && new Date(access.invite_expires_at) < new Date()) {
+        return Response.json({ error: 'Invite code expired. Ask the owner to resend.' }, { status: 410 });
+      }
       if (access.vet_email !== user.email) return Response.json({ error: 'This invite is not for you' }, { status: 403 });
       await base44.asServiceRole.entities.SharedVetAccess.update(access.id, {
         status: 'active',

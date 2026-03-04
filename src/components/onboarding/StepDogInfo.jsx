@@ -70,7 +70,7 @@ export default function StepDogInfo({ data, onChange }) {
       {/* Name */}
       <div>
         <Label className="text-sm font-semibold text-foreground mb-2 block">
-          Prénom de votre chien <span className="text-primary">*</span>
+          Prenom de ton chien <span className="text-primary">*</span>
         </Label>
         <div className="flex gap-2">
           <Input

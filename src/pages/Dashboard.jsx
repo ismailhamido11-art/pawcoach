@@ -14,6 +14,7 @@ import {
 import { Link } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
+import { calcScore } from "../components/home/HealthScore";
 import WellnessBanner from "../components/WellnessBanner";
 import IconBadge from "@/components/ui/IconBadge";
 import Illustration from "../components/illustrations/Illustration";
@@ -105,10 +106,10 @@ export default function Dashboard() {
 
         const [recs, cks, stk, prog, logs] = await Promise.all([
           base44.entities.HealthRecord.filter({ dog_id: d.id }),
-          base44.entities.DailyCheckin.filter({ dog_id: d.id }),
+          base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 90),
           base44.entities.Streak.filter({ dog_id: d.id }),
           base44.entities.UserProgress.filter({ dog_id: d.id }),
-          base44.entities.DailyLog.filter({ dog_id: d.id }),
+          base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 90),
         ]);
         setRecords(recs);
         setCheckins(cks.sort((a, b) => a.date > b.date ? 1 : -1));
@@ -132,7 +133,7 @@ export default function Dashboard() {
   ];
   // dedupe by date: keep the most recent entry per date
   const weightByDate = {};
-  allWeightPoints.forEach(p => { if (!weightByDate[p.date] || p.value) weightByDate[p.date] = p.value; });
+  allWeightPoints.forEach(p => { if (!weightByDate[p.date]) weightByDate[p.date] = p.value; });
   const weightData = Object.entries(weightByDate)
     .sort(([a], [b]) => a > b ? 1 : -1)
     .slice(-10)
@@ -156,8 +157,18 @@ export default function Dashboard() {
     energie: c.energy,
   }));
 
-  const avgMood = checkins.length
-    ? (checkins.slice(-7).reduce((s, c) => s + (c.mood || 0), 0) / Math.min(7, checkins.length)).toFixed(1)
+  // Mood calculation — unified with DailySnapshot (Monday-based week)
+  const getWeekStartDash = () => {
+    const d = new Date();
+    const day = d.getDay();
+    const diff = d.getDate() - (day === 0 ? 6 : day - 1);
+    d.setDate(diff);
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  };
+  const weekStartMood = getWeekStartDash();
+  const weekCheckins = checkins.filter(c => c.date >= weekStartMood && c.mood);
+  const avgMood = weekCheckins.length > 0
+    ? (weekCheckins.reduce((s, c) => s + c.mood, 0) / weekCheckins.length).toFixed(1)
     : null;
 
   // Health alerts
@@ -188,14 +199,17 @@ export default function Dashboard() {
     alerts.push({ type: "warning", title: "Visite vétérinaire à planifier", desc: `RDV prévu le ${lastVet.next_date}`, cta: "Agenda", to: createPageUrl("Notebook") });
   }
 
-  // Health score (0-100)
-  let score = 40;
-  if (vaccines.length > 0 && overdueVaccines.length === 0) score += 20;
-  if (checkins.length >= 3) score += 15;
-  if (weightData.length >= 2) score += 10;
-  if (streak?.current_streak >= 3) score += 10;
-  if (progress.length >= 2) score += 5;
-  score = Math.min(100, score);
+  // Health score (unified with Home via calcScore)
+  const scoreData = dog ? calcScore({
+    dog,
+    streak: streak || {},
+    checkins: checkins || [],
+    records: records || [],
+    exercises: progress || [],
+    scans: [],
+    dailyLogs: dailyLogs || [],
+  }) : { total: 0, pillars: [] };
+  const score = scoreData.total;
 
   const scoreColor = score >= 80 ? "#10b981" : score >= 60 ? "#d97706" : "#ef4444";
   const scoreLabel = score >= 80 ? "Excellent" : score >= 60 ? "Bon" : "À améliorer";

@@ -52,7 +52,7 @@ export default function ReferralSection({ user, onSave }) {
 
       <div className="px-4 py-4 space-y-3">
         <p className="text-xs text-muted-foreground leading-relaxed">
-          Partage ton code avec un ami. Il recevra 7 jours d'essai gratuit !
+          Partage ton code avec un ami. 7 jours d'essai gratuit offerts !
         </p>
 
         {code ? (

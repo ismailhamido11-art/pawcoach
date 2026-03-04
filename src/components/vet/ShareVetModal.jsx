@@ -46,8 +46,14 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
     setLoadingAccesses(false);
   };
 
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   const handleInvite = async () => {
     if (!vetEmail.trim()) return;
+    if (!isValidEmail(vetEmail.trim())) {
+      toast.error("Adresse email invalide");
+      return;
+    }
     setLoading(true);
     try {
       const res = await base44.functions.invoke("vetAccess", {
@@ -152,7 +158,7 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
                 type="email"
                 value={vetEmail}
                 onChange={e => setVetEmail(e.target.value)}
-                placeholder="dr.martin@vetclinic.fr"
+                placeholder="email@veterinaire.com"
                 className="flex-1"
               />
             </div>
@@ -189,7 +195,7 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
           </Button>
 
           <div className="pt-3 border-t border-border mt-3">
-            <p className="text-xs text-muted-foreground mb-2">Ou téléchargez le carnet pour l'imprimer / l'envoyer vous-même</p>
+            <p className="text-xs text-muted-foreground mb-2">Ou telecharge le carnet pour l'imprimer / l'envoyer toi-meme</p>
             <DownloadHealthPDF dogId={dogId} dogName={dogName} />
           </div>
         </div>

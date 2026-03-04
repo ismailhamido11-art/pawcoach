@@ -56,7 +56,7 @@ export default function PremiumNudgeSheet({ visible, onClose, dogName, context =
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-primary text-primary" />
                 ))}
-                <span className="text-xs text-muted-foreground ml-1.5 font-medium">4,9 · +2 000 familles</span>
+                <span className="text-xs text-muted-foreground ml-1.5 font-medium">Recommande par les pros</span>
               </div>
 
               {/* Illustration */}

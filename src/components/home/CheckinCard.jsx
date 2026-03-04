@@ -139,7 +139,7 @@ export default function CheckinCard({ dog, mood, setMood, energy, setEnergy, app
           className="px-5 pt-2 pb-1"
         >
           <p className="text-white font-black text-[17px] leading-snug">
-            {currentStep.question(dog?.name || "votre chien")}
+            {currentStep.question(dog?.name || "ton chien")}
           </p>
         </motion.div>
       </AnimatePresence>

@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
     lines.forEach(line => {
       if (y > 270) { doc.addPage(); y = 20; }
       doc.text(line, x, y);
-      y += fontSize * 0.5;
+      y += fontSize * 1.4;
     });
     y += 2;
   };

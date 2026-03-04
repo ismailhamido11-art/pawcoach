@@ -19,6 +19,7 @@ import { Heart, PartyPopper, Flame } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
 
 const MILESTONES = [
@@ -75,7 +76,7 @@ export default function Home() {
           const [checkins, streaks, recent, insights, recs, exs, scs, logs] = await Promise.all([
             base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
             base44.entities.Streak.filter({ dog_id: d.id }),
-            base44.entities.DailyCheckin.filter({ dog_id: d.id }),
+            base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 30),
             base44.entities.WeeklyInsight.filter({ dog_id: d.id, is_read: false }),
             base44.entities.HealthRecord.filter({ dog_id: d.id }),
             base44.entities.UserProgress.filter({ dog_id: d.id }),
@@ -94,7 +95,7 @@ export default function Home() {
             setWeeklyInsight(insights.sort((a, b) => (b.week_start || "").localeCompare(a.week_start || ""))[0]);
           }
           // Post-onboarding premium nudge (first visit, non-premium)
-          if (!isUserPremium(u) && u.premium_onboarding_nudge_shown === false) {
+          if (!isUserPremium(u) && !u.premium_onboarding_nudge_shown) {
             setShowPremiumNudge(true);
             try { await base44.auth.updateMe({ premium_onboarding_nudge_shown: true }); } catch(e) {}
           }
@@ -123,7 +124,7 @@ export default function Home() {
       setRecentCheckins(prev => [newCheckin, ...prev].slice(0, 7));
       const newStreak = result.streak?.current_streak;
       if (newStreak) {
-        const ms = MILESTONES.find(m => m.days === newStreak);
+        const ms = MILESTONES.filter(m => m.days <= newStreak).pop();
         if (ms) {
           setMilestone(ms);
           setTimeout(() => setMilestone(null), 5000);
@@ -131,6 +132,7 @@ export default function Home() {
       }
     } catch (err) {
       console.error("Check-in error:", err);
+      toast.error("Erreur lors du check-in. Réessaie dans quelques instants.");
     } finally {
       setSubmitting(false);
     }
@@ -180,7 +182,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-28 relative">
+    <div className="min-h-screen bg-background pb-40 relative">
       <WellnessBanner />
 
       {/* HERO */}

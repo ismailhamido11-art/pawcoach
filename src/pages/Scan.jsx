@@ -53,7 +53,6 @@ const VERDICT_CONFIG = {
 };
 
 const FREE_SCAN_LIMIT = 3;
-const FREE_TRIAL_DAYS = 14;
 
 function CircleScore({ score, color }) {
   const r = 30;
@@ -123,11 +122,6 @@ export default function Scan() {
 
   const checkScanLimit = (u) => {
     if (isUserPremium(u)) return false;
-    if (u?.signup_date) {
-      const signupDate = new Date(u.signup_date);
-      const daysSince = (Date.now() - signupDate) / (1000 * 60 * 60 * 24);
-      if (daysSince <= FREE_TRIAL_DAYS) return false;
-    }
     const weekStart = getWeekStart();
     const isSameWeek = u?.scans_week_start === weekStart;
     const count = isSameWeek ? (u?.scans_this_week || 0) : 0;
@@ -267,7 +261,7 @@ export default function Scan() {
   const weekStart = getWeekStart();
   const isSameWeek = user?.scans_week_start === weekStart;
   const scansUsed = isSameWeek ? (user?.scans_this_week || 0) : 0;
-  const isInTrial = user?.signup_date && ((Date.now() - new Date(user.signup_date)) / (1000 * 60 * 60 * 24)) <= FREE_TRIAL_DAYS;
+  const isInTrial = isUserPremium(user) && !user?.is_premium;
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -286,7 +280,7 @@ export default function Scan() {
         <div className="relative z-10 flex items-start justify-between">
           <div className="pb-6">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-3">PawCoach</p>
-            <h1 className="text-white font-black text-2xl leading-tight">Scan Bouffe</h1>
+            <h1 className="text-white font-black text-2xl leading-tight">Scan Aliment</h1>
             <p className="text-white/70 text-sm mt-1">
               {dog ? `Analyse pour ${dog.name}` : "Chargement..."}
             </p>
@@ -322,7 +316,7 @@ export default function Scan() {
               <div className="w-24 h-24 mx-auto">
                 <Illustration name="petFood" alt="Limite atteinte" className="w-full h-full drop-shadow-md" />
               </div>
-              <p className="font-bold text-foreground">Tu as utilisé tes {FREE_SCAN_LIMIT} scans gratuits cette semaine.</p>
+              <p className="font-bold text-foreground">Tu as utilise tes {FREE_SCAN_LIMIT} scans gratuits cette semaine ({scansUsed}/{FREE_SCAN_LIMIT}).</p>
               <p className="text-sm text-muted-foreground">Passe en Premium pour scanner sans limite.</p>
               <Button onClick={() => window.location.href = '/Premium?from=scan'} className="w-full h-12 rounded-xl gradient-warm border-0 text-white font-bold">
                 👑 Voir Premium

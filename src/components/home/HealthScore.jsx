@@ -26,7 +26,7 @@ function daysBetween(dateStr) {
   return Math.round(diff);
 }
 
-function calcScore(data) {
+export function calcScore(data) {
   const pillars = [];
 
   // 1. ROUTINE (25pts) — check-ins cette semaine
@@ -41,7 +41,7 @@ function calcScore(data) {
     max: 25,
     detail: `${checkinDays}/7 jours cette semaine`,
     status: routineScore >= 20 ? "great" : routineScore >= 10 ? "ok" : "low",
-    tip: checkinDays < 7 ? "Faites un check-in aujourd'hui !" : null,
+    tip: checkinDays < 7 ? "Fais un check-in aujourd'hui !" : null,
   });
 
   // 2. STREAK (15pts) — régularité long terme
@@ -54,7 +54,7 @@ function calcScore(data) {
     max: 15,
     detail: `${streak} jours consécutifs`,
     status: streak >= 14 ? "great" : streak >= 3 ? "ok" : "low",
-    tip: streak === 0 ? "Commencez votre streak aujourd'hui" : null,
+    tip: streak === 0 ? "Commence ton streak aujourd'hui" : null,
   });
 
   // 3. SANTÉ CARNET (20pts) — vaccins à jour, poids suivi, visite véto
@@ -90,7 +90,7 @@ function calcScore(data) {
     max: 20,
     detail: `${vaccines.length} vaccin${vaccines.length > 1 ? "s" : ""} · ${allWeightEntries.length} pesée${allWeightEntries.length > 1 ? "s" : ""} · ${vetVisits.length} visite${vetVisits.length > 1 ? "s" : ""}`,
     status: carnetScore >= 16 ? "great" : carnetScore >= 8 ? "ok" : "low",
-    tip: vaccines.length === 0 ? "Ajoutez les vaccins dans le Carnet" : daysSinceWeight > 30 ? "Mettez le poids à jour" : null,
+    tip: vaccines.length === 0 ? "Ajoute les vaccins dans le Carnet" : daysSinceWeight > 30 ? "Mets le poids a jour" : null,
   });
 
   // 4. DRESSAGE (15pts) — exercices complétés
@@ -104,7 +104,7 @@ function calcScore(data) {
     max: 15,
     detail: `${completedThisWeek.length} exercice${completedThisWeek.length > 1 ? "s" : ""} cette semaine`,
     status: exerciseScore >= 12 ? "great" : exerciseScore >= 6 ? "ok" : "low",
-    tip: completedThisWeek.length === 0 ? "Faites un exercice de dressage" : null,
+    tip: completedThisWeek.length === 0 ? "Fais un exercice de dressage" : null,
   });
 
   // 5. NUTRITION / SCAN (15pts) — scans alimentaires
@@ -120,7 +120,7 @@ function calcScore(data) {
     max: 15,
     detail: totalScans === 0 ? "Aucun scan cette semaine" : `${totalScans} scan${totalScans > 1 ? "s" : ""} · ${safeScans} sûr${safeScans > 1 ? "s" : ""}`,
     status: scanScore >= 12 ? "great" : scanScore >= 5 ? "ok" : "low",
-    tip: totalScans === 0 ? "Scannez un aliment de votre chien" : null,
+    tip: totalScans === 0 ? "Scanne un aliment de ton chien" : null,
   });
 
   // 6. PROFIL COMPLET (10pts) — données de base
@@ -138,7 +138,7 @@ function calcScore(data) {
     max: 10,
     detail: `${profileScore * 10}% complété`,
     status: profileScore >= 8 ? "great" : profileScore >= 4 ? "ok" : "low",
-    tip: profileScore < 10 ? "Complétez le profil pour un suivi optimal" : null,
+    tip: profileScore < 10 ? "Complete le profil pour un suivi optimal" : null,
   });
 
   const total = pillars.reduce((acc, p) => acc + p.score, 0);

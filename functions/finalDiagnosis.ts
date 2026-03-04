@@ -10,6 +10,9 @@ Deno.serve(async (req) => {
 
     if (!symptoms) return Response.json({ error: 'Symptoms required' }, { status: 400 });
 
+    // Sanitize user inputs to prevent prompt injection and limit length
+    const sanitize = (s, max = 2000) => String(s || '').substring(0, max).replace(/[<>]/g, '');
+
     // Null safety: handle missing followup_questions
     const questions = Array.isArray(followup_questions) ? followup_questions : [];
     const answers = user_answers || {};
@@ -17,8 +20,8 @@ Deno.serve(async (req) => {
     // Build Q&A section
     const qaSection = questions.length > 0
       ? questions.map(q => {
-          const answer = answers[q.id] || 'Non répondu';
-          return `Q: ${q.question}\nR: ${answer}`;
+          const answer = sanitize(answers[q.id], 500) || 'Non répondu';
+          return `Q: ${sanitize(q.question, 500)}\nR: ${answer}`;
         }).join('\n\n')
       : 'Aucune question complémentaire.';
 
@@ -27,21 +30,21 @@ Deno.serve(async (req) => {
 PHASE 2 - ANALYSE FINALE: Tu as maintenant TOUTES les informations nécessaires pour produire un rapport de pré-diagnostic complet et détaillé.
 
 INFORMATIONS SUR LE CHIEN:
-- Nom: ${dog_name || 'Non renseigné'}
-- Race: ${dog_breed || 'Non renseignée'}
+- Nom: ${sanitize(dog_name, 100) || 'Non renseigné'}
+- Race: ${sanitize(dog_breed, 100) || 'Non renseignée'}
 - Poids: ${dog_weight ? dog_weight + ' kg' : 'Non renseigné'}
-- Âge approximatif: ${dog_age || 'Non renseigné'}
-- Problèmes de santé connus: ${health_issues || 'Aucun'}
-- Allergies connues: ${allergies || 'Aucune'}
+- Âge approximatif: ${sanitize(dog_age, 100) || 'Non renseigné'}
+- Problèmes de santé connus: ${sanitize(health_issues, 500) || 'Aucun'}
+- Allergies connues: ${sanitize(allergies, 500) || 'Aucune'}
 ${(() => { try { const tags = JSON.parse(personality_tags || "[]"); return tags.length > 0 ? `- Personnalité : ${tags.join(", ")} (ex: un chien anxieux peut avoir des symptômes liés au stress)` : ""; } catch { return ""; } })()}
 ${dog_status && dog_status !== "healthy" ? `- Statut actuel : ${dog_status === "recovering" ? "En convalescence (adapter les recommandations en conséquence, pas d'exercice intense)" : dog_status === "traveling" ? "En voyage/déplacement (stress potentiel)" : dog_status}` : ""}
 
 SYMPTÔMES INITIAUX:
-${symptoms}
+${sanitize(symptoms)}
 
-DURÉE: ${duration || 'Non précisée'}
+DURÉE: ${sanitize(duration, 500) || 'Non précisée'}
 
-INFOS SUPPLÉMENTAIRES: ${additional_info || 'Aucune'}
+INFOS SUPPLÉMENTAIRES: ${sanitize(additional_info) || 'Aucune'}
 
 ${image_url ? "NOTE: Le propriétaire a fourni une photo des symptômes. Intègre tes observations visuelles dans le rapport." : ""}
 

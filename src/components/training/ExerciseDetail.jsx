@@ -124,6 +124,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
             <HelpCircle className="w-5 h-5" />
             J'ai besoin d'aide
           </Button>
+          <p className="text-[10px] text-muted-foreground text-center">Utilise 1 credit IA (partage avec Chat + Nutri)</p>
         </div>
       )}
     </div>

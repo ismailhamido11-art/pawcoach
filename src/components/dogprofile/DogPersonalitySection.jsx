@@ -52,7 +52,7 @@ export default function DogPersonalitySection({ dog, onSave }) {
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
                 active
                   ? "bg-primary text-white border-primary shadow-sm"
-                  : "bg-muted/40 text-muted-foreground border-border"
+                  : "bg-white text-muted-foreground border-dashed border-border/60 opacity-60"
               }`}
             >
               <span>{tag.emoji}</span>

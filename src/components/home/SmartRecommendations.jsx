@@ -89,7 +89,7 @@ function buildRecommendations({ records, exercises, scans, checkins, dailyLogs, 
       iconColor: "#10b981",
       label: completedThisWeek.length === 0 ? "Aucun exercice cette semaine" : "Continue l'entraînement",
       sub: completedThisWeek.length === 0
-        ? "Lance votre première séance ensemble"
+        ? "Lance ta premiere seance ensemble"
         : `${completedThisWeek.length} exercice${completedThisWeek.length > 1 ? "s" : ""} fait${completedThisWeek.length > 1 ? "s" : ""} — bravo !`,
       page: "Training",
       cta: "Voir les exercices",

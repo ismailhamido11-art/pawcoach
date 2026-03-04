@@ -198,22 +198,32 @@ export default function Chat() {
         imageUrl: uploadedImageUrl || null,
       });
 
+      // Handle server-side quota exceeded
+      if (response.data?.error === 'quota_exceeded') {
+        setMessagesRemaining(0);
+        return;
+      }
+
       const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
       const assistantMsg = { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() };
 
       setMessages(prev => [...prev, assistantMsg]);
       await base44.entities.ChatMessage.create({ dog_id: dog.id, ...assistantMsg });
 
-      if (!isUserPremium(user)) {
-        const newRemaining = Math.max(0, (messagesRemaining ?? 0) - 1);
-        setMessagesRemaining(newRemaining);
-        await base44.auth.updateMe({ messages_remaining: newRemaining, messages_daily_reset: getTodayString() });
+      // Sync quota from server (authoritative — prevents multi-tab bypass)
+      if (!isUserPremium(user) && response.data?.messages_remaining !== undefined) {
+        setMessagesRemaining(response.data.messages_remaining);
       }
 
       // --- STREAK UPDATE (once per day, after successful message) ---
       await updateStreakSilently(dog.id, user.email);
     } catch (err) {
       console.error("Chat send error:", err);
+      // Handle quota exceeded thrown by SDK
+      if (err?.message?.includes?.('quota_exceeded') || err?.status === 429) {
+        setMessagesRemaining(0);
+        return;
+      }
       setMessages(prev => [...prev, {
         role: "assistant",
         content: "Oups, une erreur est survenue. Réessaie dans un instant.",
@@ -269,7 +279,7 @@ export default function Chat() {
               {!isUserPremium(user) && messagesRemaining !== null && (
                 <div className="bg-white/20 px-2.5 py-1 rounded-full">
                   <span className="text-white text-xs font-medium">
-                    {messagesRemaining} msg restant{messagesRemaining !== 1 ? "s" : ""}
+                    {messagesRemaining} credit{messagesRemaining !== 1 ? "s" : ""} IA (Chat + Nutri)
                   </span>
                 </div>
               )}
@@ -434,8 +444,9 @@ export default function Chat() {
                 ref={textareaRef}
                 value={input}
                 onChange={e => setInput(e.target.value)}
+                maxLength={2000}
                 onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())}
-                placeholder={dog ? `Question sur ${dog.name}...` : "Posez votre question..."}
+                placeholder={dog ? `Question sur ${dog.name}...` : "Pose ta question..."}
                 rows={1}
                 className="flex-1 min-h-[44px] max-h-[120px] rounded-xl border border-border bg-muted/30 px-3 py-2.5 text-sm resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-ring"
                 style={{ lineHeight: "1.5" }}

@@ -22,16 +22,23 @@ Deno.serve(async (req) => {
     const dogMap = new Map(allDogs.map(d => [d.id, d]));
     const userMap = new Map(allUsers.map(u => [u.email, u]));
 
+    // Only send reminders at specific intervals: 14, 7, 3, 1, 0 days before
+    const REMINDER_DAYS = [14, 7, 3, 1, 0];
+    const todayStr = today.toISOString().slice(0, 10);
+
     const upcoming = vaccines.filter(v => {
       if (!v.next_date) return false;
       const due = new Date(v.next_date);
       due.setHours(0, 0, 0, 0);
       const diffDays = Math.round((due - today) / (1000 * 60 * 60 * 24));
-      return diffDays >= 0 && diffDays <= 14;
+      return diffDays >= 0 && REMINDER_DAYS.includes(diffDays);
     });
 
     let sent = 0;
     for (const vaccine of upcoming) {
+      // Skip if already reminded today (dedup)
+      if (vaccine.reminder_sent_date === todayStr) continue;
+
       // Get the dog
       const dog = dogMap.get(vaccine.dog_id);
       if (!dog) continue;
@@ -53,6 +60,9 @@ Deno.serve(async (req) => {
         subject: `🐾 Rappel vaccin pour ${dog.name}`,
         body: `Bonjour !\n\nRappel vaccin pour ${dog.name} : le vaccin "${vaccine.title}" est prévu le ${formattedDate} (dans ${diffDays} jour${diffDays > 1 ? "s" : ""}).\n\nPense à prendre rendez-vous chez ton vétérinaire. 🏥\n\n— PawCoach`,
       });
+
+      // Mark as reminded today (prevents duplicate sends)
+      await base44.asServiceRole.entities.HealthRecord.update(vaccine.id, { reminder_sent_date: todayStr });
       sent++;
     }
 

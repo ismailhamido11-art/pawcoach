@@ -18,7 +18,7 @@ export default function DiagnosisReportView({ report, dogName, reportDate }) {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-sm">
-          Rapport complet pour {dogName || "votre chien"}
+          Rapport complet pour {dogName || "ton chien"}
         </h3>
         <span className="text-[10px] text-muted-foreground">{reportDate}</span>
       </div>

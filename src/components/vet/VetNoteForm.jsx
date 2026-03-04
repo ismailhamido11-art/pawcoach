@@ -58,7 +58,7 @@ export default function VetNoteForm({ dogId, vetEmail, vetName, onNoteAdded }) {
       <Textarea
         value={content}
         onChange={e => setContent(e.target.value)}
-        placeholder="Votre observation, recommandation ou prescription..."
+        placeholder="Ton observation, recommandation ou prescription..."
         className="min-h-[100px]"
       />
 

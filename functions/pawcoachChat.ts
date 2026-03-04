@@ -10,10 +10,36 @@ Deno.serve(async (req) => {
 
     if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
 
+    // Server-side quota check (prevents multi-tab bypass)
+    const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
+    if (!isPremium) {
+      const today = new Date().toISOString().split("T")[0];
+      let remaining = user.messages_remaining ?? 20;
+      const lastReset = user.messages_daily_reset;
+
+      // Daily reset: give 2 free messages per day
+      if (remaining <= 0 && lastReset !== today) {
+        remaining = 2;
+      }
+
+      if (remaining <= 0) {
+        return Response.json({ error: 'quota_exceeded', messages_remaining: 0 }, { status: 429 });
+      }
+
+      // Decrement server-side (atomic relative to this request)
+      const newRemaining = remaining - 1;
+      await base44.asServiceRole.entities.User.update(user.id, {
+        messages_remaining: newRemaining,
+        messages_daily_reset: today,
+      });
+      // Will be returned in response
+      user._messagesRemaining = newRemaining;
+    }
+
     // Filter messages to only allow safe roles (prevent prompt injection)
     const messages = (rawMessages || []).filter(m => m.role === 'user' || m.role === 'assistant').map(m => ({
       role: m.role,
-      content: String(m.content || ''),
+      content: String(m.content || '').substring(0, 2000),
     }));
 
     // Fetch dog profile server-side
@@ -191,7 +217,7 @@ ${topicsInstruction ? `\nPRIORITÉS : ${topicsInstruction}` : ""}`;
       }
       const data = await response.json();
       const content = data.choices?.[0]?.message?.content || "";
-      return Response.json({ content });
+      return Response.json({ content, messages_remaining: user._messagesRemaining });
     }
 
     // Text-only with DeepSeek
@@ -221,7 +247,7 @@ ${topicsInstruction ? `\nPRIORITÉS : ${topicsInstruction}` : ""}`;
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || "";
-    return Response.json({ content });
+    return Response.json({ content, messages_remaining: user._messagesRemaining });
 
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

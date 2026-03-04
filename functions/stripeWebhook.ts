@@ -65,16 +65,43 @@ Deno.serve(async (req) => {
       }
     }
 
-    if (event.type === "invoice.payment_failed") {
-      const invoice = event.data.object;
-      const customerId = invoice.customer;
+    if (event.type === "customer.subscription.updated") {
+      const subscription = event.data.object;
+      const customerId = subscription.customer;
 
       const users = await base44.asServiceRole.entities.User.filter({ stripe_customer_id: customerId });
       if (users.length > 0) {
+        const isActive = subscription.status === "active" || subscription.status === "trialing";
         await base44.asServiceRole.entities.User.update(users[0].id, {
-          is_premium: false,
+          is_premium: isActive,
+          stripe_subscription_id: subscription.id,
+          stripe_subscription_status: subscription.status,
         });
-        console.log(`Premium revoked (payment failed) for customer: ${customerId}`);
+        console.log(`Subscription updated for customer ${customerId}: status=${subscription.status}, premium=${isActive}`);
+      } else {
+        console.error(`No user found for subscription update customer: ${customerId}`);
+      }
+    }
+
+    if (event.type === "invoice.payment_failed") {
+      const invoice = event.data.object;
+      const customerId = invoice.customer;
+      const attemptCount = invoice.attempt_count || 1;
+
+      const users = await base44.asServiceRole.entities.User.filter({ stripe_customer_id: customerId });
+      if (users.length > 0) {
+        if (attemptCount >= 3) {
+          await base44.asServiceRole.entities.User.update(users[0].id, {
+            is_premium: false,
+            stripe_subscription_status: "past_due",
+          });
+          console.log(`Premium revoked (${attemptCount} failed payments) for customer: ${customerId}`);
+        } else {
+          await base44.asServiceRole.entities.User.update(users[0].id, {
+            stripe_subscription_status: "past_due",
+          });
+          console.log(`Payment failed (attempt ${attemptCount}/3) for customer: ${customerId}, keeping premium access`);
+        }
       } else {
         console.error(`No user found for failed payment customer: ${customerId}`);
       }

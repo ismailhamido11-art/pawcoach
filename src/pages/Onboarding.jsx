@@ -226,10 +226,12 @@ Extrais ces informations et renvoie un objet JSON.
             body: `${dog.name} est maintenant inscrit ! Profitez de l'application !`,
           });
         } catch (e) {}
-        // Activate 7-day free trial + store nudge flag
+        // Activate 7-day free trial + store nudge flag (only if no existing trial)
         try {
-          const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-          await base44.auth.updateMe({ premium_onboarding_nudge_shown: false, trial_expires_at: trialEnd });
+          if (!user.trial_expires_at) {
+            const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+            await base44.auth.updateMe({ premium_onboarding_nudge_shown: false, trial_expires_at: trialEnd });
+          }
         } catch(e) {}
       }
       setDone(true);

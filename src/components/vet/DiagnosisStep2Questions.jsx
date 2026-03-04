@@ -58,7 +58,7 @@ export default function DiagnosisStep2Questions({ phase1, userAnswers, setUserAn
         <Badge variant="outline" className="text-[10px] ml-auto">{answeredCount}/{totalCount}</Badge>
       </div>
       <p className="text-[11px] text-muted-foreground -mt-2">
-        Répondez à ces questions pour obtenir un diagnostic plus précis pour {dogName || "votre chien"}.
+        Reponds a ces questions pour obtenir un diagnostic plus precis pour {dogName || "ton chien"}.
       </p>
 
       {/* Questions */}
@@ -113,7 +113,7 @@ export default function DiagnosisStep2Questions({ phase1, userAnswers, setUserAn
                 <Textarea
                   value={userAnswers[q.id] || ""}
                   onChange={(e) => handleAnswer(q.id, e.target.value)}
-                  placeholder="Votre réponse..."
+                  placeholder="Ta reponse..."
                   className="min-h-[60px] text-xs"
                 />
               </div>

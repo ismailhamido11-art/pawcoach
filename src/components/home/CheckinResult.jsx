@@ -7,6 +7,7 @@ const ENERGY_EMOJI = { 1: "😴", 2: "🚶", 3: "🏃" };
 const APPETITE_EMOJI = { 1: "🙁", 2: "😌", 3: "😋" };
 
 export default function CheckinResult({ checkin, dog }) {
+  if (!checkin) return null;
   const moodOpt = MOOD_OPTIONS.find(x => x.value === checkin.mood);
   const energyOpt = ENERGY_OPTIONS.find(x => x.value === checkin.energy);
   const appetiteOpt = APPETITE_OPTIONS.find(x => x.value === checkin.appetite);
@@ -40,7 +41,7 @@ export default function CheckinResult({ checkin, dog }) {
             </div>
             <div>
               <p className="text-white font-bold text-sm">Check-in validé</p>
-              <p className="text-white/40 text-[10px]">Aujourd'hui · {dog?.name || "votre chien"}</p>
+              <p className="text-white/40 text-[10px]">Aujourd'hui · {dog?.name || "ton chien"}</p>
             </div>
           </div>
           <motion.div

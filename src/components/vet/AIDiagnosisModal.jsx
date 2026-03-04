@@ -92,7 +92,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
       setStep("questions");
     } catch (e) {
       console.error("handleStep1 error:", e);
-      toast.error("Erreur lors de l'analyse. Veuillez réessayer.");
+      toast.error("Erreur lors de l'analyse. Reessaie.");
       setStep("form");
     }
   };
@@ -138,11 +138,11 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
         report_date: reportDate,
       });
 
-      toast.success("Rapport sauvegardé dans votre historique ✅");
+      toast.success("Rapport sauvegarde dans ton historique");
       setStep("report");
     } catch (e) {
       console.error("handleStep2 error:", e);
-      toast.error("Erreur lors du diagnostic final. Veuillez réessayer.");
+      toast.error("Erreur lors du diagnostic final. Reessaie.");
       setStep("questions");
     }
   };
@@ -202,7 +202,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
           <div className="space-y-4 mt-2">
             <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-              <span>Cet outil ne remplace pas un vétérinaire. Il prépare un rapport pour faciliter votre consultation.</span>
+              <span>Cet outil ne remplace pas un veterinaire. Il prepare un rapport pour faciliter ta consultation.</span>
             </div>
 
             {/* Step indicator */}
@@ -224,7 +224,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
             </div>
 
             <div>
-              <label className="text-sm font-medium">Quels symptômes observez-vous ? *</label>
+              <label className="text-sm font-medium">Quels symptomes observes-tu ? *</label>
               <Textarea
                 value={symptoms}
                 onChange={(e) => setSymptoms(e.target.value)}
@@ -273,7 +273,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
                   </div>
                   <div>
                     <p className="text-xs font-medium">Ajouter une photo</p>
-                    <p className="text-[10px] text-muted-foreground">Si visible, prenez une photo de la zone concernée</p>
+                    <p className="text-[10px] text-muted-foreground">Si visible, prends une photo de la zone concernee</p>
                   </div>
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                 </label>
@@ -296,7 +296,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
             <p className="text-sm text-muted-foreground text-center">
               Analyse des premiers symptômes...<br />
-              <span className="text-xs">L'IA prépare des questions ciblées pour {dog?.name || "votre chien"}</span>
+              <span className="text-xs">L'IA prepare des questions ciblées pour {dog?.name || "ton chien"}</span>
             </p>
           </div>
         )}
@@ -318,7 +318,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
             <p className="text-sm text-muted-foreground text-center">
               Analyse finale en cours...<br />
-              <span className="text-xs">Génération du rapport complet pour {dog?.name || "votre chien"}</span>
+              <span className="text-xs">Generation du rapport complet pour {dog?.name || "ton chien"}</span>
             </p>
           </div>
         )}
@@ -347,7 +347,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
             <DiagnosisReportView report={report} dogName={dog?.name} reportDate={reportDate} />
 
             <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800">
-              <strong>Conservez ce rapport !</strong> Il contient vos symptômes, vos réponses et l'analyse complète. Votre vétérinaire aura tout en main.
+              <strong>Conserve ce rapport !</strong> Il contient tes symptomes, tes reponses et l'analyse complete. Ton veterinaire aura tout en main.
             </div>
 
             <Button

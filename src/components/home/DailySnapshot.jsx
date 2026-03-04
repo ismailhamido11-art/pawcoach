@@ -16,10 +16,12 @@ function getWeekStart() {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
 
+const isValidWeight = (v) => typeof v === "number" && v > 0 && v <= 200;
+
 function WeightCard({ records, dailyLogs }) {
-  // Merge HealthRecord weights + DailyLog weights, pick most recent
-  const fromRecords = records.filter(r => r.type === "weight" && r.value).map(r => ({ date: r.date, value: r.value }));
-  const fromLogs = (dailyLogs || []).filter(l => l.weight_kg).map(l => ({ date: l.date, value: l.weight_kg }));
+  // Merge HealthRecord weights + DailyLog weights, pick most recent (filter absurd values)
+  const fromRecords = records.filter(r => r.type === "weight" && isValidWeight(r.value)).map(r => ({ date: r.date, value: r.value }));
+  const fromLogs = (dailyLogs || []).filter(l => isValidWeight(l.weight_kg)).map(l => ({ date: l.date, value: l.weight_kg }));
   const weightRecords = [...fromRecords, ...fromLogs].sort((a, b) => b.date.localeCompare(a.date));
 
   const last = weightRecords[0];
@@ -32,7 +34,7 @@ function WeightCard({ records, dailyLogs }) {
   const trendColor = trend === "up" ? "#d97706" : trend === "down" ? "#d97706" : "#94a3b8";
 
   return (
-    <Link to={createPageUrl("Notebook")} className="block">
+    <Link to={createPageUrl("Notebook") + "?tab=weight"} className="block">
       <div className="bg-white rounded-2xl p-4 border border-border/30 shadow-sm h-full">
         <div className="flex items-center justify-between mb-2">
           <div className="w-7 h-7 rounded-xl bg-blue-50 flex items-center justify-center">
@@ -131,7 +133,7 @@ function WalkCard({ dailyLogs }) {
   const mins = todayLog?.walk_minutes;
 
   return (
-    <Link to={createPageUrl("Home")} className="block">
+    <Link to={createPageUrl("Notebook")} className="block">
       <div className="bg-white rounded-2xl p-4 border border-border/30 shadow-sm h-full">
         <div className="flex items-center justify-between mb-2">
           <div className="w-7 h-7 rounded-xl bg-emerald-50 flex items-center justify-center">
@@ -145,8 +147,8 @@ function WalkCard({ dailyLogs }) {
           </>
         ) : (
           <>
-            <p className="text-sm font-bold text-muted-foreground">—</p>
-            <p className="text-[11px] text-muted-foreground mt-1">Balade non loggée</p>
+            <p className="text-sm font-bold text-muted-foreground">--</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Balade non loggee</p>
           </>
         )}
       </div>
@@ -156,8 +158,9 @@ function WalkCard({ dailyLogs }) {
 
 function VaccineCard({ records }) {
   const today = getTodayString();
-  const upcoming = records
-    .filter(r => r.type === "vaccine" && r.next_date && r.next_date >= today)
+  const allVaccines = records.filter(r => r.type === "vaccine");
+  const upcoming = allVaccines
+    .filter(r => r.next_date && r.next_date >= today)
     .sort((a, b) => a.next_date.localeCompare(b.next_date));
 
   const next = upcoming[0];
@@ -166,15 +169,16 @@ function VaccineCard({ records }) {
     : null;
 
   const urgent = daysUntil !== null && daysUntil <= 30;
+  const hasAnyVaccine = allVaccines.length > 0;
 
   return (
-    <Link to={createPageUrl("Notebook")} className="block">
+    <Link to={createPageUrl("Notebook") + "?tab=vaccine"} className="block">
       <div className="bg-white rounded-2xl p-4 border border-border/30 shadow-sm h-full">
         <div className="flex items-center justify-between mb-2">
           <div className="w-7 h-7 rounded-xl bg-emerald-50 flex items-center justify-center">
             <Syringe className="w-3.5 h-3.5 text-emerald-500" />
           </div>
-          {urgent && <span className="text-[9px] font-bold bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded-full">Bientôt</span>}
+          {urgent && <span className="text-[9px] font-bold bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded-full">Bientot</span>}
         </div>
         {next ? (
           <>
@@ -183,10 +187,15 @@ function VaccineCard({ records }) {
             </p>
             <p className="text-[11px] text-muted-foreground mt-1 truncate">{next.title}</p>
           </>
-        ) : (
+        ) : hasAnyVaccine ? (
           <>
             <p className="text-sm font-black text-emerald-500">OK</p>
-            <p className="text-[11px] text-muted-foreground mt-1">Vaccins à jour</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Vaccins a jour</p>
+          </>
+        ) : (
+          <>
+            <p className="text-sm font-bold text-muted-foreground">--</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Aucun vaccin</p>
           </>
         )}
       </div>
