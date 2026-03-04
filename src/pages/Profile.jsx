@@ -14,6 +14,7 @@ import SubscriptionSection from "../components/profile/SubscriptionSection.jsx";
 import ReferralSection from "../components/profile/ReferralSection.jsx";
 import SettingsSection from "../components/profile/SettingsSection.jsx";
 import WalkReminderSettings from "../components/profile/WalkReminderSettings.jsx";
+import ChatFAB from "../components/ChatFAB";
 
 export default function Profile() {
   const navigate = useNavigate();

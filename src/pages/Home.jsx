@@ -15,6 +15,7 @@ import SmartRecommendations from "../components/home/SmartRecommendations";
 import PremiumValueBanner from "../components/home/PremiumValueBanner";
 import DailySnapshot from "../components/home/DailySnapshot";
 import QuickLogFAB from "../components/home/QuickLogFAB";
+import ChatFAB from "../components/ChatFAB";
 
 import { Heart, PartyPopper, Flame } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
