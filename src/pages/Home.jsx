@@ -202,6 +202,15 @@ export default function Home() {
 
       {/* MAIN CONTENT */}
       <div className="space-y-4 mt-0">
+        {/* Jumeau Digital */}
+        <DogTwinSection
+          dog={dog}
+          checkins={recentCheckins}
+          streak={streak}
+          records={records}
+          scans={scans}
+        />
+
         {/* Check-in ou résultat */}
         {!todayCheckin ? (
           <CheckinCard
