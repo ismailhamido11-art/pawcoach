@@ -66,6 +66,9 @@ import Tracker from './pages/Tracker';
 import Training from './pages/Training';
 import VetDogView from './pages/VetDogView';
 import VetPortal from './pages/VetPortal';
+import Activite from './pages/Activite';
+import Nutri from './pages/Nutri';
+import Sante from './pages/Sante';
 import __Layout from './Layout.jsx';
 
 
@@ -89,6 +92,9 @@ export const PAGES = {
     "Training": Training,
     "VetDogView": VetDogView,
     "VetPortal": VetPortal,
+    "Activite": Activite,
+    "Nutri": Nutri,
+    "Sante": Sante,
 }
 
 export const pagesConfig = {
