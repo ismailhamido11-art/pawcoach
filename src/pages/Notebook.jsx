@@ -447,7 +447,7 @@ export default function Notebook() {
         <GuidanceTip
           id="assistant"
           title="Ton assistant personnel"
-          description={`Parle-lui comme a un ami : '${dog?.name || "Mon chien"} a ete vaccine aujourd'hui' ou 'Il pese 32kg'. Il s'occupe de tout enregistrer pour toi.`}
+          description={`Parle-lui comme à un ami : '${dog?.name || "Mon chien"} a été vacciné aujourd'hui' ou 'Il pèse 32kg'. Il s'occupe de tout enregistrer pour toi.`}
           icon={<Sparkles className="w-5 h-5" />}
           variant="accent"
         />

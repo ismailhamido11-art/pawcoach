@@ -87,7 +87,7 @@ Pour chaque clinique, fournis: name, address, phone (format français), google_m
           <div className="flex-1 pb-1">
             <h1 className="text-white font-bold text-xl">Trouver un vétérinaire</h1>
             <p className="text-white/70 text-xs mt-0.5">
-              Recherche une clinique pres de chez toi
+              Recherche une clinique près de chez toi
             </p>
           </div>
           <motion.div
@@ -123,7 +123,7 @@ Pour chaque clinique, fournis: name, address, phone (format français), google_m
       <div className="px-4 mt-4 space-y-3">
         {/* AI disclaimer */}
         <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2">
-          <p className="text-xs text-emerald-700 font-medium">Ces resultats sont generes par IA et peuvent contenir des erreurs. Verifie les adresses et numeros avant de te deplacer ou d'appeler.</p>
+          <p className="text-xs text-emerald-700 font-medium">Ces résultats sont générés par IA et peuvent contenir des erreurs. Vérifie les adresses et numéros avant de te déplacer ou d'appeler.</p>
         </div>
 
         {loading && (

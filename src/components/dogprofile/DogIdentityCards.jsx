@@ -36,6 +36,8 @@ export default function DogIdentityCards({ dog, dailyLogs, onSave }) {
         editLabel="Poids (kg)"
         currentValue={dog.weight}
         onSave={onSave}
+        min={0.1}
+        max={200}
       />
 
       {/* Sex & neutered */}

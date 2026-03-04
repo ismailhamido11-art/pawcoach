@@ -262,7 +262,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       </div>
 
       {/* Chat Messages Area */}
-      <div className="max-h-[380px] overflow-y-auto p-4 space-y-4 scroll-smooth bg-gradient-to-b from-white to-slate-50/50">
+      <div className="max-h-[50vh] overflow-y-auto p-4 space-y-4 scroll-smooth bg-gradient-to-b from-white to-slate-50/50">
 
         {/* Loading state before first message */}
          {messages.length === 0 && isProcessing && (

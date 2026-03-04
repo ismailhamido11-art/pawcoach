@@ -3,13 +3,22 @@ import { Pencil, Check, X } from "lucide-react";
 
 export default function InlineEditCard({
   icon: Icon, iconColor, label, value, sub, subColor,
-  editField, editType, editLabel, editOptions, currentValue, onSave
+  editField, editType, editLabel, editOptions, currentValue, onSave,
+  min, max
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(currentValue ?? "");
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSave = async () => {
+    if (editType === "number") {
+      const val = parseFloat(draft);
+      if (isNaN(val)) { setError("Valeur invalide"); return; }
+      if (min !== undefined && val < min) { setError(`Minimum ${min}`); return; }
+      if (max !== undefined && val > max) { setError(`Maximum ${max}`); return; }
+    }
+    setError("");
     setSaving(true);
     await onSave({ [editField]: editType === "number" ? parseFloat(draft) : draft });
     setSaving(false);
@@ -50,11 +59,14 @@ export default function InlineEditCard({
             <input
               type={editType || "text"}
               value={draft}
-              onChange={e => setDraft(e.target.value)}
-              className="w-full text-sm border border-border rounded-xl px-3 py-2 bg-background outline-none focus:ring-1 focus:ring-primary"
+              onChange={e => { setDraft(e.target.value); setError(""); }}
+              className={`w-full text-sm border rounded-xl px-3 py-2 bg-background outline-none focus:ring-1 focus:ring-primary ${error ? "border-red-300" : "border-border"}`}
               placeholder={editLabel}
               autoFocus
+              {...(editType === "number" && min !== undefined ? { min } : {})}
+              {...(editType === "number" && max !== undefined ? { max } : {})}
             />
+            {error && <p className="text-[11px] text-red-500 font-medium">{error}</p>}
           )}
           <div className="flex gap-2">
             <button
