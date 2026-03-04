@@ -186,31 +186,20 @@ export default function Home() {
     <div className="min-h-screen bg-background pb-40 relative">
       <WellnessBanner />
 
-      {/* HERO */}
-      <div className="pt-7">
-        <HeroHeader
-          user={user}
-          dog={dog}
-          streak={streak}
-          checkins={recentCheckins}
-          records={records}
-          exercises={exercises}
-          scans={scans}
-          dailyLogs={dailyLogs}
-        />
-      </div>
+      {/* HERO — Carte d'identité vivante */}
+      <DogRadarHero
+        user={user}
+        dog={dog}
+        streak={streak}
+        checkins={recentCheckins}
+        records={records}
+        exercises={exercises}
+        scans={scans}
+        dailyLogs={dailyLogs}
+      />
 
       {/* MAIN CONTENT */}
-      <div className="space-y-4 mt-0">
-        {/* Jumeau Digital */}
-        <DogTwinSection
-          dog={dog}
-          checkins={recentCheckins}
-          streak={streak}
-          records={records}
-          scans={scans}
-        />
-
+      <div className="space-y-4 mt-4">
         {/* Check-in ou résultat */}
         {!todayCheckin ? (
           <CheckinCard
