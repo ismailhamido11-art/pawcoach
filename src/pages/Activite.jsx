@@ -14,9 +14,9 @@ import { Link } from "react-router-dom";
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
 const TABS = [
-  { id: "balade",     label: "Balade",     icon: Footprints, color: "#2d9f82" },
-  { id: "historique", label: "Historique", icon: History,    color: "#3b82f6" },
-  { id: "dressage",   label: "Dressage",   icon: Dumbbell,   color: "#8b5cf6" },
+  { id: "balade",     label: "Balade",     emoji: "🐾", icon: Footprints, bg: "from-emerald-500 to-teal-600" },
+  { id: "historique", label: "Historique", emoji: "📊", icon: History,    bg: "from-blue-500 to-indigo-600" },
+  { id: "dressage",   label: "Dressage",   emoji: "🎯", icon: Dumbbell,   bg: "from-violet-500 to-purple-600" },
 ];
 
 export default function Activite() {
