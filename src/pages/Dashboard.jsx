@@ -438,20 +438,15 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Alerts */}
-        <div>
-          <p className="font-bold text-foreground text-sm mb-3 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-caution" />
-            Alertes de santé
-          </p>
-          <div className="space-y-2.5">
-            {alerts.map((a, i) => (
-              <motion.div key={i} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}>
-                <AlertCard {...a} />
-              </motion.div>
-            ))}
-          </div>
-        </div>
+        {/* Smart Alerts — IA trends */}
+        <SmartAlerts
+          dog={dog}
+          checkins={checkins}
+          records={records}
+          streak={streak}
+          dailyLogs={dailyLogs}
+          scans={scans}
+        />
 
         {/* Next steps */}
         <div>
