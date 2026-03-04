@@ -86,6 +86,8 @@ export default function WalkMode({ dog, user, onLogged }) {
     setStatus("running");
     setElapsed(0);
     setDistance(0);
+    setPath([]);
+    setCurrentPos(null);
     distanceRef.current = 0;
     lastPosRef.current = null;
     pausedRef.current = 0;
