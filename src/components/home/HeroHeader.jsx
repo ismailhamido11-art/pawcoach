@@ -107,39 +107,32 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
             )}
           </div>
 
-          {/* Photo du chien */}
-          {dog?.photo ? (
+          {/* Avatar Digital Twin cliquable */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 120, damping: 14 }}
+            className="relative flex-shrink-0 cursor-pointer"
+            onClick={() => navigate(createPageUrl("DogTwin"))}
+          >
+            <DogAvatar
+              healthScore={healthScore}
+              mood={mood}
+              size="md"
+              streak={currentStreak}
+              interactive
+            />
+            {/* Badge "Jumeau" */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.7, rotate: -8 }}
-              animate={{ opacity: 1, scale: 1, rotate: 3 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 120, damping: 14 }}
-              className="relative flex-shrink-0"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="absolute -bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/30 backdrop-blur-sm border border-white/10 whitespace-nowrap"
             >
-              <div className="w-24 h-24 rounded-3xl overflow-hidden border-2 border-white/30 shadow-2xl">
-                <img src={dog.photo} alt={dog.name} className="w-full h-full object-cover" />
-              </div>
-              {currentStreak >= 7 && (
-                <div className="absolute -top-2 -right-2 w-7 h-7 bg-emerald-500 rounded-full flex items-center justify-center shadow-md">
-                  <Flame className="w-4 h-4 text-white" />
-                </div>
-              )}
+              <Sparkles className="w-2.5 h-2.5 text-emerald-400" />
+              <span className="text-[9px] text-white/60 font-semibold">Jumeau IA</span>
             </motion.div>
-          ) : (
-            <motion.div
-              animate={{ scale: [1, 1.03, 1] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="w-28 h-28 flex-shrink-0"
-            >
-              <motion.div
-                initial={{ opacity: 0, scale: 0.7 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2, type: "spring" }}
-                className="w-full h-full"
-              >
-                <Illustration name="dogPaw" alt={dog?.name || "Chien"} className="w-full h-full drop-shadow-lg" />
-              </motion.div>
-            </motion.div>
-          )}
+          </motion.div>
         </div>
       </div>
     </div>
