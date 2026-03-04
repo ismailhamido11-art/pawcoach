@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { getActiveDog } from "@/utils";
+import { getActiveDog, createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import ChatFAB from "../components/ChatFAB";
 import WalkMode from "../components/tracker/WalkMode.jsx";
