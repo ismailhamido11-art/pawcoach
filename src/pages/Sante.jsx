@@ -101,22 +101,35 @@ export default function Sante() {
           </motion.div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-1.5 overflow-x-auto pb-0.5">
-          {TABS.map(({ id, label, icon: Icon }) => (
-            <motion.button
-              key={id}
-              whileTap={{ scale: 0.96 }}
-              transition={spring}
-              onClick={() => setActiveTab(id)}
-              className={`flex-shrink-0 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-semibold transition-colors ${
-                activeTab === id ? "bg-white text-primary" : "bg-white/10 text-white"
-              }`}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              {label}
-            </motion.button>
-          ))}
+        {/* Tabs — pill cards */}
+        <div className="grid grid-cols-4 gap-2 mt-1">
+          {TABS.map(({ id, label, emoji, bg }) => {
+            const active = activeTab === id;
+            return (
+              <motion.button
+                key={id}
+                whileTap={{ scale: 0.93 }}
+                transition={spring}
+                onClick={() => setActiveTab(id)}
+                className={`relative flex flex-col items-center gap-1 py-3 rounded-2xl text-center overflow-hidden transition-all ${
+                  active ? "shadow-lg" : "bg-white/10"
+                }`}
+              >
+                {active && (
+                  <div className={`absolute inset-0 bg-gradient-to-br ${bg} opacity-100`} />
+                )}
+                <span className="relative text-xl leading-none">{emoji}</span>
+                <span className={`relative text-[10px] font-bold leading-tight ${active ? "text-white" : "text-white/75"}`}>{label}</span>
+                {active && (
+                  <motion.div
+                    layoutId="santeTabIndicator"
+                    className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 rounded-full bg-white/60"
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
+              </motion.button>
+            );
+          })}
         </div>
 
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
