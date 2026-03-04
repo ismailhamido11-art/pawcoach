@@ -56,17 +56,19 @@ export default function InlineEditCard({
               ))}
             </select>
           ) : (
-            <input
-              type={editType || "text"}
-              value={draft}
-              onChange={e => { setDraft(e.target.value); setError(""); }}
-              className={`w-full text-sm border rounded-xl px-3 py-2 bg-background outline-none focus:ring-1 focus:ring-primary ${error ? "border-red-300" : "border-border"}`}
-              placeholder={editLabel}
-              autoFocus
-              {...(editType === "number" && min !== undefined ? { min } : {})}
-              {...(editType === "number" && max !== undefined ? { max } : {})}
-            />
-            {error && <p className="text-[11px] text-red-500 font-medium">{error}</p>}
+            <>
+              <input
+                type={editType || "text"}
+                value={draft}
+                onChange={e => { setDraft(e.target.value); setError(""); }}
+                className={`w-full text-sm border rounded-xl px-3 py-2 bg-background outline-none focus:ring-1 focus:ring-primary ${error ? "border-red-300" : "border-border"}`}
+                placeholder={editLabel}
+                autoFocus
+                {...(editType === "number" && min !== undefined ? { min } : {})}
+                {...(editType === "number" && max !== undefined ? { max } : {})}
+              />
+              {error && <p className="text-[11px] text-red-500 font-medium">{error}</p>}
+            </>
           )}
           <div className="flex gap-2">
             <button
