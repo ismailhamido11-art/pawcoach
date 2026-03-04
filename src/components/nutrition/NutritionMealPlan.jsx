@@ -33,30 +33,61 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium }) {
     setPlan(null);
     setBrands(null);
 
-    const activityMap = { faible: "Faible", modere: "Modérée", eleve: "Élevée", tres_eleve: "Très élevée" };
+    const activityMap = { faible: "Faible (< 30 min/jour)", modere: "Modérée (30-60 min/jour)", eleve: "Élevée (1-2h/jour)", tres_eleve: "Très élevée (> 2h/jour)" };
+    const dietMap = { kibble: "Croquettes sèches", barf: "BARF (viande crue)", mixed: "Mixte (croquettes + ménager)", homemade: "Ration ménagère" };
+
+    const ageMonths = dog.birth_date ? Math.floor((Date.now() - new Date(dog.birth_date)) / (1000 * 60 * 60 * 24 * 30)) : null;
+    const lifeStage = !ageMonths ? "adulte" : ageMonths < 12 ? "chiot" : ageMonths > 84 ? "senior" : "adulte";
+
     const scansContext = recentScans.length > 0
-      ? `\nScans récents: ${recentScans.map(s => `${s.food_name} (${s.verdict})`).join(", ")}`
+      ? `\nScans alimentaires récents: ${recentScans.map(s => `${s.food_name} (${s.verdict})`).join(", ")}`
       : "";
 
-    const prompt = `Génère un plan de repas hebdomadaire complet et détaillé pour ce chien :
-Nom: ${dog.name}
-Race: ${dog.breed || "inconnue"}
-Âge: ${getAge(dog.birth_date) || "inconnu"}
-Poids: ${dog.weight ? dog.weight + " kg" : "inconnu"}
-Niveau d'activité: ${activityMap[dog.activity_level] || "inconnu"}
-Stérilisé: ${dog.neutered ? "Oui" : "Non"}
-Allergies: ${dog.allergies || "aucune"}
-Problèmes de santé: ${dog.health_issues || "aucun"}
+    const prompt = `Tu es un nutritionniste vétérinaire expert. Génère un plan alimentaire hebdomadaire ultra-précis pour ce chien.
+
+## PROFIL DU CHIEN
+- Nom: ${dog.name}
+- Race: ${dog.breed || "inconnue"}
+- Stade de vie: ${lifeStage} (${getAge(dog.birth_date) || "âge inconnu"})
+- Poids actuel: ${dog.weight ? dog.weight + " kg" : "inconnu"}
+- Niveau d'activité: ${activityMap[dog.activity_level] || "modéré"}
+- Stérilisé(e): ${dog.neutered ? "Oui (besoin calorique réduit de 20-25%)" : "Non"}
+- Type d'alimentation actuel: ${dietMap[dog.diet_type] || "non précisé"}
+- Marque actuelle: ${dog.diet_brand || "non précisée"}
+- Allergies/intolérances: ${dog.allergies || "aucune connue"}
+- Problèmes de santé: ${dog.health_issues || "aucun"}
+- Restrictions alimentaires: ${dog.diet_restrictions || "aucune"}
 ${scansContext}
 
-Inclus :
-1. **Plan semaine** (lundi à dimanche) avec repas matin et soir, quantités en grammes
-2. **Calories journalières recommandées**
-3. **3 marques de croquettes adaptées** avec justification (note: indique "🛒 Disponible en ligne")
-4. **Aliments sains en complément** (légumes, fruits ok pour cette race/âge)
-5. **Aliments strictement interdits** pour ce chien
+## FORMAT DE RÉPONSE ATTENDU
 
-Sois très précis, pratique et personnalisé pour ${dog.name}.`;
+### 🔥 Besoins caloriques journaliers
+Calcule le RER (Resting Energy Requirement) = 70 × (poids en kg)^0.75, puis multiplie par le facteur adapté (stérilisé, activité, stade de vie). Donne le total en kcal/jour.
+
+### 📊 Quantités recommandées
+Selon le type d'alimentation (${dietMap[dog.diet_type] || "croquettes"}) :
+- Si croquettes : grammes/jour (basé sur ~3500 kcal/kg de croquettes standard, à ajuster selon la marque)
+- Si BARF : % du poids corporel (2-3% pour adulte) avec répartition muscles/abats/os
+- Si ration ménagère : grammes totaux avec sources de protéines, féculents, légumes
+- Répartition matin/soir en pourcentage
+
+### 📅 Plan semaine (Lundi → Dimanche)
+Pour chaque jour : repas matin (heure, aliment, quantité en g) + repas soir (heure, aliment, quantité en g) + éventuelles friandises/compléments.
+Varie les sources de protéines au cours de la semaine.
+
+### 🥩 Aliments recommandés en complément
+Liste des légumes, fruits et suppléments bénéfiques pour cette race/âge avec quantités max hebdomadaires.
+
+### ❌ Aliments strictement interdits
+Pour ${dog.name} spécifiquement (prends en compte la race, l'âge et les allergies renseignées).
+
+### 🛒 3 marques recommandées
+Pour chaque marque : nom, gamme adaptée, kcal/100g, pourquoi elle convient à ${dog.name}, fourchette de prix.
+
+### 💡 Conseil du nutritionniste
+1 conseil personnalisé spécifique au profil de ${dog.name} (race, âge, santé).
+
+Sois très précis avec les grammes et calories. Adapte tout au profil exact.`;
 
     try {
       const response = await base44.integrations.Core.InvokeLLM({ prompt });
