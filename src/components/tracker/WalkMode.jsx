@@ -22,6 +22,8 @@ export default function WalkMode({ dog, user, onLogged }) {
   const [distance, setDistance] = useState(0);
   const [saving, setSaving] = useState(false);
   const [savedMinutes, setSavedMinutes] = useState(null);
+  const [path, setPath] = useState([]); // [{lat, lng}]
+  const [currentPos, setCurrentPos] = useState(null);
 
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
