@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, Stethoscope, KeyRound, LogOut, ArrowLeft } from "lucide-react";
+import { Loader2, Stethoscope, KeyRound, LogOut, ArrowLeft, FileText, Users, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import VetDogCard from "../components/vet/VetDogCard";
+import { motion } from "framer-motion";
 
 export default function VetPortal() {
   const [user, setUser] = useState(null);
