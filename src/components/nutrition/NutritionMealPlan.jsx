@@ -101,22 +101,32 @@ Sois très précis avec les grammes et calories. Adapte tout au profil exact.`;
 
   return (
     <div className="space-y-4 pb-4">
-      {/* Dog summary */}
+      {/* Dog profile summary */}
       <div className="bg-white rounded-2xl border border-border p-4 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-safe/10 flex items-center justify-center text-2xl">🐕</div>
-          <div>
-            <p className="font-bold text-foreground">{dog.name}</p>
-            <p className="text-xs text-muted-foreground">
-              {dog.breed}{dog.weight ? ` · ${dog.weight} kg` : ""}{dog.allergies ? ` · Allergies: ${dog.allergies}` : ""}
-            </p>
-          </div>
-          {recentScans.length > 0 && (
-            <div className="ml-auto bg-safe/10 px-2.5 py-1 rounded-full border border-safe/20">
-              <span className="text-safe text-xs font-medium">🔍 {recentScans.length} scans intégrés</span>
-            </div>
+        <div className="flex items-start gap-3">
+          {dog.photo ? (
+            <img src={dog.photo} alt={dog.name} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+          ) : (
+            <div className="w-12 h-12 rounded-xl bg-safe/10 flex items-center justify-center text-2xl flex-shrink-0">🐕</div>
           )}
+          <div className="flex-1">
+            <p className="font-bold text-foreground">{dog.name}</p>
+            <div className="flex flex-wrap gap-1 mt-1">
+              {dog.breed && <span className="text-[10px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">{dog.breed}</span>}
+              {dog.weight && <span className="text-[10px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">{dog.weight} kg</span>}
+              {dog.birth_date && <span className="text-[10px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">{getAge(dog.birth_date)}</span>}
+              {dog.activity_level && <span className="text-[10px] bg-safe/10 text-safe px-2 py-0.5 rounded-full">{({ faible: "🐢 Faible", modere: "🚶 Modéré", eleve: "🏃 Élevé", tres_eleve: "⚡ Très élevé" })[dog.activity_level]}</span>}
+              {dog.neutered && <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">Stérilisé(e)</span>}
+              {recentScans.length > 0 && <span className="text-[10px] bg-safe/10 text-safe px-2 py-0.5 rounded-full">🔍 {recentScans.length} scans</span>}
+            </div>
+          </div>
         </div>
+        {(!dog.weight || !dog.birth_date || !dog.activity_level) && (
+          <div className="mt-3 bg-amber-50 border border-amber-200 rounded-xl p-2.5 flex items-center gap-2">
+            <span className="text-amber-500 text-sm">⚠️</span>
+            <p className="text-xs text-amber-700">Complète le profil de {dog.name} pour un plan plus précis (poids, âge, activité).</p>
+          </div>
+        )}
       </div>
 
       {/* Generate button */}
