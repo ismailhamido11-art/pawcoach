@@ -296,7 +296,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
             <p className="text-sm text-muted-foreground text-center">
               Analyse des premiers symptômes...<br />
-              <span className="text-xs">L'IA prepare des questions ciblées pour {dog?.name || "ton chien"}</span>
+              <span className="text-xs">L'IA prépare des questions ciblées pour {dog?.name || "ton chien"}</span>
             </p>
           </div>
         )}
