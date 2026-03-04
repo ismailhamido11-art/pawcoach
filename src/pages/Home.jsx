@@ -12,7 +12,7 @@ import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
 import JournalLog from "../components/home/JournalLog";
 import SmartRecommendations from "../components/home/SmartRecommendations";
 import PremiumValueBanner from "../components/home/PremiumValueBanner";
-import DailySnapshot from "../components/home/DailySnapshot";
+import HealthScore from "../components/home/HealthScore";
 import QuickLogFAB from "../components/home/QuickLogFAB";
 import ChatFAB from "../components/ChatFAB";
 
@@ -207,8 +207,15 @@ export default function Home() {
           streak={streak}
         />
 
-        {/* Snapshot du jour */}
-        <DailySnapshot records={records} exercises={exercises} checkins={recentCheckins} dailyLogs={dailyLogs} />
+        {/* Health Score */}
+        <HealthScore
+          dog={dog}
+          user={user}
+          todayCheckin={todayCheckin}
+          records={records}
+          scans={scans}
+          dailyLogs={dailyLogs}
+        />
 
         {/* Streak */}
         <StreakCard streak={streak} />
