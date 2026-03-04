@@ -115,8 +115,27 @@ export default function VetPortal() {
       </div>
 
       <div className="px-4 py-6 space-y-6">
-        {/* Accept invite */}
-        <div className="p-4 rounded-2xl bg-white border border-border">
+        {/* Hub rapide */}
+        <div className="grid grid-cols-3 gap-3">
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="p-3 rounded-xl bg-blue-50 border border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors text-center">
+            <Users className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+            <p className="text-xs font-semibold text-blue-800">Patients</p>
+            <p className="text-sm font-bold text-blue-600">{dogs.length}</p>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="p-3 rounded-xl bg-purple-50 border border-purple-100 cursor-pointer hover:bg-purple-100 transition-colors text-center">
+            <FileText className="w-5 h-5 text-purple-600 mx-auto mb-1" />
+            <p className="text-xs font-semibold text-purple-800">Notes</p>
+            <p className="text-sm font-bold text-purple-600">—</p>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="p-3 rounded-xl bg-emerald-50 border border-emerald-100 cursor-pointer hover:bg-emerald-100 transition-colors text-center">
+            <BarChart3 className="w-5 h-5 text-emerald-600 mx-auto mb-1" />
+            <p className="text-xs font-semibold text-emerald-800">Rapports</p>
+            <p className="text-sm font-bold text-emerald-600">—</p>
+          </motion.div>
+        </div>
+
+         {/* Accept invite */}
+         <div className="p-4 rounded-2xl bg-white border border-border">
           <div className="flex items-center gap-2 mb-3">
             <KeyRound className="w-4 h-4 text-primary" />
             <p className="text-sm font-semibold">Code d'invitation</p>
