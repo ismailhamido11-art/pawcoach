@@ -34,6 +34,8 @@ export default function DogTwin() {
   const [selectedZone, setSelectedZone] = useState(null);
   const [ready, setReady] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
+  // 0 = Corps, 1 = Cerveau IA, 2 = Mémoire, 3 = Voix
+  const [activeLayer, setActiveLayer] = useState(0);
 
   const buildDog = useCallback((scene) => {
     const g = new THREE.Group();
