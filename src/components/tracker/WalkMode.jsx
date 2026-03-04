@@ -241,6 +241,9 @@ export default function WalkMode({ dog, user, onLogged }) {
               </div>
             </div>
 
+            {/* Live map */}
+            <WalkMap path={path} currentPos={currentPos} />
+
             {/* Stats row */}
             <div className="flex gap-3 w-full">
               {km && (
