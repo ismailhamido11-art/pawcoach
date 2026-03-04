@@ -109,6 +109,23 @@ export default function FindVetContent({ dog }) {
           </motion.div>
         </div>
       )}
+
+      {/* Portail vétérinaire */}
+      <div className="mt-6 pt-4 border-t border-border">
+        <Link to={createPageUrl("VetPortal")}>
+          <div className="flex items-center justify-between bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                <Stethoscope className="w-4 h-4 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-blue-800">Vous êtes vétérinaire ?</p>
+                <p className="text-xs text-blue-500">Accéder à votre espace professionnel →</p>
+              </div>
+            </div>
+          </div>
+        </Link>
+      </div>
     </div>
   );
 }
