@@ -316,7 +316,7 @@ export default function Scan() {
               <div className="w-24 h-24 mx-auto">
                 <Illustration name="petFood" alt="Limite atteinte" className="w-full h-full drop-shadow-md" />
               </div>
-              <p className="font-bold text-foreground">Tu as utilise tes {FREE_SCAN_LIMIT} scans gratuits cette semaine ({scansUsed}/{FREE_SCAN_LIMIT}).</p>
+              <p className="font-bold text-foreground">Tu as utilisé tes {FREE_SCAN_LIMIT} scans gratuits cette semaine ({scansUsed}/{FREE_SCAN_LIMIT}).</p>
               <p className="text-sm text-muted-foreground">Passe en Premium pour scanner sans limite.</p>
               <Button onClick={() => window.location.href = '/Premium?from=scan'} className="w-full h-12 rounded-xl gradient-warm border-0 text-white font-bold">
                 👑 Voir Premium

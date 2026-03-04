@@ -81,8 +81,8 @@ Génère un JSON avec:
   } catch (error) {
     console.error("preDiagnosis error:", error.message);
     return Response.json({
-      error: "Une erreur est survenue lors de l'analyse. Veuillez réessayer.",
-      preliminary_observations: "L'analyse n'a pas pu être effectuée. Veuillez réessayer ou consulter directement un vétérinaire.",
+      error: "Une erreur est survenue lors de l'analyse. Réessaie dans quelques instants.",
+      preliminary_observations: "L'analyse n'a pas pu être effectuée. Réessaie ou consulte directement un vétérinaire.",
       preliminary_urgency: "medium",
       followup_questions: []
     }, { status: 500 });

@@ -92,7 +92,7 @@ export default function DogHealthSection({ dog, onSave }) {
           >
             <div className="px-4 pb-4 border-t border-border">
               <EditableField label="Allergies" value={dog.allergies} fieldKey="allergies" onSave={onSave} multiline />
-              <EditableField label="Problèmes de santé" value={dog.health_issues && !/^(non|aucun|rien|pas)$/i.test(dog.health_issues.trim()) ? dog.health_issues : dog.health_issues ? "Aucun problème connu" : undefined} fieldKey="health_issues" onSave={onSave} multiline />
+              <EditableField label="Problèmes de santé" value={dog.health_issues} fieldKey="health_issues" onSave={onSave} multiline />
               <EditableField label="Vétérinaire" value={dog.vet_name} fieldKey="vet_name" onSave={onSave} />
               <EditableField label="Ville du vétérinaire" value={dog.vet_city} fieldKey="vet_city" onSave={onSave} />
               <EditableField label="Prochain RDV vétérinaire" value={dog.next_vet_appointment} fieldKey="next_vet_appointment" onSave={onSave} type="date" />

@@ -57,7 +57,7 @@ export default function SubscriptionSection({ user }) {
                 onClick={handlePortal}
                 className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-muted/30 transition-all"
               >
-                Gerer mon abonnement
+                Gérer mon abonnement
                 <ChevronRight className="w-4 h-4 text-muted-foreground" />
               </button>
             ) : (

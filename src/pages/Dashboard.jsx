@@ -92,6 +92,7 @@ export default function Dashboard() {
   const [streak, setStreak] = useState(null);
   const [progress, setProgress] = useState([]);
   const [dailyLogs, setDailyLogs] = useState([]);
+  const [scans, setScans] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -104,18 +105,20 @@ export default function Dashboard() {
         const d = getActiveDog(dogs);
         setDog(d);
 
-        const [recs, cks, stk, prog, logs] = await Promise.all([
+        const [recs, cks, stk, prog, logs, foodScans] = await Promise.all([
           base44.entities.HealthRecord.filter({ dog_id: d.id }),
           base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 90),
           base44.entities.Streak.filter({ dog_id: d.id }),
           base44.entities.UserProgress.filter({ dog_id: d.id }),
           base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 90),
+          base44.entities.FoodScan.filter({ dog_id: d.id }).catch(() => []),
         ]);
         setRecords(recs);
         setCheckins(cks.sort((a, b) => a.date > b.date ? 1 : -1));
         setStreak(stk[0] || null);
         setProgress(prog);
         setDailyLogs(logs || []);
+        setScans(foodScans || []);
       } catch (err) {
         console.error("Dashboard load error:", err);
       } finally {
@@ -206,7 +209,7 @@ export default function Dashboard() {
     checkins: checkins || [],
     records: records || [],
     exercises: progress || [],
-    scans: [],
+    scans: scans || [],
     dailyLogs: dailyLogs || [],
   }) : { total: 0, pillars: [] };
   const score = scoreData.total;

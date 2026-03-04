@@ -31,18 +31,18 @@ const spring = { type: "spring", stiffness: 400, damping: 30 };
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
   { id: "vaccine",    label: "Vaccins",  shortLabel: "Vaccins" },
-  { id: "vet_visit",  label: "Visites",  shortLabel: "Veterinaire" },
+  { id: "vet_visit",  label: "Visites",  shortLabel: "Vétérinaire" },
   { id: "weight",     label: "Poids",    shortLabel: "Poids" },
-  { id: "medication", label: "Medoc.",   shortLabel: "Medicaments" },
+  { id: "medication", label: "Médoc.",   shortLabel: "Médicaments" },
   { id: "note",       label: "Notes",    shortLabel: "Notes" },
 ];
 
 const PREMIUM_CONFIGS = {
   vet_visit: {
-    label: "Visites veterinaire",
+    label: "Visites vétérinaire",
     emoji: "",
-    emptyText: "Aucune visite veterinaire enregistree",
-    placeholder: "Ex: Visite de controle annuelle",
+    emptyText: "Aucune visite vétérinaire enregistrée",
+    placeholder: "Ex: Visite de contrôle annuelle",
     addLabel: "Ajouter une visite",
     showNextDate: true,
     Icon: Stethoscope,
@@ -52,7 +52,7 @@ const PREMIUM_CONFIGS = {
     btnClass: "bg-purple-600 hover:bg-purple-700",
   },
   medication: {
-    label: "Medicaments",
+    label: "Médicaments",
     emoji: "",
     emptyText: "Aucun médicament enregistré",
     placeholder: "Ex: Antiparasitaire Frontline",
@@ -67,7 +67,7 @@ const PREMIUM_CONFIGS = {
   note: {
     label: "Notes",
     emoji: "",
-    emptyText: "Aucune note enregistree",
+    emptyText: "Aucune note enregistrée",
     placeholder: "Titre de la note",
     addLabel: "Ajouter une note",
     showNextDate: false,
@@ -221,7 +221,7 @@ export default function Notebook() {
       setRecords(prev => prev.filter(r => r.id !== id));
     } catch (err) {
       console.error("Delete error:", err);
-      alert("Erreur lors de la suppression. Reessaie.");
+      alert("Erreur lors de la suppression. Réessaie.");
     }
   };
 
@@ -334,7 +334,7 @@ export default function Notebook() {
                 {records.find(r => r.type === 'vaccine') && (
                   <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/30 backdrop-blur-sm text-[11px] font-medium text-white">
                     <Shield className="w-3 h-3" />
-                    Vaccins a jour
+                    Vaccins à jour
                   </span>
                 )}
                 {records.find(r => r.type === 'weight') && (
@@ -389,13 +389,13 @@ export default function Notebook() {
           <div className="relative h-32">
             <img
               src={vetCareImg}
-              alt="Soins veterinaires"
+              alt="Soins vétérinaires"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-transparent" />
             <div className="absolute inset-0 flex items-center p-5">
               <div>
-                <p className="text-xs font-semibold text-primary uppercase tracking-wider">Suivi veterinaire</p>
+                <p className="text-xs font-semibold text-primary uppercase tracking-wider">Suivi vétérinaire</p>
                 <p className="text-base font-bold text-foreground mt-1">Chaque visite compte</p>
                 <p className="text-xs text-muted-foreground mt-1 max-w-[200px]">
                   Garde un historique complet pour un suivi optimal de {dog?.name || "ton chien"}
@@ -491,7 +491,7 @@ export default function Notebook() {
               <div>
                 <span>Historique ({allRecords.length})</span>
                 {allRecords.length === 0 && (
-                  <p className="text-[10px] text-muted-foreground font-normal mt-0.5">Utilise l'assistant ou l'import IA pour ajouter des entrees</p>
+                  <p className="text-[10px] text-muted-foreground font-normal mt-0.5">Utilise l'assistant ou l'import IA pour ajouter des entrées</p>
                 )}
               </div>
             </div>
@@ -535,8 +535,8 @@ export default function Notebook() {
                 {sortedRecords.length === 0 ? (
                   <div className="flex flex-col items-center py-10 text-center">
                     <Illustration name="goodDoggy" className="w-28 h-28 mb-4 opacity-80" alt="Chien content" />
-                    <p className="text-sm font-semibold text-foreground">Le carnet de {dog?.name} est pret</p>
-                    <p className="text-xs text-muted-foreground mt-1">Discute avec l'assistant pour ajouter des entrees</p>
+                    <p className="text-sm font-semibold text-foreground">Le carnet de {dog?.name} est prêt</p>
+                    <p className="text-xs text-muted-foreground mt-1">Discute avec l'assistant pour ajouter des entrées</p>
                   </div>
                 ) : (
                   sortedRecords.map(r => (
@@ -581,7 +581,7 @@ export default function Notebook() {
                 <Stethoscope className="w-4 h-4 text-primary" />
               </div>
               <h3 className="text-sm font-semibold text-foreground">
-                Notes de ton veterinaire ({vetNotes.length})
+                Notes de ton vétérinaire ({vetNotes.length})
               </h3>
             </div>
             <VetNotesList notes={vetNotes} />

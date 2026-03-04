@@ -16,8 +16,14 @@ export default function DogEditModal({ dog, onClose, onSave }) {
 
   const sanitizeName = (name) => name.replace(/<[^>]*>/g, "").replace(/[^\p{L}\p{N}\s\-'.]/gu, "").trim().slice(0, 50);
 
+  const [dateError, setDateError] = useState(false);
+
   const handleSave = async () => {
-    if (form.birth_date && new Date(form.birth_date) > new Date()) return;
+    if (form.birth_date && new Date(form.birth_date) > new Date()) {
+      setDateError(true);
+      return;
+    }
+    setDateError(false);
     setSaving(true);
     const cleanForm = { ...form, name: sanitizeName(form.name) };
     await onSave(cleanForm);
@@ -92,7 +98,7 @@ export default function DogEditModal({ dog, onClose, onSave }) {
               <input
                 type={type}
                 value={form[field]}
-                onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
+                onChange={e => { setForm(f => ({ ...f, [field]: e.target.value })); if (field === "birth_date") setDateError(false); }}
                 className="w-full border border-border rounded-xl px-4 py-3 text-sm bg-background outline-none focus:ring-1 focus:ring-primary"
                 {...(type === "date" ? { max: new Date().toISOString().split("T")[0] } : {})}
               />
@@ -127,10 +133,13 @@ export default function DogEditModal({ dog, onClose, onSave }) {
             </button>
           </div>
 
+          {dateError && (
+            <p className="text-xs text-red-500 font-semibold text-center">Corrige la date de naissance avant d'enregistrer</p>
+          )}
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full py-4 rounded-2xl bg-primary text-white font-bold text-base flex items-center justify-center gap-2"
+            className={`w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 ${dateError ? "bg-red-500 text-white animate-pulse" : "bg-primary text-white"}`}
           >
             {saving ? <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
             Enregistrer

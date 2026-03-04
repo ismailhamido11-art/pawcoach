@@ -90,7 +90,7 @@ export function calcScore(data) {
     max: 20,
     detail: `${vaccines.length} vaccin${vaccines.length > 1 ? "s" : ""} · ${allWeightEntries.length} pesée${allWeightEntries.length > 1 ? "s" : ""} · ${vetVisits.length} visite${vetVisits.length > 1 ? "s" : ""}`,
     status: carnetScore >= 16 ? "great" : carnetScore >= 8 ? "ok" : "low",
-    tip: vaccines.length === 0 ? "Ajoute les vaccins dans le Carnet" : daysSinceWeight > 30 ? "Mets le poids a jour" : null,
+    tip: vaccines.length === 0 ? "Ajoute les vaccins dans le Carnet" : daysSinceWeight > 30 ? "Mets le poids à jour" : null,
   });
 
   // 4. DRESSAGE (15pts) — exercices complétés

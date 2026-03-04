@@ -70,7 +70,7 @@ Pour chaque clinique, fournis: name, address, phone (format français), google_m
       setResults(res.vets || []);
     } catch (e) {
       console.error("handleSearch error:", e);
-      toast.error("Erreur lors de la recherche. Reessaie.");
+      toast.error("Erreur lors de la recherche. Réessaie.");
     }
     setLoading(false);
   };

@@ -95,13 +95,13 @@ Génère un rapport COMPLET et DÉTAILLÉ au format JSON:
   } catch (error) {
     console.error("finalDiagnosis error:", error.message);
     return Response.json({
-      error: "Une erreur est survenue lors du diagnostic. Veuillez réessayer.",
-      observations: "L'analyse n'a pas pu être complétée. Veuillez réessayer ou consulter directement un vétérinaire.",
+      error: "Une erreur est survenue lors du diagnostic. Réessaie dans quelques instants.",
+      observations: "L'analyse n'a pas pu être complétée. Réessaie ou consulte directement un vétérinaire.",
       possible_causes: [],
       urgency_level: "medium",
       urgency_explanation: "Impossible de déterminer le niveau d'urgence suite à une erreur technique.",
-      immediate_advice: ["Consultez un vétérinaire si les symptômes persistent ou s'aggravent."],
-      important_note: "Ce rapport n'a pas pu être généré correctement. Consultez un vétérinaire."
+      immediate_advice: ["Consulte un vétérinaire si les symptômes persistent ou s'aggravent."],
+      important_note: "Ce rapport n'a pas pu être généré correctement. Consulte un vétérinaire."
     }, { status: 500 });
   }
 });

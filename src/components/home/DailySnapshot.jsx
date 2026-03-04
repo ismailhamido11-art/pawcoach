@@ -190,7 +190,7 @@ function VaccineCard({ records }) {
         ) : hasAnyVaccine ? (
           <>
             <p className="text-sm font-black text-emerald-500">OK</p>
-            <p className="text-[11px] text-muted-foreground mt-1">Vaccins a jour</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Vaccins à jour</p>
           </>
         ) : (
           <>

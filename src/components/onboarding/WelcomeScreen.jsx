@@ -49,7 +49,7 @@ export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium
         Bienvenue,<br />{dogName} !
       </h1>
       <p className="text-white/80 text-base mb-2 leading-relaxed max-w-xs">
-        Le profil de {dogName} est cree. PawCoach est pret a t'accompagner au quotidien
+        Le profil de {dogName} est créé. PawCoach est prêt à t'accompagner au quotidien
       </p>
       <p className="text-white/60 text-sm mb-6">
         Alimentation · Bien-être · Dressage

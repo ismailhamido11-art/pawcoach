@@ -27,7 +27,8 @@ Deno.serve(async (req) => {
       // Get owner – premium only
       const user = userMap.get(dog.owner);
       if (!user) continue;
-      if (!user.is_premium) continue;
+      const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
+      if (!isPremium) continue;
 
       // Filter health records in memory for this dog
       const dogRecords = allRecords.filter(r => r.dog_id === dog.id);

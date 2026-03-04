@@ -34,8 +34,8 @@ Deno.serve(async (req) => {
     const segmentContext = ageSegment === "chiot"
       ? "C'est un chiot, insiste sur la socialisation, les dents de lait, la croissance, et les premiers vaccins."
       : ageSegment === "senior"
-      ? "C'est un senior, sois attentif aux articulations, a la fatigue, au sommeil, et aux controles veterinaires reguliers."
-      : "C'est un adulte, concentre-toi sur l'equilibre exercice/alimentation et le maintien du poids.";
+      ? "C'est un senior, sois attentif aux articulations, à la fatigue, au sommeil, et aux contrôles vétérinaires réguliers."
+      : "C'est un adulte, concentre-toi sur l'équilibre exercice/alimentation et le maintien du poids.";
 
     // Today's date
     const today = new Date().toISOString().slice(0, 10);

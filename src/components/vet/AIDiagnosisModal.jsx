@@ -92,7 +92,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
       setStep("questions");
     } catch (e) {
       console.error("handleStep1 error:", e);
-      toast.error("Erreur lors de l'analyse. Reessaie.");
+      toast.error("Erreur lors de l'analyse. Réessaie.");
       setStep("form");
     }
   };
@@ -138,11 +138,11 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
         report_date: reportDate,
       });
 
-      toast.success("Rapport sauvegarde dans ton historique");
+      toast.success("Rapport sauvegardé dans ton historique");
       setStep("report");
     } catch (e) {
       console.error("handleStep2 error:", e);
-      toast.error("Erreur lors du diagnostic final. Reessaie.");
+      toast.error("Erreur lors du diagnostic final. Réessaie.");
       setStep("questions");
     }
   };
@@ -202,7 +202,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
           <div className="space-y-4 mt-2">
             <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-              <span>Cet outil ne remplace pas un veterinaire. Il prepare un rapport pour faciliter ta consultation.</span>
+              <span>Cet outil ne remplace pas un vétérinaire. Il prépare un rapport pour faciliter ta consultation.</span>
             </div>
 
             {/* Step indicator */}
@@ -224,7 +224,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
             </div>
 
             <div>
-              <label className="text-sm font-medium">Quels symptomes observes-tu ? *</label>
+              <label className="text-sm font-medium">Quels symptômes observes-tu ? *</label>
               <Textarea
                 value={symptoms}
                 onChange={(e) => setSymptoms(e.target.value)}
@@ -347,7 +347,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
             <DiagnosisReportView report={report} dogName={dog?.name} reportDate={reportDate} />
 
             <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800">
-              <strong>Conserve ce rapport !</strong> Il contient tes symptomes, tes reponses et l'analyse complete. Ton veterinaire aura tout en main.
+              <strong>Conserve ce rapport !</strong> Il contient tes symptômes, tes réponses et l'analyse complète. Ton vétérinaire aura tout en main.
             </div>
 
             <Button

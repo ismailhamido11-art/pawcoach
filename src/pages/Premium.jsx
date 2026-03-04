@@ -251,8 +251,8 @@ export default function Premium() {
             className="text-center text-xs text-muted-foreground mt-4"
           >
             {isOnTrial
-              ? "Sans engagement · Resiliation a tout moment · Paiement securise Stripe"
-              : "Tu peux gerer ton abonnement a tout moment depuis ton Profil."}
+              ? "Sans engagement · Résiliation à tout moment · Paiement sécurisé Stripe"
+              : "Tu peux gérer ton abonnement à tout moment depuis ton Profil."}
           </motion.p>
         </div>
 

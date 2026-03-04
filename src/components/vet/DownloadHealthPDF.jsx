@@ -61,7 +61,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
       doc.setFontSize(11);
       doc.text(sanitize(`${dog.breed || ''} · ${dog.weight ? dog.weight + ' kg' : ''} · ${dog.sex === 'male' ? 'Mâle' : dog.sex === 'female' ? 'Femelle' : ''}`), 14, 28);
       doc.setFontSize(9);
-      doc.text(sanitize(`Genere le ${formatDate(new Date().toISOString())} via PawCoach`), 14, 37);
+      doc.text(sanitize(`Généré le ${formatDate(new Date().toISOString())} via PawCoach`), 14, 37);
       y = 52;
 
       doc.setTextColor(51, 51, 51);
@@ -77,7 +77,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
         doc.setFontSize(9);
         let alertY = y + 15;
         if (dog.allergies) { doc.text(sanitize(`Allergies : ${dog.allergies}`), 18, alertY); alertY += 5; }
-        if (dog.health_issues) { doc.text(sanitize(`Problemes : ${dog.health_issues}`), 18, alertY); }
+        if (dog.health_issues) { doc.text(sanitize(`Problèmes : ${dog.health_issues}`), 18, alertY); }
         y += 28;
       }
 
@@ -121,14 +121,14 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
       });
 
       // Vet visits
-      drawSection('Visites veterinaire', records.filter(r => r.type === 'vet_visit'), v => {
+      drawSection('Visites vétérinaire', records.filter(r => r.type === 'vet_visit'), v => {
         const lines = [`${v.title} — ${formatDate(v.date)}`];
         if (v.details) lines.push(`   ${v.details.substring(0, 80)}`);
         return lines;
       });
 
       // Medications
-      drawSection('Medicaments', records.filter(r => r.type === 'medication'), m => {
+      drawSection('Médicaments', records.filter(r => r.type === 'medication'), m => {
         const lines = [`${m.title} — ${formatDate(m.date)}`];
         if (m.details) lines.push(`   ${m.details.substring(0, 80)}`);
         return lines;
