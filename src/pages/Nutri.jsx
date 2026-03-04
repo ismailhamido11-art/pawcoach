@@ -261,6 +261,19 @@ export default function Nutri() {
         </div>
       )}
 
+      {/* Tab: Comparateur */}
+      {activeTab === "compare" && (
+        <div className="flex-1 overflow-y-auto px-5 py-4 pb-28">
+          <div className="mb-4">
+            <h2 className="font-bold text-foreground text-base">Comparateur de produits</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Scanne 2 emballages et l'IA compare leur composition pour {dog?.name || "ton chien"}
+            </p>
+          </div>
+          <FoodComparator dog={dog} />
+        </div>
+      )}
+
       {/* Tab: NutriCoach chat */}
       {activeTab === "coach" && (
         <>
