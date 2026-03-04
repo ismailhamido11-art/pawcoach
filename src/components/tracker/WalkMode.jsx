@@ -47,15 +47,23 @@ export default function WalkMode({ dog, user, onLogged }) {
     watchRef.current = navigator.geolocation.watchPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
+        const newPos = { lat: latitude, lng: longitude };
+        setCurrentPos([latitude, longitude]);
         if (lastPosRef.current) {
-          const d = haversine(lastPosRef.current, { lat: latitude, lng: longitude });
-          distanceRef.current += d;
-          setDistance(Math.round(distanceRef.current));
+          const d = haversine(lastPosRef.current, newPos);
+          // Only add to path if moved > 5m (filters GPS noise)
+          if (d > 5) {
+            distanceRef.current += d;
+            setDistance(Math.round(distanceRef.current));
+            setPath(prev => [...prev, [latitude, longitude]]);
+          }
+        } else {
+          setPath([[latitude, longitude]]);
         }
-        lastPosRef.current = { lat: latitude, lng: longitude };
+        lastPosRef.current = newPos;
       },
       () => {},
-      { enableHighAccuracy: true, maximumAge: 5000 }
+      { enableHighAccuracy: true, maximumAge: 3000 }
     );
   };
 
