@@ -112,11 +112,11 @@ export default function Home() {
     loadData();
   }, [navigate]);
 
-  const handleCheckin = async () => {
+  const handleCheckin = async ({ mood, energy, appetite, notes }) => {
     if (!mood || !energy || !appetite || submitting) return;
     setSubmitting(true);
     try {
-      const response = await base44.functions.invoke("dailyCheckinProcess", { dogId: dog.id, mood, energy, appetite });
+      const response = await base44.functions.invoke("dailyCheckinProcess", { dogId: dog.id, mood, energy, appetite, notes });
       const result = response.data || {};
       const newCheckin = result.checkin || { mood, energy, appetite, ai_response: result.aiResponse, date: getTodayString() };
       setTodayCheckin(newCheckin);
@@ -131,6 +131,7 @@ export default function Home() {
           setTimeout(() => setMilestone(null), 5000);
         }
       }
+      toast.success("Check-in enregistré ! 🎉");
     } catch (err) {
       console.error("Check-in error:", err);
       toast.error("Erreur lors du check-in. Réessaie dans quelques instants.");
