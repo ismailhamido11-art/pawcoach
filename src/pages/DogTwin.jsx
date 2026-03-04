@@ -1,403 +1,588 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Heart, Zap, Utensils, Brain, Activity } from "lucide-react";
+import { ArrowLeft, Heart, Zap, Utensils, Brain, Activity, Sparkles, ChevronUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { createPageUrl } from "@/utils";
 
-const HEALTH_ZONES = [
-  { id: "heart", label: "Cœur & Énergie", icon: Heart, color: "#ef4444", score: 87, detail: "Rythme cardiaque stable, bonne vitalité générale", position: { x: 0.15, y: 0.55 } },
-  { id: "food", label: "Nutrition", icon: Utensils, color: "#f59e0b", score: 74, detail: "Appétit légèrement réduit depuis 2 jours", position: { x: -0.25, y: 0.3 } },
-  { id: "brain", label: "Mental & Comportement", icon: Brain, color: "#8b5cf6", score: 92, detail: "Très actif mentalement, bien stimulé", position: { x: 0.0, y: 0.9 } },
-  { id: "activity", label: "Activité physique", icon: Activity, color: "#10b981", score: 81, detail: "3 balades cette semaine, objectif presque atteint", position: { x: -0.15, y: 0.1 } },
+const ZONES = [
+  { id: "heart",    label: "Vitalité",    icon: Heart,    color: "#ff6b8a", score: 87, detail: "Rythme cardiaque stable · Énergie excellente", emoji: "❤️" },
+  { id: "food",     label: "Nutrition",   icon: Utensils, color: "#f59e0b", score: 74, detail: "Appétit légèrement réduit depuis 2 jours", emoji: "🍗" },
+  { id: "brain",    label: "Mental",      icon: Brain,    color: "#a78bfa", score: 92, detail: "Très stimulé · Comportement équilibré", emoji: "🧠" },
+  { id: "activity", label: "Activité",    icon: Activity, color: "#34d399", score: 81, detail: "3 balades cette semaine · Objectif presque atteint", emoji: "🏃" },
 ];
 
-function VitalityOrb({ score }) {
-  const color = score >= 85 ? "#10b981" : score >= 65 ? "#f59e0b" : "#ef4444";
-  return (
-    <div className="relative flex flex-col items-center">
-      <svg width="120" height="120" viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r="50" fill="none" stroke="#e5e7eb" strokeWidth="8" />
-        <circle
-          cx="60" cy="60" r="50"
-          fill="none"
-          stroke={color}
-          strokeWidth="8"
-          strokeLinecap="round"
-          strokeDasharray={`${(score / 100) * 314} 314`}
-          strokeDashoffset="78.5"
-          style={{ transition: "stroke-dasharray 1.5s cubic-bezier(0.4,0,0.2,1)", filter: `drop-shadow(0 0 8px ${color}88)` }}
-          transform="rotate(-90 60 60)"
-        />
-        <text x="60" y="56" textAnchor="middle" fontSize="28" fontWeight="700" fill={color}>{score}</text>
-        <text x="60" y="72" textAnchor="middle" fontSize="11" fill="#9ca3af">/100</text>
-      </svg>
-      <span className="text-xs font-semibold text-muted-foreground mt-1">Score Vitalité</span>
-    </div>
-  );
-}
+const VITALITY = Math.round(ZONES.reduce((s, z) => s + z.score, 0) / ZONES.length);
 
-function ZoneBadge({ zone, onClick, active }) {
-  const Icon = zone.icon;
-  const color = zone.score >= 85 ? "#10b981" : zone.score >= 65 ? "#f59e0b" : "#ef4444";
-  return (
-    <motion.button
-      whileTap={{ scale: 0.93 }}
-      onClick={() => onClick(zone)}
-      className={`flex items-center gap-2 px-3 py-2 rounded-2xl border transition-all ${
-        active ? "border-primary bg-primary/10 shadow-md" : "border-border bg-white"
-      }`}
-    >
-      <div className="w-7 h-7 rounded-xl flex items-center justify-center" style={{ background: zone.color + "20" }}>
-        <Icon className="w-3.5 h-3.5" style={{ color: zone.color }} />
-      </div>
-      <div className="text-left">
-        <p className="text-[10px] text-muted-foreground leading-none">{zone.label}</p>
-        <p className="text-xs font-bold" style={{ color }}>{zone.score}/100</p>
-      </div>
-    </motion.button>
-  );
-}
+const STATUS = VITALITY >= 85 ? { label: "En pleine forme", color: "#34d399", glow: "#34d39944" }
+             : VITALITY >= 65 ? { label: "Bien mais surveiller", color: "#f59e0b", glow: "#f59e0b44" }
+             : { label: "Attention requise", color: "#ff6b8a", glow: "#ff6b8a44" };
 
 export default function DogTwin() {
   const navigate = useNavigate();
   const mountRef = useRef(null);
   const rendererRef = useRef(null);
+  const cameraRef = useRef(null);
   const sceneRef = useRef(null);
   const dogRef = useRef(null);
   const frameRef = useRef(null);
-  const [selectedZone, setSelectedZone] = useState(null);
-  const [loaded, setLoaded] = useState(false);
+  const clockRef = useRef(new THREE.Clock());
+  const dragRef = useRef({ active: false, prevX: 0, prevY: 0, targetRotY: 0, targetRotX: 0, rotY: 0, rotX: 0 });
 
-  const vitalityScore = Math.round(HEALTH_ZONES.reduce((sum, z) => sum + z.score, 0) / HEALTH_ZONES.length);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [ready, setReady] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const buildDog = useCallback((scene) => {
+    const g = new THREE.Group();
+
+    const fur   = new THREE.MeshStandardMaterial({ color: 0xc4956a, roughness: 0.85, metalness: 0.0 });
+    const dark  = new THREE.MeshStandardMaterial({ color: 0x7a4a28, roughness: 0.9 });
+    const light = new THREE.MeshStandardMaterial({ color: 0xe8cfa0, roughness: 0.85 });
+    const nose  = new THREE.MeshStandardMaterial({ color: 0x1a0d06, roughness: 0.4, metalness: 0.1 });
+    const eye   = new THREE.MeshStandardMaterial({ color: 0x0d0600, roughness: 0.1, metalness: 0.3 });
+    const shine = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.0, emissive: 0xffffff, emissiveIntensity: 0.8 });
+    const collar = new THREE.MeshStandardMaterial({ color: 0x2d9f82, roughness: 0.3, metalness: 0.6 });
+    const tag   = new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.2, metalness: 0.9 });
+
+    const add = (geo, mat, x=0, y=0, z=0, rx=0, ry=0, rz=0, sx=1, sy=1, sz=1) => {
+      const m = new THREE.Mesh(geo, mat);
+      m.position.set(x, y, z);
+      m.rotation.set(rx, ry, rz);
+      m.scale.set(sx, sy, sz);
+      m.castShadow = true;
+      m.receiveShadow = true;
+      g.add(m);
+      return m;
+    };
+
+    // === BODY ===
+    add(new THREE.SphereGeometry(0.52, 32, 24), fur,   0, 0.72, 0,  0,0,0, 1, 0.88, 1.25);
+    // belly patch
+    add(new THREE.SphereGeometry(0.28, 16, 16), light, 0, 0.62, 0.42, 0,0,0, 1, 0.8, 0.6);
+
+    // === NECK ===
+    add(new THREE.CylinderGeometry(0.2, 0.25, 0.28, 20), fur, 0, 1.06, 0.18, 0.35,0,0);
+
+    // === HEAD ===
+    const headGroup = new THREE.Group();
+    headGroup.position.set(0, 1.28, 0.28);
+    g.add(headGroup);
+
+    const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.36, 32, 24), fur);
+    headMesh.scale.set(1, 0.95, 1.02);
+    headMesh.castShadow = true;
+    headGroup.add(headMesh);
+
+    // skull dome
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 16), fur);
+    dome.scale.set(1, 0.7, 0.8);
+    dome.position.set(0, 0.22, -0.06);
+    headGroup.add(dome);
+
+    // MUZZLE
+    const muzzleGroup = new THREE.Group();
+    muzzleGroup.position.set(0, -0.06, 0.32);
+    headGroup.add(muzzleGroup);
+
+    const muzzle = new THREE.Mesh(new THREE.SphereGeometry(0.19, 20, 16), light);
+    muzzle.scale.set(1, 0.72, 1.1);
+    muzzle.castShadow = true;
+    muzzleGroup.add(muzzle);
+
+    // nose tip
+    const noseMesh = new THREE.Mesh(new THREE.SphereGeometry(0.068, 16, 12), nose);
+    noseMesh.scale.set(1.15, 0.75, 0.9);
+    noseMesh.position.set(0, 0.04, 0.17);
+    muzzleGroup.add(noseMesh);
+
+    // nose nostrils
+    [-0.035, 0.035].forEach(x => {
+      const n = new THREE.Mesh(new THREE.SphereGeometry(0.018, 8, 8), nose);
+      n.position.set(x, 0.0, 0.22);
+      n.scale.set(1, 0.5, 0.8);
+      muzzleGroup.add(n);
+    });
+
+    // mouth line
+    const mouthGeo = new THREE.TorusGeometry(0.06, 0.012, 6, 12, Math.PI);
+    const mouth = new THREE.Mesh(mouthGeo, dark);
+    mouth.position.set(0, -0.045, 0.18);
+    mouth.rotation.set(0.1, 0, 0);
+    muzzleGroup.add(mouth);
+
+    // EYES
+    [-0.135, 0.135].forEach(x => {
+      const eyeMesh = new THREE.Mesh(new THREE.SphereGeometry(0.057, 16, 16), eye);
+      eyeMesh.position.set(x, 0.1, 0.29);
+      headGroup.add(eyeMesh);
+      // iris
+      const iris = new THREE.Mesh(new THREE.SphereGeometry(0.038, 12, 12), new THREE.MeshStandardMaterial({ color: 0x6b3a1f, roughness: 0.2 }));
+      iris.position.set(x, 0.1, 0.335);
+      headGroup.add(iris);
+      // shine
+      const sh = new THREE.Mesh(new THREE.SphereGeometry(0.016, 8, 8), shine);
+      sh.position.set(x + 0.02, 0.12, 0.348);
+      headGroup.add(sh);
+      // brow ridge
+      const brow = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 8), fur);
+      brow.scale.set(1.1, 0.5, 0.6);
+      brow.position.set(x, 0.17, 0.24);
+      headGroup.add(brow);
+    });
+
+    // EARS (floppy labrador style)
+    [-0.3, 0.3].forEach((x, i) => {
+      const earGroup = new THREE.Group();
+      earGroup.position.set(x, 0.15, -0.08);
+      earGroup.rotation.z = i === 0 ? 0.25 : -0.25;
+
+      const earTop = new THREE.Mesh(new THREE.SphereGeometry(0.17, 16, 12), dark);
+      earTop.scale.set(0.65, 0.5, 0.38);
+      earGroup.add(earTop);
+
+      const earFlap = new THREE.Mesh(new THREE.SphereGeometry(0.19, 16, 12), dark);
+      earFlap.scale.set(0.6, 1.1, 0.3);
+      earFlap.position.set(0, -0.18, 0.02);
+      earGroup.add(earFlap);
+
+      headGroup.add(earGroup);
+    });
+
+    // COLLAR
+    const collarMesh = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.042, 10, 36), collar);
+    collarMesh.position.set(0, 0.96, 0.14);
+    collarMesh.rotation.x = Math.PI / 2.8;
+    g.add(collarMesh);
+
+    // TAG
+    const tagMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.015, 16), tag);
+    tagMesh.position.set(0, 0.86, 0.32);
+    tagMesh.rotation.x = Math.PI / 2;
+    g.add(tagMesh);
+
+    // LEGS
+    const legPositions = [
+      [-0.27, 0.3, -0.38], [0.27, 0.3, -0.38],
+      [-0.25, 0.3, 0.28],  [0.25, 0.3, 0.28],
+    ];
+    legPositions.forEach(([x, y, z]) => {
+      // upper leg
+      add(new THREE.CylinderGeometry(0.1, 0.085, 0.38, 14), fur, x, y, z);
+      // lower leg
+      add(new THREE.CylinderGeometry(0.08, 0.075, 0.28, 12), fur, x, y - 0.32, z);
+      // paw
+      const paw = new THREE.Mesh(new THREE.SphereGeometry(0.1, 14, 10), dark);
+      paw.scale.set(1.05, 0.55, 1.15);
+      paw.position.set(x, y - 0.49, z + 0.02);
+      paw.castShadow = true;
+      g.add(paw);
+    });
+
+    // TAIL
+    const pts = [
+      new THREE.Vector3(0,   0.88, -0.52),
+      new THREE.Vector3(0.1, 1.08, -0.7),
+      new THREE.Vector3(0.22, 1.3, -0.65),
+      new THREE.Vector3(0.3,  1.5, -0.48),
+      new THREE.Vector3(0.28, 1.65,-0.3),
+    ];
+    const tailGeo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 20, 0.065, 10, false);
+    add(tailGeo, dark);
+
+    // tail tip lighter
+    const tipGeo = new THREE.SphereGeometry(0.075, 10, 10);
+    add(tipGeo, light, 0.28, 1.65, -0.3);
+
+    scene.add(g);
+    dogRef.current = g;
+    return g;
+  }, []);
 
   useEffect(() => {
-    const w = mountRef.current.clientWidth;
-    const h = mountRef.current.clientHeight;
+    const el = mountRef.current;
+    const w = el.clientWidth;
+    const h = el.clientHeight;
 
     // Scene
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
+    // Fog for depth
+    scene.fog = new THREE.FogExp2(0x0a1a14, 0.18);
+
     // Camera
-    const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-    camera.position.set(0, 1.2, 4.5);
-    camera.lookAt(0, 0.8, 0);
+    const camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 50);
+    camera.position.set(0, 1.3, 4.2);
+    camera.lookAt(0, 0.9, 0);
+    cameraRef.current = camera;
 
     // Renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setSize(w, h);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.5));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    mountRef.current.appendChild(renderer.domElement);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+    el.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // Lights
-    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambient);
+    // === LIGHTS ===
+    scene.add(new THREE.AmbientLight(0xfff0e0, 0.4));
 
-    const dirLight = new THREE.DirectionalLight(0xfff5e0, 1.2);
-    dirLight.position.set(3, 5, 3);
-    dirLight.castShadow = true;
-    scene.add(dirLight);
+    const key = new THREE.DirectionalLight(0xfff5e8, 2.2);
+    key.position.set(2.5, 5, 3);
+    key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024);
+    key.shadow.camera.near = 0.5;
+    key.shadow.camera.far = 20;
+    key.shadow.camera.left = -3;
+    key.shadow.camera.right = 3;
+    key.shadow.camera.top = 3;
+    key.shadow.camera.bottom = -3;
+    key.shadow.bias = -0.002;
+    scene.add(key);
 
-    const fillLight = new THREE.DirectionalLight(0xe0f0ff, 0.4);
-    fillLight.position.set(-3, 2, -1);
-    scene.add(fillLight);
+    const fill = new THREE.DirectionalLight(0xc8e8ff, 0.6);
+    fill.position.set(-3, 2, 1);
+    scene.add(fill);
 
-    const rimLight = new THREE.PointLight(0x2d9f82, 0.8, 10);
-    rimLight.position.set(0, 3, -3);
-    scene.add(rimLight);
+    const back = new THREE.PointLight(0x2d9f82, 1.4, 12);
+    back.position.set(0, 3.5, -3.5);
+    scene.add(back);
 
-    // Ground
-    const groundGeo = new THREE.CircleGeometry(2, 64);
-    const groundMat = new THREE.MeshStandardMaterial({ color: 0xf0fdf4, roughness: 0.8 });
+    const bottom = new THREE.PointLight(0x0a3a28, 0.8, 6);
+    bottom.position.set(0, -1, 0);
+    scene.add(bottom);
+
+    // === GROUND ===
+    const groundGeo = new THREE.CircleGeometry(2.5, 80);
+    const groundMat = new THREE.MeshStandardMaterial({
+      color: 0x0d2218,
+      roughness: 0.9,
+      metalness: 0.1,
+    });
     const ground = new THREE.Mesh(groundGeo, groundMat);
     ground.rotation.x = -Math.PI / 2;
     ground.receiveShadow = true;
     scene.add(ground);
 
-    // Ground glow ring
-    const ringGeo = new THREE.RingGeometry(0.9, 1.1, 64);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0x2d9f82, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = -Math.PI / 2;
-    ring.position.y = 0.01;
-    scene.add(ring);
-
-    // === BUILD THE DOG ===
-    const dogGroup = new THREE.Group();
-    dogRef.current = dogGroup;
-
-    const furColor = 0xc8a882;
-    const darkFur = 0x8b6347;
-    const noseColor = 0x2d1a0e;
-
-    const mat = (color, roughness = 0.7) =>
-      new THREE.MeshStandardMaterial({ color, roughness, metalness: 0.05 });
-
-    // Body
-    const bodyGeo = new THREE.SphereGeometry(0.55, 32, 32);
-    bodyGeo.scale(1, 0.85, 1.3);
-    const body = new THREE.Mesh(bodyGeo, mat(furColor));
-    body.position.set(0, 0.72, 0);
-    body.castShadow = true;
-    dogGroup.add(body);
-
-    // Chest lighter patch
-    const chestGeo = new THREE.SphereGeometry(0.3, 16, 16);
-    chestGeo.scale(1, 0.9, 0.6);
-    const chest = new THREE.Mesh(chestGeo, mat(0xe8d0b0));
-    chest.position.set(0, 0.65, 0.38);
-    dogGroup.add(chest);
-
-    // Head
-    const headGeo = new THREE.SphereGeometry(0.38, 32, 32);
-    headGeo.scale(1, 0.95, 1);
-    const head = new THREE.Mesh(headGeo, mat(furColor));
-    head.position.set(0, 1.32, 0.25);
-    head.castShadow = true;
-    dogGroup.add(head);
-
-    // Snout
-    const snoutGeo = new THREE.SphereGeometry(0.2, 16, 16);
-    snoutGeo.scale(1, 0.7, 1.1);
-    const snout = new THREE.Mesh(snoutGeo, mat(0xd4a96a));
-    snout.position.set(0, 1.22, 0.52);
-    dogGroup.add(snout);
-
-    // Nose
-    const noseGeo = new THREE.SphereGeometry(0.07, 16, 16);
-    noseGeo.scale(1.2, 0.8, 0.9);
-    const nose = new THREE.Mesh(noseGeo, mat(noseColor, 0.3));
-    nose.position.set(0, 1.26, 0.7);
-    dogGroup.add(nose);
-
-    // Eyes
-    [-0.14, 0.14].forEach(x => {
-      const eyeGeo = new THREE.SphereGeometry(0.06, 16, 16);
-      const eye = new THREE.Mesh(eyeGeo, mat(0x1a0a00, 0.1));
-      eye.position.set(x, 1.38, 0.58);
-      dogGroup.add(eye);
-
-      // Eye shine
-      const shineGeo = new THREE.SphereGeometry(0.02, 8, 8);
-      const shine = new THREE.Mesh(shineGeo, mat(0xffffff, 0.0));
-      shine.position.set(x + 0.02, 1.41, 0.63);
-      dogGroup.add(shine);
-    });
-
-    // Ears (floppy)
-    [-0.33, 0.33].forEach((x, i) => {
-      const earGeo = new THREE.SphereGeometry(0.18, 16, 16);
-      earGeo.scale(0.7, 1.3, 0.4);
-      const ear = new THREE.Mesh(earGeo, mat(darkFur));
-      ear.position.set(x, 1.32, 0.05);
-      ear.rotation.z = i === 0 ? -0.3 : 0.3;
-      ear.castShadow = true;
-      dogGroup.add(ear);
-    });
-
-    // Legs (4)
-    [[-0.28, -0.45], [0.28, -0.45], [-0.22, 0.35], [0.22, 0.35]].forEach(([x, z]) => {
-      const legGeo = new THREE.CylinderGeometry(0.1, 0.09, 0.52, 12);
-      const leg = new THREE.Mesh(legGeo, mat(furColor));
-      leg.position.set(x, 0.28, z);
-      leg.castShadow = true;
-      dogGroup.add(leg);
-
-      // Paw
-      const pawGeo = new THREE.SphereGeometry(0.11, 12, 12);
-      pawGeo.scale(1, 0.6, 1.1);
-      const paw = new THREE.Mesh(pawGeo, mat(darkFur));
-      paw.position.set(x, 0.02, z);
-      dogGroup.add(paw);
-    });
-
-    // Tail
-    const tailCurve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0, 0.85, -0.55),
-      new THREE.Vector3(0.15, 1.1, -0.75),
-      new THREE.Vector3(0.25, 1.35, -0.6),
-      new THREE.Vector3(0.2, 1.5, -0.4),
-    ]);
-    const tailGeo = new THREE.TubeGeometry(tailCurve, 12, 0.07, 8, false);
-    const tail = new THREE.Mesh(tailGeo, mat(darkFur));
-    tail.castShadow = true;
-    dogGroup.add(tail);
-
-    // Collar
-    const collarGeo = new THREE.TorusGeometry(0.25, 0.04, 8, 32);
-    const collarMat = new THREE.MeshStandardMaterial({ color: 0x2d9f82, roughness: 0.3, metalness: 0.4 });
-    const collar = new THREE.Mesh(collarGeo, collarMat);
-    collar.position.set(0, 1.05, 0.22);
-    collar.rotation.x = Math.PI / 2.5;
-    dogGroup.add(collar);
-
-    scene.add(dogGroup);
-    dogGroup.position.y = 0;
-
-    setLoaded(true);
-
-    // Floating particles
-    const particles = [];
-    for (let i = 0; i < 18; i++) {
-      const geo = new THREE.SphereGeometry(0.015 + Math.random() * 0.02, 6, 6);
-      const pMat = new THREE.MeshBasicMaterial({
-        color: [0x2d9f82, 0x10b981, 0x34d399, 0x6ee7b7][Math.floor(Math.random() * 4)],
+    // Glow rings
+    [1.05, 0.75, 0.45].forEach((r, i) => {
+      const rGeo = new THREE.RingGeometry(r - 0.04, r, 80);
+      const rMat = new THREE.MeshBasicMaterial({
+        color: 0x2d9f82,
         transparent: true,
-        opacity: 0.5 + Math.random() * 0.4,
+        opacity: 0.07 - i * 0.015,
+        side: THREE.DoubleSide,
       });
-      const p = new THREE.Mesh(geo, pMat);
-      const angle = Math.random() * Math.PI * 2;
-      const radius = 0.8 + Math.random() * 0.8;
-      p.position.set(
-        Math.cos(angle) * radius,
-        0.3 + Math.random() * 1.8,
-        Math.sin(angle) * radius
-      );
-      p.userData = { angle, radius, speed: 0.003 + Math.random() * 0.004, ySpeed: 0.008 + Math.random() * 0.006, yBase: p.position.y };
-      scene.add(p);
-      particles.push(p);
-    }
+      const ring = new THREE.Mesh(rGeo, rMat);
+      ring.rotation.x = -Math.PI / 2;
+      ring.position.y = 0.005;
+      ring.userData.baseOpacity = 0.07 - i * 0.015;
+      ring.userData.phase = i * 0.5;
+      scene.add(ring);
+    });
 
-    // Animation loop
+    // === PARTICLES ===
+    const particleCount = 60;
+    const pGeo = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const pData = [];
+    for (let i = 0; i < particleCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = 0.6 + Math.random() * 1.4;
+      const y = 0.1 + Math.random() * 2.2;
+      positions[i * 3]     = Math.cos(angle) * radius;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = Math.sin(angle) * radius;
+      pData.push({ angle, radius, speed: 0.002 + Math.random() * 0.004, yBase: y, yAmp: 0.06 + Math.random() * 0.1, yFreq: 0.5 + Math.random() * 1.0 });
+    }
+    pGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    const pMat = new THREE.PointsMaterial({ color: 0x2d9f82, size: 0.022, transparent: true, opacity: 0.55, sizeAttenuation: true });
+    const points = new THREE.Points(pGeo, pMat);
+    scene.add(points);
+
+    // === DOG ===
+    buildDog(scene);
+    setReady(true);
+
+    // === ANIMATION ===
+    const dr = dragRef.current;
     let t = 0;
     const animate = () => {
       frameRef.current = requestAnimationFrame(animate);
-      t += 0.016;
+      const delta = clockRef.current.getDelta();
+      t += delta;
 
-      // Dog idle breathing
-      if (dogGroup) {
-        dogGroup.rotation.y = Math.sin(t * 0.4) * 0.12;
-        dogGroup.position.y = Math.sin(t * 1.2) * 0.025;
-        body.scale.y = 1 + Math.sin(t * 1.8) * 0.018;
+      // Smooth drag rotation
+      dr.rotY += (dr.targetRotY - dr.rotY) * 0.1;
+      dr.rotX += (dr.targetRotX - dr.rotX) * 0.1;
+
+      const dog = dogRef.current;
+      if (dog) {
+        dog.rotation.y = dr.rotY;
+        dog.rotation.x = Math.max(-0.25, Math.min(0.2, dr.rotX));
+        // breathing
+        dog.position.y = Math.sin(t * 1.1) * 0.028;
+        dog.children.forEach(c => {
+          if (c.geometry instanceof THREE.SphereGeometry && c.position.y > 0.5 && c.position.y < 0.9) {
+            c.scale.z = 1.25 + Math.sin(t * 1.1) * 0.025;
+            c.scale.y = 0.88 + Math.sin(t * 1.1) * 0.018;
+          }
+        });
+        // tail wag
+        dog.children.forEach(c => {
+          if (c.geometry instanceof THREE.TubeGeometry) {
+            c.rotation.y = Math.sin(t * 3.5) * 0.35;
+          }
+        });
       }
 
-      // Particles orbit
-      particles.forEach(p => {
-        p.userData.angle += p.userData.speed;
-        p.position.x = Math.cos(p.userData.angle) * p.userData.radius;
-        p.position.z = Math.sin(p.userData.angle) * p.userData.radius;
-        p.position.y = p.userData.yBase + Math.sin(t * p.userData.ySpeed * 40) * 0.12;
-        p.material.opacity = 0.3 + Math.abs(Math.sin(t * p.userData.ySpeed * 20)) * 0.5;
+      // Particles
+      const pos = pGeo.attributes.position.array;
+      for (let i = 0; i < particleCount; i++) {
+        const d = pData[i];
+        d.angle += d.speed;
+        pos[i * 3]     = Math.cos(d.angle) * d.radius;
+        pos[i * 3 + 1] = d.yBase + Math.sin(t * d.yFreq) * d.yAmp;
+        pos[i * 3 + 2] = Math.sin(d.angle) * d.radius;
+      }
+      pGeo.attributes.position.needsUpdate = true;
+      pMat.opacity = 0.35 + Math.sin(t * 0.8) * 0.2;
+
+      // Rings pulse
+      scene.children.forEach(c => {
+        if (c.userData.baseOpacity !== undefined) {
+          c.material.opacity = c.userData.baseOpacity + Math.sin(t * 1.5 + c.userData.phase) * 0.03;
+        }
       });
 
-      // Ring pulse
-      ring.material.opacity = 0.08 + Math.sin(t * 1.5) * 0.07;
+      // Rim light color breathing
+      back.intensity = 1.2 + Math.sin(t * 0.9) * 0.3;
 
       renderer.render(scene, camera);
     };
     animate();
 
-    // Touch/mouse drag
-    let isDragging = false;
-    let prevX = 0;
-    const onDown = e => { isDragging = true; prevX = e.touches ? e.touches[0].clientX : e.clientX; };
-    const onUp = () => { isDragging = false; };
+    // Touch / mouse drag
+    const onStart = e => {
+      dr.active = true;
+      dr.prevX = e.touches ? e.touches[0].clientX : e.clientX;
+      dr.prevY = e.touches ? e.touches[0].clientY : e.clientY;
+    };
+    const onEnd = () => { dr.active = false; };
     const onMove = e => {
-      if (!isDragging) return;
+      if (!dr.active) return;
       const x = e.touches ? e.touches[0].clientX : e.clientX;
-      const dx = x - prevX;
-      dogGroup.rotation.y += dx * 0.012;
-      prevX = x;
+      const y = e.touches ? e.touches[0].clientY : e.clientY;
+      dr.targetRotY += (x - dr.prevX) * 0.011;
+      dr.targetRotX += (y - dr.prevY) * 0.007;
+      dr.prevX = x;
+      dr.prevY = y;
     };
 
-    const el = mountRef.current;
-    el.addEventListener("mousedown", onDown);
-    el.addEventListener("touchstart", onDown);
-    window.addEventListener("mouseup", onUp);
-    window.addEventListener("touchend", onUp);
+    el.addEventListener("mousedown", onStart);
+    el.addEventListener("touchstart", onStart, { passive: true });
+    window.addEventListener("mouseup", onEnd);
+    window.addEventListener("touchend", onEnd);
     window.addEventListener("mousemove", onMove);
-    window.addEventListener("touchmove", onMove);
+    window.addEventListener("touchmove", onMove, { passive: true });
+
+    const handleResize = () => {
+      const nw = el.clientWidth, nh = el.clientHeight;
+      camera.aspect = nw / nh;
+      camera.updateProjectionMatrix();
+      renderer.setSize(nw, nh);
+    };
+    window.addEventListener("resize", handleResize);
 
     return () => {
       cancelAnimationFrame(frameRef.current);
       renderer.dispose();
-      if (mountRef.current && renderer.domElement.parentNode === mountRef.current) {
-        mountRef.current.removeChild(renderer.domElement);
-      }
-      el.removeEventListener("mousedown", onDown);
-      el.removeEventListener("touchstart", onDown);
-      window.removeEventListener("mouseup", onUp);
-      window.removeEventListener("touchend", onUp);
+      if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
+      el.removeEventListener("mousedown", onStart);
+      el.removeEventListener("touchstart", onStart);
+      window.removeEventListener("mouseup", onEnd);
+      window.removeEventListener("touchend", onEnd);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [buildDog]);
+
+  const scoreColor = s => s >= 85 ? "#34d399" : s >= 65 ? "#f59e0b" : "#ff6b8a";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0d1f1a] via-[#0f2820] to-[#0a1a15] flex flex-col overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 pt-12 pb-2 z-10">
+    <div className="fixed inset-0 bg-[#081510] flex flex-col overflow-hidden" style={{ touchAction: "none" }}>
+
+      {/* Top bar */}
+      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-5 pt-12 pb-4 bg-gradient-to-b from-black/60 to-transparent pointer-events-none">
         <button
+          className="pointer-events-auto w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center"
           onClick={() => navigate(-1)}
-          className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center"
         >
           <ArrowLeft className="w-4 h-4 text-white" />
         </button>
+
         <div className="text-center">
-          <p className="text-white/50 text-[10px] uppercase tracking-widest font-semibold">Jumeau Digital</p>
-          <p className="text-white font-bold text-base">Max</p>
+          <div className="flex items-center gap-1.5 justify-center">
+            <Sparkles className="w-3 h-3 text-emerald-400" />
+            <span className="text-white/50 text-[10px] uppercase tracking-widest font-bold">Jumeau Digital</span>
+          </div>
+          <p className="text-white font-black text-lg tracking-tight">Max</p>
         </div>
-        <VitalityOrb score={vitalityScore} />
+
+        {/* Vitality ring */}
+        <div className="pointer-events-auto relative">
+          <svg width="52" height="52" viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="22" fill="none" stroke="#ffffff10" strokeWidth="4" />
+            <circle
+              cx="26" cy="26" r="22"
+              fill="none"
+              stroke={scoreColor(VITALITY)}
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray={`${(VITALITY / 100) * 138.2} 138.2`}
+              strokeDashoffset="34.6"
+              style={{ filter: `drop-shadow(0 0 6px ${scoreColor(VITALITY)})` }}
+              transform="rotate(-90 26 26)"
+            />
+            <text x="26" y="30" textAnchor="middle" fontSize="13" fontWeight="800" fill="white">{VITALITY}</text>
+          </svg>
+        </div>
       </div>
 
-      {/* 3D Canvas */}
-      <div
-        ref={mountRef}
-        className="flex-1 w-full cursor-grab active:cursor-grabbing"
-        style={{ minHeight: 320, maxHeight: 380 }}
-      />
-
-      {/* Drag hint */}
+      {/* Status badge */}
       <AnimatePresence>
-        {loaded && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: 1.2, duration: 0.6 }}
-            className="text-center text-white/30 text-[10px] -mt-4 mb-2 tracking-wider"
-          >
-            ↔ Fais glisser pour tourner
-          </motion.p>
-        )}
-      </AnimatePresence>
-
-      {/* Zone detail popup */}
-      <AnimatePresence>
-        {selectedZone && (
+        {ready && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="mx-5 mb-3 rounded-2xl p-4 flex items-center gap-3"
-            style={{ background: selectedZone.color + "22", border: `1px solid ${selectedZone.color}44` }}
+            transition={{ delay: 0.6 }}
+            className="absolute top-28 left-1/2 -translate-x-1/2 z-20"
           >
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: selectedZone.color + "30" }}>
-              <selectedZone.icon className="w-5 h-5" style={{ color: selectedZone.color }} />
+            <div
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full backdrop-blur-md border"
+              style={{ background: STATUS.glow, borderColor: STATUS.color + "55" }}
+            >
+              <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: STATUS.color }} />
+              <span className="text-xs font-bold" style={{ color: STATUS.color }}>{STATUS.label}</span>
             </div>
-            <div className="flex-1">
-              <p className="text-white font-bold text-sm">{selectedZone.label}</p>
-              <p className="text-white/60 text-xs mt-0.5">{selectedZone.detail}</p>
-            </div>
-            <span className="text-2xl font-black" style={{ color: selectedZone.color }}>{selectedZone.score}</span>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Health Zones Grid */}
-      <div className="px-5 pb-10 grid grid-cols-2 gap-2">
-        {HEALTH_ZONES.map(zone => (
-          <ZoneBadge
-            key={zone.id}
-            zone={zone}
-            active={selectedZone?.id === zone.id}
-            onClick={z => setSelectedZone(selectedZone?.id === z.id ? null : z)}
-          />
-        ))}
+      {/* 3D Canvas */}
+      <div
+        ref={mountRef}
+        className="absolute inset-0 cursor-grab active:cursor-grabbing"
+      />
+
+      {/* Drag hint */}
+      <AnimatePresence>
+        {ready && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: 1.5, duration: 0.8 }}
+            className="absolute bottom-52 left-0 right-0 flex justify-center pointer-events-none z-10"
+          >
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+              <span className="text-white/35 text-[10px] tracking-wider">Fais pivoter Max</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Bottom sheet */}
+      <div className="absolute bottom-0 left-0 right-0 z-20">
+        {/* Sheet handle */}
+        <div
+          className="flex justify-center pt-3 pb-1 cursor-pointer"
+          onClick={() => setSheetOpen(o => !o)}
+        >
+          <motion.div
+            animate={{ rotate: sheetOpen ? 180 : 0 }}
+            className="bg-white/20 backdrop-blur-md rounded-full px-5 py-1.5 flex items-center gap-2 border border-white/10"
+          >
+            <ChevronUp className="w-4 h-4 text-white/60" />
+            <span className="text-white/60 text-[11px] font-semibold">Zones de santé</span>
+          </motion.div>
+        </div>
+
+        <motion.div
+          animate={{ height: sheetOpen ? "auto" : 100 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="overflow-hidden"
+        >
+          <div className="bg-black/60 backdrop-blur-2xl border-t border-white/10 px-5 pt-4 pb-10">
+            {/* Zone pills */}
+            <div className="grid grid-cols-4 gap-2 mb-4">
+              {ZONES.map((z) => {
+                const c = scoreColor(z.score);
+                const active = selectedZone?.id === z.id;
+                return (
+                  <motion.button
+                    key={z.id}
+                    whileTap={{ scale: 0.92 }}
+                    onClick={() => setSelectedZone(active ? null : z)}
+                    className="flex flex-col items-center gap-1.5 py-2.5 rounded-2xl border transition-all"
+                    style={{
+                      background: active ? z.color + "22" : "rgba(255,255,255,0.05)",
+                      borderColor: active ? z.color + "66" : "rgba(255,255,255,0.08)",
+                      boxShadow: active ? `0 0 16px ${z.color}33` : "none",
+                    }}
+                  >
+                    <span className="text-lg">{z.emoji}</span>
+                    <span className="text-[9px] text-white/50 font-semibold">{z.label}</span>
+                    <span className="text-xs font-black" style={{ color: c }}>{z.score}</span>
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* Detail */}
+            <AnimatePresence mode="wait">
+              {selectedZone && (
+                <motion.div
+                  key={selectedZone.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                  className="rounded-2xl p-4 flex items-center gap-4"
+                  style={{ background: selectedZone.color + "18", border: `1px solid ${selectedZone.color}33` }}
+                >
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
+                    style={{ background: selectedZone.color + "25" }}>
+                    {selectedZone.emoji}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-white font-bold text-sm">{selectedZone.label}</p>
+                    <p className="text-white/55 text-xs mt-0.5 leading-relaxed">{selectedZone.detail}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-3xl font-black" style={{ color: scoreColor(selectedZone.score) }}>
+                      {selectedZone.score}
+                    </p>
+                    <p className="text-white/30 text-[10px]">/100</p>
+                  </div>
+                </motion.div>
+              )}
+              {!selectedZone && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center text-white/25 text-xs py-2"
+                >
+                  Appuie sur une zone pour voir les détails
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
