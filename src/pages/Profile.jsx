@@ -98,6 +98,8 @@ export default function Profile() {
 
         <CoachSettings user={user} onSave={handleSaveUser} />
 
+        <WalkReminderSettings user={user} onSave={handleSaveUser} />
+
         <VetSection dogs={dogs} activeDogId={activeDogId} />
 
         <SubscriptionSection user={user} />
