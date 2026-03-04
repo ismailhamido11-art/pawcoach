@@ -14,7 +14,6 @@ import {
 import { Link } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
-import { calcScore } from "../components/home/HealthScore";
 import WellnessBanner from "../components/WellnessBanner";
 import IconBadge from "@/components/ui/IconBadge";
 import Illustration from "../components/illustrations/Illustration";
@@ -203,17 +202,13 @@ export default function Dashboard() {
     alerts.push({ type: "warning", title: "Visite vétérinaire à planifier", desc: `RDV prévu le ${lastVet.next_date}`, cta: "Agenda", to: createPageUrl("Notebook") });
   }
 
-  // Health score (unified with Home via calcScore)
-  const scoreData = dog ? calcScore({
-    dog,
-    streak: streak || {},
-    checkins: checkins || [],
-    records: records || [],
-    exercises: progress || [],
-    scans: scans || [],
-    dailyLogs: dailyLogs || [],
-  }) : { total: 0, pillars: [] };
-  const score = scoreData.total;
+  // Health score — simple calculation for dashboard
+  const weightScore = weightData.length >= 2 
+    ? Math.max(0, 100 - Math.abs(weightTrend) * 5) 
+    : 50;
+  const checkinScore = checkins.filter(c => c.date >= new Date(Date.now() - 7 * 864e5).toISOString().split("T")[0]).length * 10;
+  const vaxScore = overdueVaccines.length === 0 ? 30 : 10;
+  const score = Math.min((weightScore + checkinScore + vaxScore) / 3, 100);
 
   const scoreColor = score >= 80 ? "#10b981" : score >= 60 ? "#d97706" : "#ef4444";
   const scoreLabel = score >= 80 ? "Excellent" : score >= 60 ? "Bon" : "À améliorer";
