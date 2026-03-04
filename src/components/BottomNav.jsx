@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, ScanLine, MessageCircle, BookHeart, Activity } from "lucide-react";
+import { Home, Heart, Activity, Utensils, User } from "lucide-react";
 import { motion } from "framer-motion";
 
 const tabs = [
-  { label: "Accueil", icon: Home, page: "Home" },
-  { label: "Scanner", icon: ScanLine, page: "Scan" },
-  { label: "Chat", icon: MessageCircle, page: "Chat" },
-  { label: "Carnet", icon: BookHeart, page: "Notebook" },
-  { label: "Tracker", icon: Activity, page: "Tracker" },
+  { label: "Accueil",    icon: Home,     page: "Home" },
+  { label: "Santé",      icon: Heart,    page: "Sante" },
+  { label: "Activité",   icon: Activity, page: "Activite" },
+  { label: "Nutrition",  icon: Utensils, page: "Nutri" },
+  { label: "Profil",     icon: User,     page: "Profile" },
 ];
 
 export default function BottomNav({ currentPage }) {
@@ -21,24 +21,18 @@ export default function BottomNav({ currentPage }) {
             <Link
               key={page}
               to={createPageUrl(page)}
-              className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl tap-scale transition-all duration-300 ${
-                active
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-primary"
+              className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl transition-all duration-300 ${
+                active ? "text-primary" : "text-muted-foreground hover:text-primary"
               }`}
             >
               <motion.div
                 className={`p-2 rounded-xl transition-all duration-300 ${
-                  active 
-                    ? "bg-gradient-to-br from-secondary to-secondary/70 shadow-md" 
-                    : "hover:bg-secondary/40"
+                  active ? "bg-gradient-to-br from-secondary to-secondary/70 shadow-md" : "hover:bg-secondary/40"
                 }`}
                 whileHover={{ scale: active ? 1 : 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Icon
-                  className={`w-5 h-5 icon-animate ${active ? "stroke-[2.5]" : "stroke-[1.75]"}`}
-                />
+                <Icon className={`w-5 h-5 ${active ? "stroke-[2.5]" : "stroke-[1.75]"}`} />
               </motion.div>
               <span className={`text-[10px] font-semibold transition-all duration-200 ${active ? "text-primary" : "text-muted-foreground"}`}>
                 {label}
