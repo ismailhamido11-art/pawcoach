@@ -9,10 +9,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { isUserPremium } from "@/utils/premium";
 
 // Sub-pages content (imported inline)
-import NotebookContent from "../components/sante/NotebookContent";
-import HealthImportContent from "../components/sante/HealthImportContent";
-import FindVetContent from "../components/sante/FindVetContent";
-import DiagnosisContent from "../components/sante/DiagnosisContent";
+import NotebookContent from "@/components/sante/NotebookContent";
+import HealthImportContent from "@/components/sante/HealthImportContent";
+import FindVetContent from "@/components/sante/FindVetContent";
+import DiagnosisContent from "@/components/sante/DiagnosisContent";
 
 import { BookHeart, Camera, Stethoscope, MapPin, AlertTriangle } from "lucide-react";
 
