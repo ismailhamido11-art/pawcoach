@@ -110,6 +110,7 @@ export default function Profile() {
         <SettingsSection />
       </div>
 
+      <ChatFAB />
       <BottomNav currentPage="Profile" />
     </div>
   );
