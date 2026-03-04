@@ -201,19 +201,14 @@ export default function Home() {
 
       {/* MAIN CONTENT */}
       <div className="space-y-4 mt-4">
-        {/* Check-in ou résultat */}
-        {!todayCheckin ? (
-          <CheckinCard
-            dog={dog}
-            mood={mood} setMood={setMood}
-            energy={energy} setEnergy={setEnergy}
-            appetite={appetite} setAppetite={setAppetite}
-            onSubmit={handleCheckin}
-            submitting={submitting}
-          />
-        ) : (
-          <CheckinResult checkin={todayCheckin} dog={dog} />
-        )}
+        {/* Daily Checkin Hub */}
+        <DailyCheckinHub
+          dog={dog}
+          todayCheckin={todayCheckin}
+          onSubmit={handleCheckin}
+          submitting={submitting}
+          streak={streak}
+        />
 
         {/* Snapshot du jour */}
         <DailySnapshot records={records} exercises={exercises} checkins={recentCheckins} dailyLogs={dailyLogs} />
