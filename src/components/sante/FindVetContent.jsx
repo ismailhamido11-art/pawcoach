@@ -3,10 +3,12 @@ import { base44 } from "@/api/base44Client";
 import VetSearchCard from "../vet/VetSearchCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, MapPin, Loader2 } from "lucide-react";
+import { Search, MapPin, Loader2, Stethoscope } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import Illustration from "../illustrations/Illustration";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 export default function FindVetContent({ dog }) {
   const [query, setQuery] = useState(dog?.vet_city || "");
