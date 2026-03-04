@@ -5,7 +5,6 @@ import BottomNav from "../components/BottomNav";
 import ChatFAB from "../components/ChatFAB";
 import WalkMode from "../components/tracker/WalkMode.jsx";
 import TrackerHistory from "../components/tracker/TrackerHistory.jsx";
-import Training from "./Training";
 import { Footprints, History, Dumbbell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import WellnessBanner from "../components/WellnessBanner";
@@ -66,9 +65,14 @@ export default function Activite() {
             ))}
           </div>
         </div>
-        {/* Training page — full content, shifted down to avoid overlap */}
-        <div className="pt-14">
-          <Training />
+        {/* Training page — redirect user there directly */}
+        <div className="pt-14 flex flex-col items-center justify-center py-16 px-6 text-center gap-4">
+          <p className="text-foreground font-bold text-lg">Dressage</p>
+          <p className="text-sm text-muted-foreground">Lance un parcours d'entraînement pour {dog?.name || "ton chien"}</p>
+          <a href={createPageUrl("Training")} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl gradient-primary text-white font-bold text-sm shadow-lg">
+            <Dumbbell className="w-4 h-4" />
+            Voir les parcours
+          </a>
         </div>
         <ChatFAB />
       </div>
