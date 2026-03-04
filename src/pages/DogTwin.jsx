@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Heart, Zap, Utensils, Brain, Activity, Sparkles, ChevronUp } from "lucide-react";
+import { ArrowLeft, Heart, Utensils, Brain, Activity, Sparkles, ChevronUp, Zap, Clock, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import TwinIA from "../components/dogtwin/TwinIA";
+import TwinMemoire from "../components/dogtwin/TwinMemoire";
+import TwinVoix from "../components/dogtwin/TwinVoix";
 
 const ZONES = [
   { id: "heart",    label: "Vitalité",    icon: Heart,    color: "#ff6b8a", score: 87, detail: "Rythme cardiaque stable · Énergie excellente", emoji: "❤️" },
