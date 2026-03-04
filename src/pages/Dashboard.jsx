@@ -18,6 +18,7 @@ import { calcScore } from "../components/home/HealthScore";
 import WellnessBanner from "../components/WellnessBanner";
 import IconBadge from "@/components/ui/IconBadge";
 import Illustration from "../components/illustrations/Illustration";
+import SmartAlerts from "../components/dashboard/SmartAlerts";
 
 const spring = { type: "spring", stiffness: 300, damping: 25 };
 
