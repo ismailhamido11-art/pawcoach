@@ -46,9 +46,6 @@ export default function Home() {
   const [todayCheckin, setTodayCheckin] = useState(null);
   const [streak, setStreak] = useState(null);
   const [recentCheckins, setRecentCheckins] = useState([]);
-  const [mood, setMood] = useState(null);
-  const [energy, setEnergy] = useState(null);
-  const [appetite, setAppetite] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   const [records, setRecords] = useState([]);
