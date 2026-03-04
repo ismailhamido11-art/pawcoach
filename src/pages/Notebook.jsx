@@ -54,9 +54,9 @@ const PREMIUM_CONFIGS = {
   medication: {
     label: "Medicaments",
     emoji: "",
-    emptyText: "Aucun medicament enregistre",
+    emptyText: "Aucun médicament enregistré",
     placeholder: "Ex: Antiparasitaire Frontline",
-    addLabel: "Ajouter un medicament",
+    addLabel: "Ajouter un médicament",
     showNextDate: true,
     Icon: Pill,
     bgClass: "bg-emerald-50",
@@ -304,7 +304,7 @@ export default function Notebook() {
                   <PawPrint className="w-5 h-5 text-white/90" />
                   <h1 className="text-lg font-bold text-white tracking-wide">PawCoach</h1>
                 </div>
-                <p className="text-xs text-white/70 mt-0.5 ml-7">Carnet de sante</p>
+                <p className="text-xs text-white/70 mt-0.5 ml-7">Carnet de santé</p>
               </div>
               <div className="w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
                 <HeartPulse className="w-5 h-5 text-white" />
@@ -360,7 +360,7 @@ export default function Notebook() {
           <GuidanceTip
             id="welcome"
             title={`Bienvenue dans le carnet de ${dog?.name || "ton chien"}`}
-            description="Suis la sante de ton compagnon : vaccins, poids, visites veto, medicaments. Tout est centralise et accessible en un coup d'oeil."
+            description="Suis la santé de ton compagnon : vaccins, poids, visites véto, médicaments. Tout est centralisé et accessible en un coup d'œil."
             icon={<PawPrint className="w-5 h-5" />}
             variant="primary"
           />
@@ -375,8 +375,8 @@ export default function Notebook() {
             <QRCodeCard dog={dog} />
             <GuidanceTip
               id="qr"
-              title="Protege ton compagnon"
-              description="Le QR code d'urgence permet a quiconque trouve ton animal d'acceder a son dossier medical. Imprime-le et attache-le au collier."
+              title="Protège ton compagnon"
+              description="Le QR code d'urgence permet à quiconque trouve ton animal d'accéder à son dossier médical. Imprime-le et attache-le au collier."
               icon={<Shield className="w-5 h-5" />}
               variant="subtle"
               className="mt-2"
@@ -417,7 +417,7 @@ export default function Notebook() {
                 <Camera className="w-5 h-5 text-accent" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-foreground">Importer des donnees de sante</p>
+                <p className="text-sm font-semibold text-foreground">Importer des données de santé</p>
                 <p className="text-xs text-muted-foreground mt-0.5">Photo, PDF, email veto — l'IA extrait tout automatiquement</p>
               </div>
               <Sparkles className="w-4 h-4 text-accent flex-shrink-0" />
@@ -466,10 +466,10 @@ export default function Notebook() {
             <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-transparent" />
             <div className="absolute inset-0 flex items-center p-5">
               <div>
-                <p className="text-xs font-semibold text-accent uppercase tracking-wider">Bien-etre</p>
+                <p className="text-xs font-semibold text-accent uppercase tracking-wider">Bien-être</p>
                 <p className="text-base font-bold text-foreground mt-1">Des moments de bonheur</p>
                 <p className="text-xs text-muted-foreground mt-1 max-w-[200px]">
-                  Suis l'activite et le bien-etre de {dog?.name || "ton chien"} au quotidien
+                  Suis l'activité et le bien-être de {dog?.name || "ton chien"} au quotidien
                 </p>
               </div>
             </div>

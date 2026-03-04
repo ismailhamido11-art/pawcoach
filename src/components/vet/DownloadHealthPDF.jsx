@@ -72,7 +72,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
         doc.roundedRect(14, y, pageW - 28, 22, 3, 3, 'F');
         doc.setTextColor(220, 38, 38);
         doc.setFontSize(10);
-        doc.text(sanitize('Alertes sante'), 18, y + 8);
+        doc.text(sanitize('Alertes santé'), 18, y + 8);
         doc.setTextColor(80, 80, 80);
         doc.setFontSize(9);
         let alertY = y + 15;

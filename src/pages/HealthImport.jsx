@@ -432,7 +432,7 @@ export default function HealthImport() {
                             <p className="text-xs text-primary mt-1 font-medium">📅 Prochain : {record.next_date}</p>
                           )}
                           {suspicious && (
-                            <p className="text-xs text-red-600 font-bold mt-1">⚠️ Donnee suspecte — verifier avant import</p>
+                            <p className="text-xs text-red-600 font-bold mt-1">⚠️ Donnée suspecte — vérifier avant import</p>
                           )}
                         </div>
                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
