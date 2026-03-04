@@ -28,7 +28,8 @@ const msgAnim = {
 const TABS = [
   { id: "coach",    label: "NutriCoach", icon: Salad },
   { id: "mealplan", label: "Plan repas",  icon: CalendarRange },
-  { id: "scan",     label: "Scanner",     icon: ScanLine },
+  { id: "compare",  label: "Comparer",   icon: GitCompare },
+  { id: "scan",     label: "Scanner",    icon: ScanLine },
 ];
 
 export default function Nutri() {
