@@ -26,10 +26,10 @@ const msgAnim = {
 };
 
 const TABS = [
-  { id: "coach",    label: "NutriCoach", icon: Salad },
-  { id: "mealplan", label: "Plan repas",  icon: CalendarRange },
-  { id: "compare",  label: "Comparer",   icon: GitCompare },
-  { id: "scan",     label: "Scanner",    icon: ScanLine },
+  { id: "coach",    label: "NutriCoach", emoji: "🥗", bg: "from-emerald-500 to-teal-600" },
+  { id: "mealplan", label: "Plan repas",  emoji: "📅", bg: "from-orange-500 to-amber-600" },
+  { id: "compare",  label: "Comparer",   emoji: "⚖️", bg: "from-blue-500 to-indigo-600" },
+  { id: "scan",     label: "Scanner",    emoji: "📷", bg: "from-violet-500 to-purple-600" },
 ];
 
 export default function Nutri() {
