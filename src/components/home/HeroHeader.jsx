@@ -8,10 +8,12 @@ import DogAvatar from "../dogtwin/DogAvatar";
 import { useDogAvatarState } from "../dogtwin/useDogAvatarState";
 
 export default function HeroHeader({ user, dog, streak, checkins, records, exercises, scans, dailyLogs }) {
+  const navigate = useNavigate();
   const currentStreak = streak?.current_streak || 0;
   const firstName = user?.full_name?.split(" ")[0] || "l'ami";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Bonjour" : hour < 18 ? "Bon après-midi" : "Bonsoir";
+  const { healthScore, mood } = useDogAvatarState({ checkins, streak, records: records || [], scans: scans || [] });
 
   return (
     <div className="relative overflow-hidden">
