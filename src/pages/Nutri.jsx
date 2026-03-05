@@ -173,7 +173,7 @@ export default function Nutri() {
   ] : [];
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-background flex flex-col">
       <WellnessBanner />
 
       {/* Header */}
