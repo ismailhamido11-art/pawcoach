@@ -184,8 +184,8 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2 text-lg">
               <Stethoscope className="w-5 h-5 text-primary" />
-              {step === "form" || step === "loading1" ? "Preparer le bilan" :
-               step === "questions" || step === "loading2" ? "Questions complementaires" :
+              {step === "form" || step === "loading1" ? "Préparer le bilan" :
+               step === "questions" || step === "loading2" ? "Questions complémentaires" :
                "Bilan complet"}
             </DialogTitle>
             <button
@@ -202,7 +202,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
           <div className="space-y-4 mt-2">
             <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-              <span>Ce bilan t'aide a preparer ta visite veterinaire. Presente-le a ton veto pour gagner du temps.</span>
+              <span>Ce bilan t'aide à préparer ta visite vétérinaire. Présente-le à ton véto pour gagner du temps.</span>
             </div>
 
             {/* Step indicator */}
@@ -347,7 +347,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
             <DiagnosisReportView report={report} dogName={dog?.name} reportDate={reportDate} />
 
             <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800">
-              <strong>Presente ce bilan a ton veto !</strong> Il contient tes observations, tes reponses et l'analyse complete. Ton veterinaire aura tout en main pour la consultation.
+              <strong>Présente ce bilan à ton véto !</strong> Il contient tes observations, tes réponses et l'analyse complète. Ton vétérinaire aura tout en main pour la consultation.
             </div>
 
             <Button

@@ -86,7 +86,7 @@ export default function SubscriptionSection({ user }) {
               className="w-full py-3 rounded-xl gradient-warm text-white font-bold text-sm flex items-center justify-center gap-2 shadow"
             >
               <Crown className="w-4 h-4" />
-              Passer Premium
+              Passer Premium · dès 5 €/mois
             </button>
           </div>
         )}

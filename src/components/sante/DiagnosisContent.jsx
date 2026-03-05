@@ -33,11 +33,11 @@ export default function DiagnosisContent({ dog }) {
           <Stethoscope className="w-7 h-7 text-emerald-600" />
         </div>
         <div className="flex-1">
-          <p className="font-bold text-foreground text-sm leading-tight">Bilan de preparation visite</p>
+          <p className="font-bold text-foreground text-sm leading-tight">Bilan de préparation visite</p>
           <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-            Prepare ta visite chez le veto : decris ce que tu observes chez {dog?.name || "ton chien"} et obtiens un bilan structure a presenter a ton veterinaire.
+            Prépare ta visite chez le véto : décris ce que tu observes chez {dog?.name || "ton chien"} et obtiens un bilan structuré à présenter à ton vétérinaire.
           </p>
-          <p className="text-[10px] font-bold text-emerald-700 mt-1.5">A presenter a ton veterinaire</p>
+          <p className="text-[10px] font-bold text-emerald-700 mt-1.5">À présenter à ton vétérinaire</p>
         </div>
       </div>
 
@@ -65,7 +65,7 @@ export default function DiagnosisContent({ dog }) {
         className="w-full h-12 gradient-primary border-0 text-white font-bold rounded-xl shadow-lg shadow-primary/25"
       >
         <Stethoscope className="w-4 h-4 mr-2" />
-        Preparer mon bilan
+        Préparer mon bilan
       </Button>
 
       {/* Emergency section */}

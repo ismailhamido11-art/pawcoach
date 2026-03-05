@@ -317,7 +317,7 @@ export default function Notebook() {
                 <div>
                   <h2 className="text-2xl font-bold text-white">{dog?.name || "Mon chien"}</h2>
                   <p className="text-sm text-white/80 mt-0.5">
-                    {dog?.breed} · {dog?.age || ""} · {dog?.weight}kg
+                    {[dog?.breed, dog?.age, dog?.weight ? `${dog.weight}kg` : null].filter(Boolean).join(" · ")}
                   </p>
                 </div>
                 {dog && (
@@ -438,8 +438,8 @@ export default function Notebook() {
               <AlertTriangle className="w-5 h-5 text-destructive" />
             </div>
             <div className="flex-1 min-w-0 text-left">
-              <p className="text-sm font-semibold text-foreground">Preparer une visite veto</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Bilan de preparation & Trouver un veto</p>
+              <p className="text-sm font-semibold text-foreground">Préparer une visite véto</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Bilan de préparation & Trouver un véto</p>
             </div>
           </motion.button>
         )}
