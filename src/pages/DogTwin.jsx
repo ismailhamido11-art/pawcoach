@@ -208,12 +208,17 @@ export default function DogTwin() {
     const w = el.clientWidth;
     const h = el.clientHeight;
 
+    // Detect dark mode
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
     // Scene
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    // Fog for depth
-    scene.fog = new THREE.FogExp2(0x0a1a14, 0.18);
+    // Adapt fog and background based on dark mode
+    const fogColor = isDark ? 0x0a1a14 : 0x1a2f26;
+    const bgColor = isDark ? 0x081510 : 0x0f2820;
+    scene.fog = new THREE.FogExp2(fogColor, 0.18);
 
     // Camera
     const camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 50);
@@ -232,10 +237,14 @@ export default function DogTwin() {
     el.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // === LIGHTS ===
-    scene.add(new THREE.AmbientLight(0xfff0e0, 0.4));
+    // === LIGHTS — adapted for dark/light mode ===
+    const ambientIntensity = isDark ? 0.4 : 0.35;
+    const ambientColor = isDark ? 0xfff0e0 : 0xffebdb;
+    scene.add(new THREE.AmbientLight(ambientColor, ambientIntensity));
 
-    const key = new THREE.DirectionalLight(0xfff5e8, 2.2);
+    const keyIntensity = isDark ? 2.2 : 2.5;
+    const keyColor = isDark ? 0xfff5e8 : 0xfffbf5;
+    const key = new THREE.DirectionalLight(keyColor, keyIntensity);
     key.position.set(2.5, 5, 3);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
@@ -248,7 +257,9 @@ export default function DogTwin() {
     key.shadow.bias = -0.002;
     scene.add(key);
 
-    const fill = new THREE.DirectionalLight(0xc8e8ff, 0.6);
+    const fillColor = isDark ? 0xc8e8ff : 0xb8deff;
+    const fillIntensity = isDark ? 0.6 : 0.5;
+    const fill = new THREE.DirectionalLight(fillColor, fillIntensity);
     fill.position.set(-3, 2, 1);
     scene.add(fill);
 
@@ -260,10 +271,11 @@ export default function DogTwin() {
     bottom.position.set(0, -1, 0);
     scene.add(bottom);
 
-    // === GROUND ===
+    // === GROUND — adapted for dark/light mode ===
     const groundGeo = new THREE.CircleGeometry(2.5, 80);
+    const groundColor = isDark ? 0x0d2218 : 0x164a37;
     const groundMat = new THREE.MeshStandardMaterial({
-      color: 0x0d2218,
+      color: groundColor,
       roughness: 0.9,
       metalness: 0.1,
     });
