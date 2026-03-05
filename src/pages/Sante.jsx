@@ -104,7 +104,7 @@ export default function Sante() {
         </div>
 
         {/* Tabs — pill cards */}
-        <div className="grid grid-cols-4 gap-2 mt-1">
+        <div className="grid grid-cols-5 gap-1.5 mt-1">
           {TABS.map(({ id, label, emoji, bg }) => {
             const active = activeTab === id;
             return (
