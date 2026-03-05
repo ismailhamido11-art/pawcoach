@@ -214,7 +214,7 @@ export default function Nutri() {
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
 
         {/* Tabs — pill cards */}
-        <div className="grid grid-cols-4 gap-2 mt-1">
+        <div className="grid grid-cols-3 gap-2 mt-1">
           {TABS.map(({ id, label, emoji, bg }) => {
             const active = activeTab === id;
             return (
