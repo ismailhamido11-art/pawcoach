@@ -303,7 +303,7 @@ export default function Chat() {
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 pb-44">
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 pb-4">
         {messages.map((msg, i) => (
           <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role === "assistant" && (
@@ -368,7 +368,7 @@ export default function Chat() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="fixed bottom-16 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-border">
+      <div className="flex-shrink-0 bg-background/80 backdrop-blur-lg border-t border-border mb-16">
         {showSuggestions && (
           <div className="px-5 pt-3 pb-1">
             <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
@@ -464,7 +464,9 @@ export default function Chat() {
         )}
       </div>
 
-      <BottomNav currentPage="Chat" />
+      <div className="flex-shrink-0">
+        <BottomNav currentPage="Chat" />
+      </div>
     </div>
   );
 }
