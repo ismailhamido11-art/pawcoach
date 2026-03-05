@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { useNavigate, useParams } from "react-router-dom";
 import { getActiveDog, createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import ChatFAB from "../components/ChatFAB";
@@ -32,12 +32,15 @@ const TABS = [
 
 export default function Sante() {
    const navigate = useNavigate();
-   const { tabId } = useParams();
    const [dog, setDog] = useState(null);
    const [user, setUser] = useState(null);
    const [records, setRecords] = useState([]);
    const [loading, setLoading] = useState(true);
-   const [activeTab, setActiveTab] = useState(tabId || "carnet");
+   
+   // Get active tab from URL query params
+   const params = new URLSearchParams(window.location.search);
+   const tabFromUrl = params.get("tab");
+   const [activeTab, setActiveTab] = useState(tabFromUrl && TABS.find(t => t.id === tabFromUrl) ? tabFromUrl : "carnet");
 
    useEffect(() => {
      async function load() {
@@ -59,13 +62,6 @@ export default function Sante() {
      }
      load();
    }, []);
-
-   // Sync activeTab with route params
-   useEffect(() => {
-     if (tabId && TABS.find(tab => tab.id === tabId)) {
-       setActiveTab(tabId);
-     }
-   }, [tabId]);
 
   const vaccineCount = records.filter(r => r.type === "vaccine").length;
   const vetCount = records.filter(r => r.type === "vet_visit").length;
@@ -120,7 +116,7 @@ export default function Sante() {
                 key={id}
                 whileTap={{ scale: 0.93 }}
                 transition={spring}
-                onClick={() => navigate(createPageUrl(`Sante/${id}`))}
+                onClick={() => navigate(createPageUrl("Sante") + `?tab=${id}`)}
                 className={`relative flex flex-col items-center gap-1 py-3 rounded-2xl text-center overflow-hidden transition-all ${
                   active ? "shadow-lg" : "bg-white/10"
                 }`}
