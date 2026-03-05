@@ -265,188 +265,169 @@ export default function Chat() {
   ] : [];
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <WellnessBanner />
-
+    <div className="fixed inset-0 flex flex-col bg-background">
       {/* Header */}
-      <div className="gradient-primary pt-14 pb-6 px-5 mt-8 overflow-hidden relative">
-        <div className="relative z-10 flex items-end gap-3">
-          <div className="flex-1 pb-1">
-            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
-            <h1 className="text-white font-black text-2xl leading-tight">Assistant IA</h1>
-            {dog && <p className="text-white/70 text-xs mt-0.5">Personnalisé pour {dog.name} · {dog.breed}</p>}
-            <div className="flex items-center gap-2 mt-2">
-              {!isUserPremium(user) && messagesRemaining !== null && (
-                <div className="bg-white/20 px-2.5 py-1 rounded-full">
-                  <span className="text-white text-xs font-medium">
-                    {messagesRemaining} crédit{messagesRemaining !== 1 ? "s" : ""} IA
-                  </span>
-                </div>
-              )}
-              {isUserPremium(user) && (
-                <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
-                  <span className="text-white text-xs font-medium">Premium</span>
-                </div>
-              )}
-            </div>
+      <div className="flex-shrink-0 gradient-primary pt-14 pb-4 px-5 overflow-hidden relative">
+        <WellnessBanner />
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="flex-1">
+            <h1 className="text-white font-black text-xl leading-tight">Assistant IA</h1>
+            {dog && <p className="text-white/70 text-xs mt-0.5">Pour {dog.name} · {dog.breed}</p>}
           </div>
-          <motion.div
-            animate={{ scale: [1, 1.03, 1] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="w-24 h-24 flex-shrink-0"
-          >
+          <div className="flex items-center gap-2">
+            {!isUserPremium(user) && messagesRemaining !== null && (
+              <div className="bg-white/20 px-2.5 py-1 rounded-full">
+                <span className="text-white text-xs font-medium">{messagesRemaining} crédit{messagesRemaining !== 1 ? "s" : ""}</span>
+              </div>
+            )}
+            {isUserPremium(user) && (
+              <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
+                <span className="text-white text-xs font-medium">Premium</span>
+              </div>
+            )}
+          </div>
+          <motion.div animate={{ scale: [1, 1.03, 1] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} className="w-14 h-14 flex-shrink-0">
             <Illustration name="dogHighFive" alt="Assistant IA" className="w-full h-full drop-shadow-lg" />
           </motion.div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
-      {/* Chat container — inlined in page */}
-      <div className="px-4 py-4">
-        <div className="bg-white rounded-2xl shadow-md border border-border overflow-hidden">
-
-          {/* Messages area */}
-          <div className="h-[40vh] overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-white to-slate-50/50">
-            {messages.map((msg, i) => (
-              <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                {msg.role === "assistant" && (
-                  <div className="w-8 h-8 flex-shrink-0 mt-1">
-                    <DogChat color="#2d9f82" />
-                  </div>
-                )}
-                <div className="flex flex-col gap-1 max-w-[82%]">
-                  <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
-                    msg.role === "user"
-                      ? "chat-bubble-user text-white rounded-br-sm"
-                      : "bg-white border border-border/50 text-foreground rounded-bl-sm shadow-sm"
-                  }`}>
-                    {msg.has_image && msg.image_url && (
-                      <img src={msg.image_url} alt="photo" className="w-full rounded-xl mb-2 max-h-48 object-cover" />
-                    )}
-                    {msg.role === "assistant" ? (
-                      <ReactMarkdown
-                        className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
-                        components={{
-                          p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
-                          ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
-                          li: ({ children }) => <li className="my-0.5">{children}</li>,
-                          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                        }}
-                      >
-                        {msg.content}
-                      </ReactMarkdown>
-                    ) : (
-                      <p className="whitespace-pre-wrap">{msg.content}</p>
-                    )}
-                  </div>
-                  {msg.role === "assistant" && (
-                    <button
-                      onClick={() => handleBookmark(msg)}
-                      className="self-start ml-1 flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {bookmarked[msg.timestamp]
-                        ? <BookmarkCheck className="w-3.5 h-3.5 text-primary" />
-                        : <Bookmark className="w-3.5 h-3.5" />}
-                      {bookmarked[msg.timestamp] ? "Sauvegardé" : "Sauvegarder"}
-                    </button>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-
-            {loading && (
-              <div className="flex gap-2 justify-start">
-                <div className="w-8 h-8 flex-shrink-0 mt-1">
-                  <DogChat color="#2d9f82" />
-                </div>
-                <div className="bg-white border border-border/50 shadow-sm px-4 py-3.5 rounded-2xl rounded-bl-sm">
-                  <div className="flex gap-1.5 items-center">
-                    <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary rounded-full" />
-                    <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }} className="w-2 h-2 bg-primary rounded-full" />
-                    <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }} className="w-2 h-2 bg-primary rounded-full" />
-                  </div>
-                </div>
+      {/* Messages — zone scrollable */}
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+        {messages.map((msg, i) => (
+          <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+            {msg.role === "assistant" && (
+              <div className="w-8 h-8 flex-shrink-0 mt-1">
+                <DogChat color="#2d9f82" />
               </div>
             )}
-            <div ref={bottomRef} />
-          </div>
-
-          {/* Quick suggestions */}
-          {showSuggestions && (
-            <div className="px-4 pt-3 pb-1 border-t border-slate-100">
-              <div className="flex gap-2 overflow-x-auto pb-1">
-                {suggestions.map((s, i) => (
-                  <motion.button
-                    key={i}
-                    whileTap={{ scale: 0.96 }}
-                    transition={spring}
-                    onClick={() => sendMessage(s)}
-                    className="flex-shrink-0 text-xs bg-secondary text-secondary-foreground px-3 py-2 rounded-xl border border-border hover:border-primary hover:text-primary transition-colors whitespace-nowrap"
+            <div className="flex flex-col gap-1 max-w-[82%]">
+              <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
+                msg.role === "user"
+                  ? "chat-bubble-user text-white rounded-br-sm"
+                  : "chat-bubble-assistant text-foreground rounded-bl-sm"
+              }`}>
+                {msg.has_image && msg.image_url && (
+                  <img src={msg.image_url} alt="photo" className="w-full rounded-xl mb-2 max-h-48 object-cover" />
+                )}
+                {msg.role === "assistant" ? (
+                  <ReactMarkdown
+                    className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                    components={{
+                      p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
+                      ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
+                      li: ({ children }) => <li className="my-0.5">{children}</li>,
+                      strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                    }}
                   >
-                    {s}
-                  </motion.button>
-                ))}
+                    {msg.content}
+                  </ReactMarkdown>
+                ) : (
+                  <p className="whitespace-pre-wrap">{msg.content}</p>
+                )}
+              </div>
+              {msg.role === "assistant" && (
+                <button
+                  onClick={() => handleBookmark(msg)}
+                  className="self-start ml-1 flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {bookmarked[msg.timestamp]
+                    ? <BookmarkCheck className="w-3.5 h-3.5 text-primary" />
+                    : <Bookmark className="w-3.5 h-3.5" />}
+                  {bookmarked[msg.timestamp] ? "Sauvegardé" : "Sauvegarder"}
+                </button>
+              )}
+            </div>
+          </motion.div>
+        ))}
+
+        {loading && (
+          <div className="flex gap-2 justify-start">
+            <div className="w-8 h-8 flex-shrink-0 mt-1">
+              <DogChat color="#2d9f82" />
+            </div>
+            <div className="chat-bubble-assistant px-4 py-3.5 rounded-2xl rounded-bl-sm">
+              <div className="flex gap-1.5 items-center">
+                <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary rounded-full" />
+                <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }} className="w-2 h-2 bg-primary rounded-full" />
+                <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }} className="w-2 h-2 bg-primary rounded-full" />
               </div>
             </div>
-          )}
-
-          {/* Input area */}
-          <div className="px-3 py-3 bg-white border-t border-slate-100">
-            {isLimitReached ? (
-              <div className="text-center py-2">
-                <p className="text-sm text-muted-foreground mb-2">Crédits épuisés pour aujourd'hui 🐾</p>
-                <Button onClick={() => navigate(createPageUrl("Premium") + "?from=chat")} size="sm" className="gradient-primary border-0 text-white text-xs h-8">
-                  Débloquer Premium ✨
-                </Button>
-              </div>
-            ) : (
-              <>
-                {pendingImage && (
-                  <div className="flex items-center gap-2 mb-2">
-                    <img src={pendingImage.preview} alt="preview" className="w-10 h-10 rounded-lg object-cover border border-border" />
-                    <span className="text-xs text-muted-foreground flex-1">Photo prête</span>
-                    <button onClick={() => { if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview); setPendingImage(null); }} className="text-xs text-destructive">Retirer</button>
-                  </div>
-                )}
-                <div className="flex items-center gap-2">
-                  <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all flex-shrink-0"
-                  >
-                    <Camera className="w-4 h-4" />
-                  </button>
-                  <VoiceInput onTranscript={(text) => setInput(text)} className="w-10 h-10 !rounded-full border-0 !bg-slate-100 hover:!bg-slate-200 !text-slate-600" />
-                  <div className="flex-1 relative">
-                    <textarea
-                      ref={textareaRef}
-                      value={input}
-                      onChange={e => setInput(e.target.value)}
-                      maxLength={2000}
-                      onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())}
-                      placeholder={dog ? `Question sur ${dog.name}...` : "Pose ta question..."}
-                      rows={1}
-                      className="w-full min-h-[40px] max-h-[100px] rounded-full border border-slate-200 bg-slate-50 focus:bg-white px-4 py-2.5 text-sm resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-ring"
-                      style={{ lineHeight: "1.4" }}
-                    />
-                  </div>
-                  <button
-                    onClick={() => sendMessage()}
-                    disabled={(!input.trim() && !pendingImage) || loading}
-                    className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center flex-shrink-0 disabled:opacity-40 shadow-md"
-                  >
-                    <Send className="w-4 h-4 text-white" />
-                  </button>
-                </div>
-              </>
-            )}
           </div>
-        </div>
+        )}
+        <div ref={bottomRef} />
       </div>
 
-      <BottomNav currentPage="Chat" />
+      {/* Barre d'input — fixe en bas */}
+      <div className="flex-shrink-0 bg-background/95 backdrop-blur-lg border-t border-border">
+        {showSuggestions && (
+          <div className="px-5 pt-2 pb-1">
+            <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+              {suggestions.map((s, i) => (
+                <motion.button
+                  key={i}
+                  whileTap={{ scale: 0.96 }}
+                  transition={spring}
+                  onClick={() => sendMessage(s)}
+                  className="flex-shrink-0 text-xs bg-secondary text-secondary-foreground px-3 py-2 rounded-xl border border-border hover:border-primary hover:text-primary transition-colors whitespace-nowrap"
+                >
+                  {s}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {isLimitReached ? (
+          <div className="px-5 py-3 flex items-center gap-3">
+            <p className="text-sm text-muted-foreground flex-1">Crédits épuisés pour aujourd'hui 🐾</p>
+            <Button onClick={() => navigate(createPageUrl("Premium") + "?from=chat")} size="sm" className="gradient-primary border-0 text-white text-xs h-8 flex-shrink-0">
+              Premium ✨
+            </Button>
+          </div>
+        ) : (
+          <>
+            {pendingImage && (
+              <div className="px-5 pt-2 flex items-center gap-2">
+                <img src={pendingImage.preview} alt="preview" className="w-10 h-10 rounded-lg object-cover border border-border" />
+                <span className="text-xs text-muted-foreground flex-1">Photo prête à envoyer</span>
+                <button onClick={() => { if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview); setPendingImage(null); }} className="text-xs text-destructive">Retirer</button>
+              </div>
+            )}
+            <div className="flex gap-2 px-5 py-3 items-end">
+              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
+              <motion.button whileTap={{ scale: 0.96 }} transition={spring} onClick={() => fileInputRef.current?.click()}
+                className="h-11 w-11 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 hover:bg-secondary/80 transition-colors border border-border">
+                <Camera className="w-5 h-5 text-secondary-foreground" />
+              </motion.button>
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                maxLength={2000}
+                onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())}
+                placeholder={dog ? `Question sur ${dog.name}...` : "Pose ta question..."}
+                rows={1}
+                className="flex-1 min-h-[44px] max-h-[120px] rounded-xl border border-border bg-muted/30 px-3 py-2.5 text-sm resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-ring"
+                style={{ lineHeight: "1.5" }}
+              />
+              <VoiceInput onTranscript={(text) => setInput(text)} className="h-11 w-11 !rounded-xl border border-border" />
+              <Button
+                onClick={() => sendMessage()}
+                disabled={(!input.trim() && !pendingImage) || loading}
+                className="h-11 w-11 rounded-xl gradient-primary border-0 shadow-lg shadow-primary/30 p-0 flex-shrink-0 self-end"
+              >
+                <Send className="w-4 h-4 text-white" />
+              </Button>
+            </div>
+          </>
+        )}
+
+        {/* BottomNav spacer */}
+        <BottomNav currentPage="Chat" />
+      </div>
     </div>
   );
 }
