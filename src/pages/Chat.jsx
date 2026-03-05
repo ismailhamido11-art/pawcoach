@@ -264,12 +264,12 @@ export default function Chat() {
   ] : [];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       <div className="fixed top-0 left-0 right-0 z-50 bg-accent/10 backdrop-blur-sm border-b border-accent/20 px-5 py-1.5 text-center">
         <p className="text-xs text-accent-foreground font-medium">🐾 PawCoach est un coach bien-être, pas un vétérinaire.</p>
       </div>
 
-      <div className="gradient-primary pt-14 pb-0 px-5 mt-8 overflow-hidden relative">
+      <div className="gradient-primary pt-14 pb-0 px-5 mt-8 overflow-hidden relative flex-shrink-0">
         <div className="relative z-10 flex items-end gap-3">
           <div className="flex-1 pb-4">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
