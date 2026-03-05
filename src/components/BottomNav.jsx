@@ -36,9 +36,8 @@ export default function BottomNav({ currentPage }) {
       sessionStorage.removeItem(`scroll_${page}`);
       sessionStorage.removeItem(`subtab_${page}`);
       window.scrollTo({ top: 0, behavior: "smooth" });
-      navigate(createPageUrl(page), { replace: true });
     }
-    // For state-preserving pages navigating away: sub-tab is kept in sessionStorage
+    // For state-preserving pages: sub-tab is kept in sessionStorage
     // For non-preserving pages: clear sub-tab so they reset on return
     if (!STATE_PRESERVING_PAGES.includes(page)) {
       sessionStorage.removeItem(`subtab_${page}`);
