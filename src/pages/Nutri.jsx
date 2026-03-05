@@ -314,7 +314,7 @@ export default function Nutri() {
           <div className="bg-white rounded-2xl shadow-md border border-border overflow-hidden">
 
             {/* Messages area */}
-            <div className="max-h-[55vh] overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-white to-slate-50/50">
+            <div className="h-[40vh] overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-white to-slate-50/50">
               {messages.map((msg, i) => (
                 <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   {msg.role === "assistant" && (
