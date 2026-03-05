@@ -225,15 +225,24 @@ Sois très précis avec les grammes et calories. Adapte tout au profil exact.`;
             <p className="text-[10px] text-accent mt-2 text-center">🤝 Liens affiliés – soutient PawCoach sans surcoût</p>
           </div>
 
-          {/* Regenerate */}
-          <Button
-            onClick={generate}
-            variant="outline"
-            className="w-full h-11 rounded-2xl border-safe/20 text-safe font-semibold gap-2"
-          >
-            <RefreshCw className="w-4 h-4" />
-            Régénérer le plan
-          </Button>
+          {/* Save + Regenerate */}
+          <div className="flex gap-2">
+            <Button
+              onClick={savePlan}
+              disabled={saving}
+              className="flex-1 h-11 rounded-2xl bg-primary text-white font-semibold gap-2"
+            >
+              <BookmarkPlus className="w-4 h-4" />
+              {saving ? "Sauvegarde..." : "Sauvegarder"}
+            </Button>
+            <Button
+              onClick={generate}
+              variant="outline"
+              className="h-11 px-4 rounded-2xl border-safe/20 text-safe font-semibold gap-2"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       )}
     </div>
