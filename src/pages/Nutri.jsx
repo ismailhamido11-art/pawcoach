@@ -173,7 +173,7 @@ export default function Nutri() {
   ] : [];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className={`${activeTab === "coach" ? "fixed inset-0 flex flex-col" : "min-h-screen"} bg-background`}>
       <WellnessBanner />
 
       {/* Header */}
