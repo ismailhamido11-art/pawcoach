@@ -47,22 +47,15 @@ export default function InlineEditCard({
       {editing && (
         <div className="space-y-2">
           {editType === "select" ? (
-            <select
-              value={draft}
-              onChange={e => setDraft(e.target.value)}
-              className="w-full text-sm border border-border rounded-xl px-3 py-2 bg-background outline-none focus:ring-1 focus:ring-primary"
-            >
-              {editOptions.map(o => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
+            <MobileSelect value={draft} onChange={val => setDraft(val)} options={editOptions} label={editLabel} />
           ) : (
             <>
               <input
                 type={editType || "text"}
                 value={draft}
                 onChange={e => { setDraft(e.target.value); setError(""); }}
-                className={`w-full text-sm border rounded-xl px-3 py-2 bg-background outline-none focus:ring-1 focus:ring-primary ${error ? "border-red-300" : "border-border"}`}
+                className={`w-full border rounded-xl px-3 py-2 bg-background outline-none focus:ring-1 focus:ring-primary ${error ? "border-red-300" : "border-border"}`}
+                style={{ fontSize: "16px" }}
                 placeholder={editLabel}
                 autoFocus
                 {...(editType === "number" && min !== undefined ? { min } : {})}

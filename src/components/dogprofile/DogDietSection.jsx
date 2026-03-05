@@ -28,12 +28,9 @@ function EditableSelect({ label, value, fieldKey, options, onSave }) {
       {editing && (
         <div className="space-y-2 mt-2">
           {options ? (
-            <select value={draft} onChange={e => setDraft(e.target.value)} className="w-full text-sm border border-border rounded-xl px-3 py-2 bg-background outline-none focus:ring-1 focus:ring-primary">
-              <option value="">— Sélectionner —</option>
-              {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-            </select>
+            <MobileSelect value={draft} onChange={val => setDraft(val)} options={options} label={label} />
           ) : (
-            <input type="text" value={draft} onChange={e => setDraft(e.target.value)} className="w-full text-sm border border-border rounded-xl px-3 py-2 bg-background outline-none focus:ring-1 focus:ring-primary" autoFocus />
+            <input type="text" value={draft} onChange={e => setDraft(e.target.value)} className="w-full border border-border rounded-xl px-3 py-2 bg-background outline-none focus:ring-1 focus:ring-primary" style={{ fontSize: "16px" }} autoFocus />
           )}
           <div className="flex gap-2">
             <button onClick={handleSave} disabled={saving} className="flex-1 py-1.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1">
