@@ -398,7 +398,7 @@ export default function Chat() {
               </div>
               <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
                 <p className="text-sm leading-relaxed">
-                  J'adorerais continuer à t'aider avec <strong>{dog?.name || "ton chien"}</strong> ! 🐾 Tes messages gratuits sont épuisés pour aujourd'hui. Reviens demain pour 2 messages offerts, ou passe en Premium pour qu'on discute sans limite !
+                  J'adorerais continuer à t'aider avec <strong>{dog?.name || "ton chien"}</strong> ! Tes messages gratuits sont épuisés pour aujourd'hui. Reviens demain pour 5 messages offerts, ou passe en Premium pour qu'on discute sans limite !
                 </p>
                 <div className="flex gap-2 mt-3">
                   <Button onClick={() => navigate(createPageUrl("Premium") + "?from=chat")} size="sm" className="gradient-primary border-0 text-white text-xs h-8">

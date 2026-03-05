@@ -30,9 +30,9 @@ Deno.serve(async (req) => {
       let remaining = user.messages_remaining ?? 20;
       const lastReset = user.messages_daily_reset;
 
-      // Daily reset: give 2 free messages per day
+      // Daily reset: give 5 free messages per day
       if (remaining <= 0 && lastReset !== today) {
-        remaining = 2;
+        remaining = 5;
       }
 
       if (remaining <= 0) {

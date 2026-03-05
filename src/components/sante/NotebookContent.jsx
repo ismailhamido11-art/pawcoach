@@ -279,7 +279,7 @@ export default function NotebookContent({ dog, user, records, setRecords, isPrem
                 type={activeTab}
                 records={records}
                 dogId={dog?.id}
-                isPremium={isPremium}
+                isPremium={activeTab === "note" ? true : isPremium}
                 onDelete={handleDelete}
                 config={PREMIUM_CONFIGS[activeTab]}
               />
