@@ -143,6 +143,9 @@ export default function WalkMode({ dog, user, onLogged }) {
           notes: `Balade de ${minutes} min${distance > 0 ? ` · ${(distance / 1000).toFixed(2)} km` : ""}`
         });
       }
+      // Check walk badges
+      const allLogs = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 60);
+      checkWalkBadges(dog.id, user?.email, allLogs || []).catch(() => {});
       onLogged?.();
     } catch (e) {
       toast.error("Erreur lors de la sauvegarde");

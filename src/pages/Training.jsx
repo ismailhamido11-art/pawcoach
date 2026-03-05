@@ -143,6 +143,7 @@ export default function Training() {
       if (!wasCompleted) {
         if (navigator.vibrate) navigator.vibrate(30);
         await updateStreakSilently(dog.id, user.email);
+        checkStreakBadges(dog.id, user.email).catch(() => {});
         const prevCount = progresses.filter(p => p.completed).length;
         const newCount = newProgresses.filter(p => p.completed).length;
         if (prevCount === 2 && newCount === 3 && !isUserPremium(user)) {
