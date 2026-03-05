@@ -327,9 +327,12 @@ export default function Nutri() {
                   <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                 )}
                 <div className="flex flex-col gap-1 max-w-[82%]">
-                  <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
-                    msg.role === "user" ? "chat-bubble-user text-white rounded-br-sm" : "chat-bubble-assistant text-foreground rounded-bl-sm"
-                  }`}>
+                  <div
+                    data-selectable
+                    className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
+                      msg.role === "user" ? "chat-bubble-user text-white rounded-br-sm" : "chat-bubble-assistant text-foreground rounded-bl-sm"
+                    }`}
+                  >
                     {msg.role === "assistant" ? (
                       <ReactMarkdown
                         className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"

@@ -312,11 +312,14 @@ export default function Chat() {
               </div>
             )}
             <div className="flex flex-col gap-1 max-w-[82%]">
-              <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
-                msg.role === "user"
-                  ? "chat-bubble-user text-white rounded-br-sm"
-                  : "chat-bubble-assistant text-foreground rounded-bl-sm"
-              }`}>
+              <div
+                data-selectable
+                className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
+                  msg.role === "user"
+                    ? "chat-bubble-user text-white rounded-br-sm"
+                    : "chat-bubble-assistant text-foreground rounded-bl-sm"
+                }`}
+              >
                 {msg.has_image && msg.image_url && (
                   <img src={msg.image_url} alt="photo" className="w-full rounded-xl mb-2 max-h-48 object-cover" />
                 )}

@@ -23,6 +23,11 @@ export default function Layout({ children, currentPageName }) {
           user-select: none;
           -webkit-user-select: none;
         }
+        /* Allow text selection in chat/journal areas */
+        .chat-bubble-assistant, .chat-bubble-user, [data-selectable] {
+          -webkit-user-select: text;
+          user-select: text;
+        }
         input, textarea, select {
           font-size: 16px !important;
         }
