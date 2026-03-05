@@ -14,6 +14,7 @@ import JournalLog from "../components/home/JournalLog";
 import SmartRecommendations from "../components/home/SmartRecommendations";
 import PremiumValueBanner from "../components/home/PremiumValueBanner";
 import HealthScore from "../components/home/HealthScore";
+import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
 import CombinedFAB from "../components/CombinedFAB";
 
 import { Heart, PartyPopper, Flame } from "lucide-react";
@@ -266,6 +267,9 @@ export default function Home() {
           scans={scans}
           dailyLogs={dailyLogs}
         />
+
+        {/* Trial expiry warning */}
+        <TrialExpiryBanner user={user} />
 
         {/* Streak */}
         <StreakCard streak={streak} />
