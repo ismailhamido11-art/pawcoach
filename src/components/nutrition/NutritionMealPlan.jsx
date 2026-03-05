@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw, ShoppingCart, BookmarkPlus } from "lucide-react";
+import { Loader2, RefreshCw, ShoppingCart, BookmarkPlus, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
