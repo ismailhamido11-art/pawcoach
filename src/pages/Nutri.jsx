@@ -277,7 +277,21 @@ export default function Nutri() {
       {/* Tab: Plan repas */}
       {activeTab === "mealplan" && (
         <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
-          <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={isUserPremium(user)} />
+          <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={isUserPremium(user)} user={user} dietPrefs={dietPrefs} />
+        </div>
+      )}
+
+      {/* Tab: Mes plans sauvegardés */}
+      {activeTab === "saved" && (
+        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
+          <SavedPlansPanel dog={dog} user={user} />
+        </div>
+      )}
+
+      {/* Tab: Préférences alimentaires */}
+      {activeTab === "prefs" && (
+        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
+          <DietPreferencesPanel dog={dog} user={user} />
         </div>
       )}
 
