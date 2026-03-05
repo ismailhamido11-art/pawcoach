@@ -386,7 +386,7 @@ export default function Nutri() {
                   <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
                     <p className="text-sm leading-relaxed">J'adorerais continuer ! 🥗 Tes crédits IA sont épuisés pour aujourd'hui. Reviens demain ou passe en Premium.</p>
                     <Button onClick={() => navigate(createPageUrl("Premium") + "?from=nutrition")} size="sm" className="mt-2 bg-safe hover:bg-safe/90 border-0 text-white text-xs h-8">
-                      Débloquer Premium ✨
+                      Passer Premium · dès 5 €/mois
                     </Button>
                   </div>
                 </div>

@@ -95,7 +95,10 @@ function OnboardingWelcome({ onStart }) {
           <ArrowRight className="w-5 h-5" />
         </motion.button>
 
-        <p className="text-white/30 text-xs mt-6">Gratuit · Pas de carte bancaire requise</p>
+        <div className="flex items-center gap-2 mt-6 bg-white/10 px-4 py-2 rounded-full border border-white/20">
+          <Sparkles className="w-3.5 h-3.5 text-white/80" />
+          <p className="text-white/80 text-xs font-semibold">7 jours Premium offerts · Sans carte bancaire</p>
+        </div>
       </motion.div>
     </div>
   );

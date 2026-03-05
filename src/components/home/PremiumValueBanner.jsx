@@ -4,8 +4,8 @@ import { createPageUrl } from "@/utils";
 import { Crown, ChevronRight, Star } from "lucide-react";
 
 export default function PremiumValueBanner({ streak, checkins }) {
-  // Only show to active free users: at least 3 check-ins total
-  if (!checkins || checkins.length < 3) return null;
+  // Only show to active free users: at least 1 check-in
+  if (!checkins || checkins.length < 1) return null;
 
   const currentStreak = streak?.current_streak || 0;
 

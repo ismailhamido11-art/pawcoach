@@ -56,7 +56,7 @@ export default function PremiumNudgeSheet({ visible, onClose, dogName, context =
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-primary text-primary" />
                 ))}
-                <span className="text-xs text-muted-foreground ml-1.5 font-medium">Recommande par les pros</span>
+                <span className="text-xs text-muted-foreground ml-1.5 font-medium">Recommandé par les pros</span>
               </div>
 
               {/* Illustration */}
@@ -71,7 +71,7 @@ export default function PremiumNudgeSheet({ visible, onClose, dogName, context =
                   : "Débloquez tout PawCoach"}
               </h2>
               <p className="text-sm text-center text-muted-foreground mb-5">
-                Débloque toutes les fonctionnalités premium à partir de <strong>7,99 €/mois</strong> (ou 5 €/mois en annuel)
+                <strong>7 jours gratuits</strong> · Sans carte bancaire · Résiliation à tout moment
               </p>
 
               {/* Feature list */}
@@ -98,7 +98,7 @@ export default function PremiumNudgeSheet({ visible, onClose, dogName, context =
                 onClick={handleUpgrade}
                 className="w-full h-14 rounded-2xl gradient-warm text-white font-black text-base flex items-center justify-center gap-2 shadow-lg border-0"
               >
-                Voir les offres
+                Commencer mon essai gratuit
                 <ChevronRight className="w-5 h-5" />
               </motion.button>
 

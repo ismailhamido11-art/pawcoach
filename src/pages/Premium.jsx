@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Check, Crown, Zap, Lock, ChevronRight, MessageCircle, ScanLine, Dumbbell, BookHeart, Salad, Search, Target, ClipboardList, Bell, BarChart3, Dog as DogIcon } from "lucide-react";
+import { ArrowLeft, Check, Crown, Zap, Lock, ChevronRight, MessageCircle, ScanLine, Dumbbell, BookHeart, Salad, Search, Target, ClipboardList, Bell, BarChart3, Dog as DogIcon, Star } from "lucide-react";
 import IconBadge from "@/components/ui/IconBadge";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
@@ -373,6 +373,26 @@ export default function Premium() {
           ))}
         </div>
 
+        {/* Social proof */}
+        <div className="bg-muted/30 rounded-2xl p-4 border border-border">
+          <div className="flex items-center gap-1 mb-2">
+            {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 fill-primary text-primary" />)}
+          </div>
+          <p className="text-sm text-foreground italic leading-relaxed">
+            "Depuis que j'utilise PawCoach, je suis enfin serein sur l'alimentation de Rex. Le chat IA répond à toutes mes questions en 30 secondes."
+          </p>
+          <p className="text-xs text-muted-foreground mt-2 font-medium">— Thomas, propriétaire d'un Golden Retriever</p>
+        </div>
+
+        {/* Trial urgency */}
+        {isOnTrial && trialDays <= 3 && (
+          <div className="bg-amber-50 border border-amber-300 rounded-xl px-4 py-2.5 text-center">
+            <p className="text-amber-700 font-bold text-sm">
+              Ton essai gratuit expire dans {trialDays} jour{trialDays > 1 ? "s" : ""} — abonne-toi pour ne rien perdre
+            </p>
+          </div>
+        )}
+
         {/* CTA */}
         <Button
           onClick={handleSubscribe}
@@ -387,7 +407,7 @@ export default function Premium() {
           ) : (
             <>
               <Zap className="w-5 h-5" />
-              {plan === "annual" ? "Commencer pour 59,99 €/an" : "Commencer pour 7,99 €/mois"}
+              {plan === "annual" ? "Commencer · 5 €/mois (59,99 €/an)" : "Commencer · 7,99 €/mois"}
             </>
           )}
         </Button>

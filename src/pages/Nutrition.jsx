@@ -325,7 +325,7 @@ export default function Nutrition() {
                     </p>
                     <div className="flex gap-2 mt-3">
                       <Button onClick={() => navigate('/Premium?from=nutrition')} size="sm" className="bg-safe hover:bg-safe/90 border-0 text-white text-xs h-8">
-                        Débloquer Premium ✨
+                        Passer Premium · dès 5 €/mois
                       </Button>
                       <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground">
                         À demain ! 👋

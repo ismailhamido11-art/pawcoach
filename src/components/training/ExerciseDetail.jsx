@@ -75,7 +75,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
             <p className="font-semibold text-emerald-700">Exercice Premium</p>
             <p className="text-emerald-600 text-sm">Passe à Premium pour débloquer toutes les fiches d'entraînement détaillées.</p>
             <Button onClick={() => navigate(createPageUrl("Premium") + "?from=training")} className="rounded-xl gradient-warm border-0 text-white font-semibold mt-1">
-              Passer Premium 🌟
+              Passer Premium · dès 5 €/mois
             </Button>
           </div>
         ) : (

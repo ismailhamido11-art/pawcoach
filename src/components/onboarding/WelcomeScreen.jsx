@@ -51,9 +51,15 @@ export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium
       <p className="text-white/80 text-base mb-2 leading-relaxed max-w-xs">
         Le profil de {dogName} est créé. PawCoach est prêt à t'accompagner au quotidien
       </p>
-      <p className="text-white/60 text-sm mb-6">
+      <p className="text-white/60 text-sm mb-4">
         Alimentation · Bien-être · Dressage
       </p>
+
+      {/* Trial badge */}
+      <div className="bg-white/15 border border-white/25 rounded-2xl px-4 py-3 mb-6 text-center max-w-xs">
+        <p className="text-white font-bold text-sm">Ton essai Premium démarre maintenant</p>
+        <p className="text-white/70 text-xs mt-1">7 jours gratuits · Toutes les fonctionnalités débloquées</p>
+      </div>
 
       {/* Referral code input */}
       {!showReferral ? (

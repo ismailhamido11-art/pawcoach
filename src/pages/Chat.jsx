@@ -99,8 +99,8 @@ export default function Chat() {
           await base44.auth.updateMe({ messages_remaining: 20, messages_daily_reset: today });
           setMessagesRemaining(20);
         } else if (remaining <= 0 && lastReset !== today) {
-          await base44.auth.updateMe({ messages_remaining: 2, messages_daily_reset: today });
-          setMessagesRemaining(2);
+          await base44.auth.updateMe({ messages_remaining: 5, messages_daily_reset: today });
+          setMessagesRemaining(5);
         } else {
           setMessagesRemaining(remaining);
         }
@@ -402,7 +402,7 @@ export default function Chat() {
                 </p>
                 <div className="flex gap-2 mt-3">
                   <Button onClick={() => navigate(createPageUrl("Premium") + "?from=chat")} size="sm" className="gradient-primary border-0 text-white text-xs h-8">
-                    Débloquer Premium ✨
+                    Passer Premium · dès 5 €/mois
                   </Button>
                   <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground">
                     À demain ! 👋

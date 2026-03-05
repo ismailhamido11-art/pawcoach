@@ -54,7 +54,7 @@ export default function PremiumSection({ type, records, dogId, isPremium, onDele
             {gate.description}
           </p>
           <Button onClick={() => navigate(createPageUrl("Premium") + "?from=notebook")} className="rounded-xl gradient-warm border-0 text-white font-semibold px-6 h-11 mt-1">
-            Débloquer avec Premium ✨
+            Passer Premium · dès 5 €/mois
           </Button>
         </div>
       </div>
