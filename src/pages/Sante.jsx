@@ -20,10 +20,11 @@ import { BookHeart, Camera, MapPin, AlertTriangle, TrendingUp } from "lucide-rea
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
 const TABS = [
-  { id: "carnet",  label: "Carnet",   emoji: "📋", icon: BookHeart,    color: "#2d9f82", bg: "from-emerald-500 to-teal-600" },
-  { id: "malade",  label: "Malade ?", emoji: "🩺", icon: AlertTriangle, color: "#ef4444", bg: "from-red-500 to-rose-600" },
-  { id: "import",  label: "Import",   emoji: "📷", icon: Camera,       color: "#8b5cf6", bg: "from-violet-500 to-purple-600" },
-  { id: "findvet", label: "Véto",     emoji: "📍", icon: MapPin,       color: "#3b82f6", bg: "from-blue-500 to-indigo-600" },
+  { id: "carnet",  label: "Carnet",    emoji: "📋", icon: BookHeart,    color: "#2d9f82", bg: "from-emerald-500 to-teal-600" },
+  { id: "malade",  label: "Malade ?",  emoji: "🩺", icon: AlertTriangle, color: "#ef4444", bg: "from-red-500 to-rose-600" },
+  { id: "growth",  label: "Croissance", emoji: "📈", icon: TrendingUp,   color: "#f59e0b", bg: "from-amber-500 to-orange-500" },
+  { id: "import",  label: "Import",    emoji: "📷", icon: Camera,       color: "#8b5cf6", bg: "from-violet-500 to-purple-600" },
+  { id: "findvet", label: "Véto",      emoji: "📍", icon: MapPin,       color: "#3b82f6", bg: "from-blue-500 to-indigo-600" },
 ];
 
 export default function Sante() {
