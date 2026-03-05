@@ -14,8 +14,7 @@ import JournalLog from "../components/home/JournalLog";
 import SmartRecommendations from "../components/home/SmartRecommendations";
 import PremiumValueBanner from "../components/home/PremiumValueBanner";
 import HealthScore from "../components/home/HealthScore";
-import QuickLogFAB from "../components/home/QuickLogFAB";
-import ChatFAB from "../components/ChatFAB";
+import CombinedFAB from "../components/CombinedFAB";
 
 import { Heart, PartyPopper, Flame } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
@@ -59,7 +58,6 @@ export default function Home() {
   const [markingRead, setMarkingRead] = useState(false);
 
   const [milestone, setMilestone] = useState(null);
-  const [fabOpen, setFabOpen] = useState(false);
   const [showPremiumNudge, setShowPremiumNudge] = useState(false);
 
   useEffect(() => {
@@ -238,7 +236,7 @@ export default function Home() {
       />
 
       {/* MAIN CONTENT */}
-      <div className="space-y-4 mt-4">
+      <div className="space-y-3 mt-3">
         {/* Daily Checkin Hub */}
         <DailyCheckinHub
           dog={dog}
@@ -288,7 +286,6 @@ export default function Home() {
           dailyLogs={dailyLogs}
           todayCheckin={todayCheckin}
           streak={streak}
-          onOpenFAB={() => setFabOpen(true)}
         />
       </div>
 
@@ -297,11 +294,9 @@ export default function Home() {
         {milestone && <MilestoneCelebration milestone={milestone} onClose={() => setMilestone(null)} />}
       </AnimatePresence>
 
-      <QuickLogFAB
+      <CombinedFAB
         dog={dog}
         user={user}
-        open={fabOpen}
-        onOpenChange={setFabOpen}
         onLogSaved={async () => {
           if (!dog) return;
           const logs = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 30);
@@ -309,7 +304,6 @@ export default function Home() {
         }}
       />
       </PullToRefresh>
-      <ChatFAB />
       <BottomNav currentPage="Home" />
 
       {/* Post-onboarding premium nudge */}
