@@ -108,6 +108,8 @@ export default function Nutri() {
         setDog(d);
         const scans = await base44.entities.FoodScan.filter({ dog_id: d.id }, "-timestamp", 5);
         setRecentScans(scans);
+        const prefs = await base44.entities.DietPreferences.filter({ dog_id: d.id, owner_email: u.email });
+        if (prefs.length > 0) setDietPrefs(prefs[0]);
         setMessages([{
           role: "assistant",
           content: `Bonjour ! 🥗 Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies ? ` avec des allergies à ${d.allergies}` : ""} et j'ai accès à ses derniers scans alimentaires.\n\nPose-moi une question, génère un **plan de repas personnalisé**, ou demande une **recommandation de croquettes** ! 🍖`,
