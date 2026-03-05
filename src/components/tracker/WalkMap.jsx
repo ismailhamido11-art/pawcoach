@@ -36,7 +36,7 @@ export default function WalkMap({ path, currentPos }) {
           <Polyline
             positions={path}
             pathOptions={{
-              color: "#2dd4bf",
+              color: "#2D9F82",
               weight: 4,
               opacity: 0.9,
               lineCap: "round",
@@ -60,12 +60,12 @@ export default function WalkMap({ path, currentPos }) {
             <CircleMarker
               center={currentPos}
               radius={14}
-              pathOptions={{ color: "#2dd4bf", fillColor: "#2dd4bf", fillOpacity: 0.15, weight: 1 }}
+              pathOptions={{ color: "#2D9F82", fillColor: "#2D9F82", fillOpacity: 0.15, weight: 1 }}
             />
             <CircleMarker
               center={currentPos}
               radius={7}
-              pathOptions={{ color: "#ffffff", fillColor: "#2dd4bf", fillOpacity: 1, weight: 2 }}
+              pathOptions={{ color: "#ffffff", fillColor: "#2D9F82", fillOpacity: 1, weight: 2 }}
             />
           </>
         )}

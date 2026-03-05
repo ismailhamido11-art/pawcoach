@@ -332,14 +332,14 @@ export default function Training() {
               <p className="font-bold text-sm text-emerald-900">Programme chiot — {dog.name} ({dogAgeMonths} mois)</p>
               <p className="text-xs text-emerald-700 mt-1 leading-relaxed">
                 {dogAgeMonths < 4
-                  ? `A ${dogAgeMonths} mois, concentre-toi sur la socialisation et les ordres de base (Assis, Couche). Sessions de 2-3 min max !`
+                  ? `À ${dogAgeMonths} mois, concentre-toi sur la socialisation et les ordres de base (Assis, Couché). Sessions de 2-3 min max !`
                   : dogAgeMonths < 8
-                  ? `A ${dogAgeMonths} mois, ${dog.name} est pret pour les ordres de base + securite. Sessions de 5 min, toujours en positif.`
-                  : `A ${dogAgeMonths} mois, ${dog.name} peut aborder les exercices intermediaires. Augmente la duree a 10 min progressivement.`
+                  ? `À ${dogAgeMonths} mois, ${dog.name} est prêt pour les ordres de base + sécurité. Sessions de 5 min, toujours en positif.`
+                  : `À ${dogAgeMonths} mois, ${dog.name} peut aborder les exercices intermédiaires. Augmente la durée à 10 min progressivement.`
                 }
               </p>
               <p className="text-[10px] text-emerald-600 mt-2 font-medium">
-                Recommande : {dogAgeMonths < 4 ? "2x 2 min" : dogAgeMonths < 8 ? "2x 5 min" : "2x 10 min"} par jour
+                Recommandé : {dogAgeMonths < 4 ? "2x 2 min" : dogAgeMonths < 8 ? "2x 5 min" : "2x 10 min"} par jour
               </p>
             </div>
           </div>

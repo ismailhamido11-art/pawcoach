@@ -85,7 +85,7 @@ export default function AchievementsSection({ dog }) {
   return (
     <div className="space-y-4">
       {/* Header card */}
-      <div className="bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-4">
+      <div className="bg-gradient-to-br from-amber-50 to-amber-50/50 border border-amber-200 rounded-2xl p-4">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center flex-shrink-0 text-2xl">
             {level.emoji}
@@ -116,7 +116,7 @@ export default function AchievementsSection({ dog }) {
             </div>
             <div className="h-2 bg-amber-100 rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full"
+                className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.8, ease: "easeOut" }}

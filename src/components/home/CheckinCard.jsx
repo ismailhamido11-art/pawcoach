@@ -11,7 +11,7 @@ export const MOOD_OPTIONS = [
   { value: 1, label: "Triste",  color: "#f43f5e" },
   { value: 2, label: "Bof",     color: "#d97706" },
   { value: 3, label: "Bien",    color: "#10b981" },
-  { value: 4, label: "Super !", color: "#8b5cf6" },
+  { value: 4, label: "Super !", color: "#2D9F82" },
 ];
 export const ENERGY_OPTIONS = [
   { value: 1, label: "Épuisé", color: "#f43f5e" },
@@ -101,7 +101,7 @@ export default function CheckinCard({ dog, mood, setMood, energy, setEnergy, app
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.15, type: "spring", stiffness: 70, damping: 16 }}
+      transition={{ delay: 0.15, type: "spring", stiffness: 200, damping: 20 }}
       className="mx-4 -mt-8 relative z-10 rounded-3xl overflow-hidden shadow-2xl"
       style={{ background: "linear-gradient(160deg, #0f2027, #1a3a4a, #0d2f2a)" }}
     >
@@ -215,7 +215,7 @@ export default function CheckinCard({ dog, mood, setMood, energy, setEnergy, app
               onClick={onSubmit}
               disabled={submitting}
               className="w-full py-4 rounded-2xl font-black text-sm text-white flex items-center justify-center gap-2 shadow-lg"
-              style={{ background: "linear-gradient(135deg, #10b981, #2dd4bf)" }}
+              style={{ background: "linear-gradient(135deg, #1A4D3E, #2D9F82)" }}
             >
               {submitting
                 ? <><Loader2 className="w-4 h-4 animate-spin" /> Analyse PawCoach...</>

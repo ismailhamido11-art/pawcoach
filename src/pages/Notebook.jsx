@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
 import WellnessBanner from "../components/WellnessBanner";
@@ -221,7 +222,7 @@ export default function Notebook() {
       setRecords(prev => prev.filter(r => r.id !== id));
     } catch (err) {
       console.error("Delete error:", err);
-      alert("Erreur lors de la suppression. Réessaie.");
+      toast.error("Erreur lors de la suppression. Réessaie.");
     }
   };
 

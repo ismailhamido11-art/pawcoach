@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -132,7 +133,7 @@ export default function DogProfile() {
       navigate(createPageUrl("Profile"));
     } catch (err) {
       console.error("Delete dog error:", err);
-      alert("Erreur lors de la suppression. Réessaie.");
+      toast.error("Erreur lors de la suppression. Réessaie.");
       setDeleting(false);
     }
   };

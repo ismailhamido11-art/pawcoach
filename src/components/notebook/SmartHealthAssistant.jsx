@@ -260,10 +260,10 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
 
   // --- EMBEDDED UI ---
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-lg border border-border overflow-hidden">
 
       {/* Chat Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-slate-100">
+      <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-border">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full gradient-primary flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-4.5 h-4.5 text-white" />
@@ -402,7 +402,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                       href="https://www.google.com/maps/search/vétérinaire+à+proximité"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                      className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-slate-50 transition-colors"
                     >
                       <MapPin className="w-4 h-4 text-blue-600" />
                       <span className="text-xs font-semibold text-slate-700">Maps</span>
@@ -411,7 +411,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                       href="https://www.google.com/search?q=urgence+vétérinaire+à+proximité"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                      className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-slate-50 transition-colors"
                     >
                       <Phone className="w-4 h-4 text-red-600" />
                       <span className="text-xs font-semibold text-slate-700">Urgences</span>
@@ -453,7 +453,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       </div>
 
       {/* Input Area */}
-      <div className="px-3 py-3 bg-white border-t border-slate-100">
+      <div className="px-3 py-3 bg-white border-t border-border">
         {isFinished && pendingRecords.length > 0 ? (
           <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
             <Button onClick={saveAllRecords} className="w-full rounded-full bg-safe hover:bg-safe/90 text-white h-11 text-sm font-medium shadow-md">
@@ -496,7 +496,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 placeholder="Écris ou parle..."
                 disabled={isProcessing}
-                className="h-10 rounded-full pl-4 pr-11 border-slate-200 bg-slate-50 focus:bg-white transition-colors text-sm"
+                className="h-10 rounded-full pl-4 pr-11 border-border bg-slate-50 focus:bg-white transition-colors text-sm"
               />
               <button
                 onClick={() => handleSend()}

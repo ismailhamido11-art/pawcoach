@@ -113,7 +113,7 @@ export default function DiagnosisStep2Questions({ phase1, userAnswers, setUserAn
                 <Textarea
                   value={userAnswers[q.id] || ""}
                   onChange={(e) => handleAnswer(q.id, e.target.value)}
-                  placeholder="Ta reponse..."
+                  placeholder="Ta réponse..."
                   className="min-h-[60px] text-xs"
                 />
               </div>

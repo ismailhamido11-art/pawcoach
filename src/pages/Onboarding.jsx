@@ -68,7 +68,7 @@ function OnboardingWelcome({ onStart }) {
         <p className="text-white/60 text-xs font-bold tracking-widest uppercase mb-3">PawCoach</p>
         <h1 className="text-4xl font-black text-white leading-tight mb-4">
           Bienvenue dans<br />
-          <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(90deg, #2dd4bf, #34d399)" }}>
+          <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(90deg, #2D9F82, #34d399)" }}>
             l'aventure
           </span>
         </h1>
@@ -89,7 +89,7 @@ function OnboardingWelcome({ onStart }) {
           whileTap={{ scale: 0.96 }}
           onClick={onStart}
           className="w-full max-w-xs h-14 rounded-2xl font-black text-white flex items-center justify-center gap-2 shadow-2xl text-base"
-          style={{ background: "linear-gradient(135deg, #10b981, #2dd4bf)" }}
+          style={{ background: "linear-gradient(135deg, #1A4D3E, #2D9F82)" }}
         >
           Créer le profil de mon chien
           <ArrowRight className="w-5 h-5" />
@@ -370,8 +370,8 @@ Extrais ces informations et renvoie un objet JSON.
                   onClick={toggleMic}
                   className="relative w-32 h-32 rounded-full flex items-center justify-center mb-8 transition-all"
                   style={{
-                    background: listening ? "#ef4444" : "linear-gradient(135deg, #10b981, #2dd4bf)",
-                    boxShadow: listening ? "0 0 50px rgba(239,68,68,0.45)" : "0 12px 40px rgba(16,185,129,0.35)",
+                    background: listening ? "#ef4444" : "linear-gradient(135deg, #1A4D3E, #2D9F82)",
+                    boxShadow: listening ? "0 0 50px rgba(239,68,68,0.45)" : "0 12px 40px rgba(26,77,62,0.35)",
                   }}
                 >
                   {listening && <div className="absolute inset-0 rounded-full border-4 border-red-400 animate-ping" />}
@@ -396,7 +396,7 @@ Extrais ces informations et renvoie un objet JSON.
                 onClick={handleNext}
                 disabled={!canNext || saving}
                 className="w-full max-w-sm h-14 rounded-2xl font-black text-base gap-2"
-                style={{ background: "linear-gradient(135deg, #10b981, #2dd4bf)" }}
+                style={{ background: "linear-gradient(135deg, #1A4D3E, #2D9F82)" }}
               >
                 {saving ? (
                   <><Loader2 className="w-5 h-5 animate-spin" /> Création en cours...</>

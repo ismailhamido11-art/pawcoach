@@ -31,7 +31,7 @@ export default function GamificationDashboard({ points = 0 }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-3 mb-4 p-3 rounded-xl bg-slate-50 border border-slate-100">
+      <div className="flex items-center gap-3 mb-4 p-3 rounded-xl bg-slate-50 border border-border">
         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${currentBadge.color}`}>
           <Icon className="w-5 h-5" />
         </div>

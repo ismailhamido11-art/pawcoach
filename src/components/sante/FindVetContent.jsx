@@ -292,8 +292,8 @@ export default function FindVetContent({ dog }) {
                 <Stethoscope className="w-4 h-4 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-blue-800">Vous êtes vétérinaire ?</p>
-                <p className="text-xs text-blue-500">Accéder à votre espace professionnel →</p>
+                <p className="text-sm font-semibold text-blue-800">Tu es vétérinaire ?</p>
+                <p className="text-xs text-blue-500">Accéder à ton espace professionnel →</p>
               </div>
             </div>
           </div>

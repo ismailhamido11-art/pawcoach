@@ -98,7 +98,7 @@ export default function HealthScore({ dog, user, todayCheckin, records, scans, d
           <div className="space-y-1.5">
             {isEstimate ? (
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Ajoute des donnees (check-ins, poids, vaccins) pour affiner le score de {dog?.name || "ton chien"}.
+                Ajoute des données (check-ins, poids, vaccins) pour affiner le score de {dog?.name || "ton chien"}.
               </p>
             ) : (
               insights.map((insight, i) => (

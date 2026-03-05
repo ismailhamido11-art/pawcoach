@@ -59,7 +59,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
             </motion.div>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-foreground text-sm">Bilan de la semaine</p>
-              <p className="text-xs text-muted-foreground">Semaine du {dateLabel} · {insight.checkin_count || 0} check-ins</p>
+              <p className="text-xs text-muted-foreground">Semaine du {dateLabel} · {insight.checkin_count || 0} check-in{(insight.checkin_count || 0) > 1 ? "s" : ""}</p>
             </div>
             {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
           </button>
@@ -90,7 +90,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                   <p className="text-xl font-black text-emerald-600">{insight.checkin_count}</p>
                   <TrendBadge current={insight.checkin_count} previous={previousInsight?.checkin_count} />
                 </div>
-                <p className="text-[10px] text-muted-foreground font-medium">check-ins</p>
+                <p className="text-[10px] text-muted-foreground font-medium">check-in{insight.checkin_count > 1 ? "s" : ""}</p>
               </div>
             )}
           </div>
@@ -186,7 +186,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                           </p>
                           <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
                             {pi.avg_mood != null && <span>Humeur {pi.avg_mood.toFixed(1)}</span>}
-                            {pi.checkin_count > 0 && <span>{pi.checkin_count} check-ins</span>}
+                            {pi.checkin_count > 0 && <span>{pi.checkin_count} check-in{pi.checkin_count > 1 ? "s" : ""}</span>}
                           </div>
                         </div>
                         {pi.summary && (

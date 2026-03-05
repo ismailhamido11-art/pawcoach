@@ -30,7 +30,7 @@ function RecordItem({ record }) {
   const cfg = TYPE_CONFIG[record.type] || TYPE_CONFIG.note;
   const Icon = cfg.icon;
   return (
-    <div className="flex items-start gap-3 py-3 border-b border-slate-100 last:border-0">
+    <div className="flex items-start gap-3 py-3 border-b border-border last:border-0">
       <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: cfg.bg }}>
         <Icon style={{ color: cfg.color, width: 15, height: 15 }} />
       </div>
@@ -56,7 +56,7 @@ function RecordItem({ record }) {
 
 function StatPill({ icon: Icon, value, label, color }) {
   return (
-    <div className="flex flex-col items-center gap-1 bg-white rounded-2xl px-4 py-3 shadow-sm border border-slate-100">
+    <div className="flex flex-col items-center gap-1 bg-white rounded-2xl px-4 py-3 shadow-sm border border-border">
       <Icon style={{ color, width: 18, height: 18 }} />
       <p className="text-sm font-bold text-slate-800">{value}</p>
       <p className="text-[10px] text-slate-400">{label}</p>
@@ -200,7 +200,7 @@ export default function DogPublicProfile() {
         )}
 
         {/* Infos générales */}
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
+        <div className="bg-white rounded-2xl border border-border shadow-sm p-4">
           <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Profil</h2>
           <div className="grid grid-cols-2 gap-2 text-sm">
             {dog.breed && (
@@ -240,8 +240,8 @@ export default function DogPublicProfile() {
 
         {/* Historique de santé */}
         {records.length > 0 && (
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm">
-            <div className="px-4 pt-4 pb-2 border-b border-slate-100">
+          <div className="bg-white rounded-2xl border border-border shadow-sm">
+            <div className="px-4 pt-4 pb-2 border-b border-border">
               <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest">Historique médical</h2>
             </div>
             <div className="px-4">
@@ -251,7 +251,7 @@ export default function DogPublicProfile() {
         )}
 
         {records.length === 0 && (
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 text-center">
+          <div className="bg-white rounded-2xl border border-border shadow-sm p-6 text-center">
             <ShieldCheck className="w-10 h-10 text-slate-200 mx-auto mb-3" />
             <p className="text-sm text-slate-400">Aucun historique médical enregistré</p>
           </div>
@@ -259,7 +259,7 @@ export default function DogPublicProfile() {
 
         {/* Footer PawCoach */}
         <div className="text-center pt-2">
-          <div className="inline-flex items-center gap-2 bg-white border border-slate-100 rounded-full px-4 py-2 shadow-sm">
+          <div className="inline-flex items-center gap-2 bg-white border border-border rounded-full px-4 py-2 shadow-sm">
             <PawPrint className="w-4 h-4 text-emerald-600" />
             <span className="text-xs font-bold text-slate-600">Dossier géré via</span>
             <span className="text-xs font-black text-emerald-700">PawCoach</span>

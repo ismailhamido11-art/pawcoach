@@ -93,7 +93,7 @@ export default function VetDogView() {
           {/* Health Records */}
           <TabsContent value="records" className="mt-4 space-y-3">
             {sharedSections.includes("weight") && records.filter(r => r.type === "weight").length > 0 && (
-              <SectionPoids records={records} dogId={dogId} onDelete={() => {}} />
+              <SectionPoids records={records} dogId={dogId} />
             )}
             {records.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-8">Aucun enregistrement partagé</p>

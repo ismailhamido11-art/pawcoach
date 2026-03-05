@@ -34,7 +34,7 @@ function getBcsLabel(score) {
   if (score <= 3) return { label: "Trop maigre", color: "text-blue-600" };
   if (score <= 4) return { label: "Sous le poids idéal", color: "text-sky-500" };
   if (score === 5) return { label: "Poids idéal", color: "text-emerald-500" };
-  if (score <= 6) return { label: "Légèrement en surpoids", color: "text-yellow-500" };
+  if (score <= 6) return { label: "Légèrement en surpoids", color: "text-amber-500" };
   if (score <= 7) return { label: "En surpoids", color: "text-amber-500" };
   return { label: "Obèse", color: "text-red-500" };
 }
@@ -298,7 +298,7 @@ export default function GrowthTrackerContent({ dog, user }) {
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-primary" />
                   <p className="font-bold text-sm">Résultat de l'analyse</p>
-                  <span className={`ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full ${analysisResult.confidence === "high" ? "bg-emerald-100 text-emerald-700" : "bg-yellow-100 text-yellow-700"}`}>
+                  <span className={`ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full ${analysisResult.confidence === "high" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
                     {analysisResult.confidence === "high" ? "Haute confiance" : "Confiance moyenne"}
                   </span>
                 </div>

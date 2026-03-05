@@ -110,7 +110,7 @@ export default function QRCodeCard({ dog }) {
 
               {/* QR Code */}
               <div className="flex justify-center mb-5">
-                <div className="relative bg-white rounded-3xl shadow-xl border-4 border-slate-100 p-4 inline-block">
+                <div className="relative bg-white rounded-2xl shadow-xl border-2 border-border p-4 inline-block">
                   <img
                     src={qrSrc}
                     alt="QR Code urgence"

@@ -29,7 +29,7 @@ const PREMIUM_FEATURES = [
   { text: "Scans illimités", icon: Search, color: "#2d9f82" },
   { text: "10 exercices dressage", icon: Target, color: "#6366f1" },
   { text: "Carnet santé complet", icon: ClipboardList, color: "#ef4444" },
-  { text: "Rappels santé email", icon: Bell, color: "#14b8a6" },
+  { text: "Rappels santé email", icon: Bell, color: "#2D9F82" },
   { text: "Résumés mensuels", icon: BarChart3, color: "#10b981" },
   { text: "Jusqu'à 3 chiens", icon: DogIcon, color: "#ec4899" },
 ];
@@ -148,7 +148,7 @@ export default function Premium() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-white font-bold text-2xl"
+            className="text-white font-black text-2xl"
           >
             {isOnTrial
               ? "Essai gratuit actif"
@@ -291,7 +291,7 @@ export default function Premium() {
           >
             <Illustration name="qualityTime" alt="PawCoach Premium" className="w-32 h-32 mx-auto drop-shadow-lg" />
           </motion.div>
-          <h1 className="text-white font-bold text-2xl">PawCoach Premium</h1>
+          <h1 className="text-white font-black text-2xl">PawCoach Premium</h1>
           <p className="text-white/70 text-sm mt-1">Le meilleur pour ton chien, sans limite</p>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />

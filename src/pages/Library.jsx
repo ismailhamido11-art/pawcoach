@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import BottomNav from "../components/BottomNav";
 import { ArrowLeft, Bookmark, Search, Trash2, MessageCircle, Salad } from "lucide-react";
@@ -43,9 +44,14 @@ export default function Library() {
   }, []);
 
   const handleDelete = async (id) => {
-    await base44.entities.Bookmark.delete(id);
-    setBookmarks(prev => prev.filter(b => b.id !== id));
-    if (expanded === id) setExpanded(null);
+    try {
+      await base44.entities.Bookmark.delete(id);
+      setBookmarks(prev => prev.filter(b => b.id !== id));
+      if (expanded === id) setExpanded(null);
+      toast.success("Conseil supprimé");
+    } catch (err) {
+      toast.error("Erreur lors de la suppression");
+    }
   };
 
   const filtered = bookmarks.filter(b => {

@@ -427,7 +427,7 @@ export default function Dashboard() {
                 <YAxis tick={{ fontSize: 9 }} tickLine={false} axisLine={false} domain={[0, 4]} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="humeur" name="Humeur" fill="#2d9f82" radius={[4, 4, 0, 0]} maxBarSize={16} />
-                <Bar dataKey="energie" name="Énergie" fill="#2dd4bf" radius={[4, 4, 0, 0]} maxBarSize={16} />
+                <Bar dataKey="energie" name="Énergie" fill="#2D9F82" radius={[4, 4, 0, 0]} maxBarSize={16} />
               </BarChart>
             </ResponsiveContainer>
           </div>

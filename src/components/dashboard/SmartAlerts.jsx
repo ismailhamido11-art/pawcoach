@@ -186,7 +186,7 @@ export function computeAlerts({ dog, checkins, records, streak, dailyLogs, scans
       icon: Footprints,
       iconColor: "#6366f1",
       title: "Pas de balade enregistrée",
-      desc: "Aucune activité physique notée depuis 5 jours. Pensez à renseigner les sorties.",
+      desc: "Aucune activité physique notée depuis 5 jours. Pense à renseigner les sorties.",
       cta: "Journaliser",
       to: createPageUrl("Home"),
     });

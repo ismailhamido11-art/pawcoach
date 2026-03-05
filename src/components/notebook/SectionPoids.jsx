@@ -84,9 +84,11 @@ export default function SectionPoids({ records, dogId, onDelete }) {
             <p className="font-bold text-primary text-base">{r.value} kg</p>
             <p className="text-xs text-muted-foreground">{new Date(r.date).toLocaleDateString("fr-FR")}</p>
           </div>
-          <button onClick={() => onDelete(r.id)} className="text-muted-foreground hover:text-destructive p-1 transition-colors">
-            <X className="w-3.5 h-3.5" />
-          </button>
+          {onDelete && (
+            <button onClick={() => onDelete(r.id)} className="text-muted-foreground hover:text-destructive p-1 transition-colors">
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       ))}
 
