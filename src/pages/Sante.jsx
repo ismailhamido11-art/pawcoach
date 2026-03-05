@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useNavigate, useParams } from "react-router-dom";
 import { getActiveDog, createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import ChatFAB from "../components/ChatFAB";
@@ -30,37 +31,41 @@ const TABS = [
 ];
 
 export default function Sante() {
-  const [dog, setDog] = useState(null);
-  const [user, setUser] = useState(null);
-  const [records, setRecords] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("carnet");
+   const navigate = useNavigate();
+   const { tabId } = useParams();
+   const [dog, setDog] = useState(null);
+   const [user, setUser] = useState(null);
+   const [records, setRecords] = useState([]);
+   const [loading, setLoading] = useState(true);
+   const [activeTab, setActiveTab] = useState(tabId || "carnet");
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const u = await base44.auth.me();
-        setUser(u);
-        const dogs = await base44.entities.Dog.filter({ owner: u.email });
-        if (dogs.length > 0) {
-          const d = getActiveDog(dogs);
-          setDog(d);
-          const recs = await base44.entities.HealthRecord.filter({ dog_id: d.id });
-          setRecords(recs || []);
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
+   useEffect(() => {
+     async function load() {
+       try {
+         const u = await base44.auth.me();
+         setUser(u);
+         const dogs = await base44.entities.Dog.filter({ owner: u.email });
+         if (dogs.length > 0) {
+           const d = getActiveDog(dogs);
+           setDog(d);
+           const recs = await base44.entities.HealthRecord.filter({ dog_id: d.id });
+           setRecords(recs || []);
+         }
+       } catch (e) {
+         console.error(e);
+       } finally {
+         setLoading(false);
+       }
+     }
+     load();
+   }, []);
 
-    // Support deep-link ?tab=xxx
-    const params = new URLSearchParams(window.location.search);
-    const t = params.get("tab");
-    if (t && TABS.find(tab => tab.id === t)) setActiveTab(t);
-  }, []);
+   // Sync activeTab with route params
+   useEffect(() => {
+     if (tabId && TABS.find(tab => tab.id === tabId)) {
+       setActiveTab(tabId);
+     }
+   }, [tabId]);
 
   const vaccineCount = records.filter(r => r.type === "vaccine").length;
   const vetCount = records.filter(r => r.type === "vet_visit").length;
@@ -115,7 +120,7 @@ export default function Sante() {
                 key={id}
                 whileTap={{ scale: 0.93 }}
                 transition={spring}
-                onClick={() => setActiveTab(id)}
+                onClick={() => navigate(createPageUrl(`Sante/${id}`))}
                 className={`relative flex flex-col items-center gap-1 py-3 rounded-2xl text-center overflow-hidden transition-all ${
                   active ? "shadow-lg" : "bg-white/10"
                 }`}
