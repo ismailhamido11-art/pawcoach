@@ -246,13 +246,6 @@ export default function Nutri() {
         </div>
       </div>
 
-      {/* Tab: Label Scanner (étiquette nutritionnelle) */}
-      {activeTab === "label" && (
-        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
-          <LabelScanner dog={dog} />
-        </div>
-      )}
-
       {/* Tab: Scan → link to Scan page */}
       {activeTab === "scan" && (
         <div className="flex-1 flex flex-col items-center justify-center px-5 py-10 gap-5">
@@ -266,8 +259,8 @@ export default function Nutri() {
           <div className="text-center">
             <h2 className="font-bold text-foreground text-lg">Scanner un aliment</h2>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-              Prends en photo n'importe quel aliment ou étiquette.<br />
-              L'IA analyse la toxicité et la qualité pour {dog?.name || "ton chien"}.
+              Toxicité d'un aliment brut ou analyse complète<br />
+              d'une étiquette nutritionnelle pour {dog?.name || "ton chien"}.
             </p>
           </div>
           <Button asChild className="gradient-primary border-0 text-white w-full max-w-xs h-13 rounded-xl font-bold shadow-lg shadow-primary/25">
