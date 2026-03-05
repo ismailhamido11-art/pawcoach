@@ -106,24 +106,32 @@ export default function NotificationCenter() {
           <Bell className={`w-6 h-6 ${count > 0 ? "text-white drop-shadow-lg" : "text-primary"}`} strokeWidth={count > 0 ? 2 : 1.5} />
         </motion.div>
         {count > 0 && (
-          <>
-            {/* Glow ring */}
-            <motion.div
-              animate={{ scale: [1, 1.15, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity }}
-              className="absolute inset-0 rounded-full border-2 border-white/30"
-            />
-            {/* Badge */}
-            <motion.span
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: "spring", stiffness: 260, damping: 20 }}
-              className="absolute -top-1.5 -right-1.5 min-w-[24px] h-6 px-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-xl ring-2 ring-white"
-            >
-              {count > 9 ? "9+" : count}
-            </motion.span>
-          </>
-        )}
+            <>
+              {/* Animated glow rings */}
+              <motion.div
+                animate={{ scale: [1, 1.25, 1], opacity: [1, 0.4, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute inset-0 rounded-full border-2 border-red-400/50"
+              />
+              <motion.div
+                animate={{ scale: [1, 1.4, 1], opacity: [0.8, 0, 0.8] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
+                className="absolute inset-0 rounded-full border border-red-300/30"
+              />
+              {/* Badge — Shake animation on urgent */}
+              <motion.span
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0, x: [0, -2, 2, -2, 0] }}
+                transition={{ 
+                  scale: { type: "spring", stiffness: 260, damping: 20 },
+                  x: { duration: 0.5, repeat: Infinity, repeatDelay: 1.5 }
+                }}
+                className="absolute -top-1.5 -right-1.5 min-w-[24px] h-6 px-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-2xl ring-2 ring-white"
+              >
+                {count > 9 ? "9+" : count}
+              </motion.span>
+            </>
+          )}
       </motion.button>
 
       {/* Backdrop */}
