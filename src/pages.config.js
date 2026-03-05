@@ -48,7 +48,6 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Activite from './pages/Activite';
-import Chat from './pages/Chat';
 import Dashboard from './pages/Dashboard';
 import DogProfile from './pages/DogProfile';
 import DogPublicProfile from './pages/DogPublicProfile';
@@ -58,23 +57,23 @@ import HealthImport from './pages/HealthImport';
 import Home from './pages/Home';
 import Library from './pages/Library';
 import Notebook from './pages/Notebook';
-import Nutri from './pages/Nutri';
 import Nutrition from './pages/Nutrition';
 import Onboarding from './pages/Onboarding';
 import Premium from './pages/Premium';
 import Profile from './pages/Profile';
 import Sante from './pages/Sante';
-import Scan from './pages/Scan';
 import Tracker from './pages/Tracker';
 import Training from './pages/Training';
 import VetDogView from './pages/VetDogView';
 import VetPortal from './pages/VetPortal';
+import Scan from './pages/Scan';
+import Chat from './pages/Chat';
+import Nutri from './pages/Nutri';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Activite": Activite,
-    "Chat": Chat,
     "Dashboard": Dashboard,
     "DogProfile": DogProfile,
     "DogPublicProfile": DogPublicProfile,
@@ -84,17 +83,18 @@ export const PAGES = {
     "Home": Home,
     "Library": Library,
     "Notebook": Notebook,
-    "Nutri": Nutri,
     "Nutrition": Nutrition,
     "Onboarding": Onboarding,
     "Premium": Premium,
     "Profile": Profile,
     "Sante": Sante,
-    "Scan": Scan,
     "Tracker": Tracker,
     "Training": Training,
     "VetDogView": VetDogView,
     "VetPortal": VetPortal,
+    "Scan": Scan,
+    "Chat": Chat,
+    "Nutri": Nutri,
 }
 
 export const pagesConfig = {
