@@ -80,7 +80,7 @@ export default function Sante() {
 
             {/* Quick stats */}
             {!loading && records.length > 0 && (
-              <div className="flex gap-2 mt-2">
+              <div className="flex gap-2 mt-2 flex-wrap">
                 <div className="bg-white/15 rounded-xl px-3 py-1.5 text-center">
                   <p className="text-white font-black text-base leading-none">{vaccineCount}</p>
                   <p className="text-white/70 text-[10px] mt-0.5">Vaccins</p>
@@ -93,6 +93,12 @@ export default function Sante() {
                   <p className="text-white font-black text-base leading-none">{weightRecords.length}</p>
                   <p className="text-white/70 text-[10px] mt-0.5">Pesées</p>
                 </div>
+              </div>
+            )}
+            {/* PDF export button */}
+            {dog && !loading && (
+              <div className="mt-3">
+                <DownloadHealthPDF dogId={dog.id} dogName={dog.name} />
               </div>
             )}
           </div>
