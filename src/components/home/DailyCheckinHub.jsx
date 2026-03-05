@@ -193,7 +193,10 @@ export default function DailyCheckinHub({ dog, todayCheckin, onSubmit, submittin
         )}
       >
         <Send className="w-4 h-4" />
-        {submitting ? "Envoi..." : "Valider le check-in"}
+        {submitting
+          ? <><span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Envoi...</>
+          : "Valider le check-in"
+        }
       </motion.button>
 
       {/* Progress indicator */}

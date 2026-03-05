@@ -56,6 +56,8 @@ export default function GrowthTrackerContent({ dog, user }) {
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [showAddManual, setShowAddManual] = useState(false);
+  const [savingManual, setSavingManual] = useState(false);
+  const [savedAnalysis, setSavedAnalysis] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [analysisResult, setAnalysisResult] = useState(null);
   const [manualForm, setManualForm] = useState({ date: format(new Date(), "yyyy-MM-dd"), weight_kg: "", height_cm: "" });
