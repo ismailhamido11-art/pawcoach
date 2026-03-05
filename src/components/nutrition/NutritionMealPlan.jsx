@@ -230,14 +230,35 @@ Sois très précis avec les grammes et calories. Adapte tout au profil exact.`;
 
           {/* Save + Regenerate */}
           <div className="flex gap-2">
-            <Button
-              onClick={savePlan}
-              disabled={saving}
-              className="flex-1 h-11 rounded-2xl bg-primary text-white font-semibold gap-2"
-            >
-              <BookmarkPlus className="w-4 h-4" />
-              {saving ? "Sauvegarde..." : "Sauvegarder"}
-            </Button>
+            <motion.div className="flex-1" whileTap={!saving && !saved ? { scale: 0.97 } : {}}>
+              <Button
+                onClick={savePlan}
+                disabled={saving || saved}
+                className={`w-full h-11 rounded-2xl font-semibold gap-2 transition-all duration-300 ${
+                  saved
+                    ? "bg-safe text-white"
+                    : "bg-primary text-white"
+                }`}
+              >
+                {saving ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : saved ? (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="flex items-center gap-2"
+                  >
+                    <Check className="w-4 h-4" />
+                    Sauvegardé !
+                  </motion.div>
+                ) : (
+                  <>
+                    <BookmarkPlus className="w-4 h-4" />
+                    Sauvegarder
+                  </>
+                )}
+              </Button>
+            </motion.div>
             <Button
               onClick={generate}
               variant="outline"
