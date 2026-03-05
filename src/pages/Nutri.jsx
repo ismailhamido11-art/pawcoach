@@ -48,6 +48,7 @@ export default function Nutri() {
   const [activeTab, setActiveTab] = useState("coach");
   const [messagesRemaining, setMessagesRemaining] = useState(null);
   const [bookmarked, setBookmarked] = useState({});
+  const [dietPrefs, setDietPrefs] = useState(null);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
 
