@@ -4,15 +4,17 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import {
   Settings, ChevronDown, ChevronUp, ChevronRight,
-  BookMarked, ShieldCheck, Info, LogOut, Trash2, Mail
+  BookMarked, ShieldCheck, Info, LogOut, Trash2, Mail, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 export default function SettingsSection() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   return (
     <div className="bg-white rounded-2xl border border-border overflow-hidden">
@@ -96,7 +98,11 @@ export default function SettingsSection() {
       {/* Delete confirm */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50 pb-8 px-5">
-          <div className="bg-white rounded-3xl p-6 w-full space-y-4 animate-slide-up">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl p-6 w-full space-y-4"
+          >
             <div className="text-center space-y-2">
               <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mx-auto">
                 <Trash2 className="w-7 h-7 text-destructive" />
@@ -106,14 +112,48 @@ export default function SettingsSection() {
                 Cette action est irréversible. Toutes tes données seront supprimées définitivement.
               </p>
             </div>
-            <p className="text-sm text-muted-foreground text-center">
-              Contacte-nous à{" "}
-              <a href="mailto:support@pawcoach.app" className="text-primary underline">support@pawcoach.app</a>
-            </p>
-            <Button onClick={() => setShowDeleteConfirm(false)} variant="outline" className="w-full h-12 rounded-xl">
-              Annuler
-            </Button>
-          </div>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => setShowDeleteConfirm(false)}
+                variant="outline"
+                className="flex-1 h-12 rounded-xl"
+                disabled={deleting}
+              >
+                Annuler
+              </Button>
+              <Button
+                onClick={async () => {
+                  setDeleting(true);
+                  try {
+                    const response = await base44.functions.invoke('deleteUser', {});
+                    if (response.data?.success) {
+                      toast.success('Compte supprimé', { description: 'Au revoir ! 👋' });
+                      await new Promise(resolve => setTimeout(resolve, 1500));
+                      base44.auth.logout();
+                    } else {
+                      toast.error('Erreur', { description: response.data?.error || 'Impossible de supprimer le compte' });
+                    }
+                  } catch (err) {
+                    console.error('Delete user error:', err);
+                    toast.error('Erreur', { description: 'Une erreur est survenue' });
+                  } finally {
+                    setDeleting(false);
+                  }
+                }}
+                disabled={deleting}
+                className="flex-1 h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white border-0"
+              >
+                {deleting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    Suppression...
+                  </>
+                ) : (
+                  'Supprimer'
+                )}
+              </Button>
+            </div>
+          </motion.div>
         </div>
       )}
     </div>
