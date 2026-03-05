@@ -17,6 +17,7 @@ import GrowthTrackerContent from "@/components/sante/GrowthTrackerContent";
 
 import { BookHeart, Camera, MapPin, AlertTriangle, TrendingUp } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
+import DownloadHealthPDF from "@/components/vet/DownloadHealthPDF";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
