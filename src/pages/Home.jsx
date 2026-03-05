@@ -221,7 +221,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-40 relative flex flex-col">
+    <div className="min-h-screen bg-background pb-40 relative flex flex-col pt-20">
       <WellnessBanner />
 
       <PullToRefresh onRefresh={handleRefresh}>
