@@ -113,7 +113,7 @@ export default function HeroHeader({ user, dog, streak, checkins, records, exerc
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 120, damping: 14 }}
             className="relative flex-shrink-0 cursor-pointer"
-            onClick={() => navigate(createPageUrl("DogTwin"))}
+            onClick={() => navigate(createPageUrl("DogProfile"))}
           >
             <DogAvatar
               healthScore={healthScore}

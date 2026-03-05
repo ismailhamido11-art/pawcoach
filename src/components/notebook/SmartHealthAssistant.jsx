@@ -44,6 +44,35 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   const recognitionRef = useRef(null);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const pendingRecordsRef = useRef([]);
+
+  // Keep ref in sync for unmount auto-save
+  useEffect(() => {
+    pendingRecordsRef.current = pendingRecords;
+  }, [pendingRecords]);
+
+  // Auto-save pending records on unmount (prevents data loss on navigation)
+  useEffect(() => {
+    return () => {
+      if (pendingRecordsRef.current.length > 0 && dogId) {
+        pendingRecordsRef.current.forEach(rec => {
+          base44.entities.HealthRecord.create({ dog_id: dogId, ...rec }).catch(() => {});
+        });
+      }
+    };
+  }, [dogId]);
+
+  // Warn before closing page with unsaved records
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (pendingRecordsRef.current.length > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
 
   // Auto-start conversation when dogId is available
   useEffect(() => {

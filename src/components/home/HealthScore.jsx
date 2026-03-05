@@ -9,6 +9,7 @@ export default function HealthScore({ dog, user, todayCheckin, records, scans, d
   const [insights, setInsights] = useState([]);
   const [alert, setAlert] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isEstimate, setIsEstimate] = useState(false);
   const isPremium = isUserPremium(user);
 
   useEffect(() => {
@@ -17,12 +18,14 @@ export default function HealthScore({ dog, user, todayCheckin, records, scans, d
       try {
         const response = await base44.functions.invoke('healthScoreCalculate', { dogId: dog.id });
         const data = response.data || {};
-        setScore(data.score || 50);
+        setScore(data.score ?? 50);
         setInsights(data.insights || []);
         setAlert(data.alert || null);
+        setIsEstimate(!data.insights || data.insights.length === 0);
       } catch (err) {
         console.error('Health score error:', err);
         setScore(50);
+        setIsEstimate(true);
       } finally {
         setLoading(false);
       }
@@ -93,17 +96,23 @@ export default function HealthScore({ dog, user, todayCheckin, records, scans, d
             {scoreLabel}
           </p>
           <div className="space-y-1.5">
-            {insights.map((insight, i) => (
-              <motion.p
-                key={i}
-                className="text-sm text-foreground/80"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 + i * 0.1 }}
-              >
-                • {insight}
-              </motion.p>
-            ))}
+            {isEstimate ? (
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Ajoute des donnees (check-ins, poids, vaccins) pour affiner le score de {dog?.name || "ton chien"}.
+              </p>
+            ) : (
+              insights.map((insight, i) => (
+                <motion.p
+                  key={i}
+                  className="text-sm text-foreground/80"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 + i * 0.1 }}
+                >
+                  • {insight}
+                </motion.p>
+              ))
+            )}
           </div>
         </div>
       </div>
