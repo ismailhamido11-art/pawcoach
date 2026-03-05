@@ -87,22 +87,35 @@ export default function NotificationCenter() {
 
   return (
     <>
-      {/* Bell button */}
-      <button
+      {/* Bell button — Premium style */}
+      <motion.button
         onClick={() => setOpen(true)}
-        className="relative p-2 rounded-xl hover:bg-secondary/40 transition-colors"
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.95 }}
+        className={`relative p-2.5 rounded-full transition-all ${
+          count > 0
+            ? "bg-gradient-to-br from-primary/15 to-accent/15 shadow-lg"
+            : "hover:bg-secondary/50"
+        }`}
       >
-        <Bell className="w-5 h-5 text-muted-foreground" />
+        <motion.div
+          animate={count > 0 ? { scale: [1, 1.05, 1] } : {}}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="relative"
+        >
+          <Bell className={`w-5 h-5 ${count > 0 ? "text-primary" : "text-muted-foreground"}`} />
+        </motion.div>
         {count > 0 && (
           <motion.span
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center"
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-lg ring-2 ring-white"
           >
             {count > 9 ? "9+" : count}
           </motion.span>
         )}
-      </button>
+      </motion.button>
 
       {/* Backdrop */}
       <AnimatePresence>
