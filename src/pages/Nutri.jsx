@@ -247,6 +247,13 @@ export default function Nutri() {
         </div>
       </div>
 
+      {/* Tab: Label Scanner (étiquette nutritionnelle) */}
+      {activeTab === "label" && (
+        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
+          <LabelScanner dog={dog} />
+        </div>
+      )}
+
       {/* Tab: Scan → link to Scan page */}
       {activeTab === "scan" && (
         <div className="flex-1 flex flex-col items-center justify-center px-5 py-10 gap-5">
