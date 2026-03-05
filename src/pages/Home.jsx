@@ -181,10 +181,41 @@ export default function Home() {
     );
   }
 
+  const handleRefresh = async () => {
+    try {
+      const u = await base44.auth.me();
+      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      if (dogs?.length > 0) {
+        const d = getActiveDog(dogs);
+        const today = getTodayString();
+        const [checkins, streaks, recent, insights, recs, exs, scs, logs] = await Promise.all([
+          base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
+          base44.entities.Streak.filter({ dog_id: d.id }),
+          base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 30),
+          base44.entities.WeeklyInsight.filter({ dog_id: d.id, is_read: false }),
+          base44.entities.HealthRecord.filter({ dog_id: d.id }),
+          base44.entities.UserProgress.filter({ dog_id: d.id }),
+          base44.entities.FoodScan.filter({ dog_id: d.id }),
+          base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30),
+        ]);
+        setRecords(recs || []);
+        setExercises(exs || []);
+        setScans(scs || []);
+        setDailyLogs(logs || []);
+        if (checkins?.length > 0) setTodayCheckin(checkins[0]);
+        else setTodayCheckin(null);
+        if (streaks?.length > 0) setStreak(streaks[0]);
+        setRecentCheckins((recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7));
+        if (insights?.length > 0) setWeeklyInsight(insights.sort((a, b) => (b.week_start || "").localeCompare(a.week_start || ""))[0]);
+      }
+    } catch (e) { console.error(e); }
+  };
+
   return (
-    <div className="min-h-screen bg-background pb-40 relative">
+    <div className="min-h-screen bg-background pb-40 relative flex flex-col">
       <WellnessBanner />
 
+      <PullToRefresh onRefresh={handleRefresh}>
       {/* HERO — Carte d'identité vivante */}
       <DogRadarHero
         user={user}
@@ -268,6 +299,7 @@ export default function Home() {
           setDailyLogs(logs || []);
         }}
       />
+      </PullToRefresh>
       <ChatFAB />
       <BottomNav currentPage="Home" />
 

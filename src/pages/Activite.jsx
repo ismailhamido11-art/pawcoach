@@ -141,7 +141,7 @@ export default function Activite() {
       </div>
 
       {/* Tab content */}
-      <div className="flex-1 overflow-y-auto pb-28">
+      <PullToRefresh onRefresh={async () => { await refreshLogs(); }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -169,7 +169,7 @@ export default function Activite() {
             )}
           </motion.div>
         </AnimatePresence>
-      </div>
+      </PullToRefresh>
 
       <ChatFAB />
       <BottomNav currentPage="Activite" />
