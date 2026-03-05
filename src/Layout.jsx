@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import ReminderAlert from "./components/reminders/ReminderAlert";
 
 export default function Layout({ children, currentPageName }) {
   // Dark mode detection
