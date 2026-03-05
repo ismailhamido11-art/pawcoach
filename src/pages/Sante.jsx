@@ -95,12 +95,7 @@ export default function Sante() {
                 </div>
               </div>
             )}
-            {/* PDF export button */}
-            {dog && !loading && (
-              <div className="mt-3">
-                <DownloadHealthPDF dogId={dog.id} dogName={dog.name} />
-              </div>
-            )}
+
           </div>
           <motion.div
             animate={{ scale: [1, 1.03, 1] }}
