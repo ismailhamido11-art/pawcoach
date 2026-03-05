@@ -11,7 +11,7 @@ import JourneyView from "../components/training/JourneyView";
 import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { updateStreakSilently } from "../components/streakHelper";
 import { unlockBadge, checkStreakBadges } from "@/components/achievements/badgeUtils";
@@ -68,16 +68,15 @@ const JOURNEYS = [
 const MILESTONES = [3, 5, 10];
 
 export default function Training() {
-  const navigate = useNavigate();
-  const [dog, setDog] = useState(null);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [progresses, setProgresses] = useState([]);
-  const [selectedJourney, setSelectedJourney] = useState(null);
-  const [selected, setSelected] = useState(null);
-  const [celebration, setCelebration] = useState(null);
-  const [milestone, setMilestone] = useState(null);
-  const [showFreeGate, setShowFreeGate] = useState(false);
+   const navigate = useNavigate();
+   const { journeyId, exerciseId } = useParams();
+   const [dog, setDog] = useState(null);
+   const [user, setUser] = useState(null);
+   const [loading, setLoading] = useState(true);
+   const [progresses, setProgresses] = useState([]);
+   const [celebration, setCelebration] = useState(null);
+   const [milestone, setMilestone] = useState(null);
+   const [showFreeGate, setShowFreeGate] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
@@ -125,7 +124,7 @@ export default function Training() {
       optimisticProgresses = [...progresses, { exercise_id: key, completed: true, completed_date: new Date().toISOString().split("T")[0], _optimistic: true }];
     }
     setProgresses(optimisticProgresses);
-    setSelected(null);
+    navigate(createPageUrl("Training"));
 
     if (!wasCompleted) {
       if (navigator.vibrate) navigator.vibrate(30);
@@ -209,67 +208,68 @@ export default function Training() {
   }
 
   // Overlay screens
-  if (milestone !== null) {
-    return (
-      <MilestoneScreen
-        dogName={dog?.name || "Ton chien"}
-        completedExercises={EXERCISES.filter(e => isCompleted(e.order_number))}
-        onContinue={() => setMilestone(null)}
-      />
-    );
-  }
+   if (milestone !== null) {
+     return (
+       <MilestoneScreen
+         dogName={dog?.name || "Ton chien"}
+         completedExercises={EXERCISES.filter(e => isCompleted(e.order_number))}
+         onContinue={() => setMilestone(null)}
+       />
+     );
+   }
 
-  if (showFreeGate) {
-    return <FreeExercisesGate dogName={dog?.name} onDismiss={() => setShowFreeGate(false)} />;
-  }
+   if (showFreeGate) {
+     return <FreeExercisesGate dogName={dog?.name} onDismiss={() => setShowFreeGate(false)} />;
+   }
 
-  // celebration is shown as overlay (handled below)
+   // Exercise detail view (from nested route)
+   if (exerciseId) {
+     const exercise = EXERCISES.find(e => String(e.order_number) === exerciseId);
+     if (!exercise) return null;
+     const locked = exercise.is_premium && !isPremium;
+     return (
+       <>
+         <ExerciseDetail
+           exercise={exercise}
+           isCompleted={isCompleted(exercise.order_number)}
+           isPremiumLocked={locked}
+           dogName={dog?.name}
+           onBack={() => navigate(journeyId ? createPageUrl(`Training/${journeyId}`) : createPageUrl("Training"))}
+           onComplete={() => handleComplete(exercise)}
+           onHelp={() => handleHelp(exercise)}
+         />
+         {celebration && (
+           <CelebrationScreen
+             dogName={dog?.name || "Ton chien"}
+             exerciseName={celebration}
+             onContinue={() => { setCelebration(null); navigate(journeyId ? createPageUrl(`Training/${journeyId}`) : createPageUrl("Training")); }}
+           />
+         )}
+       </>
+     );
+   }
 
-  if (selected) {
-    const exercise = EXERCISES.find(e => e.order_number === selected);
-    const locked = exercise.is_premium && !isPremium;
-    return (
-      <>
-        <ExerciseDetail
-          exercise={exercise}
-          isCompleted={isCompleted(exercise.order_number)}
-          isPremiumLocked={locked}
-          dogName={dog?.name}
-          onBack={() => setSelected(null)}
-          onComplete={() => handleComplete(exercise)}
-          onHelp={() => handleHelp(exercise)}
-        />
-        {celebration && (
-          <CelebrationScreen
-            dogName={dog?.name || "Ton chien"}
-            exerciseName={celebration}
-            onContinue={() => { setCelebration(null); setSelected(null); }}
-          />
-        )}
-      </>
-    );
-  }
-
-  // Journey detail view
-  if (selectedJourney) {
-    const journey = JOURNEYS.find(j => j.id === selectedJourney);
-    const journeyExercises = getJourneyExercises(journey);
-    return (
-      <>
-        <WellnessBanner />
-        <JourneyView
-          journey={journey}
-          exercises={journeyExercises}
-          progresses={progresses}
-          isPremium={isPremium}
-          dogName={dog?.name}
-          onBack={() => setSelectedJourney(null)}
-          onSelectExercise={(order) => setSelected(order)}
-        />
-        <BottomNav currentPage="Training" />
-      </>
-    );
-  }
+   // Journey detail view (from nested route)
+   if (journeyId) {
+     const journey = JOURNEYS.find(j => j.id === journeyId);
+     if (!journey) return null;
+     const journeyExercises = getJourneyExercises(journey);
+     return (
+       <>
+         <WellnessBanner />
+         <JourneyView
+           journey={journey}
+           exercises={journeyExercises}
+           progresses={progresses}
+           isPremium={isPremium}
+           dogName={dog?.name}
+           onBack={() => navigate(createPageUrl("Training"))}
+           onSelectExercise={(order) => navigate(createPageUrl(`Training/${journeyId}/exercise/${order}`))}
+         />
+         <BottomNav currentPage="Training" />
+       </>
+     );
+   }
 
   // Main journey list
   return (
@@ -325,7 +325,7 @@ export default function Training() {
               completedCount={done}
               isPremium={isPremium}
               isNext={isNext}
-              onClick={() => locked ? navigate(createPageUrl("Premium")) : setSelectedJourney(journey.id)}
+              onClick={() => locked ? navigate(createPageUrl("Premium")) : navigate(createPageUrl(`Training/${journey.id}`))}
             />
           );
         })}
