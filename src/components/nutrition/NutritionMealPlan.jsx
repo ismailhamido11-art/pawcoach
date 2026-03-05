@@ -24,6 +24,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium, user, d
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   if (!dog) {
     return <p className="text-muted-foreground text-sm text-center py-10">Aucun chien trouvé.</p>;
