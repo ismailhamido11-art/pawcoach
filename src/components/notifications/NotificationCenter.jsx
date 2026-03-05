@@ -90,30 +90,39 @@ export default function NotificationCenter() {
       {/* Bell button — Premium style */}
       <motion.button
         onClick={() => setOpen(true)}
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.95 }}
-        className={`relative p-2.5 rounded-full transition-all ${
+        whileHover={{ scale: 1.12 }}
+        whileTap={{ scale: 0.92 }}
+        className={`relative p-3 rounded-full transition-all ${
           count > 0
-            ? "bg-gradient-to-br from-primary/15 to-accent/15 shadow-lg"
-            : "hover:bg-secondary/50"
+            ? "bg-gradient-to-br from-primary via-primary to-accent shadow-xl"
+            : "bg-gradient-to-br from-primary/20 to-accent/20 hover:from-primary/30 hover:to-accent/30 shadow-md"
         }`}
       >
         <motion.div
-          animate={count > 0 ? { scale: [1, 1.05, 1] } : {}}
-          transition={{ duration: 2, repeat: Infinity }}
+          animate={count > 0 ? { scale: [1, 1.08, 1] } : {}}
+          transition={{ duration: 2.5, repeat: Infinity }}
           className="relative"
         >
-          <Bell className={`w-5 h-5 ${count > 0 ? "text-primary" : "text-muted-foreground"}`} />
+          <Bell className={`w-6 h-6 ${count > 0 ? "text-white drop-shadow-lg" : "text-primary"}`} strokeWidth={count > 0 ? 2 : 1.5} />
         </motion.div>
         {count > 0 && (
-          <motion.span
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-lg ring-2 ring-white"
-          >
-            {count > 9 ? "9+" : count}
-          </motion.span>
+          <>
+            {/* Glow ring */}
+            <motion.div
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 2.5, repeat: Infinity }}
+              className="absolute inset-0 rounded-full border-2 border-white/30"
+            />
+            {/* Badge */}
+            <motion.span
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 260, damping: 20 }}
+              className="absolute -top-1.5 -right-1.5 min-w-[24px] h-6 px-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-xl ring-2 ring-white"
+            >
+              {count > 9 ? "9+" : count}
+            </motion.span>
+          </>
         )}
       </motion.button>
 
