@@ -18,11 +18,9 @@ Deno.serve(async (req) => {
     let historyContext = "";
     let missingInfos = [];
     
-    console.log(`[DEBUG] Processing for dogId: ${dogId}`);
     
     if (dogId) {
       try {
-        console.log(`[DEBUG] Fetching dog with ID: ${dogId}`);
         // Use get() for direct ID lookup
         let dog = null;
         try {
@@ -36,7 +34,6 @@ Deno.serve(async (req) => {
         if (!dog || dog.owner !== user.email) {
           return Response.json({ error: 'Forbidden' }, { status: 403 });
         }
-        console.log(`[DEBUG] Dog found: ${dog.name}`);
         dogName = dog.name || "ton chien";
         if (dog.breed) dogDetails += dog.breed;
         if (dog.weight) dogDetails += ` (${dog.weight}kg)`;

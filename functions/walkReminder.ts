@@ -12,11 +12,10 @@ Deno.serve(async (req) => {
 
     const base44 = createClientFromRequest(req);
 
-    // Current time in Paris (UTC+1/UTC+2)
+    // Current time in Paris (handles CET/CEST automatically)
     const now = new Date();
-    const parisOffset = 60; // simplified: UTC+1 (adjust for DST if needed)
-    const localMinutes = now.getUTCHours() * 60 + now.getUTCMinutes() + parisOffset;
-    const localHour = Math.floor((localMinutes % 1440) / 60);
+    const parisTime = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Paris" }));
+    const localHour = parisTime.getHours();
     const localHourStr = String(localHour).padStart(2, "0") + ":00";
     const today = now.toISOString().slice(0, 10);
 
