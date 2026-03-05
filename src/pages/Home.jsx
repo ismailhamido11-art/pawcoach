@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
 import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
+import PullToRefresh from "../components/PullToRefresh";
 import DogRadarHero from "../components/home/DogRadarHero";
 import DailyCheckinHub from "../components/home/DailyCheckinHub";
 import StreakCard from "../components/home/StreakCard";

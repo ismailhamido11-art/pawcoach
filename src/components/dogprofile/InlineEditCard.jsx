@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Pencil, Check, X } from "lucide-react";
+import MobileSelect from "@/components/ui/MobileSelect";
 
 export default function InlineEditCard({
   icon: Icon, iconColor, label, value, sub, subColor,

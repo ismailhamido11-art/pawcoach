@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Utensils, Pencil, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import MobileSelect from "@/components/ui/MobileSelect";
 
 const DIET_LABELS = { kibble: "Croquettes", barf: "BARF (cru)", mixed: "Mixte", homemade: "Fait maison" };
 

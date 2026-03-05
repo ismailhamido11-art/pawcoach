@@ -6,6 +6,7 @@ import ChatFAB from "@/components/ChatFAB";
 import WellnessBanner from "@/components/WellnessBanner";
 import Illustration from "@/components/illustrations/Illustration";
 import WalkMode from "@/components/tracker/WalkMode";
+import PullToRefresh from "@/components/PullToRefresh";
 import TrackerHistory from "@/components/tracker/TrackerHistory";
 import AITrainingProgram from "@/components/activite/AITrainingProgram";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
