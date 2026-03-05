@@ -20,6 +20,7 @@ export default function Layout({ children, currentPageName }) {
         body { overscroll-behavior-y: none; }
         button, [role="button"], a, nav, nav * {
           -webkit-tap-highlight-color: transparent;
+          -webkit-touch-callout: none;
           user-select: none;
           -webkit-user-select: none;
         }
@@ -31,12 +32,17 @@ export default function Layout({ children, currentPageName }) {
         input, textarea, select {
           font-size: 16px !important;
         }
+        /* Prevent decorative elements from being draggable */
+        img[class*="drop-shadow"], [class*="illustration"] {
+          pointer-events: none;
+          -webkit-user-drag: none;
+        }
       `}</style>
       {/* Floating bell button top-right — hidden on DogProfile */}
       {currentPageName !== "DogProfile" && (
         <div
           className="fixed top-0 right-0 z-50 flex items-center"
-          style={{ paddingTop: "calc(max(env(safe-area-inset-top, 0px), 6px) + 28px + env(safe-area-inset-top, 0px))", paddingRight: "12px" }}
+          style={{ paddingTop: "calc(max(env(safe-area-inset-top, 0px), 12px) + 28px)", paddingRight: "max(12px, env(safe-area-inset-right, 0px))" }}
         >
           <NotificationCenter />
         </div>
