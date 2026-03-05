@@ -79,10 +79,33 @@ Réponds en JSON avec ce format exact:
           difficulty: { type: "string" },
           summary: { type: "string" },
           weekly_goal_minutes: { type: "number" },
-          weeks: { type: "array" },
-          breed_specific_tips: { type: "array" },
-          warning_signs: { type: "array" },
-          progression_indicators: { type: "array" }
+          weeks: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                week: { type: "number" },
+                theme: { type: "string" },
+                focus: { type: "string" },
+                daily_sessions: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      day: { type: "string" },
+                      type: { type: "string" },
+                      duration_min: { type: "number" },
+                      activity: { type: "string" },
+                      tips: { type: "string" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          breed_specific_tips: { type: "array", items: { type: "string" } },
+          warning_signs: { type: "array", items: { type: "string" } },
+          progression_indicators: { type: "array", items: { type: "string" } }
         }
       }
     });
