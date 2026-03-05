@@ -157,6 +157,9 @@ export default function Activite() {
             {activeTab === "historique" && (
               <TrackerHistory logs={logs} dog={dog} />
             )}
+            {activeTab === "programme" && (
+              <AITrainingProgram dog={dog} logs={logs} />
+            )}
             {activeTab === "dressage" && (
               <DressageContent dog={dog} />
             )}
