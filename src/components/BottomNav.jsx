@@ -12,8 +12,8 @@ const tabs = [
   { label: "Profil",     icon: User,     page: "Profile" },
 ];
 
-// Pages whose active sub-tab should be preserved when returning
-const STATE_PRESERVING_PAGES = ["Sante", "Activite"];
+// Pages with independent navigation stacks
+const STACK_PAGES = ["Sante", "Activite", "Nutri"];
 
 export default function BottomNav({ currentPage }) {
   const navigate = useNavigate();
@@ -32,15 +32,13 @@ export default function BottomNav({ currentPage }) {
 
     if (currentPage === page) {
       e.preventDefault();
-      // Active tab double-tap: reset to top and clear saved state
+      // Active tab double-tap: reset to root page and clear stack state
       sessionStorage.removeItem(`scroll_${page}`);
-      sessionStorage.removeItem(`subtab_${page}`);
+      // Clear sub-view query params and history
+      sessionStorage.removeItem(`tab_${page}`);
+      sessionStorage.removeItem(`journey_${page}`);
+      sessionStorage.removeItem(`exercise_${page}`);
       window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-    // For state-preserving pages: sub-tab is kept in sessionStorage
-    // For non-preserving pages: clear sub-tab so they reset on return
-    if (!STATE_PRESERVING_PAGES.includes(page)) {
-      sessionStorage.removeItem(`subtab_${page}`);
     }
   };
 
