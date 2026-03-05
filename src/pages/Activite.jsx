@@ -7,8 +7,9 @@ import WellnessBanner from "@/components/WellnessBanner";
 import Illustration from "@/components/illustrations/Illustration";
 import WalkMode from "@/components/tracker/WalkMode";
 import TrackerHistory from "@/components/tracker/TrackerHistory";
+import AITrainingProgram from "@/components/activite/AITrainingProgram";
 import { motion, AnimatePresence } from "framer-motion";
-import { Footprints, History, Dumbbell, ExternalLink } from "lucide-react";
+import { Footprints, History, Dumbbell, Sparkles, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
