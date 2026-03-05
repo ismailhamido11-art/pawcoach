@@ -15,8 +15,14 @@ export default function BottomNav({ currentPage }) {
   const navigate = useNavigate();
 
   const handleTabClick = (e, page) => {
+    // Save current scroll position before leaving
+    sessionStorage.setItem(`scroll_${currentPage}`, window.scrollY);
+
     if (currentPage === page) {
       e.preventDefault();
+      // Active tab: reset to root (clear saved scroll/subtab)
+      sessionStorage.removeItem(`scroll_${page}`);
+      sessionStorage.removeItem(`subtab_${page}`);
       navigate(createPageUrl(page), { replace: true });
     }
   };
