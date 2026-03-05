@@ -164,6 +164,9 @@ export default function Sante() {
             {activeTab === "import" && (
               <HealthImportContent dog={dog} onImported={(newRecs) => setRecords(prev => [...prev, ...newRecs])} />
             )}
+            {activeTab === "growth" && (
+              <GrowthTrackerContent dog={dog} user={user} />
+            )}
             {activeTab === "findvet" && (
               <FindVetContent dog={dog} />
             )}
