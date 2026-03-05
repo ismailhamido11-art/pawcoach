@@ -9,6 +9,7 @@ import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
 import FoodComparator from "../components/nutrition/FoodComparator";
 import DietPreferencesPanel from "../components/nutrition/DietPreferencesPanel";
 import SavedPlansPanel from "../components/nutrition/SavedPlansPanel";
+import LabelScanner from "../components/nutrition/LabelScanner";
 import { Button } from "@/components/ui/button";
 import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, Settings2, History } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
