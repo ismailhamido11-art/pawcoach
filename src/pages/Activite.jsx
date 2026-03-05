@@ -55,9 +55,11 @@ export default function Activite() {
   }, []);
 
   const refreshLogs = async () => {
-    if (!dog) return;
+    if (!dog || !user) return;
     const l = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 30);
     setLogs(l || []);
+    // Check walk badges after refresh
+    checkWalkBadges(dog.id, user.email, l || []);
   };
 
   const totalWalkMinutes = logs.reduce((acc, l) => acc + (l.walk_minutes || 0), 0);

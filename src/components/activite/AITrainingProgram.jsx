@@ -101,6 +101,10 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       setProgram(resp.data?.program);
       setShowGoalInput(false);
       toast.success("Programme généré !");
+      // Award training badge
+      if (dog?.id && dog?.owner) {
+        checkTrainingBadges(dog.id, dog.owner).catch(() => {});
+      }
     } catch (err) {
       toast.error("Erreur lors de la génération.");
     } finally {
