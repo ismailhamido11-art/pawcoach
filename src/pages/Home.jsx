@@ -113,14 +113,20 @@ export default function Home() {
   const handleCheckin = async ({ mood, energy, appetite, notes }) => {
     if (!mood || !energy || !appetite || submitting) return;
     setSubmitting(true);
+
+    // --- OPTIMISTIC UPDATE: show result card immediately ---
+    const optimisticCheckin = { mood, energy, appetite, notes, date: getTodayString(), ai_response: null, _syncing: true };
+    setTodayCheckin(optimisticCheckin);
+    setRecentCheckins(prev => [optimisticCheckin, ...prev].slice(0, 7));
+    if (navigator.vibrate) navigator.vibrate([30, 20, 30]);
+
     try {
       const response = await base44.functions.invoke("dailyCheckinProcess", { dogId: dog.id, mood, energy, appetite, notes });
       const result = response.data || {};
       const newCheckin = result.checkin || { mood, energy, appetite, ai_response: result.aiResponse, date: getTodayString() };
       setTodayCheckin(newCheckin);
       setStreak(result.streak || streak);
-      if (navigator.vibrate) navigator.vibrate([30, 20, 30]);
-      setRecentCheckins(prev => [newCheckin, ...prev].slice(0, 7));
+      setRecentCheckins(prev => [newCheckin, ...prev.filter(c => !c._syncing)].slice(0, 7));
       const newStreak = result.streak?.current_streak;
       if (newStreak) {
         const ms = MILESTONES.filter(m => m.days <= newStreak).pop();
@@ -132,6 +138,9 @@ export default function Home() {
       toast.success("Check-in enregistré ! 🎉");
     } catch (err) {
       console.error("Check-in error:", err);
+      // Rollback optimistic update
+      setTodayCheckin(null);
+      setRecentCheckins(prev => prev.filter(c => !c._syncing));
       toast.error("Erreur lors du check-in. Réessaie dans quelques instants.");
     } finally {
       setSubmitting(false);

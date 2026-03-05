@@ -115,6 +115,32 @@ export default function Training() {
     const existing = progresses.find(p => p.exercise_id === key);
     const wasCompleted = existing?.completed;
 
+    // --- OPTIMISTIC UPDATE ---
+    let optimisticProgresses;
+    if (existing && existing.completed) {
+      optimisticProgresses = progresses.map(p => p.id === existing.id ? { ...p, completed: false } : p);
+    } else if (existing) {
+      optimisticProgresses = progresses.map(p => p.id === existing.id ? { ...p, completed: true } : p);
+    } else {
+      optimisticProgresses = [...progresses, { exercise_id: key, completed: true, completed_date: new Date().toISOString().split("T")[0], _optimistic: true }];
+    }
+    setProgresses(optimisticProgresses);
+    setSelected(null);
+
+    if (!wasCompleted) {
+      if (navigator.vibrate) navigator.vibrate(30);
+      const prevCount = progresses.filter(p => p.completed).length;
+      const newCount = optimisticProgresses.filter(p => p.completed).length;
+      if (prevCount === 2 && newCount === 3 && !isUserPremium(user)) {
+        setShowFreeGate(true);
+      } else if (MILESTONES.includes(newCount)) {
+        setMilestone(newCount);
+      } else {
+        setCelebration(exercise.name);
+      }
+    }
+
+    // --- API SYNC (background) ---
     try {
       let newProgresses;
       if (existing && existing.completed) {
@@ -131,32 +157,21 @@ export default function Training() {
           completed: true,
           completed_date: new Date().toISOString().split("T")[0],
         });
-        newProgresses = [...progresses, newP];
+        // Replace the optimistic placeholder with the real record
+        newProgresses = [...progresses.filter(p => !p._optimistic), newP];
         const newPoints = (user.points || 0) + 50;
         await base44.auth.updateMe({ points: newPoints });
         setUser(prev => ({ ...prev, points: newPoints }));
       }
-
       setProgresses(newProgresses);
-      setSelected(null);
-
       if (!wasCompleted) {
-        if (navigator.vibrate) navigator.vibrate(30);
-        await updateStreakSilently(dog.id, user.email);
+        updateStreakSilently(dog.id, user.email).catch(() => {});
         checkStreakBadges(dog.id, user.email).catch(() => {});
-        const prevCount = progresses.filter(p => p.completed).length;
-        const newCount = newProgresses.filter(p => p.completed).length;
-        if (prevCount === 2 && newCount === 3 && !isUserPremium(user)) {
-          setShowFreeGate(true);
-        } else if (MILESTONES.includes(newCount)) {
-          setMilestone(newCount);
-        } else {
-          setCelebration(exercise.name);
-        }
       }
     } catch (err) {
       console.error("Training complete error:", err);
-      alert("Erreur lors de la sauvegarde. Réessaie.");
+      // Rollback on failure
+      setProgresses(progresses);
     }
   };
 

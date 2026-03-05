@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Home, Heart, Activity, Utensils, User } from "lucide-react";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 const tabs = [
   { label: "Accueil",    icon: Home,     page: "Home" },
