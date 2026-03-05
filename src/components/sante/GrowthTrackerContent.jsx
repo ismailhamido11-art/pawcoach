@@ -369,7 +369,9 @@ export default function GrowthTrackerContent({ dog, user }) {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" className="flex-1" onClick={saveManual}>Enregistrer</Button>
+              <Button size="sm" className="flex-1" onClick={saveManual} disabled={savingManual}>
+                {savingManual ? <><span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin mr-1" />Enregistrement...</> : "Enregistrer"}
+              </Button>
               <Button size="sm" variant="outline" onClick={() => setShowAddManual(false)}>Annuler</Button>
             </div>
           </motion.div>
