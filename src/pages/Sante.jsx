@@ -120,7 +120,7 @@ export default function Sante() {
                 key={id}
                 whileTap={{ scale: 0.93 }}
                 transition={spring}
-                onClick={() => navigate(createPageUrl("Sante") + `?tab=${id}`)}
+                onClick={() => setActiveTab(id)}
                 className={`relative flex flex-col items-center gap-1 py-3 rounded-2xl text-center overflow-hidden transition-all ${
                   active ? "shadow-lg" : "bg-white/10"
                 }`}
