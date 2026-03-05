@@ -311,7 +311,7 @@ export default function Nutri() {
       {/* Tab: NutriCoach chat */}
       {activeTab === "coach" && (
         <>
-          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 pb-44">
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 pb-4">
             {messages.map((msg, i) => (
               <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 {msg.role === "assistant" && (
@@ -366,7 +366,7 @@ export default function Nutri() {
             <div ref={bottomRef} />
           </div>
 
-          <div className="fixed bottom-16 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-border">
+          <div className="flex-shrink-0 bg-background/80 backdrop-blur-lg border-t border-border mb-16">
             {isLimitReached ? (
               <div className="px-5 py-3">
                 <div className="flex gap-2 justify-start mb-2">
@@ -419,7 +419,9 @@ export default function Nutri() {
         </>
       )}
 
-      <BottomNav currentPage="Nutri" />
+      <div className="flex-shrink-0">
+        <BottomNav currentPage="Nutri" />
+      </div>
     </div>
   );
 }
