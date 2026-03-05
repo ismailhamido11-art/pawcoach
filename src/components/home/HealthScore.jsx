@@ -28,7 +28,7 @@ export default function HealthScore({ dog, user, todayCheckin, records, scans, d
       }
     }
     calculate();
-  }, [dog?.id, todayCheckin]);
+  }, [dog?.id]);
 
   if (loading) {
     return (

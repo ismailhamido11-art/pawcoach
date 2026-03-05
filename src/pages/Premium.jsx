@@ -171,7 +171,7 @@ export default function Premium() {
               transition={{ delay: 0.3 }}
               className="text-white/70 text-sm mt-1"
             >
-              {dog.name} a acces a tout, sans limite
+              {dog.name} a accès à tout, sans limite
             </motion.p>
           )}
         </div>
@@ -197,7 +197,7 @@ export default function Premium() {
           {/* Unlocked features */}
           <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
             <div className="px-4 py-3 border-b border-border bg-muted/30">
-              <p className="text-xs font-bold text-foreground">Tes avantages debloques</p>
+              <p className="text-xs font-bold text-foreground">Tes avantages débloqués</p>
             </div>
             <div className="divide-y divide-border">
               {PREMIUM_FEATURES.map((f, i) => (

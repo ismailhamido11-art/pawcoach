@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
     if (todayCheckin) {
       if (todayCheckin.mood >= 3) insights.push('Humeur positive ✨');
       if (todayCheckin.energy >= 2.5) insights.push('Énergie bonne 🔥');
-      if (todayCheckin.appetite === 3) insights.push('Appétit normal 🍗');
+      if (todayCheckin.appetite === 2) insights.push('Appétit normal 🍗');
     }
     if (avgWalkMinutes > 40) insights.push('Activité excellente 🚶');
     if (insights.length === 0) insights.push('Continuer l\'observation 👀');
