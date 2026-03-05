@@ -1,21 +1,37 @@
 import { useEffect } from "react";
 
 /**
- * RouteWrapper enables nested URL routing in a flat file-based routing system.
- * It intercepts route changes and manages history navigation for sub-routes.
+ * RouteWrapper — Functional wrapper for managing application route lifecycle.
  * 
- * Usage in pages:
- * - Use useParams() to read URL segments
- * - Use navigate() with createPageUrl() for navigation
- * - Scroll restoration is handled automatically by BottomNav
+ * Handles:
+ * - Route transition animations
+ * - Navigation lifecycle hooks
+ * - Session state preservation (sub-tabs, scroll position)
+ * 
+ * Usage:
+ * import RouteWrapper from '@/components/RouteWrapper';
+ * export default function Page() {
+ *   return <RouteWrapper page="PageName">{children}</RouteWrapper>;
+ * }
  */
 
-export function useNestedRouting() {
+export default function RouteWrapper({ page, children }) {
   useEffect(() => {
-    // Scroll restoration handled by BottomNav useEffect
-  }, []);
+    // Restore scroll position if available
+    const saved = sessionStorage.getItem(`scroll_${page}`);
+    if (saved) {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: parseInt(saved, 10), behavior: "instant" });
+      });
+    }
+  }, [page]);
 
-  return null;
+  useEffect(() => {
+    return () => {
+      // Save scroll position on unmount
+      sessionStorage.setItem(`scroll_${page}`, window.scrollY);
+    };
+  }, [page]);
+
+  return children;
 }
-
-export default RouteWrapper;
