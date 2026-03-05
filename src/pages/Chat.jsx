@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Send, Camera, Bookmark, BookmarkCheck } from "lucide-react";
 import { DogChat } from "../components/ui/PawIllustrations";
 import Illustration from "../components/illustrations/Illustration";
-import WellnessBanner from "../components/WellnessBanner";
 import { isUserPremium } from "@/utils/premium";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
@@ -265,37 +264,46 @@ export default function Chat() {
   ] : [];
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-background">
-      {/* Header */}
-      <div className="flex-shrink-0 gradient-primary pt-14 pb-4 px-5 overflow-hidden relative">
-        <WellnessBanner />
-        <div className="relative z-10 flex items-center gap-3">
-          <div className="flex-1">
-            <h1 className="text-white font-black text-xl leading-tight">Assistant IA</h1>
-            {dog && <p className="text-white/70 text-xs mt-0.5">Pour {dog.name} · {dog.breed}</p>}
+    <div className="min-h-screen bg-background flex flex-col">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-accent/10 backdrop-blur-sm border-b border-accent/20 px-5 py-1.5 text-center">
+        <p className="text-xs text-accent-foreground font-medium">🐾 PawCoach est un coach bien-être, pas un vétérinaire.</p>
+      </div>
+
+      <div className="gradient-primary pt-14 pb-0 px-5 mt-8 overflow-hidden relative">
+        <div className="relative z-10 flex items-end gap-3">
+          <div className="flex-1 pb-4">
+            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
+            <h1 className="text-white font-black text-2xl leading-tight">Assistant IA</h1>
+            {dog && <p className="text-white/70 text-xs mt-0.5">Personnalisé pour {dog.name} · {dog.breed}</p>}
+            <div className="flex items-center gap-2 mt-2">
+              {!isUserPremium(user) && messagesRemaining !== null && (
+                <div className="bg-white/20 px-2.5 py-1 rounded-full">
+                  <span className="text-white text-xs font-medium">
+                    {messagesRemaining} credit{messagesRemaining !== 1 ? "s" : ""} IA (Chat + Nutri)
+                  </span>
+                </div>
+              )}
+              {isUserPremium(user) && (
+                <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
+                  <span className="text-white text-xs font-medium">Premium</span>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            {!isUserPremium(user) && messagesRemaining !== null && (
-              <div className="bg-white/20 px-2.5 py-1 rounded-full">
-                <span className="text-white text-xs font-medium">{messagesRemaining} crédit{messagesRemaining !== 1 ? "s" : ""}</span>
-              </div>
-            )}
-            {isUserPremium(user) && (
-              <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
-                <span className="text-white text-xs font-medium">Premium</span>
-              </div>
-            )}
-          </div>
-          <motion.div animate={{ scale: [1, 1.03, 1] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} className="w-14 h-14 flex-shrink-0">
+          <motion.div
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-28 h-28 flex-shrink-0"
+          >
             <Illustration name="dogHighFive" alt="Assistant IA" className="w-full h-full drop-shadow-lg" />
           </motion.div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
-      {/* Messages — zone scrollable */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 pb-44">
         {messages.map((msg, i) => (
           <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role === "assistant" && (
@@ -360,10 +368,9 @@ export default function Chat() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Barre d'input — fixe en bas */}
-      <div className="flex-shrink-0 bg-background/95 backdrop-blur-lg border-t border-border">
+      <div className="fixed bottom-16 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-border">
         {showSuggestions && (
-          <div className="px-5 pt-2 pb-1">
+          <div className="px-5 pt-3 pb-1">
             <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
               {suggestions.map((s, i) => (
                 <motion.button
@@ -381,25 +388,56 @@ export default function Chat() {
         )}
 
         {isLimitReached ? (
-          <div className="px-5 py-3 flex items-center gap-3">
-            <p className="text-sm text-muted-foreground flex-1">Crédits épuisés pour aujourd'hui 🐾</p>
-            <Button onClick={() => navigate(createPageUrl("Premium") + "?from=chat")} size="sm" className="gradient-primary border-0 text-white text-xs h-8 flex-shrink-0">
-              Premium ✨
-            </Button>
+          <div className="px-5 py-3 space-y-3">
+            <div className="flex gap-2 justify-start">
+              <div className="w-8 h-8 flex-shrink-0 mt-1">
+                <DogChat color="#2d9f82" />
+              </div>
+              <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
+                <p className="text-sm leading-relaxed">
+                  J'adorerais continuer à t'aider avec <strong>{dog?.name || "ton chien"}</strong> ! 🐾 Tes messages gratuits sont épuisés pour aujourd'hui. Reviens demain pour 2 messages offerts, ou passe en Premium pour qu'on discute sans limite !
+                </p>
+                <div className="flex gap-2 mt-3">
+                  <Button onClick={() => navigate(createPageUrl("Premium") + "?from=chat")} size="sm" className="gradient-primary border-0 text-white text-xs h-8">
+                    Débloquer Premium ✨
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground">
+                    À demain ! 👋
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 px-0 py-0">
+              <Input
+                disabled
+                placeholder="Reviens demain ou passe Premium..."
+                className="flex-1 h-11 rounded-xl border-border bg-muted/30 opacity-60"
+              />
+            </div>
           </div>
         ) : (
           <>
             {pendingImage && (
               <div className="px-5 pt-2 flex items-center gap-2">
-                <img src={pendingImage.preview} alt="preview" className="w-10 h-10 rounded-lg object-cover border border-border" />
-                <span className="text-xs text-muted-foreground flex-1">Photo prête à envoyer</span>
-                <button onClick={() => { if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview); setPendingImage(null); }} className="text-xs text-destructive">Retirer</button>
+                <img src={pendingImage.preview} alt="preview" className="w-12 h-12 rounded-lg object-cover border border-border" />
+                <span className="text-xs text-muted-foreground">Photo prête à envoyer</span>
+                <button onClick={() => { if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview); setPendingImage(null); }} className="ml-auto text-xs text-destructive">Retirer</button>
               </div>
             )}
             <div className="flex gap-2 px-5 py-3 items-end">
-              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
-              <motion.button whileTap={{ scale: 0.96 }} transition={spring} onClick={() => fileInputRef.current?.click()}
-                className="h-11 w-11 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 hover:bg-secondary/80 transition-colors border border-border">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageSelect}
+              />
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                transition={spring}
+                onClick={() => fileInputRef.current?.click()}
+                className="h-11 w-11 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0 hover:bg-secondary/80 transition-colors border border-border"
+              >
                 <Camera className="w-5 h-5 text-secondary-foreground" />
               </motion.button>
               <textarea
@@ -424,10 +462,9 @@ export default function Chat() {
             </div>
           </>
         )}
-
-        {/* BottomNav spacer */}
-        <BottomNav currentPage="Chat" />
       </div>
+
+      <BottomNav currentPage="Chat" />
     </div>
   );
 }

@@ -173,7 +173,7 @@ export default function Nutri() {
   ] : [];
 
   return (
-    <div className={`${activeTab === "coach" ? "fixed inset-0 flex flex-col" : "min-h-screen"} bg-background`}>
+    <div className="min-h-screen bg-background flex flex-col">
       <WellnessBanner />
 
       {/* Header */}
@@ -311,12 +311,11 @@ export default function Nutri() {
       {/* Tab: NutriCoach chat */}
       {activeTab === "coach" && (
         <>
-          {/* Messages — zone scrollable */}
-          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 pb-44">
             {messages.map((msg, i) => (
               <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 {msg.role === "assistant" && (
-                  <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl flex-shrink-0" />
+                  <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                 )}
                 <div className="flex flex-col gap-1 max-w-[82%]">
                   <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
@@ -339,8 +338,13 @@ export default function Nutri() {
                     )}
                   </div>
                   {msg.role === "assistant" && (
-                    <button onClick={() => handleBookmark(msg)} className="self-start ml-1 flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors">
-                      {bookmarked[msg.timestamp] ? <BookmarkCheck className="w-3.5 h-3.5 text-primary" /> : <Bookmark className="w-3.5 h-3.5" />}
+                    <button
+                      onClick={() => handleBookmark(msg)}
+                      className="self-start ml-1 flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {bookmarked[msg.timestamp]
+                        ? <BookmarkCheck className="w-3.5 h-3.5 text-primary" />
+                        : <Bookmark className="w-3.5 h-3.5" />}
                       {bookmarked[msg.timestamp] ? "Sauvegardé" : "Sauvegarder"}
                     </button>
                   )}
@@ -349,7 +353,7 @@ export default function Nutri() {
             ))}
             {loading && (
               <div className="flex gap-2 justify-start">
-                <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl flex-shrink-0" />
+                <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                 <div className="chat-bubble-assistant px-4 py-3.5 rounded-2xl rounded-bl-sm">
                   <div className="flex gap-1.5 items-center">
                     <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary rounded-full" />
@@ -362,52 +366,60 @@ export default function Nutri() {
             <div ref={bottomRef} />
           </div>
 
-          {/* Barre d'input — fixe en bas */}
-          <div className="flex-shrink-0 bg-background/95 backdrop-blur-lg border-t border-border">
-            {showQuickActions && (
-              <div className="px-5 pt-2 pb-1">
-                <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-                  {quickActions.map((s, i) => (
-                    <motion.button key={i} whileTap={{ scale: 0.96 }} transition={spring} onClick={() => sendMessage(s)}
-                      className="flex-shrink-0 text-xs bg-secondary text-secondary-foreground px-3 py-2 rounded-xl border border-border hover:border-primary hover:text-primary transition-colors whitespace-nowrap">
-                      {s}
-                    </motion.button>
-                  ))}
+          <div className="fixed bottom-16 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-border">
+            {isLimitReached ? (
+              <div className="px-5 py-3">
+                <div className="flex gap-2 justify-start mb-2">
+                  <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
+                  <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
+                    <p className="text-sm leading-relaxed">J'adorerais continuer ! 🥗 Tes crédits IA sont épuisés pour aujourd'hui. Reviens demain ou passe en Premium.</p>
+                    <Button onClick={() => navigate(createPageUrl("Premium") + "?from=nutrition")} size="sm" className="mt-2 bg-safe hover:bg-safe/90 border-0 text-white text-xs h-8">
+                      Débloquer Premium ✨
+                    </Button>
+                  </div>
                 </div>
               </div>
-            )}
-            {isLimitReached ? (
-              <div className="px-5 py-3 flex items-center gap-3">
-                <p className="text-sm text-muted-foreground flex-1">Crédits épuisés pour aujourd'hui 🥗</p>
-                <Button onClick={() => navigate(createPageUrl("Premium") + "?from=nutrition")} size="sm" className="bg-safe hover:bg-safe/90 border-0 text-white text-xs h-8 flex-shrink-0">
-                  Premium ✨
-                </Button>
-              </div>
             ) : (
-              <div className="flex gap-2 px-5 py-3 items-end">
-                <textarea
-                  ref={textareaRef}
-                  value={input}
-                  onChange={e => setInput(e.target.value)}
-                  maxLength={2000}
-                  onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())}
-                  placeholder={dog ? `Question nutrition pour ${dog.name}...` : "Pose ta question..."}
-                  rows={1}
-                  className="flex-1 min-h-[44px] max-h-[120px] rounded-xl border border-border bg-muted/30 px-3 py-2.5 text-sm resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-ring"
-                  style={{ lineHeight: "1.5" }}
-                />
-                <Button onClick={() => sendMessage()} disabled={!input.trim() || loading}
-                  className="h-11 w-11 rounded-xl bg-safe hover:bg-safe/90 border-0 shadow-lg p-0 flex-shrink-0 self-end">
-                  <Send className="w-4 h-4 text-white" />
-                </Button>
-              </div>
+              <>
+                {showQuickActions && (
+                  <div className="px-5 pt-3 pb-1">
+                    <div className="flex gap-2 overflow-x-auto pb-1">
+                      {quickActions.map((s, i) => (
+                        <motion.button key={i} whileTap={{ scale: 0.96 }} transition={spring} onClick={() => sendMessage(s)}
+                          className="flex-shrink-0 text-xs bg-secondary text-secondary-foreground px-3 py-2 rounded-xl border border-border hover:border-primary hover:text-primary transition-colors whitespace-nowrap">
+                          {s}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div className="flex gap-2 px-5 py-3 items-end">
+                  <textarea
+                    ref={textareaRef}
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    maxLength={2000}
+                    onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())}
+                    placeholder={dog ? `Question nutrition pour ${dog.name}...` : "Pose ta question..."}
+                    rows={1}
+                    className="flex-1 min-h-[44px] max-h-[120px] rounded-xl border border-border bg-muted/30 px-3 py-2.5 text-sm resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-ring"
+                    style={{ lineHeight: "1.5" }}
+                  />
+                  <Button
+                    onClick={() => sendMessage()}
+                    disabled={!input.trim() || loading}
+                    className="h-11 w-11 rounded-xl bg-safe hover:bg-safe/90 border-0 shadow-lg p-0 flex-shrink-0 self-end"
+                  >
+                    <Send className="w-4 h-4 text-white" />
+                  </Button>
+                </div>
+              </>
             )}
-            <BottomNav currentPage="Nutri" />
           </div>
         </>
       )}
 
-      {activeTab !== "coach" && <BottomNav currentPage="Nutri" />}
+      <BottomNav currentPage="Nutri" />
     </div>
   );
 }

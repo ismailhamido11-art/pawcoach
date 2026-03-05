@@ -265,7 +265,7 @@ export default function Scan() {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Emergency banner — already handled in header pt offset */}
+      {/* Emergency banner */}
       {result?.verdict === "toxic" && dogAteIt && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-red-600 px-4 py-3 text-white text-center shadow-lg">
           <p className="font-bold text-sm">🚨 URGENCE — Appelle immédiatement ton vétérinaire</p>
