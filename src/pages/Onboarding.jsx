@@ -225,14 +225,18 @@ Extrais ces informations et renvoie un objet JSON.
             subject: `Bienvenue sur PawCoach, ${user.full_name || "l'ami"} !`,
             body: `${dog.name} est maintenant inscrit ! Profitez de l'application !`,
           });
-        } catch (e) {}
+        } catch (e) {
+          console.warn("Welcome email failed:", e.message || e);
+        }
         // Activate 7-day free trial + store nudge flag (only if no existing trial)
         try {
           if (!user.trial_expires_at) {
             const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
             await base44.auth.updateMe({ premium_onboarding_nudge_shown: false, trial_expires_at: trialEnd });
           }
-        } catch(e) {}
+        } catch(e) {
+          console.error("Trial setup failed:", e.message || e);
+        }
       }
       setDone(true);
     } catch (e) {

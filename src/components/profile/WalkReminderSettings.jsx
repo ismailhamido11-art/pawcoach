@@ -10,7 +10,7 @@ const HOURS = Array.from({ length: 24 }, (_, i) => {
   return { value: `${h}:00`, label: `${h}h00` };
 });
 
-export default function WalkReminderSettings({ user, onSave }) {
+export default function WalkReminderSettings({ user, onSave, dogName }) {
   const [enabled, setEnabled] = useState(user?.walk_reminder_enabled || false);
   const [time, setTime] = useState(user?.walk_reminder_time || "18:00");
   const [saving, setSaving] = useState(false);
@@ -90,7 +90,7 @@ export default function WalkReminderSettings({ user, onSave }) {
               </div>
               <p className="text-[10px] text-muted-foreground mt-2 flex items-center gap-1">
                 <Footprints className="w-3 h-3" />
-                Un email sera envoyé à {time} si {`{chien}`} n'a pas encore eu sa balade
+                Un email sera envoyé à {time} si {dogName || "votre chien"} n'a pas encore eu sa balade
               </p>
             </div>
           </motion.div>

@@ -10,6 +10,19 @@ Deno.serve(async (req) => {
 
     if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
 
+    // Validate imageUrl to prevent SSRF
+    if (imageUrl) {
+      try {
+        const parsed = new URL(imageUrl);
+        const allowedHosts = ['base44.app', 'amazonaws.com', 's3.amazonaws.com'];
+        if (!allowedHosts.some(h => parsed.hostname.endsWith(h))) {
+          return Response.json({ error: 'Invalid image URL' }, { status: 400 });
+        }
+      } catch {
+        return Response.json({ error: 'Invalid image URL' }, { status: 400 });
+      }
+    }
+
     // Server-side quota check (prevents multi-tab bypass)
     const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
     if (!isPremium) {
@@ -36,8 +49,8 @@ Deno.serve(async (req) => {
       user._messagesRemaining = newRemaining;
     }
 
-    // Filter messages to only allow safe roles (prevent prompt injection)
-    const messages = (rawMessages || []).filter(m => m.role === 'user' || m.role === 'assistant').map(m => ({
+    // Filter messages to only allow safe roles, limit history to prevent prompt injection / cost abuse
+    const messages = (rawMessages || []).filter(m => m.role === 'user' || m.role === 'assistant').slice(-20).map(m => ({
       role: m.role,
       content: String(m.content || '').substring(0, 2000),
     }));

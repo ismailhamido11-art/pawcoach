@@ -129,7 +129,7 @@ export default function Profile() {
 
         <CoachSettings user={user} onSave={handleSaveUser} />
 
-        <WalkReminderSettings user={user} onSave={handleSaveUser} />
+        <WalkReminderSettings user={user} onSave={handleSaveUser} dogName={(dogs.find(d => d.id === activeDogId) || dogs[0])?.name} />
 
         <VetSection dogs={dogs} activeDogId={activeDogId} />
 

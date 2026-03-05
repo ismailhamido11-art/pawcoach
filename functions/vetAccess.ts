@@ -122,7 +122,9 @@ Deno.serve(async (req) => {
         if (active) return Response.json({ error: 'Access already exists', access: active }, { status: 409 });
       }
 
-      const code = (Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8)).toUpperCase();
+      const arr = new Uint8Array(8);
+      crypto.getRandomValues(arr);
+      const code = Array.from(arr, b => b.toString(36).padStart(2, '0')).join('').substring(0, 12).toUpperCase();
       const dog = dogs[0];
 
       const access = await base44.asServiceRole.entities.SharedVetAccess.create({

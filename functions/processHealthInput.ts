@@ -78,11 +78,9 @@ Deno.serve(async (req) => {
     }
 
     // Get current user info
-    try {
-      if (user && user.full_name) {
-        ownerName = user.full_name.split(" ")[0]; // First name
-      }
-    } catch (e) {}
+    if (user && user.full_name) {
+      ownerName = user.full_name.split(" ")[0]; // First name
+    }
 
     // Build prompt for LLM
     const systemPrompt = `Tu es l'ange gardien vétérinaire de ${dogName}${dogDetails ? ` (${dogDetails})` : ''}. ${ownerName} compte sur toi.
@@ -137,7 +135,7 @@ Retourne TOUJOURS du JSON valide :
     let fileUrls = [];
 
     if (messages && Array.isArray(messages)) {
-      conversationHistory = messages.map(m => `[${m.role === 'user' ? 'UTILISATEUR' : 'ASSISTANT'}] ${sanitize(m.content)}`).join("\n");
+      conversationHistory = messages.slice(-10).map(m => `[${m.role === 'user' ? 'UTILISATEUR' : 'ASSISTANT'}] ${sanitize(m.content)}`).join("\n");
       const lastMsg = messages[messages.length - 1];
       if (lastMsg?.image_url) fileUrls.push(lastMsg.image_url);
     } else if (text || imageUrl) {

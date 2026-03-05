@@ -94,7 +94,7 @@ export default function Home() {
           // Post-onboarding premium nudge (first visit, non-premium)
           if (!isUserPremium(u) && !u.premium_onboarding_nudge_shown) {
             setShowPremiumNudge(true);
-            try { await base44.auth.updateMe({ premium_onboarding_nudge_shown: true }); } catch(e) {}
+            try { await base44.auth.updateMe({ premium_onboarding_nudge_shown: true }); } catch(e) { console.warn("Nudge flag update failed:", e); }
           }
         } else {
           navigate(createPageUrl("Onboarding"));
