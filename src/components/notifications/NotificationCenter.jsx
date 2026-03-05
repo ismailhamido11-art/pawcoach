@@ -224,20 +224,42 @@ function NotifRow({ n, onNavigate }) {
   const cfg = TYPE_CONFIG[n.type] || TYPE_CONFIG.vet_visit;
   const Icon = cfg.icon;
   const badge = urgencyBadge(n.daysLeft);
+  const isUrgent = n.daysLeft <= 3;
 
   return (
-    <button onClick={onNavigate} className="w-full flex items-center gap-3 px-5 py-3.5 hover:bg-secondary/30 transition-colors text-left">
-      <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${cfg.bg}`}>
-        <Icon className={`w-4 h-4 ${cfg.color}`} />
-      </div>
+    <motion.button 
+      onClick={onNavigate} 
+      whileHover={{ x: 4 }}
+      whileTap={{ scale: 0.98 }}
+      className={`w-full flex items-center gap-3 px-5 py-4 transition-all text-left ${
+        isUrgent ? "bg-red-50/50 hover:bg-red-50" : "hover:bg-secondary/30"
+      }`}
+    >
+      {/* Icon with gradient background */}
+      <motion.div 
+        animate={isUrgent ? { scale: [1, 1.1, 1] } : {}}
+        transition={{ duration: 1.5, repeat: Infinity }}
+        className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br ${cfg.gradient} shadow-md`}
+      >
+        <Icon className="w-5 h-5 text-white" strokeWidth={2} />
+      </motion.div>
+      
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold text-foreground">{n.title}</p>
+        <p className="text-xs font-bold text-foreground">{n.title}</p>
         <p className="text-[10px] text-muted-foreground mt-0.5">
           {n.dogName && <span className="font-medium">{n.dogName} · </span>}
           {new Date(n.next_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
         </p>
       </div>
-      <span className={`text-[11px] font-bold px-2 py-1 rounded-full flex-shrink-0 ${badge.cls}`}>{badge.label}</span>
-    </button>
+      
+      {/* Animated urgency badge */}
+      <motion.span 
+        animate={isUrgent ? { scale: [1, 1.05, 1] } : {}}
+        transition={{ duration: 1, repeat: Infinity }}
+        className={`text-[11px] font-black px-2.5 py-1 rounded-full flex-shrink-0 ${badge.cls}`}
+      >
+        {badge.label}
+      </motion.span>
+    </motion.button>
   );
 }
