@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Camera } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import VoiceInput from "@/components/ui/VoiceInput";
+import MobileSelect from "@/components/ui/MobileSelect";
 
 const BREEDS = [
   "Berger Allemand", "Berger Australien", "Berger Belge", "Beagle", "Bichon Frisé",
@@ -86,15 +87,13 @@ export default function StepDogInfo({ data, onChange }) {
       {/* Breed */}
       <div>
         <Label className="text-sm font-semibold text-foreground mb-2 block">Race</Label>
-        <select
+        <MobileSelect
           value={data.breed || ""}
-          onChange={e => onChange("breed", e.target.value)}
-          className="w-full h-13 rounded-2xl border border-border bg-white px-4 text-base text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary appearance-none"
-          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 16px center" }}
-        >
-          <option value="">Choisir une race...</option>
-          {BREEDS.map(b => <option key={b} value={b}>{b}</option>)}
-        </select>
+          onChange={val => onChange("breed", val)}
+          options={BREEDS.map(b => ({ value: b, label: b }))}
+          placeholder="Choisir une race..."
+          label="Race de ton chien"
+        />
       </div>
 
       {/* Age / Birth date */}
