@@ -13,8 +13,9 @@ import NotebookContent from "@/components/sante/NotebookContent";
 import HealthImportContent from "@/components/sante/HealthImportContent";
 import FindVetContent from "@/components/sante/FindVetContent";
 import DiagnosisContent from "@/components/sante/DiagnosisContent";
+import GrowthTrackerContent from "@/components/sante/GrowthTrackerContent";
 
-import { BookHeart, Camera, Stethoscope, MapPin, AlertTriangle } from "lucide-react";
+import { BookHeart, Camera, MapPin, AlertTriangle, TrendingUp } from "lucide-react";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
