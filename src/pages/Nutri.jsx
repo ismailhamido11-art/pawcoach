@@ -310,71 +310,63 @@ export default function Nutri() {
 
       {/* Tab: NutriCoach chat */}
       {activeTab === "coach" && (
-        <div className="px-4 py-4">
-          <div className="bg-white rounded-2xl shadow-md border border-border overflow-hidden">
-
-            {/* Messages area */}
-            <div className="h-[40vh] overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-white to-slate-50/50">
-              {messages.map((msg, i) => (
-                <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                  {msg.role === "assistant" && (
-                    <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl flex-shrink-0" />
-                  )}
-                  <div className="flex flex-col gap-1 max-w-[82%]">
-                    <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
-                      msg.role === "user"
-                        ? "chat-bubble-user text-white rounded-br-sm"
-                        : "bg-white border border-border/50 text-foreground rounded-bl-sm shadow-sm"
-                    }`}>
-                      {msg.role === "assistant" ? (
-                        <ReactMarkdown
-                          className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
-                          components={{
-                            p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
-                            ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
-                            li: ({ children }) => <li className="my-0.5">{children}</li>,
-                            strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                          }}
-                        >
-                          {msg.content}
-                        </ReactMarkdown>
-                      ) : (
-                        <p className="whitespace-pre-wrap">{msg.content}</p>
-                      )}
-                    </div>
-                    {msg.role === "assistant" && (
-                      <button
-                        onClick={() => handleBookmark(msg)}
-                        className="self-start ml-1 flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
+        <>
+          {/* Messages — zone scrollable */}
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+            {messages.map((msg, i) => (
+              <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                {msg.role === "assistant" && (
+                  <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl flex-shrink-0" />
+                )}
+                <div className="flex flex-col gap-1 max-w-[82%]">
+                  <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
+                    msg.role === "user" ? "chat-bubble-user text-white rounded-br-sm" : "chat-bubble-assistant text-foreground rounded-bl-sm"
+                  }`}>
+                    {msg.role === "assistant" ? (
+                      <ReactMarkdown
+                        className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                        components={{
+                          p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
+                          ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
+                          li: ({ children }) => <li className="my-0.5">{children}</li>,
+                          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                        }}
                       >
-                        {bookmarked[msg.timestamp]
-                          ? <BookmarkCheck className="w-3.5 h-3.5 text-primary" />
-                          : <Bookmark className="w-3.5 h-3.5" />}
-                        {bookmarked[msg.timestamp] ? "Sauvegardé" : "Sauvegarder"}
-                      </button>
+                        {msg.content}
+                      </ReactMarkdown>
+                    ) : (
+                      <p className="whitespace-pre-wrap">{msg.content}</p>
                     )}
                   </div>
-                </motion.div>
-              ))}
-              {loading && (
-                <div className="flex gap-2 justify-start">
-                  <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl flex-shrink-0" />
-                  <div className="bg-white border border-border/50 shadow-sm px-4 py-3.5 rounded-2xl rounded-bl-sm">
-                    <div className="flex gap-1.5 items-center">
-                      <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary rounded-full" />
-                      <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }} className="w-2 h-2 bg-primary rounded-full" />
-                      <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }} className="w-2 h-2 bg-primary rounded-full" />
-                    </div>
+                  {msg.role === "assistant" && (
+                    <button onClick={() => handleBookmark(msg)} className="self-start ml-1 flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors">
+                      {bookmarked[msg.timestamp] ? <BookmarkCheck className="w-3.5 h-3.5 text-primary" /> : <Bookmark className="w-3.5 h-3.5" />}
+                      {bookmarked[msg.timestamp] ? "Sauvegardé" : "Sauvegarder"}
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+            {loading && (
+              <div className="flex gap-2 justify-start">
+                <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl flex-shrink-0" />
+                <div className="chat-bubble-assistant px-4 py-3.5 rounded-2xl rounded-bl-sm">
+                  <div className="flex gap-1.5 items-center">
+                    <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary rounded-full" />
+                    <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }} className="w-2 h-2 bg-primary rounded-full" />
+                    <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }} className="w-2 h-2 bg-primary rounded-full" />
                   </div>
                 </div>
-              )}
-              <div ref={bottomRef} />
-            </div>
+              </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
 
-            {/* Quick actions */}
+          {/* Barre d'input — fixe en bas */}
+          <div className="flex-shrink-0 bg-background/95 backdrop-blur-lg border-t border-border">
             {showQuickActions && (
-              <div className="px-4 pt-3 pb-1 border-t border-slate-100">
-                <div className="flex gap-2 overflow-x-auto pb-1">
+              <div className="px-5 pt-2 pb-1">
+                <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
                   {quickActions.map((s, i) => (
                     <motion.button key={i} whileTap={{ scale: 0.96 }} transition={spring} onClick={() => sendMessage(s)}
                       className="flex-shrink-0 text-xs bg-secondary text-secondary-foreground px-3 py-2 rounded-xl border border-border hover:border-primary hover:text-primary transition-colors whitespace-nowrap">
@@ -384,46 +376,38 @@ export default function Nutri() {
                 </div>
               </div>
             )}
-
-            {/* Input area */}
-            <div className="px-3 py-3 bg-white border-t border-slate-100">
-              {isLimitReached ? (
-                <div className="text-center py-2">
-                  <p className="text-sm text-muted-foreground mb-2">Crédits épuisés pour aujourd'hui 🥗</p>
-                  <Button onClick={() => navigate(createPageUrl("Premium") + "?from=nutrition")} size="sm" className="bg-safe hover:bg-safe/90 border-0 text-white text-xs h-8">
-                    Débloquer Premium ✨
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 relative">
-                    <textarea
-                      ref={textareaRef}
-                      value={input}
-                      onChange={e => setInput(e.target.value)}
-                      maxLength={2000}
-                      onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())}
-                      placeholder={dog ? `Question nutrition pour ${dog.name}...` : "Pose ta question..."}
-                      rows={1}
-                      className="w-full min-h-[40px] max-h-[100px] rounded-full border border-slate-200 bg-slate-50 focus:bg-white px-4 py-2.5 text-sm resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-ring"
-                      style={{ lineHeight: "1.4" }}
-                    />
-                  </div>
-                  <button
-                    onClick={() => sendMessage()}
-                    disabled={!input.trim() || loading}
-                    className="w-10 h-10 rounded-full bg-safe hover:bg-safe/90 flex items-center justify-center flex-shrink-0 disabled:opacity-40 shadow-md"
-                  >
-                    <Send className="w-4 h-4 text-white" />
-                  </button>
-                </div>
-              )}
-            </div>
+            {isLimitReached ? (
+              <div className="px-5 py-3 flex items-center gap-3">
+                <p className="text-sm text-muted-foreground flex-1">Crédits épuisés pour aujourd'hui 🥗</p>
+                <Button onClick={() => navigate(createPageUrl("Premium") + "?from=nutrition")} size="sm" className="bg-safe hover:bg-safe/90 border-0 text-white text-xs h-8 flex-shrink-0">
+                  Premium ✨
+                </Button>
+              </div>
+            ) : (
+              <div className="flex gap-2 px-5 py-3 items-end">
+                <textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  maxLength={2000}
+                  onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())}
+                  placeholder={dog ? `Question nutrition pour ${dog.name}...` : "Pose ta question..."}
+                  rows={1}
+                  className="flex-1 min-h-[44px] max-h-[120px] rounded-xl border border-border bg-muted/30 px-3 py-2.5 text-sm resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-ring"
+                  style={{ lineHeight: "1.5" }}
+                />
+                <Button onClick={() => sendMessage()} disabled={!input.trim() || loading}
+                  className="h-11 w-11 rounded-xl bg-safe hover:bg-safe/90 border-0 shadow-lg p-0 flex-shrink-0 self-end">
+                  <Send className="w-4 h-4 text-white" />
+                </Button>
+              </div>
+            )}
+            <BottomNav currentPage="Nutri" />
           </div>
-        </div>
+        </>
       )}
 
-      <BottomNav currentPage="Nutri" />
+      {activeTab !== "coach" && <BottomNav currentPage="Nutri" />}
     </div>
   );
 }
