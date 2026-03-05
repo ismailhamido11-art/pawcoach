@@ -13,6 +13,13 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'dogId required' }, { status: 400 });
     }
 
+    // Verify dog ownership
+    const dogs = await base44.entities.Dog.filter({ id: dogId });
+    const dog = dogs?.[0];
+    if (!dog || dog.owner !== user.email) {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     // Fetch today's checkin
     const today = new Date().toISOString().split('T')[0];
     const checkins = await base44.entities.DailyCheckin.filter({ dog_id: dogId, date: today });

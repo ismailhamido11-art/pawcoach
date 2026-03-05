@@ -9,28 +9,37 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Cascade delete: clean up all related entities
-    const entityNames = [
-      'Dog', 'HealthRecord', 'DailyCheckin', 'DailyLog', 'Streak',
-      'FoodScan', 'Bookmark', 'UserProgress', 'WeeklyInsight', 'WeeklyCheckin',
-      'ChatMessage', 'SharedVetAccess', 'VetNote', 'DiagnosisReport',
-      'NutritionPlan', 'DietPreferences', 'GrowthEntry', 'DogAchievement',
-      'PlaceFavorite', 'TrainingExercise'
-    ];
+    // Step 1: Get all user's dogs to cascade delete child records
+    const userDogs = await base44.asServiceRole.entities.Dog.filter({ owner: user.email });
+    const dogIds = userDogs.map((d: { id: string }) => d.id);
 
-    // Delete entities owned by this user
-    await Promise.all(
-      entityNames.map(name =>
-        base44.asServiceRole.entities[name]
-          .deleteMany({ owner_email: user.email })
-          .catch(() => {}) // Ignore if entity doesn't exist
-      )
-    );
+    // Step 2: Delete all dog-linked entities (using dog_id)
+    if (dogIds.length > 0) {
+      await Promise.all(dogIds.flatMap((dogId: string) => [
+        base44.asServiceRole.entities.HealthRecord.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.DailyCheckin.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.DailyLog.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.Streak.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.FoodScan.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.DogAchievement.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.UserProgress.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.WeeklyInsight.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.ChatMessage.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.GrowthEntry.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.DiagnosisReport.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.NutritionPlan.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.DietPreferences.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.SharedVetAccess.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.VetNote.deleteMany({ dog_id: dogId }).catch(() => {}),
+      ]));
+    }
 
-    // Alternative: delete by owner field
+    // Step 3: Delete user-linked entities (using owner_email or owner)
     await Promise.all([
       base44.asServiceRole.entities.Dog.deleteMany({ owner: user.email }).catch(() => {}),
-      base44.asServiceRole.entities.HealthRecord.deleteMany({ dog_id: user.id }).catch(() => {}),
+      base44.asServiceRole.entities.Bookmark.deleteMany({ owner_email: user.email }).catch(() => {}),
+      base44.asServiceRole.entities.WeeklyCheckin.deleteMany({ owner_email: user.email }).catch(() => {}),
+      base44.asServiceRole.entities.PlaceFavorite.deleteMany({ owner_email: user.email }).catch(() => {}),
       base44.asServiceRole.entities.SharedVetAccess.deleteMany({ owner_email: user.email }).catch(() => {}),
       base44.asServiceRole.entities.VetNote.deleteMany({ vet_email: user.email }).catch(() => {}),
     ]);

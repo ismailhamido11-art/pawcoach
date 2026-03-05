@@ -76,12 +76,11 @@ export async function checkWalkBadges(dogId, ownerEmail, logs) {
 }
 
 export async function checkTrainingBadges(dogId, ownerEmail) {
-  const existing = await base44.entities.DogAchievement.filter({ dog_id: dogId, badge_id: "first_program" });
-  if (!existing || existing.length === 0) {
-    await unlockBadge(dogId, ownerEmail, "first_program");
-  } else if (existing.length >= 3) {
-    await unlockBadge(dogId, ownerEmail, "training_3programs");
-  }
+  // Count completed training programs (not badge records)
+  const progress = await base44.entities.UserProgress.filter({ dog_id: dogId, completed: true });
+  const completedCount = progress?.length || 0;
+  if (completedCount >= 1) await unlockBadge(dogId, ownerEmail, "first_program");
+  if (completedCount >= 3) await unlockBadge(dogId, ownerEmail, "training_3programs");
 }
 
 export async function checkStreakBadges(dogId, ownerEmail) {

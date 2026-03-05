@@ -45,8 +45,9 @@ Deno.serve(async (req) => {
     for (const dog of dogs) {
       // Premium gate: only generate insights for premium users
       const owner = userMap[dog.owner];
+      if (!owner) continue; // Skip orphaned dogs (owner deleted)
       const ownerIsPremium = owner.is_premium || (owner.trial_expires_at && new Date(owner.trial_expires_at) > new Date());
-      if (!owner || !ownerIsPremium) continue;
+      if (!ownerIsPremium) continue;
 
       // Filter DailyCheckins for this dog within the week
       const checkins = (allCheckins || []).filter(c =>
