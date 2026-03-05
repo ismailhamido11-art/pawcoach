@@ -20,10 +20,10 @@ const AFFILIATE_BRANDS = [
   { name: "Acana", url: "https://www.zooplus.fr", emoji: "🌿" },
 ];
 
-export default function NutritionMealPlan({ dog, recentScans, isPremium }) {
+export default function NutritionMealPlan({ dog, recentScans, isPremium, user, dietPrefs }) {
   const [plan, setPlan] = useState(null);
-  const [brands, setBrands] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   if (!dog) {
     return <p className="text-muted-foreground text-sm text-center py-10">Aucun chien trouvé.</p>;
