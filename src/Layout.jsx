@@ -30,7 +30,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Floating bell button top-right */}
       <div
         className="fixed top-0 right-0 z-50 flex items-center"
-        style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 8px)", paddingRight: "12px" }}
+        style={{ paddingTop: "calc(max(env(safe-area-inset-top, 0px), 6px) + 28px + env(safe-area-inset-top, 0px))", paddingRight: "12px" }}
       >
         <NotificationCenter />
       </div>
