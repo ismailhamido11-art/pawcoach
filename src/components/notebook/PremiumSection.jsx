@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,7 +37,7 @@ const GATE_CONTENT = {
 };
 
 export default function PremiumSection({ type, records, dogId, isPremium, onDelete, config }) {
-
+  const navigate = useNavigate();
   const filtered = records.filter(r => r.type === type).sort((a, b) => new Date(b.date) - new Date(a.date));
 
   if (!isPremium) {
@@ -51,7 +53,7 @@ export default function PremiumSection({ type, records, dogId, isPremium, onDele
           <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
             {gate.description}
           </p>
-          <Button onClick={() => window.location.href = '/Premium?from=notebook'} className="rounded-xl gradient-warm border-0 text-white font-semibold px-6 h-11 mt-1">
+          <Button onClick={() => navigate(createPageUrl("Premium") + "?from=notebook")} className="rounded-xl gradient-warm border-0 text-white font-semibold px-6 h-11 mt-1">
             Débloquer avec Premium ✨
           </Button>
         </div>

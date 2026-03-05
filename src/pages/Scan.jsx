@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { getActiveDog } from "@/utils";
+import { getActiveDog, createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import ShareCard from "../components/scan/ShareCard";
 import { Button } from "@/components/ui/button";
@@ -129,6 +130,7 @@ function ModeSwitcher({ mode, onChange }) {
 }
 
 export default function Scan() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -296,6 +298,7 @@ export default function Scan() {
 
   const analyzeLabel = async () => {
     if (!labelFile || !dog) return;
+    if (checkScanLimit(user)) { setScanLimitReached(true); return; }
     setLabelScanning(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file: labelFile });
@@ -342,6 +345,9 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
         },
       });
       setLabelResult(ai);
+      await incrementScanCount(user);
+      const updatedUser = await base44.auth.me();
+      setUser(updatedUser);
       if (ai.allergen_alerts?.length > 0 && navigator.vibrate) navigator.vibrate([100, 50, 100]);
     } catch (e) {
       console.error(e);
@@ -472,7 +478,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
               </div>
               <p className="font-bold text-foreground">Tu as utilisé tes {FREE_SCAN_LIMIT} scans gratuits cette semaine ({scansUsed}/{FREE_SCAN_LIMIT}).</p>
               <p className="text-sm text-muted-foreground">Passe en Premium pour scanner sans limite.</p>
-              <Button onClick={() => window.location.href = '/Premium?from=scan'} className="w-full h-12 rounded-xl gradient-warm border-0 text-white font-bold">
+              <Button onClick={() => navigate(createPageUrl("Premium") + "?from=scan")} className="w-full h-12 rounded-xl gradient-warm border-0 text-white font-bold">
                 👑 Voir Premium
               </Button>
               <button onClick={() => setScanLimitReached(false)} className="text-xs text-muted-foreground underline">
@@ -486,7 +492,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
         {!result && !scanLimitReached && !isUserPremium(user) && !isInTrial && !labelResult && (
           <div className="flex items-center justify-between text-xs text-muted-foreground bg-muted/40 rounded-xl px-3 py-2">
             <span>Scans cette semaine : <strong className="text-foreground">{scansUsed}/{FREE_SCAN_LIMIT}</strong></span>
-            <button onClick={() => window.location.href = '/Premium?from=scan'} className="flex items-center gap-1 text-primary font-semibold">
+            <button onClick={() => navigate(createPageUrl("Premium") + "?from=scan")} className="flex items-center gap-1 text-primary font-semibold">
               <Crown className="w-3 h-3" /> Premium
             </button>
           </div>

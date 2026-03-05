@@ -14,6 +14,7 @@ const LEVEL_CONFIG = {
 import VideoCoaching from "./VideoCoaching";
 
 export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked, dogName, onBack, onComplete, onHelp }) {
+  const navigate = useNavigate();
   const levelCfg = LEVEL_CONFIG[exercise.level];
 
   return (
@@ -73,7 +74,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
             </motion.div>
             <p className="font-semibold text-emerald-700">Exercice Premium</p>
             <p className="text-emerald-600 text-sm">Passe à Premium pour débloquer toutes les fiches d'entraînement détaillées.</p>
-            <Button onClick={() => window.location.href = '/Premium?from=training'} className="rounded-xl gradient-warm border-0 text-white font-semibold mt-1">
+            <Button onClick={() => navigate(createPageUrl("Premium") + "?from=training")} className="rounded-xl gradient-warm border-0 text-white font-semibold mt-1">
               Passer Premium 🌟
             </Button>
           </div>

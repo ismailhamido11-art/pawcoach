@@ -11,6 +11,15 @@ export function isUserPremium(user) {
 }
 
 /**
+ * Check if user is specifically on trial (not paid premium).
+ */
+export function isUserOnTrial(user) {
+  if (!user || user.is_premium) return false;
+  if (!user.trial_expires_at) return false;
+  return new Date(user.trial_expires_at) > new Date();
+}
+
+/**
  * Get remaining trial days. Returns 0 if no trial or expired.
  */
 export function getTrialDaysLeft(user) {
