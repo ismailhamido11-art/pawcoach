@@ -82,7 +82,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium, user, d
 - Allergies/intolérances: ${dog.allergies || "aucune connue"}
 - Problèmes de santé: ${dog.health_issues || "aucun"}
 - Restrictions alimentaires: ${dog.diet_restrictions || "aucune"}
-${scansContext}
+${scansContext}${prefsContext}
 
 ## FORMAT DE RÉPONSE ATTENDU
 
