@@ -145,6 +145,7 @@ export default function Scan() {
   const [showDetails, setShowDetails] = useState(false);
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [historyFilter, setHistoryFilter] = useState("all"); // "all" | "safe" | "caution" | "toxic"
   const [showShare, setShowShare] = useState(false);
   const [dogAteIt, setDogAteIt] = useState(false);
   const [scanLimitReached, setScanLimitReached] = useState(false);
@@ -613,36 +614,62 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
             )}
 
             {/* History */}
-            {history.length > 0 && !result && !scanLimitReached && (
+            {history.length > 0 && (
               <div>
                 <button onClick={() => setShowHistory(s => !s)} className="flex items-center justify-between w-full py-2">
                   <div className="flex items-center gap-2">
                     <History className="w-4 h-4 text-muted-foreground" />
-                    <h2 className="text-sm font-bold text-foreground">Derniers scans ({history.length})</h2>
+                    <h2 className="text-sm font-bold text-foreground">Mes scans ({history.length})</h2>
                   </div>
                   <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${showHistory ? "rotate-180" : ""}`} />
                 </button>
                 {showHistory && (
-                  <motion.div className="space-y-2" variants={listContainer} initial="hidden" animate="show">
-                    {history.slice(0, 10).map((scan, i) => {
-                      const cfg = VERDICT_CONFIG[scan.verdict] || VERDICT_CONFIG.caution;
-                      const Icon = cfg.icon;
-                      return (
-                        <motion.div key={i} variants={listItem} className={`flex items-center gap-3 p-3 rounded-2xl border ${cfg.border} ${cfg.cardBg}`}>
-                          {scan.photo_url && <img src={scan.photo_url} alt="" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />}
-                          {!scan.photo_url && <Icon className={`w-5 h-5 ${cfg.iconColor} flex-shrink-0`} />}
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold truncate">{scan.food_name}</p>
-                            <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${cfg.badgeBg}`}>{cfg.label}</span>
-                          </div>
-                          <div className="text-right flex-shrink-0">
-                            <p className="text-xs text-muted-foreground">{new Date(scan.timestamp).toLocaleDateString("fr-FR")}</p>
-                            {scan.score != null && <p className="text-sm font-bold text-foreground">{scan.score}/10</p>}
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </motion.div>
+                  <div className="space-y-3">
+                    {/* Verdict filters */}
+                    <div className="flex gap-1.5 overflow-x-auto pb-1">
+                      {[
+                        { id: "all", label: "Tous", count: history.length },
+                        { id: "safe", label: "Sans danger", count: history.filter(s => s.verdict === "safe").length },
+                        { id: "caution", label: "Precaution", count: history.filter(s => s.verdict === "caution").length },
+                        { id: "toxic", label: "Toxiques", count: history.filter(s => s.verdict === "toxic").length },
+                      ].filter(f => f.count > 0).map(f => (
+                        <button
+                          key={f.id}
+                          onClick={() => setHistoryFilter(f.id)}
+                          className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                            historyFilter === f.id
+                              ? "bg-primary text-white"
+                              : "bg-muted text-muted-foreground hover:bg-muted/80"
+                          }`}
+                        >
+                          {f.label} ({f.count})
+                        </button>
+                      ))}
+                    </div>
+                    {/* Filtered list */}
+                    <motion.div className="space-y-2" variants={listContainer} initial="hidden" animate="show">
+                      {history
+                        .filter(s => historyFilter === "all" || s.verdict === historyFilter)
+                        .map((scan, i) => {
+                          const cfg = VERDICT_CONFIG[scan.verdict] || VERDICT_CONFIG.caution;
+                          const Icon = cfg.icon;
+                          return (
+                            <motion.div key={scan.id || i} variants={listItem} className={`flex items-center gap-3 p-3 rounded-2xl border ${cfg.border} ${cfg.cardBg}`}>
+                              {scan.photo_url && <img src={scan.photo_url} alt="" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />}
+                              {!scan.photo_url && <Icon className={`w-5 h-5 ${cfg.iconColor} flex-shrink-0`} />}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold truncate">{scan.food_name}</p>
+                                <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${cfg.badgeBg}`}>{cfg.label}</span>
+                              </div>
+                              <div className="text-right flex-shrink-0">
+                                <p className="text-xs text-muted-foreground">{new Date(scan.timestamp).toLocaleDateString("fr-FR")}</p>
+                                {scan.score != null && <p className="text-sm font-bold text-foreground">{scan.score}/10</p>}
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                    </motion.div>
+                  </div>
                 )}
               </div>
             )}
