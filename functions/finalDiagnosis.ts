@@ -25,9 +25,9 @@ Deno.serve(async (req) => {
         }).join('\n\n')
       : 'Aucune question complémentaire.';
 
-    const prompt = `Tu es un assistant vétérinaire IA spécialisé dans la santé canine.
+    const prompt = `Tu es un assistant IA qui aide les proprietaires de chiens a preparer leur visite veterinaire. Tu NE poses PAS de diagnostic — tu structures les observations pour que le veterinaire ait un dossier complet.
 
-PHASE 2 - ANALYSE FINALE: Tu as maintenant TOUTES les informations nécessaires pour produire un rapport de pré-diagnostic complet et détaillé.
+PHASE 2 - BILAN COMPLET: Tu as maintenant TOUTES les informations necessaires pour produire un bilan de preparation visite veterinaire complet et detaille.
 
 INFORMATIONS SUR LE CHIEN:
 - Nom: ${sanitize(dog_name, 100) || 'Non renseigné'}
@@ -54,15 +54,15 @@ ${preliminary_observations || 'Non disponible'}
 QUESTIONS DE SUIVI ET RÉPONSES DU PROPRIÉTAIRE:
 ${qaSection}
 
-RÈGLE ABSOLUE: Ne mentionne JAMAIS de sources, d'URLs, de liens web, de références à des sites internet, ni de citations de recherche dans ta réponse. Écris comme un vétérinaire professionnel qui partage ses connaissances directement, sans jamais citer de source.
+REGLE ABSOLUE: Ne mentionne JAMAIS de sources, d'URLs, de liens web, de references a des sites internet, ni de citations de recherche dans ta reponse. Ecris comme un professionnel de sante animale qui prepare un dossier pour le veterinaire. Ne pose JAMAIS de diagnostic — tu structures les observations et suggeres des pistes a explorer avec le veto.
 
-Génère un rapport COMPLET et DÉTAILLÉ au format JSON:
-- observations: string (résumé clinique détaillé intégrant les symptômes initiaux ET les réponses aux questions de suivi, en termes vétérinaires)
-- possible_causes: array de strings (3 à 5 pistes diagnostiques, de la plus probable à la moins, en intégrant les infos des réponses)
+Genere un bilan COMPLET et DETAILLE au format JSON:
+- observations: string (resume structure des observations du proprietaire, en termes que le veterinaire pourra exploiter immediatement)
+- possible_causes: array de strings (3 a 5 pistes a explorer avec le veterinaire, formulees comme "a verifier avec votre veto")
 - urgency_level: "low" | "medium" | "high" | "emergency"
-- urgency_explanation: string
-- immediate_advice: array de strings (3 à 5 conseils immédiats précis et personnalisés)
-- important_note: string (rappel que ceci n'est pas un diagnostic définitif)`;
+- urgency_explanation: string (aide le proprietaire a decider quand consulter)
+- immediate_advice: array de strings (3 a 5 mesures de confort en attendant la visite)
+- important_note: string (rappel que ce bilan est un outil de preparation, pas un diagnostic — seul le veterinaire peut poser un diagnostic)`;
 
     const fileUrls = image_url ? [image_url] : undefined;
 
@@ -89,7 +89,7 @@ Génère un rapport COMPLET et DÉTAILLÉ au format JSON:
       urgency_level: result.urgency_level || "medium",
       urgency_explanation: result.urgency_explanation || "",
       immediate_advice: Array.isArray(result.immediate_advice) ? result.immediate_advice : [],
-      important_note: result.important_note || "Ce pré-diagnostic a été généré par une IA et ne remplace pas l'avis d'un vétérinaire."
+      important_note: result.important_note || "Ce bilan a ete genere par une IA pour faciliter votre visite veterinaire. Seul votre veterinaire peut poser un diagnostic."
     });
 
   } catch (error) {

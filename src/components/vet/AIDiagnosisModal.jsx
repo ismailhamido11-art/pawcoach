@@ -165,7 +165,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `prediagnostic-${dog?.name || "chien"}-${reportDate}.pdf`;
+      a.download = `bilan-visite-${dog?.name || "chien"}-${reportDate}.pdf`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -184,9 +184,9 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2 text-lg">
               <Stethoscope className="w-5 h-5 text-primary" />
-              {step === "form" || step === "loading1" ? "Décrire les symptômes" :
-               step === "questions" || step === "loading2" ? "Analyse approfondie" :
-               "Rapport complet"}
+              {step === "form" || step === "loading1" ? "Preparer le bilan" :
+               step === "questions" || step === "loading2" ? "Questions complementaires" :
+               "Bilan complet"}
             </DialogTitle>
             <button
               onClick={resetAndClose}
@@ -202,7 +202,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
           <div className="space-y-4 mt-2">
             <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-              <span>Cet outil ne remplace pas un vétérinaire. Il prépare un rapport pour faciliter ta consultation.</span>
+              <span>Ce bilan t'aide a preparer ta visite veterinaire. Presente-le a ton veto pour gagner du temps.</span>
             </div>
 
             {/* Step indicator */}
@@ -285,7 +285,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
               disabled={!symptoms.trim()}
               className="w-full gradient-primary text-white"
             >
-              Analyser les symptômes
+              Generer le bilan
             </Button>
           </div>
         )}
@@ -295,8 +295,8 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
           <div className="flex flex-col items-center justify-center py-12 gap-4">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
             <p className="text-sm text-muted-foreground text-center">
-              Analyse des premiers symptômes...<br />
-              <span className="text-xs">L'IA prépare des questions ciblées pour {dog?.name || "ton chien"}</span>
+              Preparation du bilan en cours...<br />
+              <span className="text-xs">L'IA prepare des questions ciblees pour {dog?.name || "ton chien"}</span>
             </p>
           </div>
         )}
@@ -317,8 +317,8 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
           <div className="flex flex-col items-center justify-center py-12 gap-4">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
             <p className="text-sm text-muted-foreground text-center">
-              Analyse finale en cours...<br />
-              <span className="text-xs">Generation du rapport complet pour {dog?.name || "ton chien"}</span>
+              Finalisation du bilan...<br />
+              <span className="text-xs">Generation du bilan complet pour {dog?.name || "ton chien"}</span>
             </p>
           </div>
         )}
@@ -347,7 +347,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
             <DiagnosisReportView report={report} dogName={dog?.name} reportDate={reportDate} />
 
             <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800">
-              <strong>Conserve ce rapport !</strong> Il contient tes symptômes, tes réponses et l'analyse complète. Ton vétérinaire aura tout en main.
+              <strong>Presente ce bilan a ton veto !</strong> Il contient tes observations, tes reponses et l'analyse complete. Ton veterinaire aura tout en main pour la consultation.
             </div>
 
             <Button
@@ -357,7 +357,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
               variant="outline"
             >
               {downloading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Download className="w-4 h-4 mr-2" />}
-              Télécharger le rapport PDF
+              Telecharger le bilan PDF
             </Button>
 
             <Link to={createPageUrl("FindVet")} className="block">

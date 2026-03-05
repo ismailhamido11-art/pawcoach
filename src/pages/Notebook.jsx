@@ -437,8 +437,8 @@ export default function Notebook() {
               <AlertTriangle className="w-5 h-5 text-destructive" />
             </div>
             <div className="flex-1 min-w-0 text-left">
-              <p className="text-sm font-semibold text-foreground">Mon chien est malade ?</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Pre-diagnostic IA & Trouver un veto</p>
+              <p className="text-sm font-semibold text-foreground">Preparer une visite veto</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Bilan de preparation & Trouver un veto</p>
             </div>
           </motion.button>
         )}

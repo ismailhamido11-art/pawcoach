@@ -28,16 +28,16 @@ export default function DiagnosisContent({ dog }) {
   return (
     <div className="px-4 pt-4 pb-4 space-y-4">
       {/* Hero card */}
-      <div className="bg-red-50 border border-red-200 rounded-2xl p-5 flex items-center gap-4">
-        <div className="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center flex-shrink-0">
-          <Stethoscope className="w-7 h-7 text-red-600" />
+      <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 flex items-center gap-4">
+        <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+          <Stethoscope className="w-7 h-7 text-emerald-600" />
         </div>
         <div className="flex-1">
-          <p className="font-bold text-foreground text-sm leading-tight">Pré-diagnostic IA</p>
+          <p className="font-bold text-foreground text-sm leading-tight">Bilan de preparation visite</p>
           <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-            Décris les symptômes de {dog?.name || "ton chien"} et l'IA t'aide à évaluer l'urgence et t'oriente vers les bons soins.
+            Prepare ta visite chez le veto : decris ce que tu observes chez {dog?.name || "ton chien"} et obtiens un bilan structure a presenter a ton veterinaire.
           </p>
-          <p className="text-[10px] font-bold text-red-600 mt-1.5">⚠️ Ne remplace pas un vétérinaire</p>
+          <p className="text-[10px] font-bold text-emerald-700 mt-1.5">A presenter a ton veterinaire</p>
         </div>
       </div>
 
@@ -50,7 +50,7 @@ export default function DiagnosisContent({ dog }) {
               key={label}
               whileTap={{ scale: 0.92 }}
               onClick={() => openWithSymptom(label)}
-              className="flex flex-col items-center gap-1 py-3 rounded-2xl bg-white border border-border text-center hover:border-red-300 hover:bg-red-50 transition-all"
+              className="flex flex-col items-center gap-1 py-3 rounded-2xl bg-white border border-border text-center hover:border-emerald-300 hover:bg-emerald-50 transition-all"
             >
               <span className="text-xl">{emoji}</span>
               <span className="text-[10px] font-medium text-foreground leading-tight">{label}</span>
@@ -65,7 +65,7 @@ export default function DiagnosisContent({ dog }) {
         className="w-full h-12 gradient-primary border-0 text-white font-bold rounded-xl shadow-lg shadow-primary/25"
       >
         <Stethoscope className="w-4 h-4 mr-2" />
-        Décrire les symptômes
+        Preparer mon bilan
       </Button>
 
       {/* Emergency section */}

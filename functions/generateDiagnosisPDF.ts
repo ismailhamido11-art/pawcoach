@@ -59,11 +59,11 @@ Deno.serve(async (req) => {
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  doc.text(sanitize('PawCoach - Rapport de Pré-diagnostic IA'), 15, 15);
+  doc.text(sanitize('PawCoach - Bilan de preparation visite veterinaire'), 15, 15);
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
   doc.text(sanitize(`Date du rapport: ${report_date || new Date().toLocaleDateString('fr-FR')}`), 15, 25);
-  doc.text(sanitize("Ce document est un outil d'aide, pas un diagnostic vétérinaire."), 15, 31);
+  doc.text(sanitize("Bilan a presenter a votre veterinaire lors de la consultation."), 15, 31);
 
   y = 45;
 
@@ -94,7 +94,7 @@ Deno.serve(async (req) => {
 
   // Observations
   if (report.observations) {
-    addText('OBSERVATIONS CLINIQUES', 15, 12, 'bold', [22, 128, 108]);
+    addText('OBSERVATIONS DU PROPRIETAIRE', 15, 12, 'bold', [22, 128, 108]);
     addText(report.observations, 15, 10, 'normal', [40, 40, 40]);
     y += 4;
   }
@@ -113,7 +113,7 @@ Deno.serve(async (req) => {
 
   // Possible causes
   if (report.possible_causes?.length) {
-    addText('PISTES DIAGNOSTIQUES POSSIBLES', 15, 12, 'bold', [22, 128, 108]);
+    addText('PISTES A EXPLORER AVEC LE VETERINAIRE', 15, 12, 'bold', [22, 128, 108]);
     report.possible_causes.forEach((cause, i) => {
       addText(`${i + 1}. ${cause}`, 20, 10, 'normal', [40, 40, 40]);
     });
@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
 
   // Immediate advice
   if (report.immediate_advice?.length) {
-    addText('CONSEILS IMMEDIATS', 15, 12, 'bold', [22, 128, 108]);
+    addText('MESURES DE CONFORT EN ATTENDANT LA VISITE', 15, 12, 'bold', [22, 128, 108]);
     report.immediate_advice.forEach(advice => {
       addText(`- ${advice}`, 20, 10, 'normal', [40, 40, 40]);
     });
@@ -134,8 +134,8 @@ Deno.serve(async (req) => {
   doc.setDrawColor(200, 200, 200);
   doc.line(15, y, pageWidth - 15, y);
   y += 6;
-  addText('AVERTISSEMENT', 15, 10, 'bold', [150, 50, 50]);
-  addText(report.important_note || "Ce pré-diagnostic a été généré par une intelligence artificielle et ne remplace en aucun cas l'avis d'un vétérinaire professionnel.", 15, 9, 'italic', [120, 120, 120]);
+  addText('NOTE IMPORTANTE', 15, 10, 'bold', [150, 50, 50]);
+  addText(report.important_note || "Ce bilan a ete genere par une intelligence artificielle pour faciliter votre visite veterinaire. Seul votre veterinaire peut poser un diagnostic.", 15, 9, 'italic', [120, 120, 120]);
 
   const pdfBytes = doc.output('arraybuffer');
 
@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
     status: 200,
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename=prediagnostic-${sanitize(dog_name) || 'chien'}-${report_date || 'rapport'}.pdf`
+      'Content-Disposition': `attachment; filename=bilan-visite-${sanitize(dog_name) || 'chien'}-${report_date || 'rapport'}.pdf`
     }
   });
   } catch (error) {

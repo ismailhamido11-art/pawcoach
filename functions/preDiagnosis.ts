@@ -13,11 +13,11 @@ Deno.serve(async (req) => {
     // Sanitize user inputs to prevent prompt injection and limit length
     const sanitize = (s, max = 2000) => String(s || '').substring(0, max).replace(/[<>]/g, '');
 
-    const prompt = `Tu es un assistant vétérinaire IA spécialisé dans la santé canine.
+    const prompt = `Tu es un assistant IA qui aide les proprietaires de chiens a preparer leur visite veterinaire. Tu NE poses PAS de diagnostic — tu structures les observations du proprietaire pour que le veterinaire ait toutes les informations utiles des le debut de la consultation.
 
-PHASE 1: Tu reçois les premiers symptômes d'un chien. Tu dois:
-1. Faire une première analyse rapide des symptômes
-2. Générer une liste de questions CIBLÉES et PERTINENTES que le propriétaire devra renseigner pour affiner le diagnostic. Ces questions doivent être basées sur les symptômes décrits.
+PHASE 1: Tu recois les premieres observations du proprietaire. Tu dois:
+1. Resumer les observations de maniere structuree (comme un aide-memoire pour le veto)
+2. Generer une liste de questions CIBLEES et PERTINENTES pour completer le tableau clinique. Le veterinaire appreciera d'avoir ces details.
 
 INFORMATIONS SUR LE CHIEN:
 - Nom: ${sanitize(dog_name, 100) || 'Non renseigné'}
@@ -38,12 +38,12 @@ INFOS SUPPLÉMENTAIRES: ${sanitize(additional_info) || 'Aucune'}
 
 ${image_url ? "NOTE: Le propriétaire a aussi envoyé une photo des symptômes. Analyse-la attentivement pour affiner tes questions." : ""}
 
-RÈGLE ABSOLUE: Ne mentionne JAMAIS de sources, d'URLs, de liens web, de références à des sites internet, ni de citations de recherche dans ta réponse. Écris comme un vétérinaire professionnel.
+REGLE ABSOLUE: Ne mentionne JAMAIS de sources, d'URLs, de liens web, de references a des sites internet, ni de citations de recherche dans ta reponse. Ecris comme un professionnel de sante animale qui prepare un dossier pour le veterinaire. Ne pose JAMAIS de diagnostic — tu structures les observations.
 
-Génère un JSON avec:
-- preliminary_observations: string (première impression clinique courte, 2-3 phrases max)
-- preliminary_urgency: "low" | "medium" | "high" | "emergency" (première estimation d'urgence)
-- followup_questions: array d'objets avec { id: string (q1, q2...), question: string, type: "text" | "yes_no" | "choice", options?: array de strings (seulement si type=choice) }. Génère 4 à 6 questions pertinentes basées sur les symptômes. Par exemple si le chien se gratte l'oreille, demande s'il y a une odeur, un écoulement, etc.`;
+Genere un JSON avec:
+- preliminary_observations: string (resume structure des observations du proprietaire, 2-3 phrases max — utile pour le veterinaire)
+- preliminary_urgency: "low" | "medium" | "high" | "emergency" (estimation pour aider le proprietaire a decider quand consulter)
+- followup_questions: array d'objets avec { id: string (q1, q2...), question: string, type: "text" | "yes_no" | "choice", options?: array de strings (seulement si type=choice) }. Genere 4 a 6 questions que le veterinaire poserait typiquement. Par exemple si le chien se gratte l'oreille, demande s'il y a une odeur, un ecoulement, etc.`;
 
     const fileUrls = image_url ? [image_url] : undefined;
 

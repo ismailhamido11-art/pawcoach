@@ -18,7 +18,7 @@ const SECTIONS = [
   { id: "note", label: "Notes", emoji: "📝" },
   { id: "checkins", label: "Check-ins quotidiens", emoji: "📊" },
   { id: "scans", label: "Scans alimentaires", emoji: "📷" },
-  { id: "diagnosis", label: "Pré-diagnostics IA", emoji: "🩺" },
+  { id: "diagnosis", label: "Bilans de visite", emoji: "🩺" },
 ];
 
 export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
