@@ -276,28 +276,28 @@ export default function Nutri() {
 
       {/* Tab: Plan repas */}
       {activeTab === "mealplan" && (
-        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
+        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24 mb-16">
           <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={isUserPremium(user)} user={user} dietPrefs={dietPrefs} />
         </div>
       )}
 
       {/* Tab: Mes plans sauvegardés */}
       {activeTab === "saved" && (
-        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
+        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24 mb-16">
           <SavedPlansPanel dog={dog} user={user} />
         </div>
       )}
 
       {/* Tab: Préférences alimentaires */}
       {activeTab === "prefs" && (
-        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
+        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24 mb-16">
           <DietPreferencesPanel dog={dog} user={user} />
         </div>
       )}
 
       {/* Tab: Comparateur */}
       {activeTab === "compare" && (
-        <div className="flex-1 overflow-y-auto px-5 py-4 pb-28">
+        <div className="flex-1 overflow-y-auto px-5 py-4 pb-8 mb-16">
           <div className="mb-4">
             <h2 className="font-bold text-foreground text-base">Comparateur de produits</h2>
             <p className="text-xs text-muted-foreground mt-0.5">
