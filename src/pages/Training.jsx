@@ -106,6 +106,12 @@ export default function Training() {
   const completedCount = EXERCISES.filter(e => isCompleted(e.order_number)).length;
   const isPremium = isUserPremium(user);
 
+  // Puppy detection
+  const dogAgeMonths = dog?.birth_date
+    ? Math.floor((Date.now() - new Date(dog.birth_date).getTime()) / (30.44 * 24 * 60 * 60 * 1000))
+    : null;
+  const isPuppy = dogAgeMonths !== null && dogAgeMonths < 12;
+
   const getJourneyExercises = (journey) =>
     journey.exerciseOrders.map(o => EXERCISES.find(e => e.order_number === o)).filter(Boolean);
 
@@ -316,6 +322,29 @@ export default function Training() {
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
+
+      {/* Puppy program banner */}
+      {isPuppy && (
+        <div className="mx-4 mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl flex-shrink-0">🐾</span>
+            <div>
+              <p className="font-bold text-sm text-emerald-900">Programme chiot — {dog.name} ({dogAgeMonths} mois)</p>
+              <p className="text-xs text-emerald-700 mt-1 leading-relaxed">
+                {dogAgeMonths < 4
+                  ? `A ${dogAgeMonths} mois, concentre-toi sur la socialisation et les ordres de base (Assis, Couche). Sessions de 2-3 min max !`
+                  : dogAgeMonths < 8
+                  ? `A ${dogAgeMonths} mois, ${dog.name} est pret pour les ordres de base + securite. Sessions de 5 min, toujours en positif.`
+                  : `A ${dogAgeMonths} mois, ${dog.name} peut aborder les exercices intermediaires. Augmente la duree a 10 min progressivement.`
+                }
+              </p>
+              <p className="text-[10px] text-emerald-600 mt-2 font-medium">
+                Recommande : {dogAgeMonths < 4 ? "2x 2 min" : dogAgeMonths < 8 ? "2x 5 min" : "2x 10 min"} par jour
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Journey cards */}
       <div className="px-4 pt-5 space-y-3">
