@@ -22,6 +22,9 @@ export default function Layout({ children, currentPageName }) {
           user-select: none;
           -webkit-user-select: none;
         }
+        input, textarea, select {
+          font-size: 16px !important;
+        }
       `}</style>
       <div key={currentPageName} className="page-enter">
         {children}

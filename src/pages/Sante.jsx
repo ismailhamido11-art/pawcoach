@@ -16,6 +16,7 @@ import DiagnosisContent from "@/components/sante/DiagnosisContent";
 import GrowthTrackerContent from "@/components/sante/GrowthTrackerContent";
 
 import { BookHeart, Camera, MapPin, AlertTriangle, TrendingUp } from "lucide-react";
+import PullToRefresh from "@/components/PullToRefresh";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
@@ -139,7 +140,18 @@ export default function Sante() {
       </div>
 
       {/* Tab content */}
-      <div className="flex-1 overflow-y-auto pb-28">
+      <PullToRefresh onRefresh={async () => {
+        try {
+          const u = await base44.auth.me();
+          const dogs = await base44.entities.Dog.filter({ owner: u.email });
+          if (dogs.length > 0) {
+            const d = getActiveDog(dogs);
+            setDog(d);
+            const recs = await base44.entities.HealthRecord.filter({ dog_id: d.id });
+            setRecords(recs || []);
+          }
+        } catch (e) { console.error(e); }
+      }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -174,6 +186,7 @@ export default function Sante() {
         </AnimatePresence>
       </div>
 
+      </PullToRefresh>
       <ChatFAB />
       <BottomNav currentPage="Sante" />
     </div>
