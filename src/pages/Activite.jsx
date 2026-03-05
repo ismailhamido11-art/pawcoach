@@ -8,6 +8,7 @@ import Illustration from "@/components/illustrations/Illustration";
 import WalkMode from "@/components/tracker/WalkMode";
 import TrackerHistory from "@/components/tracker/TrackerHistory";
 import AITrainingProgram from "@/components/activite/AITrainingProgram";
+import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Footprints, History, Dumbbell, Sparkles, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";

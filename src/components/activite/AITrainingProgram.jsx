@@ -5,6 +5,7 @@ import { Sparkles, Dumbbell, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, 
 import { motion, AnimatePresence } from "framer-motion";
 import { differenceInMonths } from "date-fns";
 import { toast } from "sonner";
+import { checkTrainingBadges } from "@/components/achievements/badgeUtils";
 
 const ACTIVITY_LABELS = {
   faible: "Faible", modere: "Modéré", eleve: "Élevé", tres_eleve: "Très élevé"
