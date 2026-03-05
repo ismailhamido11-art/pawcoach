@@ -38,15 +38,23 @@ const TABS = [
 ];
 
 export default function Nutri() {
-  const navigate = useNavigate();
-  const [dog, setDog] = useState(null);
-  const [user, setUser] = useState(null);
-  const [recentScans, setRecentScans] = useState([]);
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [initializing, setInitializing] = useState(true);
-  const [activeTab, setActiveTab] = useState("coach");
+   const navigate = useNavigate();
+   const [dog, setDog] = useState(null);
+   const [user, setUser] = useState(null);
+   const [recentScans, setRecentScans] = useState([]);
+   const [messages, setMessages] = useState([]);
+   const [input, setInput] = useState("");
+   const [loading, setLoading] = useState(false);
+   const [initializing, setInitializing] = useState(true);
+
+   // Restore active tab from session storage (for independent stack per tab)
+   const savedTab = sessionStorage.getItem("tab_Nutri");
+   const [activeTab, setActiveTab] = useState(savedTab && TABS.find(t => t.id === savedTab) ? savedTab : "coach");
+
+   // Save active tab whenever it changes
+   useEffect(() => {
+     sessionStorage.setItem("tab_Nutri", activeTab);
+   }, [activeTab]);
   const [messagesRemaining, setMessagesRemaining] = useState(null);
   const [bookmarked, setBookmarked] = useState({});
   const [dietPrefs, setDietPrefs] = useState(null);

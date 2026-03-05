@@ -37,10 +37,14 @@ export default function Sante() {
    const [records, setRecords] = useState([]);
    const [loading, setLoading] = useState(true);
    
-   // Get active tab from URL query params
-   const params = new URLSearchParams(window.location.search);
-   const tabFromUrl = params.get("tab");
-   const [activeTab, setActiveTab] = useState(tabFromUrl && TABS.find(t => t.id === tabFromUrl) ? tabFromUrl : "carnet");
+   // Restore active tab from session storage (for independent stack per tab)
+   const savedTab = sessionStorage.getItem("tab_Sante");
+   const [activeTab, setActiveTab] = useState(savedTab && TABS.find(t => t.id === savedTab) ? savedTab : "carnet");
+
+   // Save active tab whenever it changes
+   useEffect(() => {
+     sessionStorage.setItem("tab_Sante", activeTab);
+   }, [activeTab]);
 
    useEffect(() => {
      async function load() {
