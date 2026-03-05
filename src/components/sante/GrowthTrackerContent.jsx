@@ -35,7 +35,7 @@ function getBcsLabel(score) {
   if (score <= 4) return { label: "Sous le poids idéal", color: "text-sky-500" };
   if (score === 5) return { label: "Poids idéal", color: "text-emerald-500" };
   if (score <= 6) return { label: "Légèrement en surpoids", color: "text-yellow-500" };
-  if (score <= 7) return { label: "En surpoids", color: "text-orange-500" };
+  if (score <= 7) return { label: "En surpoids", color: "text-amber-500" };
   return { label: "Obèse", color: "text-red-500" };
 }
 
@@ -193,7 +193,7 @@ export default function GrowthTrackerContent({ dog, user }) {
           )}
           {bcsInfo && (
             <div className="bg-white rounded-2xl p-3 text-center border border-border shadow-sm">
-              <TrendingUp className="w-4 h-4 text-orange-500 mx-auto mb-1" />
+              <TrendingUp className="w-4 h-4 text-amber-500 mx-auto mb-1" />
               <p className={`text-sm font-black ${bcsInfo.color}`}>{latest.body_condition_score}/9</p>
               <p className="text-[10px] text-muted-foreground">{bcsInfo.label}</p>
             </div>

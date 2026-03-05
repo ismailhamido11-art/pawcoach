@@ -17,10 +17,10 @@ import { Link } from "react-router-dom";
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
 const TABS = [
-  { id: "balade",     label: "Balade",     emoji: "🐾", icon: Footprints, bg: "from-emerald-500 to-teal-600" },
+  { id: "balade",     label: "Balade",     emoji: "🐾", icon: Footprints, bg: "from-emerald-500 to-emerald-700" },
   { id: "historique", label: "Historique", emoji: "📊", icon: History,    bg: "from-blue-500 to-indigo-600" },
   { id: "programme",  label: "Programme",  emoji: "✨", icon: Sparkles,   bg: "from-violet-500 to-purple-600" },
-  { id: "dressage",   label: "Dressage",   emoji: "🎯", icon: Dumbbell,   bg: "from-orange-500 to-amber-600" },
+  { id: "dressage",   label: "Dressage",   emoji: "🎯", icon: Dumbbell,   bg: "from-amber-500 to-amber-600" },
 ];
 
 export default function Activite() {

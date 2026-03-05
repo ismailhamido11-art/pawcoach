@@ -22,7 +22,7 @@ function getDaysLeft(dateStr) {
 function urgencyBadge(days) {
   if (days < 0)  return { label: "Dépassé", cls: "bg-red-100 text-red-600" };
   if (days === 0) return { label: "Auj. !", cls: "bg-red-100 text-red-600" };
-  if (days <= 3)  return { label: `${days}j`, cls: "bg-orange-100 text-orange-600" };
+  if (days <= 3)  return { label: `${days}j`, cls: "bg-amber-100 text-amber-600" };
   if (days <= 7)  return { label: `${days}j`, cls: "bg-amber-100 text-amber-600" };
   return { label: `${days}j`, cls: "bg-green-100 text-green-600" };
 }

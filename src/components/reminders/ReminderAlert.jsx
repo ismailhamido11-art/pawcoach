@@ -122,7 +122,7 @@ export default function ReminderAlert() {
                   </div>
                   <span className={`text-xs font-bold px-2 py-1 rounded-full flex-shrink-0 ${
                     alert.daysLeft === 0 ? "bg-red-100 text-red-600" :
-                    alert.daysLeft <= 3 ? "bg-orange-100 text-orange-600" :
+                    alert.daysLeft <= 3 ? "bg-amber-100 text-amber-600" :
                     alert.daysLeft <= 7 ? "bg-amber-100 text-amber-600" :
                     "bg-green-100 text-green-600"
                   }`}>

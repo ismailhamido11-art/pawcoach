@@ -33,38 +33,33 @@ Deno.serve(async (req) => {
           if (dogs && dogs.length > 0) dog = dogs[0];
         }
 
-        if (dog) {
-          // Ownership check
-          if (dog.owner !== user.email) {
-            return Response.json({ error: 'Forbidden' }, { status: 403 });
-          }
-          console.log(`[DEBUG] Dog found: ${dog.name}`);
-          dogName = dog.name || "ton chien";
-          if (dog.breed) dogDetails += dog.breed;
-          if (dog.weight) dogDetails += ` (${dog.weight}kg)`;
-        } else {
-           console.warn(`[WARN] No dog found for id ${dogId}`);
+        if (!dog || dog.owner !== user.email) {
+          return Response.json({ error: 'Forbidden' }, { status: 403 });
         }
-        
+        console.log(`[DEBUG] Dog found: ${dog.name}`);
+        dogName = dog.name || "ton chien";
+        if (dog.breed) dogDetails += dog.breed;
+        if (dog.weight) dogDetails += ` (${dog.weight}kg)`;
+
         const records = await base44.entities.HealthRecord.filter({ dog_id: dogId }, "-date", 20);
-        
+
         // Analyze missing info
         if (records) {
            const lastWeight = records.find(r => r.type === 'weight');
            const lastVaccine = records.find(r => r.type === 'vaccine');
            const lastVet = records.find(r => r.type === 'vet_visit');
-           
+
            if (!lastWeight) missingInfos.push("poids (jamais fait)");
            else {
               const d = new Date(lastWeight.date);
               const now = new Date();
               const diffTime = Math.abs(now - d);
-              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
               if (diffDays > 30) missingInfos.push(`poids (vieux de ${diffDays} jours)`);
            }
            if (!lastVaccine) missingInfos.push("vaccins (aucun)");
            if (!lastVet) missingInfos.push("visite vétérinaire (aucune)");
-           
+
            const summaryLines = records.map(r => {
             let line = `${r.date} [${r.type}]: ${r.title}`;
             if (r.value) line += ` (${r.value}kg)`;

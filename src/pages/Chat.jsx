@@ -77,7 +77,7 @@ export default function Chat() {
     if (!initializing && dog && !helpSent.current) {
       const params = new URLSearchParams(window.location.search);
       const helpMsg = params.get("help");
-      if (helpMsg) {
+      if (helpMsg && helpMsg.length <= 300) {
         helpSent.current = true;
         sendMessage(decodeURIComponent(helpMsg));
         window.history.replaceState({}, "", window.location.pathname);
@@ -116,7 +116,7 @@ export default function Chat() {
         ]);
         const bookmarkSet = {};
         (existingBookmarks || []).forEach(b => { bookmarkSet[b.content] = true; });
-        const sorted = history.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        const sorted = history.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)).slice(-50);
         const initialBookmarked = {};
         sorted.forEach(m => { if (m.role === "assistant" && bookmarkSet[m.content]) initialBookmarked[m.timestamp] = true; });
         setBookmarked(initialBookmarked);
