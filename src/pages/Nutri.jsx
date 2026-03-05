@@ -247,7 +247,7 @@ export default function Nutri() {
 
       {/* Tab: Scan → link to Scan page */}
       {activeTab === "scan" && (
-        <div className="flex-1 flex flex-col items-center justify-center px-5 py-10 gap-5">
+        <div className="flex-1 flex flex-col items-center justify-center px-5 py-10 gap-5 mb-16 overflow-y-auto">
           <motion.div
             animate={{ scale: [1, 1.03, 1] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
