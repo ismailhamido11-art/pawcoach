@@ -160,9 +160,14 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
   };
 
   return (
-    <Button variant="outline" onClick={handleDownload} disabled={loading} className="w-full gap-2">
-      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
-      Télécharger le carnet en PDF
+    <Button
+      variant="outline"
+      onClick={handleDownload}
+      disabled={loading}
+      className="gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30 hover:text-white text-xs font-semibold"
+    >
+      {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
+      {loading ? "Génération..." : "Rapport PDF vétérinaire"}
     </Button>
   );
 }
