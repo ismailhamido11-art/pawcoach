@@ -367,7 +367,7 @@ export default function Nutri() {
             <div ref={bottomRef} />
           </div>
 
-          <div className="fixed bottom-16 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-border">
+          <div className="fixed bottom-[4.5rem] left-0 right-0 bg-background border-t border-border">
             {isLimitReached ? (
               <div className="px-5 py-3">
                 <div className="flex gap-2 justify-start mb-2">

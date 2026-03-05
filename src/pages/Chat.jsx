@@ -368,7 +368,7 @@ export default function Chat() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="fixed bottom-16 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-border">
+      <div className="fixed bottom-[4.5rem] left-0 right-0 bg-background border-t border-border">
         {showSuggestions && (
           <div className="px-5 pt-3 pb-1">
             <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
