@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Home, Heart, Activity, Utensils, User } from "lucide-react";
 import { motion } from "framer-motion";
@@ -12,6 +12,15 @@ const tabs = [
 ];
 
 export default function BottomNav({ currentPage }) {
+  const navigate = useNavigate();
+
+  const handleTabClick = (e, page) => {
+    if (currentPage === page) {
+      e.preventDefault();
+      navigate(createPageUrl(page), { replace: true });
+    }
+  };
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bottom-nav bg-gradient-to-t from-white via-white/95 to-white/90 backdrop-blur-xl border-t border-border shadow-2xl">
       <div className="flex items-center justify-around px-2 py-2">
@@ -21,6 +30,7 @@ export default function BottomNav({ currentPage }) {
             <Link
               key={page}
               to={createPageUrl(page)}
+              onClick={(e) => handleTabClick(e, page)}
               className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl transition-all duration-300 ${
                 active ? "text-primary" : "text-muted-foreground hover:text-primary"
               }`}
