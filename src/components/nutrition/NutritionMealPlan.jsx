@@ -29,10 +29,30 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium, user, d
     return <p className="text-muted-foreground text-sm text-center py-10">Aucun chien trouvé.</p>;
   }
 
+  const savePlan = async () => {
+    if (!plan || !dog || !user) return;
+    setSaving(true);
+    try {
+      await base44.entities.NutritionPlan.create({
+        dog_id: dog.id,
+        owner_email: user.email,
+        plan_text: plan,
+        generated_at: new Date().toISOString(),
+        dog_weight_at_generation: dog.weight,
+        is_active: true,
+        notes: "",
+      });
+      toast.success("Plan sauvegardé ! Retrouve-le dans 'Mes plans'.");
+    } catch {
+      toast.error("Erreur lors de la sauvegarde");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const generate = async () => {
     setLoading(true);
     setPlan(null);
-    setBrands(null);
 
     const activityMap = { faible: "Faible (< 30 min/jour)", modere: "Modérée (30-60 min/jour)", eleve: "Élevée (1-2h/jour)", tres_eleve: "Très élevée (> 2h/jour)" };
     const dietMap = { kibble: "Croquettes sèches", barf: "BARF (viande crue)", mixed: "Mixte (croquettes + ménager)", homemade: "Ration ménagère" };
