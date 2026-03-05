@@ -184,8 +184,6 @@ export default function Sante() {
             )}
           </motion.div>
         </AnimatePresence>
-      </div>
-
       </PullToRefresh>
       <ChatFAB />
       <BottomNav currentPage="Sante" />
