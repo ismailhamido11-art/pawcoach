@@ -106,6 +106,7 @@ export default function GrowthTrackerContent({ dog, user }) {
 
   async function saveAnalysis() {
     if (!analysisResult) return;
+    setSavedAnalysis(true);
     await base44.entities.GrowthEntry.create({
       dog_id: dog.id,
       owner_email: user.email,
@@ -119,13 +120,17 @@ export default function GrowthTrackerContent({ dog, user }) {
       source: "photo_ai",
     });
     toast.success("Mesure enregistrée !");
-    setAnalysisResult(null);
-    setPreviewUrl(null);
-    loadEntries();
+    setTimeout(() => {
+      setSavedAnalysis(false);
+      setAnalysisResult(null);
+      setPreviewUrl(null);
+      loadEntries();
+    }, 1200);
   }
 
   async function saveManual() {
     if (!manualForm.weight_kg && !manualForm.height_cm) return;
+    setSavingManual(true);
     await base44.entities.GrowthEntry.create({
       dog_id: dog.id,
       owner_email: user.email,
@@ -135,6 +140,7 @@ export default function GrowthTrackerContent({ dog, user }) {
       source: "manual",
     });
     toast.success("Mesure ajoutée !");
+    setSavingManual(false);
     setShowAddManual(false);
     setManualForm({ date: format(new Date(), "yyyy-MM-dd"), weight_kg: "", height_cm: "" });
     loadEntries();
