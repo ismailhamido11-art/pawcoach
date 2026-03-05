@@ -6,9 +6,9 @@ import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
 
 const TYPE_CONFIG = {
-  vaccine:    { icon: Syringe,     color: "text-green-600",   bg: "bg-green-50",   label: "Vaccin" },
-  vet_visit:  { icon: Stethoscope, color: "text-purple-600",  bg: "bg-purple-50",  label: "Véto" },
-  medication: { icon: Pill,        color: "text-emerald-600", bg: "bg-emerald-50", label: "Traitement" },
+  vaccine:    { icon: Syringe,     color: "text-safe",        bg: "bg-safe/10",    label: "Vaccin",      gradient: "from-safe to-green-500" },
+  vet_visit:  { icon: Stethoscope, color: "text-accent",      bg: "bg-accent/10",  label: "Véto",        gradient: "from-accent to-emerald-400" },
+  medication: { icon: Pill,        color: "text-caution",     bg: "bg-caution/10", label: "Traitement",  gradient: "from-caution to-amber-400" },
 };
 
 function getDaysLeft(dateStr) {
