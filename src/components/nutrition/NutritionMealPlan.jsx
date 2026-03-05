@@ -43,7 +43,9 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium, user, d
         is_active: true,
         notes: "",
       });
+      setSaved(true);
       toast.success("Plan sauvegardé ! Retrouve-le dans 'Mes plans'.");
+      setTimeout(() => setSaved(false), 3000);
     } catch {
       toast.error("Erreur lors de la sauvegarde");
     } finally {
