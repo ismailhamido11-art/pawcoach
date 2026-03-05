@@ -27,13 +27,15 @@ export default function Layout({ children, currentPageName }) {
           font-size: 16px !important;
         }
       `}</style>
-      {/* Floating bell button top-right */}
-      <div
-        className="fixed top-0 right-0 z-50 flex items-center"
-        style={{ paddingTop: "calc(max(env(safe-area-inset-top, 0px), 6px) + 28px + env(safe-area-inset-top, 0px))", paddingRight: "12px" }}
-      >
-        <NotificationCenter />
-      </div>
+      {/* Floating bell button top-right — hidden on DogProfile */}
+      {currentPageName !== "DogProfile" && (
+        <div
+          className="fixed top-0 right-0 z-50 flex items-center"
+          style={{ paddingTop: "calc(max(env(safe-area-inset-top, 0px), 6px) + 28px + env(safe-area-inset-top, 0px))", paddingRight: "12px" }}
+        >
+          <NotificationCenter />
+        </div>
+      )}
       <div key={currentPageName} className="page-enter pb-24">
         {children}
       </div>
