@@ -14,6 +14,7 @@ import { isUserPremium } from "@/utils/premium";
 import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { updateStreakSilently } from "../components/streakHelper";
+import { unlockBadge, checkStreakBadges } from "@/components/achievements/badgeUtils";
 import { motion } from "framer-motion";
 
 const EXERCISES = [

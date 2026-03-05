@@ -4,6 +4,7 @@ import { MapPin, Pause, Play, StopCircle, Timer, Footprints, Zap } from "lucide-
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import WalkMap from "./WalkMap";
+import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 
 function formatTime(seconds) {
   const m = Math.floor(seconds / 60).toString().padStart(2, "0");
