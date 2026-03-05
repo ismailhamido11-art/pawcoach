@@ -23,6 +23,7 @@ export default function Profile() {
   const [dogs, setDogs] = useState([]);
   const [activeDogId, setActiveDogId] = useState(() => localStorage.getItem("activeDogId") || null);
   const [loading, setLoading] = useState(true);
+  const [showAchievements, setShowAchievements] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -97,6 +98,34 @@ export default function Profile() {
           onAdd={handleAddDog}
           isPremium={isUserPremium(user)}
         />
+
+        {/* Achievements Section */}
+        {dogs.length > 0 && (
+          <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
+            <button
+              onClick={() => setShowAchievements(p => !p)}
+              className="w-full flex items-center justify-between px-4 py-3.5"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center text-lg">🏆</div>
+                <div className="text-left">
+                  <p className="font-bold text-sm text-foreground">Succès & Badges</p>
+                  <p className="text-[11px] text-muted-foreground">Points, niveaux et récompenses</p>
+                </div>
+              </div>
+              <motion.div animate={{ rotate: showAchievements ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </motion.div>
+            </button>
+            {showAchievements && (
+              <div className="px-4 pb-4 border-t border-border pt-3">
+                <AchievementsSection dog={dogs.find(d => d.id === activeDogId) || dogs[0]} />
+              </div>
+            )}
+          </div>
+        )}
 
         <CoachSettings user={user} onSave={handleSaveUser} />
 
