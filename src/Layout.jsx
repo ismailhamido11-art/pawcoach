@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import ReminderAlert from "./components/reminders/ReminderAlert";
+import NotificationCenter from "./components/notifications/NotificationCenter";
 
 export default function Layout({ children, currentPageName }) {
   // Dark mode detection
@@ -27,7 +27,13 @@ export default function Layout({ children, currentPageName }) {
           font-size: 16px !important;
         }
       `}</style>
-      <ReminderAlert />
+      {/* Floating bell button top-right */}
+      <div
+        className="fixed top-0 right-0 z-50 flex items-center"
+        style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 8px)", paddingRight: "12px" }}
+      >
+        <NotificationCenter />
+      </div>
       <div key={currentPageName} className="page-enter pb-24">
         {children}
       </div>
