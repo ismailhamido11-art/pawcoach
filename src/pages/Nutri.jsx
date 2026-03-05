@@ -31,10 +31,11 @@ const msgAnim = {
 const TABS = [
   { id: "coach",    label: "NutriCoach", emoji: "🥗", bg: "from-emerald-500 to-teal-600" },
   { id: "mealplan", label: "Plan repas",  emoji: "📅", bg: "from-orange-500 to-amber-600" },
+  { id: "label",    label: "Étiquette",  emoji: "🔍", bg: "from-violet-500 to-purple-600" },
   { id: "saved",    label: "Mes plans",  emoji: "🗂️", bg: "from-primary to-accent" },
   { id: "prefs",    label: "Préférences", emoji: "⚙️", bg: "from-slate-500 to-slate-700" },
   { id: "compare",  label: "Comparer",   emoji: "⚖️", bg: "from-blue-500 to-indigo-600" },
-  { id: "scan",     label: "Scanner",    emoji: "📷", bg: "from-violet-500 to-purple-600" },
+  { id: "scan",     label: "Scanner",    emoji: "📷", bg: "from-rose-500 to-pink-600" },
 ];
 
 export default function Nutri() {
