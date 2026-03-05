@@ -27,6 +27,7 @@ export default function Layout({ children, currentPageName }) {
           font-size: 16px !important;
         }
       `}</style>
+      <ReminderAlert />
       <div key={currentPageName} className="page-enter pb-24">
         {children}
       </div>
