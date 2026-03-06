@@ -61,7 +61,7 @@ export default function Sante() {
          const u = await base44.auth.me();
          setUser(u);
          const dogs = await base44.entities.Dog.filter({ owner: u.email });
-         if (dogs.length > 0) {
+         if (dogs?.length > 0) {
            const d = getActiveDog(dogs);
            setDog(d);
            const [recs, logs] = await Promise.all([
@@ -164,7 +164,7 @@ export default function Sante() {
         try {
           const u = await base44.auth.me();
           const dogs = await base44.entities.Dog.filter({ owner: u.email });
-          if (dogs.length > 0) {
+          if (dogs?.length > 0) {
             const d = getActiveDog(dogs);
             setDog(d);
             const [recs, logs] = await Promise.all([
