@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Heart, ScanLine, Dumbbell, MessageCircle } from "lucide-react";
+import { Heart, Utensils, Dumbbell, MessageCircle } from "lucide-react";
 import { isUserPremium } from "@/utils/premium";
 import FeatureTile from "./FeatureTile";
 
@@ -108,9 +108,9 @@ function computeTileData({ records, exercises, scans, user, checkins, dailyLogs 
 
   return [
     { icon: Heart, iconColor: "#2d9f82", label: "Sante", dataPoint: santeData, subtitle: santeSub, badge: santeBadge, weekBars: santeWeekBars, page: "Notebook" },
-    { icon: ScanLine, iconColor: "#059669", label: "Nutrition", dataPoint: nutriData, subtitle: nutriSub, badge: nutriBadge, weekBars: nutriWeekBars, page: "Nutrition" },
+    { icon: Utensils, iconColor: "#059669", label: "Nutrition", dataPoint: nutriData, subtitle: nutriSub, badge: nutriBadge, weekBars: nutriWeekBars, page: "Nutrition" },
     { icon: Dumbbell, iconColor: "#6366f1", label: "Dressage", dataPoint: trainData, subtitle: trainSub, badge: trainBadge, weekBars: trainWeekBars, page: "Training" },
-    { icon: MessageCircle, iconColor: "#2d9f82", label: "Chat IA", dataPoint: chatData, subtitle: chatSub, badge: chatBadge, weekBars: null, page: "Chat" },
+    { icon: MessageCircle, iconColor: "#8b5cf6", label: "Chat IA", dataPoint: chatData, subtitle: chatSub, badge: chatBadge, weekBars: null, page: "Chat" },
   ];
 }
 
