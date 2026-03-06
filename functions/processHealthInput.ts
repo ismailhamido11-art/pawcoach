@@ -8,6 +8,8 @@ Deno.serve(async (req) => {
 
     const { messages, text, imageUrl, dogId } = await req.json();
 
+    if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
+
     // Sanitize user inputs to prevent prompt injection and limit length
     const sanitize = (s, max = 2000) => String(s || '').substring(0, max).replace(/[<>]/g, '');
 
