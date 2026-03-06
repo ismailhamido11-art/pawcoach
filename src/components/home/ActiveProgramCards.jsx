@@ -1,11 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { motion } from "framer-motion";
-import { Dumbbell, Clock, Utensils, ChevronRight, Calendar, Target, Flame } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target } from "lucide-react";
 
 const SESSION_ICONS = {
-  balade: "🐾", jeu: "🎾", "exercice mental": "🧠", repos: "💤", "entraînement": "🎯",
+  balade: "\uD83D\uDC3E", jeu: "\uD83C\uDFBE", "exercice mental": "\uD83E\uDDE0", repos: "\uD83D\uDCA4", "entra\u00EEnement": "\uD83C\uDFAF",
 };
 
 const DAY_NAMES = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -29,7 +29,6 @@ function TrainingCard({ program }) {
   const week = program.weeks?.[currentWeekIndex];
   if (!week) return null;
 
-  // Match session by day name or by index
   const todayName = DAY_NAMES[new Date().getDay()];
   const session = week.daily_sessions?.find(s =>
     s.day?.toLowerCase() === todayName.toLowerCase()
@@ -38,7 +37,7 @@ function TrainingCard({ program }) {
   if (!session) return null;
 
   const progress = Math.round(((elapsed + 1) / totalDays) * 100);
-  const icon = SESSION_ICONS[session.type] || "🐶";
+  const icon = SESSION_ICONS[session.type] || "\uD83D\uDC36";
 
   return (
     <motion.div
@@ -50,7 +49,6 @@ function TrainingCard({ program }) {
         <div className="rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-purple-50 p-4 relative overflow-hidden group">
           <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-violet-400 opacity-[0.06]" />
 
-          {/* Header */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-violet-100 flex items-center justify-center">
@@ -66,7 +64,6 @@ function TrainingCard({ program }) {
             <ChevronRight className="w-4 h-4 text-muted-foreground/30 group-hover:text-violet-400 transition-colors" />
           </div>
 
-          {/* Today's session */}
           <div className="flex items-start gap-3 bg-white/80 rounded-xl p-3 border border-violet-100/60">
             <span className="text-2xl leading-none mt-0.5">{icon}</span>
             <div className="flex-1 min-w-0">
@@ -79,12 +76,11 @@ function TrainingCard({ program }) {
               </div>
               <p className="text-[12px] text-foreground/80 leading-relaxed">{session.activity}</p>
               {session.tips && (
-                <p className="text-[10px] text-amber-600 mt-1 italic">💡 {session.tips}</p>
+                <p className="text-[10px] text-amber-600 mt-1 italic">{session.tips}</p>
               )}
             </div>
           </div>
 
-          {/* Progress bar */}
           <div className="mt-3 flex items-center gap-2">
             <div className="flex-1 h-1.5 bg-violet-100 rounded-full overflow-hidden">
               <motion.div
@@ -97,7 +93,6 @@ function TrainingCard({ program }) {
             <span className="text-[10px] font-bold text-violet-600">{progress}%</span>
           </div>
 
-          {/* Week theme */}
           {week.theme && (
             <div className="mt-2 flex items-center gap-1.5">
               <Target className="w-3 h-3 text-violet-400" />
@@ -110,35 +105,66 @@ function TrainingCard({ program }) {
   );
 }
 
+// Clean a raw markdown line into readable text
+function cleanLine(raw) {
+  return raw
+    .replace(/^[\s>|*\-#`]+/, "")   // strip leading markdown chars
+    .replace(/[*_`#|]/g, "")        // strip inline formatting
+    .replace(/\s{2,}/g, " ")        // collapse spaces
+    .trim();
+}
+
+function extractTodayMeals(planText, todayName) {
+  const lines = planText.split("\n");
+  const dayLower = todayName.toLowerCase();
+
+  // Find the line that contains today's day name
+  const dayIndex = lines.findIndex(l =>
+    l.toLowerCase().includes(dayLower) &&
+    !l.toLowerCase().includes("dimanche") !== (dayLower === "dimanche") // avoid false matches
+      ? l.toLowerCase().includes(dayLower)
+      : true
+  );
+  if (dayIndex === -1) return null;
+
+  const meals = [];
+  for (let i = dayIndex; i < Math.min(dayIndex + 10, lines.length); i++) {
+    const raw = lines[i];
+    const clean = cleanLine(raw);
+    if (!clean || clean.length < 3) continue;
+
+    // Stop if we hit another day (not the current one)
+    if (i > dayIndex) {
+      const hitOtherDay = DAY_NAMES.some(d =>
+        d.toLowerCase() !== dayLower && raw.toLowerCase().includes(d.toLowerCase())
+      );
+      if (hitOtherDay) break;
+      // Stop at section headers
+      if (raw.trim().startsWith("###") || raw.trim().startsWith("##")) break;
+    }
+
+    // Skip the day name line itself if it's just the name
+    if (i === dayIndex && clean.toLowerCase() === dayLower) continue;
+
+    meals.push(clean);
+  }
+
+  return meals.length > 0 ? meals.slice(0, 5) : null;
+}
+
 function NutritionPlanCard({ plan }) {
+  const [open, setOpen] = useState(false);
   const todayName = DAY_NAMES[new Date().getDay()];
   const dateField = plan.generated_at || plan.created_date;
   const daysSince = dateField
     ? Math.floor((Date.now() - new Date(dateField).getTime()) / (1000 * 60 * 60 * 24))
     : 0;
 
-  // Try to extract today's meal from plan text
   const planText = plan.plan_text || "";
-  const todayMeal = useMemo(() => {
-    const lines = planText.split("\n");
-    const dayLower = todayName.toLowerCase();
-    const dayIndex = lines.findIndex(l => l.toLowerCase().includes(dayLower));
-    if (dayIndex === -1) return null;
+  const todayMeals = useMemo(() => extractTodayMeals(planText, todayName), [planText, todayName]);
 
-    const mealLines = [];
-    for (let i = dayIndex; i < Math.min(dayIndex + 6, lines.length); i++) {
-      const clean = lines[i].replace(/[*_`#-]/g, "").trim();
-      if (!clean) continue;
-      // Stop if we hit another day name (not today's)
-      if (i > dayIndex && DAY_NAMES.some(d => d !== todayName && lines[i].toLowerCase().includes(d.toLowerCase()))) break;
-      mealLines.push(clean);
-    }
-    return mealLines.length > 0 ? mealLines.slice(0, 4) : null;
-  }, [planText, todayName]);
-
-  // Fallback preview
-  const fallbackLines = planText.split("\n").filter(l => l.trim() && !l.startsWith("#"));
-  const preview = fallbackLines[0]?.replace(/[*_`#]/g, "").trim().slice(0, 100) || "Plan nutrition personnalise";
+  // Compact summary: first meal line or generic
+  const summary = todayMeals?.[0]?.slice(0, 60) || "Consulte ton plan du jour";
 
   return (
     <motion.div
@@ -146,12 +172,12 @@ function NutritionPlanCard({ plan }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.05 }}
     >
-      <Link to={createPageUrl("Nutri") + "?tab=saved"}>
-        <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4 relative overflow-hidden group">
-          <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-emerald-400 opacity-[0.06]" />
+      <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative overflow-hidden">
+        <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-emerald-400 opacity-[0.06]" />
 
-          {/* Header */}
-          <div className="flex items-center justify-between mb-3">
+        {/* Clickable header */}
+        <button className="w-full text-left p-4" onClick={() => setOpen(v => !v)}>
+          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center">
                 <Utensils className="w-3.5 h-3.5 text-emerald-600" />
@@ -164,34 +190,69 @@ function NutritionPlanCard({ plan }) {
                 </p>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground/30 group-hover:text-emerald-400 transition-colors" />
+            {open
+              ? <ChevronUp className="w-4 h-4 text-emerald-400" />
+              : <ChevronDown className="w-4 h-4 text-muted-foreground/40" />
+            }
           </div>
 
-          {/* Today's meal */}
-          <div className="flex items-start gap-3 bg-white/80 rounded-xl p-3 border border-emerald-100/60">
-            <span className="text-2xl leading-none mt-0.5">🍽️</span>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-0.5">
+          {/* Compact preview when closed */}
+          {!open && (
+            <div className="flex items-center gap-2.5 bg-white/80 rounded-xl px-3 py-2.5 border border-emerald-100/60">
+              <span className="text-lg leading-none">🍽️</span>
+              <div className="flex-1 min-w-0">
                 <span className="text-xs font-bold text-foreground">{todayName}</span>
-                <span className="text-[10px] text-muted-foreground">Repas du jour</span>
+                <span className="text-[10px] text-muted-foreground ml-1.5">{summary}{summary.length >= 60 ? "..." : ""}</span>
               </div>
-              {todayMeal ? (
-                todayMeal.map((line, i) => (
-                  <p key={i} className="text-[12px] text-foreground/80 leading-relaxed truncate">{line}</p>
-                ))
-              ) : (
-                <p className="text-[12px] text-foreground/80 leading-relaxed line-clamp-2">{preview}</p>
-              )}
             </div>
-          </div>
-        </div>
-      </Link>
+          )}
+        </button>
+
+        {/* Expanded: today's meals */}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="px-4 pb-4 space-y-2">
+                <div className="bg-white/80 rounded-xl p-3 border border-emerald-100/60">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-lg leading-none">🍽️</span>
+                    <span className="text-xs font-bold text-foreground">{todayName}</span>
+                    <span className="text-[10px] text-muted-foreground">Repas du jour</span>
+                  </div>
+                  {todayMeals && todayMeals.length > 0 ? (
+                    <div className="space-y-1.5 ml-7">
+                      {todayMeals.map((line, i) => (
+                        <p key={i} className="text-[12px] text-foreground/80 leading-relaxed">{line}</p>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[12px] text-muted-foreground ml-7 italic">
+                      Pas de detail pour {todayName} dans ce plan. Consulte le plan complet.
+                    </p>
+                  )}
+                </div>
+                <Link
+                  to={createPageUrl("Nutri") + "?tab=saved"}
+                  className="block text-center text-[11px] font-semibold text-emerald-600 py-1.5"
+                >
+                  Voir le plan complet
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </motion.div>
   );
 }
 
 export default function ActiveProgramCards({ trainingBookmarks = [], nutritionPlans = [] }) {
-  // Parse the most recent active training program
   const activeTraining = useMemo(() => {
     for (const bk of trainingBookmarks) {
       try {
@@ -202,19 +263,17 @@ export default function ActiveProgramCards({ trainingBookmarks = [], nutritionPl
           if (elapsed >= 0 && elapsed < totalDays) return data;
         }
       } catch {
-        // Not JSON or invalid — skip
+        // Not JSON or invalid
       }
     }
     return null;
   }, [trainingBookmarks]);
 
-  // Find the single active nutrition plan (most recent if multiple marked active)
   const activePlan = useMemo(() => {
     if (!nutritionPlans.length) return null;
     const actives = nutritionPlans.filter(p => p.is_active === true);
     if (actives.length === 0) return null;
     if (actives.length === 1) return actives[0];
-    // Multiple active — pick most recent
     return actives.sort((a, b) => (b.generated_at || "").localeCompare(a.generated_at || ""))[0];
   }, [nutritionPlans]);
 
