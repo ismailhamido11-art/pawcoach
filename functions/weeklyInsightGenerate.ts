@@ -126,7 +126,8 @@ Deno.serve(async (req) => {
                 highlights = parsed.highlights || "";
                 recommendations = parsed.recommendations || "";
               }
-            } catch {
+            } catch (parseErr) {
+              console.warn(`weeklyInsightGenerate: JSON parse failed for dog ${dog.id}, using raw content:`, parseErr?.message || String(parseErr));
               summary = content;
             }
           }
