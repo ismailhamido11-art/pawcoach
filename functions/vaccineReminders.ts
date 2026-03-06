@@ -59,8 +59,8 @@ Deno.serve(async (req) => {
       // Mark as reminded today (prevents duplicate sends)
       try {
         await base44.asServiceRole.entities.HealthRecord.update(vaccine.id, { reminder_sent_date: todayStr });
-      } catch {
-        // Field may not exist in schema yet — email still sent
+      } catch (updateErr) {
+        console.warn(`vaccineReminders: failed to update reminder_sent_date for vaccine ${vaccine.id}:`, updateErr?.message || String(updateErr));
       }
       sent++;
     }
