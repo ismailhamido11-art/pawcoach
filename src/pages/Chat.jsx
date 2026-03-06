@@ -216,25 +216,12 @@ export default function Chat() {
       if (dogs.length > 0) {
         const d = getActiveDog(dogs);
         setDog(d);
-        const [history, existingBookmarks] = await Promise.all([
-          base44.entities.ChatMessage.filter({ dog_id: d.id }),
-          base44.entities.Bookmark.filter({ dog_id: d.id, owner: u.email, source: "chat" }),
-        ]);
-        const bookmarkSet = {};
-        (existingBookmarks || []).forEach(b => { bookmarkSet[b.content] = true; });
-        const sorted = history.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)).slice(-50);
-        const initialBookmarked = {};
-        sorted.forEach(m => { if (m.role === "assistant" && bookmarkSet[m.content]) initialBookmarked[m.timestamp] = true; });
-        setBookmarked(initialBookmarked);
-        if (sorted.length === 0) {
-          setMessages([{
-            role: "assistant",
-            content: `Bonjour ! Je suis PawCoach, ton coach bien-etre pour **${d.name}**.\n\nJe connais tout son historique : sante, nutrition, activite, humeur. Pose-moi n'importe quelle question !`,
-            timestamp: new Date().toISOString(),
-          }]);
-        } else {
-          setMessages(sorted);
-        }
+        // Always start fresh — history stays in DB but each visit = new conversation
+        setMessages([{
+          role: "assistant",
+          content: `Bonjour ! Je suis PawCoach, ton coach bien-etre pour **${d.name}**.\n\nJe connais tout son historique : sante, nutrition, activite, humeur. Pose-moi n'importe quelle question !`,
+          timestamp: new Date().toISOString(),
+        }]);
       }
     } catch (err) {
       console.error("Chat init error:", err);
