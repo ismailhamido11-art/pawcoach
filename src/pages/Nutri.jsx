@@ -204,13 +204,13 @@ export default function Nutri() {
       }
 
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
-      if (dogs.length > 0) {
+      if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
         setDog(d);
         const scans = await base44.entities.FoodScan.filter({ dog_id: d.id }, "-timestamp", 5);
-        setRecentScans(scans);
+        setRecentScans(scans || []);
         const prefs = await base44.entities.DietPreferences.filter({ dog_id: d.id, owner_email: u.email });
-        if (prefs.length > 0) setDietPrefs(prefs[0]);
+        if (prefs?.length > 0) setDietPrefs(prefs[0]);
         setMessages([{
           role: "assistant",
           content: `Bonjour ! \u{1F957} Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies ? ` avec des allergies \u00e0 ${d.allergies}` : ""} et j'ai acc\u00e8s \u00e0 ses derniers scans alimentaires.\n\nPose-moi une question, g\u00e9n\u00e8re un **plan de repas personnalis\u00e9**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
