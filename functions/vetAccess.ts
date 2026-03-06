@@ -219,7 +219,8 @@ Deno.serve(async (req) => {
       const accesses = await base44.asServiceRole.entities.SharedVetAccess.filter({ dog_id: dogId, vet_email: user.email, status: 'active' });
       if (!accesses || accesses.length === 0) return Response.json({ error: 'No active access to this dog' }, { status: 403 });
       const access = accesses[0];
-      const sharedSections = JSON.parse(access.shared_sections || '[]');
+      let sharedSections = [];
+      try { sharedSections = JSON.parse(access.shared_sections || '[]'); } catch { /* corrupted data fallback */ }
       const dogs = await base44.asServiceRole.entities.Dog.filter({ id: dogId });
       if (!dogs || dogs.length === 0) return Response.json({ error: 'Dog not found' }, { status: 404 });
       const dog = dogs[0];
