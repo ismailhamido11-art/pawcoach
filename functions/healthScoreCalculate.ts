@@ -109,6 +109,6 @@ Deno.serve(async (req) => {
     });
   } catch (error) {
     console.error("healthScoreCalculate error:", error);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ error: error?.message || String(error) }, { status: 500 });
   }
 });
