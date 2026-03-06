@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Trash2, ChevronDown, ChevronUp, Pencil, Check, X } from "lucide-react";
+import { Trash2, ChevronDown, ChevronUp, Pencil, Check, X, Home, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
@@ -45,6 +45,20 @@ export default function SavedPlansPanel({ dog, user }) {
     }
   };
 
+  const handleActivate = async (planId) => {
+    try {
+      // Deactivate all, then activate the chosen one
+      await Promise.all(plans.filter(p => p.is_active).map(p =>
+        base44.entities.NutritionPlan.update(p.id, { is_active: false })
+      ));
+      await base44.entities.NutritionPlan.update(planId, { is_active: true });
+      setPlans(prev => prev.map(p => ({ ...p, is_active: p.id === planId })));
+      toast.success("Programme active ! Retrouve-le sur ton accueil.");
+    } catch {
+      toast.error("Erreur lors de l'activation");
+    }
+  };
+
   const handleSaveNote = async (plan) => {
     try {
       await base44.entities.NutritionPlan.update(plan.id, { notes: tempNote });
@@ -77,19 +91,34 @@ export default function SavedPlansPanel({ dog, user }) {
         <motion.div key={plan.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
           {/* Header */}
-          <div className="p-4">
+          <div className={`p-4 ${plan.is_active ? "bg-emerald-50/50" : ""}`}>
+            {/* Active badge */}
+            {plan.is_active && (
+              <div className="flex items-center gap-1.5 mb-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Programme actif — visible sur l'accueil</span>
+              </div>
+            )}
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground">
                   {plan.generated_at
-                    ? format(new Date(plan.generated_at), "d MMMM yyyy 'à' HH:mm", { locale: fr })
+                    ? format(new Date(plan.generated_at), "d MMMM yyyy 'a' HH:mm", { locale: fr })
                     : "Date inconnue"}
                 </p>
                 {plan.dog_weight_at_generation && (
-                  <p className="text-xs text-primary font-medium mt-0.5">⚖️ {plan.dog_weight_at_generation} kg lors de la génération</p>
+                  <p className="text-xs text-primary font-medium mt-0.5">{plan.dog_weight_at_generation} kg lors de la generation</p>
                 )}
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-1.5">
+                {!plan.is_active && (
+                  <button
+                    onClick={() => handleActivate(plan.id)}
+                    className="h-8 px-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-1.5 text-emerald-700 text-xs font-semibold"
+                  >
+                    <Home className="w-3.5 h-3.5" /> Activer
+                  </button>
+                )}
                 <button
                   onClick={() => setExpandedId(expandedId === plan.id ? null : plan.id)}
                   className="w-8 h-8 rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground"

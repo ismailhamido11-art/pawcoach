@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import BottomNav from "../components/BottomNav";
-import { ArrowLeft, Bookmark, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarChart2, Clock, Target } from "lucide-react";
+import { ArrowLeft, Bookmark, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarChart2, Clock, Target, Home, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ReactMarkdown from "react-markdown";
@@ -57,6 +57,19 @@ export default function Library() {
       toast.success("Conseil supprimé");
     } catch (err) {
       toast.error("Erreur lors de la suppression");
+    }
+  };
+
+  const handleActivateTraining = async (bk) => {
+    try {
+      const data = JSON.parse(bk.content);
+      // Reset start_date to today — this (re)starts the program
+      data.start_date = new Date().toISOString().split("T")[0];
+      await base44.entities.Bookmark.update(bk.id, { content: JSON.stringify(data) });
+      setBookmarks(prev => prev.map(b => b.id === bk.id ? { ...b, content: JSON.stringify(data) } : b));
+      toast.success("Programme active ! Retrouve-le sur ton accueil.");
+    } catch {
+      toast.error("Erreur lors de l'activation");
     }
   };
 
@@ -168,6 +181,17 @@ export default function Library() {
                     className="w-full text-left p-4"
                     onClick={() => setExpanded(isOpen ? null : b.id)}
                   >
+                    {/* Active training badge */}
+                    {trainingData?.start_date && (() => {
+                      const elapsed = Math.floor((new Date().setHours(0,0,0,0) - new Date(trainingData.start_date + "T00:00:00").getTime()) / 86400000);
+                      const total = (trainingData.duration_weeks || 4) * 7;
+                      return elapsed >= 0 && elapsed < total ? (
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-violet-600" />
+                          <span className="text-[10px] font-bold text-violet-700 uppercase tracking-wider">Actif — Jour {elapsed + 1}/{total}</span>
+                        </div>
+                      ) : null;
+                    })()}
                     <div className="flex items-start gap-3">
                       <div className={`w-8 h-8 rounded-xl ${src.bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
                         <SrcIcon className="w-4 h-4" style={{ color: src.color }} />
@@ -177,7 +201,7 @@ export default function Library() {
                           <p className="font-bold text-sm text-foreground leading-tight truncate">{b.title}</p>
                         )}
                         <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
-                          {preview}{b.content?.length > 120 ? "..." : ""}
+                          {preview}{!trainingData && b.content?.length > 120 ? "..." : ""}
                         </p>
                         <div className="flex items-center gap-2 mt-1.5">
                           <span className="text-[10px] font-semibold" style={{ color: src.color }}>{src.label}</span>
@@ -188,12 +212,22 @@ export default function Library() {
                           )}
                         </div>
                       </div>
-                      <button
-                        onClick={e => { e.stopPropagation(); handleDelete(b.id); }}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-red-50 transition-colors flex-shrink-0"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex gap-1.5 flex-shrink-0">
+                        {trainingData && (
+                          <button
+                            onClick={e => { e.stopPropagation(); handleActivateTraining(b); }}
+                            className="h-7 px-2.5 rounded-lg bg-violet-50 border border-violet-200 flex items-center gap-1 text-violet-700 text-[10px] font-semibold"
+                          >
+                            <Home className="w-3 h-3" /> Activer
+                          </button>
+                        )}
+                        <button
+                          onClick={e => { e.stopPropagation(); handleDelete(b.id); }}
+                          className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-red-50 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                   </button>
 

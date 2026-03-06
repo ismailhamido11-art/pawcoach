@@ -111,11 +111,10 @@ function TrainingCard({ program }) {
 }
 
 function NutritionPlanCard({ plan }) {
-  const daysSince = plan.created_date
-    ? Math.floor((Date.now() - new Date(plan.created_date).getTime()) / (1000 * 60 * 60 * 24))
+  const dateField = plan.generated_at || plan.created_date;
+  const daysSince = dateField
+    ? Math.floor((Date.now() - new Date(dateField).getTime()) / (1000 * 60 * 60 * 24))
     : 0;
-
-  if (daysSince > 30) return null;
 
   // Extract first meaningful line from plan_text as preview
   const lines = (plan.plan_text || "").split("\n").filter(l => l.trim() && !l.startsWith("#"));
@@ -172,12 +171,12 @@ export default function ActiveProgramCards({ trainingBookmarks = [], nutritionPl
     return null;
   }, [trainingBookmarks]);
 
-  // Most recent active nutrition plan
+  // Find the nutrition plan marked as active
   const activePlan = useMemo(() => {
     if (!nutritionPlans.length) return null;
-    const latest = nutritionPlans[0];
-    if (!latest.is_active && latest.is_active !== undefined) return null;
-    return latest;
+    // Prefer the one explicitly marked is_active
+    const active = nutritionPlans.find(p => p.is_active === true);
+    return active || null;
   }, [nutritionPlans]);
 
   if (!activeTraining && !activePlan) return null;
