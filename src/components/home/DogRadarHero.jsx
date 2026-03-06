@@ -239,13 +239,13 @@ export default function DogRadarHero({ user, dog, streak, checkins, records, exe
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: arc.color + "25", border: `1.5px solid ${arc.color}55` }}>
                     <Icon className="w-3.5 h-3.5" style={{ color: arc.color }} />
                   </div>
-                  <span className="text-white/60 text-[9px] font-semibold">{arc.label}</span>
+                  <span className="text-white/70 text-[9px] font-semibold">{arc.label}</span>
                   {arc.hasData ? (
                     <span className="font-black text-[11px]" style={{ color: arc.color }}>{arc.score}%</span>
                   ) : (
-                    <span className="font-bold text-[11px] text-white/30">—</span>
+                    <span className="font-bold text-[11px] text-white/40">—</span>
                   )}
-                  <span className="text-white/30 text-[8px] leading-tight">{arc.hint}</span>
+                  <span className="text-white/60 text-[8px] leading-tight">{arc.hint}</span>
                 </motion.button>
               );
             })}
