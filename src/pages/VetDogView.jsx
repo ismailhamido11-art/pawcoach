@@ -32,7 +32,7 @@ export default function VetDogView() {
       if (res.data.error) { setError(res.data.error); }
       else { setDogData(res.data); }
     } catch (e) {
-      setError(e.message);
+      setError(e?.message || String(e));
     }
     setLoading(false);
   };
