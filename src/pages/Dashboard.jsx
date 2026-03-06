@@ -101,7 +101,7 @@ export default function Dashboard() {
         const u = await base44.auth.me();
         setUser(u);
         const dogs = await base44.entities.Dog.filter({ owner: u.email });
-        if (!dogs.length) return;
+        if (!dogs?.length) return;
         const d = getActiveDog(dogs);
         setDog(d);
 
@@ -113,10 +113,10 @@ export default function Dashboard() {
           base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 90),
           base44.entities.FoodScan.filter({ dog_id: d.id }).catch(() => []),
         ]);
-        setRecords(recs);
-        setCheckins(cks.sort((a, b) => a.date > b.date ? 1 : -1));
-        setStreak(stk[0] || null);
-        setProgress(prog);
+        setRecords(recs || []);
+        setCheckins((cks || []).sort((a, b) => a.date > b.date ? 1 : -1));
+        setStreak((stk || [])[0] || null);
+        setProgress(prog || []);
         setDailyLogs(logs || []);
         setScans(foodScans || []);
       } catch (err) {
