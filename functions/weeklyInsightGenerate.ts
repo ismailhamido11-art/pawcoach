@@ -131,7 +131,7 @@ Deno.serve(async (req) => {
             }
           }
         } catch (e) {
-          console.warn(`AI generation failed for dog ${dog.id}:`, e.message);
+          console.warn(`AI generation failed for dog ${dog.id}:`, e?.message || String(e));
         }
       }
 
@@ -166,7 +166,7 @@ Deno.serve(async (req) => {
     return Response.json({ ok: true, generated });
 
   } catch (error) {
-    console.error("weeklyInsightGenerate error:", error.message);
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error("weeklyInsightGenerate error:", error?.message || String(error));
+    return Response.json({ error: error?.message || String(error) }, { status: 500 });
   }
 });
