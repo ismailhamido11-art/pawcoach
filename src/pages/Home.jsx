@@ -10,6 +10,7 @@ import DogRadarHero from "../components/home/DogRadarHero";
 import TodayCard from "../components/home/TodayCard";
 import BentoGrid from "../components/home/BentoGrid";
 import StreakBar from "../components/home/StreakBar";
+import DailyCoaching from "../components/home/DailyCoaching";
 import CombinedFAB from "../components/CombinedFAB";
 
 import { Flame } from "lucide-react";
@@ -214,7 +215,15 @@ export default function Home() {
           />
         </div>
 
-        {/* Block 3: Bento Feature Grid */}
+        {/* Block 3: Daily Coaching (tip + recommendations) */}
+        <div className="mt-3">
+          <DailyCoaching
+            dog={dog} records={records} exercises={exercises} scans={scans}
+            dailyLogs={dailyLogs} todayCheckin={todayCheckin} streak={streak}
+          />
+        </div>
+
+        {/* Block 4: Bento Feature Grid */}
         <div className="mt-3">
           <BentoGrid records={records} exercises={exercises} scans={scans} user={user} checkins={recentCheckins} dailyLogs={dailyLogs} />
         </div>
