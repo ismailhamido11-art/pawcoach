@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
     return Response.json({ ok: true, reminders_sent: remindersSent });
 
   } catch (error) {
-    console.error("streakReminder error:", error.message);
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error("streakReminder error:", error?.message || String(error));
+    return Response.json({ error: error?.message || String(error) }, { status: 500 });
   }
 });
