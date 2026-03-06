@@ -4,10 +4,19 @@ import Stripe from 'npm:stripe@17.3.1';
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY"));
 
 Deno.serve(async (req) => {
+  if (req.method !== "POST") {
+    return new Response("Method not allowed", { status: 405 });
+  }
+
   try {
     const body = await req.text();
     const signature = req.headers.get("stripe-signature");
     const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
+
+    if (!signature || !webhookSecret) {
+      console.error("Missing stripe-signature header or STRIPE_WEBHOOK_SECRET env var");
+      return new Response("Configuration error", { status: 500 });
+    }
 
     let event;
     try {
