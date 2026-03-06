@@ -7,17 +7,12 @@ import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
 import PullToRefresh from "../components/PullToRefresh";
 import DogRadarHero from "../components/home/DogRadarHero";
-import DailyCheckinHub from "../components/home/DailyCheckinHub";
-import StreakCard from "../components/home/StreakCard";
-import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
-import JournalLog from "../components/home/JournalLog";
-import SmartRecommendations from "../components/home/SmartRecommendations";
-import PremiumValueBanner from "../components/home/PremiumValueBanner";
-import HealthScore from "../components/home/HealthScore";
-import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
+import TodayCard from "../components/home/TodayCard";
+import BentoGrid from "../components/home/BentoGrid";
+import StreakBar from "../components/home/StreakBar";
 import CombinedFAB from "../components/CombinedFAB";
 
-import { Heart, PartyPopper, Flame } from "lucide-react";
+import { Flame } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,12 +20,12 @@ import { toast } from "sonner";
 import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
 
 const MILESTONES = [
-  { days: 3,   message: "3 jours de suite !",    sub: "Le début d'une belle habitude" },
-  { days: 7,   message: "1 semaine complète !",   sub: "Tu es sur la bonne voie" },
-  { days: 14,  message: "2 semaines !",           sub: "La régularité paie" },
+  { days: 3,   message: "3 jours de suite !",    sub: "Le debut d'une belle habitude" },
+  { days: 7,   message: "1 semaine complete !",   sub: "Tu es sur la bonne voie" },
+  { days: 14,  message: "2 semaines !",           sub: "La regularite paie" },
   { days: 30,  message: "1 mois de suivi !",      sub: "Champion du suivi" },
   { days: 60,  message: "2 mois !",               sub: "Engagement exceptionnel" },
-  { days: 100, message: "100 jours !",             sub: "Légende absolue" },
+  { days: 100, message: "100 jours !",             sub: "Legende absolue" },
 ];
 
 function getTodayString() {
@@ -54,12 +49,6 @@ export default function Home() {
   const [scans, setScans] = useState([]);
   const [dailyLogs, setDailyLogs] = useState([]);
 
-  const [weeklyInsight, setWeeklyInsight] = useState(null);
-  const [previousInsight, setPreviousInsight] = useState(null);
-  const [pastInsights, setPastInsights] = useState([]);
-  const [insightExpanded, setInsightExpanded] = useState(false);
-  const [markingRead, setMarkingRead] = useState(false);
-
   const [milestone, setMilestone] = useState(null);
   const [showPremiumNudge, setShowPremiumNudge] = useState(false);
 
@@ -73,11 +62,10 @@ export default function Home() {
           const d = getActiveDog(dogs);
           setDog(d);
           const today = getTodayString();
-          const [checkins, streaks, recent, insights, recs, exs, scs, logs] = await Promise.all([
+          const [checkins, streaks, recent, recs, exs, scs, logs] = await Promise.all([
             base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
             base44.entities.Streak.filter({ dog_id: d.id }),
             base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 30),
-            base44.entities.WeeklyInsight.filter({ dog_id: d.id }, "-week_start", 8),
             base44.entities.HealthRecord.filter({ dog_id: d.id }),
             base44.entities.UserProgress.filter({ dog_id: d.id }),
             base44.entities.FoodScan.filter({ dog_id: d.id }),
@@ -91,14 +79,7 @@ export default function Home() {
           if (streaks?.length > 0) setStreak(streaks[0]);
           const sorted = (recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7);
           setRecentCheckins(sorted);
-          if (insights?.length > 0) {
-            const sortedInsights = insights.sort((a, b) => (b.week_start || "").localeCompare(a.week_start || ""));
-            const latestUnread = sortedInsights.find(i => !i.is_read);
-            setWeeklyInsight(latestUnread || null);
-            setPreviousInsight(sortedInsights.length > 1 ? sortedInsights[1] : null);
-            setPastInsights(sortedInsights.filter(i => i.is_read));
-          }
-          // Post-onboarding premium nudge (first visit, non-premium)
+          // Post-onboarding premium nudge
           if (!isUserPremium(u) && !u.premium_onboarding_nudge_shown) {
             setShowPremiumNudge(true);
             try { await base44.auth.updateMe({ premium_onboarding_nudge_shown: true }); } catch(e) { console.warn("Nudge flag update failed:", e); }
@@ -119,7 +100,7 @@ export default function Home() {
     if (!mood || !energy || !appetite || submitting) return;
     setSubmitting(true);
 
-    // --- OPTIMISTIC UPDATE: show result card immediately ---
+    // Optimistic update
     const optimisticCheckin = { mood, energy, appetite, notes, date: getTodayString(), ai_response: null, _syncing: true };
     setTodayCheckin(optimisticCheckin);
     setRecentCheckins(prev => [optimisticCheckin, ...prev].slice(0, 7));
@@ -140,60 +121,16 @@ export default function Home() {
           setTimeout(() => setMilestone(null), 5000);
         }
       }
-      toast.success("Check-in enregistré ! 🎉");
+      toast.success("Check-in enregistre !");
     } catch (err) {
       console.error("Check-in error:", err);
-      // Rollback optimistic update
       setTodayCheckin(null);
       setRecentCheckins(prev => prev.filter(c => !c._syncing));
-      toast.error("Erreur lors du check-in. Réessaie dans quelques instants.");
+      toast.error("Erreur lors du check-in. Reessaie dans quelques instants.");
     } finally {
       setSubmitting(false);
     }
   };
-
-  const handleMarkInsightRead = async () => {
-    if (!weeklyInsight || markingRead) return;
-    setMarkingRead(true);
-    try {
-      await base44.entities.WeeklyInsight.update(weeklyInsight.id, { is_read: true });
-      setWeeklyInsight(null);
-      setInsightExpanded(false);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setMarkingRead(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background pb-24">
-        {/* Hero skeleton */}
-        <div className="h-64 bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] relative overflow-hidden">
-          <div className="absolute bottom-6 left-5 space-y-2">
-            <div className="h-4 w-20 bg-white/20 rounded animate-pulse" />
-            <div className="h-7 w-48 bg-white/20 rounded animate-pulse" />
-            <div className="h-4 w-36 bg-white/10 rounded animate-pulse" />
-          </div>
-        </div>
-        {/* Checkin card skeleton */}
-        <div className="px-4 -mt-8 relative z-10">
-          <div className="h-[340px] rounded-3xl bg-gradient-to-br from-[#0f2027] to-[#1a3a4a] animate-pulse shadow-2xl" />
-        </div>
-        {/* Snapshot skeleton */}
-        <div className="px-5 mt-5 space-y-3">
-          <div className="h-3 w-28 bg-muted rounded animate-pulse" />
-          <div className="grid grid-cols-2 gap-3">
-            {[0, 1, 2, 3].map(i => (
-              <div key={i} className="bg-white rounded-2xl p-4 border border-border/30 h-24 animate-pulse" />
-            ))}
-          </div>
-        </div>
-        <BottomNav currentPage="Home" />
-      </div>
-    );
-  }
 
   const handleRefresh = async () => {
     try {
@@ -202,11 +139,10 @@ export default function Home() {
       if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
         const today = getTodayString();
-        const [checkins, streaks, recent, insights, recs, exs, scs, logs] = await Promise.all([
+        const [checkins, streaks, recent, recs, exs, scs, logs] = await Promise.all([
           base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
           base44.entities.Streak.filter({ dog_id: d.id }),
           base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 30),
-          base44.entities.WeeklyInsight.filter({ dog_id: d.id }, "-week_start", 8),
           base44.entities.HealthRecord.filter({ dog_id: d.id }),
           base44.entities.UserProgress.filter({ dog_id: d.id }),
           base44.entities.FoodScan.filter({ dog_id: d.id }),
@@ -220,106 +156,88 @@ export default function Home() {
         else setTodayCheckin(null);
         if (streaks?.length > 0) setStreak(streaks[0]);
         setRecentCheckins((recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7));
-        if (insights?.length > 0) {
-          const sortedInsights = insights.sort((a, b) => (b.week_start || "").localeCompare(a.week_start || ""));
-          setWeeklyInsight(sortedInsights.find(i => !i.is_read) || null);
-          setPreviousInsight(sortedInsights.length > 1 ? sortedInsights[1] : null);
-          setPastInsights(sortedInsights.filter(i => i.is_read));
-        }
       }
     } catch (e) { console.error(e); }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background pb-24">
+        {/* Hero skeleton */}
+        <div className="h-56 bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] relative overflow-hidden">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
+            <div className="w-20 h-20 rounded-full bg-white/20 animate-pulse" />
+          </div>
+        </div>
+        {/* TodayCard skeleton */}
+        <div className="px-4 mt-3">
+          <div className="h-24 rounded-2xl bg-white/80 border border-border/20 animate-pulse" />
+        </div>
+        {/* Bento skeleton */}
+        <div className="px-4 mt-3 grid grid-cols-2 gap-3">
+          {[0, 1, 2, 3].map(i => (
+            <div key={i} className="h-[120px] rounded-2xl bg-white/80 border border-border/20 animate-pulse" />
+          ))}
+        </div>
+        {/* Streak skeleton */}
+        <div className="px-4 mt-3">
+          <div className="h-14 rounded-2xl bg-white/80 border border-border/20 animate-pulse" />
+        </div>
+        <BottomNav currentPage="Home" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-40 relative flex flex-col pt-20">
       <WellnessBanner />
 
       <PullToRefresh onRefresh={handleRefresh}>
-      {/* HERO — Carte d'identité vivante */}
-      <DogRadarHero
-        user={user}
-        dog={dog}
-        streak={streak}
-        checkins={recentCheckins}
-        records={records}
-        exercises={exercises}
-        scans={scans}
-        dailyLogs={dailyLogs}
-      />
-
-      {/* MAIN CONTENT */}
-      <div className="space-y-3 mt-3">
-        {/* Daily Checkin Hub */}
-        <DailyCheckinHub
-          dog={dog}
-          todayCheckin={todayCheckin}
-          onSubmit={handleCheckin}
-          submitting={submitting}
-          streak={streak}
-        />
-
-        {/* Health Score */}
-        <HealthScore
-          dog={dog}
+        {/* Block 1: Compact Radar Hero */}
+        <DogRadarHero
           user={user}
-          todayCheckin={todayCheckin}
-          records={records}
-          scans={scans}
-          dailyLogs={dailyLogs}
-        />
-
-        {/* Trial expiry warning */}
-        <TrialExpiryBanner user={user} />
-
-        {/* Streak */}
-        <StreakCard streak={streak} />
-
-        {/* Bilan hebdo */}
-        <WeeklyInsightCard
-          insight={weeklyInsight}
-          previousInsight={previousInsight}
-          pastInsights={pastInsights}
           dog={dog}
-          expanded={insightExpanded}
-          onToggle={() => setInsightExpanded(!insightExpanded)}
-          onMarkRead={handleMarkInsightRead}
-          markingRead={markingRead}
-        />
-
-        {/* Journal */}
-        <JournalLog checkins={recentCheckins} todayCheckin={todayCheckin} />
-
-        {/* Premium value banner (free users with activity) */}
-        {user && !isUserPremium(user) && (
-          <PremiumValueBanner streak={streak} checkins={recentCheckins} />
-        )}
-
-        {/* Actions recommandées */}
-        <SmartRecommendations
+          streak={streak}
+          checkins={recentCheckins}
           records={records}
           exercises={exercises}
           scans={scans}
-          checkins={recentCheckins}
           dailyLogs={dailyLogs}
-          todayCheckin={todayCheckin}
-          streak={streak}
         />
-      </div>
 
-      {/* MILESTONE */}
-      <AnimatePresence>
-        {milestone && <MilestoneCelebration milestone={milestone} onClose={() => setMilestone(null)} />}
-      </AnimatePresence>
+        {/* Block 2: Today Card (AI coaching + inline checkin) */}
+        <div className="mt-3">
+          <TodayCard
+            dog={dog} user={user} todayCheckin={todayCheckin} streak={streak}
+            records={records} exercises={exercises} scans={scans} dailyLogs={dailyLogs}
+            onCheckin={handleCheckin} submitting={submitting}
+          />
+        </div>
 
-      <CombinedFAB
-        dog={dog}
-        user={user}
-        onLogSaved={async () => {
-          if (!dog) return;
-          const logs = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 30);
-          setDailyLogs(logs || []);
-        }}
-      />
+        {/* Block 3: Bento Feature Grid */}
+        <div className="mt-3">
+          <BentoGrid records={records} exercises={exercises} scans={scans} user={user} />
+        </div>
+
+        {/* Block 4: Streak Bar */}
+        <div className="mt-3">
+          <StreakBar streak={streak} />
+        </div>
+
+        {/* Milestone celebration */}
+        <AnimatePresence>
+          {milestone && <MilestoneCelebration milestone={milestone} onClose={() => setMilestone(null)} />}
+        </AnimatePresence>
+
+        <CombinedFAB
+          dog={dog}
+          user={user}
+          onLogSaved={async () => {
+            if (!dog) return;
+            const logs = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 30);
+            setDailyLogs(logs || []);
+          }}
+        />
       </PullToRefresh>
       <BottomNav currentPage="Home" />
 
@@ -336,7 +254,7 @@ export default function Home() {
 function MilestoneCelebration({ milestone, onClose }) {
   useEffect(() => {
     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-    confetti({ particleCount: 100, spread: 80, origin: { x: 0.5, y: 0.55 }, colors: ["#2d9f82", "#10b981", "#ec4899", "#3b82f6"] });
+    confetti({ particleCount: 100, spread: 80, origin: { x: 0.5, y: 0.55 }, colors: ["#2d9f82", "#10b981", "#6366f1", "#3b82f6"] });
   }, []);
 
   return (
