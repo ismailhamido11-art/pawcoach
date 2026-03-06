@@ -188,7 +188,7 @@ export default function Chat() {
       });
 
       const contextMsgs = messages
-        .slice(-9)
+        .slice(-15)
         .map(m => ({ role: m.role, content: m.content }));
       contextMsgs.push({ role: "user", content: content || "Analyse cette photo." });
 
