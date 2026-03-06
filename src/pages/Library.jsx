@@ -9,6 +9,7 @@ import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import Illustration from "../components/illustrations/Illustration";
 
+
 const SOURCE_LABELS = {
   chat: { label: "Chat IA", icon: MessageCircle, color: "#8b5cf6", bg: "bg-violet-50" },
   nutrition: { label: "NutriCoach", icon: Salad, color: "#10b981", bg: "bg-emerald-50" },
@@ -29,6 +30,7 @@ const FILTERS = [
 export default function Library() {
   const navigate = useNavigate();
   const [bookmarks, setBookmarks] = useState([]);
+  const [nutritionPlans, setNutritionPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
@@ -38,8 +40,12 @@ export default function Library() {
     async function load() {
       try {
         const u = await base44.auth.me();
-        const bks = await base44.entities.Bookmark.filter({ owner: u.email }, "-created_at");
+        const [bks, plans] = await Promise.all([
+          base44.entities.Bookmark.filter({ owner: u.email }, "-created_at"),
+          base44.entities.NutritionPlan.filter({ owner_email: u.email }, "-generated_at").catch(() => []),
+        ]);
         setBookmarks(bks || []);
+        setNutritionPlans(plans || []);
       } catch (e) {
         console.error(e);
       } finally {
@@ -63,7 +69,6 @@ export default function Library() {
   const handleActivateTraining = async (bk) => {
     try {
       const data = JSON.parse(bk.content);
-      // Reset start_date to today — this (re)starts the program
       data.start_date = new Date().toISOString().split("T")[0];
       await base44.entities.Bookmark.update(bk.id, { content: JSON.stringify(data) });
       setBookmarks(prev => prev.map(b => b.id === bk.id ? { ...b, content: JSON.stringify(data) } : b));
@@ -73,7 +78,49 @@ export default function Library() {
     }
   };
 
-  const filtered = bookmarks.filter(b => {
+  const handleDeleteNutritionPlan = async (id) => {
+    try {
+      await base44.entities.NutritionPlan.delete(id);
+      setNutritionPlans(prev => prev.filter(p => p.id !== id));
+      if (expanded === `nutri-${id}`) setExpanded(null);
+      toast.success("Plan nutrition supprime");
+    } catch {
+      toast.error("Erreur lors de la suppression");
+    }
+  };
+
+  const handleActivateNutritionPlan = async (planId) => {
+    try {
+      await Promise.all(nutritionPlans.filter(p => p.is_active).map(p =>
+        base44.entities.NutritionPlan.update(p.id, { is_active: false })
+      ));
+      await base44.entities.NutritionPlan.update(planId, { is_active: true });
+      setNutritionPlans(prev => prev.map(p => ({ ...p, is_active: p.id === planId })));
+      toast.success("Plan nutrition active ! Retrouve-le sur ton accueil.");
+    } catch {
+      toast.error("Erreur lors de l'activation");
+    }
+  };
+
+  // Merge bookmarks + nutrition plans into unified list
+  const allItems = [
+    ...bookmarks.map(b => ({ ...b, _type: "bookmark", _key: `bk-${b.id}` })),
+    ...nutritionPlans.map(p => ({
+      _type: "nutrition_plan",
+      _key: `nutri-${p.id}`,
+      id: p.id,
+      source: "nutrition",
+      title: `Plan repas${p.dog_weight_at_generation ? ` — ${p.dog_weight_at_generation} kg` : ""}`,
+      content: p.plan_text || "",
+      created_at: p.generated_at,
+      is_active: p.is_active,
+      dog_weight_at_generation: p.dog_weight_at_generation,
+    })),
+  ];
+
+  const totalCount = allItems.length;
+
+  const filtered = allItems.filter(b => {
     const matchFilter = filter === "all" || b.source === filter;
     const matchSearch = !search || (b.title || b.content || "").toLowerCase().includes(search.toLowerCase());
     return matchFilter && matchSearch;
@@ -89,7 +136,7 @@ export default function Library() {
         <div className="relative z-10 flex items-end gap-3 mb-4">
           <div className="flex-1 pb-1">
             <h1 className="text-white font-black text-xl leading-tight">Ma Bibliothèque</h1>
-            <p className="text-white/70 text-xs mt-0.5">{bookmarks.length} conseil{bookmarks.length !== 1 ? "s" : ""} sauvegardé{bookmarks.length !== 1 ? "s" : ""}</p>
+            <p className="text-white/70 text-xs mt-0.5">{totalCount} élément{totalCount !== 1 ? "s" : ""} sauvegardé{totalCount !== 1 ? "s" : ""}</p>
           </div>
           <motion.div
             animate={{ scale: [1, 1.03, 1] }}
@@ -156,21 +203,29 @@ export default function Library() {
         ) : (
           <AnimatePresence>
             {filtered.map((b) => {
-              const src = SOURCE_LABELS[b.source] || SOURCE_LABELS.chat;
+              const isNutriPlan = b._type === "nutrition_plan";
+              const src = isNutriPlan
+                ? SOURCE_LABELS.nutrition
+                : (SOURCE_LABELS[b.source] || SOURCE_LABELS.chat);
               const SrcIcon = src.icon;
-              const isOpen = expanded === b.id;
+              const itemKey = b._key || b.id;
+              const isOpen = expanded === itemKey;
+
               // Try parsing JSON for training bookmarks
               let trainingData = null;
-              if (b.source === "training") {
+              if (b.source === "training" && !isNutriPlan) {
                 try { trainingData = JSON.parse(b.content); } catch {}
               }
+
               const preview = trainingData
                 ? (trainingData.summary || trainingData.program_title || "Programme d'entrainement")
-                : (b.content || "").replace(/[#*_`]/g, "").slice(0, 120);
+                : isNutriPlan
+                  ? (b.content || "").replace(/[#*_`]/g, "").split("\n").filter(l => l.trim()).slice(0, 1).join("").slice(0, 120)
+                  : (b.content || "").replace(/[#*_`]/g, "").slice(0, 120);
 
               return (
                 <motion.div
-                  key={b.id}
+                  key={itemKey}
                   layout
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -179,7 +234,7 @@ export default function Library() {
                 >
                   <button
                     className="w-full text-left p-4"
-                    onClick={() => setExpanded(isOpen ? null : b.id)}
+                    onClick={() => setExpanded(isOpen ? null : itemKey)}
                   >
                     {/* Active training badge */}
                     {trainingData?.start_date && (() => {
@@ -192,6 +247,13 @@ export default function Library() {
                         </div>
                       ) : null;
                     })()}
+                    {/* Active nutrition plan badge */}
+                    {isNutriPlan && b.is_active && (
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Plan actif — visible sur l'accueil</span>
+                      </div>
+                    )}
                     <div className="flex items-start gap-3">
                       <div className={`w-8 h-8 rounded-xl ${src.bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
                         <SrcIcon className="w-4 h-4" style={{ color: src.color }} />
@@ -201,7 +263,7 @@ export default function Library() {
                           <p className="font-bold text-sm text-foreground leading-tight truncate">{b.title}</p>
                         )}
                         <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
-                          {preview}{!trainingData && b.content?.length > 120 ? "..." : ""}
+                          {preview}{preview.length >= 120 ? "..." : ""}
                         </p>
                         <div className="flex items-center gap-2 mt-1.5">
                           <span className="text-[10px] font-semibold" style={{ color: src.color }}>{src.label}</span>
@@ -221,8 +283,19 @@ export default function Library() {
                             <Home className="w-3 h-3" /> Activer
                           </button>
                         )}
+                        {isNutriPlan && !b.is_active && (
+                          <button
+                            onClick={e => { e.stopPropagation(); handleActivateNutritionPlan(b.id); }}
+                            className="h-7 px-2.5 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center gap-1 text-emerald-700 text-[10px] font-semibold"
+                          >
+                            <Home className="w-3 h-3" /> Activer
+                          </button>
+                        )}
                         <button
-                          onClick={e => { e.stopPropagation(); handleDelete(b.id); }}
+                          onClick={e => {
+                            e.stopPropagation();
+                            isNutriPlan ? handleDeleteNutritionPlan(b.id) : handleDelete(b.id);
+                          }}
                           className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-red-50 transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -277,6 +350,8 @@ export default function Library() {
                               <ReactMarkdown
                                 className="prose prose-sm max-w-none text-foreground [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
                                 components={{
+                                  h2: ({ children }) => <h2 className="text-sm font-bold text-safe mt-3 mb-1 first:mt-0">{children}</h2>,
+                                  h3: ({ children }) => <h3 className="text-sm font-semibold text-foreground mt-2 mb-1">{children}</h3>,
                                   p: ({ children }) => <p className="my-1 leading-relaxed text-sm">{children}</p>,
                                   ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
                                   li: ({ children }) => <li className="my-0.5 text-sm">{children}</li>,
