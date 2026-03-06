@@ -16,7 +16,7 @@ export function getWeekStart() {
   return mon.getFullYear() + "-" + String(mon.getMonth() + 1).padStart(2, "0") + "-" + String(mon.getDate()).padStart(2, "0");
 }
 
-export function buildRecommendations({ records, exercises, scans, checkins, dailyLogs, todayCheckin, streak, diagnosisReports = [], nutritionPlans = [] }) {
+export function buildRecommendations({ records = [], exercises = [], scans = [], checkins = [], dailyLogs = [], todayCheckin, streak, diagnosisReports = [], nutritionPlans = [] }) {
   const today = getTodayString();
   const weekStart = getWeekStart();
   const recs = [];
