@@ -48,53 +48,53 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Activite from './pages/Activite';
-import Chat from './pages/Chat';
-import Dashboard from './pages/Dashboard';
-import DogProfile from './pages/DogProfile';
 import DogPublicProfile from './pages/DogPublicProfile';
 import DogTwin from './pages/DogTwin';
-import FindVet from './pages/FindVet';
-import HealthImport from './pages/HealthImport';
 import Home from './pages/Home';
 import Library from './pages/Library';
 import Nutri from './pages/Nutri';
 import Onboarding from './pages/Onboarding';
 import Premium from './pages/Premium';
 import Profile from './pages/Profile';
-import Sante from './pages/Sante';
 import Scan from './pages/Scan';
 import Tracker from './pages/Tracker';
 import Training from './pages/Training';
 import VetDogView from './pages/VetDogView';
 import VetPortal from './pages/VetPortal';
+import Dashboard from './pages/Dashboard';
+import DogProfile from './pages/DogProfile';
+import FindVet from './pages/FindVet';
+import HealthImport from './pages/HealthImport';
+import Sante from './pages/Sante';
+import Chat from './pages/Chat';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Activite": Activite,
-    "Chat": Chat,
-    "Dashboard": Dashboard,
-    "DogProfile": DogProfile,
     "DogPublicProfile": DogPublicProfile,
     "DogTwin": DogTwin,
-    "FindVet": FindVet,
-    "HealthImport": HealthImport,
     "Home": Home,
     "Library": Library,
     "Nutri": Nutri,
     "Onboarding": Onboarding,
     "Premium": Premium,
     "Profile": Profile,
-    "Sante": Sante,
     "Scan": Scan,
     "Tracker": Tracker,
     "Training": Training,
     "VetDogView": VetDogView,
     "VetPortal": VetPortal,
+    "Dashboard": Dashboard,
+    "DogProfile": DogProfile,
+    "FindVet": FindVet,
+    "HealthImport": HealthImport,
+    "Sante": Sante,
+    "Chat": Chat,
 }
 
 export const pagesConfig = {
-    mainPage: "Onboarding",
+    mainPage: "Home",
     Pages: PAGES,
     Layout: __Layout,
 };
