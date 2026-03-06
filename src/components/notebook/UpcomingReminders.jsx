@@ -1,6 +1,6 @@
 import { Bell, Lock } from "lucide-react";
 
-export default function UpcomingReminders({ records, isPremium }) {
+export default function UpcomingReminders({ records = [], isPremium }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 

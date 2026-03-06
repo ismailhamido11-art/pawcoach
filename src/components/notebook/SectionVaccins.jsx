@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Syringe, Plus, X, Calendar } from "lucide-react";
 
-export default function SectionVaccins({ records, dogId, onDelete }) {
+export default function SectionVaccins({ records = [], dogId, onDelete }) {
 
   const vaccines = records.filter(r => r.type === "vaccine").sort((a, b) => new Date(b.date) - new Date(a.date));
 

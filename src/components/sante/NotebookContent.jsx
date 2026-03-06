@@ -56,7 +56,7 @@ const PREMIUM_CONFIGS = {
   },
 };
 
-export default function NotebookContent({ dog, user, records, setRecords, dailyLogs, isPremium, loading, initialSubTab, showShareModalInit, scrollToQR }) {
+export default function NotebookContent({ dog, user, records = [], setRecords, dailyLogs = [], isPremium, loading, initialSubTab, showShareModalInit, scrollToQR }) {
   const [activeTab, setActiveTab] = useState(initialSubTab || "all");
   const [showRecords, setShowRecords] = useState(!!initialSubTab);
   const [showShareModal, setShowShareModal] = useState(!!showShareModalInit);

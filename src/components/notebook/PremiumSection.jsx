@@ -36,7 +36,7 @@ const GATE_CONTENT = {
   },
 };
 
-export default function PremiumSection({ type, records, dogId, isPremium, onDelete, config }) {
+export default function PremiumSection({ type, records = [], dogId, isPremium, onDelete, config }) {
   const navigate = useNavigate();
   const filtered = records.filter(r => r.type === type).sort((a, b) => new Date(b.date) - new Date(a.date));
 

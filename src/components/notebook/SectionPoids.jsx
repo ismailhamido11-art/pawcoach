@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Weight, Plus, X } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
-export default function SectionPoids({ records, dogId, onDelete }) {
+export default function SectionPoids({ records = [], dogId, onDelete }) {
   const [period, setPeriod] = useState("All");
 
   const allWeights = records.filter(r => r.type === "weight" && r.value)
