@@ -90,16 +90,16 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     if (!program || !dog || saved) return;
     try {
       const user = await base44.auth.me();
-      const weeks = (program.weeks || []).map(w =>
-        `### Semaine ${w.week} — ${w.theme}\n${w.focus}\n${(w.daily_sessions || []).map(s =>
-          `- **${s.day}** (${s.type}, ${s.duration_min} min) : ${s.activity}${s.tips ? ` — _${s.tips}_` : ""}`
-        ).join("\n")}`
-      ).join("\n\n");
-      const content = `# ${program.program_title}\n\n${program.summary}\n\n**Difficulte** : ${program.difficulty || "—"} · **Duree** : ${program.duration_weeks} semaines\n\n${weeks}${program.breed_specific_tips?.length ? "\n\n### Conseils race\n" + program.breed_specific_tips.map(t => `- ${t}`).join("\n") : ""}`;
+      // Save structured JSON with start_date for daily tracking on Home
+      const payload = {
+        ...program,
+        start_date: new Date().toISOString().split("T")[0],
+        dog_name: dog.name,
+      };
       await base44.entities.Bookmark.create({
         dog_id: dog.id,
         owner: user.email,
-        content,
+        content: JSON.stringify(payload),
         source: "training",
         title: program.program_title?.slice(0, 60) || "Programme dressage",
         created_at: new Date().toISOString(),

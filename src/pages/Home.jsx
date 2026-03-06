@@ -13,6 +13,7 @@ import StreakBar from "../components/home/StreakBar";
 import DailyCoaching from "../components/home/DailyCoaching";
 import QuickActions from "../components/home/QuickActions";
 import BadgeTeaser from "../components/home/BadgeTeaser";
+import ActiveProgramCards from "../components/home/ActiveProgramCards";
 import CombinedFAB from "../components/CombinedFAB";
 
 import { Flame } from "lucide-react";
@@ -53,6 +54,7 @@ export default function Home() {
   const [dailyLogs, setDailyLogs] = useState([]);
   const [diagnosisReports, setDiagnosisReports] = useState([]);
   const [nutritionPlans, setNutritionPlans] = useState([]);
+  const [trainingBookmarks, setTrainingBookmarks] = useState([]);
 
   const [milestone, setMilestone] = useState(null);
   const [showPremiumNudge, setShowPremiumNudge] = useState(false);
@@ -67,7 +69,7 @@ export default function Home() {
           const d = getActiveDog(dogs);
           setDog(d);
           const today = getTodayString();
-          const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans] = await Promise.all([
+          const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks] = await Promise.all([
             base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
             base44.entities.Streak.filter({ dog_id: d.id }),
             base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 30),
@@ -77,6 +79,7 @@ export default function Home() {
             base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30),
             base44.entities.DiagnosisReport.filter({ dog_id: d.id }, "-report_date", 5).catch(() => []),
             base44.entities.NutritionPlan.filter({ dog_id: d.id }, "-created_date", 3).catch(() => []),
+            base44.entities.Bookmark.filter({ dog_id: d.id, source: "training" }, "-created_at", 3).catch(() => []),
           ]);
           setRecords(recs || []);
           setExercises(exs || []);
@@ -84,6 +87,7 @@ export default function Home() {
           setDailyLogs(logs || []);
           setDiagnosisReports(diags || []);
           setNutritionPlans(plans || []);
+          setTrainingBookmarks(tBks || []);
           if (checkins?.length > 0) setTodayCheckin(checkins[0]);
           if (streaks?.length > 0) setStreak(streaks[0]);
           const sorted = (recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7);
@@ -148,7 +152,7 @@ export default function Home() {
       if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
         const today = getTodayString();
-        const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans] = await Promise.all([
+        const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks] = await Promise.all([
           base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
           base44.entities.Streak.filter({ dog_id: d.id }),
           base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 30),
@@ -158,6 +162,7 @@ export default function Home() {
           base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30),
           base44.entities.DiagnosisReport.filter({ dog_id: d.id }, "-report_date", 5).catch(() => []),
           base44.entities.NutritionPlan.filter({ dog_id: d.id }, "-created_date", 3).catch(() => []),
+          base44.entities.Bookmark.filter({ dog_id: d.id, source: "training" }, "-created_at", 3).catch(() => []),
         ]);
         setRecords(recs || []);
         setExercises(exs || []);
@@ -165,6 +170,7 @@ export default function Home() {
         setDailyLogs(logs || []);
         setDiagnosisReports(diags || []);
         setNutritionPlans(plans || []);
+        setTrainingBookmarks(tBks || []);
         if (checkins?.length > 0) setTodayCheckin(checkins[0]);
         else setTodayCheckin(null);
         if (streaks?.length > 0) setStreak(streaks[0]);
@@ -226,6 +232,11 @@ export default function Home() {
             onCheckin={handleCheckin} submitting={submitting}
             diagnosisReports={diagnosisReports} nutritionPlans={nutritionPlans}
           />
+        </div>
+
+        {/* Block 2b: Active Program Cards (training + nutrition) */}
+        <div className="mt-3">
+          <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} />
         </div>
 
         {/* Block 3: Quick Actions */}

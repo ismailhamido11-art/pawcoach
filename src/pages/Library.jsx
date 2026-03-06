@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import BottomNav from "../components/BottomNav";
-import { ArrowLeft, Bookmark, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarChart2 } from "lucide-react";
+import { ArrowLeft, Bookmark, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarChart2, Clock, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ReactMarkdown from "react-markdown";
@@ -146,7 +146,14 @@ export default function Library() {
               const src = SOURCE_LABELS[b.source] || SOURCE_LABELS.chat;
               const SrcIcon = src.icon;
               const isOpen = expanded === b.id;
-              const preview = (b.content || "").replace(/[#*_`]/g, "").slice(0, 120);
+              // Try parsing JSON for training bookmarks
+              let trainingData = null;
+              if (b.source === "training") {
+                try { trainingData = JSON.parse(b.content); } catch {}
+              }
+              const preview = trainingData
+                ? (trainingData.summary || trainingData.program_title || "Programme d'entrainement")
+                : (b.content || "").replace(/[#*_`]/g, "").slice(0, 120);
 
               return (
                 <motion.div
@@ -202,17 +209,49 @@ export default function Library() {
                       >
                         <div className="px-4 pb-4 pt-0 border-t border-border/30">
                           <div className="pt-3">
-                            <ReactMarkdown
-                              className="prose prose-sm max-w-none text-foreground [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
-                              components={{
-                                p: ({ children }) => <p className="my-1 leading-relaxed text-sm">{children}</p>,
-                                ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
-                                li: ({ children }) => <li className="my-0.5 text-sm">{children}</li>,
-                                strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                              }}
-                            >
-                              {b.content}
-                            </ReactMarkdown>
+                            {trainingData ? (
+                              <div className="space-y-3">
+                                {trainingData.difficulty && (
+                                  <div className="flex flex-wrap gap-1.5">
+                                    <span className="text-[10px] font-bold bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full capitalize">{trainingData.difficulty}</span>
+                                    <span className="text-[10px] font-bold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">{trainingData.duration_weeks || 4} semaines</span>
+                                    {trainingData.weekly_goal_minutes && <span className="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">~{trainingData.weekly_goal_minutes} min/sem</span>}
+                                  </div>
+                                )}
+                                {trainingData.weeks?.map((week, wi) => (
+                                  <div key={wi} className="bg-muted/30 rounded-xl p-3">
+                                    <p className="text-xs font-bold text-foreground mb-1.5 flex items-center gap-1.5">
+                                      <Target className="w-3 h-3 text-primary" />
+                                      Semaine {week.week} — {week.theme}
+                                    </p>
+                                    <div className="space-y-1">
+                                      {week.daily_sessions?.slice(0, 3).map((s, si) => (
+                                        <div key={si} className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                                          <span>{s.day}</span>
+                                          <span className="text-foreground/70">{s.activity?.slice(0, 50)}</span>
+                                          <span className="ml-auto text-[10px] font-medium flex items-center gap-0.5"><Clock className="w-2.5 h-2.5" />{s.duration_min}m</span>
+                                        </div>
+                                      ))}
+                                      {(week.daily_sessions?.length || 0) > 3 && (
+                                        <p className="text-[10px] text-muted-foreground italic">+{week.daily_sessions.length - 3} autres sessions</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <ReactMarkdown
+                                className="prose prose-sm max-w-none text-foreground [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                                components={{
+                                  p: ({ children }) => <p className="my-1 leading-relaxed text-sm">{children}</p>,
+                                  ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
+                                  li: ({ children }) => <li className="my-0.5 text-sm">{children}</li>,
+                                  strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                                }}
+                              >
+                                {b.content}
+                              </ReactMarkdown>
+                            )}
                           </div>
                         </div>
                       </motion.div>
