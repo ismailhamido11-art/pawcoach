@@ -8,7 +8,7 @@ export async function updateStreakSilently(dogId, ownerEmail) {
   try {
     const today = getTodayString();
     const streaks = await base44.entities.Streak.filter({ dog_id: dogId });
-    if (streaks.length > 0) {
+    if (streaks?.length > 0) {
       const s = streaks[0];
       if (s.last_activity_date === today) return; // Already updated today — dedup guard
       const lastDate = new Date(s.last_activity_date + "T12:00:00");
@@ -48,6 +48,6 @@ export async function updateStreakSilently(dogId, ownerEmail) {
       });
     }
   } catch (e) {
-    console.warn("Streak update failed:", e.message);
+    console.warn("Streak update failed:", e?.message || String(e));
   }
 }
