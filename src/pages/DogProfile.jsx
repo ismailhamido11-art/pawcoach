@@ -45,7 +45,7 @@ export default function DogProfile() {
         let d;
         if (dogId) {
           const results = await base44.entities.Dog.filter({ id: dogId });
-          d = results[0];
+          d = (results || [])[0];
         } else {
           const dogs = await base44.entities.Dog.filter({ owner: u.email });
           d = getActiveDog(dogs);
@@ -64,7 +64,7 @@ export default function DogProfile() {
         ]);
         setDailyLogs(logs || []);
         setProgress(prog || []);
-        setStreak(stks[0] || null);
+        setStreak((stks || [])[0] || null);
         setScansCount((scans || []).length);
       } catch (err) {
         console.error("DogProfile load error:", err);
