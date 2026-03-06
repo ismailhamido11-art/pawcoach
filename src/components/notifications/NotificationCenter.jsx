@@ -38,7 +38,7 @@ export async function loadNotifications() {
     const u = await base44.auth.me();
     if (!u) return;
     const dogs = await base44.entities.Dog.filter({ owner: u.email });
-    if (!dogs.length) return;
+    if (!dogs?.length) return;
 
     const items = [];
 
@@ -52,7 +52,7 @@ export async function loadNotifications() {
       }
       // Health records with next_date
       const records = await base44.entities.HealthRecord.filter({ dog_id: dog.id });
-      for (const r of records) {
+      for (const r of (records || [])) {
         if (!r.next_date || !["vaccine", "vet_visit", "medication"].includes(r.type)) continue;
         const days = getDaysLeft(r.next_date);
         if (days >= -3 && days <= 30) {
