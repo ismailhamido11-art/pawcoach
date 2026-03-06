@@ -3,7 +3,6 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCw, ShoppingCart, BookmarkPlus, Check, Home } from "lucide-react";
 import { motion } from "framer-motion";
-import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import { useActionCredits } from "@/utils/ai-credits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
@@ -49,7 +48,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       await base44.entities.NutritionPlan.create({
         dog_id: dog.id,
         owner_email: user.email,
-        plan_text: plan,
+        plan_text: JSON.stringify({ ...plan, start_date: new Date().toISOString().split("T")[0], dog_name: dog.name }),
         generated_at: new Date().toISOString(),
         dog_weight_at_generation: dog.weight,
         is_active: true,
@@ -84,75 +83,53 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       ? `\n## PRÉFÉRENCES ALIMENTAIRES DU PROPRIÉTAIRE\n- Marques préférées: ${dietPrefs.preferred_brands ? JSON.parse(dietPrefs.preferred_brands).join(", ") : "non précisées"}\n- Aliments refusés par le chien: ${dietPrefs.disliked_foods || "aucun"}\n- Horaires repas: matin ${dietPrefs.meal_times ? JSON.parse(dietPrefs.meal_times).morning : "07:30"}, soir ${dietPrefs.meal_times ? JSON.parse(dietPrefs.meal_times).evening : "18:30"}\n- Budget mensuel: ${({ low: "économique (<30€)", medium: "standard (30-70€)", high: "premium (>70€)" })[dietPrefs.budget_monthly] || "standard"}\n- Préférence bio: ${dietPrefs.organic_preference ? "Oui" : "Non"}\n- Notes: ${dietPrefs.notes || "aucune"}`
       : "";
 
-    const prompt = `Tu es un nutritionniste veterinaire. Genere un plan repas hebdomadaire pour ce chien.
+    const prompt = `Tu es un nutritionniste veterinaire expert. Genere un plan repas de 7 jours pour ce chien.
 
-## PROFIL
-- Nom: ${dog.name}
-- Race: ${dog.breed || "inconnue"}
-- Stade: ${lifeStage} (${getAge(dog.birth_date) || "age inconnu"})
-- Poids: ${dog.weight ? dog.weight + " kg" : "inconnu"}
-- Activite: ${activityMap[dog.activity_level] || "modere"}
-- Sterilise: ${dog.neutered ? "Oui" : "Non"}
-- Alimentation: ${dietMap[dog.diet_type] || "non precise"} ${dog.diet_brand ? `(${dog.diet_brand})` : ""}
-- Allergies: ${dog.allergies || "aucune"}
-- Sante: ${dog.health_issues || "aucun probleme"}
-${scansContext}${prefsContext}
+PROFIL: ${dog.name}, ${dog.breed || "race inconnue"}, ${lifeStage} (${getAge(dog.birth_date) || "age inconnu"}), ${dog.weight ? dog.weight + " kg" : "poids inconnu"}, activite ${activityMap[dog.activity_level] || "moderee"}, ${dog.neutered ? "sterilise" : "non sterilise"}, alimentation ${dietMap[dog.diet_type] || "croquettes"} ${dog.diet_brand ? `(${dog.diet_brand})` : ""}, allergies: ${dog.allergies || "aucune"}, sante: ${dog.health_issues || "aucun probleme"}${scansContext}${prefsContext}
 
-## FORMAT OBLIGATOIRE — respecte exactement cette structure
+REPONDS UNIQUEMENT avec un objet JSON valide, sans texte avant ni apres, sans bloc markdown. Structure exacte :
+{
+  "calories_per_day": 850,
+  "quantity_summary": "240g de croquettes par jour",
+  "days": [
+    {
+      "day": "Lundi",
+      "morning": { "food": "Croquettes + huile de saumon", "quantity": "145g + 1 c.c." },
+      "evening": { "food": "Croquettes + courgette cuite", "quantity": "95g + 30g" }
+    }
+  ],
+  "supplements": ["Carotte crue (2x/sem)", "Pomme sans pepins (1x/sem)"],
+  "avoid": ["Raisins", "Chocolat", "Oignons"],
+  "tip": "Un conseil personnalise pour ce chien."
+}
 
-### Resume
-- Besoin calorique : [X] kcal/jour
-- Quantite quotidienne : [X]g de croquettes (ou detail selon type alimentation)
-
-### Lundi
-- Matin : [aliment, quantite en g]
-- Soir : [aliment, quantite en g]
-
-### Mardi
-- Matin : [aliment, quantite en g]
-- Soir : [aliment, quantite en g]
-
-### Mercredi
-- Matin : [aliment, quantite en g]
-- Soir : [aliment, quantite en g]
-
-### Jeudi
-- Matin : [aliment, quantite en g]
-- Soir : [aliment, quantite en g]
-
-### Vendredi
-- Matin : [aliment, quantite en g]
-- Soir : [aliment, quantite en g]
-
-### Samedi
-- Matin : [aliment, quantite en g]
-- Soir : [aliment, quantite en g]
-
-### Dimanche
-- Matin : [aliment, quantite en g]
-- Soir : [aliment, quantite en g]
-
-### Complements utiles
-- [legume/fruit/supplement] : [quantite max/semaine]
-
-### A eviter
-- [aliments interdits pour ce profil]
-
-### Conseil
-- 1 conseil personnalise pour ${dog.name}
-
-## REGLES
-- PAS de formules mathematiques, PAS de tableaux, PAS de calculs detailles
-- Chaque jour doit avoir ses propres repas (varie les proteines dans la semaine)
-- Sois concis : 1-2 lignes max par repas
-- Adapte les quantites au poids et a l'activite du chien`;
+REGLES :
+- Le tableau "days" doit contenir exactement 7 jours : Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, Dimanche
+- Varie les proteines et complements au fil de la semaine
+- Adapte les quantites au poids, age, activite et sterilisation
+- Sois concis dans les descriptions (pas de phrases longues)
+- Retourne UNIQUEMENT le JSON, rien d'autre`;
 
     try {
       const response = await base44.integrations.Core.InvokeLLM({ prompt });
-      setPlan(typeof response === "string" ? response : JSON.stringify(response));
+      const raw = typeof response === "string" ? response : JSON.stringify(response);
+      // Extract JSON from potential markdown code blocks
+      const jsonMatch = raw.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        if (parsed.days && Array.isArray(parsed.days)) {
+          setPlan(parsed);
+        } else {
+          throw new Error("Invalid structure");
+        }
+      } else {
+        throw new Error("No JSON found");
+      }
       if (!isPremium) await consume();
     } catch (e) {
-      setPlan("Erreur lors de la génération. Réessaie !");
+      console.error("Nutrition plan parse error:", e);
+      setPlan(null);
+      toast.error("Erreur lors de la generation. Reessaie !");
     }
 
     setLoading(false);
@@ -221,28 +198,77 @@ ${scansContext}${prefsContext}
 
       {plan && (
         <div className="space-y-4 animate-fade-in">
-          {/* Meal plan content */}
-          <div className="bg-white rounded-2xl border border-border p-5 shadow-sm">
-            <ReactMarkdown
-              className="prose prose-sm max-w-none prose-headings:text-foreground prose-strong:text-foreground"
-              components={{
-                h1: ({ children }) => <h1 className="text-base font-bold text-foreground mt-4 mb-2 first:mt-0">{children}</h1>,
-                h2: ({ children }) => <h2 className="text-sm font-bold text-safe mt-4 mb-2 first:mt-0 flex items-center gap-1">{children}</h2>,
-                h3: ({ children }) => <h3 className="text-sm font-semibold text-foreground mt-3 mb-1">{children}</h3>,
-                p: ({ children }) => <p className="text-sm text-foreground my-1.5 leading-relaxed">{children}</p>,
-                ul: ({ children }) => <ul className="my-1.5 ml-4 list-disc space-y-0.5">{children}</ul>,
-                li: ({ children }) => <li className="text-sm text-foreground">{children}</li>,
-                strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
-              }}
-            >
-              {plan}
-            </ReactMarkdown>
+          {/* Summary */}
+          <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-5 text-white">
+            <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider mb-1">Plan 7 jours pour {dog.name}</p>
+            <div className="flex gap-3 mt-2">
+              <span className="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+                {plan.calories_per_day} kcal/jour
+              </span>
+              <span className="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+                {plan.quantity_summary}
+              </span>
+            </div>
           </div>
+
+          {/* Days */}
+          <div className="space-y-2">
+            {plan.days?.map((d, i) => (
+              <div key={i} className="bg-white rounded-2xl border border-border shadow-sm p-4">
+                <p className="text-xs font-bold text-foreground mb-2">{d.day}</p>
+                <div className="space-y-1.5">
+                  <div className="flex items-start gap-2">
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5">Matin</span>
+                    <div className="flex-1">
+                      <p className="text-xs text-foreground">{d.morning?.food}</p>
+                      <p className="text-[10px] text-muted-foreground">{d.morning?.quantity}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5">Soir</span>
+                    <div className="flex-1">
+                      <p className="text-xs text-foreground">{d.evening?.food}</p>
+                      <p className="text-[10px] text-muted-foreground">{d.evening?.quantity}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Supplements + Avoid */}
+          {plan.supplements?.length > 0 && (
+            <div className="bg-white rounded-2xl border border-border p-4">
+              <p className="text-xs font-bold text-foreground mb-2">Complements utiles</p>
+              <div className="flex flex-wrap gap-1.5">
+                {plan.supplements.map((s, i) => (
+                  <span key={i} className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {plan.avoid?.length > 0 && (
+            <div className="bg-red-50 rounded-2xl border border-red-200 p-4">
+              <p className="text-xs font-bold text-red-700 mb-2">A eviter</p>
+              <div className="flex flex-wrap gap-1.5">
+                {plan.avoid.map((a, i) => (
+                  <span key={i} className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {plan.tip && (
+            <div className="bg-amber-50 rounded-2xl border border-amber-200 p-4">
+              <p className="text-xs text-amber-800">{plan.tip}</p>
+            </div>
+          )}
 
           {/* Affiliate brands */}
           <div className="bg-accent/10 rounded-2xl border border-accent/20 p-4">
             <p className="text-xs font-bold text-accent flex items-center gap-1.5 mb-3">
-              <ShoppingCart className="w-3.5 h-3.5" /> Marques recommandées – Liens partenaires
+              <ShoppingCart className="w-3.5 h-3.5" /> Marques recommandees
             </p>
             <div className="grid grid-cols-1 gap-2">
               {AFFILIATE_BRANDS.map((brand, i) => (
@@ -257,13 +283,12 @@ ${scansContext}${prefsContext}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{brand.emoji}</span>
-                      <span className="text-sm font-semibold text-foreground">{brand.name}</span>
-                    </div>
-                    <span className="text-xs text-accent font-medium">Voir →</span>
-                    </motion.a>
+                    <span className="text-sm font-semibold text-foreground">{brand.name}</span>
+                  </div>
+                  <span className="text-xs text-accent font-medium">Voir</span>
+                </motion.a>
               ))}
             </div>
-            <p className="text-[10px] text-accent mt-2 text-center">🤝 Liens affiliés – soutient PawCoach sans surcoût</p>
           </div>
 
           {/* Save + Regenerate */}
@@ -273,32 +298,22 @@ ${scansContext}${prefsContext}
                 onClick={savePlan}
                 disabled={saving || saved}
                 className={`w-full h-11 rounded-2xl font-semibold gap-2 transition-all duration-300 ${
-                  saved
-                    ? "bg-safe text-white"
-                    : "bg-primary text-white"
+                  saved ? "bg-safe text-white" : "bg-primary text-white"
                 }`}
               >
                 {saving ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : saved ? (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="flex items-center gap-2"
-                  >
-                    <Check className="w-4 h-4" />
-                    Active !
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-2">
+                    <Check className="w-4 h-4" /> Active !
                   </motion.div>
                 ) : (
-                  <>
-                    <Home className="w-4 h-4" />
-                    Activer ce programme
-                  </>
+                  <><Home className="w-4 h-4" /> Activer ce programme</>
                 )}
               </Button>
             </motion.div>
             <Button
-              onClick={generate}
+              onClick={() => { setPlan(null); setSaved(false); }}
               variant="outline"
               className="h-11 px-4 rounded-2xl border-safe/20 text-safe font-semibold gap-2"
             >

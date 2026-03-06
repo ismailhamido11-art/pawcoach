@@ -3,9 +3,108 @@ import { base44 } from "@/api/base44Client";
 import { Trash2, ChevronDown, ChevronUp, Pencil, Check, X, Home, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+
+function parsePlanJSON(text) {
+  if (!text) return null;
+  try {
+    const data = JSON.parse(text);
+    if (data.days && Array.isArray(data.days)) return data;
+  } catch {
+    // Not JSON
+  }
+  return null;
+}
+
+function PlanContent({ planText }) {
+  const parsed = parsePlanJSON(planText);
+
+  if (!parsed) {
+    // Old markdown plan — render as plain text
+    return (
+      <div className="text-xs text-foreground whitespace-pre-wrap leading-relaxed">
+        {planText}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {/* Summary */}
+      {(parsed.calories_per_day || parsed.quantity_summary) && (
+        <div className="flex flex-wrap gap-1.5">
+          {parsed.calories_per_day && (
+            <span className="text-[10px] font-bold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">
+              {parsed.calories_per_day} kcal/jour
+            </span>
+          )}
+          {parsed.quantity_summary && (
+            <span className="text-[10px] font-bold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">
+              {parsed.quantity_summary}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Days */}
+      {parsed.days.map((d, i) => (
+        <div key={i} className="bg-white rounded-xl border border-border/60 p-3">
+          <p className="text-xs font-bold text-foreground mb-1.5">{d.day}</p>
+          <div className="space-y-1">
+            {d.morning && (
+              <div className="flex items-start gap-2">
+                <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">Matin</span>
+                <div>
+                  <p className="text-[12px] text-foreground/80">{d.morning.food}</p>
+                  <p className="text-[10px] text-muted-foreground">{d.morning.quantity}</p>
+                </div>
+              </div>
+            )}
+            {d.evening && (
+              <div className="flex items-start gap-2">
+                <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">Soir</span>
+                <div>
+                  <p className="text-[12px] text-foreground/80">{d.evening.food}</p>
+                  <p className="text-[10px] text-muted-foreground">{d.evening.quantity}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+
+      {/* Supplements */}
+      {parsed.supplements?.length > 0 && (
+        <div>
+          <p className="text-[10px] font-bold text-foreground mb-1">Complements</p>
+          <div className="flex flex-wrap gap-1">
+            {parsed.supplements.map((s, i) => (
+              <span key={i} className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Avoid */}
+      {parsed.avoid?.length > 0 && (
+        <div>
+          <p className="text-[10px] font-bold text-red-700 mb-1">A eviter</p>
+          <div className="flex flex-wrap gap-1">
+            {parsed.avoid.map((a, i) => (
+              <span key={i} className="text-[10px] bg-red-50 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Tip */}
+      {parsed.tip && (
+        <p className="text-[10px] text-amber-700 bg-amber-50 rounded-lg px-2.5 py-1.5 italic">{parsed.tip}</p>
+      )}
+    </div>
+  );
+}
 
 export default function SavedPlansPanel({ dog, user }) {
   const [plans, setPlans] = useState([]);
@@ -97,6 +196,11 @@ export default function SavedPlansPanel({ dog, user }) {
       <p className="text-xs text-muted-foreground font-medium">{plans.length} plan(s) sauvegardé(s)</p>
       {plans.map(plan => {
         const isTheActive = plan.id === trueActiveId;
+        const planJSON = parsePlanJSON(plan.plan_text);
+        const startDate = planJSON?.start_date;
+        const elapsed = startDate ? Math.floor((new Date().setHours(0,0,0,0) - new Date(startDate + "T00:00:00")) / 86400000) : null;
+        const dayNumber = elapsed !== null && elapsed >= 0 ? Math.min(elapsed + 1, 7) : null;
+        const isExpired = elapsed !== null && elapsed >= 7;
         return (
         <motion.div key={plan.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
@@ -106,7 +210,9 @@ export default function SavedPlansPanel({ dog, user }) {
             {isTheActive && (
               <div className="flex items-center gap-1.5 mb-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Plan actif — visible sur l'accueil</span>
+                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">
+                  {isExpired ? "Plan termine — genere un nouveau !" : `Plan actif — Jour ${dayNumber || "?"}/7`}
+                </span>
               </div>
             )}
             <div className="flex items-start justify-between gap-2">
@@ -115,6 +221,8 @@ export default function SavedPlansPanel({ dog, user }) {
                   {plan.generated_at
                     ? format(new Date(plan.generated_at), "d MMMM yyyy 'a' HH:mm", { locale: fr })
                     : "Date inconnue"}
+                  {dayNumber && !isExpired ? ` — J${dayNumber}/7` : ""}
+                  {isExpired ? " — Termine" : ""}
                 </p>
                 {plan.dog_weight_at_generation && (
                   <p className="text-xs text-primary font-medium mt-0.5">{plan.dog_weight_at_generation} kg lors de la generation</p>
@@ -188,18 +296,7 @@ export default function SavedPlansPanel({ dog, user }) {
                 className="overflow-hidden border-t border-border/40"
               >
                 <div className="p-4 bg-muted/20 max-h-96 overflow-y-auto">
-                  <ReactMarkdown
-                    className="prose prose-sm max-w-none"
-                    components={{
-                      h2: ({ children }) => <h2 className="text-sm font-bold text-safe mt-3 mb-1 first:mt-0">{children}</h2>,
-                      h3: ({ children }) => <h3 className="text-sm font-semibold text-foreground mt-2 mb-1">{children}</h3>,
-                      p: ({ children }) => <p className="text-xs text-foreground my-1 leading-relaxed">{children}</p>,
-                      ul: ({ children }) => <ul className="my-1 ml-3 list-disc">{children}</ul>,
-                      li: ({ children }) => <li className="text-xs text-foreground">{children}</li>,
-                    }}
-                  >
-                    {plan.plan_text}
-                  </ReactMarkdown>
+                  <PlanContent planText={plan.plan_text} />
                 </div>
               </motion.div>
             )}

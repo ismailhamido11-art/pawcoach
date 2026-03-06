@@ -9,6 +9,7 @@ const SESSION_ICONS = {
 };
 
 const DAY_NAMES = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+const WEEK_DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
 function getElapsedDays(startDate) {
   const start = new Date(startDate + "T00:00:00");
@@ -105,75 +106,77 @@ function TrainingCard({ program }) {
   );
 }
 
-// Clean a raw markdown line into readable text
-function cleanLine(raw) {
-  return raw
-    .replace(/^[\s>|*\-#`]+/, "")   // strip leading markdown chars
-    .replace(/[*_`#|]/g, "")        // strip inline formatting
-    .replace(/\s{2,}/g, " ")        // collapse spaces
-    .trim();
-}
-
-function extractTodayMeals(planText, todayName) {
-  const lines = planText.split("\n");
-  const dayLower = todayName.toLowerCase();
-
-  // Strategy 1: Find a markdown header with the day name (### Lundi, ## Lundi, etc.)
-  let dayIndex = lines.findIndex(l => {
-    const trimmed = l.trim().toLowerCase();
-    return (trimmed.startsWith("#") && trimmed.includes(dayLower));
-  });
-
-  // Strategy 2: Find a line that starts with or is primarily the day name
-  // (skip lines with formulas, calculations, or long text before the day name)
-  if (dayIndex === -1) {
-    dayIndex = lines.findIndex(l => {
-      const trimmed = l.trim().toLowerCase();
-      // Must start with or be dominated by the day name, not just contain it
-      return (trimmed.startsWith(dayLower) || trimmed.startsWith(`**${dayLower}`));
-    });
+// Try to parse plan_text as JSON (new structured format)
+function parsePlanData(plan) {
+  const text = plan.plan_text || "";
+  try {
+    const data = JSON.parse(text);
+    if (data.days && Array.isArray(data.days)) {
+      return data;
+    }
+  } catch {
+    // Not JSON — old markdown plan
   }
-
-  if (dayIndex === -1) return null;
-
-  const meals = [];
-  for (let i = dayIndex + 1; i < Math.min(dayIndex + 8, lines.length); i++) {
-    const raw = lines[i];
-    const trimmed = raw.trim();
-
-    // Stop at next section header or next day
-    if (trimmed.startsWith("##")) break;
-    const hitOtherDay = DAY_NAMES.some(d =>
-      d.toLowerCase() !== dayLower &&
-      (trimmed.toLowerCase().startsWith(d.toLowerCase()) ||
-       trimmed.toLowerCase().startsWith(`**${d.toLowerCase()}`))
-    );
-    if (hitOtherDay) break;
-
-    const clean = cleanLine(raw);
-    // Skip empty, very short, or formula-like lines
-    if (!clean || clean.length < 5) continue;
-    if (clean.includes("=") || clean.includes("\\times") || clean.includes("^")) continue;
-
-    meals.push(clean);
-  }
-
-  return meals.length > 0 ? meals.slice(0, 4) : null;
+  return null;
 }
 
 function NutritionPlanCard({ plan }) {
   const [open, setOpen] = useState(false);
   const todayName = DAY_NAMES[new Date().getDay()];
-  const dateField = plan.generated_at || plan.created_date;
-  const daysSince = dateField
-    ? Math.floor((Date.now() - new Date(dateField).getTime()) / (1000 * 60 * 60 * 24))
-    : 0;
 
-  const planText = plan.plan_text || "";
-  const todayMeals = useMemo(() => extractTodayMeals(planText, todayName), [planText, todayName]);
+  const planData = useMemo(() => parsePlanData(plan), [plan.plan_text]);
 
-  // Compact summary: first meal line or generic
-  const summary = todayMeals?.[0]?.slice(0, 60) || "Consulte ton plan du jour";
+  // For structured plans: calculate elapsed days and find today's meals
+  const startDate = planData?.start_date;
+  const elapsed = startDate ? getElapsedDays(startDate) : null;
+  const isExpired = elapsed !== null && elapsed >= 7;
+  const dayNumber = elapsed !== null ? Math.min(elapsed + 1, 7) : null;
+  const progress = dayNumber ? Math.round((dayNumber / 7) * 100) : null;
+
+  // Find today's day data from the structured plan
+  const todayData = useMemo(() => {
+    if (!planData?.days) return null;
+    // Try matching by day name
+    const match = planData.days.find(d => d.day?.toLowerCase() === todayName.toLowerCase());
+    if (match) return match;
+    // Fallback: use elapsed day index
+    if (elapsed !== null && elapsed >= 0 && elapsed < 7) {
+      return planData.days[elapsed] || null;
+    }
+    return planData.days[0] || null;
+  }, [planData, todayName, elapsed]);
+
+  // Compact summary for closed state
+  const summary = todayData?.morning?.food
+    ? `${todayData.morning.food} (${todayData.morning.quantity})`
+    : planData?.quantity_summary || "Consulte ton plan du jour";
+
+  if (isExpired) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.05 }}
+      >
+        <Link to={createPageUrl("Nutri") + "?tab=plan"}>
+          <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 relative overflow-hidden group">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center">
+                  <Utensils className="w-3.5 h-3.5 text-amber-600" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Plan termine</p>
+                  <p className="text-xs font-semibold text-foreground mt-0.5">Genere un nouveau plan repas</p>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-amber-400" />
+            </div>
+          </div>
+        </Link>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -194,7 +197,7 @@ function NutritionPlanCard({ plan }) {
               <div>
                 <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Plan repas actif</p>
                 <p className="text-[10px] text-muted-foreground">
-                  {daysSince === 0 ? "Cree aujourd'hui" : `Jour ${daysSince + 1}`}
+                  {dayNumber ? `Jour ${dayNumber} / 7` : "Plan en cours"}
                   {plan.dog_weight_at_generation ? ` — ${plan.dog_weight_at_generation} kg` : ""}
                 </p>
               </div>
@@ -211,8 +214,23 @@ function NutritionPlanCard({ plan }) {
               <span className="text-lg leading-none">🍽️</span>
               <div className="flex-1 min-w-0">
                 <span className="text-xs font-bold text-foreground">{todayName}</span>
-                <span className="text-[10px] text-muted-foreground ml-1.5">{summary}{summary.length >= 60 ? "..." : ""}</span>
+                <span className="text-[10px] text-muted-foreground ml-1.5 truncate">{summary.slice(0, 50)}{summary.length > 50 ? "..." : ""}</span>
               </div>
+            </div>
+          )}
+
+          {/* Progress bar */}
+          {progress !== null && !open && (
+            <div className="mt-2.5 flex items-center gap-2">
+              <div className="flex-1 h-1.5 bg-emerald-100 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                />
+              </div>
+              <span className="text-[10px] font-bold text-emerald-600">{progress}%</span>
             </div>
           )}
         </button>
@@ -228,27 +246,53 @@ function NutritionPlanCard({ plan }) {
               className="overflow-hidden"
             >
               <div className="px-4 pb-4 space-y-2">
-                <div className="bg-white/80 rounded-xl p-3 border border-emerald-100/60">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-lg leading-none">🍽️</span>
-                    <span className="text-xs font-bold text-foreground">{todayName}</span>
-                    <span className="text-[10px] text-muted-foreground">Repas du jour</span>
-                  </div>
-                  {todayMeals && todayMeals.length > 0 ? (
-                    <div className="space-y-1.5 ml-7">
-                      {todayMeals.map((line, i) => (
-                        <p key={i} className="text-[12px] text-foreground/80 leading-relaxed">{line}</p>
-                      ))}
+                {todayData ? (
+                  <div className="bg-white/80 rounded-xl p-3 border border-emerald-100/60 space-y-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-lg leading-none">🍽️</span>
+                      <span className="text-xs font-bold text-foreground">{todayData.day || todayName}</span>
+                      <span className="text-[10px] text-muted-foreground">Repas du jour</span>
                     </div>
-                  ) : (
-                    <p className="text-[12px] text-muted-foreground ml-7 italic">
-                      Pas de detail pour {todayName} dans ce plan. Consulte le plan complet.
+                    {todayData.morning && (
+                      <div className="flex items-start gap-2 ml-7">
+                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">Matin</span>
+                        <div>
+                          <p className="text-[12px] text-foreground/80">{todayData.morning.food}</p>
+                          <p className="text-[10px] text-muted-foreground">{todayData.morning.quantity}</p>
+                        </div>
+                      </div>
+                    )}
+                    {todayData.evening && (
+                      <div className="flex items-start gap-2 ml-7">
+                        <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">Soir</span>
+                        <div>
+                          <p className="text-[12px] text-foreground/80">{todayData.evening.food}</p>
+                          <p className="text-[10px] text-muted-foreground">{todayData.evening.quantity}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="bg-white/80 rounded-xl p-3 border border-emerald-100/60">
+                    <p className="text-[12px] text-muted-foreground italic">
+                      Pas de detail pour {todayName}. Consulte le plan complet.
                     </p>
-                  )}
-                </div>
+                  </div>
+                )}
+
+                {/* Progress bar in expanded view */}
+                {progress !== null && (
+                  <div className="flex items-center gap-2 px-1">
+                    <div className="flex-1 h-1.5 bg-emerald-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full" style={{ width: `${progress}%` }} />
+                    </div>
+                    <span className="text-[10px] font-bold text-emerald-600">J{dayNumber}/7</span>
+                  </div>
+                )}
+
                 <Link
                   to={createPageUrl("Nutri") + "?tab=saved"}
-                  className="block text-center text-[11px] font-semibold text-emerald-600 py-1.5"
+                  className="block text-center text-[11px] font-semibold text-emerald-600 py-1"
                 >
                   Voir le plan complet
                 </Link>
