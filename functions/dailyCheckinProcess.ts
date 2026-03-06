@@ -138,6 +138,8 @@ Deno.serve(async (req) => {
       if (llmResponse.ok) {
         const llmData = await llmResponse.json();
         aiResponse = llmData.choices?.[0]?.message?.content || "";
+      } else {
+        console.error("OpenRouter LLM call failed:", llmResponse.status, await llmResponse.text().catch(() => ""));
       }
     }
 
@@ -153,6 +155,7 @@ Deno.serve(async (req) => {
     });
 
   } catch (error) {
+    console.error("dailyCheckinProcess error:", error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
