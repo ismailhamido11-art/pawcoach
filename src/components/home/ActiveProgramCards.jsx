@@ -111,14 +111,34 @@ function TrainingCard({ program }) {
 }
 
 function NutritionPlanCard({ plan }) {
+  const todayName = DAY_NAMES[new Date().getDay()];
   const dateField = plan.generated_at || plan.created_date;
   const daysSince = dateField
     ? Math.floor((Date.now() - new Date(dateField).getTime()) / (1000 * 60 * 60 * 24))
     : 0;
 
-  // Extract first meaningful line from plan_text as preview
-  const lines = (plan.plan_text || "").split("\n").filter(l => l.trim() && !l.startsWith("#"));
-  const preview = lines[0]?.replace(/[*_`#]/g, "").trim().slice(0, 100) || "Plan nutrition personnalise";
+  // Try to extract today's meal from plan text
+  const planText = plan.plan_text || "";
+  const todayMeal = useMemo(() => {
+    const lines = planText.split("\n");
+    const dayLower = todayName.toLowerCase();
+    const dayIndex = lines.findIndex(l => l.toLowerCase().includes(dayLower));
+    if (dayIndex === -1) return null;
+
+    const mealLines = [];
+    for (let i = dayIndex; i < Math.min(dayIndex + 6, lines.length); i++) {
+      const clean = lines[i].replace(/[*_`#-]/g, "").trim();
+      if (!clean) continue;
+      // Stop if we hit another day name (not today's)
+      if (i > dayIndex && DAY_NAMES.some(d => d !== todayName && lines[i].toLowerCase().includes(d.toLowerCase()))) break;
+      mealLines.push(clean);
+    }
+    return mealLines.length > 0 ? mealLines.slice(0, 4) : null;
+  }, [planText, todayName]);
+
+  // Fallback preview
+  const fallbackLines = planText.split("\n").filter(l => l.trim() && !l.startsWith("#"));
+  const preview = fallbackLines[0]?.replace(/[*_`#]/g, "").trim().slice(0, 100) || "Plan nutrition personnalise";
 
   return (
     <motion.div
@@ -130,7 +150,8 @@ function NutritionPlanCard({ plan }) {
         <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4 relative overflow-hidden group">
           <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-emerald-400 opacity-[0.06]" />
 
-          <div className="flex items-center justify-between mb-2">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center">
                 <Utensils className="w-3.5 h-3.5 text-emerald-600" />
@@ -146,7 +167,23 @@ function NutritionPlanCard({ plan }) {
             <ChevronRight className="w-4 h-4 text-muted-foreground/30 group-hover:text-emerald-400 transition-colors" />
           </div>
 
-          <p className="text-[12px] text-foreground/80 leading-relaxed line-clamp-2">{preview}</p>
+          {/* Today's meal */}
+          <div className="flex items-start gap-3 bg-white/80 rounded-xl p-3 border border-emerald-100/60">
+            <span className="text-2xl leading-none mt-0.5">🍽️</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="text-xs font-bold text-foreground">{todayName}</span>
+                <span className="text-[10px] text-muted-foreground">Repas du jour</span>
+              </div>
+              {todayMeal ? (
+                todayMeal.map((line, i) => (
+                  <p key={i} className="text-[12px] text-foreground/80 leading-relaxed truncate">{line}</p>
+                ))
+              ) : (
+                <p className="text-[12px] text-foreground/80 leading-relaxed line-clamp-2">{preview}</p>
+              )}
+            </div>
+          </div>
         </div>
       </Link>
     </motion.div>
@@ -171,12 +208,14 @@ export default function ActiveProgramCards({ trainingBookmarks = [], nutritionPl
     return null;
   }, [trainingBookmarks]);
 
-  // Find the nutrition plan marked as active
+  // Find the single active nutrition plan (most recent if multiple marked active)
   const activePlan = useMemo(() => {
     if (!nutritionPlans.length) return null;
-    // Prefer the one explicitly marked is_active
-    const active = nutritionPlans.find(p => p.is_active === true);
-    return active || null;
+    const actives = nutritionPlans.filter(p => p.is_active === true);
+    if (actives.length === 0) return null;
+    if (actives.length === 1) return actives[0];
+    // Multiple active — pick most recent
+    return actives.sort((a, b) => (b.generated_at || "").localeCompare(a.generated_at || ""))[0];
   }, [nutritionPlans]);
 
   if (!activeTraining && !activePlan) return null;
