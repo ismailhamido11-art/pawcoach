@@ -1,80 +1,55 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MapPin } from "lucide-react";
-import IllustrationImg from "../illustrations/Illustration";
+import { ScanLine, Scale, Dumbbell, MapPin, BookOpen } from "lucide-react";
 
 const ACTIONS = [
-  {
-    page: "Notebook",
-    illustration: "veterinary",
-    label: "Carnet santé",
-    sub: "Vaccins, poids, visites",
-    bg: "bg-rose-50",
-  },
-  {
-    page: "Nutrition",
-    illustration: "petFood",
-    label: "NutriCoach",
-    sub: "Nutrition & repas IA",
-    bg: "bg-emerald-50",
-  },
-  {
-    page: "Training",
-    illustration: "dogWalking",
-    label: "Dressage",
-    sub: "Exercices guidés",
-    bg: "bg-violet-50",
-  },
-  {
-    page: "FindVet",
-    icon: MapPin,
-    label: "Trouver un véto",
-    sub: "Cliniques proches",
-    bg: "bg-blue-50",
-    iconColor: "#3b82f6",
-  },
+  { icon: ScanLine, label: "Scanner", page: "Scan", color: "#059669" },
+  { icon: Scale, label: "Peser", page: "Notebook", color: "#2d9f82" },
+  { icon: Dumbbell, label: "Exercice", page: "Training", color: "#6366f1" },
+  { icon: MapPin, label: "Veto", page: "FindVet", color: "#3b82f6" },
+  { icon: BookOpen, label: "Guides", page: "Library", color: "#8b5cf6" },
 ];
-
-const stagger = { show: { transition: { staggerChildren: 0.07 } } };
-const item = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } },
-};
 
 export default function QuickActions() {
   return (
-    <div className="mx-5">
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3 px-1">
-        Accès rapide
-      </p>
-      <motion.div className="grid grid-cols-2 gap-3" variants={stagger} initial="hidden" animate="show">
-        {ACTIONS.map(({ page, illustration, icon: Icon, label, sub, bg, iconColor }) => (
-          <motion.div key={page} variants={item} whileTap={{ scale: 0.96 }}>
-            <Link
-              to={createPageUrl(page)}
-              className={`flex flex-col gap-2 p-4 rounded-2xl ${bg} border border-white/60 shadow-sm hover:shadow-md transition-all`}
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1 }}
+      className="px-4"
+    >
+      <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+        {ACTIONS.map((action, i) => {
+          const Icon = action.icon;
+          return (
+            <motion.div
+              key={action.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 + i * 0.05 }}
+              whileTap={{ scale: 0.92 }}
+              className="flex-shrink-0"
             >
-              <div className="w-12 h-12">
-                {illustration ? (
-                  <IllustrationImg name={illustration} alt={label} className="w-full h-full" />
-                ) : (
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ background: `${iconColor}18` }}
-                  >
-                    <Icon style={{ color: iconColor, width: 20, height: 20 }} strokeWidth={2} />
-                  </div>
-                )}
-              </div>
-              <div>
-                <p className="font-bold text-foreground text-sm leading-tight">{label}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5 leading-tight">{sub}</p>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
-      </motion.div>
-    </div>
+              <Link
+                to={createPageUrl(action.page)}
+                className="flex flex-col items-center gap-1.5 w-[56px]"
+              >
+                <div
+                  className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm border transition-transform"
+                  style={{
+                    background: `linear-gradient(135deg, ${action.color}15, ${action.color}08)`,
+                    borderColor: `${action.color}20`,
+                  }}
+                >
+                  <Icon className="w-5 h-5" style={{ color: action.color }} />
+                </div>
+                <span className="text-[10px] font-semibold text-muted-foreground">{action.label}</span>
+              </Link>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.div>
   );
 }

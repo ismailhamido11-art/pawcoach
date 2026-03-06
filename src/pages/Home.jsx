@@ -11,6 +11,8 @@ import TodayCard from "../components/home/TodayCard";
 import BentoGrid from "../components/home/BentoGrid";
 import StreakBar from "../components/home/StreakBar";
 import DailyCoaching from "../components/home/DailyCoaching";
+import QuickActions from "../components/home/QuickActions";
+import BadgeTeaser from "../components/home/BadgeTeaser";
 import CombinedFAB from "../components/CombinedFAB";
 
 import { Flame } from "lucide-react";
@@ -215,7 +217,12 @@ export default function Home() {
           />
         </div>
 
-        {/* Block 3: Daily Coaching (tip + recommendations) */}
+        {/* Block 3: Quick Actions */}
+        <div className="mt-3">
+          <QuickActions />
+        </div>
+
+        {/* Block 4: Daily Coaching (tip + recommendations) */}
         <div className="mt-3">
           <DailyCoaching
             dog={dog} records={records} exercises={exercises} scans={scans}
@@ -223,14 +230,19 @@ export default function Home() {
           />
         </div>
 
-        {/* Block 4: Bento Feature Grid */}
+        {/* Block 5: Bento Feature Grid */}
         <div className="mt-3">
           <BentoGrid records={records} exercises={exercises} scans={scans} user={user} checkins={recentCheckins} dailyLogs={dailyLogs} />
         </div>
 
-        {/* Block 4: Streak Bar */}
+        {/* Block 6: Streak Bar */}
         <div className="mt-3">
           <StreakBar streak={streak} />
+        </div>
+
+        {/* Block 7: Badge Teaser */}
+        <div className="mt-3">
+          <BadgeTeaser streak={streak} exercises={exercises} dailyLogs={dailyLogs} />
         </div>
 
         {/* Milestone celebration */}
