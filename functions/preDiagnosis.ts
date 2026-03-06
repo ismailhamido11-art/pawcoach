@@ -79,7 +79,7 @@ Genere un JSON avec:
     return Response.json(result);
 
   } catch (error) {
-    console.error("preDiagnosis error:", error.message);
+    console.error("preDiagnosis error:", error?.message || String(error));
     return Response.json({
       error: "Une erreur est survenue lors de l'analyse. Réessaie dans quelques instants.",
       preliminary_observations: "L'analyse n'a pas pu être effectuée. Réessaie ou consulte directement un vétérinaire.",
