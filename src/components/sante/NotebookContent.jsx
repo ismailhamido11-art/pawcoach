@@ -78,7 +78,7 @@ export default function NotebookContent({ dog, user, records, setRecords, dailyL
     if (vetNotesLoaded || !dog) return;
     try {
       const notes = await base44.entities.VetNote.filter({ dog_id: dog.id });
-      setVetNotes(notes);
+      setVetNotes(notes || []);
     } catch (e) {
       console.warn("Failed to load vet notes:", e.message || e);
     }
