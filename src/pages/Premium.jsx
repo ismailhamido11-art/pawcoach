@@ -50,7 +50,7 @@ export default function Premium() {
         const u = await base44.auth.me();
         setUser(u);
         const dogs = await base44.entities.Dog.filter({ owner: u.email });
-        if (dogs.length > 0) setDog(getActiveDog(dogs));
+        if (dogs?.length > 0) setDog(getActiveDog(dogs));
 
         if (isUserPremium(u) && !u.premium_welcome_seen) {
           setIsFirstVisit(true);
