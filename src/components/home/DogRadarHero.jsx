@@ -6,7 +6,7 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Flame, UserCircle, Zap, Dumbbell, ScanLine, Heart } from "lucide-react";
+import { Flame, UserCircle, Dumbbell, ScanLine, Heart } from "lucide-react";
 import { useDogAvatarState } from "../dogtwin/useDogAvatarState";
 
 // Calcule les 4 scores à partir des données réelles
@@ -46,9 +46,9 @@ function computeArcs({ checkins, streak, records, exercises, scans }) {
 
   return [
     { key: "health",    label: "Santé",       score: Math.max(10, health),    color: "#2d9f82", Icon: Heart,     page: "Notebook" },
-    { key: "activity",  label: "Activité",    score: Math.max(10, activity),  color: "#f59e0b", Icon: Flame,     page: "Dashboard" },
+    { key: "activity",  label: "Activité",    score: Math.max(10, activity),  color: "#d97706", Icon: Flame,     page: "Dashboard" },
     { key: "training",  label: "Dressage",    score: Math.max(10, training),  color: "#6366f1", Icon: Dumbbell,  page: "Training" },
-    { key: "nutrition", label: "Nutrition",   score: Math.max(10, nutrition), color: "#ec4899", Icon: ScanLine,  page: "Nutrition" },
+    { key: "nutrition", label: "Nutrition",   score: Math.max(10, nutrition), color: "#059669", Icon: ScanLine,  page: "Nutrition" },
   ];
 }
 
@@ -56,8 +56,8 @@ function computeArcs({ checkins, streak, records, exercises, scans }) {
 function Arc({ index, total, score, color, size }) {
   const cx = size / 2;
   const cy = size / 2;
-  const gap = 10; // px entre anneaux
-  const ringWidth = 7;
+  const gap = 7;
+  const ringWidth = 5;
   // Du plus grand (extérieur) au plus petit (intérieur)
   const r = cx - 10 - index * (ringWidth + gap);
   const circumference = 2 * Math.PI * r;
@@ -89,21 +89,20 @@ const moodText  = { excited: "Très heureux !", happy: "En forme", neutral: "Cal
 
 export default function DogRadarHero({ user, dog, streak, checkins, records, exercises, scans, dailyLogs }) {
   const navigate = useNavigate();
-  const currentStreak = streak?.current_streak || 0;
   const firstName = user?.full_name?.split(" ")[0] || "toi";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Bonjour" : hour < 18 ? "Bon après-midi" : "Bonsoir";
   const { mood } = useDogAvatarState({ checkins, streak, records: records || [], scans: scans || [] });
   const arcs = computeArcs({ checkins, streak, records: records || [], exercises: exercises || [], scans: scans || [] });
 
-  const SIZE = 220; // taille SVG radar
+  const SIZE = 160;
 
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-[#0f4c3a] via-[#1a6b52] to-background">
       {/* Fond décoratif */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.1),transparent_60%)]" />
 
-      <div className="relative z-10 px-5 pt-12 pb-6">
+      <div className="relative z-10 px-5 pt-10 pb-4">
         {/* Top bar */}
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -111,12 +110,6 @@ export default function DogRadarHero({ user, dog, streak, checkins, records, exe
             <p className="text-white text-sm font-semibold mt-0.5">{greeting}, {firstName}</p>
           </div>
           <div className="flex items-center gap-2">
-            {currentStreak > 0 && (
-              <div className="flex items-center gap-1 bg-white/15 border border-white/20 px-2.5 py-1 rounded-full">
-                <Flame className="w-3 h-3 text-amber-300" />
-                <span className="text-white text-xs font-bold">{currentStreak}j</span>
-              </div>
-            )}
             <Link
               to={createPageUrl("Profile")}
               className="w-8 h-8 rounded-full bg-white/20 border border-white/30 flex items-center justify-center"
@@ -153,14 +146,14 @@ export default function DogRadarHero({ user, dog, streak, checkins, records, exe
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, type: "spring" }}
-                    className="w-28 h-28 rounded-full object-cover border-4 border-white/30 shadow-2xl"
+                    className="w-20 h-20 rounded-full object-cover border-4 border-white/30 shadow-2xl"
                   />
                 ) : (
                   <motion.div
                     initial={{ scale: 0.8 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 0.4 }}
-                    className="w-28 h-28 rounded-full bg-white/10 border-4 border-white/20 flex items-center justify-center text-5xl shadow-xl"
+                    className="w-20 h-20 rounded-full bg-white/10 border-4 border-white/20 flex items-center justify-center text-5xl shadow-xl"
                   >
                     🐶
                   </motion.div>
