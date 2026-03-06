@@ -11,7 +11,7 @@ Deno.serve(async (req) => {
 
     // Step 1: Get all user's dogs to cascade delete child records
     const userDogs = await base44.asServiceRole.entities.Dog.filter({ owner: user.email });
-    const dogIds = userDogs.map((d: { id: string }) => d.id);
+    const dogIds = (userDogs || []).map((d: { id: string }) => d.id);
 
     // Step 2: Delete all dog-linked entities (using dog_id)
     if (dogIds.length > 0) {
@@ -47,6 +47,6 @@ Deno.serve(async (req) => {
     return Response.json({ success: true, message: 'User account deleted successfully' });
   } catch (err) {
     console.error('Delete user error:', err);
-    return Response.json({ error: err.message || 'Failed to delete user' }, { status: 500 });
+    return Response.json({ error: err?.message || String(err) }, { status: 500 });
   }
 });
