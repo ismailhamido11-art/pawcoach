@@ -603,6 +603,12 @@ export default function Chat() {
           </div>
         ) : (
           <>
+            {!isUserPremium(user) && messagesRemaining !== null && (
+              <div className="flex items-center gap-1.5 px-5 pt-2 pb-0">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span className="text-[11px] text-muted-foreground font-medium">{messagesRemaining} credit{messagesRemaining !== 1 ? "s" : ""} restant{messagesRemaining !== 1 ? "s" : ""}</span>
+              </div>
+            )}
             {pendingImage && (
               <div className="px-5 pt-2 flex items-center gap-2">
                 <img src={pendingImage.preview} alt="preview" className="w-12 h-12 rounded-lg object-cover border border-border" />
