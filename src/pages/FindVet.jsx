@@ -24,7 +24,7 @@ export default function FindVet() {
       try {
         const u = await base44.auth.me();
         const dogs = await base44.entities.Dog.filter({ owner: u.email });
-        if (dogs.length > 0) {
+        if (dogs?.length > 0) {
           const activeDog = getActiveDog(dogs);
           setDog(activeDog);
           if (activeDog.vet_city) setQuery(activeDog.vet_city);
