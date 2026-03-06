@@ -33,7 +33,7 @@ export function buildRecommendations({ records, exercises, scans, checkins, dail
       iconColor: "#ef4444",
       label: "Rappel vaccin en retard",
       sub: `${overdueVaccine.title} — depuis le ${overdueVaccine.next_date}`,
-      page: "Notebook",
+      page: "Sante",
       cta: "Mettre a jour",
       accent: "border-l-red-400",
     });
@@ -51,7 +51,7 @@ export function buildRecommendations({ records, exercises, scans, checkins, dail
         iconColor: "#2d9f82",
         label: "Vaccin a prevoir bientot",
         sub: `${soonVaccine.title} — le ${soonVaccine.next_date}`,
-        page: "Notebook",
+        page: "Sante",
         cta: "Voir le carnet",
         accent: "border-l-primary",
       });
@@ -88,7 +88,7 @@ export function buildRecommendations({ records, exercises, scans, checkins, dail
       sub: completedThisWeek.length === 0
         ? "Lance ta premiere seance ensemble"
         : `${completedThisWeek.length} exercice${completedThisWeek.length > 1 ? "s" : ""} fait${completedThisWeek.length > 1 ? "s" : ""} — bravo !`,
-      page: "Training",
+      page: "Activite",
       cta: "Voir les exercices",
       accent: "border-l-emerald-400",
     });
@@ -144,7 +144,7 @@ export function buildRecommendations({ records, exercises, scans, checkins, dail
       iconColor: "#ec4899",
       label: "Peser ton chien",
       sub: lastWeight ? `Dernier releve il y a +30 jours` : "Aucun poids enregistre",
-      page: "Notebook",
+      page: "Sante",
       cta: "Ajouter un poids",
       accent: "border-l-pink-400",
     });

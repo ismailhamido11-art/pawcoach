@@ -107,9 +107,9 @@ function computeTileData({ records, exercises, scans, user, checkins, dailyLogs 
   }
 
   return [
-    { icon: Heart, iconColor: "#2d9f82", label: "Sante", dataPoint: santeData, subtitle: santeSub, badge: santeBadge, weekBars: santeWeekBars, page: "Notebook" },
+    { icon: Heart, iconColor: "#2d9f82", label: "Sante", dataPoint: santeData, subtitle: santeSub, badge: santeBadge, weekBars: santeWeekBars, page: "Sante" },
     { icon: Utensils, iconColor: "#059669", label: "Nutrition", dataPoint: nutriData, subtitle: nutriSub, badge: nutriBadge, weekBars: nutriWeekBars, page: "Nutri" },
-    { icon: Dumbbell, iconColor: "#6366f1", label: "Dressage", dataPoint: trainData, subtitle: trainSub, badge: trainBadge, weekBars: trainWeekBars, page: "Training" },
+    { icon: Dumbbell, iconColor: "#6366f1", label: "Dressage", dataPoint: trainData, subtitle: trainSub, badge: trainBadge, weekBars: trainWeekBars, page: "Activite" },
     { icon: MessageCircle, iconColor: "#8b5cf6", label: "Chat IA", dataPoint: chatData, subtitle: chatSub, badge: chatBadge, weekBars: null, page: "Chat" },
   ];
 }

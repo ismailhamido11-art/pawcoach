@@ -5,8 +5,8 @@ import { ScanLine, Scale, Dumbbell, MapPin, BookOpen } from "lucide-react";
 
 const ACTIONS = [
   { icon: ScanLine, label: "Scanner", page: "Scan", color: "#059669" },
-  { icon: Scale, label: "Peser", page: "Notebook", color: "#2d9f82" },
-  { icon: Dumbbell, label: "Exercice", page: "Training", color: "#6366f1" },
+  { icon: Scale, label: "Peser", page: "Sante", color: "#2d9f82" },
+  { icon: Dumbbell, label: "Exercice", page: "Activite", color: "#6366f1" },
   { icon: MapPin, label: "Veto", page: "FindVet", color: "#3b82f6" },
   { icon: BookOpen, label: "Guides", page: "Library", color: "#8b5cf6" },
 ];
