@@ -120,6 +120,14 @@ export default function Library() {
 
   const totalCount = allItems.length;
 
+  // Determine the single true active nutrition plan (most recent if multiple marked active)
+  const activeNutriPlans = nutritionPlans.filter(p => p.is_active);
+  const trueActiveNutriId = activeNutriPlans.length === 1
+    ? activeNutriPlans[0].id
+    : activeNutriPlans.length > 1
+      ? activeNutriPlans.sort((a, b) => (b.generated_at || "").localeCompare(a.generated_at || ""))[0]?.id
+      : null;
+
   const filtered = allItems.filter(b => {
     const matchFilter = filter === "all" || b.source === filter;
     const matchSearch = !search || (b.title || b.content || "").toLowerCase().includes(search.toLowerCase());
@@ -248,7 +256,7 @@ export default function Library() {
                       ) : null;
                     })()}
                     {/* Active nutrition plan badge */}
-                    {isNutriPlan && b.is_active && (
+                    {isNutriPlan && b.id === trueActiveNutriId && (
                       <div className="flex items-center gap-1.5 mb-2">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                         <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Plan actif — visible sur l'accueil</span>
@@ -283,16 +291,12 @@ export default function Library() {
                             <Home className="w-3 h-3" /> Activer
                           </button>
                         )}
-                        {isNutriPlan && (
+                        {isNutriPlan && b.id !== trueActiveNutriId && (
                           <button
                             onClick={e => { e.stopPropagation(); handleActivateNutritionPlan(b.id); }}
-                            className={`h-7 px-2.5 rounded-lg flex items-center gap-1 text-[10px] font-semibold ${
-                              b.is_active
-                                ? "bg-emerald-100 border border-emerald-300 text-emerald-800"
-                                : "bg-emerald-50 border border-emerald-200 text-emerald-700"
-                            }`}
+                            className="h-7 px-2.5 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center gap-1 text-emerald-700 text-[10px] font-semibold"
                           >
-                            <Home className="w-3 h-3" /> {b.is_active ? "Reactiver" : "Activer"}
+                            <Home className="w-3 h-3" /> Choisir ce plan
                           </button>
                         )}
                         <button

@@ -84,19 +84,29 @@ export default function SavedPlansPanel({ dog, user }) {
     </div>
   );
 
+  // Determine the single "true" active plan (most recent if multiple are marked active)
+  const activePlans = plans.filter(p => p.is_active);
+  const trueActiveId = activePlans.length === 1
+    ? activePlans[0].id
+    : activePlans.length > 1
+      ? activePlans.sort((a, b) => (b.generated_at || "").localeCompare(a.generated_at || ""))[0]?.id
+      : null;
+
   return (
     <div className="space-y-3 pb-4">
       <p className="text-xs text-muted-foreground font-medium">{plans.length} plan(s) sauvegardé(s)</p>
-      {plans.map(plan => (
+      {plans.map(plan => {
+        const isTheActive = plan.id === trueActiveId;
+        return (
         <motion.div key={plan.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
           {/* Header */}
-          <div className={`p-4 ${plan.is_active ? "bg-emerald-50/50" : ""}`}>
+          <div className={`p-4 ${isTheActive ? "bg-emerald-50/50" : ""}`}>
             {/* Active badge */}
-            {plan.is_active && (
+            {isTheActive && (
               <div className="flex items-center gap-1.5 mb-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Programme actif — visible sur l'accueil</span>
+                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Plan actif — visible sur l'accueil</span>
               </div>
             )}
             <div className="flex items-start justify-between gap-2">
@@ -111,16 +121,14 @@ export default function SavedPlansPanel({ dog, user }) {
                 )}
               </div>
               <div className="flex gap-1.5">
-                <button
-                  onClick={() => handleActivate(plan.id)}
-                  className={`h-8 px-3 rounded-xl flex items-center gap-1.5 text-xs font-semibold ${
-                    plan.is_active
-                      ? "bg-emerald-100 border border-emerald-300 text-emerald-800"
-                      : "bg-emerald-50 border border-emerald-200 text-emerald-700"
-                  }`}
-                >
-                  <Home className="w-3.5 h-3.5" /> {plan.is_active ? "Reactiver" : "Activer"}
-                </button>
+                {!isTheActive && (
+                  <button
+                    onClick={() => handleActivate(plan.id)}
+                    className="h-8 px-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-1.5 text-emerald-700 text-xs font-semibold"
+                  >
+                    <Home className="w-3.5 h-3.5" /> Choisir ce plan
+                  </button>
+                )}
                 <button
                   onClick={() => setExpandedId(expandedId === plan.id ? null : plan.id)}
                   className="w-8 h-8 rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground"
@@ -197,7 +205,8 @@ export default function SavedPlansPanel({ dog, user }) {
             )}
           </AnimatePresence>
         </motion.div>
-      ))}
+        );
+      })}
     </div>
   );
 }
