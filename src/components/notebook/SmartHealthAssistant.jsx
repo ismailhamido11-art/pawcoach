@@ -305,7 +305,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
 
       for (const rec of pendingRecords) {
         if (rec.type === "vaccine") {
-          const isDuplicate = existingRecords.some(
+          const isDuplicate = (existingRecords || []).some(
             existing => existing.type === "vaccine" && existing.title === rec.title && existing.date === rec.date
           );
           if (isDuplicate) {
