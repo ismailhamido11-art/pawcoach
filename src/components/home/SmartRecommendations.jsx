@@ -52,6 +52,11 @@ export default function SmartRecommendations({ records, exercises, scans, checki
             );
           }
 
+          // Don't wrap "Home" recs in a Link — we're already on Home
+          if (rec.page === "Home") {
+            return <div key={rec.id}>{inner}</div>;
+          }
+
           return (
             <Link key={rec.id} to={createPageUrl(rec.page) + (rec.tab ? `?tab=${rec.tab}` : "")}>
               {inner}

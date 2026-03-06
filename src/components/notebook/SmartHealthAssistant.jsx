@@ -54,6 +54,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
 
   const recognitionRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
   const fileInputRef = useRef(null);
   const pendingRecordsRef = useRef([]);
 
@@ -92,9 +93,12 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
     }
   }, [dogId]);
 
-  // Scroll to bottom
+  // Scroll to bottom — only within the chat container, never the page
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = chatContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [messages, isProcessing, streamingText]);
 
   // Cleanup SpeechRecognition on unmount
@@ -342,7 +346,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       </div>
 
       {/* Chat Messages Area */}
-      <div className="max-h-[50vh] overflow-y-auto p-4 space-y-4 scroll-smooth bg-gradient-to-b from-white to-slate-50/50">
+      <div ref={chatContainerRef} className="max-h-[50vh] overflow-y-auto p-4 space-y-4 scroll-smooth bg-gradient-to-b from-white to-slate-50/50">
 
         {/* Loading state before first message */}
          {messages.length === 0 && isProcessing && (

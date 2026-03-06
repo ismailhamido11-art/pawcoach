@@ -5,7 +5,7 @@ import { base44 } from "@/api/base44Client";
 import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Camera, Bookmark, BookmarkCheck, ChevronDown, Copy, RotateCcw } from "lucide-react";
+import { Send, Camera, Bookmark, BookmarkCheck, ChevronDown, Copy, RotateCcw, Plus } from "lucide-react";
 import { DogChat } from "../components/ui/PawIllustrations";
 import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
@@ -372,6 +372,19 @@ export default function Chat() {
     );
   }
 
+  const startNewChat = () => {
+    setMessages([{
+      role: "assistant",
+      content: `Bonjour ! Je suis PawCoach, ton coach bien-etre pour **${dog?.name || "ton chien"}**.\n\nJe connais tout son historique : sante, nutrition, activite, humeur. Pose-moi n'importe quelle question !`,
+      timestamp: new Date().toISOString(),
+    }]);
+    setInput("");
+    setLastFailedInput(null);
+    if (streamingRef.current.timer) clearInterval(streamingRef.current.timer);
+    setIsStreaming(false);
+    setStreamingText("");
+  };
+
   const isLimitReached = !isUserPremium(user) && (messagesRemaining ?? 0) <= 0;
   const showSuggestions = messages.length <= 1 && !isLimitReached;
 
@@ -399,6 +412,16 @@ export default function Chat() {
             <h1 className="text-white font-black text-2xl leading-tight">Assistant IA</h1>
             {dog && <p className="text-white/70 text-xs mt-0.5">Personnalise pour {dog.name} · {dog.breed}</p>}
             <div className="flex items-center gap-2 mt-2">
+              {messages.length > 1 && (
+                <motion.button
+                  whileTap={{ scale: 0.93 }}
+                  onClick={startNewChat}
+                  className="flex items-center gap-1.5 bg-white/25 hover:bg-white/35 px-3 py-1.5 rounded-full transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5 text-white" />
+                  <span className="text-white text-xs font-semibold">Nouveau</span>
+                </motion.button>
+              )}
               {!isUserPremium(user) && messagesRemaining !== null && (
                 <div className="bg-white/20 px-2.5 py-1 rounded-full">
                   <span className="text-white text-xs font-medium">

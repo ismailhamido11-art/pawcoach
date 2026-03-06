@@ -24,7 +24,8 @@ export default function TodayCard({ dog, user, todayCheckin, streak, records, ex
     todayCheckin,
     streak,
   });
-  const topRec = recs[0];
+  // Skip "Home" recs — we're already on Home, they go nowhere
+  const topRec = recs.find(r => r.page !== "Home");
   const isAlert = topRec && topRec.priority === 1;
 
   // STATE 1: Critical alert (overdue vaccine)

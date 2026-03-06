@@ -60,8 +60,10 @@ export default function DailyCoaching({ dog, records, exercises, scans, dailyLog
     streak,
   });
 
+  // Filter out "Home" recs (we're already on Home, they go nowhere)
+  const actionableRecs = recs.filter(r => r.page !== "Home");
   // If todayCheckin exists, TodayCard already shows rec[0] — skip it here
-  const topRecs = todayCheckin ? recs.slice(1, 3) : recs.slice(0, 2);
+  const topRecs = todayCheckin ? actionableRecs.slice(0, 3) : actionableRecs.slice(0, 3);
 
   return (
     <motion.div
