@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
 Deno.serve(async (req) => {
   try {
@@ -37,8 +37,22 @@ Deno.serve(async (req) => {
         dogName = dog.name || "ton chien";
         if (dog.breed) dogDetails += dog.breed;
         if (dog.weight) dogDetails += ` (${dog.weight}kg)`;
+        if (dog.birth_date) {
+          const months = Math.floor((Date.now() - new Date(dog.birth_date).getTime()) / (1000 * 60 * 60 * 24 * 30));
+          dogDetails += months < 12 ? `, ${months} mois` : `, ${Math.floor(months / 12)} an(s)`;
+        }
+        if (dog.sex) dogDetails += `, ${dog.sex === "male" ? "male" : "femelle"}`;
+        if (dog.allergies) dogDetails += `, allergies: ${dog.allergies}`;
+        if (dog.health_issues) dogDetails += `, problemes: ${dog.health_issues}`;
 
-        const records = await base44.entities.HealthRecord.filter({ dog_id: dogId }, "-date", 20);
+        // Fetch all relevant data in parallel
+        const [records, checkins, foodScans, dailyLogs, streaks] = await Promise.all([
+          base44.entities.HealthRecord.filter({ dog_id: dogId }, "-date", 20).catch(() => []),
+          base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dogId }).catch(() => []),
+          base44.asServiceRole.entities.FoodScan.filter({ dog_id: dogId }).catch(() => []),
+          base44.asServiceRole.entities.DailyLog.filter({ dog_id: dogId }).catch(() => []),
+          base44.asServiceRole.entities.Streak.filter({ dog_id: dogId }).catch(() => []),
+        ]);
 
         // Analyze missing info
         if (records) {
@@ -50,19 +64,58 @@ Deno.serve(async (req) => {
            else {
               const d = new Date(lastWeight.date);
               const now = new Date();
-              const diffTime = Math.abs(now - d);
+              const diffTime = Math.abs(now.getTime() - d.getTime());
               const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
               if (diffDays > 30) missingInfos.push(`poids (vieux de ${diffDays} jours)`);
            }
            if (!lastVaccine) missingInfos.push("vaccins (aucun)");
-           if (!lastVet) missingInfos.push("visite vétérinaire (aucune)");
+           if (!lastVet) missingInfos.push("visite veterinaire (aucune)");
 
            const summaryLines = records.map(r => {
             let line = `${r.date} [${r.type}]: ${r.title}`;
             if (r.value) line += ` (${r.value}kg)`;
             return line;
           });
-          historyContext = "DONNÉES EXISTANTES DU CARNET:\n" + summaryLines.slice(0, 8).join("\n");
+          historyContext = "DONNEES EXISTANTES DU CARNET:\n" + summaryLines.slice(0, 8).join("\n");
+        }
+
+        // Build well-being context from DailyCheckins (last 7 days)
+        const now = new Date();
+        const recentCheckins = (checkins || [])
+          .filter(c => c.date && (now.getTime() - new Date(c.date).getTime()) < 7 * 24 * 60 * 60 * 1000)
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        if (recentCheckins.length > 0) {
+          const moodMap = { great: "excellent", good: "bon", neutral: "neutre", bad: "mauvais", terrible: "tres mauvais" };
+          const energyMap = { high: "haute", medium: "moyenne", low: "basse" };
+          const appetiteMap = { normal: "normal", increased: "augmente", decreased: "diminue", none: "aucun" };
+          historyContext += `\nBIEN-ETRE RECENT (${recentCheckins.length} check-ins, 7j) :`;
+          historyContext += `\n- Humeurs : ${recentCheckins.map(c => moodMap[c.mood] || c.mood).filter(Boolean).join(", ")}`;
+          historyContext += `\n- Energie : ${recentCheckins.map(c => energyMap[c.energy] || c.energy).filter(Boolean).join(", ")}`;
+          historyContext += `\n- Appetit : ${recentCheckins.map(c => appetiteMap[c.appetite] || c.appetite).filter(Boolean).join(", ")}`;
+          const latestNote = recentCheckins.find(c => c.notes)?.notes;
+          if (latestNote) historyContext += `\n- Note : "${latestNote}"`;
+        }
+
+        // Food scan context
+        const recentScans = (foodScans || [])
+          .sort((a, b) => new Date(b.timestamp || b.created_date).getTime() - new Date(a.timestamp || a.created_date).getTime())
+          .slice(0, 3);
+        if (recentScans.length > 0) {
+          historyContext += `\nALIMENTS SCANNES : ${recentScans.map(s => `${s.food_name} (${s.verdict})`).join(", ")}`;
+        }
+
+        // Activity context
+        const recentLogs = (dailyLogs || [])
+          .filter(l => l.date && (now.getTime() - new Date(l.date).getTime()) < 7 * 24 * 60 * 60 * 1000);
+        if (recentLogs.length > 0) {
+          const totalMin = recentLogs.reduce((s, l) => s + (l.walk_minutes || 0), 0);
+          historyContext += `\nACTIVITE (7j) : ${recentLogs.length} jour(s) de balade, ${totalMin} min total`;
+        }
+
+        // Streak
+        const streak = (streaks || [])[0];
+        if (streak?.current_streak) {
+          historyContext += `\nSTREAK : ${streak.current_streak} jour(s)`;
         }
       } catch (e) {
         console.warn("[WARN] Error fetching history:", e.message);
@@ -75,16 +128,24 @@ Deno.serve(async (req) => {
     }
 
     // Build prompt for LLM
-    const systemPrompt = `Tu es l'ange gardien vétérinaire de ${dogName}${dogDetails ? ` (${dogDetails})` : ''}. ${ownerName} compte sur toi.
-Ton but : Rassurer, Guider, et Être Efficace.
+    const todayFr = new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
-CONTEXTE MÉDICAL : ${historyContext || "Aucun historique médical récent."}
-INFORMATIONS MANQUANTES : ${missingInfos.length > 0 ? missingInfos.join(", ") : "Tout est à jour !"}
+    const systemPrompt = `Tu es l'ange gardien veterinaire de ${dogName}${dogDetails ? ` (${dogDetails})` : ''}. ${ownerName} compte sur toi.
+Ton but : Rassurer, Guider, et Etre Efficace.
+DATE : ${todayFr}
 
-RÈGLES D'INTELLIGENCE ÉMOTIONNELLE :
-- Sois chaleureux mais précis. Utilise des émojis rassurants 🐾 💙.
-- Si le chien va mal : PAS DE BLABLA inutile. Pose 1 question pour cibler l'urgence, puis donne la conduite à tenir.
-- Crée du lien : "Pauvre ${dogName}...", "Je comprends ton inquiétude...".
+CONTEXTE COMPLET DE ${dogName.toUpperCase()} : ${historyContext || "Aucun historique."}
+INFORMATIONS MANQUANTES : ${missingInfos.length > 0 ? missingInfos.join(", ") : "Tout est a jour !"}
+
+INTELLIGENCE HOLISTIQUE :
+- Tu as acces au bien-etre recent (humeur, energie, appetit), a l'activite physique, et aux aliments scannes.
+- UTILISE CES DONNEES pour enrichir ton analyse. Ex: "Je vois que l'energie de ${dogName} est basse depuis 3 jours, combine avec cette perte d'appetit, ca merite attention."
+- Fais des connexions entre les symptomes rapportes et les donnees objectives.
+
+REGLES D'INTELLIGENCE EMOTIONNELLE :
+- Sois chaleureux mais precis. Utilise des emojis rassurants.
+- Si le chien va mal : PAS DE BLABLA inutile. Pose 1 question pour cibler l'urgence, puis donne la conduite a tenir.
+- Cree du lien : "Pauvre ${dogName}...", "Je comprends ton inquietude...".
 
 GÉRER LE LIEN VÉTÉRINAIRE :
 Si tu recommandes d'aller chez le véto :
