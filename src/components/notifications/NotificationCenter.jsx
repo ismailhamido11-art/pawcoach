@@ -64,7 +64,7 @@ export async function loadNotifications() {
     items.sort((a, b) => a.daysLeft - b.daysLeft);
     _notifications = items;
     notify();
-  } catch (e) { /* silent */ }
+  } catch (e) { console.warn("loadNotifications error:", e?.message || String(e)); }
 }
 
 export function useNotifications() {
