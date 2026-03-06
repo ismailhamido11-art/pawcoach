@@ -37,7 +37,7 @@ export default function ReminderAlert() {
       try {
         const u = await base44.auth.me();
         const dogs = await base44.entities.Dog.filter({ owner: u.email });
-        if (!dogs.length) return;
+        if (!dogs?.length) return;
         const dog = getActiveDog(dogs);
 
         // Also check next_vet_appointment on dog profile
@@ -56,7 +56,7 @@ export default function ReminderAlert() {
         }
 
         const records = await base44.entities.HealthRecord.filter({ dog_id: dog.id });
-        const recordAlerts = records
+        const recordAlerts = (records || [])
           .filter(r => r.next_date && ["vaccine", "vet_visit", "medication"].includes(r.type))
           .map(r => ({ ...r, daysLeft: getDaysLeft(r.next_date) }))
           .filter(r => r.daysLeft >= 0 && r.daysLeft <= 14)
