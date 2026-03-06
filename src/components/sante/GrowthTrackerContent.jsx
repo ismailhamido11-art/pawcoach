@@ -75,7 +75,7 @@ export default function GrowthTrackerContent({ dog, user }) {
     setLoading(true);
     try {
       const data = await base44.entities.GrowthEntry.filter({ dog_id: dog.id }, "-date", 50);
-      setEntries(data);
+      setEntries(data || []);
     } finally {
       setLoading(false);
     }
