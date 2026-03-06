@@ -89,11 +89,11 @@ export default function Training() {
       const u = await base44.auth.me();
       setUser(u);
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
-      if (dogs.length > 0) {
+      if (dogs?.length > 0) {
         const activeDog = getActiveDog(dogs);
         setDog(activeDog);
         const progs = await base44.entities.UserProgress.filter({ user_email: u.email, dog_id: activeDog.id });
-        setProgresses(progs);
+        setProgresses(progs || []);
       }
     } catch (err) {
       console.error("Training load error:", err);
