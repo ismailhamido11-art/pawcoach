@@ -22,7 +22,7 @@ const SEVERITY = {
 /**
  * Génère toutes les alertes intelligentes à partir des données brutes
  */
-export function computeAlerts({ dog, checkins, records, streak, dailyLogs, scans }) {
+export function computeAlerts({ dog, checkins = [], records = [], streak, dailyLogs = [], scans = [] }) {
   const alerts = [];
   const today = new Date().toISOString().split("T")[0];
 
@@ -230,9 +230,9 @@ function AlertRow({ alert, index }) {
   );
 }
 
-export default function SmartAlerts({ dog, checkins, records, streak, dailyLogs, scans }) {
+export default function SmartAlerts({ dog, checkins = [], records = [], streak, dailyLogs = [], scans = [] }) {
   const [expanded, setExpanded] = useState(false);
-  const alerts = computeAlerts({ dog, checkins, records, streak, dailyLogs: dailyLogs || [], scans: scans || [] });
+  const alerts = computeAlerts({ dog, checkins, records, streak, dailyLogs, scans });
 
   const criticalCount = alerts.filter(a => a.severity === "critical").length;
   const warningCount  = alerts.filter(a => a.severity === "warning").length;
