@@ -53,7 +53,7 @@ export default function SmartRecommendations({ records, exercises, scans, checki
           }
 
           return (
-            <Link key={rec.id} to={createPageUrl(rec.page)}>
+            <Link key={rec.id} to={createPageUrl(rec.page) + (rec.tab ? `?tab=${rec.tab}` : "")}>
               {inner}
             </Link>
           );

@@ -47,7 +47,7 @@ function computeArcs({ checkins, streak, records, exercises, scans }) {
   return [
     { key: "health",    label: "Santé",       score: Math.max(10, health),    color: "#2d9f82", Icon: Heart,     page: "Sante" },
     { key: "activity",  label: "Activité",    score: Math.max(10, activity),  color: "#d97706", Icon: Flame,     page: "Activite" },
-    { key: "training",  label: "Dressage",    score: Math.max(10, training),  color: "#6366f1", Icon: Dumbbell,  page: "Activite" },
+    { key: "training",  label: "Dressage",    score: Math.max(10, training),  color: "#6366f1", Icon: Dumbbell,  page: "Activite", tab: "dressage" },
     { key: "nutrition", label: "Nutrition",   score: Math.max(10, nutrition), color: "#059669", Icon: ScanLine,  page: "Nutri" },
   ];
 }
@@ -206,7 +206,7 @@ export default function DogRadarHero({ user, dog, streak, checkins, records, exe
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + i * 0.08 }}
                   whileTap={{ scale: 0.92 }}
-                  onClick={() => navigate(createPageUrl(arc.page))}
+                  onClick={() => navigate(createPageUrl(arc.page) + (arc.tab ? `?tab=${arc.tab}` : ""))}
                   className="flex flex-col items-center gap-1"
                 >
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: arc.color + "25", border: `1.5px solid ${arc.color}55` }}>

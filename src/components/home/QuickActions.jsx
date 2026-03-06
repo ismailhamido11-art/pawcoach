@@ -5,8 +5,8 @@ import { ScanLine, Scale, Dumbbell, MapPin, BookOpen } from "lucide-react";
 
 const ACTIONS = [
   { icon: ScanLine, label: "Scanner", page: "Scan", color: "#059669" },
-  { icon: Scale, label: "Peser", page: "Sante", color: "#2d9f82" },
-  { icon: Dumbbell, label: "Exercice", page: "Activite", color: "#6366f1" },
+  { icon: Scale, label: "Peser", page: "Sante", tab: "weight", color: "#2d9f82" },
+  { icon: Dumbbell, label: "Exercice", page: "Activite", tab: "dressage", color: "#6366f1" },
   { icon: MapPin, label: "Veto", page: "FindVet", color: "#3b82f6" },
   { icon: BookOpen, label: "Guides", page: "Library", color: "#8b5cf6" },
 ];
@@ -32,7 +32,7 @@ export default function QuickActions() {
               className="flex-shrink-0"
             >
               <Link
-                to={createPageUrl(action.page)}
+                to={createPageUrl(action.page) + (action.tab ? `?tab=${action.tab}` : "")}
                 className="flex flex-col items-center gap-1.5 w-[56px]"
               >
                 <div

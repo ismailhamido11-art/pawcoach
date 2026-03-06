@@ -34,6 +34,7 @@ export function buildRecommendations({ records, exercises, scans, checkins, dail
       label: "Rappel vaccin en retard",
       sub: `${overdueVaccine.title} — depuis le ${overdueVaccine.next_date}`,
       page: "Sante",
+      tab: "vaccine",
       cta: "Mettre a jour",
       accent: "border-l-red-400",
     });
@@ -52,6 +53,7 @@ export function buildRecommendations({ records, exercises, scans, checkins, dail
         label: "Vaccin a prevoir bientot",
         sub: `${soonVaccine.title} — le ${soonVaccine.next_date}`,
         page: "Sante",
+        tab: "vaccine",
         cta: "Voir le carnet",
         accent: "border-l-primary",
       });
@@ -89,6 +91,7 @@ export function buildRecommendations({ records, exercises, scans, checkins, dail
         ? "Lance ta premiere seance ensemble"
         : `${completedThisWeek.length} exercice${completedThisWeek.length > 1 ? "s" : ""} fait${completedThisWeek.length > 1 ? "s" : ""} — bravo !`,
       page: "Activite",
+      tab: "dressage",
       cta: "Voir les exercices",
       accent: "border-l-emerald-400",
     });
@@ -145,6 +148,7 @@ export function buildRecommendations({ records, exercises, scans, checkins, dail
       label: "Peser ton chien",
       sub: lastWeight ? `Dernier releve il y a +30 jours` : "Aucun poids enregistre",
       page: "Sante",
+      tab: "weight",
       cta: "Ajouter un poids",
       accent: "border-l-pink-400",
     });

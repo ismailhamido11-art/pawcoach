@@ -95,7 +95,7 @@ export default function DailyCoaching({ dog, records, exercises, scans, dailyLog
             </div>
             <div className="space-y-1">
               {topRecs.map((rec) => (
-                <Link key={rec.id} to={createPageUrl(rec.page)}>
+                <Link key={rec.id} to={createPageUrl(rec.page) + (rec.tab ? `?tab=${rec.tab}` : "")}>
                   <div className="flex items-center gap-2.5 py-2 group">
                     <div
                       className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"

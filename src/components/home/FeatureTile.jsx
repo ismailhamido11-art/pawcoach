@@ -8,10 +8,10 @@ const item = {
   show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 300, damping: 24 } },
 };
 
-export default function FeatureTile({ icon: Icon, iconColor, label, dataPoint, subtitle, page, badge, weekBars }) {
+export default function FeatureTile({ icon: Icon, iconColor, label, dataPoint, subtitle, page, tab, badge, weekBars }) {
   return (
     <motion.div variants={item} whileTap={{ scale: 0.96 }}>
-      <Link to={createPageUrl(page)}>
+      <Link to={createPageUrl(page) + (tab ? `?tab=${tab}` : "")}>
         <div
           className="relative overflow-hidden rounded-2xl p-3.5 h-full min-h-[144px] flex flex-col shadow-sm border transition-transform"
           style={{
