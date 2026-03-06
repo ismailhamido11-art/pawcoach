@@ -217,7 +217,7 @@ export default function HealthImport() {
     <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background pb-24">
       {/* Header */}
       <div className="gradient-primary px-5 pt-14 pb-6 relative overflow-hidden">
-        <Link to={createPageUrl("Notebook")} className="relative z-20 inline-flex items-center gap-2 text-white/80 text-sm mb-4 hover:text-white transition-colors">
+        <Link to={createPageUrl("Sante")} className="relative z-20 inline-flex items-center gap-2 text-white/80 text-sm mb-4 hover:text-white transition-colors">
           <ArrowLeft className="w-4 h-4" /> Carnet de santé
         </Link>
         <div className="relative z-10 flex items-end gap-3">
@@ -475,7 +475,7 @@ export default function HealthImport() {
                   Nouvel import
                 </Button>
                 <Button asChild className="flex-1 gradient-primary text-white">
-                  <Link to={createPageUrl("Notebook")}>Voir le carnet</Link>
+                  <Link to={createPageUrl("Sante")}>Voir le carnet</Link>
                 </Button>
               </motion.div>
             </motion.div>
@@ -505,7 +505,7 @@ export default function HealthImport() {
 
       {/* Hidden file input */}
       <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} />
-      <BottomNav currentPage="Notebook" />
+      <BottomNav currentPage="Sante" />
     </div>
   );
 }

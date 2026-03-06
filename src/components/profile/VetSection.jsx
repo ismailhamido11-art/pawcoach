@@ -29,7 +29,7 @@ export default function VetSection({ dogs, activeDogId }) {
           <span className="font-bold text-sm text-foreground">Espace vétérinaire</span>
         </div>
         <button
-          onClick={() => navigate(createPageUrl("Notebook") + "?tab=vet")}
+          onClick={() => navigate(createPageUrl("Sante") + "?tab=vet")}
           className="flex items-center gap-1 text-xs text-primary font-semibold"
         >
           <Plus className="w-3.5 h-3.5" /> Inviter
@@ -41,7 +41,7 @@ export default function VetSection({ dogs, activeDogId }) {
           <div className="text-center py-4">
             <p className="text-sm text-muted-foreground">Aucun vétérinaire invité</p>
             <button
-              onClick={() => navigate(createPageUrl("Notebook") + "?tab=vet")}
+              onClick={() => navigate(createPageUrl("Sante") + "?tab=vet")}
               className="mt-2 text-xs text-primary font-semibold underline"
             >
               Inviter un vétérinaire

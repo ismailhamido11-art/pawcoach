@@ -80,7 +80,7 @@ Pour chaque clinique, fournis: name, address, phone (format français), google_m
       <WellnessBanner />
 
       <div className="gradient-primary pt-14 pb-6 px-5 relative overflow-hidden">
-        <Link to={createPageUrl("Notebook")} className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-3 hover:bg-white/30 transition-colors">
+        <Link to={createPageUrl("Sante")} className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-3 hover:bg-white/30 transition-colors">
           <ArrowLeft className="w-4 h-4 text-white" />
         </Link>
         <div className="relative z-10 flex items-end gap-3">

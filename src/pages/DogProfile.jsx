@@ -193,7 +193,7 @@ export default function DogProfile() {
           </div>
           <div className="divide-y divide-border">
             <button
-              onClick={() => navigate(createPageUrl("Notebook") + "?tab=vet")}
+              onClick={() => navigate(createPageUrl("Sante") + "?tab=vet")}
               className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-muted/30 transition-all"
             >
               <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
@@ -206,7 +206,7 @@ export default function DogProfile() {
               <ChevronDown className="w-4 h-4 text-muted-foreground rotate-[-90deg]" />
             </button>
             <button
-              onClick={() => navigate(createPageUrl("Notebook") + "?tab=qr")}
+              onClick={() => navigate(createPageUrl("Sante") + "?tab=qr")}
               className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-muted/30 transition-all"
             >
               <div className="w-9 h-9 rounded-xl bg-violet-50 flex items-center justify-center flex-shrink-0">

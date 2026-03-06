@@ -183,11 +183,11 @@ export default function Dashboard() {
   const upcomingVaccines = vaccines.filter(r => r.next_date && r.next_date >= today && r.next_date <= new Date(Date.now() + 30 * 864e5).toISOString().split("T")[0]);
 
   if (overdueVaccines.length > 0) {
-    alerts.push({ type: "warning", title: `${overdueVaccines.length} vaccin(s) à renouveler`, desc: overdueVaccines.map(v => v.title).join(", "), cta: "Voir", to: createPageUrl("Notebook") });
+    alerts.push({ type: "warning", title: `${overdueVaccines.length} vaccin(s) à renouveler`, desc: overdueVaccines.map(v => v.title).join(", "), cta: "Voir", to: createPageUrl("Sante") });
   } else if (vaccines.length > 0) {
-    alerts.push({ type: "ok", title: "Vaccins à jour ✓", desc: `Dernier : ${vaccines.sort((a,b) => b.date > a.date ? 1 : -1)[0]?.title}`, cta: "Carnet", to: createPageUrl("Notebook") });
+    alerts.push({ type: "ok", title: "Vaccins à jour ✓", desc: `Dernier : ${vaccines.sort((a,b) => b.date > a.date ? 1 : -1)[0]?.title}`, cta: "Carnet", to: createPageUrl("Sante") });
   } else {
-    alerts.push({ type: "warning", title: "Aucun vaccin enregistré", desc: "Renseigne les vaccins dans le carnet de santé", cta: "Ajouter", to: createPageUrl("Notebook") });
+    alerts.push({ type: "warning", title: "Aucun vaccin enregistré", desc: "Renseigne les vaccins dans le carnet de santé", cta: "Ajouter", to: createPageUrl("Sante") });
   }
 
   if (upcomingVaccines.length > 0) {
@@ -197,9 +197,9 @@ export default function Dashboard() {
   const vetVisits = records.filter(r => r.type === "vet_visit").sort((a, b) => b.date > a.date ? 1 : -1);
   const lastVet = vetVisits[0];
   if (!lastVet) {
-    alerts.push({ type: "info", title: "Aucune visite vétérinaire", desc: "Planifie une visite de contrôle annuelle", cta: "Agenda", to: createPageUrl("Notebook") });
+    alerts.push({ type: "info", title: "Aucune visite vétérinaire", desc: "Planifie une visite de contrôle annuelle", cta: "Agenda", to: createPageUrl("Sante") });
   } else if (lastVet.next_date && lastVet.next_date < today) {
-    alerts.push({ type: "warning", title: "Visite vétérinaire à planifier", desc: `RDV prévu le ${lastVet.next_date}`, cta: "Agenda", to: createPageUrl("Notebook") });
+    alerts.push({ type: "warning", title: "Visite vétérinaire à planifier", desc: `RDV prévu le ${lastVet.next_date}`, cta: "Agenda", to: createPageUrl("Sante") });
   }
 
   // Health score — simple calculation for dashboard
@@ -221,9 +221,9 @@ export default function Dashboard() {
   if (progress.length < 3) {
     nextSteps.push({ icon: Dumbbell, color: "#8b5cf6", label: "Commencer le dressage", desc: "Des exercices adaptés à " + (dog?.name || "ton chien"), to: createPageUrl("Training") });
   }
-  nextSteps.push({ icon: Salad, color: "#10b981", label: "Plan nutrition IA", desc: "Génère un plan repas personnalisé", to: createPageUrl("Nutrition") });
+  nextSteps.push({ icon: Salad, color: "#10b981", label: "Plan nutrition IA", desc: "Génère un plan repas personnalisé", to: createPageUrl("Nutri") });
   if (alerts.some(a => a.type === "warning")) {
-    nextSteps.unshift({ icon: Stethoscope, color: "#3b82f6", label: "Mettre à jour le carnet", desc: "Des informations de santé manquent", to: createPageUrl("Notebook") });
+    nextSteps.unshift({ icon: Stethoscope, color: "#3b82f6", label: "Mettre à jour le carnet", desc: "Des informations de santé manquent", to: createPageUrl("Sante") });
   }
 
   if (loading) {

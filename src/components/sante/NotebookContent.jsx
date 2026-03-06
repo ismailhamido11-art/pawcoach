@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { Link } from "react-router-dom";
@@ -56,12 +56,22 @@ const PREMIUM_CONFIGS = {
   },
 };
 
-export default function NotebookContent({ dog, user, records, setRecords, isPremium, loading }) {
-  const [activeTab, setActiveTab] = useState("all");
-  const [showRecords, setShowRecords] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
+export default function NotebookContent({ dog, user, records, setRecords, dailyLogs, isPremium, loading, initialSubTab, showShareModalInit, scrollToQR }) {
+  const [activeTab, setActiveTab] = useState(initialSubTab || "all");
+  const [showRecords, setShowRecords] = useState(!!initialSubTab);
+  const [showShareModal, setShowShareModal] = useState(!!showShareModalInit);
   const [vetNotes, setVetNotes] = useState([]);
   const [vetNotesLoaded, setVetNotesLoaded] = useState(false);
+
+  // Scroll to QR if deep-linked
+  useEffect(() => {
+    if (scrollToQR) {
+      setTimeout(() => {
+        const qrEl = document.getElementById("qr-code-section");
+        if (qrEl) qrEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 600);
+    }
+  }, [scrollToQR]);
 
   // Load vet notes lazily
   const ensureVetNotes = async () => {
@@ -109,8 +119,23 @@ export default function NotebookContent({ dog, user, records, setRecords, isPrem
     }
   };
 
-  const sortedRecords = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
-  const countForTab = (id) => id === "all" ? records.length : records.filter(r => r.type === id).length;
+  // Merge DailyLog weight entries as pseudo-records
+  const dailyLogRecords = (dailyLogs || [])
+    .filter(l => l.weight_kg && l.weight_kg > 0)
+    .map(l => ({
+      id: `dl-${l.id}`,
+      type: "weight",
+      title: "Poids (log rapide)",
+      date: l.date,
+      value: l.weight_kg,
+      _fromDailyLog: true,
+    }));
+  const hrWeightDates = new Set(records.filter(r => r.type === "weight").map(r => r.date));
+  const uniqueDailyLogRecords = dailyLogRecords.filter(r => !hrWeightDates.has(r.date));
+  const allRecords = [...records, ...uniqueDailyLogRecords];
+
+  const sortedRecords = [...allRecords].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const countForTab = (id) => id === "all" ? allRecords.length : allRecords.filter(r => r.type === id).length;
 
   const lastWeight = records.find(r => r.type === 'weight');
   const lastVaccine = records.find(r => r.type === 'vaccine');
@@ -172,7 +197,7 @@ export default function NotebookContent({ dog, user, records, setRecords, isPrem
         <UpcomingReminders records={records} isPremium={isPremium} />
 
         {/* QR Code */}
-        {dog && <QRCodeCard dog={dog} />}
+        {dog && <div id="qr-code-section"><QRCodeCard dog={dog} /></div>}
 
         {/* Vet care image */}
         <div className="relative overflow-hidden rounded-2xl border border-border">
@@ -272,7 +297,7 @@ export default function NotebookContent({ dog, user, records, setRecords, isPrem
               <SectionVaccins records={records} dogId={dog?.id} onDelete={handleDelete} />
             )}
             {activeTab === "weight" && (
-              <SectionPoids records={records} dogId={dog?.id} onDelete={handleDelete} />
+              <SectionPoids records={allRecords} dogId={dog?.id} onDelete={handleDelete} />
             )}
             {(activeTab === "vet_visit" || activeTab === "medication" || activeTab === "note") && (
               <PremiumSection

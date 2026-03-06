@@ -35,11 +35,20 @@ export default function Sante() {
    const [dog, setDog] = useState(null);
    const [user, setUser] = useState(null);
    const [records, setRecords] = useState([]);
+   const [dailyLogs, setDailyLogs] = useState([]);
    const [loading, setLoading] = useState(true);
    
+   // Handle deep link params (?tab=weight, ?tab=vaccine, ?tab=vet, ?tab=qr)
+   const urlParams = new URLSearchParams(window.location.search);
+   const urlTab = urlParams.get("tab");
+   const validSubTabs = ["all", "vaccine", "vet_visit", "weight", "medication", "note"];
+   const hasDeepLink = urlTab && (validSubTabs.includes(urlTab) || urlTab === "vet" || urlTab === "qr");
+
    // Restore active tab from session storage (for independent stack per tab)
    const savedTab = sessionStorage.getItem("tab_Sante");
-   const [activeTab, setActiveTab] = useState(savedTab && TABS.find(t => t.id === savedTab) ? savedTab : "carnet");
+   const [activeTab, setActiveTab] = useState(hasDeepLink ? "carnet" : (savedTab && TABS.find(t => t.id === savedTab) ? savedTab : "carnet"));
+   const [initialSubTab] = useState(hasDeepLink && validSubTabs.includes(urlTab) ? urlTab : null);
+   const [showShareModal, setShowShareModal] = useState(urlTab === "vet");
 
    // Save active tab whenever it changes
    useEffect(() => {
@@ -55,8 +64,12 @@ export default function Sante() {
          if (dogs.length > 0) {
            const d = getActiveDog(dogs);
            setDog(d);
-           const recs = await base44.entities.HealthRecord.filter({ dog_id: d.id });
+           const [recs, logs] = await Promise.all([
+             base44.entities.HealthRecord.filter({ dog_id: d.id }),
+             base44.entities.DailyLog.filter({ dog_id: d.id }),
+           ]);
            setRecords(recs || []);
+           setDailyLogs(logs || []);
          }
        } catch (e) {
          console.error(e);
@@ -154,8 +167,12 @@ export default function Sante() {
           if (dogs.length > 0) {
             const d = getActiveDog(dogs);
             setDog(d);
-            const recs = await base44.entities.HealthRecord.filter({ dog_id: d.id });
+            const [recs, logs] = await Promise.all([
+              base44.entities.HealthRecord.filter({ dog_id: d.id }),
+              base44.entities.DailyLog.filter({ dog_id: d.id }),
+            ]);
             setRecords(recs || []);
+            setDailyLogs(logs || []);
           }
         } catch (e) { console.error(e); }
       }}>
@@ -173,8 +190,12 @@ export default function Sante() {
                 user={user}
                 records={records}
                 setRecords={setRecords}
+                dailyLogs={dailyLogs}
                 isPremium={isUserPremium(user)}
                 loading={loading}
+                initialSubTab={initialSubTab}
+                showShareModalInit={showShareModal}
+                scrollToQR={urlTab === "qr"}
               />
             )}
             {activeTab === "malade" && (

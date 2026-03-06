@@ -34,7 +34,7 @@ function WeightCard({ records, dailyLogs }) {
   const trendColor = trend === "up" ? "#d97706" : trend === "down" ? "#d97706" : "#94a3b8";
 
   return (
-    <Link to={createPageUrl("Notebook") + "?tab=weight"} className="block">
+    <Link to={createPageUrl("Sante") + "?tab=weight"} className="block">
       <div className="bg-white rounded-2xl p-4 border border-border/30 shadow-sm h-full">
         <div className="flex items-center justify-between mb-2">
           <div className="w-7 h-7 rounded-xl bg-blue-50 flex items-center justify-center">
@@ -133,7 +133,7 @@ function WalkCard({ dailyLogs }) {
   const mins = todayLog?.walk_minutes;
 
   return (
-    <Link to={createPageUrl("Notebook")} className="block">
+    <Link to={createPageUrl("Sante")} className="block">
       <div className="bg-white rounded-2xl p-4 border border-border/30 shadow-sm h-full">
         <div className="flex items-center justify-between mb-2">
           <div className="w-7 h-7 rounded-xl bg-emerald-50 flex items-center justify-center">
@@ -172,7 +172,7 @@ function VaccineCard({ records }) {
   const hasAnyVaccine = allVaccines.length > 0;
 
   return (
-    <Link to={createPageUrl("Notebook") + "?tab=vaccine"} className="block">
+    <Link to={createPageUrl("Sante") + "?tab=vaccine"} className="block">
       <div className="bg-white rounded-2xl p-4 border border-border/30 shadow-sm h-full">
         <div className="flex items-center justify-between mb-2">
           <div className="w-7 h-7 rounded-xl bg-emerald-50 flex items-center justify-center">

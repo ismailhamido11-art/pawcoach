@@ -57,9 +57,7 @@ import FindVet from './pages/FindVet';
 import HealthImport from './pages/HealthImport';
 import Home from './pages/Home';
 import Library from './pages/Library';
-import Notebook from './pages/Notebook';
 import Nutri from './pages/Nutri';
-import Nutrition from './pages/Nutrition';
 import Onboarding from './pages/Onboarding';
 import Premium from './pages/Premium';
 import Profile from './pages/Profile';
@@ -83,9 +81,7 @@ export const PAGES = {
     "HealthImport": HealthImport,
     "Home": Home,
     "Library": Library,
-    "Notebook": Notebook,
     "Nutri": Nutri,
-    "Nutrition": Nutrition,
     "Onboarding": Onboarding,
     "Premium": Premium,
     "Profile": Profile,

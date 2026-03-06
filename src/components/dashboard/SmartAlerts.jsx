@@ -101,7 +101,7 @@ export function computeAlerts({ dog, checkins, records, streak, dailyLogs, scans
       title: `${overdueVax.length} vaccin(s) en retard !`,
       desc: overdueVax.map(v => v.title).join(", ") + " — rappel dépassé.",
       cta: "Voir le carnet",
-      to: createPageUrl("Notebook"),
+      to: createPageUrl("Sante"),
     });
   } else if (in30Vax.length > 0) {
     const daysUntil = Math.ceil((new Date(in30Vax[0].next_date) - new Date()) / 864e5);
@@ -113,7 +113,7 @@ export function computeAlerts({ dog, checkins, records, streak, dailyLogs, scans
       title: `Rappel vaccin dans ${daysUntil} jours`,
       desc: in30Vax.map(v => v.title).join(", ") + " — prends rendez-vous bientôt.",
       cta: "Planifier",
-      to: createPageUrl("Notebook"),
+      to: createPageUrl("Sante"),
     });
   } else if (in90Vax.length > 0) {
     alerts.push({
@@ -135,7 +135,7 @@ export function computeAlerts({ dog, checkins, records, streak, dailyLogs, scans
       title: "Aucun vaccin renseigné",
       desc: "Ajoute les vaccins dans le carnet pour activer les rappels automatiques.",
       cta: "Ajouter",
-      to: createPageUrl("Notebook"),
+      to: createPageUrl("Sante"),
     });
   }
 
