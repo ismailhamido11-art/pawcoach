@@ -41,13 +41,14 @@ function computeArcs({ checkins, streak, records, exercises, scans }) {
   const activityData = streakDays > 0;
   const activityHint = activityData ? `Streak ${streakDays}j` : "Pas de streak";
 
-  // 3. Dressage (exercices complétés)
+  // 3. Dressage (exercices complétés sur 8 exercices au total)
+  const TOTAL_EXERCISES = 8;
   const completedEx = exercises.filter(e => e.completed).length;
-  const training = exercises.length > 0
-    ? Math.min(100, Math.round((completedEx / Math.max(exercises.length, 1)) * 100))
+  const training = completedEx > 0
+    ? Math.min(100, Math.round((completedEx / TOTAL_EXERCISES) * 100))
     : 0;
-  const trainingData = exercises.length > 0;
-  const trainingHint = trainingData ? `${completedEx}/${exercises.length} faits` : "Aucun exercice";
+  const trainingData = completedEx > 0;
+  const trainingHint = trainingData ? `${completedEx}/${TOTAL_EXERCISES} faits` : "Aucun exercice";
 
   // 4. Alimentation (scans + appétit)
   let nutrition = 0;

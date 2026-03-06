@@ -72,14 +72,14 @@ function computeTileData({ records, exercises, scans, user, checkins, dailyLogs 
   });
 
   // --- DRESSAGE ---
+  const TOTAL_EXERCISES = 8;
   const completed = (exercises || []).filter(e => e.completed);
-  const total = (exercises || []).length;
 
   let trainData, trainSub, trainBadge;
-  if (total > 0) {
-    trainData = `${completed.length}/${total}`;
-    trainSub = `exercice${total > 1 ? "s" : ""} complete${completed.length > 1 ? "s" : ""}`;
-    const ratio = completed.length / total;
+  if (completed.length > 0) {
+    trainData = `${completed.length}/${TOTAL_EXERCISES}`;
+    trainSub = `exercice${completed.length > 1 ? "s" : ""} complete${completed.length > 1 ? "s" : ""}`;
+    const ratio = completed.length / TOTAL_EXERCISES;
     trainBadge = ratio >= 0.8 ? { text: "Bravo", color: "#6366f1" } : ratio >= 0.4 ? { text: "En cours", color: "#d97706" } : { text: "A faire", color: "#6b7280" };
   } else {
     trainData = "0";
