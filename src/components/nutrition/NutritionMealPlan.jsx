@@ -79,9 +79,14 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       ? `\nScans alimentaires récents: ${recentScans.map(s => `${s.food_name} (${s.verdict})`).join(", ")}`
       : "";
 
-    const prefsContext = dietPrefs
-      ? `\n## PRÉFÉRENCES ALIMENTAIRES DU PROPRIÉTAIRE\n- Marques préférées: ${dietPrefs.preferred_brands ? JSON.parse(dietPrefs.preferred_brands).join(", ") : "non précisées"}\n- Aliments refusés par le chien: ${dietPrefs.disliked_foods || "aucun"}\n- Horaires repas: matin ${dietPrefs.meal_times ? JSON.parse(dietPrefs.meal_times).morning : "07:30"}, soir ${dietPrefs.meal_times ? JSON.parse(dietPrefs.meal_times).evening : "18:30"}\n- Budget mensuel: ${({ low: "économique (<30€)", medium: "standard (30-70€)", high: "premium (>70€)" })[dietPrefs.budget_monthly] || "standard"}\n- Préférence bio: ${dietPrefs.organic_preference ? "Oui" : "Non"}\n- Notes: ${dietPrefs.notes || "aucune"}`
-      : "";
+    let prefsContext = "";
+    if (dietPrefs) {
+      let brands = "non précisées";
+      try { brands = dietPrefs.preferred_brands ? JSON.parse(dietPrefs.preferred_brands).join(", ") : "non précisées"; } catch { /* invalid JSON */ }
+      let mealMorning = "07:30", mealEvening = "18:30";
+      try { const mt = dietPrefs.meal_times ? JSON.parse(dietPrefs.meal_times) : {}; mealMorning = mt.morning || "07:30"; mealEvening = mt.evening || "18:30"; } catch { /* invalid JSON */ }
+      prefsContext = `\n## PRÉFÉRENCES ALIMENTAIRES DU PROPRIÉTAIRE\n- Marques préférées: ${brands}\n- Aliments refusés par le chien: ${dietPrefs.disliked_foods || "aucun"}\n- Horaires repas: matin ${mealMorning}, soir ${mealEvening}\n- Budget mensuel: ${({ low: "économique (<30€)", medium: "standard (30-70€)", high: "premium (>70€)" })[dietPrefs.budget_monthly] || "standard"}\n- Préférence bio: ${dietPrefs.organic_preference ? "Oui" : "Non"}\n- Notes: ${dietPrefs.notes || "aucune"}`;
+    }
 
     const prompt = `Tu es un nutritionniste veterinaire expert. Genere un plan repas de 7 jours pour ce chien.
 
