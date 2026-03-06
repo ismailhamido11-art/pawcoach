@@ -55,6 +55,6 @@ Réponds UNIQUEMENT en JSON avec ce format exact:
     return Response.json({ success: true, analysis: result });
   } catch (error) {
     console.error('analyzeGrowthPhoto error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ error: error?.message || String(error) }, { status: 500 });
   }
 });
