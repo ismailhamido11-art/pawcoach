@@ -113,6 +113,6 @@ Réponds en JSON avec ce format exact:
     return Response.json({ success: true, program: result });
   } catch (error) {
     console.error('generateTrainingProgram error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ error: error?.message || String(error) }, { status: 500 });
   }
 });
