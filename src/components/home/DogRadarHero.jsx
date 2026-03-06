@@ -48,7 +48,7 @@ function computeArcs({ checkins, streak, records, exercises, scans }) {
     { key: "health",    label: "Santé",       score: Math.max(10, health),    color: "#2d9f82", Icon: Heart,     page: "Notebook" },
     { key: "activity",  label: "Activité",    score: Math.max(10, activity),  color: "#d97706", Icon: Flame,     page: "Dashboard" },
     { key: "training",  label: "Dressage",    score: Math.max(10, training),  color: "#6366f1", Icon: Dumbbell,  page: "Training" },
-    { key: "nutrition", label: "Nutrition",   score: Math.max(10, nutrition), color: "#059669", Icon: ScanLine,  page: "Nutrition" },
+    { key: "nutrition", label: "Nutrition",   score: Math.max(10, nutrition), color: "#059669", Icon: ScanLine,  page: "Nutri" },
   ];
 }
 
