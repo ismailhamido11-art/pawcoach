@@ -51,6 +51,8 @@ export default function Home() {
   const [exercises, setExercises] = useState([]);
   const [scans, setScans] = useState([]);
   const [dailyLogs, setDailyLogs] = useState([]);
+  const [diagnosisReports, setDiagnosisReports] = useState([]);
+  const [nutritionPlans, setNutritionPlans] = useState([]);
 
   const [milestone, setMilestone] = useState(null);
   const [showPremiumNudge, setShowPremiumNudge] = useState(false);
@@ -65,7 +67,7 @@ export default function Home() {
           const d = getActiveDog(dogs);
           setDog(d);
           const today = getTodayString();
-          const [checkins, streaks, recent, recs, exs, scs, logs] = await Promise.all([
+          const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans] = await Promise.all([
             base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
             base44.entities.Streak.filter({ dog_id: d.id }),
             base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 30),
@@ -73,11 +75,15 @@ export default function Home() {
             base44.entities.UserProgress.filter({ dog_id: d.id }),
             base44.entities.FoodScan.filter({ dog_id: d.id }),
             base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30),
+            base44.entities.DiagnosisReport.filter({ dog_id: d.id }, "-report_date", 5).catch(() => []),
+            base44.entities.NutritionPlan.filter({ dog_id: d.id }, "-created_date", 3).catch(() => []),
           ]);
           setRecords(recs || []);
           setExercises(exs || []);
           setScans(scs || []);
           setDailyLogs(logs || []);
+          setDiagnosisReports(diags || []);
+          setNutritionPlans(plans || []);
           if (checkins?.length > 0) setTodayCheckin(checkins[0]);
           if (streaks?.length > 0) setStreak(streaks[0]);
           const sorted = (recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7);
@@ -142,7 +148,7 @@ export default function Home() {
       if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
         const today = getTodayString();
-        const [checkins, streaks, recent, recs, exs, scs, logs] = await Promise.all([
+        const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans] = await Promise.all([
           base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
           base44.entities.Streak.filter({ dog_id: d.id }),
           base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 30),
@@ -150,11 +156,15 @@ export default function Home() {
           base44.entities.UserProgress.filter({ dog_id: d.id }),
           base44.entities.FoodScan.filter({ dog_id: d.id }),
           base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30),
+          base44.entities.DiagnosisReport.filter({ dog_id: d.id }, "-report_date", 5).catch(() => []),
+          base44.entities.NutritionPlan.filter({ dog_id: d.id }, "-created_date", 3).catch(() => []),
         ]);
         setRecords(recs || []);
         setExercises(exs || []);
         setScans(scs || []);
         setDailyLogs(logs || []);
+        setDiagnosisReports(diags || []);
+        setNutritionPlans(plans || []);
         if (checkins?.length > 0) setTodayCheckin(checkins[0]);
         else setTodayCheckin(null);
         if (streaks?.length > 0) setStreak(streaks[0]);
@@ -214,6 +224,7 @@ export default function Home() {
             dog={dog} user={user} todayCheckin={todayCheckin} streak={streak}
             records={records} exercises={exercises} scans={scans} dailyLogs={dailyLogs}
             onCheckin={handleCheckin} submitting={submitting}
+            diagnosisReports={diagnosisReports} nutritionPlans={nutritionPlans}
           />
         </div>
 
@@ -227,6 +238,7 @@ export default function Home() {
           <DailyCoaching
             dog={dog} records={records} exercises={exercises} scans={scans}
             dailyLogs={dailyLogs} todayCheckin={todayCheckin} streak={streak}
+            diagnosisReports={diagnosisReports} nutritionPlans={nutritionPlans}
           />
         </div>
 

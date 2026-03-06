@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import BottomNav from "../components/BottomNav";
-import { ArrowLeft, Bookmark, Search, Trash2, MessageCircle, Salad } from "lucide-react";
+import { ArrowLeft, Bookmark, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarChart2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ReactMarkdown from "react-markdown";
@@ -12,12 +12,18 @@ import Illustration from "../components/illustrations/Illustration";
 const SOURCE_LABELS = {
   chat: { label: "Chat IA", icon: MessageCircle, color: "#8b5cf6", bg: "bg-violet-50" },
   nutrition: { label: "NutriCoach", icon: Salad, color: "#10b981", bg: "bg-emerald-50" },
+  training: { label: "Dressage", icon: Dumbbell, color: "#7c3aed", bg: "bg-purple-50" },
+  video: { label: "Video", icon: Video, color: "#9333ea", bg: "bg-purple-50" },
+  compare: { label: "Comparaison", icon: BarChart2, color: "#3b82f6", bg: "bg-blue-50" },
 };
 
 const FILTERS = [
   { id: "all", label: "Tous" },
   { id: "chat", label: "Chat IA" },
   { id: "nutrition", label: "Nutrition" },
+  { id: "training", label: "Dressage" },
+  { id: "video", label: "Video" },
+  { id: "compare", label: "Comparaison" },
 ];
 
 export default function Library() {
@@ -131,7 +137,7 @@ export default function Library() {
               {search ? "Aucun résultat" : "Aucun bookmark"}
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              {search ? "Essaie un autre mot-clé" : "Sauvegarde des conseils IA depuis le Chat ou NutriCoach"}
+              {search ? "Essaie un autre mot-cle" : "Sauvegarde des conseils depuis le Chat, NutriCoach, dressage ou comparaisons"}
             </p>
           </div>
         ) : (

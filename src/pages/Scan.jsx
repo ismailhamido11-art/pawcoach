@@ -158,7 +158,28 @@ export default function Scan() {
   const [labelScanning, setLabelScanning] = useState(false);
   const [labelResult, setLabelResult] = useState(null);
   const [showIngredients, setShowIngredients] = useState(false);
+  const [labelSaved, setLabelSaved] = useState(false);
   const labelFileRef = useRef();
+
+  const saveLabelResult = async () => {
+    if (!labelResult || !dog || !user || labelSaved) return;
+    try {
+      await base44.entities.FoodScan.create({
+        dog_id: dog.id,
+        food_name: labelResult.product_name || "Etiquette analysee",
+        verdict: labelResult.compatibility_verdict === "excellent" || labelResult.compatibility_verdict === "good" ? "safe" : labelResult.compatibility_verdict === "avoid" ? "toxic" : "caution",
+        score: labelResult.compatibility_score,
+        details: `${labelResult.recommendation || ""}\nProteines: ${labelResult.protein_pct ?? "?"}%, Graisses: ${labelResult.fat_pct ?? "?"}%, Fibres: ${labelResult.fiber_pct ?? "?"}%`,
+        recommendation: labelResult.recommendation,
+        timestamp: new Date().toISOString(),
+      });
+      setLabelSaved(true);
+      toast.success("Analyse sauvegardee !");
+    } catch (e) {
+      console.error(e);
+      toast.error("Erreur lors de la sauvegarde");
+    }
+  };
 
   useEffect(() => { loadData(); }, []);
 
@@ -359,7 +380,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
   };
 
   const resetLabel = () => {
-    setLabelFile(null); setLabelPreview(null); setLabelResult(null); setShowIngredients(false);
+    setLabelFile(null); setLabelPreview(null); setLabelResult(null); setShowIngredients(false); setLabelSaved(false);
   };
 
   const handleModeChange = (m) => {
@@ -824,9 +845,18 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                   )}
                 </div>
 
-                <Button variant="outline" onClick={resetLabel} className="w-full h-11 rounded-xl font-semibold">
-                  Scanner une autre étiquette
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={saveLabelResult}
+                    disabled={labelSaved}
+                    className={`flex-1 h-11 rounded-xl font-semibold ${labelSaved ? "bg-green-50 text-green-700 border border-green-200" : "gradient-primary border-0 text-white"}`}
+                  >
+                    {labelSaved ? "Sauvegardee" : "Sauvegarder"}
+                  </Button>
+                  <Button variant="outline" onClick={resetLabel} className="flex-1 h-11 rounded-xl font-semibold">
+                    Nouvelle analyse
+                  </Button>
+                </div>
               </div>
             )}
           </>

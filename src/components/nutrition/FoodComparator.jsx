@@ -2,7 +2,8 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Camera, Plus, X, BarChart2, ChevronDown, ChevronUp, Trophy, AlertTriangle, CheckCircle2, Loader2 } from "lucide-react";
+import { Camera, Plus, X, BarChart2, ChevronDown, ChevronUp, Trophy, AlertTriangle, CheckCircle2, Loader2, BookmarkPlus, BookmarkCheck } from "lucide-react";
+import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { useActionCredits } from "@/utils/ai-credits";
@@ -111,6 +112,29 @@ export default function FoodComparator({ dog }) {
   const [comparing, setComparing] = useState(false);
   const [comparison, setComparison] = useState(null);
   const [showDetails, setShowDetails] = useState({});
+  const [compSaved, setCompSaved] = useState(false);
+
+  const saveComparison = async () => {
+    if (!comparison || comparison.error || compSaved) return;
+    try {
+      const user = await base44.auth.me();
+      const [a, b] = products;
+      const content = `# Comparaison : ${a?.result?.food_name || "Produit 1"} vs ${b?.result?.food_name || "Produit 2"}\n\n**Gagnant** : ${comparison.winner_name}\n${comparison.winner_reason}\n\n## Bilan\n${comparison.comparison_summary}\n\n**Recommandation** : ${comparison.recommendation}`;
+      await base44.entities.Bookmark.create({
+        dog_id: dog?.id,
+        owner: user.email,
+        content,
+        source: "compare",
+        title: `${a?.result?.food_name || "?"} vs ${b?.result?.food_name || "?"}`.slice(0, 60),
+        created_at: new Date().toISOString(),
+      });
+      setCompSaved(true);
+      toast.success("Comparaison sauvegardee !");
+    } catch (e) {
+      console.error(e);
+      toast.error("Erreur lors de la sauvegarde");
+    }
+  };
 
   const analyzeProduct = async (file, index) => {
     if (!isPremium && !hasCredits) return;
@@ -413,13 +437,26 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
                   <p className="text-xs text-foreground/80 leading-relaxed">{comparison.recommendation}</p>
                 </div>
 
-                {/* Reset */}
-                <button
-                  onClick={() => { setProducts([null, null]); setComparison(null); }}
-                  className="w-full text-xs text-muted-foreground underline text-center"
-                >
-                  Nouvelle comparaison
-                </button>
+                {/* Save + Reset */}
+                <div className="flex gap-2">
+                  <Button
+                    onClick={saveComparison}
+                    disabled={compSaved}
+                    size="sm"
+                    className={`flex-1 rounded-xl ${compSaved ? "bg-green-50 text-green-700 border border-green-200" : "gradient-primary border-0 text-white"}`}
+                  >
+                    {compSaved ? <BookmarkCheck className="w-3.5 h-3.5 mr-1.5" /> : <BookmarkPlus className="w-3.5 h-3.5 mr-1.5" />}
+                    {compSaved ? "Sauvegardee" : "Sauvegarder"}
+                  </Button>
+                  <Button
+                    onClick={() => { setProducts([null, null]); setComparison(null); setCompSaved(false); }}
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 rounded-xl"
+                  >
+                    Nouvelle comparaison
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </motion.div>

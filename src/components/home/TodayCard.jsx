@@ -6,7 +6,7 @@ import { buildRecommendations } from "@/utils/recommendations";
 import { isUserOnTrial, getTrialDaysLeft } from "@/utils/premium";
 import InlineCheckin from "./InlineCheckin";
 
-export default function TodayCard({ dog, user, todayCheckin, streak, records, exercises, scans, dailyLogs, onCheckin, submitting }) {
+export default function TodayCard({ dog, user, todayCheckin, streak, records, exercises, scans, dailyLogs, onCheckin, submitting, diagnosisReports, nutritionPlans }) {
   const hour = new Date().getHours();
   const timeLabel = hour < 12 ? "Ce matin" : hour < 18 ? "Cet apres-midi" : "Ce soir";
 
@@ -23,6 +23,8 @@ export default function TodayCard({ dog, user, todayCheckin, streak, records, ex
     dailyLogs: dailyLogs || [],
     todayCheckin,
     streak,
+    diagnosisReports: diagnosisReports || [],
+    nutritionPlans: nutritionPlans || [],
   });
   // Skip "Home" recs — we're already on Home, they go nowhere
   const topRec = recs.find(r => r.page !== "Home");

@@ -1,6 +1,6 @@
 import {
   Syringe, Dumbbell, ScanLine, MessageCircle,
-  Footprints, Scale
+  Footprints, Scale, Stethoscope, Utensils, AlertTriangle as AlertTriangleIcon
 } from "lucide-react";
 
 export function getTodayString() {
@@ -16,7 +16,7 @@ export function getWeekStart() {
   return mon.getFullYear() + "-" + String(mon.getMonth() + 1).padStart(2, "0") + "-" + String(mon.getDate()).padStart(2, "0");
 }
 
-export function buildRecommendations({ records, exercises, scans, checkins, dailyLogs, todayCheckin, streak }) {
+export function buildRecommendations({ records, exercises, scans, checkins, dailyLogs, todayCheckin, streak, diagnosisReports = [], nutritionPlans = [] }) {
   const today = getTodayString();
   const weekStart = getWeekStart();
   const recs = [];
@@ -152,6 +152,70 @@ export function buildRecommendations({ records, exercises, scans, checkins, dail
       cta: "Ajouter un poids",
       accent: "border-l-pink-400",
     });
+  }
+
+  // 8. Recent diagnosis — remind to book vet
+  if (diagnosisReports.length > 0) {
+    const latest = diagnosisReports[0]; // sorted by -report_date
+    const reportDate = latest.report_date;
+    const daysSince = reportDate ? Math.floor((Date.now() - new Date(reportDate).getTime()) / 86400000) : null;
+    if (daysSince != null && daysSince <= 14) {
+      const isUrgent = latest.urgency_level === "high" || latest.urgency_level === "urgent";
+      recs.push({
+        id: "diagnosis_followup",
+        priority: isUrgent ? 1 : 2,
+        icon: Stethoscope,
+        iconBg: isUrgent ? "bg-red-50" : "bg-blue-50",
+        iconColor: isUrgent ? "#ef4444" : "#3b82f6",
+        label: isUrgent ? "Bilan veto urgent" : "Bilan veto recent",
+        sub: daysSince === 0 ? "Genere aujourd'hui — pense a prendre RDV" : `Il y a ${daysSince}j — as-tu pris RDV ?`,
+        page: "FindVet",
+        cta: "Trouver un veto",
+        accent: isUrgent ? "border-l-red-400" : "border-l-blue-400",
+      });
+    }
+  }
+
+  // 9. Active nutrition plan
+  if (nutritionPlans.length > 0) {
+    const latest = nutritionPlans[0];
+    const planDate = latest.created_date;
+    const daysSince = planDate ? Math.floor((Date.now() - new Date(planDate).getTime()) / 86400000) : 0;
+    if (daysSince <= 7) {
+      recs.push({
+        id: "nutrition_plan",
+        priority: 3,
+        icon: Utensils,
+        iconBg: "bg-emerald-50",
+        iconColor: "#10b981",
+        label: "Plan repas actif",
+        sub: "Consulte ton plan nutrition personnalise",
+        page: "Nutri",
+        tab: "saved",
+        cta: "Voir le plan",
+        accent: "border-l-emerald-400",
+      });
+    }
+  }
+
+  // 10. Caution/toxic food scan alert
+  const recentCaution = scans.find(s => (s.verdict === "caution" || s.verdict === "toxic") && s.timestamp);
+  if (recentCaution) {
+    const daysSince = Math.floor((Date.now() - new Date(recentCaution.timestamp).getTime()) / 86400000);
+    if (daysSince <= 7) {
+      recs.push({
+        id: "food_alert",
+        priority: recentCaution.verdict === "toxic" ? 1 : 3,
+        icon: AlertTriangleIcon,
+        iconBg: recentCaution.verdict === "toxic" ? "bg-red-50" : "bg-amber-50",
+        iconColor: recentCaution.verdict === "toxic" ? "#ef4444" : "#f59e0b",
+        label: recentCaution.verdict === "toxic" ? "Aliment toxique detecte" : "Aliment a surveiller",
+        sub: `${recentCaution.food_name} — score ${recentCaution.score}/10`,
+        page: "Scan",
+        cta: "Voir les details",
+        accent: recentCaution.verdict === "toxic" ? "border-l-red-400" : "border-l-amber-400",
+      });
+    }
   }
 
   // Sort by priority, return top 3

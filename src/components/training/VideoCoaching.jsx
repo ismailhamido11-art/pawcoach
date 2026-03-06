@@ -1,7 +1,8 @@
 import { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Video, Loader2, Sparkles, AlertCircle } from "lucide-react";
+import { Video, Loader2, Sparkles, AlertCircle, BookmarkPlus, BookmarkCheck } from "lucide-react";
+import { toast } from "sonner";
 import ReactMarkdown from 'react-markdown';
 import { useActionCredits } from "@/utils/ai-credits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
@@ -12,7 +13,29 @@ export default function VideoCoaching({ exerciseName, dogName }) {
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [error, setError] = useState(null);
+  const [saved, setSaved] = useState(false);
   const fileInputRef = useRef(null);
+
+  const saveFeedback = async () => {
+    if (!feedback || saved) return;
+    try {
+      const user = await base44.auth.me();
+      const text = typeof feedback === "string" ? feedback : JSON.stringify(feedback);
+      await base44.entities.Bookmark.create({
+        dog_id: null,
+        owner: user.email,
+        content: `# Coaching video — ${exerciseName}\n\n${text}`,
+        source: "video",
+        title: `Video : ${exerciseName}`.slice(0, 60),
+        created_at: new Date().toISOString(),
+      });
+      setSaved(true);
+      toast.success("Feedback sauvegarde !");
+    } catch (e) {
+      console.error(e);
+      toast.error("Erreur lors de la sauvegarde");
+    }
+  };
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -137,13 +160,23 @@ export default function VideoCoaching({ exerciseName, dogName }) {
               {typeof feedback === 'string' ? feedback : JSON.stringify(feedback)}
             </ReactMarkdown>
           </div>
-          <Button
-            onClick={() => { setFeedback(null); setFile(null); }}
-            variant="outline"
-            className="w-full h-10 rounded-xl border-purple-200 text-purple-700 font-semibold"
-          >
-            Nouvelle analyse
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={saveFeedback}
+              disabled={saved}
+              className={`flex-1 h-10 rounded-xl font-semibold ${saved ? "bg-green-50 text-green-700 border border-green-200" : "bg-purple-600 hover:bg-purple-700 text-white"}`}
+            >
+              {saved ? <BookmarkCheck className="w-4 h-4 mr-1.5" /> : <BookmarkPlus className="w-4 h-4 mr-1.5" />}
+              {saved ? "Sauvegarde" : "Sauvegarder"}
+            </Button>
+            <Button
+              onClick={() => { setFeedback(null); setFile(null); setSaved(false); }}
+              variant="outline"
+              className="flex-1 h-10 rounded-xl border-purple-200 text-purple-700 font-semibold"
+            >
+              Nouvelle analyse
+            </Button>
+          </div>
         </div>
       )}
     </div>

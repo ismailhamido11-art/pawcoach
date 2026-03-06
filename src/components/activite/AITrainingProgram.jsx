@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Dumbbell, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, Clock, RotateCcw, CheckCircle2 } from "lucide-react";
+import { Sparkles, Dumbbell, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, Clock, RotateCcw, CheckCircle2, BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { differenceInMonths } from "date-fns";
 import { toast } from "sonner";
@@ -84,6 +84,33 @@ export default function AITrainingProgram({ dog, logs = [] }) {
   const [openWeek, setOpenWeek] = useState(0);
   const [goals, setGoals] = useState("");
   const [showGoalInput, setShowGoalInput] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const saveProgram = async () => {
+    if (!program || !dog || saved) return;
+    try {
+      const user = await base44.auth.me();
+      const weeks = (program.weeks || []).map(w =>
+        `### Semaine ${w.week} — ${w.theme}\n${w.focus}\n${(w.daily_sessions || []).map(s =>
+          `- **${s.day}** (${s.type}, ${s.duration_min} min) : ${s.activity}${s.tips ? ` — _${s.tips}_` : ""}`
+        ).join("\n")}`
+      ).join("\n\n");
+      const content = `# ${program.program_title}\n\n${program.summary}\n\n**Difficulte** : ${program.difficulty || "—"} · **Duree** : ${program.duration_weeks} semaines\n\n${weeks}${program.breed_specific_tips?.length ? "\n\n### Conseils race\n" + program.breed_specific_tips.map(t => `- ${t}`).join("\n") : ""}`;
+      await base44.entities.Bookmark.create({
+        dog_id: dog.id,
+        owner: user.email,
+        content,
+        source: "training",
+        title: program.program_title?.slice(0, 60) || "Programme dressage",
+        created_at: new Date().toISOString(),
+      });
+      setSaved(true);
+      toast.success("Programme sauvegarde !");
+    } catch (e) {
+      console.error(e);
+      toast.error("Erreur lors de la sauvegarde");
+    }
+  };
 
   const weeklyWalkMinutes = logs.slice(0, 7).reduce((acc, l) => acc + (l.walk_minutes || 0), 0);
 
@@ -272,10 +299,22 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         </div>
       )}
 
-      {/* Regenerate */}
-      <Button variant="outline" size="sm" className="w-full" onClick={() => setProgram(null)}>
-        <RotateCcw className="w-4 h-4 mr-2" /> Générer un nouveau programme
-      </Button>
+      {/* Save + Regenerate */}
+      <div className="flex gap-2">
+        <Button
+          variant={saved ? "ghost" : "default"}
+          size="sm"
+          className={`flex-1 ${saved ? "text-green-700" : "gradient-primary border-0 text-white"}`}
+          disabled={saved}
+          onClick={saveProgram}
+        >
+          {saved ? <BookmarkCheck className="w-4 h-4 mr-2" /> : <BookmarkPlus className="w-4 h-4 mr-2" />}
+          {saved ? "Sauvegarde" : "Sauvegarder"}
+        </Button>
+        <Button variant="outline" size="sm" className="flex-1" onClick={() => { setProgram(null); setSaved(false); }}>
+          <RotateCcw className="w-4 h-4 mr-2" /> Nouveau
+        </Button>
+      </div>
     </div>
   );
 }

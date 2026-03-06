@@ -44,7 +44,7 @@ function getDayOfYear() {
   return Math.floor((now - start) / (1000 * 60 * 60 * 24));
 }
 
-export default function DailyCoaching({ dog, records, exercises, scans, dailyLogs, todayCheckin, streak }) {
+export default function DailyCoaching({ dog, records, exercises, scans, dailyLogs, todayCheckin, streak, diagnosisReports, nutritionPlans }) {
   const dayIndex = getDayOfYear();
   const tip = TIPS[dayIndex % TIPS.length]
     .replace(/\{name\}/g, dog?.name || "ton chien")
@@ -58,6 +58,8 @@ export default function DailyCoaching({ dog, records, exercises, scans, dailyLog
     dailyLogs: dailyLogs || [],
     todayCheckin,
     streak,
+    diagnosisReports: diagnosisReports || [],
+    nutritionPlans: nutritionPlans || [],
   });
 
   // Filter out "Home" recs (we're already on Home, they go nowhere)
