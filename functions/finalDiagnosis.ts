@@ -93,7 +93,7 @@ Genere un bilan COMPLET et DETAILLE au format JSON:
     });
 
   } catch (error) {
-    console.error("finalDiagnosis error:", error.message);
+    console.error("finalDiagnosis error:", error?.message || String(error));
     return Response.json({
       error: "Une erreur est survenue lors du diagnostic. Réessaie dans quelques instants.",
       observations: "L'analyse n'a pas pu être complétée. Réessaie ou consulte directement un vétérinaire.",
