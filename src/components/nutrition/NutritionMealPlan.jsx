@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw, ShoppingCart, BookmarkPlus, Check } from "lucide-react";
+import { Loader2, RefreshCw, ShoppingCart, BookmarkPlus, Check, Home } from "lucide-react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
+import { useActionCredits } from "@/utils/ai-credits";
+import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 function getAge(birthDate) {
   if (!birthDate) return null;
@@ -20,7 +22,8 @@ const AFFILIATE_BRANDS = [
   { name: "Acana", url: "https://www.zooplus.fr", emoji: "🌿" },
 ];
 
-export default function NutritionMealPlan({ dog, recentScans, isPremium, user, dietPrefs }) {
+export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPremiumProp, user, dietPrefs }) {
+  const { credits, hasCredits, isPremium, consume } = useActionCredits();
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -44,7 +47,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium, user, d
         notes: "",
       });
       setSaved(true);
-      toast.success("Plan sauvegardé ! Retrouve-le dans 'Mes plans'.");
+      toast.success("Programme active ! Retrouve-le sur ton accueil.");
       setTimeout(() => setSaved(false), 3000);
     } catch {
       toast.error("Erreur lors de la sauvegarde");
@@ -54,6 +57,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium, user, d
   };
 
   const generate = async () => {
+    if (!isPremium && !hasCredits) return;
     setLoading(true);
     setPlan(null);
 
@@ -120,6 +124,7 @@ Sois très précis avec les grammes et calories. Adapte tout au profil exact.`;
     try {
       const response = await base44.integrations.Core.InvokeLLM({ prompt });
       setPlan(typeof response === "string" ? response : JSON.stringify(response));
+      if (!isPremium) await consume();
     } catch (e) {
       setPlan("Erreur lors de la génération. Réessaie !");
     }
@@ -161,13 +166,20 @@ Sois très précis avec les grammes et calories. Adapte tout au profil exact.`;
       {!plan && !loading && (
         <div className="text-center space-y-3 py-6">
           <div className="text-5xl mb-2">🍽️</div>
-          <h3 className="font-bold text-foreground">Plan de repas personnalisé IA</h3>
+          <h3 className="font-bold text-foreground">Plan de repas personnalise IA</h3>
           <p className="text-sm text-muted-foreground px-4">
-            Génère un plan hebdomadaire complet adapté au profil exact de {dog.name}, avec quantités, marques recommandées et aliments à éviter.
+            Genere un plan hebdomadaire complet adapte au profil exact de {dog.name}, avec quantites, marques recommandees et aliments a eviter.
           </p>
-          <Button onClick={generate} className="bg-safe hover:bg-safe/90 text-white font-bold h-12 px-8 rounded-2xl shadow-lg shadow-safe/30">
-            ✨ Générer mon plan de repas
-          </Button>
+          {!isPremium && !hasCredits ? (
+            <UpgradePrompt type="action" from="nutrition-plan" />
+          ) : (
+            <>
+              {!isPremium && credits != null && <CreditBadge remaining={credits} className="mb-2" />}
+              <Button onClick={generate} className="bg-safe hover:bg-safe/90 text-white font-bold h-12 px-8 rounded-2xl shadow-lg shadow-safe/30">
+                ✨ Generer mon plan de repas
+              </Button>
+            </>
+          )}
         </div>
       )}
 
@@ -249,12 +261,12 @@ Sois très précis avec les grammes et calories. Adapte tout au profil exact.`;
                     className="flex items-center gap-2"
                   >
                     <Check className="w-4 h-4" />
-                    Sauvegardé !
+                    Active !
                   </motion.div>
                 ) : (
                   <>
-                    <BookmarkPlus className="w-4 h-4" />
-                    Sauvegarder
+                    <Home className="w-4 h-4" />
+                    Activer ce programme
                   </>
                 )}
               </Button>

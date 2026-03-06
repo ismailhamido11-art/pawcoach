@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Dumbbell, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, Clock, RotateCcw, CheckCircle2, BookmarkPlus, BookmarkCheck } from "lucide-react";
+import { Sparkles, Dumbbell, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, Clock, RotateCcw, CheckCircle2, BookmarkCheck, Home } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { differenceInMonths } from "date-fns";
 import { toast } from "sonner";
@@ -105,7 +105,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         created_at: new Date().toISOString(),
       });
       setSaved(true);
-      toast.success("Programme sauvegarde !");
+      toast.success("Programme active ! Retrouve-le sur ton accueil.");
     } catch (e) {
       console.error(e);
       toast.error("Erreur lors de la sauvegarde");
@@ -308,8 +308,8 @@ export default function AITrainingProgram({ dog, logs = [] }) {
           disabled={saved}
           onClick={saveProgram}
         >
-          {saved ? <BookmarkCheck className="w-4 h-4 mr-2" /> : <BookmarkPlus className="w-4 h-4 mr-2" />}
-          {saved ? "Sauvegarde" : "Sauvegarder"}
+          {saved ? <BookmarkCheck className="w-4 h-4 mr-2" /> : <Home className="w-4 h-4 mr-2" />}
+          {saved ? "Active !" : "Activer ce programme"}
         </Button>
         <Button variant="outline" size="sm" className="flex-1" onClick={() => { setProgram(null); setSaved(false); }}>
           <RotateCcw className="w-4 h-4 mr-2" /> Nouveau
