@@ -10,45 +10,66 @@ import { Flame, UserCircle, Dumbbell, ScanLine, Heart } from "lucide-react";
 import { useDogAvatarState } from "../dogtwin/useDogAvatarState";
 
 // Calcule les 4 scores à partir des données réelles
+// Chaque arc retourne hasData + hint pour transparence
 function computeArcs({ checkins, streak, records, exercises, scans }) {
+  const recent = checkins.slice(-7);
+
   // 1. Santé (checkins humeur + énergie + vaccins)
-  let health = 40;
-  if (checkins.length > 0) {
-    const r = checkins.slice(-7);
-    const avgM = r.reduce((s, c) => s + (c.mood || 2), 0) / r.length;
-    const avgE = r.reduce((s, c) => s + (c.energy || 2), 0) / r.length;
-    health = Math.round(((avgM - 1) / 3) * 50 + ((avgE - 1) / 2) * 30 + 20);
-  }
+  let health = 0;
+  let healthData = false;
+  let healthHint = "Pas de donnees";
   const hasVaccine = records.some(r => r.type === "vaccine" && r.date && (Date.now() - new Date(r.date).getTime()) / 86400000 < 365);
-  if (hasVaccine) health = Math.min(100, health + 10);
+
+  if (recent.length > 0) {
+    healthData = true;
+    const avgM = recent.reduce((s, c) => s + (c.mood || 2), 0) / recent.length;
+    const avgE = recent.reduce((s, c) => s + (c.energy || 2), 0) / recent.length;
+    health = Math.round(((avgM - 1) / 3) * 50 + ((avgE - 1) / 2) * 30 + 20);
+    if (hasVaccine) health = Math.min(100, health + 10);
+    healthHint = `${recent.length} check-in${recent.length > 1 ? "s" : ""}`;
+  } else if (hasVaccine) {
+    healthData = true;
+    health = 60;
+    healthHint = "Vaccins a jour";
+  }
 
   // 2. Activité (streak)
-  const activity = streak?.current_streak
-    ? Math.min(100, Math.round((streak.current_streak / 14) * 100))
+  const streakDays = streak?.current_streak || 0;
+  const activity = streakDays > 0
+    ? Math.min(100, Math.round((streakDays / 14) * 100))
     : 0;
+  const activityData = streakDays > 0;
+  const activityHint = activityData ? `Streak ${streakDays}j` : "Pas de streak";
 
   // 3. Dressage (exercices complétés)
+  const completedEx = exercises.filter(e => e.completed).length;
   const training = exercises.length > 0
-    ? Math.min(100, Math.round((exercises.filter(e => e.completed).length / Math.max(exercises.length, 1)) * 100))
+    ? Math.min(100, Math.round((completedEx / Math.max(exercises.length, 1)) * 100))
     : 0;
+  const trainingData = exercises.length > 0;
+  const trainingHint = trainingData ? `${completedEx}/${exercises.length} faits` : "Aucun exercice";
 
-  // 4. Alimentation (scans récents + appétit)
-  let nutrition = 50;
+  // 4. Alimentation (scans + appétit)
+  let nutrition = 0;
+  let nutritionData = false;
+  let nutritionHint = "Aucun scan";
+
   if (scans.length > 0) {
+    nutritionData = true;
     const safe = scans.filter(s => s.verdict === "safe").length;
     nutrition = Math.min(100, Math.round((safe / scans.length) * 80 + 20));
+    nutritionHint = `${scans.length} scan${scans.length > 1 ? "s" : ""}`;
   }
-  if (checkins.length > 0) {
-    const r = checkins.slice(-7);
-    const avgA = r.reduce((s, c) => s + (c.appetite || 2), 0) / r.length;
+  if (recent.length > 0 && nutritionData) {
+    const avgA = recent.reduce((s, c) => s + (c.appetite || 2), 0) / recent.length;
     nutrition = Math.min(100, Math.round(nutrition * 0.6 + ((avgA - 1) / 2) * 40));
   }
 
   return [
-    { key: "health",    label: "Santé",       score: Math.max(10, health),    color: "#2d9f82", Icon: Heart,     page: "Sante" },
-    { key: "activity",  label: "Activité",    score: Math.max(10, activity),  color: "#d97706", Icon: Flame,     page: "Activite" },
-    { key: "training",  label: "Dressage",    score: Math.max(10, training),  color: "#6366f1", Icon: Dumbbell,  page: "Activite", tab: "dressage" },
-    { key: "nutrition", label: "Nutrition",   score: Math.max(10, nutrition), color: "#059669", Icon: ScanLine,  page: "Nutri" },
+    { key: "health",    label: "Santé",     score: health,    hasData: healthData,    hint: healthHint,    color: "#2d9f82", Icon: Heart,     page: "Sante" },
+    { key: "activity",  label: "Activité",  score: activity,  hasData: activityData,  hint: activityHint,  color: "#d97706", Icon: Flame,     page: "Activite" },
+    { key: "training",  label: "Dressage",  score: training,  hasData: trainingData,  hint: trainingHint,  color: "#6366f1", Icon: Dumbbell,  page: "Activite", tab: "dressage" },
+    { key: "nutrition", label: "Nutrition", score: nutrition, hasData: nutritionData, hint: nutritionHint, color: "#059669", Icon: ScanLine,  page: "Nutri" },
   ];
 }
 
@@ -183,8 +204,14 @@ export default function DogRadarHero({ user, dog, streak, checkins, records, exe
               <p className="text-white/50 text-xs mt-0.5">{dog.breed}{dog.weight ? ` · ${dog.weight} kg` : ""}</p>
             )}
             {(() => {
-              const avg = Math.round(arcs.reduce((s, a) => s + a.score, 0) / arcs.length);
+              const withData = arcs.filter(a => a.hasData);
               const name = dog?.name || "Ton chien";
+              if (withData.length === 0) {
+                return (
+                  <p className="text-[11px] font-medium mt-1.5 text-white/40">Fais un check-in pour activer le suivi</p>
+                );
+              }
+              const avg = Math.round(withData.reduce((s, a) => s + a.score, 0) / withData.length);
               let text, color;
               if (avg >= 75) { text = `${name} est en pleine forme`; color = "#10b981"; }
               else if (avg >= 50) { text = "Quelques points a surveiller"; color = "#d97706"; }
@@ -213,7 +240,12 @@ export default function DogRadarHero({ user, dog, streak, checkins, records, exe
                     <Icon className="w-3.5 h-3.5" style={{ color: arc.color }} />
                   </div>
                   <span className="text-white/60 text-[9px] font-semibold">{arc.label}</span>
-                  <span className="font-black text-[11px]" style={{ color: arc.color }}>{arc.score}%</span>
+                  {arc.hasData ? (
+                    <span className="font-black text-[11px]" style={{ color: arc.color }}>{arc.score}%</span>
+                  ) : (
+                    <span className="font-bold text-[11px] text-white/30">—</span>
+                  )}
+                  <span className="text-white/30 text-[8px] leading-tight">{arc.hint}</span>
                 </motion.button>
               );
             })}
