@@ -3,8 +3,11 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Video, Loader2, Sparkles, AlertCircle } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
+import { useActionCredits } from "@/utils/ai-credits";
+import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 export default function VideoCoaching({ exerciseName, dogName }) {
+  const { credits, hasCredits, isPremium, consume } = useActionCredits();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
@@ -21,6 +24,7 @@ export default function VideoCoaching({ exerciseName, dogName }) {
 
   const handleAnalyze = async () => {
     if (!file) return;
+    if (!isPremium && !hasCredits) return;
     setLoading(true);
     setError(null);
 
@@ -38,6 +42,7 @@ export default function VideoCoaching({ exerciseName, dogName }) {
       });
 
       setFeedback(llmRes);
+      if (!isPremium) await consume();
     } catch (err) {
       setError(err.message || "Une erreur est survenue lors de l'analyse.");
     } finally {
@@ -54,8 +59,13 @@ export default function VideoCoaching({ exerciseName, dogName }) {
         <h3 className="font-bold text-foreground">Coaching Vidéo IA</h3>
       </div>
 
-      {!feedback && !loading && (
+      {!isPremium && !hasCredits && !feedback && !loading && (
+        <UpgradePrompt type="action" from="video-coaching" />
+      )}
+
+      {!feedback && !loading && hasCredits && (
         <div className="space-y-4">
+          {!isPremium && credits != null && <CreditBadge remaining={credits} />}
           <p className="text-sm text-muted-foreground">
             Filme {dogName ? `ton chien ${dogName}` : "ton chien"} en train de faire l'exercice <strong>{exerciseName}</strong> et reçois un feedback personnalisé de notre IA coach !
           </p>

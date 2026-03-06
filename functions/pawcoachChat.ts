@@ -27,12 +27,12 @@ Deno.serve(async (req) => {
     const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
     if (!isPremium) {
       const today = new Date().toISOString().split("T")[0];
-      let remaining = user.messages_remaining ?? 20;
+      let remaining = user.messages_remaining ?? 10;
       const lastReset = user.messages_daily_reset;
 
-      // Daily reset: give 5 free messages per day
+      // Daily reset: give 10 free messages per day (unified pool)
       if (remaining <= 0 && lastReset !== today) {
-        remaining = 5;
+        remaining = 10;
       }
 
       if (remaining <= 0) {

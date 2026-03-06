@@ -7,6 +7,8 @@ import { format, differenceInMonths } from "date-fns";
 import { fr } from "date-fns/locale";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { useActionCredits } from "@/utils/ai-credits";
+import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 // Breed reference curves (weight in kg by age in months)
 const BREED_REFERENCES = {
@@ -52,6 +54,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function GrowthTrackerContent({ dog, user }) {
+  const { credits, hasCredits, isPremium, consume } = useActionCredits();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
@@ -81,6 +84,10 @@ export default function GrowthTrackerContent({ dog, user }) {
   async function handlePhotoUpload(e) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!isPremium && !hasCredits) {
+      toast.error("Plus d'actions IA disponibles aujourd'hui");
+      return;
+    }
     const localUrl = URL.createObjectURL(file);
     setPreviewUrl(localUrl);
     setAnalyzing(true);
@@ -96,6 +103,7 @@ export default function GrowthTrackerContent({ dog, user }) {
       });
       const analysis = resp.data?.analysis;
       setAnalysisResult({ ...analysis, photo_url: file_url });
+      if (!isPremium) await consume();
     } catch (err) {
       toast.error("Erreur lors de l'analyse. Réessaie.");
       setPreviewUrl(null);

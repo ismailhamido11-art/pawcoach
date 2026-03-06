@@ -9,6 +9,7 @@ import { Send, Camera, Bookmark, BookmarkCheck, ChevronDown, Copy, RotateCcw, Pl
 import { DogChat } from "../components/ui/PawIllustrations";
 import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
+import { initCredits, MSG_DAILY_LIMIT } from "@/utils/ai-credits";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
@@ -197,19 +198,8 @@ export default function Chat() {
       setUser(u);
 
       if (!isUserPremium(u)) {
-        const today = getTodayString();
-        const lastReset = u.messages_daily_reset;
-        const remaining = u.messages_remaining ?? 20;
-
-        if (remaining === null || remaining === undefined) {
-          await base44.auth.updateMe({ messages_remaining: 20, messages_daily_reset: today });
-          setMessagesRemaining(20);
-        } else if (remaining <= 0 && lastReset !== today) {
-          await base44.auth.updateMe({ messages_remaining: 5, messages_daily_reset: today });
-          setMessagesRemaining(5);
-        } else {
-          setMessagesRemaining(remaining);
-        }
+        const { msgCredits } = await initCredits(u);
+        setMessagesRemaining(msgCredits);
       }
 
       const dogs = await base44.entities.Dog.filter({ owner: u.email });

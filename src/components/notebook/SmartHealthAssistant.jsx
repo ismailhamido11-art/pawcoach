@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { isUserPremium } from "@/utils/premium";
+import { initCredits, consumeMessageCredit } from "@/utils/ai-credits";
+import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 // Sound utility — reuse AudioContext to prevent memory leak
 let _audioCtx = null;
@@ -36,6 +39,10 @@ function getTimeStr(timestamp) {
 }
 
 export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
+  // Credits
+  const [msgCredits, setMsgCredits] = useState(null);
+  const [isPremium, setIsPremium] = useState(false);
+
   // Conversation state
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -84,6 +91,21 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
+  // Load credits
+  useEffect(() => {
+    (async () => {
+      try {
+        const user = await base44.auth.me();
+        if (isUserPremium(user)) {
+          setIsPremium(true);
+        } else {
+          const { msgCredits: mc } = await initCredits(user);
+          setMsgCredits(mc);
+        }
+      } catch {}
+    })();
   }, []);
 
   // Auto-start conversation when dogId is available
@@ -206,8 +228,11 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
     }
   };
 
+  const isLimitReached = !isPremium && msgCredits !== null && msgCredits <= 0;
+
   const handleSend = async (text = inputValue, image = null) => {
     if ((!text && !image) || isProcessing || isStreaming) return;
+    if (isLimitReached) return;
 
     const newMsg = { role: "user", content: text, image_url: image, timestamp: new Date().toISOString() };
     addMessage(newMsg);
@@ -217,6 +242,12 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
 
     const history = [...messages, newMsg];
     await processConversation(history);
+
+    // Consume message credit after successful send
+    if (!isPremium && msgCredits != null) {
+      const newCredits = await consumeMessageCredit(msgCredits);
+      setMsgCredits(newCredits);
+    }
   };
 
   // --- Voice ---
@@ -332,6 +363,9 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {!isPremium && msgCredits != null && (
+            <CreditBadge remaining={msgCredits} type="message" />
+          )}
           {pendingRecords.length > 0 && !hasSaved && (
             <Button size="sm" onClick={saveAllRecords} className="rounded-full bg-safe hover:bg-safe/90 text-white text-xs h-8 shadow-md">
               <Check className="w-3.5 h-3.5 mr-1" /> Sauver ({pendingRecords.length})
@@ -540,7 +574,9 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
 
       {/* Input Area */}
       <div className="px-3 py-3 bg-white border-t border-border">
-        {isFinished && pendingRecords.length > 0 ? (
+        {isLimitReached ? (
+          <UpgradePrompt type="message" from="health-assistant" className="!p-3 !rounded-xl" />
+        ) : isFinished && pendingRecords.length > 0 ? (
           <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
             <Button onClick={saveAllRecords} className="w-full rounded-full bg-safe hover:bg-safe/90 text-white h-11 text-sm font-medium shadow-md">
               <Check className="w-4 h-4 mr-2" />

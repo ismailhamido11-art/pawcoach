@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { differenceInMonths } from "date-fns";
 import { toast } from "sonner";
 import { checkTrainingBadges } from "@/components/achievements/badgeUtils";
+import { useActionCredits } from "@/utils/ai-credits";
+import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 const ACTIVITY_LABELS = {
   faible: "Faible", modere: "Modéré", eleve: "Élevé", tres_eleve: "Très élevé"
@@ -76,6 +78,7 @@ function WeekCard({ week, isOpen, onToggle }) {
 }
 
 export default function AITrainingProgram({ dog, logs = [] }) {
+  const { credits, hasCredits, isPremium, consume } = useActionCredits();
   const [program, setProgram] = useState(null);
   const [generating, setGenerating] = useState(false);
   const [openWeek, setOpenWeek] = useState(0);
@@ -85,6 +88,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
   const weeklyWalkMinutes = logs.slice(0, 7).reduce((acc, l) => acc + (l.walk_minutes || 0), 0);
 
   async function generate() {
+    if (!isPremium && !hasCredits) return;
     setGenerating(true);
     setProgram(null);
     try {
@@ -101,6 +105,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       setProgram(resp.data?.program);
       setShowGoalInput(false);
       toast.success("Programme généré !");
+      if (!isPremium) await consume();
       // Award training badge
       if (dog?.id && dog?.owner) {
         checkTrainingBadges(dog.id, dog.owner).catch(() => {});
@@ -157,10 +162,17 @@ export default function AITrainingProgram({ dog, logs = [] }) {
             />
           )}
 
-          <Button onClick={generate} className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white">
-            <Sparkles className="w-4 h-4 mr-2" />
-            Générer le programme
-          </Button>
+          {!isPremium && !hasCredits ? (
+            <UpgradePrompt type="action" from="training" />
+          ) : (
+            <>
+              {!isPremium && credits != null && <CreditBadge remaining={credits} className="mb-2" />}
+              <Button onClick={generate} className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Générer le programme
+              </Button>
+            </>
+          )}
         </div>
       </div>
     );

@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
+import { useActionCredits } from "@/utils/ai-credits";
+import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 import {
   FileText, Camera, ClipboardPaste, Sparkles,
   CheckCircle, ArrowLeft, Loader2, Syringe, Weight,
@@ -61,6 +63,7 @@ const ANALYZING_STEPS_LABELS = [
 ];
 
 export default function HealthImport() {
+  const { credits, hasCredits, isPremium, consume } = useActionCredits();
   const [step, setStep] = useState(STEPS.SELECT);
   const [source, setSource] = useState(null);
   const [textInput, setTextInput] = useState("");
@@ -120,6 +123,10 @@ export default function HealthImport() {
   };
 
   const handleSourceSelect = (src) => {
+    if (!isPremium && !hasCredits) {
+      toast.error("Plus d'actions IA disponibles aujourd'hui");
+      return;
+    }
     setSource(src);
     if (src.id === "text") {
       setStep(STEPS.INPUT);
@@ -150,6 +157,7 @@ export default function HealthImport() {
         dog_breed: dog?.breed,
       });
       processResult(res.data);
+      if (!isPremium) await consume();
     } catch (err) {
       toast.error("Erreur lors de l'analyse. Réessaie avec un autre document.");
       setStep(STEPS.SELECT);
@@ -171,6 +179,7 @@ export default function HealthImport() {
         })
       ]);
       processResult(res.data);
+      if (!isPremium) await consume();
     } catch (err) {
       toast.error("Erreur lors de l'analyse. Réessaie.");
       setStep(STEPS.INPUT);

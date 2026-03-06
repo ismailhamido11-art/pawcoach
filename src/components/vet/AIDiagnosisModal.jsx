@@ -10,8 +10,11 @@ import DiagnosisReportView from "./DiagnosisReportView";
 import DiagnosisStep2Questions from "./DiagnosisStep2Questions";
 import { Loader2, Stethoscope, AlertTriangle, Download, MapPin, Camera, X, Image } from "lucide-react";
 import { toast } from "sonner";
+import { useActionCredits } from "@/utils/ai-credits";
+import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
+  const { credits, hasCredits, isPremium, consume } = useActionCredits();
   // Steps: form → loading1 → questions → loading2 → report
   const [step, setStep] = useState("form");
   const [symptoms, setSymptoms] = useState("");
@@ -65,6 +68,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
   // STEP 1: Analyze symptoms → get followup questions
   const handleStep1 = async () => {
     if (!symptoms.trim()) return;
+    if (!isPremium && !hasCredits) return;
     setStep("loading1");
 
     try {
@@ -90,6 +94,8 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
 
       setPhase1(result.data);
       setStep("questions");
+      // Consume 1 action credit for the entire diagnostic flow
+      if (!isPremium) await consume();
     } catch (e) {
       console.error("handleStep1 error:", e);
       toast.error("Erreur lors de l'analyse. Réessaie.");
@@ -280,13 +286,20 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
               )}
             </div>
 
-            <Button
-              onClick={handleStep1}
-              disabled={!symptoms.trim()}
-              className="w-full gradient-primary text-white"
-            >
-              Generer le bilan
-            </Button>
+            {!isPremium && !hasCredits ? (
+              <UpgradePrompt type="action" from="diagnostic" />
+            ) : (
+              <>
+                {!isPremium && credits != null && <CreditBadge remaining={credits} className="mb-2" />}
+                <Button
+                  onClick={handleStep1}
+                  disabled={!symptoms.trim()}
+                  className="w-full gradient-primary text-white"
+                >
+                  Generer le bilan
+                </Button>
+              </>
+            )}
           </div>
         )}
 

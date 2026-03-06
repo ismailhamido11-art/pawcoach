@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, Settings2, History, ChevronDown, Copy, RotateCcw } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
+import { initCredits } from "@/utils/ai-credits";
 import IconBadge from "@/components/ui/IconBadge";
 import { InlineIcon } from "@/components/ui/IconBadge";
 import ReactMarkdown from "react-markdown";
@@ -198,18 +199,8 @@ export default function Nutri() {
       setUser(u);
 
       if (!isUserPremium(u)) {
-        const today = getTodayString();
-        const lastReset = u.messages_daily_reset;
-        const remaining = u.messages_remaining ?? 20;
-        if (remaining === null || remaining === undefined) {
-          await base44.auth.updateMe({ messages_remaining: 20, messages_daily_reset: today });
-          setMessagesRemaining(20);
-        } else if (remaining <= 0 && lastReset !== today) {
-          await base44.auth.updateMe({ messages_remaining: 2, messages_daily_reset: today });
-          setMessagesRemaining(2);
-        } else {
-          setMessagesRemaining(remaining);
-        }
+        const { msgCredits } = await initCredits(u);
+        setMessagesRemaining(msgCredits);
       }
 
       const dogs = await base44.entities.Dog.filter({ owner: u.email });

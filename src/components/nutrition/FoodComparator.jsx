@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Camera, Plus, X, BarChart2, ChevronDown, ChevronUp, Trophy, AlertTriangle, CheckCircle2, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { useActionCredits } from "@/utils/ai-credits";
+import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
@@ -104,12 +106,15 @@ function ProductSlot({ index, product, onAdd, onRemove }) {
 }
 
 export default function FoodComparator({ dog }) {
+  const { credits, hasCredits, isPremium, consume } = useActionCredits();
   const [products, setProducts] = useState([null, null]);
   const [comparing, setComparing] = useState(false);
   const [comparison, setComparison] = useState(null);
   const [showDetails, setShowDetails] = useState({});
 
   const analyzeProduct = async (file, index) => {
+    if (!isPremium && !hasCredits) return;
+
     const preview = await new Promise(resolve => {
       const r = new FileReader();
       r.onload = e => resolve(e.target.result);
@@ -161,6 +166,8 @@ Fournis une analyse nutritionnelle détaillée en JSON. Réponds UNIQUEMENT en f
         next[index] = { ...next[index], state: "done", result: { ...aiResult, photo_url: file_url } };
         return next;
       });
+      // Consume action credit on success
+      if (!isPremium) await consume();
     } catch {
       setProducts(prev => {
         const next = [...prev];
@@ -225,8 +232,13 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
   const readyCount = products.filter(p => p?.state === "done").length;
   const anyAnalyzing = products.some(p => p?.state === "analyzing");
 
+  if (!isPremium && !hasCredits) {
+    return <UpgradePrompt type="action" from="comparateur" />;
+  }
+
   return (
     <div className="space-y-4">
+      {!isPremium && credits != null && <CreditBadge remaining={credits} />}
       {/* Product slots */}
       <div className="flex gap-3">
         {products.map((product, i) => (

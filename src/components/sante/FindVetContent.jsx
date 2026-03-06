@@ -9,6 +9,8 @@ import Illustration from "../illustrations/Illustration";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import PlaceCard from "./PlaceCard";
+import { useActionCredits } from "@/utils/ai-credits";
+import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -46,6 +48,7 @@ function createColoredIcon(color) {
 }
 
 export default function FindVetContent({ dog }) {
+  const { credits, hasCredits, isPremium, consume } = useActionCredits();
   const [query, setQuery] = useState(dog?.vet_city || "");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -86,6 +89,10 @@ export default function FindVetContent({ dog }) {
 
   const handleSearch = async () => {
     if (!query.trim()) return;
+    if (!isPremium && !hasCredits) {
+      toast.error("Plus d'actions IA disponibles aujourd'hui");
+      return;
+    }
     setLoading(true);
     setSearched(true);
     setShowFavorites(false);
@@ -118,6 +125,7 @@ export default function FindVetContent({ dog }) {
       setResults(places);
       if (res.city_lat && res.city_lng) setMapCenter([res.city_lat, res.city_lng]);
       else if (places.length > 0 && places[0].lat && places[0].lng) setMapCenter([places[0].lat, places[0].lng]);
+      if (!isPremium) await consume();
     } catch {
       toast.error("Erreur lors de la recherche. Réessaie.");
     }
