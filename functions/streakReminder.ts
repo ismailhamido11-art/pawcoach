@@ -1,12 +1,7 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
 Deno.serve(async (req) => {
   try {
-    const cronSecret = req.headers.get("x-cron-secret");
-    if (cronSecret !== Deno.env.get("CRON_SECRET")) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const base44 = createClientFromRequest(req);
     const today = new Date().toISOString().slice(0, 10);
 

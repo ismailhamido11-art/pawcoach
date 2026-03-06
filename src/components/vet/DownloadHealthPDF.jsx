@@ -59,7 +59,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
       doc.setFontSize(20);
       doc.text(sanitize(`Carnet de santé — ${dog.name}`), 14, 18);
       doc.setFontSize(11);
-      doc.text(sanitize(`${dog.breed || ''} · ${dog.weight ? dog.weight + ' kg' : ''} · ${dog.sex === 'male' ? 'Mâle' : dog.sex === 'female' ? 'Femelle' : ''}`), 14, 28);
+      doc.text(sanitize([dog.breed, dog.weight ? `${dog.weight} kg` : null, dog.sex === 'male' ? 'Mâle' : dog.sex === 'female' ? 'Femelle' : null].filter(Boolean).join(' · ')), 14, 28);
       doc.setFontSize(9);
       doc.text(sanitize(`Généré le ${formatDate(new Date().toISOString())} via PawCoach`), 14, 37);
       y = 52;

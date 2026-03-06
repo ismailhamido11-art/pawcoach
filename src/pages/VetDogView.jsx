@@ -74,7 +74,7 @@ export default function VetDogView() {
           )}
           <div>
             <h1 className="text-white font-bold text-xl">{dog.name}</h1>
-            <p className="text-white/80 text-xs">{dog.breed} · {dog.weight ? `${dog.weight}kg` : ""} · {dog.sex === "male" ? "♂" : "♀"}</p>
+            <p className="text-white/80 text-xs">{[dog.breed, dog.weight ? `${dog.weight}kg` : null, dog.sex === "male" ? "♂" : dog.sex === "female" ? "♀" : null].filter(Boolean).join(" · ")}</p>
             {dog.health_issues && <p className="text-white/70 text-[10px] mt-0.5">⚠️ {dog.health_issues}</p>}
           </div>
         </div>
