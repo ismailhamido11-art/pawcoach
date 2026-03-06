@@ -80,7 +80,7 @@ export default function HealthImport() {
     (async () => {
       const u = await base44.auth.me();
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
-      if (dogs.length > 0) setDog(getActiveDog(dogs));
+      if (dogs?.length > 0) setDog(getActiveDog(dogs));
     })();
   }, []);
 
