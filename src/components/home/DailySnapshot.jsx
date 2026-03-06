@@ -18,7 +18,7 @@ function getWeekStart() {
 
 const isValidWeight = (v) => typeof v === "number" && v > 0 && v <= 200;
 
-function WeightCard({ records, dailyLogs }) {
+function WeightCard({ records = [], dailyLogs = [] }) {
   // Merge HealthRecord weights + DailyLog weights, pick most recent (filter absurd values)
   const fromRecords = records.filter(r => r.type === "weight" && isValidWeight(r.value)).map(r => ({ date: r.date, value: r.value }));
   const fromLogs = (dailyLogs || []).filter(l => isValidWeight(l.weight_kg)).map(l => ({ date: l.date, value: l.weight_kg }));
@@ -58,7 +58,7 @@ function WeightCard({ records, dailyLogs }) {
   );
 }
 
-function MoodCard({ checkins }) {
+function MoodCard({ checkins = [] }) {
   const weekStart = getWeekStart();
   const weekCheckins = checkins.filter(c => c.date >= weekStart && c.mood);
   const avg = weekCheckins.length > 0
@@ -95,7 +95,7 @@ function MoodCard({ checkins }) {
   );
 }
 
-function TrainingCard({ exercises }) {
+function TrainingCard({ exercises = [] }) {
   const completed = exercises.filter(e => e.completed).length;
   const total = Math.max(exercises.length, 10);
   const pct = Math.round((completed / total) * 100);
@@ -156,7 +156,7 @@ function WalkCard({ dailyLogs }) {
   );
 }
 
-function VaccineCard({ records }) {
+function VaccineCard({ records = [] }) {
   const today = getTodayString();
   const allVaccines = records.filter(r => r.type === "vaccine");
   const upcoming = allVaccines
@@ -206,7 +206,7 @@ function VaccineCard({ records }) {
 const stagger = { show: { transition: { staggerChildren: 0.07 } } };
 const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120 } } };
 
-export default function DailySnapshot({ records, exercises, checkins, dailyLogs }) {
+export default function DailySnapshot({ records = [], exercises = [], checkins = [], dailyLogs = [] }) {
   return (
     <div className="mx-5">
       <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3 px-1">
