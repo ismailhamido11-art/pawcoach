@@ -104,7 +104,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
           const { msgCredits: mc } = await initCredits(user);
           setMsgCredits(mc);
         }
-      } catch {}
+      } catch (e) { console.warn("SmartHealthAssistant credits init error:", e?.message || String(e)); }
     })();
   }, []);
 
