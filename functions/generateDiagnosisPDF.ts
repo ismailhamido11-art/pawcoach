@@ -147,7 +147,7 @@ Deno.serve(async (req) => {
     }
   });
   } catch (error) {
-    console.error("generateDiagnosisPDF error:", error.message);
+    console.error("generateDiagnosisPDF error:", error?.message || String(error));
     return Response.json({ error: "Erreur lors de la génération du PDF. Réessaie dans quelques instants." }, { status: 500 });
   }
 });
