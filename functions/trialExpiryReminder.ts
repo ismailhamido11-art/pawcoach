@@ -97,14 +97,14 @@ Deno.serve(async (req) => {
         console.log(`Trial reminder (${daysLeft}d) sent to ${user.email} for ${dogName}`);
         sent++;
       } catch (emailErr) {
-        console.error(`Failed to send to ${user.email}:`, emailErr.message);
+        console.error(`Failed to send to ${user.email}:`, emailErr?.message || String(emailErr));
       }
     }
 
     return Response.json({ ok: true, sent, total_users: users.length });
 
   } catch (error) {
-    console.error("trialExpiryReminder error:", error.message);
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error("trialExpiryReminder error:", error?.message || String(error));
+    return Response.json({ error: error?.message || String(error) }, { status: 500 });
   }
 });
