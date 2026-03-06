@@ -77,6 +77,6 @@ ${text_content ? `Texte à analyser:\n\n${text_content}` : ''}`;
         return Response.json(result);
     } catch (error) {
         console.error('Error in parseHealthFile:', error);
-        return Response.json({ error: error.message }, { status: 500 });
+        return Response.json({ error: error?.message || String(error) }, { status: 500 });
     }
 });
