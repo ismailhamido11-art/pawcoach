@@ -179,7 +179,7 @@ export default function Onboarding() {
       const FREE_MAX = 1, PREMIUM_MAX = 3;
       const existingDogs = await base44.entities.Dog.filter({ owner: user.email });
       const maxDogs = isUserPremium(user) ? PREMIUM_MAX : FREE_MAX;
-      if (existingDogs.length >= maxDogs) {
+      if ((existingDogs || []).length >= maxDogs) {
         setSaving(false); savingRef.current = false;
         if (!isUserPremium(user)) navigate(createPageUrl("Premium") + "?from=profile");
         else { alert("Maximum 3 chiens atteint"); navigate(createPageUrl("Home")); }
