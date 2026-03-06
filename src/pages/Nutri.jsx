@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog, createPageUrl } from "@/utils";
@@ -11,7 +11,7 @@ import DietPreferencesPanel from "../components/nutrition/DietPreferencesPanel";
 import SavedPlansPanel from "../components/nutrition/SavedPlansPanel";
 
 import { Button } from "@/components/ui/button";
-import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, Settings2, History } from "lucide-react";
+import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, Settings2, History, ChevronDown, Copy, RotateCcw } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
 import IconBadge from "@/components/ui/IconBadge";
@@ -28,13 +28,44 @@ const msgAnim = {
   transition: { type: "spring", stiffness: 120, damping: 20 }
 };
 
+const mdComponents = {
+  p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
+  ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
+  li: ({ children }) => <li className="my-0.5">{children}</li>,
+  strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+};
+
+// --- Helpers ---
+function getDateLabel(timestamp) {
+  if (!timestamp) return "";
+  const d = new Date(timestamp);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (d.toDateString() === today.toDateString()) return "Aujourd'hui";
+  if (d.toDateString() === yesterday.toDateString()) return "Hier";
+  return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+}
+
+function shouldShowDateSeparator(messages, index) {
+  if (index === 0) return true;
+  const prev = new Date(messages[index - 1].timestamp);
+  const curr = new Date(messages[index].timestamp);
+  return prev.toDateString() !== curr.toDateString();
+}
+
+function getTimeStr(timestamp) {
+  if (!timestamp) return "";
+  return new Date(timestamp).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+}
+
 const TABS = [
-  { id: "coach",    label: "NutriCoach", emoji: "🥗", bg: "from-emerald-500 to-emerald-700" },
-  { id: "mealplan", label: "Plan repas",  emoji: "📅", bg: "from-amber-500 to-amber-600" },
-  { id: "saved",    label: "Mes plans",  emoji: "🗂️", bg: "from-primary to-accent" },
-  { id: "prefs",    label: "Préférences", emoji: "⚙️", bg: "from-slate-500 to-slate-700" },
-  { id: "compare",  label: "Comparer",   emoji: "⚖️", bg: "from-blue-500 to-indigo-600" },
-  { id: "scan",     label: "Scanner",    emoji: "📷", bg: "from-violet-500 to-purple-600" },
+  { id: "coach",    label: "NutriCoach", emoji: "\u{1F957}", bg: "from-emerald-500 to-emerald-700" },
+  { id: "mealplan", label: "Plan repas",  emoji: "\u{1F4C5}", bg: "from-amber-500 to-amber-600" },
+  { id: "saved",    label: "Mes plans",  emoji: "\u{1F5C2}\uFE0F", bg: "from-primary to-accent" },
+  { id: "prefs",    label: "Pr\u00e9f\u00e9rences", emoji: "\u2699\uFE0F", bg: "from-slate-500 to-slate-700" },
+  { id: "compare",  label: "Comparer",   emoji: "\u2696\uFE0F", bg: "from-blue-500 to-indigo-600" },
+  { id: "scan",     label: "Scanner",    emoji: "\u{1F4F7}", bg: "from-violet-500 to-purple-600" },
 ];
 
 export default function Nutri() {
@@ -61,6 +92,71 @@ export default function Nutri() {
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
 
+  // Typewriter streaming
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamingText, setStreamingText] = useState("");
+  const streamingRef = useRef({ fullText: "", words: [], wordIndex: 0, timer: null, timestamp: "" });
+
+  // Scroll-to-bottom
+  const scrollContainerRef = useRef(null);
+  const [showScrollBtn, setShowScrollBtn] = useState(false);
+
+  // Retry
+  const [lastFailedInput, setLastFailedInput] = useState(null);
+
+  // --- Typewriter ---
+  const startStreaming = useCallback((fullText, timestamp) => {
+    const words = fullText.split(/(\s+)/);
+    streamingRef.current = { fullText, words, wordIndex: 0, timer: null, timestamp };
+    setIsStreaming(true);
+    setStreamingText("");
+    const timer = setInterval(() => {
+      const data = streamingRef.current;
+      data.wordIndex += 2;
+      if (data.wordIndex >= data.words.length) {
+        clearInterval(timer);
+        const finalText = data.fullText;
+        const finalTs = data.timestamp;
+        streamingRef.current = { fullText: "", words: [], wordIndex: 0, timer: null, timestamp: "" };
+        setIsStreaming(false);
+        setStreamingText("");
+        setMessages(prev => [...prev, { role: "assistant", content: finalText, timestamp: finalTs }]);
+        return;
+      }
+      setStreamingText(data.words.slice(0, data.wordIndex).join(""));
+    }, 30);
+    streamingRef.current.timer = timer;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (streamingRef.current.timer) clearInterval(streamingRef.current.timer);
+    };
+  }, []);
+
+  // --- Scroll detection ---
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const handleScroll = () => {
+      const dist = container.scrollHeight - container.scrollTop - container.clientHeight;
+      setShowScrollBtn(dist > 200);
+    };
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!showScrollBtn) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, streamingText]);
+
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    setShowScrollBtn(false);
+  };
+
   const handleBookmark = async (msg) => {
     if (!dog || !user || bookmarked[msg.timestamp]) return;
     const title = msg.content.replace(/[#*_`]/g, "").split("\n")[0].slice(0, 60);
@@ -74,14 +170,19 @@ export default function Nutri() {
         created_at: new Date().toISOString(),
       });
       setBookmarked(prev => ({ ...prev, [msg.timestamp]: true }));
-      toast.success("Sauvegardé !", { description: "Conseil ajouté à ta bibliothèque" });
+      toast.success("Sauvegard\u00e9 !", { description: "Conseil ajout\u00e9 \u00e0 ta biblioth\u00e8que" });
     } catch {
       toast.error("Erreur", { description: "Impossible de sauvegarder" });
     }
   };
 
+  const handleCopy = (content) => {
+    navigator.clipboard?.writeText(content).then(() => {
+      toast.success("Copi\u00e9 !");
+    }).catch(() => {});
+  };
+
   useEffect(() => { init(); }, []);
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
   useEffect(() => {
     const ta = textareaRef.current;
     if (!ta) return;
@@ -121,7 +222,7 @@ export default function Nutri() {
         if (prefs.length > 0) setDietPrefs(prefs[0]);
         setMessages([{
           role: "assistant",
-          content: `Bonjour ! 🥗 Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies ? ` avec des allergies à ${d.allergies}` : ""} et j'ai accès à ses derniers scans alimentaires.\n\nPose-moi une question, génère un **plan de repas personnalisé**, ou demande une **recommandation de croquettes** ! 🍖`,
+          content: `Bonjour ! \u{1F957} Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies ? ` avec des allergies \u00e0 ${d.allergies}` : ""} et j'ai acc\u00e8s \u00e0 ses derniers scans alimentaires.\n\nPose-moi une question, g\u00e9n\u00e8re un **plan de repas personnalis\u00e9**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
           timestamp: new Date().toISOString(),
         }]);
       }
@@ -138,23 +239,31 @@ export default function Nutri() {
     if (!isUserPremium(user)) {
       if ((messagesRemaining ?? 0) <= 0) return;
     }
+
+    if (navigator.vibrate) navigator.vibrate(10);
+
     setInput("");
+    setLastFailedInput(null);
     setMessages(prev => [...prev, { role: "user", content, timestamp: new Date().toISOString() }]);
     setLoading(true);
     try {
-      const contextMsgs = messages.slice(-8).map(m => ({ role: m.role, content: m.content }));
+      const contextMsgs = messages.slice(-15).map(m => ({ role: m.role, content: m.content }));
       contextMsgs.push({ role: "user", content });
       const response = await base44.functions.invoke("pawcoachChat", { dogId: dog.id, mode: "nutrition", messages: contextMsgs });
       if (response.data?.error === "quota_exceeded") { setMessagesRemaining(0); return; }
-      const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
-      setMessages(prev => [...prev, { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() }]);
+      const assistantContent = response.data?.content || "D\u00e9sol\u00e9, je n'ai pas pu r\u00e9pondre.";
+      const assistantTs = new Date().toISOString();
+
+      startStreaming(assistantContent, assistantTs);
+
       if (!isUserPremium(user) && response.data?.messages_remaining !== undefined) {
         setMessagesRemaining(response.data.messages_remaining);
       }
     } catch (err) {
       console.error("Nutri send error:", err);
       if (err?.message?.includes?.("quota_exceeded") || err?.status === 429) { setMessagesRemaining(0); return; }
-      setMessages(prev => [...prev, { role: "assistant", content: "Oups, une erreur est survenue. Réessaie dans un instant.", timestamp: new Date().toISOString() }]);
+      setLastFailedInput(content);
+      setMessages(prev => [...prev, { role: "assistant", content: "Oups, une erreur est survenue. R\u00e9essaie dans un instant.", timestamp: new Date().toISOString(), isError: true }]);
     } finally {
       setLoading(false);
     }
@@ -177,8 +286,8 @@ export default function Nutri() {
   const quickActions = dog ? [
     `Plan de repas hebdomadaire pour ${dog.name}`,
     `Meilleures croquettes pour ${dog.breed || "mon chien"}`,
-    `Quelle quantité donner à ${dog.name} ?`,
-    `Aliments à éviter absolument`,
+    `Quelle quantit\u00e9 donner \u00e0 ${dog.name} ?`,
+    `Aliments \u00e0 \u00e9viter absolument`,
   ] : [];
 
   return (
@@ -191,11 +300,11 @@ export default function Nutri() {
           <div className="flex-1 pb-1">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
             <h1 className="text-white font-black text-2xl leading-tight">Nutrition</h1>
-            {dog && <p className="text-white/70 text-xs mt-0.5">Pour {dog.name} · {dog.breed}</p>}
+            {dog && <p className="text-white/70 text-xs mt-0.5">Pour {dog.name} &middot; {dog.breed}</p>}
             <div className="flex items-center gap-2 mt-2 flex-wrap">
               {!isUserPremium(user) && messagesRemaining !== null && (
                 <div className="bg-white/20 px-2.5 py-1 rounded-full">
-                  <span className="text-white text-xs font-medium">{messagesRemaining} crédit{messagesRemaining !== 1 ? "s" : ""} IA</span>
+                  <span className="text-white text-xs font-medium">{messagesRemaining} cr&eacute;dit{messagesRemaining !== 1 ? "s" : ""} IA</span>
                 </div>
               )}
               {isUserPremium(user) && (
@@ -206,7 +315,7 @@ export default function Nutri() {
               )}
               {recentScans.length > 0 && (
                 <div className="bg-white/20 px-2.5 py-1 rounded-full">
-                  <span className="text-white text-xs font-medium">🔍 {recentScans.length} scans</span>
+                  <span className="text-white text-xs font-medium">{"\u{1F50D}"} {recentScans.length} scans</span>
                 </div>
               )}
             </div>
@@ -254,7 +363,7 @@ export default function Nutri() {
         </div>
       </div>
 
-      {/* Tab: Scan → link to Scan page */}
+      {/* Tab: Scan */}
       {activeTab === "scan" && (
         <div className="flex-1 flex flex-col items-center justify-center px-5 py-10 gap-5">
           <motion.div
@@ -267,8 +376,8 @@ export default function Nutri() {
           <div className="text-center">
             <h2 className="font-bold text-foreground text-lg">Scanner un aliment</h2>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-              Toxicité d'un aliment brut ou analyse complète<br />
-              d'une étiquette nutritionnelle pour {dog?.name || "ton chien"}.
+              Toxicit&eacute; d'un aliment brut ou analyse compl&egrave;te<br />
+              d'une &eacute;tiquette nutritionnelle pour {dog?.name || "ton chien"}.
             </p>
           </div>
           <Button asChild className="gradient-primary border-0 text-white w-full max-w-xs h-13 rounded-xl font-bold shadow-lg shadow-primary/25">
@@ -278,7 +387,7 @@ export default function Nutri() {
             </Link>
           </Button>
           {recentScans.length > 0 && (
-            <p className="text-xs text-muted-foreground">{recentScans.length} scan{recentScans.length > 1 ? "s" : ""} récent{recentScans.length > 1 ? "s" : ""}</p>
+            <p className="text-xs text-muted-foreground">{recentScans.length} scan{recentScans.length > 1 ? "s" : ""} r&eacute;cent{recentScans.length > 1 ? "s" : ""}</p>
           )}
         </div>
       )}
@@ -290,14 +399,14 @@ export default function Nutri() {
         </div>
       )}
 
-      {/* Tab: Mes plans sauvegardés */}
+      {/* Tab: Mes plans */}
       {activeTab === "saved" && (
         <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
           <SavedPlansPanel dog={dog} user={user} />
         </div>
       )}
 
-      {/* Tab: Préférences alimentaires */}
+      {/* Tab: Preferences */}
       {activeTab === "prefs" && (
         <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
           <DietPreferencesPanel dog={dog} user={user} />
@@ -320,50 +429,91 @@ export default function Nutri() {
       {/* Tab: NutriCoach chat */}
       {activeTab === "coach" && (
         <>
-          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 pb-44">
+          <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3 pb-44">
             {messages.map((msg, i) => (
-              <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                {msg.role === "assistant" && (
-                  <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
-                )}
-                <div className="flex flex-col gap-1 max-w-[82%]">
-                  <div
-                    data-selectable
-                    className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
-                      msg.role === "user" ? "chat-bubble-user text-white rounded-br-sm" : "chat-bubble-assistant text-foreground rounded-bl-sm"
-                    }`}
-                  >
-                    {msg.role === "assistant" ? (
-                      <ReactMarkdown
-                        className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
-                        components={{
-                          p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
-                          ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
-                          li: ({ children }) => <li className="my-0.5">{children}</li>,
-                          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                        }}
-                      >
-                        {msg.content}
-                      </ReactMarkdown>
-                    ) : (
-                      <p className="whitespace-pre-wrap">{msg.content}</p>
-                    )}
+              <div key={i}>
+                {shouldShowDateSeparator(messages, i) && (
+                  <div className="flex items-center gap-3 py-2 my-1">
+                    <div className="flex-1 h-px bg-border" />
+                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">
+                      {getDateLabel(msg.timestamp)}
+                    </span>
+                    <div className="flex-1 h-px bg-border" />
                   </div>
+                )}
+
+                <motion.div {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   {msg.role === "assistant" && (
-                    <button
-                      onClick={() => handleBookmark(msg)}
-                      className="self-start ml-1 flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {bookmarked[msg.timestamp]
-                        ? <BookmarkCheck className="w-3.5 h-3.5 text-primary" />
-                        : <Bookmark className="w-3.5 h-3.5" />}
-                      {bookmarked[msg.timestamp] ? "Sauvegardé" : "Sauvegarder"}
-                    </button>
+                    <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                   )}
+                  <div className="flex flex-col gap-0.5 max-w-[82%]">
+                    <div
+                      data-selectable
+                      className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
+                        msg.role === "user" ? "chat-bubble-user text-white rounded-br-sm" : "chat-bubble-assistant text-foreground rounded-bl-sm"
+                      }`}
+                    >
+                      {msg.role === "assistant" ? (
+                        <ReactMarkdown className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0" components={mdComponents}>
+                          {msg.content}
+                        </ReactMarkdown>
+                      ) : (
+                        <p className="whitespace-pre-wrap">{msg.content}</p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2.5 px-1 mt-0.5">
+                      <span className="text-[9px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
+                      {msg.role === "assistant" && !msg.isError && (
+                        <>
+                          <button
+                            onClick={() => handleCopy(msg.content)}
+                            className="text-muted-foreground/40 hover:text-primary transition-colors"
+                            title="Copier"
+                          >
+                            <Copy className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => handleBookmark(msg)}
+                            className="text-muted-foreground/40 hover:text-primary transition-colors"
+                            title="Sauvegarder"
+                          >
+                            {bookmarked[msg.timestamp]
+                              ? <BookmarkCheck className="w-3 h-3 text-primary" />
+                              : <Bookmark className="w-3 h-3" />}
+                          </button>
+                        </>
+                      )}
+                      {msg.isError && lastFailedInput && (
+                        <button
+                          onClick={() => sendMessage(lastFailedInput)}
+                          className="flex items-center gap-1 text-[10px] text-destructive hover:text-destructive/80 transition-colors"
+                        >
+                          <RotateCcw className="w-3 h-3" />
+                          <span>R&eacute;essayer</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            ))}
+
+            {/* Typewriter streaming message */}
+            {isStreaming && streamingText && (
+              <motion.div {...msgAnim} className="flex gap-2 justify-start">
+                <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
+                <div className="flex flex-col gap-0.5 max-w-[82%]">
+                  <div className="chat-bubble-assistant px-4 py-3 rounded-2xl rounded-bl-sm text-sm leading-relaxed text-foreground">
+                    <ReactMarkdown className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0" components={mdComponents}>
+                      {streamingText}
+                    </ReactMarkdown>
+                  </div>
                 </div>
               </motion.div>
-            ))}
-            {loading && (
+            )}
+
+            {/* Typing dots */}
+            {((loading && !isStreaming) || (isStreaming && !streamingText)) && (
               <div className="flex gap-2 justify-start">
                 <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                 <div className="chat-bubble-assistant px-4 py-3.5 rounded-2xl rounded-bl-sm">
@@ -378,15 +528,30 @@ export default function Nutri() {
             <div ref={bottomRef} />
           </div>
 
+          {/* Scroll-to-bottom FAB */}
+          <AnimatePresence>
+            {showScrollBtn && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                onClick={scrollToBottom}
+                className="fixed bottom-40 right-5 z-40 w-10 h-10 rounded-full bg-background border border-border shadow-lg flex items-center justify-center"
+              >
+                <ChevronDown className="w-5 h-5 text-muted-foreground" />
+              </motion.button>
+            )}
+          </AnimatePresence>
+
           <div className="fixed bottom-[4.5rem] left-0 right-0 bg-background border-t border-border">
             {isLimitReached ? (
               <div className="px-5 py-3">
                 <div className="flex gap-2 justify-start mb-2">
                   <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                   <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
-                    <p className="text-sm leading-relaxed">J'adorerais continuer ! 🥗 Tes crédits IA sont épuisés pour aujourd'hui. Reviens demain ou passe en Premium.</p>
+                    <p className="text-sm leading-relaxed">J'adorerais continuer ! {"\u{1F957}"} Tes cr&eacute;dits IA sont &eacute;puis&eacute;s pour aujourd'hui. Reviens demain ou passe en Premium.</p>
                     <Button onClick={() => navigate(createPageUrl("Premium") + "?from=nutrition")} size="sm" className="mt-2 bg-safe hover:bg-safe/90 border-0 text-white text-xs h-8">
-                      Passer Premium · dès 5 €/mois
+                      Passer Premium &middot; d&egrave;s 5 &euro;/mois
                     </Button>
                   </div>
                 </div>
@@ -419,7 +584,7 @@ export default function Nutri() {
                   />
                   <Button
                     onClick={() => sendMessage()}
-                    disabled={!input.trim() || loading}
+                    disabled={!input.trim() || loading || isStreaming}
                     className="h-11 w-11 rounded-xl bg-safe hover:bg-safe/90 border-0 shadow-lg p-0 flex-shrink-0 self-end"
                   >
                     <Send className="w-4 h-4 text-white" />

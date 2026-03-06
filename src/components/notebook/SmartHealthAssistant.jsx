@@ -1,13 +1,14 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import ReactMarkdown from "react-markdown";
 import {
   Mic, Camera, X, Check, Loader2, Sparkles,
-  Keyboard, ChevronRight, ArrowLeft, ExternalLink, MapPin, Phone, AlertCircle, Send
+  Keyboard, ChevronRight, ArrowLeft, ExternalLink, MapPin, Phone, AlertCircle, Send, Copy
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 // Sound utility — reuse AudioContext to prevent memory leak
 let _audioCtx = null;
@@ -29,6 +30,11 @@ const playPop = () => {
   } catch(e) {}
 };
 
+function getTimeStr(timestamp) {
+  if (!timestamp) return "";
+  return new Date(timestamp).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+}
+
 export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   // Conversation state
   const [messages, setMessages] = useState([]);
@@ -40,6 +46,11 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   const [isFinished, setIsFinished] = useState(false);
   const [suggestedActions, setSuggestedActions] = useState([]);
   const [hasSaved, setHasSaved] = useState(false);
+
+  // Typewriter streaming
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamingText, setStreamingText] = useState("");
+  const streamingRef = useRef({ fullText: "", words: [], wordIndex: 0, timer: null, meta: {} });
 
   const recognitionRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -84,7 +95,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   // Scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isProcessing]);
+  }, [messages, isProcessing, streamingText]);
 
   // Cleanup SpeechRecognition on unmount
   useEffect(() => {
@@ -95,9 +106,49 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
     };
   }, []);
 
+  // Cleanup streaming timer on unmount
+  useEffect(() => {
+    return () => {
+      if (streamingRef.current.timer) clearInterval(streamingRef.current.timer);
+    };
+  }, []);
+
+  // --- Typewriter ---
+  const startStreaming = useCallback((fullText, meta = {}, onComplete = null) => {
+    const words = fullText.split(/(\s+)/);
+    streamingRef.current = { fullText, words, wordIndex: 0, timer: null, meta, onComplete };
+    setIsStreaming(true);
+    setStreamingText("");
+    const timer = setInterval(() => {
+      const data = streamingRef.current;
+      data.wordIndex += 2;
+      if (data.wordIndex >= data.words.length) {
+        clearInterval(timer);
+        const finalText = data.fullText;
+        const finalMeta = data.meta;
+        const cb = data.onComplete;
+        streamingRef.current = { fullText: "", words: [], wordIndex: 0, timer: null, meta: {} };
+        setIsStreaming(false);
+        setStreamingText("");
+        setMessages(prev => [...prev, { role: "assistant", content: finalText, timestamp: new Date().toISOString(), ...finalMeta }]);
+        playPop();
+        if (cb) cb();
+        return;
+      }
+      setStreamingText(data.words.slice(0, data.wordIndex).join(""));
+    }, 30);
+    streamingRef.current.timer = timer;
+  }, []);
+
   const addMessage = (msg) => {
-    setMessages(prev => [...prev, msg]);
+    setMessages(prev => [...prev, { ...msg, timestamp: msg.timestamp || new Date().toISOString() }]);
     if (msg.role === "assistant") playPop();
+  };
+
+  const handleCopy = (content) => {
+    navigator.clipboard?.writeText(content).then(() => {
+      toast.success("Copi\u00e9 !");
+    }).catch(() => {});
   };
 
   const processConversation = async (newMessages) => {
@@ -107,14 +158,6 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
         messages: newMessages,
         dogId
       });
-
-      if (data.next_question) {
-        addMessage({
-          role: "assistant",
-          content: data.next_question,
-          show_vet_map: data.show_vet_map
-        });
-      }
 
       setShowScanner(!!data.suggest_scan);
 
@@ -134,25 +177,35 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
         setIsFinished(true);
       }
 
-      if (data.suggested_actions && Array.isArray(data.suggested_actions)) {
-        setSuggestedActions(data.suggested_actions);
+      if (data.next_question) {
+        startStreaming(data.next_question, { show_vet_map: data.show_vet_map }, () => {
+          if (data.suggested_actions && Array.isArray(data.suggested_actions)) {
+            setSuggestedActions(data.suggested_actions);
+          } else {
+            setSuggestedActions([]);
+          }
+        });
       } else {
-        setSuggestedActions([]);
+        if (data.suggested_actions && Array.isArray(data.suggested_actions)) {
+          setSuggestedActions(data.suggested_actions);
+        } else {
+          setSuggestedActions([]);
+        }
       }
 
     } catch (e) {
       console.error("SmartHealthAssistant error:", e);
       const errMsg = e?.response?.data?.error || e?.message || "Erreur inconnue";
-      addMessage({ role: "assistant", content: `Oups, erreur : ${errMsg}. On peut réessayer ?` });
+      addMessage({ role: "assistant", content: `Oups, erreur : ${errMsg}. On peut r\u00e9essayer ?` });
     } finally {
       setIsProcessing(false);
     }
   };
 
   const handleSend = async (text = inputValue, image = null) => {
-    if ((!text && !image) || isProcessing) return;
+    if ((!text && !image) || isProcessing || isStreaming) return;
 
-    const newMsg = { role: "user", content: text, image_url: image };
+    const newMsg = { role: "user", content: text, image_url: image, timestamp: new Date().toISOString() };
     addMessage(newMsg);
     setInputValue("");
     setShowScanner(false);
@@ -165,7 +218,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   // --- Voice ---
   const startListening = () => {
     if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
-      alert("Dictée non supportée.");
+      alert("Dict\u00e9e non support\u00e9e.");
       return;
     }
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -185,7 +238,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    e.target.value = ""; // Reset pour pouvoir re-scanner le même fichier
+    e.target.value = "";
 
     addMessage({ role: "user", content: "Analyse du document...", type: "loading_image" });
 
@@ -194,7 +247,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       setMessages(prev => {
         const next = [...prev];
         next.pop();
-        return [...next, { role: "user", content: "", image_url: file_url }];
+        return [...next, { role: "user", content: "", image_url: file_url, timestamp: new Date().toISOString() }];
       });
       const history = [...messages, { role: "user", content: "Voici le document.", image_url: file_url }];
       await processConversation(history);
@@ -205,19 +258,17 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
         next.pop();
         return next;
       });
-      addMessage({ role: "assistant", content: "Erreur lors de l'envoi de l'image. Réessaie." });
+      addMessage({ role: "assistant", content: "Erreur lors de l'envoi de l'image. R\u00e9essaie." });
     }
   };
 
   const saveAllRecords = async () => {
     try {
-      // Fetch existing records to check for duplicates
       const existingRecords = await base44.entities.HealthRecord.filter({ dog_id: dogId });
       let savedCount = 0;
       let skippedCount = 0;
 
       for (const rec of pendingRecords) {
-        // Duplicate check for vaccines: same type, title, and date
         if (rec.type === "vaccine") {
           const isDuplicate = existingRecords.some(
             existing => existing.type === "vaccine" && existing.title === rec.title && existing.date === rec.date
@@ -233,7 +284,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       }
 
       if (skippedCount > 0) {
-        alert(`${skippedCount} vaccin(s) déjà enregistré(s) pour cette date — ignoré(s).`);
+        alert(`${skippedCount} vaccin(s) d\u00e9j\u00e0 enregistr\u00e9(s) pour cette date \u2014 ignor\u00e9(s).`);
       }
 
       setPendingRecords([]);
@@ -246,7 +297,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       }, 2000);
     } catch (e) {
       console.error(e);
-      alert("Erreur lors de la sauvegarde. Réessaie.");
+      alert("Erreur lors de la sauvegarde. R\u00e9essaie.");
     }
   };
 
@@ -269,7 +320,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
             <Sparkles className="w-4.5 h-4.5 text-white" />
           </div>
           <div>
-            <p className="font-bold text-foreground text-sm leading-tight">Assistant Santé</p>
+            <p className="font-bold text-foreground text-sm leading-tight">Assistant Sant&eacute;</p>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-safe animate-pulse" />
               <span className="text-[10px] text-muted-foreground">En ligne</span>
@@ -282,7 +333,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
               <Check className="w-3.5 h-3.5 mr-1" /> Sauver ({pendingRecords.length})
             </Button>
           )}
-          {messages.length > 2 && !isProcessing && !isFinished && (
+          {messages.length > 2 && !isProcessing && !isStreaming && !isFinished && (
             <button onClick={startNewConversation} className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-slate-100">
               Nouveau
             </button>
@@ -309,8 +360,8 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex justify-center py-4">
             <div className="bg-safe/10 border border-safe/20 rounded-2xl px-6 py-4 text-center">
               <Check className="w-8 h-8 text-safe mx-auto mb-2" />
-              <p className="text-sm font-bold text-safe">Enregistré avec succès !</p>
-              <p className="text-xs text-safe/70 mt-1">Le carnet se met à jour...</p>
+              <p className="text-sm font-bold text-safe">Enregistr&eacute; avec succ&egrave;s !</p>
+              <p className="text-xs text-safe/70 mt-1">Le carnet se met &agrave; jour...</p>
             </div>
           </motion.div>
         )}
@@ -353,7 +404,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                                 : "bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-100 shadow-sm"}
                             `}
                           >
-                            {String(props.children).includes("vétérinaire") ? <MapPin className="w-3.5 h-3.5 flex-shrink-0" /> : <ExternalLink className="w-3 h-3 flex-shrink-0" />}
+                            {String(props.children).includes("v\u00e9t\u00e9rinaire") ? <MapPin className="w-3.5 h-3.5 flex-shrink-0" /> : <ExternalLink className="w-3 h-3 flex-shrink-0" />}
                             <span className="truncate">{props.children}</span>
                           </a>
                         ),
@@ -365,7 +416,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                   </div>
 
                   {/* Inline Suggestions */}
-                  {msg.role === "assistant" && i === messages.length - 1 && !isProcessing && suggestedActions.length > 0 && (
+                  {msg.role === "assistant" && i === messages.length - 1 && !isProcessing && !isStreaming && suggestedActions.length > 0 && (
                     <div className="mt-2.5 flex flex-wrap gap-1.5">
                       {suggestedActions.map((action, idx) => (
                         <button
@@ -381,6 +432,20 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                 </div>
               </motion.div>
 
+              {/* Actions: time + copy */}
+              <div className={`flex items-center gap-2.5 px-1 mt-1 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                <span className="text-[9px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
+                {msg.role === "assistant" && (
+                  <button
+                    onClick={() => handleCopy(msg.content)}
+                    className="text-muted-foreground/40 hover:text-primary transition-colors"
+                    title="Copier"
+                  >
+                    <Copy className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+
               {/* VET CARD */}
               {msg.role === "assistant" && msg.show_vet_map && (
                 <motion.div
@@ -393,13 +458,13 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                       <AlertCircle className="w-4 h-4 text-red-600" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-red-900 text-xs">Consultation recommandée</h4>
+                      <h4 className="font-bold text-red-900 text-xs">Consultation recommand&eacute;e</h4>
                       <p className="text-[10px] text-red-700">Trouver un professionnel</p>
                     </div>
                   </div>
                   <div className="p-2 grid grid-cols-2 gap-2">
                     <a
-                      href="https://www.google.com/maps/search/vétérinaire+à+proximité"
+                      href="https://www.google.com/maps/search/v%C3%A9t%C3%A9rinaire+%C3%A0+proximit%C3%A9"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-slate-50 transition-colors"
@@ -408,7 +473,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                       <span className="text-xs font-semibold text-slate-700">Maps</span>
                     </a>
                     <a
-                      href="https://www.google.com/search?q=urgence+vétérinaire+à+proximité"
+                      href="https://www.google.com/search?q=urgence+v%C3%A9t%C3%A9rinaire+%C3%A0+proximit%C3%A9"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-slate-50 transition-colors"
@@ -422,8 +487,25 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
             </div>
           ))}
 
+          {/* Typewriter streaming message */}
+          {isStreaming && streamingText && (
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-start">
+              <div className="max-w-[85%] rounded-2xl rounded-bl-sm p-3.5 shadow-sm bg-white border border-border/50 text-foreground">
+                <div className="text-sm leading-relaxed markdown-content break-words">
+                  <ReactMarkdown
+                    components={{
+                      p: ({node, ...props}) => <p {...props} className="mb-1.5 last:mb-0" />
+                    }}
+                  >
+                    {streamingText}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {/* Processing indicator */}
-          {isProcessing && messages.length > 0 && (
+          {((isProcessing && !isStreaming) || (isStreaming && !streamingText)) && messages.length > 0 && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
               <div className="bg-white border border-border/50 rounded-2xl rounded-bl-sm p-3 flex gap-1.5 shadow-sm">
                 <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary/40 rounded-full" />
@@ -458,7 +540,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
           <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
             <Button onClick={saveAllRecords} className="w-full rounded-full bg-safe hover:bg-safe/90 text-white h-11 text-sm font-medium shadow-md">
               <Check className="w-4 h-4 mr-2" />
-              Enregistrer {pendingRecords.length} entrée{pendingRecords.length > 1 ? 's' : ''} dans le carnet
+              Enregistrer {pendingRecords.length} entr&eacute;e{pendingRecords.length > 1 ? 's' : ''} dans le carnet
             </Button>
           </motion.div>
         ) : (
@@ -494,13 +576,13 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                placeholder="Écris ou parle..."
-                disabled={isProcessing}
+                placeholder="\u00c9cris ou parle..."
+                disabled={isProcessing || isStreaming}
                 className="h-10 rounded-full pl-4 pr-11 border-border bg-slate-50 focus:bg-white transition-colors text-sm"
               />
               <button
                 onClick={() => handleSend()}
-                disabled={!inputValue.trim() || isProcessing}
+                disabled={!inputValue.trim() || isProcessing || isStreaming}
                 className="absolute right-1 top-1 h-8 w-8 bg-primary rounded-full flex items-center justify-center text-white shadow-sm disabled:opacity-40 transition-all hover:scale-105 active:scale-95"
               >
                 <Send className="w-4 h-4" />
