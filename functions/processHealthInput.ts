@@ -118,7 +118,7 @@ Deno.serve(async (req) => {
           historyContext += `\nSTREAK : ${streak.current_streak} jour(s)`;
         }
       } catch (e) {
-        console.warn("[WARN] Error fetching history:", e.message);
+        console.warn("[WARN] Error fetching history:", e?.message || String(e));
       }
     }
 
@@ -238,7 +238,7 @@ Retourne TOUJOURS du JSON valide :
         parsedResult = JSON.parse(llmResult.response);
       }
     } catch (parseErr) {
-      console.error("processHealthInput JSON parse error:", parseErr.message);
+      console.error("processHealthInput JSON parse error:", parseErr?.message || String(parseErr));
       return Response.json({ next_question: "Pardon, je n'ai pas compris la reponse. Peux-tu reformuler ?", records_to_save: [], suggested_actions: [], is_finished: false }, { status: 200 });
     }
 
@@ -246,6 +246,6 @@ Retourne TOUJOURS du JSON valide :
 
   } catch (error) {
     console.error("processHealthInput error:", error);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ error: error?.message || String(error) }, { status: 500 });
   }
 });
