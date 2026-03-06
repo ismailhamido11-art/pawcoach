@@ -58,13 +58,13 @@ Deno.serve(async (req) => {
           body: `Bonjour !\n\nVoici le résumé du mois de ${monthName} pour ${dog.name} :\n\n• Visites vétérinaire : ${vetVisits}\n${weightLine}\n• Notes ajoutées : ${notes}\n\nBravo pour le suivi de ${dog.name} ! 🌟\n\n— PawCoach`,
         });
       } catch (emailErr) {
-        console.error(`monthlySummary email failed for ${user.email}:`, emailErr.message);
+        console.error(`monthlySummary email failed for ${user.email}:`, emailErr?.message || String(emailErr));
       }
     }
 
-    return Response.json({ ok: true, processed: dogs.length });
+    return Response.json({ ok: true, processed: (dogs || []).length });
   } catch (error) {
     console.error("monthlySummary error:", error);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ error: error?.message || String(error) }, { status: 500 });
   }
 });
