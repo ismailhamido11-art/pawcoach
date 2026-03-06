@@ -11,10 +11,11 @@ function formatDate(d) {
 }
 
 function buildHealthSummaryHTML(dog, records) {
-  const vaccines = records.filter(r => r.type === 'vaccine').sort((a,b) => new Date(b.date) - new Date(a.date));
-  const weights = records.filter(r => r.type === 'weight').sort((a,b) => new Date(b.date) - new Date(a.date));
-  const visits = records.filter(r => r.type === 'vet_visit').sort((a,b) => new Date(b.date) - new Date(a.date));
-  const meds = records.filter(r => r.type === 'medication').sort((a,b) => new Date(b.date) - new Date(a.date));
+  const safeRecords = records || [];
+  const vaccines = safeRecords.filter(r => r.type === 'vaccine').sort((a,b) => new Date(b.date) - new Date(a.date));
+  const weights = safeRecords.filter(r => r.type === 'weight').sort((a,b) => new Date(b.date) - new Date(a.date));
+  const visits = safeRecords.filter(r => r.type === 'vet_visit').sort((a,b) => new Date(b.date) - new Date(a.date));
+  const meds = safeRecords.filter(r => r.type === 'medication').sort((a,b) => new Date(b.date) - new Date(a.date));
 
   const age = dog.birth_date ? `${Math.floor((Date.now() - new Date(dog.birth_date)) / (365.25 * 24 * 60 * 60 * 1000))} ans` : 'Non renseigné';
   const lastWeight = weights[0];
@@ -225,7 +226,7 @@ Deno.serve(async (req) => {
       if (!dogs || dogs.length === 0) return Response.json({ error: 'Dog not found' }, { status: 404 });
       const dog = dogs[0];
       const allRecords = await base44.asServiceRole.entities.HealthRecord.filter({ dog_id: dogId });
-      const records = allRecords.filter(r => sharedSections.includes(r.type));
+      const records = (allRecords || []).filter(r => sharedSections.includes(r.type));
       let checkins = [];
       if (sharedSections.includes('checkins')) {
         checkins = await base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dogId });
@@ -253,6 +254,6 @@ Deno.serve(async (req) => {
 
   } catch (error) {
     console.error('vetAccess error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ error: error?.message || String(error) }, { status: 500 });
   }
 });
