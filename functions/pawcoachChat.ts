@@ -392,6 +392,7 @@ ${topicsInstruction ? `\nPRIORITES : ${topicsInstruction}` : ""}`;
     return Response.json({ content, messages_remaining: user._messagesRemaining });
 
   } catch (error) {
+    console.error("pawcoachChat error:", error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
