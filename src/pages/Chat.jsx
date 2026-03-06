@@ -203,7 +203,7 @@ export default function Chat() {
       }
 
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
-      if (dogs.length > 0) {
+      if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
         setDog(d);
         // Always start fresh — history stays in DB but each visit = new conversation
