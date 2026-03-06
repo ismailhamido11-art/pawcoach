@@ -231,15 +231,21 @@ Retourne TOUJOURS du JSON valide :
 
     // Parse the JSON response
     let parsedResult = llmResult;
-    if (typeof llmResult === "string") {
-      parsedResult = JSON.parse(llmResult);
-    } else if (llmResult.response && typeof llmResult.response === "string") {
-      parsedResult = JSON.parse(llmResult.response);
+    try {
+      if (typeof llmResult === "string") {
+        parsedResult = JSON.parse(llmResult);
+      } else if (llmResult.response && typeof llmResult.response === "string") {
+        parsedResult = JSON.parse(llmResult.response);
+      }
+    } catch (parseErr) {
+      console.error("processHealthInput JSON parse error:", parseErr.message);
+      return Response.json({ next_question: "Pardon, je n'ai pas compris la reponse. Peux-tu reformuler ?", records_to_save: [], suggested_actions: [], is_finished: false }, { status: 200 });
     }
 
     return Response.json(parsedResult);
 
   } catch (error) {
+    console.error("processHealthInput error:", error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

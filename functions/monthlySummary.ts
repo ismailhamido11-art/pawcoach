@@ -50,16 +50,21 @@ Deno.serve(async (req) => {
         ? `• Variation de poids : ${weightChange > 0 ? "+" : ""}${weightChange} kg`
         : "• Poids : pas de nouvelle mesure ce mois-ci";
 
-      await base44.asServiceRole.integrations.Core.SendEmail({
-        to: user.email,
-        from_name: "PawCoach",
-        subject: `🐾 Résumé de ${monthName} pour ${dog.name}`,
-        body: `Bonjour !\n\nVoici le résumé du mois de ${monthName} pour ${dog.name} :\n\n• Visites vétérinaire : ${vetVisits}\n${weightLine}\n• Notes ajoutées : ${notes}\n\nBravo pour le suivi de ${dog.name} ! 🌟\n\n— PawCoach`,
-      });
+      try {
+        await base44.asServiceRole.integrations.Core.SendEmail({
+          to: user.email,
+          from_name: "PawCoach",
+          subject: `🐾 Résumé de ${monthName} pour ${dog.name}`,
+          body: `Bonjour !\n\nVoici le résumé du mois de ${monthName} pour ${dog.name} :\n\n• Visites vétérinaire : ${vetVisits}\n${weightLine}\n• Notes ajoutées : ${notes}\n\nBravo pour le suivi de ${dog.name} ! 🌟\n\n— PawCoach`,
+        });
+      } catch (emailErr) {
+        console.error(`monthlySummary email failed for ${user.email}:`, emailErr.message);
+      }
     }
 
     return Response.json({ ok: true, processed: dogs.length });
   } catch (error) {
+    console.error("monthlySummary error:", error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
