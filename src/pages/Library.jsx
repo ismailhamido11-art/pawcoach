@@ -283,12 +283,16 @@ export default function Library() {
                             <Home className="w-3 h-3" /> Activer
                           </button>
                         )}
-                        {isNutriPlan && !b.is_active && (
+                        {isNutriPlan && (
                           <button
                             onClick={e => { e.stopPropagation(); handleActivateNutritionPlan(b.id); }}
-                            className="h-7 px-2.5 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center gap-1 text-emerald-700 text-[10px] font-semibold"
+                            className={`h-7 px-2.5 rounded-lg flex items-center gap-1 text-[10px] font-semibold ${
+                              b.is_active
+                                ? "bg-emerald-100 border border-emerald-300 text-emerald-800"
+                                : "bg-emerald-50 border border-emerald-200 text-emerald-700"
+                            }`}
                           >
-                            <Home className="w-3 h-3" /> Activer
+                            <Home className="w-3 h-3" /> {b.is_active ? "Reactiver" : "Activer"}
                           </button>
                         )}
                         <button

@@ -37,6 +37,15 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
     if (!plan || !dog || !user) return;
     setSaving(true);
     try {
+      // Deactivate all existing plans before creating the new active one
+      const existing = await base44.entities.NutritionPlan.filter(
+        { dog_id: dog.id, owner_email: user.email }
+      ).catch(() => []);
+      await Promise.all(
+        (existing || []).filter(p => p.is_active).map(p =>
+          base44.entities.NutritionPlan.update(p.id, { is_active: false })
+        )
+      );
       await base44.entities.NutritionPlan.create({
         dog_id: dog.id,
         owner_email: user.email,
