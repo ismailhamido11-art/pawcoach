@@ -216,7 +216,7 @@ export default function Home() {
 
         {/* Block 3: Bento Feature Grid */}
         <div className="mt-3">
-          <BentoGrid records={records} exercises={exercises} scans={scans} user={user} />
+          <BentoGrid records={records} exercises={exercises} scans={scans} user={user} checkins={recentCheckins} dailyLogs={dailyLogs} />
         </div>
 
         {/* Block 4: Streak Bar */}

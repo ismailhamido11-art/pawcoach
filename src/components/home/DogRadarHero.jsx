@@ -171,7 +171,7 @@ export default function DogRadarHero({ user, dog, streak, checkins, records, exe
             </div>
           </div>
 
-          {/* Nom + race */}
+          {/* Nom + race + contextual summary */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -182,6 +182,17 @@ export default function DogRadarHero({ user, dog, streak, checkins, records, exe
             {dog?.breed && (
               <p className="text-white/50 text-xs mt-0.5">{dog.breed}{dog.weight ? ` · ${dog.weight} kg` : ""}</p>
             )}
+            {(() => {
+              const avg = Math.round(arcs.reduce((s, a) => s + a.score, 0) / arcs.length);
+              const name = dog?.name || "Ton chien";
+              let text, color;
+              if (avg >= 75) { text = `${name} est en pleine forme`; color = "#10b981"; }
+              else if (avg >= 50) { text = "Quelques points a surveiller"; color = "#d97706"; }
+              else { text = "A besoin d'attention"; color = "#ef4444"; }
+              return (
+                <p className="text-[11px] font-medium mt-1.5" style={{ color: `${color}99` }}>{text}</p>
+              );
+            })()}
           </motion.div>
 
           {/* Légende des arcs */}
