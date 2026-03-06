@@ -84,51 +84,68 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       ? `\n## PRÉFÉRENCES ALIMENTAIRES DU PROPRIÉTAIRE\n- Marques préférées: ${dietPrefs.preferred_brands ? JSON.parse(dietPrefs.preferred_brands).join(", ") : "non précisées"}\n- Aliments refusés par le chien: ${dietPrefs.disliked_foods || "aucun"}\n- Horaires repas: matin ${dietPrefs.meal_times ? JSON.parse(dietPrefs.meal_times).morning : "07:30"}, soir ${dietPrefs.meal_times ? JSON.parse(dietPrefs.meal_times).evening : "18:30"}\n- Budget mensuel: ${({ low: "économique (<30€)", medium: "standard (30-70€)", high: "premium (>70€)" })[dietPrefs.budget_monthly] || "standard"}\n- Préférence bio: ${dietPrefs.organic_preference ? "Oui" : "Non"}\n- Notes: ${dietPrefs.notes || "aucune"}`
       : "";
 
-    const prompt = `Tu es un nutritionniste vétérinaire expert. Génère un plan alimentaire hebdomadaire ultra-précis pour ce chien.
+    const prompt = `Tu es un nutritionniste veterinaire. Genere un plan repas hebdomadaire pour ce chien.
 
-## PROFIL DU CHIEN
+## PROFIL
 - Nom: ${dog.name}
 - Race: ${dog.breed || "inconnue"}
-- Stade de vie: ${lifeStage} (${getAge(dog.birth_date) || "âge inconnu"})
-- Poids actuel: ${dog.weight ? dog.weight + " kg" : "inconnu"}
-- Niveau d'activité: ${activityMap[dog.activity_level] || "modéré"}
-- Stérilisé(e): ${dog.neutered ? "Oui (besoin calorique réduit de 20-25%)" : "Non"}
-- Type d'alimentation actuel: ${dietMap[dog.diet_type] || "non précisé"}
-- Marque actuelle: ${dog.diet_brand || "non précisée"}
-- Allergies/intolérances: ${dog.allergies || "aucune connue"}
-- Problèmes de santé: ${dog.health_issues || "aucun"}
-- Restrictions alimentaires: ${dog.diet_restrictions || "aucune"}
+- Stade: ${lifeStage} (${getAge(dog.birth_date) || "age inconnu"})
+- Poids: ${dog.weight ? dog.weight + " kg" : "inconnu"}
+- Activite: ${activityMap[dog.activity_level] || "modere"}
+- Sterilise: ${dog.neutered ? "Oui" : "Non"}
+- Alimentation: ${dietMap[dog.diet_type] || "non precise"} ${dog.diet_brand ? `(${dog.diet_brand})` : ""}
+- Allergies: ${dog.allergies || "aucune"}
+- Sante: ${dog.health_issues || "aucun probleme"}
 ${scansContext}${prefsContext}
 
-## FORMAT DE RÉPONSE ATTENDU
+## FORMAT OBLIGATOIRE — respecte exactement cette structure
 
-### 🔥 Besoins caloriques journaliers
-Calcule le RER (Resting Energy Requirement) = 70 × (poids en kg)^0.75, puis multiplie par le facteur adapté (stérilisé, activité, stade de vie). Donne le total en kcal/jour.
+### Resume
+- Besoin calorique : [X] kcal/jour
+- Quantite quotidienne : [X]g de croquettes (ou detail selon type alimentation)
 
-### 📊 Quantités recommandées
-Selon le type d'alimentation (${dietMap[dog.diet_type] || "croquettes"}) :
-- Si croquettes : grammes/jour (basé sur ~3500 kcal/kg de croquettes standard, à ajuster selon la marque)
-- Si BARF : % du poids corporel (2-3% pour adulte) avec répartition muscles/abats/os
-- Si ration ménagère : grammes totaux avec sources de protéines, féculents, légumes
-- Répartition matin/soir en pourcentage
+### Lundi
+- Matin : [aliment, quantite en g]
+- Soir : [aliment, quantite en g]
 
-### 📅 Plan semaine (Lundi → Dimanche)
-Pour chaque jour : repas matin (heure, aliment, quantité en g) + repas soir (heure, aliment, quantité en g) + éventuelles friandises/compléments.
-Varie les sources de protéines au cours de la semaine.
+### Mardi
+- Matin : [aliment, quantite en g]
+- Soir : [aliment, quantite en g]
 
-### 🥩 Aliments recommandés en complément
-Liste des légumes, fruits et suppléments bénéfiques pour cette race/âge avec quantités max hebdomadaires.
+### Mercredi
+- Matin : [aliment, quantite en g]
+- Soir : [aliment, quantite en g]
 
-### ❌ Aliments strictement interdits
-Pour ${dog.name} spécifiquement (prends en compte la race, l'âge et les allergies renseignées).
+### Jeudi
+- Matin : [aliment, quantite en g]
+- Soir : [aliment, quantite en g]
 
-### 🛒 3 marques recommandées
-Pour chaque marque : nom, gamme adaptée, kcal/100g, pourquoi elle convient à ${dog.name}, fourchette de prix.
+### Vendredi
+- Matin : [aliment, quantite en g]
+- Soir : [aliment, quantite en g]
 
-### 💡 Conseil du nutritionniste
-1 conseil personnalisé spécifique au profil de ${dog.name} (race, âge, santé).
+### Samedi
+- Matin : [aliment, quantite en g]
+- Soir : [aliment, quantite en g]
 
-Sois très précis avec les grammes et calories. Adapte tout au profil exact.`;
+### Dimanche
+- Matin : [aliment, quantite en g]
+- Soir : [aliment, quantite en g]
+
+### Complements utiles
+- [legume/fruit/supplement] : [quantite max/semaine]
+
+### A eviter
+- [aliments interdits pour ce profil]
+
+### Conseil
+- 1 conseil personnalise pour ${dog.name}
+
+## REGLES
+- PAS de formules mathematiques, PAS de tableaux, PAS de calculs detailles
+- Chaque jour doit avoir ses propres repas (varie les proteines dans la semaine)
+- Sois concis : 1-2 lignes max par repas
+- Adapte les quantites au poids et a l'activite du chien`;
 
     try {
       const response = await base44.integrations.Core.InvokeLLM({ prompt });

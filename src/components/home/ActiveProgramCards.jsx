@@ -118,38 +118,47 @@ function extractTodayMeals(planText, todayName) {
   const lines = planText.split("\n");
   const dayLower = todayName.toLowerCase();
 
-  // Find the line that contains today's day name
-  const dayIndex = lines.findIndex(l =>
-    l.toLowerCase().includes(dayLower) &&
-    !l.toLowerCase().includes("dimanche") !== (dayLower === "dimanche") // avoid false matches
-      ? l.toLowerCase().includes(dayLower)
-      : true
-  );
+  // Strategy 1: Find a markdown header with the day name (### Lundi, ## Lundi, etc.)
+  let dayIndex = lines.findIndex(l => {
+    const trimmed = l.trim().toLowerCase();
+    return (trimmed.startsWith("#") && trimmed.includes(dayLower));
+  });
+
+  // Strategy 2: Find a line that starts with or is primarily the day name
+  // (skip lines with formulas, calculations, or long text before the day name)
+  if (dayIndex === -1) {
+    dayIndex = lines.findIndex(l => {
+      const trimmed = l.trim().toLowerCase();
+      // Must start with or be dominated by the day name, not just contain it
+      return (trimmed.startsWith(dayLower) || trimmed.startsWith(`**${dayLower}`));
+    });
+  }
+
   if (dayIndex === -1) return null;
 
   const meals = [];
-  for (let i = dayIndex; i < Math.min(dayIndex + 10, lines.length); i++) {
+  for (let i = dayIndex + 1; i < Math.min(dayIndex + 8, lines.length); i++) {
     const raw = lines[i];
+    const trimmed = raw.trim();
+
+    // Stop at next section header or next day
+    if (trimmed.startsWith("##")) break;
+    const hitOtherDay = DAY_NAMES.some(d =>
+      d.toLowerCase() !== dayLower &&
+      (trimmed.toLowerCase().startsWith(d.toLowerCase()) ||
+       trimmed.toLowerCase().startsWith(`**${d.toLowerCase()}`))
+    );
+    if (hitOtherDay) break;
+
     const clean = cleanLine(raw);
-    if (!clean || clean.length < 3) continue;
-
-    // Stop if we hit another day (not the current one)
-    if (i > dayIndex) {
-      const hitOtherDay = DAY_NAMES.some(d =>
-        d.toLowerCase() !== dayLower && raw.toLowerCase().includes(d.toLowerCase())
-      );
-      if (hitOtherDay) break;
-      // Stop at section headers
-      if (raw.trim().startsWith("###") || raw.trim().startsWith("##")) break;
-    }
-
-    // Skip the day name line itself if it's just the name
-    if (i === dayIndex && clean.toLowerCase() === dayLower) continue;
+    // Skip empty, very short, or formula-like lines
+    if (!clean || clean.length < 5) continue;
+    if (clean.includes("=") || clean.includes("\\times") || clean.includes("^")) continue;
 
     meals.push(clean);
   }
 
-  return meals.length > 0 ? meals.slice(0, 5) : null;
+  return meals.length > 0 ? meals.slice(0, 4) : null;
 }
 
 function NutritionPlanCard({ plan }) {
