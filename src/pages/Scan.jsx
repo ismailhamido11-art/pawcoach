@@ -188,11 +188,11 @@ export default function Scan() {
       const u = await base44.auth.me();
       setUser(u);
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
-      if (dogs.length > 0) {
+      if (dogs?.length > 0) {
         const activeDog = getActiveDog(dogs);
         setDog(activeDog);
         const scans = await base44.entities.FoodScan.filter({ dog_id: activeDog.id });
-        setHistory(scans.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
+        setHistory((scans || []).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
       }
     } catch (e) {
       console.error(e);
