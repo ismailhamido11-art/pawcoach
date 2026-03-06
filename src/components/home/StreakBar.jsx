@@ -24,13 +24,31 @@ export default function StreakBar({ streak }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="mx-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-border/30 px-4 py-3 shadow-sm"
+      className="mx-4 rounded-2xl border px-4 py-3 shadow-sm relative overflow-hidden"
+      style={{
+        background: `linear-gradient(135deg, white 0%, ${level.color}06 100%)`,
+        borderColor: `${level.color}20`,
+      }}
     >
-      <div className="flex items-center gap-3">
+      {/* Glow matching level color */}
+      <div
+        className="absolute -top-4 -left-4 w-16 h-16 rounded-full opacity-[0.07]"
+        style={{ background: level.color }}
+      />
+
+      <div className="relative flex items-center gap-3">
         <div className="flex items-center gap-1.5">
-          <Flame className="w-4 h-4" style={{ color: level.color }} />
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{
+              background: `linear-gradient(135deg, ${level.color}20, ${level.color}10)`,
+              border: `1px solid ${level.color}25`,
+            }}
+          >
+            <Flame className="w-4 h-4" style={{ color: level.color }} />
+          </div>
           <span className="text-lg font-black" style={{ color: level.color }}>{current}</span>
-          <span className="text-xs text-muted-foreground font-medium">jours</span>
+          <span className="text-[10px] text-muted-foreground font-medium">jours</span>
         </div>
 
         <div className="flex-1">
@@ -40,10 +58,10 @@ export default function StreakBar({ streak }) {
               <span className="text-[10px] text-muted-foreground">{nextLevel.label} dans {nextLevel.min - current}j</span>
             )}
           </div>
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+          <div className="h-1.5 bg-muted/50 rounded-full overflow-hidden">
             <motion.div
               className="h-full rounded-full"
-              style={{ background: level.color }}
+              style={{ background: `linear-gradient(90deg, ${level.color}, ${level.color}cc)` }}
               initial={{ width: 0 }}
               animate={{ width: `${Math.min(progress, 100)}%` }}
               transition={{ delay: 0.5, duration: 0.9, ease: "easeOut" }}
@@ -52,7 +70,7 @@ export default function StreakBar({ streak }) {
         </div>
 
         {current >= longest && longest > 1 && (
-          <div className="flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full">
+          <div className="flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
             <Trophy className="w-3 h-3 text-emerald-500" />
             <span className="text-[9px] font-bold text-emerald-600">Record</span>
           </div>

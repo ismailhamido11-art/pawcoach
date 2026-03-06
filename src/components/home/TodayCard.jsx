@@ -61,10 +61,17 @@ export default function TodayCard({ dog, user, todayCheckin, streak, records, ex
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 400, damping: 30 }}
-        className="mx-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-border/30 p-4 shadow-sm"
+        className="mx-4 rounded-2xl border p-4 shadow-sm relative overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, white 0%, rgba(45, 159, 130, 0.03) 100%)",
+          borderColor: "rgba(45, 159, 130, 0.15)",
+        }}
       >
-        <div className="flex items-center gap-2 mb-3">
-          <Sparkles className="w-4 h-4 text-primary" />
+        <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-primary opacity-[0.05]" />
+        <div className="relative flex items-center gap-2 mb-3">
+          <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+          </div>
           <p className="text-sm font-bold text-foreground">{timeLabel} pour {dog?.name}</p>
         </div>
         <InlineCheckin dogName={dog?.name || "ton chien"} onSubmit={onCheckin} submitting={submitting} />
@@ -78,31 +85,52 @@ export default function TodayCard({ dog, user, todayCheckin, streak, records, ex
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
-      className="mx-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-white border border-emerald-200/50 p-4 shadow-sm"
+      className="mx-4 rounded-2xl border p-4 shadow-sm relative overflow-hidden"
+      style={{
+        background: "linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 40%, white 100%)",
+        borderColor: "rgba(16, 185, 129, 0.2)",
+      }}
     >
-      <div className="flex items-center gap-2 mb-2">
-        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+      {/* Subtle glow */}
+      <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-emerald-400 opacity-[0.06]" />
+
+      <div className="relative flex items-center gap-2 mb-3">
+        <div className="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+        </div>
         <p className="text-sm font-bold text-emerald-700">Check-in fait</p>
-        <span className="text-xs text-muted-foreground ml-auto">
-          Humeur {todayCheckin.mood}/4 | Energie {todayCheckin.energy}/3
-        </span>
+        <div className="ml-auto flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium">
+          <span className="px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600">{todayCheckin.mood}/4</span>
+          <span className="px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600">{todayCheckin.energy}/3</span>
+        </div>
       </div>
 
       {todayCheckin.ai_response && (
-        <p className="text-sm text-foreground/80 leading-relaxed italic mb-3">
-          "{todayCheckin.ai_response}"
-        </p>
+        <div className="relative bg-white/70 backdrop-blur-sm rounded-xl px-3.5 py-3 mb-3 border border-emerald-100/50">
+          <Sparkles className="w-3 h-3 text-emerald-500 absolute top-2.5 right-2.5 opacity-60" />
+          <p className="text-[13px] text-foreground/80 leading-relaxed italic pr-5">
+            "{todayCheckin.ai_response}"
+          </p>
+        </div>
       )}
 
       {topRec && (
         <Link to={createPageUrl(topRec.page)}>
-          <div className="flex items-center gap-3 bg-white/70 rounded-xl px-3 py-2.5 border border-border/20">
-            <topRec.icon className="w-4 h-4 flex-shrink-0" style={{ color: topRec.iconColor }} />
+          <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-xl px-3 py-2.5 border border-border/20 transition-colors hover:bg-white">
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+              style={{
+                background: `linear-gradient(135deg, ${topRec.iconColor}20, ${topRec.iconColor}10)`,
+                border: `1px solid ${topRec.iconColor}25`,
+              }}
+            >
+              <topRec.icon className="w-4 h-4" style={{ color: topRec.iconColor }} />
+            </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-bold text-foreground truncate">{topRec.label}</p>
               <p className="text-[10px] text-muted-foreground">{topRec.sub}</p>
             </div>
-            <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
+            <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40" />
           </div>
         </Link>
       )}
