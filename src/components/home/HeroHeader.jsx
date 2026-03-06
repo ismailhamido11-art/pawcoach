@@ -7,7 +7,7 @@ import Illustration from "../illustrations/Illustration";
 import DogAvatar from "../dogtwin/DogAvatar";
 import { useDogAvatarState } from "../dogtwin/useDogAvatarState";
 
-export default function HeroHeader({ user, dog, streak, checkins, records, exercises, scans, dailyLogs }) {
+export default function HeroHeader({ user, dog, streak, checkins = [], records = [], exercises = [], scans = [], dailyLogs = [] }) {
   const navigate = useNavigate();
   const currentStreak = streak?.current_streak || 0;
   const firstName = user?.full_name?.split(" ")[0] || "l'ami";

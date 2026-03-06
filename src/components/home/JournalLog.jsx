@@ -28,7 +28,7 @@ const itemVariant = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120 } },
 };
 
-export default function JournalLog({ checkins, todayCheckin }) {
+export default function JournalLog({ checkins = [], todayCheckin }) {
   const items = checkins.slice(todayCheckin ? 1 : 0, 6);
   if (items.length === 0) return null;
 

@@ -11,7 +11,7 @@ import { useDogAvatarState } from "../dogtwin/useDogAvatarState";
 
 // Calcule les 4 scores à partir des données réelles
 // Chaque arc retourne hasData + hint pour transparence
-function computeArcs({ checkins, streak, records, exercises, scans }) {
+function computeArcs({ checkins = [], streak, records = [], exercises = [], scans = [] }) {
   const recent = checkins.slice(-7);
 
   // 1. Santé (checkins humeur + énergie + vaccins)
@@ -109,7 +109,7 @@ function Arc({ index, total, score, color, size }) {
 const moodEmoji = { excited: "🤩", happy: "😊", neutral: "😌", tired: "😴" };
 const moodText  = { excited: "Très heureux !", happy: "En forme", neutral: "Calme", tired: "Fatigué" };
 
-export default function DogRadarHero({ user, dog, streak, checkins, records, exercises, scans, dailyLogs }) {
+export default function DogRadarHero({ user, dog, streak, checkins = [], records = [], exercises = [], scans = [], dailyLogs = [] }) {
   const navigate = useNavigate();
   const firstName = user?.full_name?.split(" ")[0] || "toi";
   const hour = new Date().getHours();

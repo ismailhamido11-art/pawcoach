@@ -6,7 +6,7 @@ import { buildRecommendations } from "@/utils/recommendations";
 import { isUserOnTrial, getTrialDaysLeft } from "@/utils/premium";
 import InlineCheckin from "./InlineCheckin";
 
-export default function TodayCard({ dog, user, todayCheckin, streak, records, exercises, scans, dailyLogs, onCheckin, submitting, diagnosisReports, nutritionPlans }) {
+export default function TodayCard({ dog, user, todayCheckin, streak, records = [], exercises = [], scans = [], dailyLogs = [], onCheckin, submitting, diagnosisReports = [], nutritionPlans = [] }) {
   const hour = new Date().getHours();
   const timeLabel = hour < 12 ? "Ce matin" : hour < 18 ? "Cet apres-midi" : "Ce soir";
 

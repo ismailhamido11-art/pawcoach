@@ -4,7 +4,7 @@ import { AlertCircle, TrendingDown, Lock } from 'lucide-react';
 import { isUserPremium } from '@/utils/premium';
 import { motion } from 'framer-motion';
 
-export default function HealthScore({ dog, user, todayCheckin, records, scans, dailyLogs }) {
+export default function HealthScore({ dog, user, todayCheckin, records = [], scans = [], dailyLogs = [] }) {
   const [score, setScore] = useState(null);
   const [insights, setInsights] = useState([]);
   const [alert, setAlert] = useState(null);

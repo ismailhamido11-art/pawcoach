@@ -18,7 +18,7 @@ function getLast7Days() {
   return days;
 }
 
-function computeTileData({ records, exercises, scans, user, checkins, dailyLogs }) {
+function computeTileData({ records = [], exercises = [], scans = [], user, checkins = [], dailyLogs = [] }) {
   const today = getTodayString();
   const isPremium = isUserPremium(user);
   const last7 = getLast7Days();
@@ -119,7 +119,7 @@ const stagger = {
   show: { transition: { staggerChildren: 0.08 } },
 };
 
-export default function BentoGrid({ records, exercises, scans, user, checkins, dailyLogs }) {
+export default function BentoGrid({ records = [], exercises = [], scans = [], user, checkins = [], dailyLogs = [] }) {
   const tiles = computeTileData({ records, exercises, scans, user, checkins, dailyLogs });
 
   return (

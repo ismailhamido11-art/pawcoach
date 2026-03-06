@@ -44,7 +44,7 @@ function getDayOfYear() {
   return Math.floor((now - start) / (1000 * 60 * 60 * 24));
 }
 
-export default function DailyCoaching({ dog, records, exercises, scans, dailyLogs, todayCheckin, streak, diagnosisReports, nutritionPlans }) {
+export default function DailyCoaching({ dog, records = [], exercises = [], scans = [], dailyLogs = [], todayCheckin, streak, diagnosisReports = [], nutritionPlans = [] }) {
   const dayIndex = getDayOfYear();
   const tip = TIPS[dayIndex % TIPS.length]
     .replace(/\{name\}/g, dog?.name || "ton chien")

@@ -10,7 +10,7 @@ const item = {
   show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 120, damping: 14 } },
 };
 
-export default function SmartRecommendations({ records, exercises, scans, checkins, dailyLogs, todayCheckin, streak, onOpenFAB, diagnosisReports, nutritionPlans }) {
+export default function SmartRecommendations({ records = [], exercises = [], scans = [], checkins = [], dailyLogs = [], todayCheckin, streak, onOpenFAB, diagnosisReports = [], nutritionPlans = [] }) {
   const recs = buildRecommendations({ records, exercises, scans, checkins, dailyLogs, todayCheckin, streak, diagnosisReports, nutritionPlans });
 
   if (recs.length === 0) return null;
