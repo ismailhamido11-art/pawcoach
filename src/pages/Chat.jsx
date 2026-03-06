@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Camera, Bookmark, BookmarkCheck } from "lucide-react";
+import { Send, Camera, Bookmark, BookmarkCheck, ChevronDown, Copy, RotateCcw } from "lucide-react";
 import { DogChat } from "../components/ui/PawIllustrations";
 import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
@@ -13,11 +13,12 @@ import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
 import { createPageUrl, getActiveDog } from "@/utils";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { type: "spring", stiffness: 120, damping: 20 } };
 
+// --- Helpers ---
 function getAge(birthDate) {
   if (!birthDate) return null;
   const months = Math.floor((Date.now() - new Date(birthDate)) / (1000 * 60 * 60 * 24 * 30));
@@ -27,6 +28,36 @@ function getAge(birthDate) {
 function getTodayString() {
   return new Date().toISOString().split("T")[0];
 }
+
+function getDateLabel(timestamp) {
+  if (!timestamp) return "";
+  const d = new Date(timestamp);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (d.toDateString() === today.toDateString()) return "Aujourd'hui";
+  if (d.toDateString() === yesterday.toDateString()) return "Hier";
+  return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+}
+
+function shouldShowDateSeparator(messages, index) {
+  if (index === 0) return true;
+  const prev = new Date(messages[index - 1].timestamp);
+  const curr = new Date(messages[index].timestamp);
+  return prev.toDateString() !== curr.toDateString();
+}
+
+function getTimeStr(timestamp) {
+  if (!timestamp) return "";
+  return new Date(timestamp).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+}
+
+const mdComponents = {
+  p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
+  ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
+  li: ({ children }) => <li className="my-0.5">{children}</li>,
+  strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+};
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -40,11 +71,76 @@ export default function Chat() {
   const [pendingImage, setPendingImage] = useState(null);
   const bottomRef = useRef(null);
   const fileInputRef = useRef(null);
-
   const [bookmarked, setBookmarked] = useState({});
   const helpSent = useRef(false);
   const textareaRef = useRef(null);
 
+  // Typewriter streaming
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamingText, setStreamingText] = useState("");
+  const streamingRef = useRef({ fullText: "", words: [], wordIndex: 0, timer: null, timestamp: "" });
+
+  // Scroll-to-bottom
+  const scrollContainerRef = useRef(null);
+  const [showScrollBtn, setShowScrollBtn] = useState(false);
+
+  // Retry
+  const [lastFailedInput, setLastFailedInput] = useState(null);
+
+  // --- Typewriter ---
+  const startStreaming = useCallback((fullText, timestamp) => {
+    const words = fullText.split(/(\s+)/);
+    streamingRef.current = { fullText, words, wordIndex: 0, timer: null, timestamp };
+    setIsStreaming(true);
+    setStreamingText("");
+    const timer = setInterval(() => {
+      const data = streamingRef.current;
+      data.wordIndex += 2;
+      if (data.wordIndex >= data.words.length) {
+        clearInterval(timer);
+        const finalText = data.fullText;
+        const finalTs = data.timestamp;
+        streamingRef.current = { fullText: "", words: [], wordIndex: 0, timer: null, timestamp: "" };
+        setIsStreaming(false);
+        setStreamingText("");
+        setMessages(prev => [...prev, { role: "assistant", content: finalText, timestamp: finalTs }]);
+        return;
+      }
+      setStreamingText(data.words.slice(0, data.wordIndex).join(""));
+    }, 30);
+    streamingRef.current.timer = timer;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (streamingRef.current.timer) clearInterval(streamingRef.current.timer);
+    };
+  }, []);
+
+  // --- Scroll detection ---
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const handleScroll = () => {
+      const dist = container.scrollHeight - container.scrollTop - container.clientHeight;
+      setShowScrollBtn(dist > 200);
+    };
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!showScrollBtn) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, streamingText]);
+
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    setShowScrollBtn(false);
+  };
+
+  // --- Bookmark ---
   const handleBookmark = async (msg) => {
     if (!dog || !user || bookmarked[msg.timestamp]) return;
     const title = msg.content.replace(/[#*_`]/g, "").split("\n")[0].slice(0, 60);
@@ -58,14 +154,20 @@ export default function Chat() {
         created_at: new Date().toISOString(),
       });
       setBookmarked(prev => ({ ...prev, [msg.timestamp]: true }));
-      toast.success("Sauvegardé !", { description: "Conseil ajouté à ta bibliothèque" });
+      toast.success("Conseil sauvegarde !");
     } catch {
-      toast.error("Erreur", { description: "Impossible de sauvegarder", variant: "destructive" });
+      toast.error("Impossible de sauvegarder");
     }
   };
 
-  useEffect(() => { initChat(); }, []);
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+  // --- Copy ---
+  const handleCopy = (content) => {
+    navigator.clipboard?.writeText(content).then(() => {
+      toast.success("Copie !");
+    }).catch(() => {});
+  };
+
+  // --- Textarea auto-resize ---
   useEffect(() => {
     const ta = textareaRef.current;
     if (!ta) return;
@@ -73,6 +175,7 @@ export default function Chat() {
     ta.style.height = Math.min(ta.scrollHeight, 120) + "px";
   }, [input]);
 
+  // --- Help message from URL ---
   useEffect(() => {
     if (!initializing && dog && !helpSent.current) {
       const params = new URLSearchParams(window.location.search);
@@ -84,6 +187,9 @@ export default function Chat() {
       }
     }
   }, [initializing, dog]);
+
+  // --- Init ---
+  useEffect(() => { initChat(); }, []);
 
   const initChat = async () => {
     try {
@@ -123,7 +229,7 @@ export default function Chat() {
         if (sorted.length === 0) {
           setMessages([{
             role: "assistant",
-            content: `Bonjour ! 🐾 Je suis PawCoach, ton coach bien-être pour **${d.name}**.\n\nJe connais son profil : ${d.breed}${getAge(d.birth_date) ? `, ${getAge(d.birth_date)}` : ""}${d.weight ? `, ${d.weight} kg` : ""}.\n\nPose-moi n'importe quelle question sur sa nutrition, son comportement ou son dressage !`,
+            content: `Bonjour ! Je suis PawCoach, ton coach bien-etre pour **${d.name}**.\n\nJe connais tout son historique : sante, nutrition, activite, humeur. Pose-moi n'importe quelle question !`,
             timestamp: new Date().toISOString(),
           }]);
         } else {
@@ -137,6 +243,7 @@ export default function Chat() {
     }
   };
 
+  // --- Image ---
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -145,6 +252,7 @@ export default function Chat() {
     setPendingImage({ file, preview });
   };
 
+  // --- Send ---
   const sendMessage = async (text) => {
     const content = (text || input).trim();
     const hasImage = !!pendingImage;
@@ -156,13 +264,16 @@ export default function Chat() {
       if (remaining <= 0) return;
     }
 
+    if (navigator.vibrate) navigator.vibrate(10);
+
     setInput("");
+    setLastFailedInput(null);
     const imageToSend = pendingImage;
     setPendingImage(null);
 
     const userMsg = {
       role: "user",
-      content: content || "📷 Photo envoyée",
+      content: content || "Photo envoyee",
       timestamp: new Date().toISOString(),
       has_image: hasImage,
       image_url: imageToSend?.preview || null,
@@ -198,42 +309,49 @@ export default function Chat() {
         imageUrl: uploadedImageUrl || null,
       });
 
-      // Handle server-side quota exceeded
       if (response.data?.error === 'quota_exceeded') {
         setMessagesRemaining(0);
         return;
       }
 
-      const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
-      const assistantMsg = { role: "assistant", content: assistantContent, timestamp: new Date().toISOString() };
+      const assistantContent = response.data?.content || "Desole, je n'ai pas pu repondre.";
+      const assistantTs = new Date().toISOString();
 
-      setMessages(prev => [...prev, assistantMsg]);
-      await base44.entities.ChatMessage.create({ dog_id: dog.id, ...assistantMsg });
+      // Typewriter streaming (message added to state when streaming completes)
+      startStreaming(assistantContent, assistantTs);
 
-      // Sync quota from server (authoritative — prevents multi-tab bypass)
+      // Save to DB immediately
+      base44.entities.ChatMessage.create({
+        dog_id: dog.id,
+        role: "assistant",
+        content: assistantContent,
+        timestamp: assistantTs,
+      }).catch(() => {});
+
       if (!isUserPremium(user) && response.data?.messages_remaining !== undefined) {
         setMessagesRemaining(response.data.messages_remaining);
       }
 
-      // --- STREAK UPDATE (once per day, after successful message) ---
       await updateStreakSilently(dog.id, user.email);
     } catch (err) {
       console.error("Chat send error:", err);
-      // Handle quota exceeded thrown by SDK
       if (err?.message?.includes?.('quota_exceeded') || err?.status === 429) {
         setMessagesRemaining(0);
         return;
       }
+      setLastFailedInput(content);
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: "Oups, une erreur est survenue. Réessaie dans un instant.",
+        content: "Oups, une erreur est survenue.",
         timestamp: new Date().toISOString(),
+        isError: true,
       }]);
     } finally {
       setLoading(false);
     }
   };
 
+  // --- Loading skeleton ---
   if (initializing) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
@@ -256,30 +374,35 @@ export default function Chat() {
 
   const isLimitReached = !isUserPremium(user) && (messagesRemaining ?? 0) <= 0;
   const showSuggestions = messages.length <= 1 && !isLimitReached;
+
   const suggestions = dog ? [
-    `Comment dresser ${dog.name} ?`,
-    `Que peut manger ${dog.name} ?`,
-    `Exercices pour ${dog.breed || "mon chien"}`,
-    `Signes de stress à surveiller`,
+    `Comment va ${dog.name} en ce moment ?`,
+    dog.birth_date && getAge(dog.birth_date)?.includes("mois")
+      ? `Alimentation chiot ${dog.breed || ""}`
+      : `Plan nutritionnel pour ${dog.name}`,
+    `${dog.name} peut manger du chocolat ?`,
+    `Signes de stress chez ${dog.breed || "un chien"}`,
   ] : [];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Disclaimer */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-accent/10 backdrop-blur-sm border-b border-accent/20 px-5 py-1.5 text-center">
-        <p className="text-xs text-accent-foreground font-medium">🐾 PawCoach est un coach bien-être, pas un vétérinaire.</p>
+        <p className="text-xs text-accent-foreground font-medium">PawCoach est un coach bien-etre, pas un veterinaire.</p>
       </div>
 
+      {/* Hero */}
       <div className="gradient-primary pt-14 pb-0 px-5 mt-8 overflow-hidden relative">
         <div className="relative z-10 flex items-end gap-3">
           <div className="flex-1 pb-4">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
             <h1 className="text-white font-black text-2xl leading-tight">Assistant IA</h1>
-            {dog && <p className="text-white/70 text-xs mt-0.5">Personnalisé pour {dog.name} · {dog.breed}</p>}
+            {dog && <p className="text-white/70 text-xs mt-0.5">Personnalise pour {dog.name} · {dog.breed}</p>}
             <div className="flex items-center gap-2 mt-2">
               {!isUserPremium(user) && messagesRemaining !== null && (
                 <div className="bg-white/20 px-2.5 py-1 rounded-full">
                   <span className="text-white text-xs font-medium">
-                    {messagesRemaining} credit{messagesRemaining !== 1 ? "s" : ""} IA (Chat + Nutri)
+                    {messagesRemaining} credit{messagesRemaining !== 1 ? "s" : ""} IA
                   </span>
                 </div>
               )}
@@ -303,58 +426,102 @@ export default function Chat() {
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 pb-44">
+      {/* Messages */}
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3 pb-44">
         {messages.map((msg, i) => (
-          <motion.div key={i} {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-            {msg.role === "assistant" && (
-              <div className="w-8 h-8 flex-shrink-0 mt-1">
-                <DogChat color="#2d9f82" />
+          <div key={i}>
+            {shouldShowDateSeparator(messages, i) && (
+              <div className="flex items-center gap-3 py-2 my-1">
+                <div className="flex-1 h-px bg-border" />
+                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">
+                  {getDateLabel(msg.timestamp)}
+                </span>
+                <div className="flex-1 h-px bg-border" />
               </div>
             )}
-            <div className="flex flex-col gap-1 max-w-[82%]">
-              <div
-                data-selectable
-                className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
-                  msg.role === "user"
-                    ? "chat-bubble-user text-white rounded-br-sm"
-                    : "chat-bubble-assistant text-foreground rounded-bl-sm"
-                }`}
-              >
-                {msg.has_image && msg.image_url && (
-                  <img src={msg.image_url} alt="photo" className="w-full rounded-xl mb-2 max-h-48 object-cover" />
-                )}
-                {msg.role === "assistant" ? (
-                  <ReactMarkdown
-                    className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
-                    components={{
-                      p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
-                      ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
-                      li: ({ children }) => <li className="my-0.5">{children}</li>,
-                      strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                    }}
-                  >
-                    {msg.content}
-                  </ReactMarkdown>
-                ) : (
-                  <p className="whitespace-pre-wrap">{msg.content}</p>
-                )}
-              </div>
+
+            <motion.div {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               {msg.role === "assistant" && (
-                <button
-                  onClick={() => handleBookmark(msg)}
-                  className="self-start ml-1 flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {bookmarked[msg.timestamp]
-                    ? <BookmarkCheck className="w-3.5 h-3.5 text-primary" />
-                    : <Bookmark className="w-3.5 h-3.5" />}
-                  {bookmarked[msg.timestamp] ? "Sauvegardé" : "Sauvegarder"}
-                </button>
+                <div className="w-8 h-8 flex-shrink-0 mt-1">
+                  <DogChat color="#2d9f82" />
+                </div>
               )}
-            </div>
-          </motion.div>
+              <div className="flex flex-col gap-0.5 max-w-[82%]">
+                <div
+                  data-selectable
+                  className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
+                    msg.role === "user"
+                      ? "chat-bubble-user text-white rounded-br-sm"
+                      : "chat-bubble-assistant text-foreground rounded-bl-sm"
+                  }`}
+                >
+                  {msg.has_image && msg.image_url && (
+                    <img src={msg.image_url} alt="photo" className="w-full rounded-xl mb-2 max-h-48 object-cover" />
+                  )}
+                  {msg.role === "assistant" ? (
+                    <ReactMarkdown className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0" components={mdComponents}>
+                      {msg.content}
+                    </ReactMarkdown>
+                  ) : (
+                    <p className="whitespace-pre-wrap">{msg.content}</p>
+                  )}
+                </div>
+                {/* Actions: time + copy + bookmark + retry */}
+                <div className="flex items-center gap-2.5 px-1 mt-0.5">
+                  <span className="text-[9px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
+                  {msg.role === "assistant" && !msg.isError && (
+                    <>
+                      <button
+                        onClick={() => handleCopy(msg.content)}
+                        className="text-muted-foreground/40 hover:text-primary transition-colors"
+                        title="Copier"
+                      >
+                        <Copy className="w-3 h-3" />
+                      </button>
+                      <button
+                        onClick={() => handleBookmark(msg)}
+                        className="text-muted-foreground/40 hover:text-primary transition-colors"
+                        title="Sauvegarder"
+                      >
+                        {bookmarked[msg.timestamp]
+                          ? <BookmarkCheck className="w-3 h-3 text-primary" />
+                          : <Bookmark className="w-3 h-3" />}
+                      </button>
+                    </>
+                  )}
+                  {msg.isError && lastFailedInput && (
+                    <button
+                      onClick={() => sendMessage(lastFailedInput)}
+                      className="flex items-center gap-1 text-[10px] text-destructive hover:text-destructive/80 transition-colors"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Reessayer</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </div>
         ))}
 
-        {loading && (
+        {/* Typewriter streaming message */}
+        {isStreaming && streamingText && (
+          <motion.div {...msgAnim} className="flex gap-2 justify-start">
+            <div className="w-8 h-8 flex-shrink-0 mt-1">
+              <DogChat color="#2d9f82" />
+            </div>
+            <div className="flex flex-col gap-0.5 max-w-[82%]">
+              <div className="chat-bubble-assistant px-4 py-3 rounded-2xl rounded-bl-sm text-sm leading-relaxed text-foreground">
+                <ReactMarkdown className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0" components={mdComponents}>
+                  {streamingText}
+                </ReactMarkdown>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Typing dots (waiting for API OR first streaming word) */}
+        {((loading && !isStreaming) || (isStreaming && !streamingText)) && (
           <div className="flex gap-2 justify-start">
             <div className="w-8 h-8 flex-shrink-0 mt-1">
               <DogChat color="#2d9f82" />
@@ -371,6 +538,22 @@ export default function Chat() {
         <div ref={bottomRef} />
       </div>
 
+      {/* Scroll-to-bottom FAB */}
+      <AnimatePresence>
+        {showScrollBtn && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            onClick={scrollToBottom}
+            className="fixed bottom-40 right-5 z-40 w-10 h-10 rounded-full bg-background border border-border shadow-lg flex items-center justify-center"
+          >
+            <ChevronDown className="w-5 h-5 text-muted-foreground" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Input area */}
       <div className="fixed bottom-[4.5rem] left-0 right-0 bg-background border-t border-border">
         {showSuggestions && (
           <div className="px-5 pt-3 pb-1">
@@ -398,14 +581,14 @@ export default function Chat() {
               </div>
               <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
                 <p className="text-sm leading-relaxed">
-                  J'adorerais continuer à t'aider avec <strong>{dog?.name || "ton chien"}</strong> ! Tes messages gratuits sont épuisés pour aujourd'hui. Reviens demain pour 5 messages offerts, ou passe en Premium pour qu'on discute sans limite !
+                  J'adorerais continuer a t'aider avec <strong>{dog?.name || "ton chien"}</strong> ! Tes messages gratuits sont epuises pour aujourd'hui. Reviens demain ou passe en Premium !
                 </p>
                 <div className="flex gap-2 mt-3">
                   <Button onClick={() => navigate(createPageUrl("Premium") + "?from=chat")} size="sm" className="gradient-primary border-0 text-white text-xs h-8">
-                    Passer Premium · dès 5 €/mois
+                    Passer Premium
                   </Button>
                   <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground">
-                    À demain ! 👋
+                    A demain !
                   </Button>
                 </div>
               </div>
@@ -423,7 +606,7 @@ export default function Chat() {
             {pendingImage && (
               <div className="px-5 pt-2 flex items-center gap-2">
                 <img src={pendingImage.preview} alt="preview" className="w-12 h-12 rounded-lg object-cover border border-border" />
-                <span className="text-xs text-muted-foreground">Photo prête à envoyer</span>
+                <span className="text-xs text-muted-foreground">Photo prete a envoyer</span>
                 <button onClick={() => { if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview); setPendingImage(null); }} className="ml-auto text-xs text-destructive">Retirer</button>
               </div>
             )}
@@ -457,7 +640,7 @@ export default function Chat() {
               <VoiceInput onTranscript={(text) => setInput(text)} className="h-11 w-11 !rounded-xl border border-border" />
               <Button
                 onClick={() => sendMessage()}
-                disabled={(!input.trim() && !pendingImage) || loading}
+                disabled={(!input.trim() && !pendingImage) || loading || isStreaming}
                 className="h-11 w-11 rounded-xl gradient-primary border-0 shadow-lg shadow-primary/30 p-0 flex-shrink-0 self-end"
               >
                 <Send className="w-4 h-4 text-white" />
