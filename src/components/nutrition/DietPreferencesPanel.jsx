@@ -40,7 +40,7 @@ export default function DietPreferencesPanel({ dog, user }) {
     setLoading(true);
     try {
       const existing = await base44.entities.DietPreferences.filter({ dog_id: dog.id, owner_email: user.email });
-      if (existing.length > 0) {
+      if (existing?.length > 0) {
         const p = existing[0];
         setPrefs(p);
         setPreferredBrands(p.preferred_brands ? JSON.parse(p.preferred_brands) : []);
