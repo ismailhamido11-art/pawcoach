@@ -111,14 +111,16 @@ export default function SavedPlansPanel({ dog, user }) {
                 )}
               </div>
               <div className="flex gap-1.5">
-                {!plan.is_active && (
-                  <button
-                    onClick={() => handleActivate(plan.id)}
-                    className="h-8 px-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-1.5 text-emerald-700 text-xs font-semibold"
-                  >
-                    <Home className="w-3.5 h-3.5" /> Activer
-                  </button>
-                )}
+                <button
+                  onClick={() => handleActivate(plan.id)}
+                  className={`h-8 px-3 rounded-xl flex items-center gap-1.5 text-xs font-semibold ${
+                    plan.is_active
+                      ? "bg-emerald-100 border border-emerald-300 text-emerald-800"
+                      : "bg-emerald-50 border border-emerald-200 text-emerald-700"
+                  }`}
+                >
+                  <Home className="w-3.5 h-3.5" /> {plan.is_active ? "Reactiver" : "Activer"}
+                </button>
                 <button
                   onClick={() => setExpandedId(expandedId === plan.id ? null : plan.id)}
                   className="w-8 h-8 rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground"
