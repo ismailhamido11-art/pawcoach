@@ -176,6 +176,9 @@ input, textarea, [contenteditable="true"],
 .gradient-card {
   background: linear-gradient(145deg, hsl(0,0%,100%), hsl(150,15%,97%));
 }
+.dark .gradient-card {
+  background: linear-gradient(145deg, hsl(var(--card)), hsl(160, 15%, 12%));
+}
 
 /* ======= SMOOTH INTERACTIONS ======= */
 
@@ -190,10 +193,17 @@ button, [role="button"], a[class*="btn"] {
   background: linear-gradient(135deg, hsl(160, 50%, 22%), hsl(162, 45%, 32%));
   box-shadow: 0 2px 8px rgba(22, 78, 62, 0.15);
 }
+.dark .chat-bubble-user {
+  background: linear-gradient(135deg, hsl(160, 45%, 18%), hsl(162, 40%, 28%));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
 .chat-bubble-assistant {
   background: hsl(0, 0%, 100%);
   border: 1px solid hsl(var(--border));
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.dark .chat-bubble-assistant {
+  background: hsl(var(--card));
 }
 
 /* ======= BOTTOM NAV ======= */
@@ -204,6 +214,10 @@ button, [role="button"], a[class*="btn"] {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   border-top: 1px solid rgba(0,0,0,0.06);
+}
+.dark .bottom-nav {
+  background: rgba(15, 30, 25, 0.9);
+  border-top-color: rgba(255, 255, 255, 0.06);
 }
 
 /* ======= PREMIUM DETAILS ======= */
@@ -232,4 +246,50 @@ input:focus-visible, textarea:focus-visible, select:focus-visible,
 .progress-fill {
   border-radius: 99px;
   transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ======= DARK MODE CONTRAST FIXES ======= */
+
+/* Cards and surfaces: remap bg-white to card color in dark mode */
+.dark .bg-white { background-color: hsl(var(--card)) !important; }
+
+/* Gradient stops: remap white to card color in dark mode */
+.dark .from-white { --tw-gradient-from: hsl(var(--card)) !important; }
+.dark .via-white  { --tw-gradient-via: hsl(var(--card)) !important; }
+.dark .to-white   { --tw-gradient-to: hsl(var(--card)) !important; }
+
+/* Colored -50 gradient stops: remap to dark-friendly variants */
+.dark .from-emerald-50, .dark .from-green-50, .dark .from-teal-50 { --tw-gradient-from: hsl(160, 30%, 12%) !important; }
+.dark .from-violet-50, .dark .from-purple-50 { --tw-gradient-from: hsl(270, 25%, 14%) !important; }
+.dark .from-amber-50, .dark .from-orange-50  { --tw-gradient-from: hsl(38, 30%, 12%) !important; }
+.dark .from-blue-50   { --tw-gradient-from: hsl(220, 30%, 14%) !important; }
+.dark .from-red-50    { --tw-gradient-from: hsl(0, 25%, 14%) !important; }
+.dark .from-slate-50  { --tw-gradient-from: hsl(var(--muted)) !important; }
+.dark .to-emerald-50, .dark .to-green-50, .dark .to-teal-50 { --tw-gradient-to: hsl(160, 30%, 12%) !important; }
+.dark .to-violet-50, .dark .to-purple-50, .dark .to-orange-50 { --tw-gradient-to: hsl(270, 25%, 14%) !important; }
+.dark .to-amber-50   { --tw-gradient-to: hsl(38, 30%, 12%) !important; }
+.dark .to-slate-50    { --tw-gradient-to: hsl(var(--muted)) !important; }
+.dark .via-emerald-50 { --tw-gradient-via: hsl(160, 30%, 12%) !important; }
+
+/* Colored -50 backgrounds: remap to dark-friendly variants */
+.dark .bg-emerald-50, .dark .bg-green-50, .dark .bg-teal-50 { background-color: hsl(160, 30%, 12%) !important; }
+.dark .bg-blue-50, .dark .bg-indigo-50    { background-color: hsl(220, 30%, 14%) !important; }
+.dark .bg-violet-50, .dark .bg-purple-50  { background-color: hsl(270, 25%, 14%) !important; }
+.dark .bg-amber-50, .dark .bg-orange-50   { background-color: hsl(38, 30%, 12%) !important; }
+.dark .bg-red-50, .dark .bg-rose-50       { background-color: hsl(0, 25%, 14%) !important; }
+.dark .bg-cyan-50                         { background-color: hsl(190, 25%, 13%) !important; }
+.dark .bg-slate-50                        { background-color: hsl(var(--muted)) !important; }
+.dark .bg-pink-50                         { background-color: hsl(330, 25%, 14%) !important; }
+
+/* -50 borders: soften in dark mode */
+.dark .border-emerald-200, .dark .border-green-200 { border-color: hsl(160, 20%, 20%) !important; }
+.dark .border-blue-200   { border-color: hsl(220, 20%, 22%) !important; }
+.dark .border-purple-200 { border-color: hsl(270, 18%, 22%) !important; }
+.dark .border-amber-200  { border-color: hsl(38, 20%, 20%) !important; }
+.dark .border-red-200    { border-color: hsl(0, 18%, 22%) !important; }
+
+/* Input focus ring — brighter in dark */
+.dark input:focus-visible, .dark textarea:focus-visible, .dark select:focus-visible,
+.dark [role="combobox"]:focus-visible {
+  box-shadow: 0 0 0 3px rgba(45, 159, 130, 0.25);
 }

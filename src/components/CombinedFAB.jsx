@@ -104,7 +104,8 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl pb-10"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl shadow-2xl"
+            style={{ paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))" }}
           >
             {/* Handle */}
             <div className="w-10 h-1 bg-muted rounded-full mx-auto mt-2.5 mb-3" />
@@ -208,8 +209,8 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
         whileTap={{ scale: 0.9 }}
         animate={{ scale: open ? 0 : 1, opacity: open ? 0 : 1 }}
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
-        className="fixed bottom-24 right-5 z-[45] w-14 h-14 rounded-full shadow-2xl flex items-center justify-center"
-        style={{ background: "linear-gradient(135deg, #0f4c3a, #2d9f82)" }}
+        className="fixed right-5 z-[45] w-14 h-14 rounded-full shadow-2xl flex items-center justify-center"
+        style={{ bottom: "calc(6rem + env(safe-area-inset-bottom, 0px))", background: "linear-gradient(135deg, #0f4c3a, #2d9f82)" }}
       >
         <Plus className="w-6 h-6 text-white" strokeWidth={2.5} />
       </motion.button>
