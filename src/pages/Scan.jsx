@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Camera, ChevronDown, ChevronUp, CheckCircle, AlertTriangle,
-  AlertCircle, X, History, Share2, Phone, Crown, ScanLine, Tag, Loader2
+  AlertCircle, X, History, Share2, Phone, Crown, ScanLine, Tag, Loader2, ArrowLeft
 } from "lucide-react";
 import { updateStreakSilently } from "../components/streakHelper";
 import { motion, AnimatePresence } from "framer-motion";
@@ -431,9 +431,15 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
 
       {/* Header */}
       <div className={`gradient-primary pb-4 px-5 ${result?.verdict === "toxic" && dogAteIt ? "safe-pt-24" : "safe-pt-14"} overflow-hidden relative`}>
+        <button
+          aria-label="Retour"
+          onClick={() => navigate(-1)}
+          className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-3 hover:bg-white/30 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4 text-white" />
+        </button>
         <div className="relative z-10 flex items-start justify-between">
           <div className="pb-2">
-            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-3">PawCoach</p>
             <h1 className="text-white font-black text-2xl leading-tight">Scan Aliment</h1>
             <p className="text-white/70 text-sm mt-1">
               {dog ? `Analyse pour ${dog.name}` : "Chargement..."}
