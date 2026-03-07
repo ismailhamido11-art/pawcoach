@@ -12,7 +12,7 @@ import AITrainingProgram from "@/components/activite/AITrainingProgram";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Footprints, History, Dumbbell, Sparkles, ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
@@ -28,7 +28,10 @@ export default function Activite() {
   const [dog, setDog] = useState(null);
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("balade");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = (searchParams.get("tab") && TABS.some(t => t.id === searchParams.get("tab")))
+    ? searchParams.get("tab") : "balade";
+  const changeTab = (tabId) => setSearchParams({ tab: tabId });
 
   useEffect(() => {
     async function load() {
@@ -50,9 +53,6 @@ export default function Activite() {
     }
     load();
 
-    const params = new URLSearchParams(window.location.search);
-    const t = params.get("tab");
-    if (t && TABS.find(tab => tab.id === t)) setActiveTab(t);
   }, []);
 
   const refreshLogs = async () => {
@@ -114,7 +114,7 @@ export default function Activite() {
                 key={id}
                 whileTap={{ scale: 0.93 }}
                 transition={spring}
-                onClick={() => setActiveTab(id)}
+                onClick={() => changeTab(id)}
                 className={`relative flex flex-col items-center gap-1 py-3 rounded-2xl text-center overflow-hidden transition-all ${
                   active ? "shadow-lg" : "bg-white/10"
                 }`}
@@ -155,7 +155,7 @@ export default function Activite() {
               <WalkMode
                 dog={dog}
                 user={user}
-                onLogged={() => { refreshLogs(); setActiveTab("historique"); }}
+                onLogged={() => { refreshLogs(); changeTab("historique"); }}
               />
             )}
             {activeTab === "historique" && (

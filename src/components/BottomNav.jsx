@@ -34,10 +34,10 @@ export default function BottomNav({ currentPage }) {
       e.preventDefault();
       // Active tab double-tap: reset to root page and clear stack state
       sessionStorage.removeItem(`scroll_${page}`);
-      // Clear sub-view query params and history
-      sessionStorage.removeItem(`tab_${page}`);
       sessionStorage.removeItem(`journey_${page}`);
       sessionStorage.removeItem(`exercise_${page}`);
+      // Navigate to clean URL (removes ?tab query param, resets to default sub-tab)
+      navigate(createPageUrl(page), { replace: true });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };

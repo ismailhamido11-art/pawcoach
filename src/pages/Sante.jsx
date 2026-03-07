@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog, createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
@@ -38,22 +38,22 @@ export default function Sante() {
    const [dailyLogs, setDailyLogs] = useState([]);
    const [loading, setLoading] = useState(true);
    
-   // Handle deep link params (?tab=weight, ?tab=vaccine, ?tab=vet, ?tab=qr)
-   const urlParams = new URLSearchParams(window.location.search);
-   const urlTab = urlParams.get("tab");
+   // URL-based tab navigation (enables back button between sub-tabs)
+   const [searchParams, setSearchParams] = useSearchParams();
+   const urlTab = searchParams.get("tab");
+
+   // Deep link sub-tabs (within Carnet): ?tab=vaccine, ?tab=weight, etc.
    const validSubTabs = ["all", "vaccine", "vet_visit", "weight", "medication", "note"];
-   const hasDeepLink = urlTab && (validSubTabs.includes(urlTab) || urlTab === "vet" || urlTab === "qr");
+   const isDeepLink = urlTab && (validSubTabs.includes(urlTab) || urlTab === "vet" || urlTab === "qr");
 
-   // Restore active tab from session storage (for independent stack per tab)
-   const savedTab = sessionStorage.getItem("tab_Sante");
-   const [activeTab, setActiveTab] = useState(hasDeepLink ? "carnet" : (savedTab && TABS.find(t => t.id === savedTab) ? savedTab : "carnet"));
-   const [initialSubTab] = useState(hasDeepLink && validSubTabs.includes(urlTab) ? urlTab : null);
+   const activeTab = isDeepLink ? "carnet"
+     : (urlTab && TABS.some(t => t.id === urlTab)) ? urlTab
+     : "carnet";
+
+   const changeTab = (tabId) => setSearchParams({ tab: tabId });
+
+   const [initialSubTab] = useState(isDeepLink && validSubTabs.includes(urlTab) ? urlTab : null);
    const [showShareModal, setShowShareModal] = useState(urlTab === "vet");
-
-   // Save active tab whenever it changes
-   useEffect(() => {
-     sessionStorage.setItem("tab_Sante", activeTab);
-   }, [activeTab]);
 
    useEffect(() => {
      async function load() {
@@ -133,7 +133,7 @@ export default function Sante() {
                 key={id}
                 whileTap={{ scale: 0.93 }}
                 transition={spring}
-                onClick={() => setActiveTab(id)}
+                onClick={() => changeTab(id)}
                 className={`relative flex flex-col items-center gap-1 py-3 rounded-2xl text-center overflow-hidden transition-all ${
                   active ? "shadow-lg" : "bg-white/10"
                 }`}

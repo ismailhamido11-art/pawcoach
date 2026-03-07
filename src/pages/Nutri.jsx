@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog, createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
@@ -20,7 +20,6 @@ import { InlineIcon } from "@/components/ui/IconBadge";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 const msgAnim = {
@@ -79,14 +78,11 @@ export default function Nutri() {
    const [loading, setLoading] = useState(false);
    const [initializing, setInitializing] = useState(true);
 
-   // Restore active tab from session storage (for independent stack per tab)
-   const savedTab = sessionStorage.getItem("tab_Nutri");
-   const [activeTab, setActiveTab] = useState(savedTab && TABS.find(t => t.id === savedTab) ? savedTab : "coach");
-
-   // Save active tab whenever it changes
-   useEffect(() => {
-     sessionStorage.setItem("tab_Nutri", activeTab);
-   }, [activeTab]);
+   // URL-based tab navigation (enables back button between sub-tabs)
+   const [searchParams, setSearchParams] = useSearchParams();
+   const activeTab = (searchParams.get("tab") && TABS.some(t => t.id === searchParams.get("tab")))
+     ? searchParams.get("tab") : "coach";
+   const changeTab = (tabId) => setSearchParams({ tab: tabId });
   const [messagesRemaining, setMessagesRemaining] = useState(null);
   const [bookmarked, setBookmarked] = useState({});
   const [dietPrefs, setDietPrefs] = useState(null);
@@ -331,7 +327,7 @@ export default function Nutri() {
                 key={id}
                 whileTap={{ scale: 0.93 }}
                 transition={spring}
-                onClick={() => setActiveTab(id)}
+                onClick={() => changeTab(id)}
                 className={`relative flex flex-col items-center gap-1 py-3 rounded-2xl text-center overflow-hidden transition-all ${
                   active ? "shadow-lg" : "bg-white/10"
                 }`}
