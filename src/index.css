@@ -103,6 +103,22 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Prevent iOS auto text-size adjustment */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Prevent iOS zoom on input focus + standardize font size */
+input, textarea, select {
+  font-size: 16px !important;
+}
+
+/* Prevent double-tap zoom on interactive elements */
+button, [role="button"], a, input, textarea, select, label {
+  touch-action: manipulation;
+}
+
 /* Disable browser text selection and tap effects for native feel */
 body {
   -webkit-user-select: none;
