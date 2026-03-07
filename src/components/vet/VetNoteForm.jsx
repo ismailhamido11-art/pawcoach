@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import MobileSelect from "@/components/ui/MobileSelect";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -63,16 +63,12 @@ export default function VetNoteForm({ dogId, vetEmail, vetName, onNoteAdded }) {
       />
 
       <div className="flex items-center gap-3 flex-wrap">
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-48">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {CATEGORIES.map(c => (
-              <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <MobileSelect
+          value={category}
+          onChange={setCategory}
+          options={CATEGORIES}
+          label="Catégorie"
+        />
 
         <label className="flex items-center gap-2 cursor-pointer">
           <Checkbox checked={isUrgent} onCheckedChange={setIsUrgent} />

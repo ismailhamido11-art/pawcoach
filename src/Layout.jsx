@@ -47,7 +47,7 @@ export default function Layout({ children, currentPageName }) {
           <NotificationCenter />
         </div>
       )}
-      <div key={currentPageName} className="page-enter pb-24">
+      <div key={currentPageName} className="page-enter" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom, 0px))" }}>
         {children}
       </div>
     </>
