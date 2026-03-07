@@ -97,9 +97,10 @@
 
 /* ======= NATIVE APP BEHAVIOR ======= */
 
-/* Prevent overscroll bounce / rubber-band effect */
+/* Prevent overscroll bounce / rubber-band + clip horizontal overflow during page transitions */
 html, body {
   overscroll-behavior: none;
+  overflow-x: hidden;
 }
 
 /* Disable browser text selection and tap effects for native feel */
@@ -208,15 +209,6 @@ input:focus-visible, textarea:focus-visible, select:focus-visible,
 .sheet-overlay {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-}
-
-/* ======= PAGE TRANSITION (CSS-only, no framer-motion) ======= */
-
-@keyframes pageEnter {
-  from { opacity: 0.4; }
-}
-.page-enter {
-  animation: pageEnter 0.18s ease-out;
 }
 
 /* Progress bars — rounded + smooth */
