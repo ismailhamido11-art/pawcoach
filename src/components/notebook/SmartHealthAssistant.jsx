@@ -616,7 +616,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                placeholder="\u00c9cris ou parle..."
+                placeholder="Écris ou parle..."
                 disabled={isProcessing || isStreaming}
                 className="h-10 rounded-full pl-4 pr-11 border-border bg-slate-50 focus:bg-white transition-colors text-sm"
               />

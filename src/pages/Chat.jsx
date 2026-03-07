@@ -209,7 +209,7 @@ export default function Chat() {
         // Always start fresh — history stays in DB but each visit = new conversation
         setMessages([{
           role: "assistant",
-          content: `Bonjour ! Je suis PawCoach, ton coach bien-etre pour **${d.name}**.\n\nJe connais tout son historique : sante, nutrition, activite, humeur. Pose-moi n'importe quelle question !`,
+          content: `Bonjour ! Je suis PawCoach, ton coach bien-être pour **${d.name}**.\n\nJe connais tout son historique : santé, nutrition, activité, humeur. Pose-moi n'importe quelle question !`,
           timestamp: new Date().toISOString(),
         }]);
       }
@@ -352,7 +352,7 @@ export default function Chat() {
   const startNewChat = () => {
     setMessages([{
       role: "assistant",
-      content: `Bonjour ! Je suis PawCoach, ton coach bien-etre pour **${dog?.name || "ton chien"}**.\n\nJe connais tout son historique : sante, nutrition, activite, humeur. Pose-moi n'importe quelle question !`,
+      content: `Bonjour ! Je suis PawCoach, ton coach bien-être pour **${dog?.name || "ton chien"}**.\n\nJe connais tout son historique : santé, nutrition, activité, humeur. Pose-moi n'importe quelle question !`,
       timestamp: new Date().toISOString(),
     }]);
     setInput("");
@@ -378,7 +378,7 @@ export default function Chat() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Disclaimer */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-accent/10 backdrop-blur-sm border-b border-accent/20 px-5 py-1.5 text-center">
-        <p className="text-xs text-accent-foreground font-medium">PawCoach est un coach bien-etre, pas un veterinaire.</p>
+        <p className="text-xs text-accent-foreground font-medium">PawCoach est un coach bien-être, pas un vétérinaire.</p>
       </div>
 
       {/* Hero */}

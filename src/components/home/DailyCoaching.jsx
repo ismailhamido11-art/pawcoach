@@ -22,7 +22,7 @@ const TIPS = [
   // Activity
   "{name} a besoin de stimulation physique ET mentale chaque jour pour rester equilibre",
   "Varie les parcours de promenade ! Les nouvelles odeurs stimulent le cerveau de {name} autant que l'exercice",
-  "15 minutes de jeu interactif par jour renforcent votre lien et la confiance de {name}",
+  "15 minutes de jeu interactif par jour renforcent ton lien et la confiance de {name}",
   "Un chien fatigue mentalement est plus calme qu'un chien fatigue physiquement. Essaie les jeux de flair !",
   "La socialisation ne s'arrete pas apres le chiot. Expose {name} regulierement a de nouvelles situations",
   // Breed-aware

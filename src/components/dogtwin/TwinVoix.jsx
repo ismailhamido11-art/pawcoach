@@ -23,7 +23,7 @@ Mon conseil pour la semaine prochaine : pensez à me proposer de l'eau plus fra�
 
 Les nouvelles croquettes Royal Canin commencent vraiment à me convenir. Je sens que j'ai plus d'énergie le matin et ma digestion est bien meilleure qu'avant.
 
-Bilan : une des meilleures semaines depuis longtemps. Si vous pouvez réinviter mon ami Toffi... je dis ça, je dis rien 🐶`,
+Bilan : une des meilleures semaines depuis longtemps. Si tu peux réinviter mon ami Toffi... je dis ça, je dis rien 🐶`,
     highlights: ["Score énergie : 96/100", "Visite d'un autre chien", "Digestion : excellente"],
     score: 94,
   },

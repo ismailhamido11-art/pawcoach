@@ -174,9 +174,9 @@ REGLES :
       {!plan && !loading && (
         <div className="text-center space-y-3 py-6">
           <div className="text-5xl mb-2">🍽️</div>
-          <h3 className="font-bold text-foreground">Plan de repas personnalise IA</h3>
+          <h3 className="font-bold text-foreground">Plan de repas personnalisé IA</h3>
           <p className="text-sm text-muted-foreground px-4">
-            Genere un plan hebdomadaire complet adapte au profil exact de {dog.name}, avec quantites, marques recommandees et aliments a eviter.
+            Génère un plan hebdomadaire complet adapté au profil exact de {dog.name}, avec quantités, marques recommandées et aliments à éviter.
           </p>
           {!isPremium && !hasCredits ? (
             <UpgradePrompt type="action" from="nutrition-plan" />

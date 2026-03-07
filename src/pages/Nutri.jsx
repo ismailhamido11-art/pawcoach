@@ -213,7 +213,7 @@ export default function Nutri() {
         if (prefs?.length > 0) setDietPrefs(prefs[0]);
         setMessages([{
           role: "assistant",
-          content: `Bonjour ! \u{1F957} Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies ? ` avec des allergies \u00e0 ${d.allergies}` : ""} et j'ai acc\u00e8s \u00e0 ses derniers scans alimentaires.\n\nPose-moi une question, g\u00e9n\u00e8re un **plan de repas personnalis\u00e9**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
+          content: `Bonjour ! \u{1F957} Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies && d.allergies.toLowerCase() !== "non" ? ` avec des allergies \u00e0 ${d.allergies}` : ""} et j'ai acc\u00e8s \u00e0 ses derniers scans alimentaires.\n\nPose-moi une question, g\u00e9n\u00e8re un **plan de repas personnalis\u00e9**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
           timestamp: new Date().toISOString(),
         }]);
       }
