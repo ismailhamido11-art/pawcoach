@@ -112,6 +112,15 @@
     0 8px 24px rgba(0,0,0,0.05);
 }
 
+/* ======= SAFE AREA HEADER PADDING ======= */
+/* Use safe-pt-* instead of pt-* on hero headers without WellnessBanner */
+.safe-pt-8  { padding-top: calc(env(safe-area-inset-top, 0px) + 2rem); }
+.safe-pt-10 { padding-top: calc(env(safe-area-inset-top, 0px) + 2.5rem); }
+.safe-pt-12 { padding-top: calc(env(safe-area-inset-top, 0px) + 3rem); }
+.safe-pt-14 { padding-top: calc(env(safe-area-inset-top, 0px) + 3.5rem); }
+.safe-pt-16 { padding-top: calc(env(safe-area-inset-top, 0px) + 4rem); }
+.safe-pt-24 { padding-top: calc(env(safe-area-inset-top, 0px) + 6rem); }
+
 /* ======= GRADIENT UTILITIES ======= */
 
 .gradient-primary {

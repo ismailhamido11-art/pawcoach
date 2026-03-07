@@ -19,7 +19,7 @@ export default function ProfileHeader({ user }) {
   const initials = (user?.full_name || "?").split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <div className="gradient-primary pt-16 pb-8 px-5 relative overflow-hidden">
+    <div className="gradient-primary safe-pt-16 pb-8 px-5 relative overflow-hidden">
       <div className="absolute top-[-20%] right-[-10%] w-44 h-44 bg-white/10 rounded-full blur-2xl pointer-events-none" />
 
       <div className="relative z-10 flex items-center gap-4">

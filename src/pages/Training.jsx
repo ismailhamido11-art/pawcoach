@@ -197,7 +197,7 @@ export default function Training() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background pb-24">
-        <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] pt-16 pb-0 px-5 overflow-hidden relative">
+        <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] safe-pt-16 pb-0 px-5 overflow-hidden relative">
           <div className="flex items-start justify-between">
             <div className="pb-6 flex-1">
               <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-2" />

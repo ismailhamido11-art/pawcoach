@@ -279,7 +279,7 @@ export default function Nutri() {
   if (initializing) {
     return (
       <div className="min-h-screen bg-background flex flex-col pb-24">
-        <div className="gradient-primary pt-14 pb-4 px-5">
+        <div className="gradient-primary safe-pt-14 pb-4 px-5">
           <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-2" />
           <div className="h-7 w-36 bg-white/20 rounded animate-pulse" />
         </div>

@@ -22,7 +22,7 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] pt-14 pb-6 px-5 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] safe-pt-14 pb-6 px-5 relative overflow-hidden">
         <button
           onClick={onBack}
           className="absolute top-14 left-4 w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-white"

@@ -42,7 +42,7 @@ export default function Tracker() {
   return (
     <div className="min-h-screen bg-background pb-28">
       {/* Header */}
-      <div className="gradient-primary px-5 pt-12 pb-6">
+      <div className="gradient-primary px-5 safe-pt-12 pb-6">
         <div className="flex items-center gap-3 mb-4">
           <Link to={createPageUrl("Home")} className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
             <ArrowLeft className="w-4 h-4 text-white" />

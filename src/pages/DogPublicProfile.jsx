@@ -133,7 +133,7 @@ export default function DogPublicProfile() {
       </div>
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] px-5 pt-8 pb-10 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] px-5 safe-pt-8 pb-10 relative overflow-hidden">
         <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-white/10 rounded-full blur-3xl" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}

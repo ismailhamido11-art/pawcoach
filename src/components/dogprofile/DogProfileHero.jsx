@@ -46,7 +46,7 @@ export default function DogProfileHero({ dog, dailyLogs, onSave }) {
   const displayWeight = latestLog?.weight_kg || dog.weight;
 
   return (
-    <div className="relative bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] pt-24 pb-10 px-5">
+    <div className="relative bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] safe-pt-24 pb-10 px-5">
       {/* Decorative orbs */}
       <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent/20 rounded-full blur-2xl pointer-events-none" />

@@ -100,7 +100,7 @@ export default function Premium() {
   if (pageLoading) {
     return (
       <div className="min-h-screen bg-background pb-10">
-        <div className="gradient-primary pt-12 pb-8 px-5">
+        <div className="gradient-primary safe-pt-12 pb-8 px-5">
           <div className="text-center">
             <div className="w-16 h-16 bg-white/20 rounded-3xl mx-auto mb-3 animate-pulse" />
             <div className="h-7 w-48 bg-white/20 rounded mx-auto animate-pulse" />
@@ -123,7 +123,7 @@ export default function Premium() {
   if (isUserPremium(user)) {
     return (
       <div className="min-h-screen bg-background pb-24">
-        <div className="gradient-primary pt-14 pb-10 px-5 text-center">
+        <div className="gradient-primary safe-pt-14 pb-10 px-5 text-center">
           {/* Avatar */}
           <motion.div
             initial={{ scale: 0 }}
@@ -276,7 +276,7 @@ export default function Premium() {
   return (
     <div className="min-h-screen bg-background pb-10">
       {/* Header */}
-      <div className="gradient-primary pt-12 pb-8 px-5 relative overflow-hidden">
+      <div className="gradient-primary safe-pt-12 pb-8 px-5 relative overflow-hidden">
         <button
           onClick={() => navigate(-1)}
           className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/20 flex items-center justify-center z-20"

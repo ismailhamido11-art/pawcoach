@@ -392,7 +392,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
   if (loading) {
     return (
       <div className="min-h-screen bg-background pb-24">
-        <div className="gradient-primary pb-0 px-5 pt-14 overflow-hidden relative">
+        <div className="gradient-primary pb-0 px-5 safe-pt-14 overflow-hidden relative">
           <div className="flex items-start justify-between">
             <div className="pb-6">
               <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-3" />
@@ -430,7 +430,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
       )}
 
       {/* Header */}
-      <div className={`gradient-primary pb-4 px-5 ${result?.verdict === "toxic" && dogAteIt ? "pt-24" : "pt-14"} overflow-hidden relative`}>
+      <div className={`gradient-primary pb-4 px-5 ${result?.verdict === "toxic" && dogAteIt ? "safe-pt-24" : "safe-pt-14"} overflow-hidden relative`}>
         <div className="relative z-10 flex items-start justify-between">
           <div className="pb-2">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-3">PawCoach</p>

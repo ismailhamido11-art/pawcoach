@@ -62,7 +62,7 @@ export default function VetDogView() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="gradient-primary pt-10 pb-6 px-5 relative overflow-hidden">
+      <div className="gradient-primary safe-pt-10 pb-6 px-5 relative overflow-hidden">
         <Link to={createPageUrl("VetPortal")} className="flex items-center gap-1 text-white/80 text-xs mb-3 hover:text-white">
           <ArrowLeft className="w-4 h-4" /> Retour
         </Link>

@@ -225,7 +225,7 @@ export default function HealthImport() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background pb-24">
       {/* Header */}
-      <div className="gradient-primary px-5 pt-14 pb-6 relative overflow-hidden">
+      <div className="gradient-primary px-5 safe-pt-14 pb-6 relative overflow-hidden">
         <Link to={createPageUrl("Sante")} className="relative z-20 inline-flex items-center gap-2 text-white/80 text-sm mb-4 hover:text-white transition-colors">
           <ArrowLeft className="w-4 h-4" /> Carnet de santé
         </Link>

@@ -91,7 +91,7 @@ export default function VetPortal() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="gradient-primary pt-10 pb-8 px-5 relative overflow-hidden">
+      <div className="gradient-primary safe-pt-10 pb-8 px-5 relative overflow-hidden">
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-1">
             <Link to={createPageUrl("Home")} className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">

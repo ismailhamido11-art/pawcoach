@@ -333,7 +333,7 @@ export default function Chat() {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <div className="h-7 bg-accent/10" />
-        <div className="gradient-primary pt-10 pb-4 px-5 mt-7">
+        <div className="gradient-primary safe-pt-10 pb-4 px-5 mt-7">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-white/20 animate-pulse" />
             <div className="space-y-2"><div className="h-4 w-24 bg-white/20 rounded animate-pulse" /><div className="h-3 w-32 bg-white/10 rounded animate-pulse" /></div>
@@ -382,7 +382,7 @@ export default function Chat() {
       </div>
 
       {/* Hero */}
-      <div className="gradient-primary pt-14 pb-0 px-5 mt-8 overflow-hidden relative">
+      <div className="gradient-primary safe-pt-14 pb-0 px-5 mt-8 overflow-hidden relative">
         <div className="relative z-10 flex items-end gap-3">
           <div className="flex-1 pb-4">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>

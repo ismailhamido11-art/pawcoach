@@ -230,7 +230,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-background pb-24">
         {/* Header skeleton */}
-        <div className="gradient-primary pt-16 pb-8 px-5">
+        <div className="gradient-primary safe-pt-16 pb-8 px-5">
           <div className="space-y-2 mb-4">
             <div className="h-6 w-40 bg-white/20 rounded animate-pulse" />
             <div className="h-4 w-56 bg-white/10 rounded animate-pulse" />
