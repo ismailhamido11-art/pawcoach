@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import useBackClose from "@/hooks/useBackClose";
 import { QrCode, Download, Share2, X, Smartphone, Shield, Zap } from "lucide-react";
 
 // Generates a QR code using the Google Charts API (no npm needed)
@@ -10,6 +11,7 @@ function buildQRUrl(text, size = 300) {
 export default function QRCodeCard({ dog }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  useBackClose(open, () => setOpen(false));
 
   if (!dog) return null;
 

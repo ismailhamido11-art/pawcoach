@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import useBackClose from "@/hooks/useBackClose";
 import { createPageUrl } from "@/utils";
 import { Crown, MessageCircle, ScanLine, Dumbbell, Bell, X, ChevronRight, Star } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
@@ -13,6 +14,7 @@ const FEATURES = [
 
 export default function PremiumNudgeSheet({ visible, onClose, dogName, context = "default" }) {
   const navigate = useNavigate();
+  useBackClose(visible, onClose);
 
   const handleUpgrade = () => {
     onClose();

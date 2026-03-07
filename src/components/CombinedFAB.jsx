@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import useBackClose from "@/hooks/useBackClose";
 import { Plus, X, MessageCircle, Scale, Droplets, Footprints, FileText, Check, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
@@ -19,6 +20,7 @@ const FIELDS = [
 
 export default function CombinedFAB({ dog, user, onLogSaved }) {
   const [open, setOpen] = useState(false);
+  useBackClose(open, () => setOpen(false));
   const [activeTab, setActiveTab] = useState("log"); // "log" ou "chat"
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);

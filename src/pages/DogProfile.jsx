@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import useBackClose from "@/hooks/useBackClose";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Pencil, ChevronDown, ChevronUp,
@@ -31,6 +32,8 @@ export default function DogProfile() {
   const [scansCount, setScansCount] = useState(0);
   const [editModal, setEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  useBackClose(editModal, () => setEditModal(false));
+  useBackClose(showDeleteConfirm, () => setShowDeleteConfirm(false));
   const [deleting, setDeleting] = useState(false);
 
   const urlParams = new URLSearchParams(window.location.search);
