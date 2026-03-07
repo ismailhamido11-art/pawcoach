@@ -134,17 +134,19 @@ img {
   -webkit-user-drag: none;
 }
 
-/* Re-enable selection in inputs, chat, and copyable content */
+/* Re-enable selection in inputs, chat, and readable content (articles, help) */
 input, textarea, [contenteditable="true"],
-.chat-bubble-assistant, .chat-bubble-user, [data-selectable] {
+.chat-bubble-assistant, .chat-bubble-user, [data-selectable],
+p, li, dd, blockquote, pre, code, h1, h2, h3 {
   -webkit-user-select: text;
   user-select: text;
 }
 
-/* Disable selection on navigation and interactive chrome */
-nav, nav * {
-  -webkit-user-select: none;
-  user-select: none;
+/* Keep navigation and interactive chrome non-selectable */
+nav, nav *, button, button *, [role="button"], [role="button"] *,
+.bottom-nav, .bottom-nav * {
+  -webkit-user-select: none !important;
+  user-select: none !important;
 }
 
 /* ======= PREMIUM CARD SYSTEM ======= */
