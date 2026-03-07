@@ -294,7 +294,7 @@ export default function Training() {
       <WellnessBanner />
 
       {/* Hero header */}
-      <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] pt-16 pb-0 px-5 overflow-hidden relative">
+      <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] safe-pt-16 pb-0 px-5 overflow-hidden relative">
         <div className="relative z-10 flex items-start justify-between">
           <div className="pb-6 flex-1">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-2">PawCoach</p>

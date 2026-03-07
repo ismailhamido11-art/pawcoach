@@ -79,7 +79,7 @@ Pour chaque clinique, fournis: name, address, phone (format français), google_m
     <div className="min-h-screen bg-background pb-24">
       <WellnessBanner />
 
-      <div className="gradient-primary pt-14 pb-6 px-5 relative overflow-hidden">
+      <div className="gradient-primary safe-pt-14 pb-6 px-5 relative overflow-hidden">
         <Link to={createPageUrl("Sante")} aria-label="Retour" className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-3 hover:bg-white/30 transition-colors">
           <ArrowLeft className="w-4 h-4 text-white" />
         </Link>

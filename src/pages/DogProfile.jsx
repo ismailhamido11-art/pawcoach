@@ -155,18 +155,21 @@ export default function DogProfile() {
   return (
     <div className="min-h-screen bg-background pb-28">
       {/* Back button */}
-      <div className="fixed top-0 left-0 right-0 z-30 pt-safe">
-        <div className="px-4 pt-12 pb-2 flex items-center justify-between bg-gradient-to-b from-[#0f4c3a]/80 to-transparent absolute top-0 left-0 right-0 pointer-events-none" />
+      <div className="fixed top-0 left-0 right-0 z-30">
+        <div className="px-4 pb-2 flex items-center justify-between bg-gradient-to-b from-[#0f4c3a]/80 to-transparent absolute top-0 left-0 right-0 pointer-events-none"
+          style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3rem)" }} />
         <button
           aria-label="Retour"
           onClick={() => navigate(createPageUrl("Profile"))}
-          className="absolute top-12 left-4 w-9 h-9 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center z-40"
+          className="absolute left-4 w-9 h-9 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center z-40"
+          style={{ top: "calc(env(safe-area-inset-top, 0px) + 3rem)" }}
         >
           <ArrowLeft className="w-5 h-5 text-white" />
         </button>
         <button
           onClick={() => setEditModal(true)}
-          className="absolute top-12 right-4 w-9 h-9 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center z-40"
+          className="absolute right-4 w-9 h-9 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center z-40"
+          style={{ top: "calc(env(safe-area-inset-top, 0px) + 3rem)" }}
         >
           <Pencil className="w-4 h-4 text-white" />
         </button>

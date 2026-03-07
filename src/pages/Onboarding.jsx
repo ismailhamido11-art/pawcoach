@@ -266,7 +266,7 @@ Extrais ces informations et renvoie un objet JSON.
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg, #0a2a1e 0%, #f0fdf4 30%)" }}>
       {/* Progress header */}
-      <div className="pt-12 px-6 pb-6 flex items-center gap-4">
+      <div className="safe-pt-12 px-6 pb-6 flex items-center gap-4">
         {step > 0 ? (
           <motion.button whileTap={{ scale: 0.96 }} transition={spring} onClick={() => setStep(s => s - 1)}
             className="w-10 h-10 flex items-center justify-center bg-white/20 backdrop-blur rounded-full border border-white/30">

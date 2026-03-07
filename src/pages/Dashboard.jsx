@@ -263,7 +263,7 @@ export default function Dashboard() {
       <WellnessBanner />
 
       {/* Header */}
-      <div className="gradient-primary pt-16 pb-8 px-5 relative overflow-hidden">
+      <div className="gradient-primary safe-pt-16 pb-8 px-5 relative overflow-hidden">
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
             <div>

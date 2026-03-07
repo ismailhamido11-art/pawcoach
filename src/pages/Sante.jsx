@@ -107,7 +107,7 @@ export default function Sante() {
       <WellnessBanner />
 
       {/* Hero */}
-      <div className="gradient-primary px-5 pt-12 pb-3 relative overflow-hidden mt-8">
+      <div className="gradient-primary px-5 safe-pt-12 pb-3 relative overflow-hidden mt-8">
         <div className="relative z-10 flex items-end gap-3 mb-3">
           <div className="flex-1 pb-1">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
