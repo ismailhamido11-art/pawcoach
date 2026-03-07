@@ -7,7 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import { useActionCredits } from "@/utils/ai-credits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
-export default function VideoCoaching({ exerciseName, dogName }) {
+export default function VideoCoaching({ exerciseName, dogName, dogId }) {
   const { credits, hasCredits, isPremium, consume } = useActionCredits();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ export default function VideoCoaching({ exerciseName, dogName }) {
       const user = await base44.auth.me();
       const text = typeof feedback === "string" ? feedback : JSON.stringify(feedback);
       await base44.entities.Bookmark.create({
-        dog_id: null,
+        dog_id: dogId || null,
         owner: user.email,
         content: `# Coaching video — ${exerciseName}\n\n${text}`,
         source: "video",

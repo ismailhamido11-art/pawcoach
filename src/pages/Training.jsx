@@ -250,6 +250,7 @@ export default function Training() {
            isCompleted={isCompleted(exercise.order_number)}
            isPremiumLocked={locked}
            dogName={dog?.name}
+           dogId={dog?.id}
            onBack={() => navigate(backUrl)}
            onComplete={() => handleComplete(exercise)}
            onHelp={() => handleHelp(exercise)}

@@ -13,7 +13,7 @@ const LEVEL_CONFIG = {
 
 import VideoCoaching from "./VideoCoaching";
 
-export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked, dogName, onBack, onComplete, onHelp }) {
+export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked, dogName, dogId, onBack, onComplete, onHelp }) {
   const navigate = useNavigate();
   const levelCfg = LEVEL_CONFIG[exercise.level];
 
@@ -104,7 +104,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
           </div>
         )}
 
-        {!isPremiumLocked && <VideoCoaching exerciseName={exercise.name} dogName={dogName} />}
+        {!isPremiumLocked && <VideoCoaching exerciseName={exercise.name} dogName={dogName} dogId={dogId} />}
       </div>
 
       {/* Bottom actions */}
