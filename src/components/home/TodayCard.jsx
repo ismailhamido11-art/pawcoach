@@ -66,7 +66,7 @@ export default function TodayCard({ dog, user, todayCheckin, streak, records = [
         transition={{ type: "spring", stiffness: 400, damping: 30 }}
         className="mx-4 rounded-2xl border p-4 shadow-sm relative overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, white 0%, rgba(45, 159, 130, 0.03) 100%)",
+          background: "linear-gradient(135deg, hsl(var(--card)) 0%, rgba(45, 159, 130, 0.03) 100%)",
           borderColor: "rgba(45, 159, 130, 0.15)",
         }}
       >
@@ -90,7 +90,7 @@ export default function TodayCard({ dog, user, todayCheckin, streak, records = [
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
       className="mx-4 rounded-2xl border p-4 shadow-sm relative overflow-hidden"
       style={{
-        background: "linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 40%, white 100%)",
+        background: "linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--secondary)) 40%, hsl(var(--card)) 100%)",
         borderColor: "rgba(16, 185, 129, 0.2)",
       }}
     >

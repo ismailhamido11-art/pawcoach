@@ -53,7 +53,7 @@ export default function TrackerHistory({ logs, dog }) {
               <XAxis dataKey="day" tick={{ fontSize: 9, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
               <YAxis hide />
               <Tooltip
-                contentStyle={{ background: "white", border: "1px solid #e5e7eb", borderRadius: 12, fontSize: 11 }}
+                contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 12, fontSize: 11, color: "hsl(var(--foreground))" }}
                 formatter={(v) => [`${v} min`, "Activité"]}
               />
               <Bar dataKey="minutes" radius={[4, 4, 0, 0]}>

@@ -15,7 +15,7 @@ export default function FeatureTile({ icon: Icon, iconColor, label, dataPoint, s
         <div
           className="relative overflow-hidden rounded-2xl p-3.5 h-full min-h-[144px] flex flex-col shadow-sm border transition-transform"
           style={{
-            background: `linear-gradient(135deg, white 0%, ${iconColor}08 100%)`,
+            background: `linear-gradient(135deg, hsl(var(--card)) 0%, ${iconColor}08 100%)`,
             borderColor: `${iconColor}20`,
           }}
         >

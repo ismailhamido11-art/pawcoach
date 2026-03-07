@@ -114,9 +114,11 @@ input, textarea, select {
   font-size: 16px !important;
 }
 
-/* Prevent double-tap zoom on interactive elements */
+/* Prevent double-tap zoom + disable tap highlight on interactive elements */
 button, [role="button"], a, input, textarea, select, label {
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 /* Disable browser text selection and tap effects for native feel */
@@ -132,11 +134,17 @@ img {
   -webkit-user-drag: none;
 }
 
-/* Re-enable selection in inputs and copyable content */
+/* Re-enable selection in inputs, chat, and copyable content */
 input, textarea, [contenteditable="true"],
-.chat-bubble-assistant {
+.chat-bubble-assistant, .chat-bubble-user, [data-selectable] {
   -webkit-user-select: text;
   user-select: text;
+}
+
+/* Disable selection on navigation and interactive chrome */
+nav, nav * {
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* ======= PREMIUM CARD SYSTEM ======= */

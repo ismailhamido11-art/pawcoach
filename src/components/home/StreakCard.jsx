@@ -26,7 +26,7 @@ export default function StreakCard({ streak }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.35, type: "spring" }}
       className="mx-5 rounded-3xl overflow-hidden shadow-sm border border-border/30"
-      style={{ background: "white" }}
+      style={{ background: "hsl(var(--card))" }}
     >
       {/* Top accent */}
       <div className="h-1" style={{ background: `linear-gradient(90deg, ${level.color}, ${level.color}66)` }} />

@@ -46,7 +46,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, type: "spring" }}
           className="rounded-3xl overflow-hidden border border-primary/15 shadow-sm"
-          style={{ background: "linear-gradient(135deg, #ffffff, #ecfdf5)" }}
+          style={{ background: "linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary)))" }}
         >
           {/* Header */}
           <button onClick={onToggle} className="w-full flex items-center gap-3 p-4 text-left">

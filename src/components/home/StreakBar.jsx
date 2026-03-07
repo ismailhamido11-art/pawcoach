@@ -26,7 +26,7 @@ export default function StreakBar({ streak }) {
       transition={{ delay: 0.3 }}
       className="mx-4 rounded-2xl border px-4 py-3 shadow-sm relative overflow-hidden"
       style={{
-        background: `linear-gradient(135deg, white 0%, ${level.color}06 100%)`,
+        background: `linear-gradient(135deg, hsl(var(--card)) 0%, ${level.color}06 100%)`,
         borderColor: `${level.color}20`,
       }}
     >

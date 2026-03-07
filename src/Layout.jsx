@@ -18,21 +18,6 @@ export default function Layout({ children, currentPageName }) {
   return (
     <>
       <style>{`
-        body { overscroll-behavior-y: none; }
-        button, [role="button"], a, nav, nav * {
-          -webkit-tap-highlight-color: transparent;
-          -webkit-touch-callout: none;
-          user-select: none;
-          -webkit-user-select: none;
-        }
-        /* Allow text selection in chat/journal areas */
-        .chat-bubble-assistant, .chat-bubble-user, [data-selectable] {
-          -webkit-user-select: text;
-          user-select: text;
-        }
-        input, textarea, select {
-          font-size: 16px !important;
-        }
         /* Prevent decorative elements from being draggable */
         img[class*="drop-shadow"], [class*="illustration"] {
           pointer-events: none;
