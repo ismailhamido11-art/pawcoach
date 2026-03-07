@@ -436,6 +436,7 @@ export default function DogTwin() {
       {/* Top bar */}
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-5 safe-pt-12 pb-4 bg-gradient-to-b from-black/60 to-transparent pointer-events-none">
         <button
+          aria-label="Retour"
           className="pointer-events-auto w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center"
           onClick={() => navigate(-1)}
         >

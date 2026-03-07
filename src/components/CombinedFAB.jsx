@@ -128,7 +128,7 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
               >
                 Chat
               </button>
-              <button onClick={() => setOpen(false)} className="ml-auto w-7 h-7 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+              <button aria-label="Fermer" onClick={() => setOpen(false)} className="ml-auto w-7 h-7 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
                 <X className="w-3.5 h-3.5 text-muted-foreground" />
               </button>
             </div>
@@ -205,6 +205,7 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
 
       {/* FAB */}
       <motion.button
+        aria-label="Ajouter un log rapide"
         onClick={() => setOpen(true)}
         whileTap={{ scale: 0.9 }}
         animate={{ scale: open ? 0 : 1, opacity: open ? 0 : 1 }}

@@ -485,6 +485,7 @@ export default function Nutri() {
                       {msg.role === "assistant" && !msg.isError && (
                         <>
                           <button
+                            aria-label="Copier"
                             onClick={() => handleCopy(msg.content)}
                             className="text-muted-foreground/40 hover:text-primary transition-colors"
                             title="Copier"
@@ -492,6 +493,7 @@ export default function Nutri() {
                             <Copy className="w-3 h-3" />
                           </button>
                           <button
+                            aria-label="Sauvegarder"
                             onClick={() => handleBookmark(msg)}
                             className="text-muted-foreground/40 hover:text-primary transition-colors"
                             title="Sauvegarder"
@@ -597,6 +599,7 @@ export default function Nutri() {
                 )}
                 <div className="flex gap-2 px-5 py-3 items-end">
                   <textarea
+                    aria-label="Votre message"
                     ref={textareaRef}
                     value={input}
                     onChange={e => setInput(e.target.value)}

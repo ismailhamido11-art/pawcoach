@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function ChatFAB() {
   return (
-    <Link to={createPageUrl("Chat")}>
+    <Link to={createPageUrl("Chat")} aria-label="Ouvrir le chat">
       <motion.div
         whileTap={{ scale: 0.92 }}
         className="fixed right-4 z-30 w-14 h-14 rounded-full gradient-primary shadow-lg shadow-primary/30 flex items-center justify-center"

@@ -472,6 +472,7 @@ export default function Chat() {
                   {msg.role === "assistant" && !msg.isError && (
                     <>
                       <button
+                        aria-label="Copier"
                         onClick={() => handleCopy(msg.content)}
                         className="text-muted-foreground/40 hover:text-primary transition-colors"
                         title="Copier"
@@ -479,6 +480,7 @@ export default function Chat() {
                         <Copy className="w-3 h-3" />
                       </button>
                       <button
+                        aria-label="Sauvegarder"
                         onClick={() => handleBookmark(msg)}
                         className="text-muted-foreground/40 hover:text-primary transition-colors"
                         title="Sauvegarder"
@@ -625,6 +627,7 @@ export default function Chat() {
                 onChange={handleImageSelect}
               />
               <motion.button
+                aria-label="Ajouter une image"
                 whileTap={{ scale: 0.96 }}
                 transition={spring}
                 onClick={() => fileInputRef.current?.click()}
@@ -633,6 +636,7 @@ export default function Chat() {
                 <Camera className="w-5 h-5 text-secondary-foreground" />
               </motion.button>
               <textarea
+                aria-label="Votre message"
                 ref={textareaRef}
                 value={input}
                 onChange={e => setInput(e.target.value)}

@@ -24,6 +24,7 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
       {/* Header */}
       <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] safe-pt-14 pb-6 px-5 relative overflow-hidden">
         <button
+          aria-label="Retour"
           onClick={onBack}
           className="absolute top-14 left-4 w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-white"
         >

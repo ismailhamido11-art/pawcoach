@@ -278,6 +278,7 @@ export default function Premium() {
       {/* Header */}
       <div className="gradient-primary safe-pt-12 pb-8 px-5 relative overflow-hidden">
         <button
+          aria-label="Retour"
           onClick={() => navigate(-1)}
           className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/20 flex items-center justify-center z-20"
         >
