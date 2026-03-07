@@ -34,6 +34,7 @@ export default function BottomNav({ currentPage }) {
       e.preventDefault();
       // Active tab double-tap: reset to root page and clear stack state
       sessionStorage.removeItem(`scroll_${page}`);
+      sessionStorage.removeItem(`tab_${page}`);
       sessionStorage.removeItem(`journey_${page}`);
       sessionStorage.removeItem(`exercise_${page}`);
       // Navigate to clean URL (removes ?tab query param, resets to default sub-tab)

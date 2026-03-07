@@ -80,9 +80,17 @@ export default function Nutri() {
 
    // URL-based tab navigation (enables back button between sub-tabs)
    const [searchParams, setSearchParams] = useSearchParams();
-   const activeTab = (searchParams.get("tab") && TABS.some(t => t.id === searchParams.get("tab")))
-     ? searchParams.get("tab") : "coach";
-   const changeTab = (tabId) => setSearchParams({ tab: tabId });
+   const urlTab = searchParams.get("tab");
+   // Priority: URL param > sessionStorage > default
+   const activeTab = (urlTab && TABS.some(t => t.id === urlTab)) ? urlTab
+     : (() => { const s = sessionStorage.getItem("tab_Nutri"); return (s && TABS.some(t => t.id === s)) ? s : "coach"; })();
+   // On mount without URL param, sync URL with preserved tab (replace, not push)
+   const initRef = useRef(false);
+   useEffect(() => {
+     if (!initRef.current) { initRef.current = true; if (!urlTab && activeTab !== "coach") setSearchParams({ tab: activeTab }, { replace: true }); }
+   }, []);
+   useEffect(() => { sessionStorage.setItem("tab_Nutri", activeTab); }, [activeTab]);
+   const changeTab = (tabId) => { sessionStorage.setItem("tab_Nutri", tabId); setSearchParams({ tab: tabId }); };
   const [messagesRemaining, setMessagesRemaining] = useState(null);
   const [bookmarked, setBookmarked] = useState({});
   const [dietPrefs, setDietPrefs] = useState(null);

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog, createPageUrl } from "@/utils";
 import BottomNav from "@/components/BottomNav";
@@ -29,9 +29,17 @@ export default function Activite() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = (searchParams.get("tab") && TABS.some(t => t.id === searchParams.get("tab")))
-    ? searchParams.get("tab") : "balade";
-  const changeTab = (tabId) => setSearchParams({ tab: tabId });
+  const urlTab = searchParams.get("tab");
+  // Priority: URL param > sessionStorage > default
+  const activeTab = (urlTab && TABS.some(t => t.id === urlTab)) ? urlTab
+    : (() => { const s = sessionStorage.getItem("tab_Activite"); return (s && TABS.some(t => t.id === s)) ? s : "balade"; })();
+  // On mount without URL param, sync URL with preserved tab (replace, not push)
+  const initRef = useRef(false);
+  useEffect(() => {
+    if (!initRef.current) { initRef.current = true; if (!urlTab && activeTab !== "balade") setSearchParams({ tab: activeTab }, { replace: true }); }
+  }, []);
+  useEffect(() => { sessionStorage.setItem("tab_Activite", activeTab); }, [activeTab]);
+  const changeTab = (tabId) => { sessionStorage.setItem("tab_Activite", tabId); setSearchParams({ tab: tabId }); };
 
   useEffect(() => {
     async function load() {

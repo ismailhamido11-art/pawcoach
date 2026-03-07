@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog, createPageUrl } from "@/utils";
@@ -46,11 +46,18 @@ export default function Sante() {
    const validSubTabs = ["all", "vaccine", "vet_visit", "weight", "medication", "note"];
    const isDeepLink = urlTab && (validSubTabs.includes(urlTab) || urlTab === "vet" || urlTab === "qr");
 
+   // Priority: deep link > URL param > sessionStorage > default
    const activeTab = isDeepLink ? "carnet"
      : (urlTab && TABS.some(t => t.id === urlTab)) ? urlTab
-     : "carnet";
+     : (() => { const s = sessionStorage.getItem("tab_Sante"); return (s && TABS.some(t => t.id === s)) ? s : "carnet"; })();
 
-   const changeTab = (tabId) => setSearchParams({ tab: tabId });
+   // On mount without URL param, sync URL with preserved tab (replace, not push)
+   const initRef = useRef(false);
+   useEffect(() => {
+     if (!initRef.current) { initRef.current = true; if (!isDeepLink && !urlTab && activeTab !== "carnet") setSearchParams({ tab: activeTab }, { replace: true }); }
+   }, []);
+   useEffect(() => { sessionStorage.setItem("tab_Sante", activeTab); }, [activeTab]);
+   const changeTab = (tabId) => { sessionStorage.setItem("tab_Sante", tabId); setSearchParams({ tab: tabId }); };
 
    const [initialSubTab] = useState(isDeepLink && validSubTabs.includes(urlTab) ? urlTab : null);
    const [showShareModal, setShowShareModal] = useState(urlTab === "vet");
