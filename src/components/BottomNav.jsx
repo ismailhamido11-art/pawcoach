@@ -15,6 +15,16 @@ const tabs = [
 // Pages with independent navigation stacks
 const STACK_PAGES = ["Sante", "Activite", "Nutri"];
 
+// Build nav URL — include saved sub-tab for stack pages
+function getNavUrl(page) {
+  const base = createPageUrl(page);
+  if (STACK_PAGES.includes(page)) {
+    const saved = sessionStorage.getItem(`tab_${page}`);
+    if (saved) return `${base}?tab=${saved}`;
+  }
+  return base;
+}
+
 export default function BottomNav({ currentPage }) {
   const navigate = useNavigate();
 
@@ -51,7 +61,7 @@ export default function BottomNav({ currentPage }) {
           return (
             <Link
               key={page}
-              to={createPageUrl(page)}
+              to={getNavUrl(page)}
               onClick={(e) => handleTabClick(e, page)}
               className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl transition-all duration-300 ${
                 active ? "text-primary" : "text-muted-foreground hover:text-primary"
