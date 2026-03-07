@@ -78,7 +78,7 @@ export default function Home() {
             base44.entities.FoodScan.filter({ dog_id: d.id }),
             base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30),
             base44.entities.DiagnosisReport.filter({ dog_id: d.id }, "-report_date", 5).catch(() => []),
-            base44.entities.NutritionPlan.filter({ dog_id: d.id }, "-created_date", 3).catch(() => []),
+            base44.entities.NutritionPlan.filter({ dog_id: d.id }, "-generated_at", 3).catch(() => []),
             base44.entities.Bookmark.filter({ dog_id: d.id, source: "training" }, "-created_at", 3).catch(() => []),
           ]);
           setRecords(recs || []);
@@ -161,7 +161,7 @@ export default function Home() {
           base44.entities.FoodScan.filter({ dog_id: d.id }),
           base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30),
           base44.entities.DiagnosisReport.filter({ dog_id: d.id }, "-report_date", 5).catch(() => []),
-          base44.entities.NutritionPlan.filter({ dog_id: d.id }, "-created_date", 3).catch(() => []),
+          base44.entities.NutritionPlan.filter({ dog_id: d.id }, "-generated_at", 3).catch(() => []),
           base44.entities.Bookmark.filter({ dog_id: d.id, source: "training" }, "-created_at", 3).catch(() => []),
         ]);
         setRecords(recs || []);

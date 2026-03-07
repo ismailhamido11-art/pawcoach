@@ -116,7 +116,8 @@ export default function DogProfile() {
       const entityNames = [
         "HealthRecord", "DailyCheckin", "DailyLog", "Streak",
         "FoodScan", "Bookmark", "UserProgress", "WeeklyInsight",
-        "ChatMessage", "SharedVetAccess", "VetNote", "DiagnosisReport"
+        "ChatMessage", "SharedVetAccess", "VetNote", "DiagnosisReport",
+        "DogAchievement", "GrowthEntry", "NutritionPlan", "DietPreferences"
       ];
       await Promise.all(
         entityNames.map(name =>

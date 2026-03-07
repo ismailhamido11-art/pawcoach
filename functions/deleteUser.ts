@@ -37,9 +37,8 @@ Deno.serve(async (req) => {
     // Step 3: Delete user-linked entities (using owner_email or owner)
     await Promise.all([
       base44.asServiceRole.entities.Dog.deleteMany({ owner: user.email }).catch(() => {}),
-      base44.asServiceRole.entities.Bookmark.deleteMany({ owner_email: user.email }).catch(() => {}),
-      base44.asServiceRole.entities.WeeklyCheckin.deleteMany({ owner_email: user.email }).catch(() => {}),
-      base44.asServiceRole.entities.PlaceFavorite.deleteMany({ owner_email: user.email }).catch(() => {}),
+      base44.asServiceRole.entities.Bookmark.deleteMany({ owner: user.email }).catch(() => {}),
+      base44.asServiceRole.entities.PlaceFavorite.deleteMany({ owner: user.email }).catch(() => {}),
       base44.asServiceRole.entities.SharedVetAccess.deleteMany({ owner_email: user.email }).catch(() => {}),
       base44.asServiceRole.entities.VetNote.deleteMany({ vet_email: user.email }).catch(() => {}),
     ]);
