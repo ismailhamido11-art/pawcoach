@@ -8,7 +8,7 @@ import {
 import {
   Syringe, Weight, Stethoscope, Dumbbell, Salad,
   AlertTriangle, CheckCircle, ChevronRight, Flame,
-  TrendingUp, TrendingDown, Minus, ArrowLeft, Heart,
+  TrendingUp, TrendingDown, Minus, Heart,
   Sparkles, Activity, Calendar, Star, Footprints
 } from "lucide-react";
 import { Link } from "react-router-dom";

@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import ReactMarkdown from "react-markdown";
 import {
   Mic, Camera, X, Check, Loader2, Sparkles,
-  Keyboard, ChevronRight, ArrowLeft, ExternalLink, MapPin, Phone, AlertCircle, Send, Copy
+  Keyboard, ChevronRight, ExternalLink, MapPin, Phone, AlertCircle, Send, Copy
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
