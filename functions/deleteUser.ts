@@ -47,6 +47,6 @@ Deno.serve(async (req) => {
     return Response.json({ success: true, message: 'User account deleted successfully' });
   } catch (err) {
     console.error('Delete user error:', err);
-    return Response.json({ error: err?.message || String(err) }, { status: 500 });
+    return Response.json({ error: err?.message || 'Failed to delete user' }, { status: 500 });
   }
 });

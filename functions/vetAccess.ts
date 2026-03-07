@@ -229,11 +229,11 @@ Deno.serve(async (req) => {
       const records = (allRecords || []).filter(r => sharedSections.includes(r.type));
       let checkins = [];
       if (sharedSections.includes('checkins')) {
-        checkins = await base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dogId });
+        checkins = (await base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dogId })) || [];
       }
       let scans = [];
       if (sharedSections.includes('scans')) {
-        scans = await base44.asServiceRole.entities.FoodScan.filter({ dog_id: dogId });
+        scans = (await base44.asServiceRole.entities.FoodScan.filter({ dog_id: dogId })) || [];
       }
       const vetNotes = await base44.asServiceRole.entities.VetNote.filter({ dog_id: dogId });
       return Response.json({ dog, records, checkins, scans, vetNotes, sharedSections });
