@@ -95,6 +95,33 @@
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 99px; }
 
+/* ======= NATIVE APP BEHAVIOR ======= */
+
+/* Prevent overscroll bounce / rubber-band effect */
+html, body {
+  overscroll-behavior: none;
+}
+
+/* Disable browser text selection and tap effects for native feel */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Prevent image long-press save and dragging */
+img {
+  -webkit-user-drag: none;
+}
+
+/* Re-enable selection in inputs and copyable content */
+input, textarea, [contenteditable="true"],
+.chat-bubble-assistant {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 /* ======= PREMIUM CARD SYSTEM ======= */
 
 /* Elevated card — subtle shadow + clean border */
