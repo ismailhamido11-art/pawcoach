@@ -47,50 +47,45 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import { lazy } from 'react';
-
-// Eager imports (entry points — loaded in initial bundle)
+import DogProfile from './pages/DogProfile';
+import FindVet from './pages/FindVet';
 import Home from './pages/Home';
 import Onboarding from './pages/Onboarding';
+import Activite from './pages/Activite';
+import Sante from './pages/Sante';
+import Chat from './pages/Chat';
+import Dashboard from './pages/Dashboard';
+import DogPublicProfile from './pages/DogPublicProfile';
+import DogTwin from './pages/DogTwin';
+import HealthImport from './pages/HealthImport';
+import Library from './pages/Library';
+import Nutri from './pages/Nutri';
+import Premium from './pages/Premium';
+import Profile from './pages/Profile';
+import Scan from './pages/Scan';
+import Tracker from './pages/Tracker';
+import Training from './pages/Training';
+import VetDogView from './pages/VetDogView';
+import VetPortal from './pages/VetPortal';
 import __Layout from './Layout.jsx';
-
-// Lazy imports (code-split — loaded on demand)
-const Activite = lazy(() => import('./pages/Activite'));
-const Chat = lazy(() => import('./pages/Chat'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const DogProfile = lazy(() => import('./pages/DogProfile'));
-const DogPublicProfile = lazy(() => import('./pages/DogPublicProfile'));
-const DogTwin = lazy(() => import('./pages/DogTwin'));
-const FindVet = lazy(() => import('./pages/FindVet'));
-const HealthImport = lazy(() => import('./pages/HealthImport'));
-const Library = lazy(() => import('./pages/Library'));
-const Nutri = lazy(() => import('./pages/Nutri'));
-const Premium = lazy(() => import('./pages/Premium'));
-const Profile = lazy(() => import('./pages/Profile'));
-const Sante = lazy(() => import('./pages/Sante'));
-const Scan = lazy(() => import('./pages/Scan'));
-const Tracker = lazy(() => import('./pages/Tracker'));
-const Training = lazy(() => import('./pages/Training'));
-const VetDogView = lazy(() => import('./pages/VetDogView'));
-const VetPortal = lazy(() => import('./pages/VetPortal'));
 
 
 export const PAGES = {
+    "DogProfile": DogProfile,
+    "FindVet": FindVet,
+    "Home": Home,
+    "Onboarding": Onboarding,
     "Activite": Activite,
+    "Sante": Sante,
     "Chat": Chat,
     "Dashboard": Dashboard,
-    "DogProfile": DogProfile,
     "DogPublicProfile": DogPublicProfile,
     "DogTwin": DogTwin,
-    "FindVet": FindVet,
     "HealthImport": HealthImport,
-    "Home": Home,
     "Library": Library,
     "Nutri": Nutri,
-    "Onboarding": Onboarding,
     "Premium": Premium,
     "Profile": Profile,
-    "Sante": Sante,
     "Scan": Scan,
     "Tracker": Tracker,
     "Training": Training,
