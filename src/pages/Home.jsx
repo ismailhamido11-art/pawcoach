@@ -22,6 +22,8 @@ import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
+import PostTrialSheet from "../components/premium/PostTrialSheet";
+import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
 
 const MILESTONES = [
   { days: 3,   message: "3 jours de suite !",    sub: "Le debut d'une belle habitude" },
@@ -58,6 +60,7 @@ export default function Home() {
 
   const [milestone, setMilestone] = useState(null);
   const [showPremiumNudge, setShowPremiumNudge] = useState(false);
+  const [showPostTrial, setShowPostTrial] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -92,10 +95,25 @@ export default function Home() {
           if (streaks?.length > 0) setStreak(streaks[0]);
           const sorted = (recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7);
           setRecentCheckins(sorted);
-          // Post-onboarding premium nudge
-          if (!isUserPremium(u) && !u.premium_onboarding_nudge_shown) {
+          // Premium nudge — declenche a J2+ (pas J0)
+          const signupDaysAgo = u.signup_date
+            ? Math.floor((Date.now() - new Date(u.signup_date)) / (1000 * 60 * 60 * 24))
+            : 0;
+          if (!isUserPremium(u) && !u.premium_onboarding_nudge_shown && signupDaysAgo >= 2) {
             setShowPremiumNudge(true);
             try { await base44.auth.updateMe({ premium_onboarding_nudge_shown: true }); } catch(e) { console.warn("Nudge flag update failed:", e); }
+          }
+          // Post-trial sheet — trial expire, pas premium, pas deja vu
+          if (!isUserPremium(u) && u.trial_expires_at) {
+            const trialEnd = new Date(u.trial_expires_at);
+            const daysSinceExpiry = Math.floor((Date.now() - trialEnd.getTime()) / (1000 * 60 * 60 * 24));
+            if (daysSinceExpiry >= 0 && daysSinceExpiry <= 3) {
+              try {
+                if (!localStorage.getItem("pawcoach_post_trial_dismissed")) {
+                  setShowPostTrial(true);
+                }
+              } catch {}
+            }
           }
         } else {
           navigate(createPageUrl("Onboarding"));
@@ -224,6 +242,11 @@ export default function Home() {
           dailyLogs={dailyLogs}
         />
 
+        {/* Trial expiry banner — segmente par age du chien */}
+        <div className="mt-3">
+          <TrialExpiryBanner user={user} dog={dog} />
+        </div>
+
         {/* Block 2: Today Card (AI coaching + inline checkin) */}
         <div className="mt-3">
           <TodayCard
@@ -289,6 +312,14 @@ export default function Home() {
       <PremiumNudgeSheet
         visible={showPremiumNudge}
         onClose={() => setShowPremiumNudge(false)}
+        dogName={dog?.name}
+        ownerGoal={dog?.owner_goal}
+      />
+
+      {/* Post-trial sheet — J7, une seule fois */}
+      <PostTrialSheet
+        visible={showPostTrial}
+        onClose={() => setShowPostTrial(false)}
         dogName={dog?.name}
       />
     </div>

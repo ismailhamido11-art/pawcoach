@@ -4,13 +4,45 @@ import { getTrialDaysLeft, isUserOnTrial } from "@/utils/premium";
 import { Clock, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function TrialExpiryBanner({ user }) {
+function getDogAgeSegment(dog) {
+  if (!dog?.birth_date) return "adult";
+  const monthsOld = (Date.now() - new Date(dog.birth_date)) / (1000 * 60 * 60 * 24 * 30.44);
+  if (monthsOld < 12) return "puppy";
+  if (monthsOld > 84) return "senior";
+  return "adult";
+}
+
+const SEGMENT_MESSAGES = {
+  puppy: {
+    title: (name, days) => days === 1
+      ? `Dernier jour pour accompagner ${name} dans ses semaines critiques !`
+      : `${name} grandit vite — encore ${days} jours de suivi complet`,
+    sub: "Les premiers mois sont decisifs pour son education et sa sante",
+  },
+  adult: {
+    title: (name, days) => days === 1
+      ? `Dernier jour pour garder l'historique sante de ${name} !`
+      : `${name} a deja son suivi en place — encore ${days} jours d'essai`,
+    sub: "Un suivi regulier previent les problemes courants",
+  },
+  senior: {
+    title: (name, days) => days === 1
+      ? `Dernier jour pour proteger la sante de ${name} !`
+      : `${name} merite un suivi attentif — encore ${days} jours d'essai`,
+    sub: "Les rappels vaccins et le carnet sante sont essentiels a son age",
+  },
+};
+
+export default function TrialExpiryBanner({ user, dog }) {
   if (!isUserOnTrial(user)) return null;
 
   const daysLeft = getTrialDaysLeft(user);
   if (daysLeft > 3 || daysLeft <= 0) return null;
 
   const isUrgent = daysLeft <= 1;
+  const segment = getDogAgeSegment(dog);
+  const dogName = dog?.name || "ton chien";
+  const msg = SEGMENT_MESSAGES[segment];
 
   return (
     <motion.div
@@ -34,12 +66,10 @@ export default function TrialExpiryBanner({ user }) {
           </div>
           <div className="flex-1 min-w-0">
             <p className={`text-xs font-bold leading-snug ${isUrgent ? "text-amber-800" : "text-amber-700"}`}>
-              {daysLeft === 1
-                ? "Dernier jour de ton essai Premium !"
-                : `Ton essai Premium expire dans ${daysLeft} jours`}
+              {msg.title(dogName, daysLeft)}
             </p>
             <p className="text-[10px] text-amber-600/80 mt-0.5">
-              Abonne-toi pour garder toutes les fonctionnalités
+              {msg.sub}
             </p>
           </div>
           <ChevronRight className="w-4 h-4 text-amber-500 flex-shrink-0" />

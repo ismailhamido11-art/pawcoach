@@ -12,7 +12,30 @@ const FEATURES = [
   { icon: Bell, label: "Rappels santé & résumés mensuels", color: "#ef4444" },
 ];
 
-export default function PremiumNudgeSheet({ visible, onClose, dogName, context = "default" }) {
+const GOAL_NUDGE = {
+  "Qu'il soit en bonne santé": {
+    title: (name) => `Le carnet sante complet de ${name} est ouvert`,
+    sub: "Ajoute sa derniere visite veto pendant ton essai gratuit",
+  },
+  "Bien l'éduquer": {
+    title: (name) => `${name} progresse vite`,
+    sub: "Les 7 exercices avances sont debloques pendant ton essai",
+  },
+  "Qu'il mange bien": {
+    title: (name) => `Le NutriCoach de ${name} est sans limite`,
+    sub: "Genere son plan repas personnalise cette semaine",
+  },
+  "Son bonheur au quotidien": {
+    title: (name) => `${name} a deja son suivi en place`,
+    sub: "Continue le check-in quotidien pendant les 7 jours de l'essai",
+  },
+  "Mieux le comprendre": {
+    title: (name) => `Le coach IA connait ${name} par son nom`,
+    sub: "Pose-lui n'importe quelle question sur sa race et ses habitudes",
+  },
+};
+
+export default function PremiumNudgeSheet({ visible, onClose, dogName, ownerGoal, context = "default" }) {
   const navigate = useNavigate();
   useBackClose(visible, onClose);
 
@@ -66,14 +89,18 @@ export default function PremiumNudgeSheet({ visible, onClose, dogName, context =
                 <Illustration name="goodDoggy" alt="PawCoach Premium" className="w-full h-full drop-shadow-lg" />
               </div>
 
-              {/* Title */}
+              {/* Title — personnalise par objectif */}
               <h2 className="text-xl font-black text-center text-foreground mb-1">
-                {dogName
-                  ? `Le profil de ${dogName} est prêt !`
-                  : "Débloquez tout PawCoach"}
+                {ownerGoal && GOAL_NUDGE[ownerGoal]
+                  ? GOAL_NUDGE[ownerGoal].title(dogName || "ton chien")
+                  : dogName
+                    ? `Le profil de ${dogName} est pret !`
+                    : "Debloquez tout PawCoach"}
               </h2>
               <p className="text-sm text-center text-muted-foreground mb-5">
-                <strong>7 jours gratuits</strong> · Sans carte bancaire · Résiliation à tout moment
+                {ownerGoal && GOAL_NUDGE[ownerGoal]
+                  ? GOAL_NUDGE[ownerGoal].sub
+                  : <><strong>7 jours gratuits</strong> · Sans carte bancaire · Resiliation a tout moment</>}
               </p>
 
               {/* Feature list */}

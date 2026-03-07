@@ -34,6 +34,29 @@ const PREMIUM_FEATURES = [
   { text: "Jusqu'à 3 chiens", icon: DogIcon, color: "#ec4899" },
 ];
 
+function getDogAgeSegment(dog) {
+  if (!dog?.birth_date) return "adult";
+  const monthsOld = (Date.now() - new Date(dog.birth_date)) / (1000 * 60 * 60 * 24 * 30.44);
+  if (monthsOld < 12) return "puppy";
+  if (monthsOld > 84) return "senior";
+  return "adult";
+}
+
+const SEGMENT_HERO = {
+  puppy: {
+    subtitle: (name) => `${name} grandit vite — ne rate pas ses semaines critiques`,
+    urgency: (name, days) => `${name} a besoin de toi maintenant — essai expire dans ${days} jour${days > 1 ? "s" : ""}`,
+  },
+  adult: {
+    subtitle: (name) => `Le meilleur suivi au quotidien pour ${name}`,
+    urgency: (name, days) => `Garde l'historique sante de ${name} — essai expire dans ${days} jour${days > 1 ? "s" : ""}`,
+  },
+  senior: {
+    subtitle: (name) => `${name} merite un suivi attentif a son age`,
+    urgency: (name, days) => `Les rappels sante de ${name} expirent dans ${days} jour${days > 1 ? "s" : ""}`,
+  },
+};
+
 export default function Premium() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -119,6 +142,8 @@ export default function Premium() {
 
   const trialDays = getTrialDaysLeft(user);
   const isOnTrial = trialDays > 0 && !user?.is_premium;
+  const segment = getDogAgeSegment(dog);
+  const dogName = dog?.name || "ton chien";
 
   if (isUserPremium(user)) {
     return (
@@ -293,7 +318,7 @@ export default function Premium() {
             <Illustration name="qualityTime" alt="PawCoach Premium" className="w-32 h-32 mx-auto drop-shadow-lg" />
           </motion.div>
           <h1 className="text-white font-black text-2xl">PawCoach Premium</h1>
-          <p className="text-white/70 text-sm mt-1">Le meilleur pour ton chien, sans limite</p>
+          <p className="text-white/70 text-sm mt-1">{SEGMENT_HERO[segment].subtitle(dogName)}</p>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
@@ -341,6 +366,7 @@ export default function Premium() {
             </span>
             Annuel<br />
             <span className={`text-xs font-normal ${plan === "annual" ? "text-white/80" : "text-muted-foreground"}`}>59,99 €/an · 5 €/mois</span>
+            <span className={`block text-[10px] mt-0.5 font-medium ${plan === "annual" ? "text-white/60" : "text-muted-foreground/60"}`}>Tu economies 36 € par an</span>
           </motion.button>
         </div>
 
@@ -389,7 +415,7 @@ export default function Premium() {
         {isOnTrial && trialDays <= 3 && (
           <div className="bg-amber-50 border border-amber-300 rounded-xl px-4 py-2.5 text-center">
             <p className="text-amber-700 font-bold text-sm">
-              Ton essai gratuit expire dans {trialDays} jour{trialDays > 1 ? "s" : ""} — abonne-toi pour ne rien perdre
+              {SEGMENT_HERO[segment].urgency(dogName, trialDays)}
             </p>
           </div>
         )}
