@@ -21,6 +21,11 @@ import PullToRefresh from "@/components/PullToRefresh";
 import DownloadHealthPDF from "@/components/vet/DownloadHealthPDF";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
+const tabVariants = {
+  enter: (d) => ({ opacity: 0, x: d * 60 }),
+  center: { opacity: 1, x: 0 },
+  exit: (d) => ({ opacity: 0, x: d * -60 }),
+};
 
 const TABS = [
   { id: "carnet",  label: "Carnet",    emoji: "📋", icon: BookHeart,    color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
@@ -58,6 +63,12 @@ export default function Sante() {
    }, []);
    useEffect(() => { sessionStorage.setItem("tab_Sante", activeTab); }, [activeTab]);
    const changeTab = (tabId) => { sessionStorage.setItem("tab_Sante", tabId); setSearchParams({ tab: tabId }); };
+
+   // Track direction for native-like horizontal slide
+   const tabIndex = TABS.findIndex(t => t.id === activeTab);
+   const prevTabIdx = useRef(tabIndex);
+   const tabDir = tabIndex >= prevTabIdx.current ? 1 : -1;
+   useEffect(() => { prevTabIdx.current = tabIndex; }, [tabIndex]);
 
    const [initialSubTab] = useState(isDeepLink && validSubTabs.includes(urlTab) ? urlTab : null);
    const [showShareModal, setShowShareModal] = useState(urlTab === "vet");
@@ -183,13 +194,15 @@ export default function Sante() {
           }
         } catch (e) { console.error(e); }
       }}>
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" custom={tabDir}>
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18 }}
+            custom={tabDir}
+            variants={tabVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ type: "spring", stiffness: 500, damping: 35 }}
           >
             {activeTab === "carnet" && (
               <NotebookContent

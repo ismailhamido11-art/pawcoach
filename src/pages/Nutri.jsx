@@ -22,6 +22,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
+const tabVariants = {
+  enter: (d) => ({ opacity: 0, x: d * 60 }),
+  center: { opacity: 1, x: 0 },
+  exit: (d) => ({ opacity: 0, x: d * -60 }),
+};
 const msgAnim = {
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
@@ -91,6 +96,13 @@ export default function Nutri() {
    }, []);
    useEffect(() => { sessionStorage.setItem("tab_Nutri", activeTab); }, [activeTab]);
    const changeTab = (tabId) => { sessionStorage.setItem("tab_Nutri", tabId); setSearchParams({ tab: tabId }); };
+
+  // Track direction for native-like horizontal slide
+  const tabIndex = TABS.findIndex(t => t.id === activeTab);
+  const prevTabIdx = useRef(tabIndex);
+  const tabDir = tabIndex >= prevTabIdx.current ? 1 : -1;
+  useEffect(() => { prevTabIdx.current = tabIndex; }, [tabIndex]);
+
   const [messagesRemaining, setMessagesRemaining] = useState(null);
   const [bookmarked, setBookmarked] = useState({});
   const [dietPrefs, setDietPrefs] = useState(null);
@@ -358,6 +370,18 @@ export default function Nutri() {
         </div>
       </div>
 
+      <AnimatePresence mode="wait" custom={tabDir}>
+        <motion.div
+          key={activeTab}
+          custom={tabDir}
+          variants={tabVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ type: "spring", stiffness: 500, damping: 35 }}
+          className="flex-1 flex flex-col"
+        >
+
       {/* Tab: Scan */}
       {activeTab === "scan" && (
         <div className="flex-1 flex flex-col items-center justify-center px-5 py-10 gap-5">
@@ -423,7 +447,7 @@ export default function Nutri() {
 
       {/* Tab: NutriCoach chat */}
       {activeTab === "coach" && (
-        <>
+        <div className="flex-1 flex flex-col">
           <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3 pb-44">
             {messages.map((msg, i) => (
               <div key={i}>
@@ -594,8 +618,11 @@ export default function Nutri() {
               </>
             )}
           </div>
-        </>
+        </div>
       )}
+
+        </motion.div>
+      </AnimatePresence>
 
       <BottomNav currentPage="Nutri" />
     </div>
