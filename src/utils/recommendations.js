@@ -191,7 +191,7 @@ export function buildRecommendations({ records = [], exercises = [], scans = [],
         label: "Plan repas actif",
         sub: "Consulte ton plan nutrition personnalise",
         page: "Nutri",
-        tab: "saved",
+        tab: "mealplan",
         cta: "Voir le plan",
         accent: "border-l-emerald-400",
       });
