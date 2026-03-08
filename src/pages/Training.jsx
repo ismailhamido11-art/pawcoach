@@ -8,7 +8,7 @@ import MilestoneScreen from "../components/training/MilestoneScreen";
 import FreeExercisesGate from "../components/training/FreeExercisesGate";
 import JourneyCard from "../components/training/JourneyCard";
 import JourneyView from "../components/training/JourneyView";
-import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw, ChevronRight, Sparkles, Lock, Loader2 } from "lucide-react";
+import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw, ChevronRight, Sparkles, Lock } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
 import { useNavigate, Link } from "react-router-dom";
@@ -156,6 +156,8 @@ export default function Training() {
    const [milestone, setMilestone] = useState(null);
    const [showFreeGate, setShowFreeGate] = useState(false);
    const [generatingProgram, setGeneratingProgram] = useState(false);
+   const [behaviorProgram, setBehaviorProgram] = useState(null);
+   const [behaviorBookmarks, setBehaviorBookmarks] = useState([]);
 
    // Get journey and exercise IDs from URL query params
    const params = new URLSearchParams(window.location.search);
@@ -173,8 +175,12 @@ export default function Training() {
       if (dogs?.length > 0) {
         const activeDog = getActiveDog(dogs);
         setDog(activeDog);
-        const progs = await base44.entities.UserProgress.filter({ user_email: u.email, dog_id: activeDog.id });
+        const [progs, bBks] = await Promise.all([
+          base44.entities.UserProgress.filter({ user_email: u.email, dog_id: activeDog.id }),
+          base44.entities.Bookmark.filter({ dog_id: activeDog.id, source: "behavior_program" }, "-created_at", 5).catch(() => []),
+        ]);
         setProgresses(progs || []);
+        setBehaviorBookmarks(bBks || []);
       }
     } catch (err) {
       console.error("Training load error:", err);
@@ -374,6 +380,35 @@ export default function Training() {
     const guide = BEHAVIOR_GUIDES.find(g => g.id === behaviorId);
     if (!guide) return null;
     const locked = !guide.isFree && !isPremium;
+
+    // Find active behavior program for this guide
+    let activeProgram = null;
+    if (behaviorProgram?.problem_id === guide.id) {
+      activeProgram = behaviorProgram;
+    } else {
+      for (const bk of behaviorBookmarks) {
+        try {
+          const data = JSON.parse(bk.content);
+          if (data.problem_id === guide.id && data.start_date && data.days) {
+            const start = new Date(data.start_date + "T00:00:00");
+            const now = new Date(); now.setHours(0, 0, 0, 0);
+            const elapsed = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+            if (elapsed >= 0 && elapsed < 7) { activeProgram = data; break; }
+          }
+        } catch {}
+      }
+    }
+
+    let todayDay = null, dayIndex = 0, programProgress = 0;
+    if (activeProgram?.days) {
+      const start = new Date(activeProgram.start_date + "T00:00:00");
+      const now = new Date(); now.setHours(0, 0, 0, 0);
+      const elapsed = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+      dayIndex = Math.min(Math.max(elapsed, 0), 6);
+      todayDay = activeProgram.days[dayIndex];
+      programProgress = Math.round(((dayIndex + 1) / 7) * 100);
+    }
+
     return (
       <div className="min-h-screen bg-background pb-24">
         <WellnessBanner />
@@ -439,58 +474,158 @@ export default function Training() {
               <p className="text-sm text-amber-800 leading-relaxed">{guide.alarm}</p>
             </div>
 
-            {/* CTA Programme 7 jours IA */}
-            <motion.button
-              whileTap={{ scale: 0.97 }}
-              disabled={generatingProgram}
-              onClick={async () => {
-                if (!isPremium) {
-                  navigate(createPageUrl("Premium") + "?from=behavior-program");
-                  return;
-                }
-                setGeneratingProgram(true);
-                try {
-                  const response = await base44.functions.invoke("generateTrainingProgram", {
-                    dogId: dog.id,
-                    dogName: dog.name,
-                    dogBreed: dog.breed,
-                    dogBirthDate: dog.birth_date,
-                    activityLevel: dog.activity_level,
-                    healthIssues: dog.health_issues,
-                    mode: "behavior",
-                    problemId: guide.id,
-                    problemLabel: guide.name,
-                    problemDescription: guide.description,
-                  });
-                  const program = response.data?.program;
-                  if (!program) throw new Error("No program returned");
-                  const today = new Date().toISOString().slice(0, 10);
-                  await base44.entities.Bookmark.create({
-                    dog_id: dog.id,
-                    source: "behavior_program",
-                    title: program.program_title || `Programme — ${guide.name}`,
-                    content: JSON.stringify({ ...program, start_date: today, problem_id: guide.id }),
-                  });
-                  toast.success("Programme 7 jours cree !");
-                  navigate(createPageUrl("Home"));
-                } catch (err) {
-                  console.error("Behavior program generation error:", err);
-                  toast.error("Erreur lors de la generation. Reessaie.");
-                } finally {
-                  setGeneratingProgram(false);
-                }
-              }}
-              className="w-full py-4 rounded-2xl font-bold text-sm text-white flex items-center justify-center gap-2 shadow-lg disabled:opacity-60"
-              style={{ background: "linear-gradient(135deg, #1A4D3E, #2D9F82)" }}
-            >
-              {generatingProgram ? (
-                <><Loader2 className="w-4 h-4 animate-spin" /> Generation en cours...</>
-              ) : isPremium ? (
-                <><Sparkles className="w-4 h-4" /> Lancer un programme 7 jours</>
-              ) : (
-                <><Lock className="w-4 h-4" /> Programme 7 jours — Premium</>
-              )}
-            </motion.button>
+            {/* Programme comportement 7j — affichage ou generation */}
+            {generatingProgram ? (
+              <div className="flex flex-col items-center justify-center py-8 gap-3">
+                <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                  <Sparkles className="w-6 h-6 text-blue-600 animate-pulse" />
+                </div>
+                <p className="font-bold text-sm text-center">Création du programme en cours...</p>
+                <p className="text-xs text-muted-foreground text-center max-w-52">L'IA conçoit un programme adapté à {dog?.name}</p>
+              </div>
+            ) : activeProgram && todayDay ? (
+              <div className="space-y-3 mt-2">
+                {/* Program header */}
+                <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-5 text-white">
+                  <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider mb-1">Programme comportement</p>
+                  <h3 className="font-black text-lg leading-tight">{activeProgram.program_title}</h3>
+                  <p className="text-white/80 text-xs mt-1.5 leading-relaxed">{activeProgram.summary}</p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">Jour {dayIndex + 1} / 7</span>
+                    <div className="flex-1 h-1.5 bg-white/20 rounded-full overflow-hidden">
+                      <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${programProgress}%` }} />
+                    </div>
+                    <span className="text-[10px] font-bold text-white/80">{programProgress}%</span>
+                  </div>
+                </div>
+
+                {/* Today's exercises */}
+                <div className="bg-white rounded-2xl border border-blue-200 p-4">
+                  <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">{todayDay.day_name} — {todayDay.theme}</p>
+                  {todayDay.exercises?.map((ex, i) => (
+                    <div key={i} className="flex items-start gap-2.5 mt-2.5 first:mt-0">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+                        <span className="text-[10px] font-bold text-blue-600">{i + 1}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-foreground">
+                          {ex.name} <span className="text-xs text-muted-foreground font-normal">({ex.duration_min} min)</span>
+                        </p>
+                        <p className="text-xs text-foreground/70 leading-relaxed mt-0.5">{ex.description}</p>
+                        {ex.tips && <p className="text-[10px] text-blue-600 italic mt-1">{ex.tips}</p>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Environment tips */}
+                {todayDay.environment_tips && (
+                  <div className="bg-blue-50/80 rounded-2xl px-4 py-3 border border-blue-100">
+                    <p className="text-[10px] font-bold text-blue-700 uppercase tracking-widest mb-1">Environnement</p>
+                    <p className="text-xs text-blue-800 leading-relaxed">{todayDay.environment_tips}</p>
+                  </div>
+                )}
+
+                {/* Do / Don't */}
+                {(todayDay.do?.length > 0 || todayDay.dont?.length > 0) && (
+                  <div className="grid grid-cols-2 gap-2">
+                    {todayDay.do?.length > 0 && (
+                      <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-200">
+                        <p className="text-[10px] font-bold text-emerald-700 uppercase mb-1.5">A faire</p>
+                        {todayDay.do.map((d, i) => <p key={i} className="text-[10px] text-emerald-800 leading-relaxed">✓ {d}</p>)}
+                      </div>
+                    )}
+                    {todayDay.dont?.length > 0 && (
+                      <div className="bg-red-50 rounded-xl p-3 border border-red-200">
+                        <p className="text-[10px] font-bold text-red-700 uppercase mb-1.5">A eviter</p>
+                        {todayDay.dont.map((d, i) => <p key={i} className="text-[10px] text-red-800 leading-relaxed">✕ {d}</p>)}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Emergency protocol */}
+                {activeProgram.emergency_protocol && (
+                  <div className="bg-amber-50 rounded-2xl p-4 border border-amber-200">
+                    <p className="text-xs font-bold text-amber-700 uppercase tracking-widest mb-2">En cas d'urgence</p>
+                    <p className="text-xs text-amber-800 leading-relaxed">{activeProgram.emergency_protocol}</p>
+                  </div>
+                )}
+
+                {/* Progress indicators */}
+                {activeProgram.progress_indicators?.length > 0 && (
+                  <div className="bg-white rounded-2xl border border-border p-4">
+                    <p className="font-bold text-sm mb-2">Signes de progres a observer</p>
+                    {activeProgram.progress_indicators.map((ind, i) => (
+                      <p key={i} className="text-xs text-muted-foreground mt-1">✓ {ind}</p>
+                    ))}
+                  </div>
+                )}
+
+                {/* Link to Home */}
+                <Link
+                  to={createPageUrl("Home")}
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-blue-600 text-white font-bold text-sm"
+                >
+                  Suivre le programme sur l'accueil
+                </Link>
+              </div>
+            ) : (
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={async () => {
+                  if (!isPremium) {
+                    navigate(createPageUrl("Premium") + "?from=behavior-program");
+                    return;
+                  }
+                  setGeneratingProgram(true);
+                  try {
+                    const response = await base44.functions.invoke("generateTrainingProgram", {
+                      dogId: dog.id,
+                      dogName: dog.name,
+                      dogBreed: dog.breed,
+                      dogBirthDate: dog.birth_date,
+                      activityLevel: dog.activity_level,
+                      healthIssues: dog.health_issues,
+                      mode: "behavior",
+                      problemId: guide.id,
+                      problemLabel: guide.name,
+                      problemDescription: guide.description,
+                    });
+                    let program = response.data?.program;
+                    if (typeof program === "string") {
+                      try { program = JSON.parse(program); } catch {}
+                    }
+                    if (!program || !program.days) throw new Error("No program returned");
+                    const today = new Date().toISOString().slice(0, 10);
+                    const programData = { ...program, start_date: today, problem_id: guide.id };
+                    await base44.entities.Bookmark.create({
+                      dog_id: dog.id,
+                      owner: user.email,
+                      source: "behavior_program",
+                      title: program.program_title || `Programme — ${guide.name}`,
+                      content: JSON.stringify(programData),
+                      created_at: new Date().toISOString(),
+                    });
+                    setBehaviorProgram(programData);
+                    toast.success("Programme 7 jours activé !");
+                  } catch (err) {
+                    console.error("Behavior program generation error:", err);
+                    toast.error("Erreur lors de la génération. Réessaie.");
+                  } finally {
+                    setGeneratingProgram(false);
+                  }
+                }}
+                className="w-full py-4 rounded-2xl font-bold text-sm text-white flex items-center justify-center gap-2 shadow-lg"
+                style={{ background: "linear-gradient(135deg, #1A4D3E, #2D9F82)" }}
+              >
+                {isPremium ? (
+                  <><Sparkles className="w-4 h-4" /> Lancer le programme comportement</>
+                ) : (
+                  <><Lock className="w-4 h-4" /> Programme comportement — Premium</>
+                )}
+              </motion.button>
+            )}
 
             {/* CTA Chat */}
             <Link to={createPageUrl("Chat") + `?help=${encodeURIComponent(`J'ai un probleme de ${guide.name.toLowerCase()} avec ${dog?.name || "mon chien"}. Peux-tu m'aider ?`)}`}>

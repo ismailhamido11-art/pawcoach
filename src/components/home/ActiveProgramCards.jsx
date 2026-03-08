@@ -46,7 +46,7 @@ function TrainingCard({ program }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
     >
-      <Link to={createPageUrl("Activite") + "?tab=dressage"}>
+      <Link to={createPageUrl("Activite") + "?tab=programme"}>
         <div className="rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-purple-50 p-4 relative overflow-hidden group">
           <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-violet-400 opacity-[0.06]" />
 
@@ -56,7 +56,7 @@ function TrainingCard({ program }) {
                 <Dumbbell className="w-3.5 h-3.5 text-violet-600" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-violet-600 uppercase tracking-wider">Programme actif</p>
+                <p className="text-[10px] font-bold text-violet-600 uppercase tracking-wider">Programme d'activité</p>
                 <p className="text-[10px] text-muted-foreground">
                   Semaine {currentDay} / {program.duration_weeks || 4} — Jour {elapsed + 1}
                 </p>
@@ -346,12 +346,18 @@ function BehaviorProgramCard({ program }) {
           </div>
 
           {!open && (
-            <div className="flex items-start gap-2.5 bg-white/80 rounded-xl px-3 py-2.5 border border-blue-100/60">
-              <Brain className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
-              <div className="flex-1 min-w-0">
+            <div className="bg-white/80 rounded-xl px-3 py-2.5 border border-blue-100/60 space-y-1">
+              <div className="flex items-center gap-2">
+                <Brain className="w-4 h-4 text-blue-500 shrink-0" />
                 <span className="text-xs font-bold text-foreground">{day.day_name || `Jour ${elapsed + 1}`}</span>
-                <span className="text-[10px] text-muted-foreground ml-1.5 truncate"> — {day.theme}</span>
+                <span className="text-[10px] text-muted-foreground truncate"> — {day.theme}</span>
               </div>
+              {day.exercises?.[0] && (
+                <p className="text-[10px] text-foreground/60 ml-6 truncate">
+                  Aujourd'hui : {day.exercises[0].name} ({day.exercises[0].duration_min} min)
+                  {day.exercises.length > 1 ? ` + ${day.exercises.length - 1} autre${day.exercises.length > 2 ? "s" : ""}` : ""}
+                </p>
+              )}
             </div>
           )}
 
@@ -380,6 +386,9 @@ function BehaviorProgramCard({ program }) {
               className="overflow-hidden"
             >
               <div className="px-4 pb-4 space-y-2">
+                {program.summary && (
+                  <p className="text-[10px] text-foreground/60 italic px-1">{program.summary}</p>
+                )}
                 <div className="bg-white/80 rounded-xl p-3 border border-blue-100/60">
                   <p className="text-xs font-bold text-foreground mb-2">{day.day_name} — {day.theme}</p>
                   {day.exercises?.map((ex, i) => (
@@ -404,6 +413,23 @@ function BehaviorProgramCard({ program }) {
                   </div>
                 )}
 
+                {(day.do?.length > 0 || day.dont?.length > 0) && (
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {day.do?.length > 0 && (
+                      <div className="bg-emerald-50 rounded-lg px-2.5 py-2 border border-emerald-100">
+                        <p className="text-[9px] font-bold text-emerald-700 uppercase mb-0.5">A faire</p>
+                        {day.do.slice(0, 2).map((d, i) => <p key={i} className="text-[10px] text-emerald-800 truncate">✓ {d}</p>)}
+                      </div>
+                    )}
+                    {day.dont?.length > 0 && (
+                      <div className="bg-red-50 rounded-lg px-2.5 py-2 border border-red-100">
+                        <p className="text-[9px] font-bold text-red-700 uppercase mb-0.5">A eviter</p>
+                        {day.dont.slice(0, 2).map((d, i) => <p key={i} className="text-[10px] text-red-800 truncate">✕ {d}</p>)}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="flex items-center gap-2 px-1">
                   <div className="flex-1 h-1.5 bg-blue-100 rounded-full overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" style={{ width: `${progress}%` }} />
@@ -416,7 +442,7 @@ function BehaviorProgramCard({ program }) {
                     to={createPageUrl("Training") + `?behavior=${program.problem_id}`}
                     className="block text-center text-[11px] font-semibold text-blue-600 py-1"
                   >
-                    Voir la fiche complete
+                    Voir le programme détaillé
                   </Link>
                 )}
               </div>

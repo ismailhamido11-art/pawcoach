@@ -154,9 +154,9 @@ export default function AITrainingProgram({ dog, logs = [] }) {
               <Sparkles className="w-6 h-6 text-purple-600" />
             </div>
             <div>
-              <p className="font-bold text-sm text-foreground">Programme sur mesure IA</p>
+              <p className="font-bold text-sm text-foreground">Programme d'activité sur mesure</p>
               <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-                Génère un programme d'entraînement 4 semaines adapté à {dog?.name}, sa race ({dog?.breed || "…"}) et son niveau d'activité actuel.
+                Génère un programme d'activité 4 semaines adapté à {dog?.name}, sa race ({dog?.breed || "…"}) et son niveau d'activité actuel.
               </p>
             </div>
           </div>
@@ -223,7 +223,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       <div className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-5 text-white">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider mb-1">Programme IA</p>
+            <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider mb-1">Programme d'activité</p>
             <h3 className="font-black text-lg leading-tight">{program.program_title}</h3>
             <p className="text-white/80 text-xs mt-1.5 leading-relaxed">{program.summary}</p>
           </div>

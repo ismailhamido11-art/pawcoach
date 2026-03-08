@@ -219,7 +219,6 @@ export default function Home() {
         if (streaks?.length > 0) setStreak(streaks[0]);
         setRecentCheckins((recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7));
         // Refresh weekly insights
-        const u = await base44.auth.me();
         if (isUserPremium(u)) {
           try {
             const allInsights = await base44.entities.WeeklyInsight.filter({ dog_id: d.id }, "-week_start", 10);
@@ -324,7 +323,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Block 2c: Active Program Cards (training + nutrition) */}
+        {/* Block 2c: Active Program Cards (activite + comportement + nutrition) */}
         <div className="mt-3">
           <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} behaviorBookmarks={behaviorBookmarks} />
         </div>
