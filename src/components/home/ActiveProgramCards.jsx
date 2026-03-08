@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target, Brain } from "lucide-react";
+import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target, Brain, CheckCircle2 } from "lucide-react";
 
 const SESSION_ICONS = {
   balade: "\uD83D\uDC3E", jeu: "\uD83C\uDFBE", "exercice mental": "\uD83E\uDDE0", repos: "\uD83D\uDCA4", "entra\u00EEnement": "\uD83C\uDFAF",
@@ -10,6 +10,18 @@ const SESSION_ICONS = {
 
 const DAY_NAMES = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 const WEEK_DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+const JOURS_COURTS = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
+const MOIS_FR = ["jan.", "fév.", "mars", "avr.", "mai", "juin", "juil.", "août", "sep.", "oct.", "nov.", "déc."];
+
+function addDaysToDate(dateStr, days) {
+  const d = new Date(dateStr + "T00:00:00");
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+function formatDateFr(date) {
+  return `${JOURS_COURTS[date.getDay()]} ${date.getDate()} ${MOIS_FR[date.getMonth()]}`;
+}
 
 function getElapsedDays(startDate) {
   const start = new Date(startDate + "T00:00:00");
@@ -26,19 +38,22 @@ function TrainingCard({ program }) {
 
   const currentWeekIndex = Math.floor(elapsed / 7);
   const currentDayIndex = elapsed % 7;
-  const currentDay = currentWeekIndex + 1;
   const week = program.weeks?.[currentWeekIndex];
   if (!week) return null;
 
-  const todayName = DAY_NAMES[new Date().getDay()];
-  const session = week.daily_sessions?.find(s =>
-    s.day?.toLowerCase() === todayName.toLowerCase()
-  ) || week.daily_sessions?.[currentDayIndex] || week.daily_sessions?.[0];
-
+  const session = week.daily_sessions?.[currentDayIndex] || week.daily_sessions?.[0];
   if (!session) return null;
 
-  const progress = Math.round(((elapsed + 1) / totalDays) * 100);
+  const realDate = addDaysToDate(program.start_date, elapsed);
   const icon = SESSION_ICONS[session.type] || "\uD83D\uDC36";
+
+  // Completion tracking
+  const completedSessions = program.completed_sessions || [];
+  const totalSessions = program.weeks?.reduce((acc, w) => acc + (w.daily_sessions?.length || 0), 0) || 0;
+  const completedCount = completedSessions.length;
+  const progress = totalSessions > 0 ? Math.round((completedCount / totalSessions) * 100) : Math.round(((elapsed + 1) / totalDays) * 100);
+  const todayKey = `w${currentWeekIndex}-d${currentDayIndex}`;
+  const todayDone = completedSessions.includes(todayKey);
 
   return (
     <motion.div
@@ -58,26 +73,34 @@ function TrainingCard({ program }) {
               <div>
                 <p className="text-[10px] font-bold text-violet-600 uppercase tracking-wider">Programme d'activité</p>
                 <p className="text-[10px] text-muted-foreground">
-                  Semaine {currentDay} / {program.duration_weeks || 4} — Jour {elapsed + 1}
+                  Semaine {currentWeekIndex + 1}/{program.duration_weeks || 4} — {formatDateFr(realDate)}
                 </p>
               </div>
             </div>
             <ChevronRight className="w-4 h-4 text-muted-foreground/30 group-hover:text-violet-400 transition-colors" />
           </div>
 
-          <div className="flex items-start gap-3 bg-white/80 rounded-xl p-3 border border-violet-100/60">
+          <div className={`flex items-start gap-3 rounded-xl p-3 border ${
+            todayDone ? "bg-emerald-50/80 border-emerald-100/60" : "bg-white/80 border-violet-100/60"
+          }`}>
             <span className="text-2xl leading-none mt-0.5">{icon}</span>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
-                <span className="text-xs font-bold text-foreground">{session.day || todayName}</span>
-                <span className="text-[10px] text-muted-foreground capitalize">{session.type}</span>
+                <span className={`text-xs font-bold ${todayDone ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                  {session.activity?.split(".")[0]?.slice(0, 40) || session.type}
+                </span>
                 <span className="ml-auto text-[10px] font-bold text-violet-600 flex items-center gap-0.5">
                   <Clock className="w-3 h-3" />{session.duration_min} min
                 </span>
               </div>
-              <p className="text-[12px] text-foreground/80 leading-relaxed">{session.activity}</p>
+              <p className="text-[11px] text-foreground/70 leading-relaxed line-clamp-2">{session.activity}</p>
               {session.tips && (
-                <p className="text-[10px] text-amber-600 mt-1 italic">{session.tips}</p>
+                <p className="text-[10px] text-amber-600 mt-1 italic line-clamp-1">💡 {session.tips}</p>
+              )}
+              {todayDone && (
+                <p className="text-[10px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> Fait !
+                </p>
               )}
             </div>
           </div>
@@ -91,7 +114,9 @@ function TrainingCard({ program }) {
                 transition={{ duration: 0.8, ease: "easeOut" }}
               />
             </div>
-            <span className="text-[10px] font-bold text-violet-600">{progress}%</span>
+            <span className="text-[10px] font-bold text-violet-600">
+              {completedCount > 0 ? `${completedCount}/${totalSessions}` : `${progress}%`}
+            </span>
           </div>
 
           {week.theme && (
