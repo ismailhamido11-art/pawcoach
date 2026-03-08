@@ -337,7 +337,7 @@ export default function Home() {
         <div className="mt-3">
           <DailyCoaching
             dog={dog} records={records} exercises={exercises} scans={scans}
-            dailyLogs={dailyLogs} todayCheckin={todayCheckin} streak={streak}
+            dailyLogs={dailyLogs} checkins={recentCheckins} todayCheckin={todayCheckin} streak={streak}
             diagnosisReports={diagnosisReports} nutritionPlans={nutritionPlans}
           />
         </div>

@@ -23,10 +23,11 @@ Deno.serve(async (req) => {
     }
 
     // Fetch all data upfront to avoid N+1 queries
-    const [allCheckins, allProgress, allScans] = await Promise.all([
+    const [allCheckins, allProgress, allScans, allDailyLogs] = await Promise.all([
       base44.asServiceRole.entities.DailyCheckin.list(),
       base44.asServiceRole.entities.UserProgress.list(),
       base44.asServiceRole.entities.FoodScan.list(),
+      base44.asServiceRole.entities.DailyLog.list(),
     ]);
 
     const apiKey = Deno.env.get("OPENROUTER_API_KEY");
@@ -69,6 +70,14 @@ Deno.serve(async (req) => {
         return scanDate >= weekStart && scanDate <= weekEnd;
       }).length;
 
+      // Walk data from DailyLog
+      const weekLogs = (allDailyLogs || []).filter(l =>
+        l.dog_id === dog.id && l.date >= weekStart && l.date <= weekEnd
+      );
+      const walkDays = weekLogs.filter(l => l.walk_minutes > 0).length;
+      const totalWalkMinutes = weekLogs.reduce((s, l) => s + (l.walk_minutes || 0), 0);
+      const avgWalkMinutes = walkDays > 0 ? Math.round(totalWalkMinutes / walkDays) : 0;
+
       // Collect symptoms from this week's check-ins
       const weekSymptoms = {};
       checkins.forEach(c => {
@@ -103,7 +112,8 @@ Deno.serve(async (req) => {
 
         const prevBehavior = dog.behavior_summary ? `\nProfil comportemental precedent: "${dog.behavior_summary}"` : "";
         const systemPrompt = `Tu es PawCoach. Genere un bilan hebdomadaire pour ${dog.name} (${dog.breed}).${personalityNote}${statusNote}${prevBehavior} ${toneInstruction} Tutoie. 3-5 phrases max. Reponds en JSON avec: summary (bilan general), highlights (2-3 points cles), recommendations (2-3 conseils pour la semaine prochaine), behavior_summary (profil comportemental synthetique de ${dog.name} en 2-3 phrases — patterns d'humeur, energie, alertes, evolution par rapport au profil precedent si disponible).`;
-        const userMessage = `Bilan de la semaine du ${weekStart} au ${weekEnd} pour ${dog.name}: ${checkinCount} check-ins, humeur moyenne ${avgMood}/4, energie moyenne ${avgEnergy}/3, appetit moyen ${avgAppetite}/3, ${exercisesCompleted} exercices completes, ${scansDone} scans alimentaires${symptomText}.`;
+        const walkText = walkDays > 0 ? `, ${walkDays} jours de balade (${totalWalkMinutes} min total, moyenne ${avgWalkMinutes} min/sortie)` : ", aucune balade enregistrée cette semaine";
+        const userMessage = `Bilan de la semaine du ${weekStart} au ${weekEnd} pour ${dog.name}: ${checkinCount} check-ins, humeur moyenne ${avgMood}/4, energie moyenne ${avgEnergy}/3, appetit moyen ${avgAppetite}/3, ${exercisesCompleted} exercices completes, ${scansDone} scans alimentaires${walkText}${symptomText}.`;
 
         try {
           const llmResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {

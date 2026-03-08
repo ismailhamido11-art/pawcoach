@@ -537,7 +537,13 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     return () => { cancelled = true; };
   }, [dog?.id]);
 
-  const weeklyWalkMinutes = logs.slice(0, 7).reduce((acc, l) => acc + (l.walk_minutes || 0), 0);
+  // Richer walk data for the backend — filter by calendar days, not array index
+  const sevenDaysAgoStr = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+  const last7DayLogs = logs.filter(l => l.date >= sevenDaysAgoStr);
+  const weeklyWalkMinutes = last7DayLogs.reduce((acc, l) => acc + (l.walk_minutes || 0), 0);
+  const walkDaysLast7 = last7DayLogs.filter(l => l.walk_minutes > 0).length;
+  const recentWalkLogs = logs.filter(l => l.walk_minutes > 0).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 14);
+  const avgWalkMinutes = recentWalkLogs.length > 0 ? Math.round(recentWalkLogs.reduce((s, l) => s + l.walk_minutes, 0) / recentWalkLogs.length) : 0;
 
   const saveProgram = async () => {
     if (!program || !dog || saved) return;
@@ -648,6 +654,9 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     setCompletedDays([]);
     const allGoals = [...selectedGoals, goals.trim()].filter(Boolean).join(", ") || null;
     try {
+      // Extract last bilan for continuity
+      const lastBilan = pastPrograms.find(p => p.bilan)?.bilan || null;
+
       const resp = await base44.functions.invoke("generateTrainingProgram", {
         dogId: dog.id,
         dogName: dog.name,
@@ -657,7 +666,15 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         healthIssues: dog.health_issues,
         goals: allGoals,
         weeklyWalkMinutes,
+        walkDaysLast7,
+        avgWalkMinutes,
         previousPrograms: pastPrograms.map(p => p.title).filter(Boolean),
+        previousBilan: lastBilan ? {
+          feeling: lastBilan.feeling,
+          observed: lastBilan.observed_indicators?.length || 0,
+          feedback: lastBilan.feedback || "",
+          nextFocus: lastBilan.next_focus || [],
+        } : null,
       });
       // Robust response parsing (handles both resp.data.program and resp.program)
       let respData = resp?.data || resp;

@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { dogId, dogName, dogBreed, dogBirthDate, activityLevel, healthIssues, goals, weeklyWalkMinutes, mode, problemId, problemLabel, problemDescription, previousPrograms } = await req.json();
+    const { dogId, dogName, dogBreed, dogBirthDate, activityLevel, healthIssues, goals, weeklyWalkMinutes, walkDaysLast7, avgWalkMinutes, mode, problemId, problemLabel, problemDescription, previousPrograms, previousBilan } = await req.json();
     if (!dogId) return Response.json({ error: 'Missing dogId' }, { status: 400 });
 
     // Calculate age
@@ -151,7 +151,14 @@ PROFIL DU CHIEN :
 - Niveau d'activité : ${activityLabels[activityLevel] || activityLevel || "modéré"}
 - Santé : ${healthIssues || "aucun problème"}
 - Objectifs : ${goals || "bien-être général et lien avec son chien"}
-- Balades actuelles : ${weeklyWalkMinutes ? weeklyWalkMinutes + " min/semaine" : "non renseigné"}
+- Balades actuelles : ${weeklyWalkMinutes ? weeklyWalkMinutes + " min/semaine" : "non renseigné"}${walkDaysLast7 != null ? `, ${walkDaysLast7} jours de balade sur 7` : ""}${avgWalkMinutes ? `, moyenne ${avgWalkMinutes} min/sortie` : ""}
+${previousBilan ? `
+BILAN DU DERNIER PROGRAMME :
+${previousBilan.feeling > 0 ? `- Ressenti : ${previousBilan.feeling}/5${previousBilan.feeling <= 2 ? " (pas convaincu — adapter la difficulté, varier les approches)" : previousBilan.feeling >= 4 ? " (très positif — augmenter le challenge)" : ""}` : "- Ressenti : non renseigné"}
+- Signes de progression observés : ${previousBilan.observed || 0}
+${previousBilan.feedback ? `- Commentaire du propriétaire : "${previousBilan.feedback}"` : ""}
+${previousBilan.nextFocus?.length > 0 ? `- Focus demandé : ${previousBilan.nextFocus.join(", ")}` : ""}
+UTILISE CE BILAN pour adapter le nouveau programme (difficulté, thèmes, approche).` : ""}
 
 RÈGLES DE QUALITÉ ABSOLUES :
 
@@ -182,6 +189,8 @@ PROGRESSION :
 VARIÉTÉ : alterner balade, jeu, exercice mental, repos actif, entraînement
 MATÉRIEL : uniquement ce qu'on trouve à la maison (gobelets, serviettes, carton, friandises, corde)
 ADAPTATION : tout est adapté à ${breedName} (instincts naturels de la race) et à l'âge (${ageLabel})
+${walkDaysLast7 != null && walkDaysLast7 <= 2 ? `ALERTE BALADE : Ce chien ne sort que ${walkDaysLast7} jours sur 7. Inclure des motivations spécifiques pour augmenter les sorties. Proposer des activités d'intérieur en complément.` : ""}
+${avgWalkMinutes && avgWalkMinutes < 15 ? `BALADES COURTES : Moyenne ${avgWalkMinutes} min/sortie. Adapter les activités "balade" à des formats courts (10-15 min) et proposer des missions pendant ces balades.` : ""}
 ${previousPrograms?.length > 0 ? '\nPROGRAMMES DÉJÀ FAITS (varier les thèmes, NE PAS répéter ces programmes) :\n' + previousPrograms.map((p: string) => '- ' + p).join('\n') : ''}
 Langue : français, tutoiement, ton coach bienveillant.`;
 

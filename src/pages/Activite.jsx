@@ -176,6 +176,7 @@ export default function Activite() {
               <WalkMode
                 dog={dog}
                 user={user}
+                logs={logs}
                 onLogged={() => { refreshLogs(); changeTab("historique"); }}
               />
             )}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Pause, Play, StopCircle, Timer, Footprints, Zap } from "lucide-react";
+import { MapPin, Pause, Play, StopCircle, Timer, Footprints, Zap, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import WalkMap from "./WalkMap";
@@ -17,7 +17,37 @@ function getTodayString() {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
 
-export default function WalkMode({ dog, user, onLogged }) {
+function getWalkInsight(minutes, logs, dogName) {
+  const name = dogName || "ton chien";
+  const recentLogs = (logs || []).filter(l => l.walk_minutes > 0).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 14);
+  const avgMinutes = recentLogs.length > 0 ? Math.round(recentLogs.reduce((s, l) => s + l.walk_minutes, 0) / recentLogs.length) : 0;
+  const walkDaysThisWeek = recentLogs.filter(l => {
+    const d = new Date(l.date + "T00:00:00");
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    const diff = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+    return diff >= 0 && diff < 7;
+  }).length + 1; // +1 for today's walk
+
+  const diff = avgMinutes > 0 ? Math.round(((minutes - avgMinutes) / avgMinutes) * 100) : 0;
+  let trend = null;
+  if (avgMinutes > 0 && diff > 15) trend = { icon: TrendingUp, color: "text-emerald-600", text: `+${diff}% vs ta moyenne (${avgMinutes} min)` };
+  else if (avgMinutes > 0 && diff < -15) trend = { icon: TrendingDown, color: "text-amber-600", text: `${diff}% vs ta moyenne (${avgMinutes} min)` };
+  else if (avgMinutes > 0) trend = { icon: Minus, color: "text-blue-600", text: `Dans ta moyenne (${avgMinutes} min)` };
+
+  let insight = "";
+  if (minutes >= 45) insight = `Super sortie ! ${name} a eu sa dose d'activité pour la journée.`;
+  else if (minutes >= 30) insight = `Objectif atteint ! 30 min de balade, c'est l'idéal pour la santé de ${name}.`;
+  else if (minutes >= 15) insight = `Bonne balade ! Pour maximiser les bénéfices, vise 30 min la prochaine fois.`;
+  else insight = `Petite sortie rapide — chaque minute compte pour ${name} !`;
+
+  let streak = "";
+  if (walkDaysThisWeek >= 5) streak = `${walkDaysThisWeek} balades cette semaine — régularité exemplaire !`;
+  else if (walkDaysThisWeek >= 3) streak = `${walkDaysThisWeek} balades cette semaine — belle constance.`;
+
+  return { trend, insight, streak };
+}
+
+export default function WalkMode({ dog, user, logs = [], onLogged }) {
   const [status, setStatus] = useState("idle"); // idle | running | paused | done
   const [elapsed, setElapsed] = useState(0);
   const [distance, setDistance] = useState(0);
@@ -337,6 +367,31 @@ export default function WalkMode({ dog, user, onLogged }) {
                 <div className="text-xs text-accent font-semibold">✓ Enregistré dans le journal</div>
               )}
             </div>
+
+            {/* Walk Intelligence — contextual insight */}
+            {savedMinutes && (() => {
+              const { trend, insight, streak: walkStreak } = getWalkInsight(savedMinutes, logs, dog?.name);
+              return (
+                <motion.div
+                  initial={{ y: 16, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5, type: "spring", stiffness: 400, damping: 30 }}
+                  className="bg-white border border-border rounded-2xl p-4 w-full space-y-2 text-left"
+                >
+                  {trend && (
+                    <div className="flex items-center gap-2">
+                      <trend.icon className={`w-4 h-4 ${trend.color} flex-shrink-0`} />
+                      <p className={`text-xs font-bold ${trend.color}`}>{trend.text}</p>
+                    </div>
+                  )}
+                  <p className="text-xs text-foreground/80 leading-relaxed">{insight}</p>
+                  {walkStreak && (
+                    <p className="text-[10px] font-bold text-primary">{walkStreak}</p>
+                  )}
+                </motion.div>
+              );
+            })()}
+
             <button
               onClick={handleReset}
               className="w-full py-3.5 rounded-2xl font-bold text-sm"

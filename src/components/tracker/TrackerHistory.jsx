@@ -1,7 +1,10 @@
 import { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, startOfWeek, isSameWeek } from "date-fns";
 import { fr } from "date-fns/locale";
+
+const WEEKLY_GOAL = 5; // 5 walks of 20+ min per week
+const MIN_WALK_MINUTES = 20;
 
 export default function TrackerHistory({ logs, dog }) {
   const sorted = useMemo(() => [...(logs || [])].sort((a, b) => b.date.localeCompare(a.date)), [logs]);
@@ -17,6 +20,16 @@ export default function TrackerHistory({ logs, dog }) {
   const avgMinutes = sorted.length > 0 ? Math.round(totalMinutes / sorted.length) : 0;
   const daysOver30 = sorted.filter(l => (l.walk_minutes || 0) >= 30).length;
 
+  // Weekly goal: walks of 20+ min this week
+  const weeklyWalks = useMemo(() => {
+    const now = new Date();
+    return sorted.filter(l => {
+      if (!l.walk_minutes || l.walk_minutes < MIN_WALK_MINUTES) return false;
+      try { return isSameWeek(parseISO(l.date), now, { weekStartsOn: 1 }); } catch { return false; }
+    }).length;
+  }, [sorted]);
+  const weeklyProgress = Math.min(weeklyWalks / WEEKLY_GOAL, 1);
+
   if (sorted.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center space-y-3">
@@ -29,6 +42,31 @@ export default function TrackerHistory({ logs, dog }) {
 
   return (
     <div className="space-y-4 pb-4">
+      {/* Weekly goal card */}
+      <div className={`rounded-2xl p-4 border ${weeklyWalks >= WEEKLY_GOAL ? "bg-emerald-50 border-emerald-200" : "bg-white border-border"}`}>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">{weeklyWalks >= WEEKLY_GOAL ? "🏆" : "🎯"}</span>
+            <p className="font-bold text-sm text-foreground">Objectif semaine</p>
+          </div>
+          <span className={`text-sm font-black ${weeklyWalks >= WEEKLY_GOAL ? "text-emerald-600" : "text-primary"}`}>
+            {weeklyWalks}/{WEEKLY_GOAL}
+          </span>
+        </div>
+        <div className="bg-border/30 rounded-full h-2.5 overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all duration-500 ${weeklyWalks >= WEEKLY_GOAL ? "bg-emerald-500" : "bg-primary"}`}
+            style={{ width: `${weeklyProgress * 100}%` }}
+          />
+        </div>
+        <p className="text-[10px] text-muted-foreground mt-1.5">
+          {weeklyWalks >= WEEKLY_GOAL
+            ? `Bravo ! Objectif atteint pour ${dog?.name || "ton chien"} cette semaine !`
+            : `${WEEKLY_GOAL - weeklyWalks} balade${WEEKLY_GOAL - weeklyWalks > 1 ? "s" : ""} de ${MIN_WALK_MINUTES}+ min restante${WEEKLY_GOAL - weeklyWalks > 1 ? "s" : ""}`
+          }
+        </p>
+      </div>
+
       {/* Stats summary */}
       <div className="grid grid-cols-3 gap-2">
         {[
