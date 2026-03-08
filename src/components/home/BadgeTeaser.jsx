@@ -11,23 +11,23 @@ function getAllNextBadges({ streak, exercises, dailyLogs }) {
 
   // Streak badges
   if (currentStreak < 3)
-    candidates.push({ emoji: "\uD83D\uDD25", name: "En forme", current: currentStreak, target: 3, unit: "jours de streak", category: "Streak" });
+    candidates.push({ emoji: "🔥", name: "En forme", current: currentStreak, target: 3, unit: "jours de streak", category: "Streak" });
   else if (currentStreak < 7)
-    candidates.push({ emoji: "\u26A1", name: "Habitude", current: currentStreak, target: 7, unit: "jours de streak", category: "Streak" });
+    candidates.push({ emoji: "⚡", name: "Habitude", current: currentStreak, target: 7, unit: "jours de streak", category: "Streak" });
   else if (currentStreak < 30)
-    candidates.push({ emoji: "\uD83D\uDC51", name: "Légende", current: currentStreak, target: 30, unit: "jours de streak", category: "Streak" });
+    candidates.push({ emoji: "👑", name: "Légende", current: currentStreak, target: 30, unit: "jours de streak", category: "Streak" });
 
   // Training badges
   if (completedExercises < 1)
-    candidates.push({ emoji: "\u2728", name: "Coach débutant", current: 0, target: 1, unit: "programme", category: "Dressage" });
+    candidates.push({ emoji: "✨", name: "Coach débutant", current: 0, target: 1, unit: "programme", category: "Dressage" });
   else if (completedExercises < 3)
-    candidates.push({ emoji: "\uD83C\uDF93", name: "Coach expert", current: completedExercises, target: 3, unit: "programmes", category: "Dressage" });
+    candidates.push({ emoji: "🎓", name: "Coach expert", current: completedExercises, target: 3, unit: "programmes", category: "Dressage" });
 
   // Walk badges
   if (walkDays < 1)
-    candidates.push({ emoji: "\uD83D\uDC3E", name: "Première balade", current: 0, target: 1, unit: "balade", category: "Activité" });
+    candidates.push({ emoji: "🐾", name: "Première balade", current: 0, target: 1, unit: "balade", category: "Activité" });
   else if (walkDays < 7)
-    candidates.push({ emoji: "\uD83D\uDCC5", name: "Régulier", current: walkDays, target: 7, unit: "jours de balade", category: "Activité" });
+    candidates.push({ emoji: "📅", name: "Régulier", current: walkDays, target: 7, unit: "jours de balade", category: "Activité" });
 
   // Sort by closest to completion
   return candidates.sort((a, b) => (b.current / b.target) - (a.current / a.target));

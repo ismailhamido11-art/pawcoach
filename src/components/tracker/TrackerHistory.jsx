@@ -9,7 +9,7 @@ import ActivityCalendar from "./ActivityCalendar";
 const WEEKLY_GOAL = 5;
 const MIN_WALK_MINUTES = 20;
 const MOOD_KEY = "pawcoach_walk_moods";
-const MOOD_EMOJIS = { super: "\u{1F60A}", good: "\u{1F44D}", calm: "\u{1F610}", hard: "\u{1F624}" };
+const MOOD_EMOJIS = { super: "😊", good: "👍", calm: "😐", hard: "😤" };
 
 function getMoods() {
   try { return JSON.parse(localStorage.getItem(MOOD_KEY) || "{}"); } catch { return {}; }
@@ -120,7 +120,7 @@ export default function TrackerHistory({ logs, dog }) {
   if (sorted.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center space-y-3">
-        <span className="text-5xl">{"\u{1F9AE}"}</span>
+        <span className="text-5xl">🦮</span>
         <p className="font-bold text-foreground">Aucune balade enregistrée</p>
         <p className="text-xs text-muted-foreground">Lance une balade pour voir ton historique ici.</p>
       </div>
@@ -148,7 +148,7 @@ export default function TrackerHistory({ logs, dog }) {
             {todayMood && <span className="text-xl">{MOOD_EMOJIS[todayMood.mood]}</span>}
             {todayLog?.walk_minutes ? (
               <div className="w-10 h-10 rounded-full bg-safe/15 flex items-center justify-center">
-                <span className="text-base">{"\u2705"}</span>
+                <span className="text-base">✅</span>
               </div>
             ) : (
               <div className="w-10 h-10 rounded-full bg-secondary/30 flex items-center justify-center">
@@ -168,7 +168,7 @@ export default function TrackerHistory({ logs, dog }) {
         >
           <Flame className="w-5 h-5 text-amber-500" />
           <span className="text-sm font-black text-amber-700">{streaks.current} jour{streaks.current > 1 ? "s" : ""} de suite</span>
-          {streaks.current >= 7 && <span className="text-xs">{"\u{1F525}"}</span>}
+          {streaks.current >= 7 && <span className="text-xs">🔥</span>}
         </motion.div>
       )}
 
@@ -176,7 +176,7 @@ export default function TrackerHistory({ logs, dog }) {
       <div className={`rounded-2xl p-4 border ${weeklyWalks >= WEEKLY_GOAL ? "bg-emerald-50 border-emerald-200" : "bg-white border-border"}`}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <span className="text-lg">{weeklyWalks >= WEEKLY_GOAL ? "\u{1F3C6}" : "\u{1F3AF}"}</span>
+            <span className="text-lg">{weeklyWalks >= WEEKLY_GOAL ? "🏆" : "🎯"}</span>
             <p className="font-bold text-sm text-foreground">Objectif semaine</p>
           </div>
           <span className={`text-sm font-black ${weeklyWalks >= WEEKLY_GOAL ? "text-emerald-600" : "text-primary"}`}>
@@ -210,8 +210,8 @@ export default function TrackerHistory({ logs, dog }) {
         ].map((stat, i) => (
           <div key={i} className="bg-white border border-border rounded-2xl p-2.5 text-center">
             <p className={`text-lg font-black ${stat.color}`}>{stat.value}</p>
-            <p className="text-[8px] font-bold text-muted-foreground uppercase">{stat.unit}</p>
-            <p className="text-[8px] text-muted-foreground">{stat.label}</p>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase">{stat.unit}</p>
+            <p className="text-[10px] text-muted-foreground">{stat.label}</p>
           </div>
         ))}
       </div>
@@ -265,8 +265,8 @@ export default function TrackerHistory({ logs, dog }) {
                   style={{ height: `${Math.max(4, (d.avg / maxDayAvg) * 100)}%` }}
                 />
               </div>
-              <span className="text-[9px] font-black text-foreground">{d.avg > 0 ? d.avg : "\u2014"}</span>
-              <span className="text-[9px] font-bold text-muted-foreground">{d.label}</span>
+              <span className="text-[10px] font-black text-foreground">{d.avg > 0 ? d.avg : "—"}</span>
+              <span className="text-[10px] font-bold text-muted-foreground">{d.label}</span>
             </div>
           ))}
         </div>
@@ -295,8 +295,8 @@ export default function TrackerHistory({ logs, dog }) {
             </BarChart>
           </ResponsiveContainer>
           <div className="flex gap-3 mt-2 justify-center">
-            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-emerald-400" /><span className="text-[9px] text-muted-foreground">{"\u2265"} 30 min</span></div>
-            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-blue-400" /><span className="text-[9px] text-muted-foreground">&lt; 30 min</span></div>
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-emerald-400" /><span className="text-[10px] text-muted-foreground">≥ 30 min</span></div>
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-blue-400" /><span className="text-[10px] text-muted-foreground">&lt; 30 min</span></div>
           </div>
         </div>
       )}
@@ -329,7 +329,7 @@ export default function TrackerHistory({ logs, dog }) {
                   {mood?.tags?.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1">
                       {mood.tags.map(t => (
-                        <span key={t} className="text-[8px] bg-primary/10 text-primary font-semibold rounded px-1.5 py-0.5">{t}</span>
+                        <span key={t} className="text-[10px] bg-primary/10 text-primary font-semibold rounded px-1.5 py-0.5">{t}</span>
                       ))}
                     </div>
                   )}
@@ -343,13 +343,13 @@ export default function TrackerHistory({ logs, dog }) {
                         {log.walk_minutes} min
                       </span>
                       {log.date === recordDate && (
-                        <span className="text-[7px] bg-amber-100 text-amber-700 font-bold rounded px-1 py-0.5">Record</span>
+                        <span className="text-[10px] bg-amber-100 text-amber-700 font-bold rounded px-1 py-0.5">Record</span>
                       )}
                     </div>
                     <p className="text-[10px] text-muted-foreground">{(log.walk_distance_km || log.walk_minutes * 0.065).toFixed(1)} km</p>
                   </>
                 ) : (
-                  <span className="text-xs text-muted-foreground">{"\u2014"}</span>
+                  <span className="text-xs text-muted-foreground">—</span>
                 )}
                 {log.weight_kg && <p className="text-[10px] text-muted-foreground">{log.weight_kg} kg</p>}
               </div>

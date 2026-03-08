@@ -193,7 +193,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground">Parcs canins proches</p>
               <p className="text-[10px] text-muted-foreground mt-0.5">
-                {error === "denied" ? "Localisation refus\u00e9e. V\u00e9rifie les r\u00e9glages de ton navigateur." : "Active la localisation pour voir les parcs autour de toi."}
+                {error === "denied" ? "Localisation refusée. Vérifie les réglages de ton navigateur." : "Active la localisation pour voir les parcs autour de toi."}
               </p>
             </div>
           </div>
@@ -319,7 +319,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
         <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
           <p className="text-[10px] text-amber-700 font-medium">Impossible de charger les parcs</p>
           <button onClick={retryGeolocation} className="text-[10px] font-bold text-primary px-2.5 py-1 rounded-lg bg-primary/10">
-            R\u00e9essayer
+            Réessayer
           </button>
         </div>
       )}

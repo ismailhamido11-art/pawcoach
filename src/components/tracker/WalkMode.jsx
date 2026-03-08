@@ -80,6 +80,14 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
   const watchRef = useRef(null);
   const lastPosRef = useRef(null);
   const distanceRef = useRef(0);
+  const wakeLockRef = useRef(null);
+
+  const releaseWakeLock = () => {
+    if (wakeLockRef.current) {
+      wakeLockRef.current.release().catch(() => {});
+      wakeLockRef.current = null;
+    }
+  };
 
   // Cleanup on unmount
   useEffect(() => {
@@ -88,6 +96,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
       if (watchRef.current && navigator.geolocation) {
         navigator.geolocation.clearWatch(watchRef.current);
       }
+      releaseWakeLock();
     };
   }, []);
 
@@ -131,6 +140,39 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
       } catch {}
     })();
   }, [dog?.id]);
+
+  // Sync pending offline walks
+  useEffect(() => {
+    (async () => {
+      try {
+        const pending = JSON.parse(localStorage.getItem("pawcoach_pending_walks") || "[]");
+        if (pending.length === 0) return;
+        const synced = [];
+        for (const walk of pending) {
+          try {
+            const existing = await base44.entities.DailyLog.filter({ dog_id: walk.dog_id, date: walk.date });
+            if (existing && existing.length > 0) {
+              const prev = existing[0];
+              await base44.entities.DailyLog.update(prev.id, {
+                walk_minutes: (prev.walk_minutes || 0) + walk.walk_minutes,
+                ...(walk.walk_distance_km != null ? { walk_distance_km: (prev.walk_distance_km || 0) + walk.walk_distance_km } : {}),
+              });
+            } else {
+              await base44.entities.DailyLog.create(walk);
+            }
+            synced.push(walk);
+          } catch { break; } // Still offline, stop trying
+        }
+        if (synced.length > 0) {
+          const remaining = pending.filter(w => !synced.includes(w));
+          localStorage.setItem("pawcoach_pending_walks", JSON.stringify(remaining));
+          if (remaining.length === 0) localStorage.removeItem("pawcoach_pending_walks");
+          toast.success(`${synced.length} balade(s) synchronisée(s)`);
+          if (onLogged) onLogged();
+        }
+      } catch {}
+    })();
+  }, []);
 
   const startGPS = () => {
     if (!navigator.geolocation) return;
@@ -180,7 +222,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     return R * 2 * Math.atan2(Math.sqrt(sin2), Math.sqrt(1 - sin2));
   };
 
-  const handleStart = () => {
+  const handleStart = async () => {
     if (!dog?.id) {
       toast.error("Aucun chien sélectionné");
       return;
@@ -195,6 +237,12 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     pausedRef.current = 0;
     startTimeRef.current = Date.now();
     startGPS();
+    // Request wake lock to keep screen on during walk
+    try {
+      if (navigator.wakeLock) {
+        wakeLockRef.current = await navigator.wakeLock.request("screen");
+      }
+    } catch {}
     localStorage.setItem("pawcoach_walk_active", JSON.stringify({
       startTime: Date.now(), dogId: dog.id, paused: 0
     }));
@@ -214,12 +262,13 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     if (navigator.vibrate) navigator.vibrate(100);
   };
 
-  const handlePause = () => {
+  const handlePause = async () => {
     if (status === "running") {
       setStatus("paused");
       clearInterval(timerRef.current);
       pauseStartRef.current = Date.now();
       stopGPS();
+      releaseWakeLock();
     } else {
       setStatus("running");
       pausedRef.current += Date.now() - pauseStartRef.current;
@@ -231,6 +280,12 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
         }));
       } catch {}
       startGPS();
+      // Re-acquire wake lock on resume
+      try {
+        if (navigator.wakeLock) {
+          wakeLockRef.current = await navigator.wakeLock.request("screen");
+        }
+      } catch {}
       clearInterval(timerRef.current);
       timerRef.current = setInterval(() => {
         setElapsed(Math.floor((Date.now() - startTimeRef.current - pausedRef.current) / 1000));
@@ -244,6 +299,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     stoppingRef.current = true;
     clearInterval(timerRef.current);
     stopGPS();
+    releaseWakeLock();
 
     if (!dog?.id || !user?.email) {
       toast.error("Profil non chargé. Réessaie.");
@@ -265,8 +321,8 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     const minutes = Math.max(1, Math.round(elapsed / 60));
     setSavedMinutes(minutes);
     setSaving(true);
+    const today = getTodayString();
     try {
-      const today = getTodayString();
       const existing = await base44.entities.DailyLog.filter({ dog_id: dog.id, date: today });
       // Persist walk data — mood/tags/distance saved to DailyLog fields
       const distanceKm = finalKm ? parseFloat(finalKm) : null;
@@ -275,7 +331,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
         const prevDist = existing[0].walk_distance_km || 0;
         await base44.entities.DailyLog.update(existing[0].id, {
           walk_minutes: prev + minutes,
-          notes: `Balade de ${prev + minutes} min${finalKm ? ` \u00b7 ${finalKm} km` : ""}`,
+          notes: `Balade de ${prev + minutes} min${finalKm ? ` \u00b7 ${finalKm} km` : ""}${nearPark ? ` \u00b7 ${nearPark.name}` : ""}`,
           ...(distanceKm && { walk_distance_km: Math.round((prevDist + distanceKm) * 100) / 100 }),
         });
       } else {
@@ -284,7 +340,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
           owner: user?.email,
           date: today,
           walk_minutes: minutes,
-          notes: `Balade de ${minutes} min${finalKm ? ` \u00b7 ${finalKm} km` : ""}`,
+          notes: `Balade de ${minutes} min${finalKm ? ` \u00b7 ${finalKm} km` : ""}${nearPark ? ` \u00b7 ${nearPark.name}` : ""}`,
           ...(distanceKm && { walk_distance_km: distanceKm }),
         });
       }
@@ -293,7 +349,22 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
       checkWalkBadges(dog.id, user?.email, allLogs || []).catch(() => {});
       onLogged?.();
     } catch (e) {
-      toast.error("Erreur lors de la sauvegarde");
+      // Save to localStorage for later retry
+      try {
+        const pending = JSON.parse(localStorage.getItem("pawcoach_pending_walks") || "[]");
+        pending.push({
+          dog_id: dog.id,
+          owner: user?.email,
+          date: today,
+          walk_minutes: minutes,
+          walk_distance_km: finalKm ? parseFloat(finalKm) : null,
+          ts: Date.now(),
+        });
+        localStorage.setItem("pawcoach_pending_walks", JSON.stringify(pending));
+        toast.info("Balade sauvegardée hors ligne. Elle sera synchronisée au retour du réseau.");
+      } catch {
+        toast.error("Erreur lors de la sauvegarde");
+      }
     } finally {
       setSaving(false);
     }
@@ -305,6 +376,9 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
       // Persist in localStorage (fallback for offline / pre-schema)
       const stored = JSON.parse(localStorage.getItem(MOOD_KEY) || "{}");
       stored[getTodayString()] = { mood: walkMood, tags: selectedMoodTags };
+      // Cleanup moods older than 90 days
+      const cutoff = new Date(Date.now() - 90 * 86400000).toISOString().slice(0, 10);
+      Object.keys(stored).filter(k => k < cutoff).forEach(k => delete stored[k]);
       localStorage.setItem(MOOD_KEY, JSON.stringify(stored));
       // Persist in DailyLog entity (survives device changes, visible to backend)
       const today = getTodayString();
@@ -321,6 +395,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
 
   const handleReset = () => {
     stoppingRef.current = false;
+    releaseWakeLock();
     localStorage.removeItem("pawcoach_walk_active");
     setStatus("idle");
     setElapsed(0);

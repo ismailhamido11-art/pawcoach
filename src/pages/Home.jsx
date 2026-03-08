@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -18,7 +18,7 @@ import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
 import CombinedFAB from "../components/CombinedFAB";
 import { checkStreakBadges } from "@/components/achievements/badgeUtils";
 
-import { Flame } from "lucide-react";
+import { Flame, Footprints } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
@@ -249,6 +249,29 @@ export default function Home() {
     finally { setMarkingRead(false); }
   };
 
+  // Walk streak — calculated from dailyLogs (same logic as TrackerHistory)
+  const walkStreak = useMemo(() => {
+    const withWalks = (dailyLogs || [])
+      .filter(l => (l.walk_minutes || 0) > 0)
+      .sort((a, b) => b.date.localeCompare(a.date));
+    if (withWalks.length === 0) return 0;
+    const today = getTodayString();
+    const yesterday = (() => {
+      const d = new Date(); d.setDate(d.getDate() - 1);
+      return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    })();
+    if (withWalks[0].date !== today && withWalks[0].date !== yesterday) return 0;
+    let current = 1;
+    for (let i = 0; i < withWalks.length - 1; i++) {
+      const d1 = new Date(withWalks[i].date + "T12:00:00");
+      const d2 = new Date(withWalks[i + 1].date + "T12:00:00");
+      const diff = Math.round((d1 - d2) / 86400000);
+      if (diff === 1) current++;
+      else break;
+    }
+    return current;
+  }, [dailyLogs]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background pb-24">
@@ -352,6 +375,19 @@ export default function Home() {
         {/* Block 6: Streak Bar */}
         <div className="mt-3">
           <StreakBar streak={streak} />
+          {/* Walk streak badge — visible only if >= 2 consecutive walk days */}
+          {walkStreak >= 2 && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="mx-4 mt-2 flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-xl px-3.5 py-2"
+            >
+              <Footprints className="w-4 h-4 text-blue-500 flex-shrink-0" />
+              <span className="text-xs font-bold text-blue-700">{walkStreak}j de balade d'affilee</span>
+              {walkStreak >= 7 && <span className="text-xs font-bold text-blue-500 ml-auto">Record !</span>}
+            </motion.div>
+          )}
         </div>
 
         {/* Block 7: Badge Teaser */}

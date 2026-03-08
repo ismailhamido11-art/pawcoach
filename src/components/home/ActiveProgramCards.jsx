@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target, Brain, CheckCircle2 } from "lucide-react";
 
 const SESSION_ICONS = {
-  balade: "\uD83D\uDC3E", jeu: "\uD83C\uDFBE", "exercice mental": "\uD83E\uDDE0", repos: "\uD83D\uDCA4", "entra\u00EEnement": "\uD83C\uDFAF",
+  balade: "🐾", jeu: "🎾", "exercice mental": "🧠", repos: "💤", "entraînement": "🎯",
 };
 
 const DAY_NAMES = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -31,8 +31,8 @@ function getElapsedDays(startDate) {
 }
 
 const ACTIVITY_ICONS = {
-  balade: "\uD83D\uDC3E", jeu: "\uD83C\uDFBE", "exercice mental": "\uD83E\uDDE0",
-  "repos actif": "\uD83D\uDC86", repos: "\uD83D\uDCA4", "entra\u00EEnement": "\uD83C\uDFAF",
+  balade: "🐾", jeu: "🎾", "exercice mental": "🧠",
+  "repos actif": "💆", repos: "💤", "entraînement": "🎯",
 };
 
 function TrainingCard({ program }) {
@@ -47,7 +47,7 @@ function TrainingCard({ program }) {
 
   const realDate = addDaysToDate(program.start_date, elapsed);
   const actType = today.activity?.type || "balade";
-  const icon = ACTIVITY_ICONS[actType] || SESSION_ICONS[actType] || "\uD83D\uDC36";
+  const icon = ACTIVITY_ICONS[actType] || SESSION_ICONS[actType] || "🐶";
 
   // Completion tracking
   const completedDays = program.completed_days || [];

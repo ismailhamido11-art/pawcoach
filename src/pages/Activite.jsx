@@ -33,6 +33,7 @@ export default function Activite() {
   const [dog, setDog] = useState(null);
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const urlTab = searchParams.get("tab");
   // Priority: URL param > sessionStorage > default
@@ -52,26 +53,28 @@ export default function Activite() {
   const tabDir = tabIndex >= prevTabIdx.current ? 1 : -1;
   useEffect(() => { prevTabIdx.current = tabIndex; }, [tabIndex]);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const u = await base44.auth.me();
-        setUser(u);
-        const dogs = await base44.entities.Dog.filter({ owner: u.email });
-        if (dogs?.length > 0) {
-          const d = getActiveDog(dogs);
-          setDog(d);
-          const l = await base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30);
-          setLogs(l || []);
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
+  const load = async () => {
+    setLoading(true);
+    try {
+      const u = await base44.auth.me();
+      setUser(u);
+      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      if (dogs?.length > 0) {
+        const d = getActiveDog(dogs);
+        setDog(d);
+        const l = await base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30);
+        setLogs(l || []);
       }
+    } catch (e) {
+      console.error(e);
+      setLoadError(true);
+    } finally {
+      setLoading(false);
     }
-    load();
+  };
 
+  useEffect(() => {
+    load();
   }, []);
 
   const refreshLogs = async () => {
@@ -137,6 +140,20 @@ export default function Activite() {
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
+
+      {/* Offline error banner */}
+      {loadError && !loading && (
+        <div className="mx-4 mt-4 bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">
+          <p className="text-sm font-bold text-amber-700">Pas de connexion</p>
+          <p className="text-xs text-amber-600 mt-1">Vérifie ta connexion internet</p>
+          <button
+            onClick={() => { setLoadError(false); load(); }}
+            className="mt-3 text-xs font-bold text-primary"
+          >
+            Réessayer
+          </button>
+        </div>
+      )}
 
       {/* Tab content */}
       <PullToRefresh onRefresh={async () => { await refreshLogs(); }}>

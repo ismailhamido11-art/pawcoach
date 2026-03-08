@@ -224,6 +224,14 @@ Deno.serve(async (req) => {
       if (Object.keys(tagCounts).length > 0) {
         activityMemory += `\n- Comportements en balade : ${Object.entries(tagCounts).map(([t, n]) => `${t} (${n}x)`).join(", ")}`;
       }
+      // Walk notes (includes park names when detected nearby)
+      const recentNotes = recentLogs
+        .filter(l => l.notes)
+        .slice(0, 5)
+        .map(l => l.notes);
+      if (recentNotes.length > 0) {
+        activityMemory += `\n- Notes de balade : ${recentNotes.join(" | ").substring(0, 300)}`;
+      }
     }
 
     // --- Streak ---
