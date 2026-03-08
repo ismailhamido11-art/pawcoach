@@ -22,20 +22,12 @@ Deno.serve(async (req) => {
       return Response.json({ ok: true, generated: 0 });
     }
 
-    // Fetch all data upfront to avoid N+1 queries
-    const [allCheckins, allProgress, allScans, allDailyLogs] = await Promise.all([
-      base44.asServiceRole.entities.DailyCheckin.list(),
-      base44.asServiceRole.entities.UserProgress.list(),
-      base44.asServiceRole.entities.FoodScan.list(),
-      base44.asServiceRole.entities.DailyLog.list(),
-    ]);
-
     const apiKey = Deno.env.get("OPENROUTER_API_KEY");
     let generated = 0;
 
     // Fetch all users upfront for premium check
     const allUsers = await base44.asServiceRole.entities.User.list();
-    const userMap = {};
+    const userMap: Record<string, any> = {};
     for (const u of allUsers || []) userMap[u.email] = u;
 
     for (const dog of dogs) {
@@ -45,34 +37,46 @@ Deno.serve(async (req) => {
       const ownerIsPremium = owner.is_premium || (owner.trial_expires_at && new Date(owner.trial_expires_at) > new Date());
       if (!ownerIsPremium) continue;
 
-      // Filter DailyCheckins for this dog within the week
-      const checkins = (allCheckins || []).filter(c =>
-        c.dog_id === dog.id && c.date >= weekStart && c.date <= weekEnd
+      // Dedup BEFORE LLM call: skip if insight already exists for this dog + week
+      const existing = await base44.asServiceRole.entities.WeeklyInsight.filter({ dog_id: dog.id, week_start: weekStart });
+      if (existing && existing.length > 0) continue;
+
+      // Fetch data filtered per dog (avoids loading entire DB)
+      const [checkins, dogProgress, dogScans, dogDailyLogs] = await Promise.all([
+        base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dog.id }).catch(() => []),
+        base44.asServiceRole.entities.UserProgress.filter({ dog_id: dog.id }).catch(() => []),
+        base44.asServiceRole.entities.FoodScan.filter({ dog_id: dog.id }).catch(() => []),
+        base44.asServiceRole.entities.DailyLog.filter({ dog_id: dog.id }).catch(() => []),
+      ]);
+
+      // Filter DailyCheckins for the week
+      const weekCheckins = (checkins || []).filter(c =>
+        c.date >= weekStart && c.date <= weekEnd
       );
 
-      const checkinCount = checkins.length;
+      const checkinCount = weekCheckins.length;
       if (checkinCount === 0) continue; // No activity, skip
 
       // Calculate averages
-      const avgMood = Math.round((checkins.reduce((s, c) => s + (c.mood || 0), 0) / checkinCount) * 100) / 100;
-      const avgEnergy = Math.round((checkins.reduce((s, c) => s + (c.energy || 0), 0) / checkinCount) * 100) / 100;
-      const avgAppetite = Math.round((checkins.reduce((s, c) => s + (c.appetite || 0), 0) / checkinCount) * 100) / 100;
+      const avgMood = Math.round((weekCheckins.reduce((s, c) => s + (c.mood || 0), 0) / checkinCount) * 100) / 100;
+      const avgEnergy = Math.round((weekCheckins.reduce((s, c) => s + (c.energy || 0), 0) / checkinCount) * 100) / 100;
+      const avgAppetite = Math.round((weekCheckins.reduce((s, c) => s + (c.appetite || 0), 0) / checkinCount) * 100) / 100;
 
       // Count exercises completed this week
-      const exercisesCompleted = (allProgress || []).filter(p =>
-        p.dog_id === dog.id && p.completed && p.completed_date >= weekStart && p.completed_date <= weekEnd
+      const exercisesCompleted = (dogProgress || []).filter(p =>
+        p.completed && p.completed_date >= weekStart && p.completed_date <= weekEnd
       ).length;
 
       // Count food scans this week
-      const scansDone = (allScans || []).filter(s => {
-        if (s.dog_id !== dog.id || !s.timestamp) return false;
+      const scansDone = (dogScans || []).filter(s => {
+        if (!s.timestamp) return false;
         const scanDate = s.timestamp.slice(0, 10);
         return scanDate >= weekStart && scanDate <= weekEnd;
       }).length;
 
       // Walk data from DailyLog
-      const weekLogs = (allDailyLogs || []).filter(l =>
-        l.dog_id === dog.id && l.date >= weekStart && l.date <= weekEnd
+      const weekLogs = (dogDailyLogs || []).filter(l =>
+        l.date >= weekStart && l.date <= weekEnd
       );
       const walkDays = weekLogs.filter(l => l.walk_minutes > 0).length;
       const totalWalkMinutes = weekLogs.reduce((s, l) => s + (l.walk_minutes || 0), 0);
@@ -96,9 +100,9 @@ Deno.serve(async (req) => {
         : "";
 
       // Collect symptoms from this week's check-ins
-      const weekSymptoms = {};
-      checkins.forEach(c => {
-        if (c.symptoms?.length) c.symptoms.forEach(s => { weekSymptoms[s] = (weekSymptoms[s] || 0) + 1; });
+      const weekSymptoms: Record<string, number> = {};
+      weekCheckins.forEach(c => {
+        if (c.symptoms?.length) c.symptoms.forEach((s: string) => { weekSymptoms[s] = (weekSymptoms[s] || 0) + 1; });
       });
       const symptomText = Object.keys(weekSymptoms).length > 0
         ? `, symptomes signales: ${Object.entries(weekSymptoms).map(([s, n]) => `${s} (${n}x)`).join(", ")}`
@@ -127,10 +131,14 @@ Deno.serve(async (req) => {
 
         const statusNote = dog.status === "recovering" ? " Il est en convalescence." : dog.status === "traveling" ? " Il était en voyage cette semaine." : "";
 
-        const prevBehavior = dog.behavior_summary ? `\nProfil comportemental precedent: "${dog.behavior_summary}"` : "";
-        const systemPrompt = `Tu es PawCoach. Genere un bilan hebdomadaire pour ${dog.name} (${dog.breed}).${personalityNote}${statusNote}${prevBehavior} ${toneInstruction} Tutoie. 3-5 phrases max. Reponds en JSON avec: summary (bilan general), highlights (2-3 points cles), recommendations (2-3 conseils pour la semaine prochaine), behavior_summary (profil comportemental synthetique de ${dog.name} en 2-3 phrases — patterns d'humeur, energie, alertes, evolution par rapport au profil precedent si disponible).`;
+        // Sanitize user-controlled strings before prompt injection
+        const safeName = String(dog.name || "").substring(0, 50);
+        const safeBreed = String(dog.breed || "").substring(0, 50);
+
+        const prevBehavior = dog.behavior_summary ? `\nProfil comportemental precedent: "${String(dog.behavior_summary).substring(0, 300)}"` : "";
+        const systemPrompt = `Tu es PawCoach. Genere un bilan hebdomadaire pour ${safeName} (${safeBreed}).${personalityNote}${statusNote}${prevBehavior} ${toneInstruction} Tutoie. 3-5 phrases max. Reponds en JSON avec: summary (bilan general), highlights (2-3 points cles), recommendations (2-3 conseils pour la semaine prochaine), behavior_summary (profil comportemental synthetique de ${safeName} en 2-3 phrases — patterns d'humeur, energie, alertes, evolution par rapport au profil precedent si disponible).`;
         const walkText = walkDays > 0 ? `, ${walkDays} jours de balade (${totalWalkMinutes} min total, moyenne ${avgWalkMinutes} min/sortie${totalWalkKm > 0 ? `, ${totalWalkKm.toFixed(1)} km parcourus` : ""}${moodText}${tagText})` : ", aucune balade enregistrée cette semaine";
-        const userMessage = `Bilan de la semaine du ${weekStart} au ${weekEnd} pour ${dog.name}: ${checkinCount} check-ins, humeur moyenne ${avgMood}/4, energie moyenne ${avgEnergy}/3, appetit moyen ${avgAppetite}/3, ${exercisesCompleted} exercices completes, ${scansDone} scans alimentaires${walkText}${symptomText}.`;
+        const userMessage = `Bilan de la semaine du ${weekStart} au ${weekEnd} pour ${safeName}: ${checkinCount} check-ins, humeur moyenne ${avgMood}/4, energie moyenne ${avgEnergy}/3, appetit moyen ${avgAppetite}/3, ${exercisesCompleted} exercices completes, ${scansDone} scans alimentaires${walkText}${symptomText}.`;
 
         try {
           const llmResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -178,10 +186,6 @@ Deno.serve(async (req) => {
       // Stringify arrays if needed
       if (typeof highlights === "object") highlights = JSON.stringify(highlights);
       if (typeof recommendations === "object") recommendations = JSON.stringify(recommendations);
-
-      // Dedup: skip if insight already exists for this dog + week
-      const existing = await base44.asServiceRole.entities.WeeklyInsight.filter({ dog_id: dog.id, week_start: weekStart });
-      if (existing && existing.length > 0) continue;
 
       // Create WeeklyInsight
       await base44.asServiceRole.entities.WeeklyInsight.create({

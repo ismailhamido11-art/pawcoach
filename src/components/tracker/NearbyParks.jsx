@@ -35,7 +35,7 @@ function FitBounds({ positions }) {
     if (positions.length >= 2) {
       map.fitBounds(L.latLngBounds(positions), { padding: [30, 30], maxZoom: 14 });
     }
-  }, []);
+  }, [positions.length]);
   return null;
 }
 

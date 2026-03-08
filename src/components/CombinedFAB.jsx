@@ -5,6 +5,7 @@ import { Plus, X, MessageCircle, Scale, Droplets, Footprints, FileText, Check, L
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
+import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 
 function getTodayString() {
   const d = new Date();
@@ -71,6 +72,15 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
     } else {
       await base44.entities.DailyLog.create(payload);
     }
+
+    // Trigger walk badge check if walk was logged
+    if (payload.walk_minutes > 0) {
+      try {
+        const allLogs = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 60);
+        checkWalkBadges(dog.id, user?.email, allLogs).catch(() => {});
+      } catch {}
+    }
+
     setSaving(false);
     setSaved(true);
     onLogSaved?.();

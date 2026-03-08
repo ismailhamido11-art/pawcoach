@@ -76,6 +76,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
   const pausedRef = useRef(0);
+  const pauseStartRef = useRef(null);
   const watchRef = useRef(null);
   const lastPosRef = useRef(null);
   const distanceRef = useRef(0);
@@ -89,6 +90,23 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
       }
     };
   }, []);
+
+  // Recover interrupted walk from localStorage
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("pawcoach_walk_active"));
+      if (saved && dog?.id === saved.dogId) {
+        const elapsedSec = Math.round((Date.now() - saved.startTime - (saved.paused || 0)) / 1000);
+        if (elapsedSec > 60 && elapsedSec < 18000) { // entre 1 min et 5h
+          setElapsed(elapsedSec);
+          setSavedMinutes(Math.round(elapsedSec / 60));
+          setStatus("done");
+          toast.info(`Balade récupérée : ~${Math.round(elapsedSec / 60)} min`);
+        }
+        localStorage.removeItem("pawcoach_walk_active");
+      }
+    } catch {}
+  }, [dog?.id]);
 
   const startGPS = () => {
     if (!navigator.geolocation) return;
@@ -110,7 +128,11 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
         }
         lastPosRef.current = newPos;
       },
-      () => {},
+      (err) => {
+        if (err.code === 1) {
+          toast.info("GPS désactivé — la distance ne sera pas mesurée", { id: "gps-warn" });
+        }
+      },
       { enableHighAccuracy: true, maximumAge: 3000 }
     );
   };
@@ -131,6 +153,10 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
   };
 
   const handleStart = () => {
+    if (!dog?.id) {
+      toast.error("Aucun chien sélectionné");
+      return;
+    }
     setStatus("running");
     setElapsed(0);
     setDistance(0);
@@ -141,8 +167,20 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     pausedRef.current = 0;
     startTimeRef.current = Date.now();
     startGPS();
+    localStorage.setItem("pawcoach_walk_active", JSON.stringify({
+      startTime: Date.now(), dogId: dog.id, paused: 0
+    }));
     timerRef.current = setInterval(() => {
-      setElapsed(Math.floor((Date.now() - startTimeRef.current - pausedRef.current) / 1000));
+      const now = Date.now();
+      setElapsed(Math.floor((now - startTimeRef.current - pausedRef.current) / 1000));
+      // Persist walk state every ~30s
+      if (Math.floor(now / 30000) !== Math.floor((now - 500) / 30000)) {
+        try {
+          localStorage.setItem("pawcoach_walk_active", JSON.stringify({
+            startTime: startTimeRef.current, dogId: dog?.id, paused: pausedRef.current
+          }));
+        } catch {}
+      }
     }, 500);
     if (navigator.vibrate) navigator.vibrate(100);
   };
@@ -151,11 +189,12 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     if (status === "running") {
       setStatus("paused");
       clearInterval(timerRef.current);
-      pausedRef.current -= Date.now();
+      pauseStartRef.current = Date.now();
       stopGPS();
     } else {
       setStatus("running");
-      pausedRef.current += Date.now();
+      pausedRef.current += Date.now() - pauseStartRef.current;
+      pauseStartRef.current = null;
       startGPS();
       timerRef.current = setInterval(() => {
         setElapsed(Math.floor((Date.now() - startTimeRef.current - pausedRef.current) / 1000));
@@ -169,6 +208,16 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     stoppingRef.current = true;
     clearInterval(timerRef.current);
     stopGPS();
+
+    if (!dog?.id || !user?.email) {
+      toast.error("Profil non chargé. Réessaie.");
+      setSaving(false);
+      setStatus("done");
+      stoppingRef.current = false;
+      return;
+    }
+
+    localStorage.removeItem("pawcoach_walk_active");
     setStatus("done");
     if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
 
@@ -236,6 +285,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
 
   const handleReset = () => {
     stoppingRef.current = false;
+    localStorage.removeItem("pawcoach_walk_active");
     setStatus("idle");
     setElapsed(0);
     setDistance(0);

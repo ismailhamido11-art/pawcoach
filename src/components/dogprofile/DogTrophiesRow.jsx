@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Trophy } from "lucide-react";
 
@@ -19,13 +20,31 @@ export default function DogTrophiesRow({ streak, progress, scansCount, dailyLogs
   const walkDays = (dailyLogs || []).filter(l => (l.walk_minutes || 0) > 0).length;
   const totalWalkMin = (dailyLogs || []).reduce((s, l) => s + (l.walk_minutes || 0), 0);
 
+  // Longest consecutive walk streak (aligned with badgeUtils walk_7days)
+  const walkStreak = useMemo(() => {
+    const dates = (dailyLogs || [])
+      .filter(l => (l.walk_minutes || 0) > 0)
+      .map(l => l.date)
+      .sort((a, b) => b.localeCompare(a));
+    if (dates.length === 0) return 0;
+    let maxStreak = 1, current = 1;
+    for (let i = 1; i < dates.length; i++) {
+      const d1 = new Date(dates[i - 1]);
+      const d2 = new Date(dates[i]);
+      const diff = Math.round((d1 - d2) / 86400000);
+      if (diff === 1) { current++; maxStreak = Math.max(maxStreak, current); }
+      else current = 1;
+    }
+    return maxStreak;
+  }, [dailyLogs]);
+
   const trophies = [
     { emoji: "🔥", label: "1er streak", earned: longest >= 1 },
     { emoji: "⚡", label: "7 jours", earned: longest >= 7 },
     { emoji: "🏅", label: "30 jours", earned: longest >= 30 },
     { emoji: "🐾", label: "1re balade", earned: walkDays >= 1 },
     { emoji: "👟", label: "30 min+", earned: (dailyLogs || []).some(l => l.walk_minutes >= 30) },
-    { emoji: "📅", label: "7j de balade", earned: walkDays >= 7 },
+    { emoji: "📅", label: "7j de balade", earned: walkStreak >= 7 },
     { emoji: "🏅", label: "Ultra marcheur", earned: totalWalkMin >= 1000 },
     { emoji: "✨", label: "1er exercice", earned: exerciseCount >= 1 },
     { emoji: "🎓", label: "3 exercices", earned: exerciseCount >= 3 },

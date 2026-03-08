@@ -6,8 +6,21 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { dogId, dogName, dogBreed, dogBirthDate, activityLevel, healthIssues, goals, weeklyWalkMinutes, walkDaysLast7, avgWalkMinutes, weeklyWalkDistanceKm, walkMoodSummary, mode, problemId, problemLabel, problemDescription, previousPrograms, previousBilan } = await req.json();
+    const { dogId, dogName: rawDogName, dogBreed: rawDogBreed, dogBirthDate, activityLevel, healthIssues, goals, weeklyWalkMinutes, walkDaysLast7, avgWalkMinutes, weeklyWalkDistanceKm, walkMoodSummary: rawWalkMood, mode, problemId, problemLabel, problemDescription, previousPrograms: rawPreviousPrograms, previousBilan: rawPreviousBilan } = await req.json();
     if (!dogId) return Response.json({ error: 'Missing dogId' }, { status: 400 });
+
+    // Sanitize user-controlled strings before prompt injection
+    const dogName = String(rawDogName || "").substring(0, 50);
+    const dogBreed = String(rawDogBreed || "").substring(0, 50);
+    const walkMoodSummary = rawWalkMood ? String(rawWalkMood).substring(0, 100) : null;
+    const safeWalkDistanceKm = typeof weeklyWalkDistanceKm === 'number' && isFinite(weeklyWalkDistanceKm) ? weeklyWalkDistanceKm : null;
+    const previousPrograms = Array.isArray(rawPreviousPrograms) ? rawPreviousPrograms.slice(0, 10).map((p: any) => String(p).substring(0, 100)) : [];
+    const previousBilan = rawPreviousBilan ? {
+      feeling: typeof rawPreviousBilan.feeling === 'number' ? rawPreviousBilan.feeling : 0,
+      observed: rawPreviousBilan.observed,
+      feedback: rawPreviousBilan.feedback ? String(rawPreviousBilan.feedback).substring(0, 200) : "",
+      nextFocus: Array.isArray(rawPreviousBilan.nextFocus) ? rawPreviousBilan.nextFocus.slice(0, 5).map((f: any) => String(f).substring(0, 50)) : [],
+    } : null;
 
     // Calculate age
     let ageMonths = null;
@@ -32,6 +45,9 @@ Deno.serve(async (req) => {
         return Response.json({ error: 'problemId and problemLabel required for behavior mode' }, { status: 400 });
       }
 
+      const safeProblemLabel = String(problemLabel || "").substring(0, 100);
+      const safeProblemDescription = String(problemDescription || "").substring(0, 200);
+
       const behaviorPrompt = `Tu es un éducateur canin certifié et comportementaliste expert. Génère un programme personnalisé de 7 jours pour résoudre un problème de comportement.
 
 CHIEN :
@@ -41,8 +57,8 @@ CHIEN :
 - Niveau d'activité : ${activityLabels[activityLevel] || activityLevel || "modéré"}
 - Problèmes de santé : ${healthIssues || "aucun"}
 
-PROBLÈME À RÉSOUDRE : ${problemLabel}
-Description : ${problemDescription || ""}
+PROBLÈME À RÉSOUDRE : ${safeProblemLabel}
+Description : ${safeProblemDescription}
 
 RÈGLES ABSOLUES :
 - Uniquement du renforcement positif — JAMAIS de punition, collier étrangleur ou méthode coercitive
@@ -56,8 +72,8 @@ RÈGLES ABSOLUES :
 Réponds en JSON avec ce format exact :
 {
   "program_title": "<titre motivant avec le nom du chien>",
-  "problem_id": "${problemId}",
-  "problem_label": "${problemLabel}",
+  "problem_id": "${String(problemId || "").substring(0, 50)}",
+  "problem_label": "${safeProblemLabel}",
   "duration_days": 7,
   "summary": "<résumé motivant en 2-3 phrases>",
   "days": [
@@ -151,7 +167,7 @@ PROFIL DU CHIEN :
 - Niveau d'activité : ${activityLabels[activityLevel] || activityLevel || "modéré"}
 - Santé : ${healthIssues || "aucun problème"}
 - Objectifs : ${goals || "bien-être général et lien avec son chien"}
-- Balades actuelles : ${weeklyWalkMinutes ? weeklyWalkMinutes + " min/semaine" : "non renseigné"}${walkDaysLast7 != null ? `, ${walkDaysLast7} jours de balade sur 7` : ""}${avgWalkMinutes ? `, moyenne ${avgWalkMinutes} min/sortie` : ""}${weeklyWalkDistanceKm ? `, ${weeklyWalkDistanceKm} km parcourus cette semaine` : ""}
+- Balades actuelles : ${weeklyWalkMinutes ? weeklyWalkMinutes + " min/semaine" : "non renseigné"}${walkDaysLast7 != null ? `, ${walkDaysLast7} jours de balade sur 7` : ""}${avgWalkMinutes ? `, moyenne ${avgWalkMinutes} min/sortie` : ""}${safeWalkDistanceKm ? `, ${safeWalkDistanceKm} km parcourus cette semaine` : ""}
 ${walkMoodSummary ? `- Ressenti post-balade : ${walkMoodSummary}` : ""}
 ${previousBilan ? `
 BILAN DU DERNIER PROGRAMME :

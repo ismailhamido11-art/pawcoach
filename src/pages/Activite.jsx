@@ -79,7 +79,7 @@ export default function Activite() {
     const l = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 30);
     setLogs(l || []);
     // Check walk badges after refresh
-    checkWalkBadges(dog.id, user.email, l || []);
+    checkWalkBadges(dog.id, user.email, l || []).catch(() => {});
   };
 
   return (

@@ -122,9 +122,9 @@ Deno.serve(async (req) => {
       wellbeingMemory += `\n- Humeurs : ${moods.join(", ")}`;
       wellbeingMemory += `\n- Energie : ${energies.join(", ")}`;
       wellbeingMemory += `\n- Appetit : ${appetites.join(", ")}`;
-      if (latestNote) wellbeingMemory += `\n- Derniere note : "${latestNote}"`;
+      if (latestNote) wellbeingMemory += `\n- Derniere note : "${String(latestNote).substring(0, 200)}"`;
       const latestBehaviorNote = recentCheckins.find(c => c.behavior_notes)?.behavior_notes;
-      if (latestBehaviorNote) wellbeingMemory += `\n- Observation comportement : "${latestBehaviorNote}"`;
+      if (latestBehaviorNote) wellbeingMemory += `\n- Observation comportement : "${String(latestBehaviorNote).substring(0, 200)}"`;
       // Symptoms from F11
       const symptomCheckins = recentCheckins.filter(c => c.symptoms?.length > 0);
       if (symptomCheckins.length > 0) {
@@ -346,9 +346,13 @@ Deno.serve(async (req) => {
     // ═══════════════════════════════════════════════════════════
     // Build SYSTEM PROMPT — "Intelligent Brain"
     // ═══════════════════════════════════════════════════════════
+    // Sanitize user-controlled strings before prompt injection
+    const safeDogName = String(dog.name || "").substring(0, 50);
+    const safeDogBreed = String(dog.breed || "").substring(0, 50);
+
     const dogProfile = [
-      `- Nom : ${dog.name}`,
-      `- Race : ${dog.breed || "Non renseignee"}`,
+      `- Nom : ${safeDogName}`,
+      `- Race : ${safeDogBreed || "Non renseignee"}`,
       ageStr ? `- Age : ${ageStr}` : null,
       dog.weight ? `- Poids : ${dog.weight} kg` : null,
       dog.sex ? `- Sexe : ${dog.sex === "male" ? "Male" : "Femelle"}` : null,
@@ -366,7 +370,7 @@ Deno.serve(async (req) => {
 
     const roleIntro = mode === "nutrition"
       ? `Tu es NutriCoach, le coach nutrition canin expert de PawCoach. Tu donnes des conseils nutritionnels personnalises et recommandes des aliments adaptes.`
-      : `Tu es PawCoach, le coach bien-etre canin intelligent. Tu es l'expert personnel de ${dog.name} — tu connais son historique, sa sante, son alimentation, son activite et son caractere.`;
+      : `Tu es PawCoach, le coach bien-etre canin intelligent. Tu es l'expert personnel de ${safeDogName} — tu connais son historique, sa sante, son alimentation, son activite et son caractere.`;
 
     const systemPrompt = `${roleIntro}
 
@@ -374,14 +378,14 @@ DATE : ${todayFr}
 
 PROFIL DU CHIEN :
 ${dogProfile}
-${dogMemory ? `\n═══ MEMOIRE DE ${dog.name.toUpperCase()} ═══${dogMemory}` : ""}
+${dogMemory ? `\n═══ MEMOIRE DE ${safeDogName.toUpperCase()} ═══${dogMemory}` : ""}
 
 COMMENT TE COMPORTER :
-- Tu CONNAIS ${dog.name} personnellement. Refere-toi a son historique naturellement dans tes reponses.
+- Tu CONNAIS ${safeDogName} personnellement. Refere-toi a son historique naturellement dans tes reponses.
 - Si tu vois des tendances dans les donnees (baisse d'energie, perte de poids, appetit en baisse), mentionne-les proactivement.
 - Fais des connexions entre les domaines : nutrition + sante + activite + comportement = une seule vision holistique.
 - Si un vaccin ou RDV approche, mentionne-le naturellement.
-- Utilise le prenom de ${dog.name}, tutoie le proprietaire.
+- Utilise le prenom de ${safeDogName}, tutoie le proprietaire.
 - Reponds en francais, sois chaleureux et concis (2-3 paragraphes max).
 - Ne pose JAMAIS de diagnostic medical. En cas de symptome inquietant, recommande un veterinaire.
 - Quand tu ne sais pas, dis-le honnetement.

@@ -55,7 +55,7 @@ export async function checkWalkBadges(dogId, ownerEmail, logs) {
   const todayLog = logs?.[0];
 
   if (walkDays >= 1) await unlockBadge(dogId, ownerEmail, "first_walk");
-  if (todayLog?.walk_minutes >= 30) await unlockBadge(dogId, ownerEmail, "walk_30min");
+  if ((logs || []).some(l => (l.walk_minutes || 0) >= 30)) await unlockBadge(dogId, ownerEmail, "walk_30min");
   if (totalMinutes >= 1000) await unlockBadge(dogId, ownerEmail, "walk_marathon");
 
   // Check 7 consecutive days
@@ -87,7 +87,7 @@ export async function checkStreakBadges(dogId, ownerEmail) {
   const streaks = await base44.entities.Streak.filter({ dog_id: dogId });
   const streak = streaks?.[0];
   if (!streak) return;
-  if (streak.current_streak >= 3) await unlockBadge(dogId, ownerEmail, "streak_3");
-  if (streak.current_streak >= 7) await unlockBadge(dogId, ownerEmail, "streak_7");
-  if (streak.current_streak >= 30) await unlockBadge(dogId, ownerEmail, "streak_30");
+  if ((streak.current_streak >= 3) || (streak.longest_streak >= 3)) await unlockBadge(dogId, ownerEmail, "streak_3");
+  if ((streak.current_streak >= 7) || (streak.longest_streak >= 7)) await unlockBadge(dogId, ownerEmail, "streak_7");
+  if ((streak.current_streak >= 30) || (streak.longest_streak >= 30)) await unlockBadge(dogId, ownerEmail, "streak_30");
 }
