@@ -7,34 +7,34 @@ import { buildRecommendations } from "@/utils/recommendations";
 // 25 tips rotating daily — {name} and {breed} are replaced dynamically
 const TIPS = [
   // Health
-  "Un check-in quotidien de 30 secondes peut detecter des problemes de sante precocement chez {name}",
-  "Les soins dentaires sont souvent negliges. Pense a verifier les dents de {name} regulierement",
-  "Le stress peut affecter l'appetit et l'humeur de {name}. Un environnement calme et previsible aide",
+  "Un check-in quotidien de 30 secondes peut détecter des problèmes de santé précocement chez {name}",
+  "Les soins dentaires sont souvent négligés. Pense à vérifier les dents de {name} régulièrement",
+  "Le stress peut affecter l'appétit et l'humeur de {name}. Un environnement calme et prévisible aide",
   "Les vaccins de rappel sont aussi importants que les premiers vaccins. Un retard de quelques semaines peut laisser {name} sans protection",
   "Surveille le poids de {name} chaque mois : un surpoids de 10% augmente les risques articulaires de 30%",
-  "Les puces et tiques sont actives des le printemps. Verifie le traitement antiparasitaire de {name}",
+  "Les puces et tiques sont actives dès le printemps. Vérifie le traitement antiparasitaire de {name}",
   // Nutrition
   "{name} devrait boire environ 50ml d'eau par kg de poids par jour. Change l'eau au moins 2 fois",
-  "Le chocolat, le raisin, l'oignon et l'ail sont toxiques pour les chiens — meme en petite quantite",
-  "Les croquettes de qualite doivent avoir une proteine animale en premier ingredient. Verifie l'etiquette !",
-  "Un changement d'alimentation doit se faire progressivement sur 7 jours pour eviter les troubles digestifs",
-  "Les os cuits sont dangereux — ils peuvent se fragmenter. Prefere les os crus ou les jouets a macher",
+  "Le chocolat, le raisin, l'oignon et l'ail sont toxiques pour les chiens — même en petite quantité",
+  "Les croquettes de qualité doivent avoir une protéine animale en premier ingrédient. Vérifie l'étiquette !",
+  "Un changement d'alimentation doit se faire progressivement sur 7 jours pour éviter les troubles digestifs",
+  "Les os cuits sont dangereux — ils peuvent se fragmenter. Préfère les os crus ou les jouets à mâcher",
   // Activity
-  "{name} a besoin de stimulation physique ET mentale chaque jour pour rester equilibre",
+  "{name} a besoin de stimulation physique ET mentale chaque jour pour rester équilibré",
   "Varie les parcours de promenade ! Les nouvelles odeurs stimulent le cerveau de {name} autant que l'exercice",
   "15 minutes de jeu interactif par jour renforcent ton lien et la confiance de {name}",
-  "Un chien fatigue mentalement est plus calme qu'un chien fatigue physiquement. Essaie les jeux de flair !",
-  "La socialisation ne s'arrete pas apres le chiot. Expose {name} regulierement a de nouvelles situations",
+  "Un chien fatigué mentalement est plus calme qu'un chien fatigué physiquement. Essaie les jeux de flair !",
+  "La socialisation ne s'arrête pas après le chiot. Expose {name} régulièrement à de nouvelles situations",
   // Breed-aware
-  "Chaque race a ses predispositions de sante. Renseigne-toi sur celles des {breed} pour mieux prevenir",
-  "L'esperance de vie de {name} depend enormement de la qualite de ses soins quotidiens",
-  "Adapte les portions de {name} a son age, son poids actuel et son niveau d'activite — pas juste la notice du paquet",
-  "Un brossage regulier permet de reperer tot les problemes de peau, les parasites et les masses inhabituelles",
+  "Chaque race a ses prédispositions de santé. Renseigne-toi sur celles des {breed} pour mieux prévenir",
+  "L'espérance de vie de {name} dépend énormément de la qualité de ses soins quotidiens",
+  "Adapte les portions de {name} à son âge, son poids actuel et son niveau d'activité — pas juste la notice du paquet",
+  "Un brossage régulier permet de repérer tôt les problèmes de peau, les parasites et les masses inhabituelles",
   // Fun facts
   "Le nez de chaque chien est unique, comme une empreinte digitale humaine",
-  "Les chiens revent pendant le sommeil paradoxal — ils revivent souvent leurs aventures de la journee",
-  "Un chien peut apprendre en moyenne 165 mots et signaux. Certains prodiges jusqu'a 250 !",
-  "Les chiens percoivent les odeurs 100 000 fois mieux que nous. Une promenade est un festival sensoriel pour {name}",
+  "Les chiens rêvent pendant le sommeil paradoxal — ils revivent souvent leurs aventures de la journée",
+  "Un chien peut apprendre en moyenne 165 mots et signaux. Certains prodiges jusqu'à 250 !",
+  "Les chiens perçoivent les odeurs 100 000 fois mieux que nous. Une promenade est un festival sensoriel pour {name}",
   "Les chiens voient en bleu et jaune, pas en noir et blanc comme on le croit souvent",
 ];
 

@@ -27,12 +27,12 @@ import PostTrialSheet from "../components/premium/PostTrialSheet";
 import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
 
 const MILESTONES = [
-  { days: 3,   message: "3 jours de suite !",    sub: "Le debut d'une belle habitude" },
-  { days: 7,   message: "1 semaine complete !",   sub: "Tu es sur la bonne voie" },
-  { days: 14,  message: "2 semaines !",           sub: "La regularite paie" },
+  { days: 3,   message: "3 jours de suite !",    sub: "Le début d'une belle habitude" },
+  { days: 7,   message: "1 semaine complète !",   sub: "Tu es sur la bonne voie" },
+  { days: 14,  message: "2 semaines !",           sub: "La régularité paie" },
   { days: 30,  message: "1 mois de suivi !",      sub: "Champion du suivi" },
   { days: 60,  message: "2 mois !",               sub: "Engagement exceptionnel" },
-  { days: 100, message: "100 jours !",             sub: "Legende absolue" },
+  { days: 100, message: "100 jours !",             sub: "Légende absolue" },
 ];
 
 function getTodayString() {

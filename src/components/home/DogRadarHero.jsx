@@ -17,7 +17,7 @@ function computeArcs({ checkins = [], streak, records = [], exercises = [], scan
   // 1. Santé (checkins humeur + énergie + vaccins)
   let health = 0;
   let healthData = false;
-  let healthHint = "Pas de donnees";
+  let healthHint = "Pas de données";
   const hasVaccine = records.some(r => r.type === "vaccine" && r.date && (Date.now() - new Date(r.date).getTime()) / 86400000 < 365);
 
   if (recent.length > 0) {

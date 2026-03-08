@@ -86,9 +86,9 @@ export function buildRecommendations({ records = [], exercises = [], scans = [],
       icon: Dumbbell,
       iconBg: "bg-emerald-50",
       iconColor: "#10b981",
-      label: completedThisWeek.length === 0 ? "Aucun exercice cette semaine" : "Continue l'entrainement",
+      label: completedThisWeek.length === 0 ? "Aucun exercice cette semaine" : "Continue l'entraînement",
       sub: completedThisWeek.length === 0
-        ? "Lance ta premiere seance ensemble"
+        ? "Lance ta première séance ensemble"
         : `${completedThisWeek.length} exercice${completedThisWeek.length > 1 ? "s" : ""} fait${completedThisWeek.length > 1 ? "s" : ""} — bravo !`,
       page: "Activite",
       tab: "dressage",
@@ -209,10 +209,10 @@ export function buildRecommendations({ records = [], exercises = [], scans = [],
         icon: AlertTriangleIcon,
         iconBg: recentCaution.verdict === "toxic" ? "bg-red-50" : "bg-amber-50",
         iconColor: recentCaution.verdict === "toxic" ? "#ef4444" : "#f59e0b",
-        label: recentCaution.verdict === "toxic" ? "Aliment toxique detecte" : "Aliment a surveiller",
+        label: recentCaution.verdict === "toxic" ? "Aliment toxique détecté" : "Aliment à surveiller",
         sub: `${recentCaution.food_name} — score ${recentCaution.score}/10`,
         page: "Scan",
-        cta: "Voir les details",
+        cta: "Voir les détails",
         accent: recentCaution.verdict === "toxic" ? "border-l-red-400" : "border-l-amber-400",
       });
     }

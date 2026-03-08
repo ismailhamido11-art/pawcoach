@@ -39,7 +39,7 @@ function computeTileData({ records = [], exercises = [], scans = [], user, check
     santeBadge = { text: "A jour", color: "#10b981" };
   } else {
     santeData = "0";
-    santeSub = "Ajoute un suivi sante";
+    santeSub = "Ajoute un suivi santé";
     santeBadge = null;
   }
 
@@ -78,7 +78,7 @@ function computeTileData({ records = [], exercises = [], scans = [], user, check
   let trainData, trainSub, trainBadge;
   if (completed.length > 0) {
     trainData = `${completed.length}/${TOTAL_EXERCISES}`;
-    trainSub = `exercice${completed.length > 1 ? "s" : ""} complete${completed.length > 1 ? "s" : ""}`;
+    trainSub = `exercice${completed.length > 1 ? "s" : ""} complété${completed.length > 1 ? "s" : ""}`;
     const ratio = completed.length / TOTAL_EXERCISES;
     trainBadge = ratio >= 0.8 ? { text: "Bravo", color: "#6366f1" } : ratio >= 0.4 ? { text: "En cours", color: "#d97706" } : { text: "A faire", color: "#6b7280" };
   } else {
@@ -97,8 +97,8 @@ function computeTileData({ records = [], exercises = [], scans = [], user, check
   // --- CHAT IA ---
   let chatData, chatSub, chatBadge;
   if (isPremium) {
-    chatData = "Illimite";
-    chatSub = "Chat sante personnalise";
+    chatData = "Illimité";
+    chatSub = "Chat santé personnalisé";
     chatBadge = { text: "Pro", color: "#2d9f82" };
   } else {
     chatData = "3/jour";
@@ -107,7 +107,7 @@ function computeTileData({ records = [], exercises = [], scans = [], user, check
   }
 
   return [
-    { icon: Heart, iconColor: "#2d9f82", label: "Sante", dataPoint: santeData, subtitle: santeSub, badge: santeBadge, weekBars: santeWeekBars, page: "Sante" },
+    { icon: Heart, iconColor: "#2d9f82", label: "Santé", dataPoint: santeData, subtitle: santeSub, badge: santeBadge, weekBars: santeWeekBars, page: "Sante" },
     { icon: Utensils, iconColor: "#059669", label: "Nutrition", dataPoint: nutriData, subtitle: nutriSub, badge: nutriBadge, weekBars: nutriWeekBars, page: "Nutri" },
     { icon: Dumbbell, iconColor: "#6366f1", label: "Dressage", dataPoint: trainData, subtitle: trainSub, badge: trainBadge, weekBars: trainWeekBars, page: "Activite", tab: "dressage" },
     { icon: MessageCircle, iconColor: "#8b5cf6", label: "Chat IA", dataPoint: chatData, subtitle: chatSub, badge: chatBadge, weekBars: null, page: "Chat" },
