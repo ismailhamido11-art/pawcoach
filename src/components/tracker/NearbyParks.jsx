@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Navigation, TreePine, Dog, Loader2, Shield, Droplets, Sun, Clock, ChevronDown, MessageCircle } from "lucide-react";
+import { Navigation, TreePine, Dog, Loader2, Shield, Droplets, Sun, Clock, ChevronDown } from "lucide-react";
 import { fetchNearbyParks, findNearestPark } from "@/utils/overpass";
+import ParkReviews from "./ParkReviews";
 
 const TYPE_LABELS = {
   dog_park: { label: "Parc canin", color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200", icon: Dog },
@@ -45,7 +46,7 @@ function getDogAdvice(park, dog) {
   if (!dog) return null;
   const name = dog.name || "ton chien";
   const weight = dog.weight || 0;
-  const age = dog.age_years || 0;
+  const age = dog.birth_date ? (Date.now() - new Date(dog.birth_date).getTime()) / (365.25 * 24 * 60 * 60 * 1000) : 0;
   const isSmall = weight > 0 && weight < 10;
   const isLarge = weight >= 25;
   const isSenior = age >= 8;
@@ -71,7 +72,7 @@ function PawRating({ paws }) {
   );
 }
 
-export default function NearbyParks({ dog, onNearPark }) {
+export default function NearbyParks({ dog, user, onNearPark }) {
   const [parks, setParks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -193,11 +194,8 @@ export default function NearbyParks({ dog, onNearPark }) {
                           </div>
                         )}
 
-                        {/* Reviews placeholder */}
-                        <div className="flex items-center gap-2 opacity-50">
-                          <MessageCircle className="w-3 h-3 text-muted-foreground" />
-                          <p className="text-[10px] text-muted-foreground italic">Avis bientôt disponibles</p>
-                        </div>
+                        {/* Reviews */}
+                        <ParkReviews park={park} dog={dog} user={user} />
 
                         {/* Navigate button */}
                         <motion.button

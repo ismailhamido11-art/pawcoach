@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import WalkMap from "./WalkMap";
 import WalkShareCard from "./WalkShareCard";
 import NearbyParks from "./NearbyParks";
+import { PostWalkReviewPrompt } from "./ParkReviews";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 
 function formatTime(seconds) {
@@ -198,6 +199,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     setDistance(0);
     setSavedMinutes(null);
     setShowShare(false);
+    setNearPark(null);
   };
 
   const minutes = Math.floor(elapsed / 60);
@@ -267,7 +269,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
             )}
 
             {/* Nearby parks */}
-            <NearbyParks dog={dog} onNearPark={setNearPark} />
+            <NearbyParks dog={dog} user={user} onNearPark={setNearPark} />
           </motion.div>
         )}
 
@@ -419,6 +421,11 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                       <p className="text-[10px] font-bold text-primary">{walkInfo.streak}</p>
                     )}
                   </motion.div>
+
+                  {/* Post-walk park review prompt */}
+                  {nearPark && (
+                    <PostWalkReviewPrompt park={nearPark} dog={dog} user={user} />
+                  )}
 
                   <div className="grid grid-cols-2 gap-3 w-full">
                     <motion.button
