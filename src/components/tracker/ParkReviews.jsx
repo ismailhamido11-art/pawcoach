@@ -169,9 +169,7 @@ export default function ParkReviews({ park, dog, user }) {
             </div>
           )}
         </div>
-      ) : (
-        <p className="text-[10px] text-muted-foreground">Aucun avis encore — sois le premier !</p>
-      )}
+      ) : null}
 
       {/* Recent reviews */}
       {reviews.slice(0, 3).map(r => (

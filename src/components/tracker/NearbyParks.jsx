@@ -1,8 +1,34 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Navigation, TreePine, Dog, Loader2, Shield, Droplets, Sun, Clock, ChevronDown } from "lucide-react";
+import { Navigation, TreePine, Dog, Loader2, Shield, Droplets, Sun, Clock, ChevronDown, ExternalLink, Map as MapIcon } from "lucide-react";
 import { fetchNearbyParks, findNearestPark } from "@/utils/overpass";
 import ParkReviews from "./ParkReviews";
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix default Leaflet marker icons (same pattern as FindVetContent)
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
+const PARK_COLORS = { dog_park: "#10b981", park_dog_ok: "#3b82f6", park_leashed: "#f59e0b" };
+
+function createParkIcon(type) {
+  const color = PARK_COLORS[type] || PARK_COLORS.park_dog_ok;
+  return L.divIcon({
+    className: "",
+    html: `<div style="width:28px;height:28px;border-radius:50% 50% 50% 0;background:${color};border:2.5px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.25);transform:rotate(-45deg);"></div>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 28],
+    popupAnchor: [0, -32],
+  });
+}
+
+// No MapFlyTo needed — MapContainer initializes at userPos directly
 
 const TYPE_LABELS = {
   dog_park: { label: "Parc canin", color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200", icon: Dog },
@@ -21,6 +47,11 @@ function openDirections(lat, lng) {
   window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=walking`, "_blank");
 }
 
+function openGoogleMaps(lat, lng, name) {
+  const q = name ? `${encodeURIComponent(name)}+${lat},${lng}` : `${lat},${lng}`;
+  window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, "_blank");
+}
+
 /** Compute paw rating (1-3) and attribute badges from OSM tags */
 function computeParkInfo(park) {
   let paws = 1;
@@ -29,7 +60,7 @@ function computeParkInfo(park) {
   if (park.type === "dog_park") paws = 2;
   if (park.tags.fenced === "yes") {
     badges.push({ icon: Shield, label: "Clôturé", color: "text-emerald-600" });
-    if (park.type !== "park_leashed") paws = 3; // leashed parks capped at 2
+    if (park.type !== "park_leashed") paws = 3;
   }
   if (park.tags.surface && SURFACE_LABELS[park.tags.surface]) {
     badges.push({ icon: TreePine, label: SURFACE_LABELS[park.tags.surface], color: "text-green-600" });
@@ -52,7 +83,6 @@ function getDogAdvice(park, dog) {
   const isSenior = age >= 8;
   const isPuppy = age > 0 && age <= 1;
 
-  // Safety first: leash requirement must never be masked
   if (park.type === "park_leashed") return `Chiens en laisse obligatoire — prévois la laisse pour ${name}.`;
   if (park.tags.fenced === "yes" && isSmall) return `Espace clos, idéal pour ${name} qui peut courir en sécurité.`;
   if (park.tags.fenced === "yes" && isPuppy) return `Parfait pour ${name} — espace clos pour explorer sans risque.`;
@@ -77,53 +107,106 @@ export default function NearbyParks({ dog, user, onNearPark }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
+  const [userPos, setUserPos] = useState(null);
+  const [showMap, setShowMap] = useState(true);
 
   useEffect(() => {
     if (!navigator.geolocation) { setLoading(false); setError("geo"); return; }
+    let cancelled = false;
 
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude, longitude } = pos.coords;
+        if (cancelled) return;
+        setUserPos([latitude, longitude]);
         try {
           const results = await fetchNearbyParks(latitude, longitude, 3000);
+          if (cancelled) return;
           setParks(results);
           const nearest = findNearestPark(latitude, longitude, results, 150);
           if (nearest && onNearPark) onNearPark(nearest);
         } catch (e) {
+          if (cancelled) return;
           console.warn("Overpass fetch failed:", e);
           setError("api");
         } finally {
-          setLoading(false);
+          if (!cancelled) setLoading(false);
         }
       },
-      () => { setLoading(false); setError("geo"); },
+      () => { if (!cancelled) { setLoading(false); setError("geo"); } },
       { enableHighAccuracy: false, timeout: 8000 }
     );
+
+    return () => { cancelled = true; };
   }, []);
 
   if (error === "geo") return null;
   if (!loading && parks.length === 0 && error !== "api") return null;
+
+  const visibleParks = parks.slice(0, 5);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, type: "spring", stiffness: 400, damping: 30 }}
-      className="w-full space-y-2"
+      className="w-full space-y-3"
     >
-      <div className="flex items-center gap-2">
-        <TreePine className="w-4 h-4 text-emerald-600" />
-        <p className="text-xs font-bold text-foreground">Parcs proches</p>
-        {loading && <Loader2 className="w-3 h-3 animate-spin text-muted-foreground" />}
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <TreePine className="w-4 h-4 text-emerald-600" />
+          <p className="text-sm font-bold text-foreground">Parcs proches</p>
+          {loading && <Loader2 className="w-3 h-3 animate-spin text-muted-foreground" />}
+        </div>
+        {!loading && parks.length > 0 && (
+          <button
+            onClick={() => setShowMap(s => !s)}
+            className="flex items-center gap-1 text-[10px] font-semibold text-primary px-2.5 py-1 rounded-lg bg-primary/10"
+          >
+            <MapIcon className="w-3 h-3" />
+            {showMap ? "Masquer" : "Carte"}
+          </button>
+        )}
       </div>
+
+      {/* Interactive map */}
+      {showMap && !loading && visibleParks.length > 0 && userPos && (
+        <div className="rounded-2xl overflow-hidden border border-border/50 shadow-sm" style={{ height: 200 }}>
+          <MapContainer center={userPos} zoom={14} style={{ height: "100%", width: "100%" }} zoomControl={false}>
+            <TileLayer
+              attribution='&copy; <a href="https://carto.com">CARTO</a>'
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            />
+            {/* Map is already centered on userPos via MapContainer center prop */}
+            {/* User position — blue dot */}
+            <CircleMarker center={userPos} radius={8} fillColor="#3b82f6" fillOpacity={1} color="white" weight={3} />
+            {/* Park markers — colored by type */}
+            {visibleParks.map((park) => {
+              const { paws } = computeParkInfo(park);
+              return (
+                <Marker key={park.id} position={[park.lat, park.lng]} icon={createParkIcon(park.type)}>
+                  <Popup>
+                    <div className="text-xs">
+                      <p className="font-bold">{park.name}</p>
+                      <p className="text-gray-500 mt-0.5">{"🐾".repeat(paws)} · {formatDistance(park.distanceKm)}</p>
+                    </div>
+                  </Popup>
+                </Marker>
+              );
+            })}
+          </MapContainer>
+        </div>
+      )}
 
       {error === "api" && (
         <p className="text-[10px] text-muted-foreground">Impossible de charger les parcs. Réessaie plus tard.</p>
       )}
 
-      {!loading && parks.length > 0 && (
+      {/* Park cards */}
+      {!loading && visibleParks.length > 0 && (
         <div className="space-y-2">
-          {parks.slice(0, 5).map((park) => {
+          {visibleParks.map((park) => {
             const typeInfo = TYPE_LABELS[park.type] || TYPE_LABELS.park_dog_ok;
             const TypeIcon = typeInfo.icon;
             const { paws, badges } = computeParkInfo(park);
@@ -197,16 +280,26 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                         {/* Reviews */}
                         <ParkReviews park={park} dog={dog} user={user} />
 
-                        {/* Navigate button */}
-                        <motion.button
-                          whileTap={{ scale: 0.96 }}
-                          onClick={(e) => { e.stopPropagation(); openDirections(park.lat, park.lng); }}
-                          className="w-full py-2.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2"
-                          style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))" }}
-                        >
-                          <Navigation className="w-4 h-4" />
-                          Y aller ({formatDistance(park.distanceKm)})
-                        </motion.button>
+                        {/* Action buttons — 2 columns */}
+                        <div className="flex gap-2">
+                          <motion.button
+                            whileTap={{ scale: 0.96 }}
+                            onClick={(e) => { e.stopPropagation(); openDirections(park.lat, park.lng); }}
+                            className="flex-1 py-2.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2"
+                            style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))" }}
+                          >
+                            <Navigation className="w-4 h-4" />
+                            Y aller
+                          </motion.button>
+                          <motion.button
+                            whileTap={{ scale: 0.96 }}
+                            onClick={(e) => { e.stopPropagation(); openGoogleMaps(park.lat, park.lng, park.name); }}
+                            className="flex-1 py-2.5 rounded-xl font-bold text-sm text-blue-600 border-2 border-blue-200 bg-blue-50 flex items-center justify-center gap-2"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            Voir sur Maps
+                          </motion.button>
+                        </div>
                       </div>
                   )}
                 </motion.div>
