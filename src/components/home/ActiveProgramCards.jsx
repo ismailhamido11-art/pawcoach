@@ -261,7 +261,7 @@ function NutritionPlanCard({ plan }) {
               <span className="text-lg leading-none">🍽️</span>
               <div className="flex-1 min-w-0">
                 <span className="text-xs font-bold text-foreground">{todayName}</span>
-                <span className="text-[10px] text-muted-foreground ml-1.5 truncate">{summary.slice(0, 50)}{summary.length > 50 ? "..." : ""}</span>
+                <span className="text-[10px] text-muted-foreground truncate">{" · "}{summary.slice(0, 45)}{summary.length > 45 ? "..." : ""}</span>
               </div>
             </div>
           )}

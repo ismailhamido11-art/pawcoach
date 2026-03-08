@@ -35,7 +35,7 @@ export function buildRecommendations({ records = [], exercises = [], scans = [],
       sub: `${overdueVaccine.title} — depuis le ${overdueVaccine.next_date}`,
       page: "Sante",
       tab: "vaccine",
-      cta: "Mettre a jour",
+      cta: "Mettre \u00e0 jour",
       accent: "border-l-red-400",
     });
   }

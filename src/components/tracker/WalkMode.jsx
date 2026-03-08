@@ -187,7 +187,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
         const prev = existing[0].walk_minutes || 0;
         await base44.entities.DailyLog.update(existing[0].id, {
           walk_minutes: prev + minutes,
-          notes: existing[0].notes || `Balade de ${minutes} min${finalKm ? ` · ${finalKm} km` : ""}`
+          notes: `Balade de ${prev + minutes} min${finalKm ? ` · ${finalKm} km` : ""}`
         });
       } else {
         await base44.entities.DailyLog.create({
