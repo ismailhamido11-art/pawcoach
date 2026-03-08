@@ -7,9 +7,9 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 const BUDGET_OPTIONS = [
-  { id: "low",    label: "\u00c9conomique", desc: "< 30\u20ac/mois", emoji: "\uD83D\uDC9A" },
-  { id: "medium", label: "Standard",   desc: "30-70\u20ac/mois", emoji: "\uD83D\uDC9B" },
-  { id: "high",   label: "Premium",    desc: "> 70\u20ac/mois", emoji: "\uD83D\uDC9C" },
+  { id: "low",    label: "\u{00c9}conomique", desc: "< 30\u20ac/mois", emoji: "\u{1F49A}" },
+  { id: "medium", label: "Standard",   desc: "30-70\u20ac/mois", emoji: "\u{1F49B}" },
+  { id: "high",   label: "Premium",    desc: "> 70\u20ac/mois", emoji: "\u{1F49C}" },
 ];
 
 const PORTIONS_OPTIONS = [1, 2, 3];
@@ -21,8 +21,8 @@ const POPULAR_BRANDS = [
 ];
 
 const COMMON_DISLIKES = [
-  "Poulet", "B\u0153uf", "Porc", "Poisson",
-  "C\u00e9r\u00e9ales", "Gluten", "Soja", "Ma\u00efs",
+  "Poulet", "Boeuf", "Porc", "Poisson",
+  "Cereales", "Gluten", "Soja", "Mais",
 ];
 
 export default function DietPreferencesPanel({ dog, user }) {
@@ -106,7 +106,7 @@ export default function DietPreferencesPanel({ dog, user }) {
         setPrefs(created);
       }
       setSaved(true);
-      toast.success("Pr\u00e9f\u00e9rences sauvegard\u00e9es !");
+      toast.success("Préférences sauvegardées !");
       setTimeout(() => setSaved(false), 3000);
     } catch {
       toast.error("Erreur lors de la sauvegarde");
@@ -147,13 +147,13 @@ export default function DietPreferencesPanel({ dog, user }) {
   return (
     <div className="space-y-5 pb-4">
       <div>
-        <h2 className="font-bold text-foreground text-base">Pr\u00e9f\u00e9rences alimentaires</h2>
-        <p className="text-xs text-muted-foreground mt-0.5">Ces donn\u00e9es personnalisent les plans g\u00e9n\u00e9r\u00e9s pour {dog?.name}</p>
+        <h2 className="font-bold text-foreground text-base">Préférences alimentaires</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">Ces données personnalisent les plans générés pour {dog?.name}</p>
       </div>
 
       {/* Marques pr\u00e9f\u00e9r\u00e9es */}
       <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
-        <p className="text-sm font-semibold text-foreground flex items-center gap-2">{"\uD83C\uDFF7\uFE0F"} Marques appr\u00e9ci\u00e9es</p>
+        <p className="text-sm font-semibold text-foreground flex items-center gap-2">{"\u{1F3F7}\uFE0F"} Marques appréciées</p>
 
         {/* Selected brands */}
         {preferredBrands.length > 0 && (
@@ -199,11 +199,11 @@ export default function DietPreferencesPanel({ dog, user }) {
 
       {/* Aliments refus\u00e9s */}
       <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
-        <p className="text-sm font-semibold text-foreground">{"\uD83D\uDE24"} Aliments refus\u00e9s / non aim\u00e9s</p>
+        <p className="text-sm font-semibold text-foreground">{"\u{1F624}"} Aliments refusés / non aimés</p>
 
         {/* Common dislikes quick-pick */}
         <div>
-          <p className="text-[10px] text-muted-foreground mb-1.5 font-medium">Allerg\u00e8nes et intol\u00e9rances courants</p>
+          <p className="text-[10px] text-muted-foreground mb-1.5 font-medium">Allergènes et intolérances courants</p>
           <div className="flex flex-wrap gap-1.5">
             {COMMON_DISLIKES.map(food => (
               <button key={food} onClick={() => toggleDislike(food)}
@@ -250,7 +250,7 @@ export default function DietPreferencesPanel({ dog, user }) {
         <div className={`grid gap-3 ${portionsPerDay === 3 ? "grid-cols-3" : portionsPerDay === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
           {portionsPerDay >= 1 && (
             <div>
-              <p className="text-xs text-muted-foreground mb-1">{portionsPerDay === 1 ? "\uD83C\uDF1E Repas" : "\uD83C\uDF05 Matin"}</p>
+              <p className="text-xs text-muted-foreground mb-1">{portionsPerDay === 1 ? "\u{1F31E} Repas" : "\u{1F305} Matin"}</p>
               <Input type="time" value={mealMorning} onChange={e => setMealMorning(e.target.value)} className="text-sm" />
             </div>
           )}
@@ -262,7 +262,7 @@ export default function DietPreferencesPanel({ dog, user }) {
           )}
           {portionsPerDay >= 2 && (
             <div>
-              <p className="text-xs text-muted-foreground mb-1">{"\uD83C\uDF07"} Soir</p>
+              <p className="text-xs text-muted-foreground mb-1">{"\u{1F307}"} Soir</p>
               <Input type="time" value={mealEvening} onChange={e => setMealEvening(e.target.value)} className="text-sm" />
             </div>
           )}
@@ -296,8 +296,8 @@ export default function DietPreferencesPanel({ dog, user }) {
               <Leaf className={`w-4 h-4 ${organic ? "text-green-600" : "text-muted-foreground"}`} />
             </div>
             <div className="text-left">
-              <p className="text-sm font-semibold text-foreground">Pr\u00e9f\u00e9rence bio / naturel</p>
-              <p className="text-xs text-muted-foreground">Privil\u00e9gier les ingr\u00e9dients naturels</p>
+              <p className="text-sm font-semibold text-foreground">Préférence bio / naturel</p>
+              <p className="text-xs text-muted-foreground">Privilégier les ingrédients naturels</p>
             </div>
           </div>
           <div className={`w-11 h-6 rounded-full transition-all relative ${organic ? "bg-green-500" : "bg-muted"}`}>
@@ -308,11 +308,11 @@ export default function DietPreferencesPanel({ dog, user }) {
 
       {/* Notes */}
       <div className="bg-white rounded-2xl border border-border p-4 space-y-2">
-        <p className="text-sm font-semibold text-foreground">{"\uD83D\uDCDD"} Notes personnelles</p>
+        <p className="text-sm font-semibold text-foreground">{"\u{1F4DD}"} Notes personnelles</p>
         <textarea
           value={notes}
           onChange={e => setNotes(e.target.value)}
-          placeholder="Infos suppl\u00e9mentaires pour personnaliser les plans IA..."
+          placeholder="Infos supplémentaires pour personnaliser les plans IA..."
           className="w-full text-sm rounded-xl border border-border p-3 resize-none h-20 focus:outline-none focus:ring-1 focus:ring-primary"
         />
       </div>
@@ -320,7 +320,7 @@ export default function DietPreferencesPanel({ dog, user }) {
       <Button onClick={handleSave} disabled={saving || saved}
         className={`w-full h-12 rounded-2xl text-white font-bold shadow-lg gap-2 transition-all duration-300 ${saved ? "bg-green-500 shadow-green-200" : "bg-safe hover:bg-safe/90 shadow-safe/20"}`}>
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-        {saving ? "Sauvegarde..." : saved ? "Sauvegard\u00e9 !" : "Sauvegarder mes pr\u00e9f\u00e9rences"}
+        {saving ? "Sauvegarde..." : saved ? "Sauvegardé !" : "Sauvegarder mes préférences"}
       </Button>
     </div>
   );

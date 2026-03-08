@@ -8,10 +8,10 @@ import WellnessBanner from "../components/WellnessBanner";
 import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
 import FoodComparator from "../components/nutrition/FoodComparator";
 import DietPreferencesPanel from "../components/nutrition/DietPreferencesPanel";
-import SavedPlansPanel from "../components/nutrition/SavedPlansPanel";
+// SavedPlansPanel merged into NutritionMealPlan
 
 import { Button } from "@/components/ui/button";
-import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, Settings2, History, ChevronDown, Copy, RotateCcw } from "lucide-react";
+import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, Settings2, ChevronDown, Copy, RotateCcw } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
 import { initCredits } from "@/utils/ai-credits";
@@ -67,7 +67,6 @@ function getTimeStr(timestamp) {
 const TABS = [
   { id: "coach",    label: "NutriCoach", emoji: "\u{1F957}", bg: "from-emerald-500 to-emerald-700" },
   { id: "mealplan", label: "Plan repas",  emoji: "\u{1F4C5}", bg: "from-amber-500 to-amber-600" },
-  { id: "saved",    label: "Mes plans",  emoji: "\u{1F5C2}\uFE0F", bg: "from-primary to-accent" },
   { id: "prefs",    label: "Pr\u00e9f\u00e9rences", emoji: "\u2699\uFE0F", bg: "from-slate-500 to-slate-700" },
   { id: "compare",  label: "Comparer",   emoji: "\u2696\uFE0F", bg: "from-blue-500 to-indigo-600" },
   { id: "scan",     label: "Scanner",    emoji: "\u{1F4F7}", bg: "from-violet-500 to-purple-600" },
@@ -111,6 +110,7 @@ export default function Nutri() {
   const [dailyLogs, setDailyLogs] = useState([]);
   const [activePlan, setActivePlan] = useState(null);
   const [monthlyPlanCount, setMonthlyPlanCount] = useState(0);
+  const [allPlans, setAllPlans] = useState([]);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -204,6 +204,19 @@ export default function Nutri() {
     }).catch(() => {});
   };
 
+  const refreshPlans = async () => {
+    if (!dog || !user) return;
+    try {
+      const nplans = await base44.entities.NutritionPlan.filter({ dog_id: dog.id, owner_email: user.email }, "-generated_at", 10).catch(() => []);
+      const allP = nplans || [];
+      setAllPlans(allP);
+      const active = allP.find(p => p.is_active);
+      setActivePlan(active || null);
+      const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+      setMonthlyPlanCount(allP.filter(p => p.generated_at >= monthStart).length);
+    } catch { /* ignore */ }
+  };
+
   useEffect(() => { init(); }, []);
   useEffect(() => {
     const ta = textareaRef.current;
@@ -241,10 +254,12 @@ export default function Nutri() {
         setCheckins(ckns || []);
         setHealthRecords(hrecs || []);
         setDailyLogs(dlogs || []);
-        const active = (nplans || []).find(p => p.is_active);
+        const allP = nplans || [];
+        setAllPlans(allP);
+        const active = allP.find(p => p.is_active);
         setActivePlan(active || null);
         const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
-        setMonthlyPlanCount((nplans || []).filter(p => p.generated_at >= monthStart).length);
+        setMonthlyPlanCount(allP.filter(p => p.generated_at >= monthStart).length);
         const planInfo = active ? (() => {
           try {
             const pd = JSON.parse(active.plan_text);
@@ -443,14 +458,7 @@ export default function Nutri() {
       {/* Tab: Plan repas */}
       {activeTab === "mealplan" && (
         <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
-          <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={isUserPremium(user)} user={user} dietPrefs={dietPrefs} checkins={checkins} healthRecords={healthRecords} dailyLogs={dailyLogs} activePlan={activePlan} monthlyPlanCount={monthlyPlanCount} onPlanSaved={() => { setMonthlyPlanCount(c => c + 1); setActivePlan(null); }} />
-        </div>
-      )}
-
-      {/* Tab: Mes plans */}
-      {activeTab === "saved" && (
-        <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
-          <SavedPlansPanel dog={dog} user={user} />
+          <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={isUserPremium(user)} user={user} dietPrefs={dietPrefs} checkins={checkins} healthRecords={healthRecords} dailyLogs={dailyLogs} activePlan={activePlan} monthlyPlanCount={monthlyPlanCount} allPlans={allPlans} onPlanSaved={refreshPlans} />
         </div>
       )}
 
