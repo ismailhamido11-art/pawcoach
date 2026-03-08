@@ -93,23 +93,51 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
 
   // Recover interrupted walk from localStorage
   useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem("pawcoach_walk_active"));
-      if (saved && dog?.id === saved.dogId) {
-        const elapsedSec = Math.round((Date.now() - saved.startTime - (saved.paused || 0)) / 1000);
-        if (elapsedSec > 60 && elapsedSec < 18000) { // entre 1 min et 5h
-          setElapsed(elapsedSec);
-          setSavedMinutes(Math.round(elapsedSec / 60));
-          setStatus("done");
-          toast.info(`Balade récupérée : ~${Math.round(elapsedSec / 60)} min`);
+    (async () => {
+      try {
+        const saved = JSON.parse(localStorage.getItem("pawcoach_walk_active"));
+        if (saved && dog?.id === saved.dogId) {
+          const elapsedSec = Math.round((Date.now() - saved.startTime - (saved.paused || 0)) / 1000);
+          if (elapsedSec > 60 && elapsedSec < 18000) { // entre 1 min et 5h
+            setElapsed(elapsedSec);
+            setSavedMinutes(Math.round(elapsedSec / 60));
+            setStatus("done");
+            toast.info(`Balade récupérée : ~${Math.round(elapsedSec / 60)} min`);
+            // Save recovered walk to DB
+            const today = new Date().toISOString().slice(0, 10);
+            const minutes = Math.round(elapsedSec / 60);
+            try {
+              const existing = await base44.entities.DailyLog.filter({ dog_id: saved.dogId, date: today });
+              if (existing && existing.length > 0) {
+                const prev = existing[0];
+                await base44.entities.DailyLog.update(prev.id, {
+                  walk_minutes: (prev.walk_minutes || 0) + minutes,
+                });
+              } else {
+                await base44.entities.DailyLog.create({
+                  dog_id: saved.dogId,
+                  owner: user?.email,
+                  date: today,
+                  walk_minutes: minutes,
+                });
+              }
+              if (onLogged) onLogged();
+            } catch (e) {
+              console.error("Recovery save failed:", e);
+            }
+          }
+          localStorage.removeItem("pawcoach_walk_active");
         }
-        localStorage.removeItem("pawcoach_walk_active");
-      }
-    } catch {}
+      } catch {}
+    })();
   }, [dog?.id]);
 
   const startGPS = () => {
     if (!navigator.geolocation) return;
+    if (watchRef.current) {
+      navigator.geolocation.clearWatch(watchRef.current);
+      watchRef.current = null;
+    }
     watchRef.current = navigator.geolocation.watchPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -170,18 +198,19 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     localStorage.setItem("pawcoach_walk_active", JSON.stringify({
       startTime: Date.now(), dogId: dog.id, paused: 0
     }));
+    clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       const now = Date.now();
       setElapsed(Math.floor((now - startTimeRef.current - pausedRef.current) / 1000));
       // Persist walk state every ~30s
-      if (Math.floor(now / 30000) !== Math.floor((now - 500) / 30000)) {
+      if (Math.floor(now / 30000) !== Math.floor((now - 1000) / 30000)) {
         try {
           localStorage.setItem("pawcoach_walk_active", JSON.stringify({
             startTime: startTimeRef.current, dogId: dog?.id, paused: pausedRef.current
           }));
         } catch {}
       }
-    }, 500);
+    }, 1000);
     if (navigator.vibrate) navigator.vibrate(100);
   };
 
@@ -195,10 +224,17 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
       setStatus("running");
       pausedRef.current += Date.now() - pauseStartRef.current;
       pauseStartRef.current = null;
+      // Persist updated pause time immediately (crash safety)
+      try {
+        localStorage.setItem("pawcoach_walk_active", JSON.stringify({
+          startTime: startTimeRef.current, dogId: dog?.id, paused: pausedRef.current
+        }));
+      } catch {}
       startGPS();
+      clearInterval(timerRef.current);
       timerRef.current = setInterval(() => {
         setElapsed(Math.floor((Date.now() - startTimeRef.current - pausedRef.current) / 1000));
-      }, 500);
+      }, 1000);
     }
   };
 
@@ -428,7 +464,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
             </div>
 
             {/* Controls */}
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-6 items-center">
               <motion.button
                 whileTap={{ scale: 0.93 }}
                 onClick={handlePause}
@@ -470,7 +506,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
             </motion.div>
             <div>
               <h2 className="text-2xl font-black text-foreground">Balade terminée !</h2>
-              <p className="text-muted-foreground text-sm mt-1">Super promenade avec {dog?.name}</p>
+              <p className="text-muted-foreground text-sm mt-1">Super balade avec {dog?.name}</p>
             </div>
             <div className="bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 rounded-3xl p-5 w-full space-y-3">
               <div className="flex justify-around">
@@ -544,7 +580,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                           <button
                             key={m.id}
                             onClick={() => setWalkMood(m.id)}
-                            className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${
+                            className={`flex flex-col items-center gap-1 p-2.5 rounded-xl transition-all ${
                               walkMood === m.id ? "bg-primary/10 ring-2 ring-primary scale-105" : "hover:bg-secondary/40"
                             }`}
                           >
@@ -563,7 +599,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                                 onClick={() => setSelectedMoodTags(prev =>
                                   prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
                                 )}
-                                className={`text-[10px] font-semibold px-2.5 py-1 rounded-full transition-all ${
+                                className={`text-[10px] font-semibold px-2.5 py-2 rounded-full transition-all ${
                                   selectedMoodTags.includes(tag)
                                     ? "bg-primary text-white"
                                     : "bg-secondary/50 text-muted-foreground"

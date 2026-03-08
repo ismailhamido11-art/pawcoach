@@ -52,7 +52,6 @@ export async function unlockBadge(dogId, ownerEmail, badgeId) {
 export async function checkWalkBadges(dogId, ownerEmail, logs) {
   const totalMinutes = (logs || []).reduce((s, l) => s + (l.walk_minutes || 0), 0);
   const walkDays = (logs || []).filter(l => (l.walk_minutes || 0) > 0).length;
-  const todayLog = logs?.[0];
 
   if (walkDays >= 1) await unlockBadge(dogId, ownerEmail, "first_walk");
   if ((logs || []).some(l => (l.walk_minutes || 0) >= 30)) await unlockBadge(dogId, ownerEmail, "walk_30min");

@@ -121,7 +121,7 @@ export default function TrackerHistory({ logs, dog }) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center space-y-3">
         <span className="text-5xl">{"\u{1F9AE}"}</span>
-        <p className="font-bold text-foreground">Aucune donnee encore</p>
+        <p className="font-bold text-foreground">Aucune balade enregistrée</p>
         <p className="text-xs text-muted-foreground">Lance une balade pour voir ton historique ici.</p>
       </div>
     );
@@ -285,7 +285,7 @@ export default function TrackerHistory({ logs, dog }) {
               <YAxis hide />
               <Tooltip
                 contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 12, fontSize: 11, color: "hsl(var(--foreground))" }}
-                formatter={(v) => [`${v} min`, "Activite"]}
+                formatter={(v) => [`${v} min`, "Activité"]}
               />
               <Bar dataKey="minutes" radius={[4, 4, 0, 0]}>
                 {chartData.map((entry, i) => (

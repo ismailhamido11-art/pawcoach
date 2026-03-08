@@ -464,13 +464,13 @@ function BehaviorProgramCard({ program }) {
                   <div className="grid grid-cols-2 gap-1.5">
                     {day.do?.length > 0 && (
                       <div className="bg-emerald-50 rounded-lg px-2.5 py-2 border border-emerald-100">
-                        <p className="text-[9px] font-bold text-emerald-700 uppercase mb-0.5">A faire</p>
+                        <p className="text-[9px] font-bold text-emerald-700 uppercase mb-0.5">À faire</p>
                         {day.do.slice(0, 2).map((d, i) => <p key={i} className="text-[10px] text-emerald-800 truncate">✓ {d}</p>)}
                       </div>
                     )}
                     {day.dont?.length > 0 && (
                       <div className="bg-red-50 rounded-lg px-2.5 py-2 border border-red-100">
-                        <p className="text-[9px] font-bold text-red-700 uppercase mb-0.5">A eviter</p>
+                        <p className="text-[9px] font-bold text-red-700 uppercase mb-0.5">À éviter</p>
                         {day.dont.slice(0, 2).map((d, i) => <p key={i} className="text-[10px] text-red-800 truncate">✕ {d}</p>)}
                       </div>
                     )}

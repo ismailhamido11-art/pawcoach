@@ -27,13 +27,13 @@ export default function DogTrophiesRow({ streak, progress, scansCount, dailyLogs
       .map(l => l.date)
       .sort((a, b) => b.localeCompare(a));
     if (dates.length === 0) return 0;
-    let maxStreak = 1, current = 1;
+    let maxStreak = 1, curRun = 1;
     for (let i = 1; i < dates.length; i++) {
       const d1 = new Date(dates[i - 1]);
       const d2 = new Date(dates[i]);
       const diff = Math.round((d1 - d2) / 86400000);
-      if (diff === 1) { current++; maxStreak = Math.max(maxStreak, current); }
-      else current = 1;
+      if (diff === 1) { curRun++; maxStreak = Math.max(maxStreak, curRun); }
+      else curRun = 1;
     }
     return maxStreak;
   }, [dailyLogs]);

@@ -307,7 +307,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
               <button
                 key={i}
                 onClick={() => !bilanSaved && setFeeling(i + 1)}
-                className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-xl border transition-all ${
+                className={`flex-1 flex flex-col items-center gap-1 py-2.5 rounded-xl border transition-all ${
                   feeling === i + 1 ? "bg-blue-100 border-blue-300 scale-105" : "bg-white border-border hover:border-blue-200"
                 }`}
               >
@@ -344,7 +344,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
                 <button
                   key={label}
                   onClick={() => !bilanSaved && setNextFocus(prev => selected ? prev.filter(g => g !== label) : [...prev, label])}
-                  className={`text-[10px] font-bold px-2.5 py-1.5 rounded-full transition-all ${
+                  className={`text-[10px] font-bold px-2.5 py-2.5 rounded-full transition-all ${
                     selected ? "bg-blue-600 text-white" : "bg-white border border-blue-200 text-blue-700 hover:bg-blue-50"
                   }`}
                 >
@@ -419,7 +419,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {nextFocus.map(f => (
-                  <span key={f} className="text-[10px] font-bold bg-white/20 text-white px-2.5 py-1 rounded-full">
+                  <span key={f} className="text-[10px] font-bold bg-white/20 text-white px-2.5 py-2 rounded-full">
                     {GOAL_SUGGESTIONS.find(g => g.label === f)?.emoji} {f}
                   </span>
                 ))}
@@ -815,7 +815,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
                 <button
                   key={label}
                   onClick={() => setSelectedGoals(prev => selected ? prev.filter(g => g !== label) : [...prev, label])}
-                  className={`text-[10px] font-bold px-2.5 py-1.5 rounded-full transition-all ${
+                  className={`text-[10px] font-bold px-2.5 py-2.5 rounded-full transition-all ${
                     selected ? "bg-purple-600 text-white" : "bg-white border border-purple-200 text-purple-700 hover:bg-purple-50"
                   }`}
                 >
