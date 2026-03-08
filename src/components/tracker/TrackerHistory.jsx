@@ -93,6 +93,9 @@ export default function TrackerHistory({ logs, dog }) {
   const bestDayIdx = dayAvgs.reduce((best, d, i) => d.avg > dayAvgs[best].avg ? i : best, 0);
   const bestDayInsight = dayAvgs[bestDayIdx].avg > 0 ? `Ton jour le plus actif : le ${DAY_NAMES[bestDayIdx]}` : null;
 
+  const recordDate = longestWalk > 0 ? sorted.find(l => l.walk_minutes === longestWalk)?.date : null;
+  const activeDays = sorted.filter(l => (l.walk_minutes || 0) > 0).length;
+
   if (sorted.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center space-y-3">
@@ -191,6 +194,9 @@ export default function TrackerHistory({ logs, dog }) {
           </div>
         ))}
       </div>
+      <p className="text-[10px] text-muted-foreground text-center mt-1">
+        {activeDays} jour{activeDays > 1 ? "s" : ""} actif{activeDays > 1 ? "s" : ""} sur {sorted.length}
+      </p>
 
       {/* Records */}
       {streaks.best > 1 && (
@@ -296,9 +302,17 @@ export default function TrackerHistory({ logs, dog }) {
               </div>
               <div className="text-right flex-shrink-0 ml-2">
                 {log.walk_minutes ? (
-                  <span className={`text-sm font-black ${log.walk_minutes >= 30 ? "text-safe" : "text-amber-500"}`}>
-                    {log.walk_minutes} min
-                  </span>
+                  <>
+                    <div className="flex items-center gap-1.5 justify-end">
+                      <span className={`text-sm font-black ${log.walk_minutes >= 30 ? "text-safe" : "text-amber-500"}`}>
+                        {log.walk_minutes} min
+                      </span>
+                      {log.date === recordDate && (
+                        <span className="text-[7px] bg-amber-100 text-amber-700 font-bold rounded px-1 py-0.5">Record</span>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">{(log.walk_minutes * 0.065).toFixed(1)} km</p>
+                  </>
                 ) : (
                   <span className="text-xs text-muted-foreground">{"\u2014"}</span>
                 )}
