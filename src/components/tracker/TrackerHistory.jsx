@@ -67,7 +67,8 @@ export default function TrackerHistory({ logs, dog }) {
   [sorted]);
 
   const totalMinutes = sorted.reduce((acc, l) => acc + (l.walk_minutes || 0), 0);
-  const avgMinutes = sorted.length > 0 ? Math.round(totalMinutes / sorted.length) : 0;
+  const walkDaysCount = sorted.filter(l => (l.walk_minutes || 0) > 0).length;
+  const avgMinutes = walkDaysCount > 0 ? Math.round(totalMinutes / walkDaysCount) : 0;
   const daysOver30 = sorted.filter(l => (l.walk_minutes || 0) >= 30).length;
   const longestWalk = sorted.reduce((max, l) => Math.max(max, l.walk_minutes || 0), 0);
   const totalKm = (totalMinutes * 0.065).toFixed(1);

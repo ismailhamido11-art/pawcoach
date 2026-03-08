@@ -38,7 +38,7 @@ function getWalkInsight(minutes, logs, dogName) {
     const now = new Date(); now.setHours(0, 0, 0, 0);
     const diff = Math.floor((now - d) / (1000 * 60 * 60 * 24));
     return diff >= 0 && diff < 7;
-  }).length + 1; // +1 for today's walk
+  }).length;
 
   const diff = avgMinutes > 0 ? Math.round(((minutes - avgMinutes) / avgMinutes) * 100) : 0;
   let trend = null;
