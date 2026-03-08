@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { dogId, dogName, dogBreed, dogBirthDate, activityLevel, healthIssues, goals, weeklyWalkMinutes } = await req.json();
+    const { dogId, dogName, dogBreed, dogBirthDate, activityLevel, healthIssues, goals, weeklyWalkMinutes, mode, problemId, problemLabel, problemDescription } = await req.json();
     if (!dogId) return Response.json({ error: 'Missing dogId' }, { status: 400 });
 
     // Calculate age
@@ -24,6 +24,116 @@ Deno.serve(async (req) => {
 
     const activityLabels = { faible: "faible", modere: "modéré", eleve: "élevé", tres_eleve: "très élevé" };
 
+    // ═══════════════════════════════════════════════════════════
+    // MODE BEHAVIOR — Programme anti-problème 7 jours
+    // ═══════════════════════════════════════════════════════════
+    if (mode === "behavior") {
+      if (!problemId || !problemLabel) {
+        return Response.json({ error: 'problemId and problemLabel required for behavior mode' }, { status: 400 });
+      }
+
+      const behaviorPrompt = `Tu es un éducateur canin certifié et comportementaliste expert. Génère un programme personnalisé de 7 jours pour résoudre un problème de comportement.
+
+CHIEN :
+- Nom : ${dogName || "chien"}
+- Race : ${dogBreed || "inconnue"}
+- Âge : ${ageLabel}
+- Niveau d'activité : ${activityLabels[activityLevel] || activityLevel || "modéré"}
+- Problèmes de santé : ${healthIssues || "aucun"}
+
+PROBLÈME À RÉSOUDRE : ${problemLabel}
+Description : ${problemDescription || ""}
+
+RÈGLES ABSOLUES :
+- Uniquement du renforcement positif — JAMAIS de punition, collier étrangleur ou méthode coercitive
+- Progression TRÈS graduelle — si le chien régresse, on recule d'un jour
+- Adapter les exercices à la race (${dogBreed || "race inconnue"}) et à l'âge (${ageLabel})
+- Chaque jour : 1-2 exercices pratiques (15-30 min max) + conseil d'environnement
+- Les exercices doivent être concrets et actionnables par un propriétaire non-expert
+- Jour 1 = observation/évaluation, Jour 7 = consolidation
+- Langue : français naturel, tutoiement
+
+Réponds en JSON avec ce format exact :
+{
+  "program_title": "<titre motivant avec le nom du chien>",
+  "problem_id": "${problemId}",
+  "problem_label": "${problemLabel}",
+  "duration_days": 7,
+  "summary": "<résumé motivant en 2-3 phrases>",
+  "days": [
+    {
+      "day": 1,
+      "day_name": "Jour 1",
+      "theme": "<thème du jour>",
+      "exercises": [
+        {
+          "name": "<nom clair de l'exercice>",
+          "duration_min": <minutes>,
+          "description": "<instructions concrètes et actionnables>",
+          "tips": "<conseil pratique spécifique à la race ou au contexte>"
+        }
+      ],
+      "environment_tips": "<comment aménager l'environnement pour ce jour>",
+      "do": ["<bonne pratique 1>", "<bonne pratique 2>"],
+      "dont": ["<erreur courante à éviter 1>", "<erreur courante à éviter 2>"]
+    }
+  ],
+  "emergency_protocol": "<quoi faire si la situation dégénère pendant le programme>",
+  "when_to_see_pro": "<signes clairs qu'il faut consulter un comportementaliste>",
+  "progress_indicators": ["<signe d'amélioration observable 1>", "<signe 2>", "<signe 3>"],
+  "dog_name": "${dogName || "chien"}"
+}`;
+
+      const behaviorResult = await base44.asServiceRole.integrations.Core.InvokeLLM({
+        prompt: behaviorPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            program_title: { type: "string" },
+            problem_id: { type: "string" },
+            problem_label: { type: "string" },
+            duration_days: { type: "number" },
+            summary: { type: "string" },
+            days: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  day: { type: "number" },
+                  day_name: { type: "string" },
+                  theme: { type: "string" },
+                  exercises: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        name: { type: "string" },
+                        duration_min: { type: "number" },
+                        description: { type: "string" },
+                        tips: { type: "string" }
+                      }
+                    }
+                  },
+                  environment_tips: { type: "string" },
+                  do: { type: "array", items: { type: "string" } },
+                  dont: { type: "array", items: { type: "string" } }
+                }
+              }
+            },
+            emergency_protocol: { type: "string" },
+            when_to_see_pro: { type: "string" },
+            progress_indicators: { type: "array", items: { type: "string" } },
+            dog_name: { type: "string" }
+          }
+        }
+      });
+
+      return Response.json({ success: true, program: behaviorResult });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // MODE STANDARD — Programme d'entraînement 4 semaines
+    // ═══════════════════════════════════════════════════════════
     const prompt = `Tu es un coach canin expert certifié. Génère un programme d'entraînement personnalisé sur 4 semaines pour ce chien:
 
 - Nom: ${dogName || "chien"}

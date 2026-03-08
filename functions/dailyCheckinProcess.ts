@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { dogId, mood, energy, appetite, notes } = await req.json();
+    const { dogId, mood, energy, appetite, notes, symptoms, behavior_notes } = await req.json();
 
     // Validate inputs
     if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
     if (existing && existing.length > 0) return Response.json({ error: 'Already checked in today' }, { status: 409 });
 
     // Create DailyCheckin
-    const checkin = await base44.asServiceRole.entities.DailyCheckin.create({
+    const checkinData = {
       dog_id: dogId,
       owner_email: user.email,
       date: today,
@@ -53,7 +53,10 @@ Deno.serve(async (req) => {
       energy,
       appetite,
       notes: notes || null,
-    });
+    };
+    if (symptoms?.length) checkinData.symptoms = symptoms;
+    if (behavior_notes) checkinData.behavior_notes = behavior_notes;
+    const checkin = await base44.asServiceRole.entities.DailyCheckin.create(checkinData);
 
     // Update Streak
     const streaks = await base44.asServiceRole.entities.Streak.filter({ dog_id: dogId });
@@ -114,7 +117,9 @@ Deno.serve(async (req) => {
 
     if (apiKey) {
       const systemPrompt = `Tu es PawCoach, le compagnon quotidien de ${dog.name} (${dog.breed}). Tu commentes le check-in du jour de maniere chaleureuse et personnalisee. Tutoiement, 2-3 phrases max, emojis doux. Adapte ton message selon l'humeur (${mood}/4), l'energie (${energy}/3) et l'appetit (${appetite}/3). Si energie haute, suggere un exercice de dressage. Si appetit faible, suggere de surveiller ou scanner les croquettes. Si le streak depasse 3 jours, felicite fierement. ${segmentContext} Ne diagnostique jamais, ne prescris jamais.`;
-      const userMessage = `Check-in de ${dog.name}: humeur ${mood}/4, energie ${energy}/3, appetit ${appetite}/3. Streak actuel: ${streak.current_streak} jours.${notes ? ' Notes: ' + notes : ''}`;
+      const symptomText = symptoms?.length ? ` Symptomes signales: ${symptoms.join(', ')}.` : '';
+      const behaviorText = behavior_notes ? ` Observations: ${behavior_notes}.` : '';
+      const userMessage = `Check-in de ${dog.name}: humeur ${mood}/4, energie ${energy}/3, appetit ${appetite}/3. Streak actuel: ${streak.current_streak} jours.${notes ? ' Notes: ' + notes : ''}${symptomText}${behaviorText}`;
 
       const llmResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",

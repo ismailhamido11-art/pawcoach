@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target } from "lucide-react";
+import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target, Brain } from "lucide-react";
 
 const SESSION_ICONS = {
   balade: "\uD83D\uDC3E", jeu: "\uD83C\uDFBE", "exercice mental": "\uD83E\uDDE0", repos: "\uD83D\uDCA4", "entra\u00EEnement": "\uD83C\uDFAF",
@@ -305,7 +305,130 @@ function NutritionPlanCard({ plan }) {
   );
 }
 
-export default function ActiveProgramCards({ trainingBookmarks = [], nutritionPlans = [] }) {
+function BehaviorProgramCard({ program }) {
+  const [open, setOpen] = useState(false);
+  const elapsed = getElapsedDays(program.start_date);
+
+  if (elapsed < 0 || elapsed >= 7) return null;
+
+  const dayIndex = Math.min(elapsed, 6);
+  const day = program.days?.[dayIndex];
+  if (!day) return null;
+
+  const progress = Math.round(((elapsed + 1) / 7) * 100);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.1 }}
+    >
+      <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden">
+        <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-blue-400 opacity-[0.06]" />
+
+        <button className="w-full text-left p-4" onClick={() => setOpen(v => !v)}>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center">
+                <Brain className="w-3.5 h-3.5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-blue-600 uppercase tracking-wider">Programme comportement</p>
+                <p className="text-[10px] text-muted-foreground">
+                  Jour {elapsed + 1} / 7 — {program.problem_label}
+                </p>
+              </div>
+            </div>
+            {open
+              ? <ChevronUp className="w-4 h-4 text-blue-400" />
+              : <ChevronDown className="w-4 h-4 text-muted-foreground/40" />
+            }
+          </div>
+
+          {!open && (
+            <div className="flex items-start gap-2.5 bg-white/80 rounded-xl px-3 py-2.5 border border-blue-100/60">
+              <Brain className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <span className="text-xs font-bold text-foreground">{day.day_name || `Jour ${elapsed + 1}`}</span>
+                <span className="text-[10px] text-muted-foreground ml-1.5 truncate"> — {day.theme}</span>
+              </div>
+            </div>
+          )}
+
+          {!open && (
+            <div className="mt-2.5 flex items-center gap-2">
+              <div className="flex-1 h-1.5 bg-blue-100 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                />
+              </div>
+              <span className="text-[10px] font-bold text-blue-600">{progress}%</span>
+            </div>
+          )}
+        </button>
+
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="px-4 pb-4 space-y-2">
+                <div className="bg-white/80 rounded-xl p-3 border border-blue-100/60">
+                  <p className="text-xs font-bold text-foreground mb-2">{day.day_name} — {day.theme}</p>
+                  {day.exercises?.map((ex, i) => (
+                    <div key={i} className="flex items-start gap-2 mt-2">
+                      <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+                        <span className="text-[10px] font-bold text-blue-600">{i + 1}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[12px] font-semibold text-foreground">
+                          {ex.name} <span className="text-[10px] text-muted-foreground font-normal">({ex.duration_min} min)</span>
+                        </p>
+                        <p className="text-[10px] text-foreground/70 leading-relaxed">{ex.description}</p>
+                        {ex.tips && <p className="text-[10px] text-blue-600 italic mt-0.5">{ex.tips}</p>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {day.environment_tips && (
+                  <div className="bg-blue-50/50 rounded-xl px-3 py-2 border border-blue-100/40">
+                    <p className="text-[10px] text-blue-700">{day.environment_tips}</p>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 px-1">
+                  <div className="flex-1 h-1.5 bg-blue-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" style={{ width: `${progress}%` }} />
+                  </div>
+                  <span className="text-[10px] font-bold text-blue-600">J{elapsed + 1}/7</span>
+                </div>
+
+                {program.problem_id && (
+                  <Link
+                    to={createPageUrl("Training") + `?behavior=${program.problem_id}`}
+                    className="block text-center text-[11px] font-semibold text-blue-600 py-1"
+                  >
+                    Voir la fiche complete
+                  </Link>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function ActiveProgramCards({ trainingBookmarks = [], nutritionPlans = [], behaviorBookmarks = [] }) {
   const activeTraining = useMemo(() => {
     for (const bk of trainingBookmarks) {
       try {
@@ -330,11 +453,25 @@ export default function ActiveProgramCards({ trainingBookmarks = [], nutritionPl
     return actives.sort((a, b) => (b.generated_at || "").localeCompare(a.generated_at || ""))[0];
   }, [nutritionPlans]);
 
-  if (!activeTraining && !activePlan) return null;
+  const activeBehavior = useMemo(() => {
+    for (const bk of behaviorBookmarks) {
+      try {
+        const data = JSON.parse(bk.content);
+        if (data.start_date && data.days) {
+          const elapsed = getElapsedDays(data.start_date);
+          if (elapsed >= 0 && elapsed < 7) return data;
+        }
+      } catch {}
+    }
+    return null;
+  }, [behaviorBookmarks]);
+
+  if (!activeTraining && !activePlan && !activeBehavior) return null;
 
   return (
     <div className="mx-4 space-y-3">
       {activeTraining && <TrainingCard program={activeTraining} />}
+      {activeBehavior && <BehaviorProgramCard program={activeBehavior} />}
       {activePlan && <NutritionPlanCard plan={activePlan} />}
     </div>
   );

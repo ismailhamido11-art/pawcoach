@@ -58,6 +58,7 @@ export default function Home() {
   const [diagnosisReports, setDiagnosisReports] = useState([]);
   const [nutritionPlans, setNutritionPlans] = useState([]);
   const [trainingBookmarks, setTrainingBookmarks] = useState([]);
+  const [behaviorBookmarks, setBehaviorBookmarks] = useState([]);
 
   const [weeklyInsight, setWeeklyInsight] = useState(null);
   const [previousInsight, setPreviousInsight] = useState(null);
@@ -79,7 +80,7 @@ export default function Home() {
           const d = getActiveDog(dogs);
           setDog(d);
           const today = getTodayString();
-          const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks] = await Promise.all([
+          const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks] = await Promise.all([
             base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
             base44.entities.Streak.filter({ dog_id: d.id }),
             base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 30),
@@ -90,6 +91,7 @@ export default function Home() {
             base44.entities.DiagnosisReport.filter({ dog_id: d.id }, "-report_date", 5).catch(() => []),
             base44.entities.NutritionPlan.filter({ dog_id: d.id }, "-generated_at", 3).catch(() => []),
             base44.entities.Bookmark.filter({ dog_id: d.id, source: "training" }, "-created_at", 3).catch(() => []),
+            base44.entities.Bookmark.filter({ dog_id: d.id, source: "behavior_program" }, "-created_at", 3).catch(() => []),
           ]);
           setRecords(recs || []);
           setExercises(exs || []);
@@ -98,6 +100,7 @@ export default function Home() {
           setDiagnosisReports(diags || []);
           setNutritionPlans(plans || []);
           setTrainingBookmarks(tBks || []);
+          setBehaviorBookmarks(bBks || []);
           if (checkins?.length > 0) setTodayCheckin(checkins[0]);
           if (streaks?.length > 0) setStreak(streaks[0]);
           const sorted = (recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7);
@@ -147,18 +150,18 @@ export default function Home() {
     loadData();
   }, [navigate]);
 
-  const handleCheckin = async ({ mood, energy, appetite, notes }) => {
+  const handleCheckin = async ({ mood, energy, appetite, notes, symptoms, behaviorNotes }) => {
     if (!mood || !energy || !appetite || submitting) return;
     setSubmitting(true);
 
     // Optimistic update
-    const optimisticCheckin = { mood, energy, appetite, notes, date: getTodayString(), ai_response: null, _syncing: true };
+    const optimisticCheckin = { mood, energy, appetite, notes, symptoms, date: getTodayString(), ai_response: null, _syncing: true };
     setTodayCheckin(optimisticCheckin);
     setRecentCheckins(prev => [optimisticCheckin, ...prev].slice(0, 7));
     if (navigator.vibrate) navigator.vibrate([30, 20, 30]);
 
     try {
-      const response = await base44.functions.invoke("dailyCheckinProcess", { dogId: dog.id, mood, energy, appetite, notes });
+      const response = await base44.functions.invoke("dailyCheckinProcess", { dogId: dog.id, mood, energy, appetite, notes, symptoms: symptoms || [], behavior_notes: behaviorNotes || "" });
       const result = response.data || {};
       const newCheckin = result.checkin || { mood, energy, appetite, ai_response: result.aiResponse, date: getTodayString() };
       setTodayCheckin(newCheckin);
@@ -190,7 +193,7 @@ export default function Home() {
       if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
         const today = getTodayString();
-        const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks] = await Promise.all([
+        const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks] = await Promise.all([
           base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
           base44.entities.Streak.filter({ dog_id: d.id }),
           base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 30),
@@ -201,6 +204,7 @@ export default function Home() {
           base44.entities.DiagnosisReport.filter({ dog_id: d.id }, "-report_date", 5).catch(() => []),
           base44.entities.NutritionPlan.filter({ dog_id: d.id }, "-generated_at", 3).catch(() => []),
           base44.entities.Bookmark.filter({ dog_id: d.id, source: "training" }, "-created_at", 3).catch(() => []),
+          base44.entities.Bookmark.filter({ dog_id: d.id, source: "behavior_program" }, "-created_at", 3).catch(() => []),
         ]);
         setRecords(recs || []);
         setExercises(exs || []);
@@ -209,6 +213,7 @@ export default function Home() {
         setDiagnosisReports(diags || []);
         setNutritionPlans(plans || []);
         setTrainingBookmarks(tBks || []);
+        setBehaviorBookmarks(bBks || []);
         if (checkins?.length > 0) setTodayCheckin(checkins[0]);
         else setTodayCheckin(null);
         if (streaks?.length > 0) setStreak(streaks[0]);
@@ -321,7 +326,7 @@ export default function Home() {
 
         {/* Block 2c: Active Program Cards (training + nutrition) */}
         <div className="mt-3">
-          <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} />
+          <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} behaviorBookmarks={behaviorBookmarks} />
         </div>
 
         {/* Block 3: Quick Actions */}

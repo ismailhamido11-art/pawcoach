@@ -123,6 +123,15 @@ Deno.serve(async (req) => {
       wellbeingMemory += `\n- Energie : ${energies.join(", ")}`;
       wellbeingMemory += `\n- Appetit : ${appetites.join(", ")}`;
       if (latestNote) wellbeingMemory += `\n- Derniere note : "${latestNote}"`;
+      const latestBehaviorNote = recentCheckins.find(c => c.behavior_notes)?.behavior_notes;
+      if (latestBehaviorNote) wellbeingMemory += `\n- Observation comportement : "${latestBehaviorNote}"`;
+      // Symptoms from F11
+      const symptomCheckins = recentCheckins.filter(c => c.symptoms?.length > 0);
+      if (symptomCheckins.length > 0) {
+        const symptomCounts: Record<string, number> = {};
+        symptomCheckins.forEach(c => (c.symptoms || []).forEach((s: string) => { symptomCounts[s] = (symptomCounts[s] || 0) + 1; }));
+        wellbeingMemory += `\n- Symptomes signales : ${Object.entries(symptomCounts).map(([s, n]) => `${s} (${n}x)`).join(", ")}`;
+      }
     }
 
     // --- Health records (recent) ---
@@ -265,8 +274,14 @@ Deno.serve(async (req) => {
       }
     }
 
+    // --- Behavior summary (persistent, updated weekly by CRON) ---
+    let behaviorMemory = "";
+    if (dog.behavior_summary) {
+      behaviorMemory = `\nPROFIL COMPORTEMENTAL (memoire longue duree) :\n${dog.behavior_summary}`;
+    }
+
     // Assemble the full DOG MEMORY
-    const dogMemory = [wellbeingMemory, healthMemory, nutritionMemory, nutritionPlanMemory, activityMemory, streakMemory, trainingMemory, insightMemory]
+    const dogMemory = [wellbeingMemory, healthMemory, nutritionMemory, nutritionPlanMemory, activityMemory, streakMemory, trainingMemory, insightMemory, behaviorMemory]
       .filter(s => s.length > 0)
       .join("\n");
 

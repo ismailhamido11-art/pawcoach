@@ -69,10 +69,20 @@ Deno.serve(async (req) => {
         return scanDate >= weekStart && scanDate <= weekEnd;
       }).length;
 
+      // Collect symptoms from this week's check-ins
+      const weekSymptoms = {};
+      checkins.forEach(c => {
+        if (c.symptoms?.length) c.symptoms.forEach(s => { weekSymptoms[s] = (weekSymptoms[s] || 0) + 1; });
+      });
+      const symptomText = Object.keys(weekSymptoms).length > 0
+        ? `, symptomes signales: ${Object.entries(weekSymptoms).map(([s, n]) => `${s} (${n}x)`).join(", ")}`
+        : "";
+
       // Generate AI summary
       let summary = "";
       let highlights = "";
       let recommendations = "";
+      let behaviorSummary = "";
 
       if (apiKey) {
         // Personalization context
@@ -91,8 +101,9 @@ Deno.serve(async (req) => {
 
         const statusNote = dog.status === "recovering" ? " Il est en convalescence." : dog.status === "traveling" ? " Il était en voyage cette semaine." : "";
 
-        const systemPrompt = `Tu es PawCoach. Génère un bilan hebdomadaire pour ${dog.name} (${dog.breed}).${personalityNote}${statusNote} ${toneInstruction} Tutoie. 3-5 phrases max. Réponds en JSON avec: summary (bilan général), highlights (2-3 points clés), recommendations (2-3 conseils pour la semaine prochaine).`;
-        const userMessage = `Bilan de la semaine du ${weekStart} au ${weekEnd} pour ${dog.name}: ${checkinCount} check-ins, humeur moyenne ${avgMood}/4, energie moyenne ${avgEnergy}/3, appetit moyen ${avgAppetite}/3, ${exercisesCompleted} exercices completes, ${scansDone} scans alimentaires.`;
+        const prevBehavior = dog.behavior_summary ? `\nProfil comportemental precedent: "${dog.behavior_summary}"` : "";
+        const systemPrompt = `Tu es PawCoach. Genere un bilan hebdomadaire pour ${dog.name} (${dog.breed}).${personalityNote}${statusNote}${prevBehavior} ${toneInstruction} Tutoie. 3-5 phrases max. Reponds en JSON avec: summary (bilan general), highlights (2-3 points cles), recommendations (2-3 conseils pour la semaine prochaine), behavior_summary (profil comportemental synthetique de ${dog.name} en 2-3 phrases — patterns d'humeur, energie, alertes, evolution par rapport au profil precedent si disponible).`;
+        const userMessage = `Bilan de la semaine du ${weekStart} au ${weekEnd} pour ${dog.name}: ${checkinCount} check-ins, humeur moyenne ${avgMood}/4, energie moyenne ${avgEnergy}/3, appetit moyen ${avgAppetite}/3, ${exercisesCompleted} exercices completes, ${scansDone} scans alimentaires${symptomText}.`;
 
         try {
           const llmResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -125,6 +136,7 @@ Deno.serve(async (req) => {
                 summary = parsed.summary || "";
                 highlights = parsed.highlights || "";
                 recommendations = parsed.recommendations || "";
+                behaviorSummary = parsed.behavior_summary || "";
               }
             } catch (parseErr) {
               console.warn(`weeklyInsightGenerate: JSON parse failed for dog ${dog.id}, using raw content:`, parseErr?.message || String(parseErr));
@@ -160,6 +172,15 @@ Deno.serve(async (req) => {
         recommendations,
         is_read: false,
       });
+
+      // Update Dog.behavior_summary (Memory Coach F07)
+      if (behaviorSummary) {
+        try {
+          await base44.asServiceRole.entities.Dog.update(dog.id, { behavior_summary: behaviorSummary });
+        } catch (e) {
+          console.warn(`behavior_summary update failed for dog ${dog.id}:`, e?.message || String(e));
+        }
+      }
 
       generated++;
     }

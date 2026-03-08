@@ -8,7 +8,7 @@ import MilestoneScreen from "../components/training/MilestoneScreen";
 import FreeExercisesGate from "../components/training/FreeExercisesGate";
 import JourneyCard from "../components/training/JourneyCard";
 import JourneyView from "../components/training/JourneyView";
-import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw, ChevronRight, Sparkles, Lock } from "lucide-react";
+import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw, ChevronRight, Sparkles, Lock, Loader2 } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
 import { useNavigate, Link } from "react-router-dom";
@@ -16,6 +16,7 @@ import { createPageUrl, getActiveDog } from "@/utils";
 import { updateStreakSilently } from "../components/streakHelper";
 import { unlockBadge, checkStreakBadges } from "@/components/achievements/badgeUtils";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 const EXERCISES = [
   { order_number: 1,  name: "Assis",               emoji: "🐶", icon: DogIcon,    iconColor: "#10b981", level: "debutant",      duration: "3 min",  is_premium: false, description: "La base de tout dressage – indispensable pour la sécurité.", steps: ["Tiens une friandise devant le museau de ton chien.", "Remonte lentement la friandise au-dessus de sa tête.", "Quand il s'assoit naturellement, dis « Assis » et donne la friandise.", "Répète 5 fois, puis réduis progressivement la friandise.", "Pratique dans différents endroits et situations."] },
@@ -154,6 +155,7 @@ export default function Training() {
    const [celebration, setCelebration] = useState(null);
    const [milestone, setMilestone] = useState(null);
    const [showFreeGate, setShowFreeGate] = useState(false);
+   const [generatingProgram, setGeneratingProgram] = useState(false);
 
    // Get journey and exercise IDs from URL query params
    const params = new URLSearchParams(window.location.search);
@@ -436,6 +438,59 @@ export default function Training() {
               <p className="text-xs font-bold text-amber-700 uppercase tracking-widest mb-2">Quand consulter</p>
               <p className="text-sm text-amber-800 leading-relaxed">{guide.alarm}</p>
             </div>
+
+            {/* CTA Programme 7 jours IA */}
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              disabled={generatingProgram}
+              onClick={async () => {
+                if (!isPremium) {
+                  navigate(createPageUrl("Premium") + "?from=behavior-program");
+                  return;
+                }
+                setGeneratingProgram(true);
+                try {
+                  const response = await base44.functions.invoke("generateTrainingProgram", {
+                    dogId: dog.id,
+                    dogName: dog.name,
+                    dogBreed: dog.breed,
+                    dogBirthDate: dog.birth_date,
+                    activityLevel: dog.activity_level,
+                    healthIssues: dog.health_issues,
+                    mode: "behavior",
+                    problemId: guide.id,
+                    problemLabel: guide.name,
+                    problemDescription: guide.description,
+                  });
+                  const program = response.data?.program;
+                  if (!program) throw new Error("No program returned");
+                  const today = new Date().toISOString().slice(0, 10);
+                  await base44.entities.Bookmark.create({
+                    dog_id: dog.id,
+                    source: "behavior_program",
+                    title: program.program_title || `Programme — ${guide.name}`,
+                    content: JSON.stringify({ ...program, start_date: today, problem_id: guide.id }),
+                  });
+                  toast.success("Programme 7 jours cree !");
+                  navigate(createPageUrl("Home"));
+                } catch (err) {
+                  console.error("Behavior program generation error:", err);
+                  toast.error("Erreur lors de la generation. Reessaie.");
+                } finally {
+                  setGeneratingProgram(false);
+                }
+              }}
+              className="w-full py-4 rounded-2xl font-bold text-sm text-white flex items-center justify-center gap-2 shadow-lg disabled:opacity-60"
+              style={{ background: "linear-gradient(135deg, #1A4D3E, #2D9F82)" }}
+            >
+              {generatingProgram ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Generation en cours...</>
+              ) : isPremium ? (
+                <><Sparkles className="w-4 h-4" /> Lancer un programme 7 jours</>
+              ) : (
+                <><Lock className="w-4 h-4" /> Programme 7 jours — Premium</>
+              )}
+            </motion.button>
 
             {/* CTA Chat */}
             <Link to={createPageUrl("Chat") + `?help=${encodeURIComponent(`J'ai un probleme de ${guide.name.toLowerCase()} avec ${dog?.name || "mon chien"}. Peux-tu m'aider ?`)}`}>

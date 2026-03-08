@@ -20,11 +20,23 @@ const APPETITES = [
   { value: 3, emoji: "\u{1F924}", label: "Glouton" },
 ];
 
+const SYMPTOMS = [
+  { id: "vomiting", label: "Vomissements" },
+  { id: "diarrhea", label: "Diarrhee" },
+  { id: "scratching", label: "Grattage" },
+  { id: "limping", label: "Boiterie" },
+  { id: "coughing", label: "Toux" },
+  { id: "lethargy", label: "Apathie" },
+  { id: "unusual", label: "Comportement inhabituel" },
+];
+
 export default function InlineCheckin({ dogName, onSubmit, submitting }) {
   const [mood, setMood] = useState(null);
   const [energy, setEnergy] = useState(null);
   const [appetite, setAppetite] = useState(null);
   const [expanded, setExpanded] = useState(false);
+  const [symptoms, setSymptoms] = useState([]);
+  const [behaviorNotes, setBehaviorNotes] = useState("");
 
   const handleMoodTap = (val) => {
     setMood(val);
@@ -32,11 +44,16 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
     if (navigator.vibrate) navigator.vibrate(15);
   };
 
+  const toggleSymptom = (id) => {
+    setSymptoms(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]);
+  };
+
   const canSubmit = mood && energy && appetite;
+  const hasConcern = mood <= 2 || energy === 1 || appetite === 1;
 
   const handleSubmit = () => {
     if (!canSubmit || submitting) return;
-    onSubmit({ mood, energy, appetite, notes: "" });
+    onSubmit({ mood, energy, appetite, notes: "", symptoms, behaviorNotes });
   };
 
   return (
@@ -116,6 +133,47 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                 ))}
               </div>
             </div>
+
+            {/* Symptoms — conditional, only when concern detected */}
+            <AnimatePresence>
+              {canSubmit && hasConcern && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <p className="text-xs font-semibold text-muted-foreground mb-2">
+                    Symptomes observes ? <span className="font-normal text-[10px]">(optionnel)</span>
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {SYMPTOMS.map(s => (
+                      <button
+                        key={s.id}
+                        onClick={() => toggleSymptom(s.id)}
+                        className={cn(
+                          "px-2.5 py-1.5 rounded-lg border text-[10px] font-medium transition-all",
+                          symptoms.includes(s.id)
+                            ? "border-red-300 bg-red-50 text-red-700"
+                            : "border-border/40 bg-white/60 text-muted-foreground"
+                        )}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                  {symptoms.length > 0 && (
+                    <input
+                      value={behaviorNotes}
+                      onChange={e => setBehaviorNotes(e.target.value)}
+                      placeholder="Details optionnels..."
+                      className="w-full mt-2 px-3 py-2 text-xs rounded-lg border border-border/40 bg-white/60 focus:outline-none focus:ring-1 focus:ring-primary/30"
+                    />
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Submit */}
             <motion.button

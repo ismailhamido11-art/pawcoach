@@ -218,6 +218,29 @@ export function buildRecommendations({ records = [], exercises = [], scans = [],
     }
   }
 
+  // 11. Recurring symptom alert — same symptom in 3+ of last 7 calendar check-ins
+  const last7Checkins = checkins.slice(0, 7);
+  if (last7Checkins.length >= 3) {
+    const symptomCounts = {};
+    last7Checkins.forEach(c => (c.symptoms || []).forEach(s => { symptomCounts[s] = (symptomCounts[s] || 0) + 1; }));
+    const recurring = Object.entries(symptomCounts).find(([, count]) => count >= 3);
+    if (recurring) {
+      recs.push({
+        id: "recurring_symptom",
+        priority: 1,
+        icon: Stethoscope,
+        iconBg: "bg-red-50",
+        iconColor: "#ef4444",
+        label: `Symptome recurrent : ${recurring[0]}`,
+        sub: `Signale ${recurring[1]} fois sur 7 check-ins`,
+        page: "Sante",
+        tab: "malade",
+        cta: "Lancer un bilan",
+        accent: "border-l-red-400",
+      });
+    }
+  }
+
   // Sort by priority, return top 3
   return recs.sort((a, b) => a.priority - b.priority).slice(0, 3);
 }

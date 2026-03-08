@@ -117,6 +117,14 @@ export default function TodayCard({ dog, user, todayCheckin, streak, records = [
         </div>
       )}
 
+      {todayCheckin.symptoms?.length > 0 && (
+        <div className="flex flex-wrap gap-1 mb-3">
+          {todayCheckin.symptoms.map(s => (
+            <span key={s} className="px-2 py-0.5 rounded-md bg-red-50 border border-red-200 text-[10px] font-medium text-red-700">{s}</span>
+          ))}
+        </div>
+      )}
+
       {topRec && (
         <Link to={createPageUrl(topRec.page) + (topRec.tab ? `?tab=${topRec.tab}` : "")}>
           <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-xl px-3 py-2.5 border border-border/20 transition-colors hover:bg-white">
