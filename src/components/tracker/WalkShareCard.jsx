@@ -10,7 +10,7 @@ function getWalkLevel(minutes) {
   return { label: "PETITE SORTIE", emoji: "🐕", bg: "linear-gradient(135deg, #374151, #6b7280)", accent: "#d1d5db" };
 }
 
-export default function WalkShareCard({ minutes, km, calories, dogName, streak, onClose }) {
+export default function WalkShareCard({ minutes, km, calories, dogName, streak, kibbleEquiv, onClose }) {
   const cardRef = useRef();
   const level = getWalkLevel(minutes);
 
@@ -140,6 +140,19 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
                 }}>
                   <span style={{ color: "rgba(255,255,255,0.8)", fontSize: 13, fontWeight: 600 }}>
                     {streak}
+                  </span>
+                </div>
+              )}
+
+              {/* Kibble equivalent */}
+              {kibbleEquiv > 0 && (
+                <div style={{
+                  padding: "5px 14px",
+                  borderRadius: 999,
+                  background: "rgba(255,255,255,0.08)",
+                }}>
+                  <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 600 }}>
+                    🦴 = {kibbleEquiv} croquettes brûlées
                   </span>
                 </div>
               )}

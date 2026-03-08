@@ -1,13 +1,63 @@
 import { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { format, parseISO, startOfWeek, isSameWeek } from "date-fns";
+import { format, parseISO, isSameWeek, subDays } from "date-fns";
 import { fr } from "date-fns/locale";
+import { Flame, Trophy, Zap } from "lucide-react";
+import { motion } from "framer-motion";
+import ActivityCalendar from "./ActivityCalendar";
 
-const WEEKLY_GOAL = 5; // 5 walks of 20+ min per week
+const WEEKLY_GOAL = 5;
 const MIN_WALK_MINUTES = 20;
+const MOOD_KEY = "pawcoach_walk_moods";
+const MOOD_EMOJIS = { super: "\u{1F60A}", good: "\u{1F44D}", calm: "\u{1F610}", hard: "\u{1F624}" };
+
+function getMoods() {
+  try { return JSON.parse(localStorage.getItem(MOOD_KEY) || "{}"); } catch { return {}; }
+}
+
+function calculateStreaks(sortedLogs) {
+  const withWalks = sortedLogs.filter(l => (l.walk_minutes || 0) > 0);
+  if (withWalks.length === 0) return { current: 0, best: 0 };
+
+  const todayStr = format(new Date(), "yyyy-MM-dd");
+  const yestStr = format(subDays(new Date(), 1), "yyyy-MM-dd");
+
+  let bestStreak = 1, tempStreak = 1;
+  for (let i = 0; i < withWalks.length - 1; i++) {
+    const diff = Math.round((new Date(withWalks[i].date + "T12:00:00") - new Date(withWalks[i + 1].date + "T12:00:00")) / 86400000);
+    if (diff === 1) { tempStreak++; bestStreak = Math.max(bestStreak, tempStreak); }
+    else tempStreak = 1;
+  }
+  bestStreak = Math.max(bestStreak, tempStreak);
+
+  let current = 0;
+  if (withWalks[0].date === todayStr || withWalks[0].date === yestStr) {
+    current = 1;
+    for (let i = 0; i < withWalks.length - 1; i++) {
+      const diff = Math.round((new Date(withWalks[i].date + "T12:00:00") - new Date(withWalks[i + 1].date + "T12:00:00")) / 86400000);
+      if (diff === 1) current++;
+      else break;
+    }
+  }
+  return { current, best: bestStreak };
+}
+
+function getDayAverages(sortedLogs) {
+  const buckets = [[], [], [], [], [], [], []];
+  sortedLogs.forEach(l => {
+    if (!l.walk_minutes) return;
+    const dow = new Date(l.date + "T12:00:00").getDay();
+    buckets[dow === 0 ? 6 : dow - 1].push(l.walk_minutes);
+  });
+  return ["L", "M", "M", "J", "V", "S", "D"].map((label, i) => ({
+    label,
+    avg: buckets[i].length > 0 ? Math.round(buckets[i].reduce((a, b) => a + b, 0) / buckets[i].length) : 0,
+  }));
+}
 
 export default function TrackerHistory({ logs, dog }) {
   const sorted = useMemo(() => [...(logs || [])].sort((a, b) => b.date.localeCompare(a.date)), [logs]);
+  const moods = useMemo(() => getMoods(), []);
 
   const chartData = useMemo(() =>
     sorted.slice(0, 14).reverse().map(l => ({
@@ -19,8 +69,13 @@ export default function TrackerHistory({ logs, dog }) {
   const totalMinutes = sorted.reduce((acc, l) => acc + (l.walk_minutes || 0), 0);
   const avgMinutes = sorted.length > 0 ? Math.round(totalMinutes / sorted.length) : 0;
   const daysOver30 = sorted.filter(l => (l.walk_minutes || 0) >= 30).length;
+  const longestWalk = sorted.reduce((max, l) => Math.max(max, l.walk_minutes || 0), 0);
+  const totalKm = (totalMinutes * 0.065).toFixed(1);
 
-  // Weekly goal: walks of 20+ min this week
+  const streaks = useMemo(() => calculateStreaks(sorted), [sorted]);
+  const dayAvgs = useMemo(() => getDayAverages(sorted), [sorted]);
+  const maxDayAvg = Math.max(...dayAvgs.map(d => d.avg), 1);
+
   const weeklyWalks = useMemo(() => {
     const now = new Date();
     return sorted.filter(l => {
@@ -33,20 +88,33 @@ export default function TrackerHistory({ logs, dog }) {
   if (sorted.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center space-y-3">
-        <span className="text-5xl">🦮</span>
-        <p className="font-bold text-foreground">Aucune donnée encore</p>
-        <p className="text-xs text-muted-foreground">Connecte un tracker ou importe un fichier CSV pour voir l'historique.</p>
+        <span className="text-5xl">{"\u{1F9AE}"}</span>
+        <p className="font-bold text-foreground">Aucune donnee encore</p>
+        <p className="text-xs text-muted-foreground">Lance une balade pour voir ton historique ici.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4 pb-4">
-      {/* Weekly goal card */}
+      {/* Streak flame */}
+      {streaks.current > 0 && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex items-center justify-center gap-2 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl py-3"
+        >
+          <Flame className="w-5 h-5 text-amber-500" />
+          <span className="text-sm font-black text-amber-700">{streaks.current} jour{streaks.current > 1 ? "s" : ""} de suite</span>
+          {streaks.current >= 7 && <span className="text-xs">{"\u{1F525}"}</span>}
+        </motion.div>
+      )}
+
+      {/* Weekly goal */}
       <div className={`rounded-2xl p-4 border ${weeklyWalks >= WEEKLY_GOAL ? "bg-emerald-50 border-emerald-200" : "bg-white border-border"}`}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <span className="text-lg">{weeklyWalks >= WEEKLY_GOAL ? "🏆" : "🎯"}</span>
+            <span className="text-lg">{weeklyWalks >= WEEKLY_GOAL ? "\u{1F3C6}" : "\u{1F3AF}"}</span>
             <p className="font-bold text-sm text-foreground">Objectif semaine</p>
           </div>
           <span className={`text-sm font-black ${weeklyWalks >= WEEKLY_GOAL ? "text-emerald-600" : "text-primary"}`}>
@@ -67,32 +135,75 @@ export default function TrackerHistory({ logs, dog }) {
         </p>
       </div>
 
-      {/* Stats summary */}
-      <div className="grid grid-cols-3 gap-2">
+      {/* Activity Calendar */}
+      <ActivityCalendar logs={sorted} />
+
+      {/* Stats grid */}
+      <div className="grid grid-cols-4 gap-2">
         {[
-          { label: "Total", value: `${totalMinutes} min`, sub: `${sorted.length} jours`, color: "text-primary" },
-          { label: "Moyenne", value: `${avgMinutes} min`, sub: "par jour", color: "text-safe" },
-          { label: "Jours ≥ 30 min", value: daysOver30, sub: "objectif atteint", color: "text-accent" },
+          { label: "Total", value: `${totalMinutes}`, unit: "min", color: "text-primary" },
+          { label: "Moyenne", value: `${avgMinutes}`, unit: "min/j", color: "text-safe" },
+          { label: "Record", value: `${longestWalk}`, unit: "min", color: "text-accent" },
+          { label: "Distance", value: totalKm, unit: "km est.", color: "text-blue-600" },
         ].map((stat, i) => (
-          <div key={i} className="bg-white border border-border rounded-2xl p-3 text-center">
-            <p className={`text-xl font-black ${stat.color}`}>{stat.value}</p>
-            <p className="text-[9px] font-bold text-muted-foreground uppercase mt-0.5">{stat.label}</p>
-            <p className="text-[9px] text-muted-foreground">{stat.sub}</p>
+          <div key={i} className="bg-white border border-border rounded-2xl p-2.5 text-center">
+            <p className={`text-lg font-black ${stat.color}`}>{stat.value}</p>
+            <p className="text-[8px] font-bold text-muted-foreground uppercase">{stat.unit}</p>
+            <p className="text-[8px] text-muted-foreground">{stat.label}</p>
           </div>
         ))}
       </div>
 
-      {/* Chart */}
+      {/* Records */}
+      {streaks.best > 1 && (
+        <div className="flex gap-2">
+          <div className="flex-1 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 flex items-center gap-2">
+            <Trophy className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+            <div>
+              <p className="text-[10px] font-bold text-amber-700">Meilleur streak</p>
+              <p className="text-xs font-black text-amber-800">{streaks.best} jours</p>
+            </div>
+          </div>
+          <div className="flex-1 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 flex items-center gap-2">
+            <Zap className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+            <div>
+              <p className="text-[10px] font-bold text-emerald-700">Jours 30+ min</p>
+              <p className="text-xs font-black text-emerald-800">{daysOver30}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Day-of-week pattern */}
+      <div className="bg-white border border-border rounded-2xl p-4">
+        <p className="text-xs font-bold text-muted-foreground mb-3">Moyenne par jour</p>
+        <div className="grid grid-cols-7 gap-1.5">
+          {dayAvgs.map((d, i) => (
+            <div key={i} className="flex flex-col items-center gap-1">
+              <div className="w-full h-14 flex items-end justify-center">
+                <div
+                  className={`w-full rounded-t-md ${d.avg > 0 ? "bg-primary/80" : "bg-secondary/30"}`}
+                  style={{ height: `${Math.max(4, (d.avg / maxDayAvg) * 100)}%` }}
+                />
+              </div>
+              <span className="text-[9px] font-black text-foreground">{d.avg > 0 ? d.avg : "\u2014"}</span>
+              <span className="text-[9px] font-bold text-muted-foreground">{d.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bar chart 14 days */}
       {chartData.length > 0 && (
         <div className="bg-white border border-border rounded-2xl p-4">
-          <p className="text-xs font-bold text-muted-foreground mb-3">📊 14 derniers jours (minutes)</p>
+          <p className="text-xs font-bold text-muted-foreground mb-3">14 derniers jours</p>
           <ResponsiveContainer width="100%" height={120}>
             <BarChart data={chartData} barSize={14}>
               <XAxis dataKey="day" tick={{ fontSize: 9, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
               <YAxis hide />
               <Tooltip
                 contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 12, fontSize: 11, color: "hsl(var(--foreground))" }}
-                formatter={(v) => [`${v} min`, "Activité"]}
+                formatter={(v) => [`${v} min`, "Activite"]}
               />
               <Bar dataKey="minutes" radius={[4, 4, 0, 0]}>
                 {chartData.map((entry, i) => (
@@ -102,34 +213,47 @@ export default function TrackerHistory({ logs, dog }) {
             </BarChart>
           </ResponsiveContainer>
           <div className="flex gap-3 mt-2 justify-center">
-            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-emerald-400" /><span className="text-[9px] text-muted-foreground">≥ 30 min</span></div>
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-emerald-400" /><span className="text-[9px] text-muted-foreground">{"\u2265"} 30 min</span></div>
             <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-blue-400" /><span className="text-[9px] text-muted-foreground">&lt; 30 min</span></div>
           </div>
         </div>
       )}
 
-      {/* Log list */}
+      {/* Log list with mood */}
       <div className="space-y-2">
-        {sorted.slice(0, 20).map((log, i) => (
-          <div key={i} className="bg-white border border-border rounded-2xl px-4 py-3 flex items-center justify-between">
-            <div>
-              <p className="text-sm font-bold text-foreground">
-                {format(parseISO(log.date), "EEEE dd MMM", { locale: fr })}
-              </p>
-              {log.notes && <p className="text-xs text-muted-foreground mt-0.5 truncate max-w-[180px]">{log.notes}</p>}
+        {sorted.slice(0, 15).map((log, i) => {
+          const mood = moods[log.date];
+          return (
+            <div key={i} className="bg-white border border-border rounded-2xl px-4 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-2.5 min-w-0">
+                {mood && <span className="text-base flex-shrink-0">{MOOD_EMOJIS[mood.mood] || ""}</span>}
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-foreground">
+                    {format(parseISO(log.date), "EEEE dd MMM", { locale: fr })}
+                  </p>
+                  {log.notes && <p className="text-xs text-muted-foreground mt-0.5 truncate max-w-[180px]">{log.notes}</p>}
+                  {mood?.tags?.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {mood.tags.map(t => (
+                        <span key={t} className="text-[8px] bg-primary/10 text-primary font-semibold rounded px-1.5 py-0.5">{t}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="text-right flex-shrink-0 ml-2">
+                {log.walk_minutes ? (
+                  <span className={`text-sm font-black ${log.walk_minutes >= 30 ? "text-safe" : "text-amber-500"}`}>
+                    {log.walk_minutes} min
+                  </span>
+                ) : (
+                  <span className="text-xs text-muted-foreground">{"\u2014"}</span>
+                )}
+                {log.weight_kg && <p className="text-[10px] text-muted-foreground">{log.weight_kg} kg</p>}
+              </div>
             </div>
-            <div className="text-right">
-              {log.walk_minutes ? (
-                <span className={`text-sm font-black ${log.walk_minutes >= 30 ? "text-safe" : "text-amber-500"}`}>
-                  {log.walk_minutes} min
-                </span>
-              ) : (
-                <span className="text-xs text-muted-foreground">—</span>
-              )}
-              {log.weight_kg && <p className="text-[10px] text-muted-foreground">{log.weight_kg} kg</p>}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

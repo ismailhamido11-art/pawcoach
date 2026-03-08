@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { MapContainer, TileLayer, Polyline, CircleMarker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -13,7 +13,6 @@ function MapFollower({ position }) {
 
 export default function WalkMap({ path, currentPos }) {
   const defaultCenter = currentPos || [48.8566, 2.3522]; // Paris fallback
-  const lastTwo = path.length >= 2 ? path.slice(-2) : null;
 
   return (
     <div className="w-full h-52 rounded-2xl overflow-hidden border border-border/50 shadow-sm relative z-0">

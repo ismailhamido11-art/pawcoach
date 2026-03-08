@@ -35,11 +35,11 @@ export async function fetchNearbyParks(lat, lng, radiusM = 3000) {
   } catch {}
 
   // Overpass QL query: dog parks + parks that accept dogs
+  // Note: relations excluded — `out center tags` doesn't return coordinates for relations
   const query = `[out:json][timeout:10];
 (
   node["leisure"="dog_park"](around:${radiusM},${lat},${lng});
   way["leisure"="dog_park"](around:${radiusM},${lat},${lng});
-  relation["leisure"="dog_park"](around:${radiusM},${lat},${lng});
   node["leisure"="park"]["dog"="yes"](around:${radiusM},${lat},${lng});
   way["leisure"="park"]["dog"="yes"](around:${radiusM},${lat},${lng});
   node["leisure"="park"]["dog"="leashed"](around:${radiusM},${lat},${lng});
@@ -71,7 +71,7 @@ out center tags;`;
     const tags = el.tags || {};
     const isDogPark = tags.leisure === "dog_park";
     return {
-      id: el.id,
+      id: `${el.type}/${el.id}`,
       name: tags.name || (isDogPark ? "Parc canin" : "Parc"),
       lat: elLat,
       lng: elLng,
@@ -90,9 +90,13 @@ out center tags;`;
   }).filter(Boolean).sort((a, b) => a.distanceKm - b.distanceKm);
 
   // Deduplicate by proximity (OSM can have node + way for same park)
+  // For generic names (Parc/Parc canin), use tighter proximity (20m) to avoid merging distinct parks
+  const GENERIC_NAMES = ["Parc", "Parc canin"];
   const deduped = [];
   for (const p of parks) {
-    const duplicate = deduped.some(d => haversineKm(p.lat, p.lng, d.lat, d.lng) < 0.05 && d.name === p.name);
+    const isGeneric = GENERIC_NAMES.includes(p.name);
+    const threshold = isGeneric ? 0.02 : 0.05; // 20m for generic, 50m for named
+    const duplicate = deduped.some(d => haversineKm(p.lat, p.lng, d.lat, d.lng) < threshold && d.name === p.name);
     if (!duplicate) deduped.push(p);
   }
 

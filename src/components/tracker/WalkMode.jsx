@@ -9,6 +9,15 @@ import NearbyParks from "./NearbyParks";
 import { PostWalkReviewPrompt } from "./ParkReviews";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 
+const WALK_MOODS = [
+  { id: "super", emoji: "😊", label: "Super" },
+  { id: "good", emoji: "👍", label: "Bien" },
+  { id: "calm", emoji: "😐", label: "Calme" },
+  { id: "hard", emoji: "😤", label: "Difficile" },
+];
+const WALK_TAGS = ["Tirait en laisse", "Bon rappel", "Sociable", "Distrait", "Très calme", "Énergique"];
+const MOOD_KEY = "pawcoach_walk_moods";
+
 function formatTime(seconds) {
   const m = Math.floor(seconds / 60).toString().padStart(2, "0");
   const s = (seconds % 60).toString().padStart(2, "0");
@@ -60,6 +69,9 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
   const [nearPark, setNearPark] = useState(null); // park user is near
   const [path, setPath] = useState([]); // [{lat, lng}]
   const [currentPos, setCurrentPos] = useState(null);
+  const [walkMood, setWalkMood] = useState(null);
+  const [selectedMoodTags, setSelectedMoodTags] = useState([]);
+  const [moodSaved, setMoodSaved] = useState(false);
 
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
@@ -160,6 +172,11 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     setStatus("done");
     if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
 
+    // Sync distance state from ref (GPS watcher may have updated ref without React re-render)
+    const finalDistance = distanceRef.current;
+    setDistance(Math.round(finalDistance));
+    const finalKm = finalDistance > 0 ? (finalDistance / 1000).toFixed(2) : null;
+
     const minutes = Math.max(1, Math.round(elapsed / 60));
     setSavedMinutes(minutes);
     setSaving(true);
@@ -170,7 +187,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
         const prev = existing[0].walk_minutes || 0;
         await base44.entities.DailyLog.update(existing[0].id, {
           walk_minutes: prev + minutes,
-          notes: existing[0].notes || `Balade de ${minutes} min${distance > 0 ? ` · ${(distance / 1000).toFixed(2)} km` : ""}`
+          notes: existing[0].notes || `Balade de ${minutes} min${finalKm ? ` · ${finalKm} km` : ""}`
         });
       } else {
         await base44.entities.DailyLog.create({
@@ -178,7 +195,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
           owner: user?.email,
           date: today,
           walk_minutes: minutes,
-          notes: `Balade de ${minutes} min${distance > 0 ? ` · ${(distance / 1000).toFixed(2)} km` : ""}`
+          notes: `Balade de ${minutes} min${finalKm ? ` · ${finalKm} km` : ""}`
         });
       }
       // Check walk badges
@@ -192,6 +209,16 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     }
   };
 
+  const saveMoodData = () => {
+    if (!walkMood) return;
+    try {
+      const existing = JSON.parse(localStorage.getItem(MOOD_KEY) || "{}");
+      existing[getTodayString()] = { mood: walkMood, tags: selectedMoodTags };
+      localStorage.setItem(MOOD_KEY, JSON.stringify(existing));
+      setMoodSaved(true);
+    } catch {}
+  };
+
   const handleReset = () => {
     stoppingRef.current = false;
     setStatus("idle");
@@ -200,11 +227,16 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     setSavedMinutes(null);
     setShowShare(false);
     setNearPark(null);
+    setWalkMood(null);
+    setSelectedMoodTags([]);
+    setMoodSaved(false);
   };
 
   const minutes = Math.floor(elapsed / 60);
   const seconds = elapsed % 60;
   const km = distance > 0 ? (distance / 1000).toFixed(2) : null;
+  const dogCalories = dog?.weight ? Math.round(dog.weight * 3.5 * ((savedMinutes || 0) / 60)) : null;
+  const kibbleEquiv = dogCalories ? Math.round(dogCalories / 3.5) : null;
 
   return (
     <div className="flex flex-col items-center py-6 select-none">
@@ -392,6 +424,12 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                   <div className="text-xs text-muted-foreground">cal. est.</div>
                 </div>
               </div>
+              {kibbleEquiv > 0 && (
+                <div className="flex items-center justify-center gap-1.5 bg-white/60 rounded-xl py-1.5 px-3">
+                  <span className="text-sm">🦴</span>
+                  <span className="text-xs font-bold text-foreground">= {kibbleEquiv} croquettes brûlées</span>
+                </div>
+              )}
               {saving ? (
                 <div className="text-xs text-muted-foreground animate-pulse">Sauvegarde en cours…</div>
               ) : (
@@ -425,6 +463,70 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                   {/* Post-walk park review prompt */}
                   {nearPark && (
                     <PostWalkReviewPrompt park={nearPark} dog={dog} user={user} />
+                  )}
+
+                  {/* Walk Mood Tracker */}
+                  {!moodSaved ? (
+                    <motion.div
+                      initial={{ y: 16, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.7, type: "spring", stiffness: 400, damping: 30 }}
+                      className="bg-white border border-border rounded-2xl p-4 w-full space-y-3"
+                    >
+                      <p className="text-xs font-bold text-foreground">Comment s'est passée la balade ?</p>
+                      <div className="flex justify-center gap-3">
+                        {WALK_MOODS.map(m => (
+                          <button
+                            key={m.id}
+                            onClick={() => setWalkMood(m.id)}
+                            className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${
+                              walkMood === m.id ? "bg-primary/10 ring-2 ring-primary scale-105" : "hover:bg-secondary/40"
+                            }`}
+                          >
+                            <span className="text-2xl">{m.emoji}</span>
+                            <span className="text-[10px] font-bold text-muted-foreground">{m.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                      {walkMood && (
+                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="space-y-2 overflow-hidden">
+                          <p className="text-[10px] font-bold text-muted-foreground">Comportement (optionnel)</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {WALK_TAGS.map(tag => (
+                              <button
+                                key={tag}
+                                onClick={() => setSelectedMoodTags(prev =>
+                                  prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+                                )}
+                                className={`text-[10px] font-semibold px-2.5 py-1 rounded-full transition-all ${
+                                  selectedMoodTags.includes(tag)
+                                    ? "bg-primary text-white"
+                                    : "bg-secondary/50 text-muted-foreground"
+                                }`}
+                              >
+                                {tag}
+                              </button>
+                            ))}
+                          </div>
+                          <button
+                            onClick={saveMoodData}
+                            className="w-full py-2 rounded-xl text-xs font-bold text-white"
+                            style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))" }}
+                          >
+                            Enregistrer
+                          </button>
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="bg-emerald-50 border border-emerald-200 rounded-2xl py-2.5 px-4 flex items-center justify-center gap-2"
+                    >
+                      <span className="text-xs text-emerald-600">✓</span>
+                      <span className="text-xs font-bold text-emerald-700">Humeur enregistrée</span>
+                    </motion.div>
                   )}
 
                   <div className="grid grid-cols-2 gap-3 w-full">
@@ -461,6 +563,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                       calories={Math.round((savedMinutes || 0) * 5)}
                       dogName={dog?.name}
                       streak={walkInfo.streak}
+                      kibbleEquiv={kibbleEquiv}
                       onClose={() => setShowShare(false)}
                     />
                   )}
