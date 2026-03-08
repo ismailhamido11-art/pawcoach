@@ -206,7 +206,7 @@ Deno.serve(async (req) => {
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     if (recentLogs.length > 0) {
       const totalMinutes = recentLogs.reduce((sum, l) => sum + (l.walk_minutes || 0), 0);
-      const totalDistance = recentLogs.reduce((sum, l) => sum + (l.walk_distance || 0), 0);
+      const totalDistance = recentLogs.reduce((sum, l) => sum + (l.walk_distance_km || 0), 0);
       activityMemory = `\nACTIVITE (7 derniers jours) :`;
       activityMemory += `\n- ${recentLogs.length} jour(s) de balade, ${totalMinutes} min au total${totalDistance ? `, ${totalDistance.toFixed(1)} km` : ""}`;
       activityMemory += `\n- Moyenne : ${Math.round(totalMinutes / recentLogs.length)} min/jour`;
@@ -235,9 +235,9 @@ Deno.serve(async (req) => {
     let insightMemory = "";
     const latestInsight = (weeklyInsights || [])
       .sort((a, b) => new Date(b.week_start || b.created_date).getTime() - new Date(a.week_start || a.created_date).getTime())[0];
-    if (latestInsight?.content) {
-      const summary = latestInsight.content.substring(0, 200);
-      insightMemory = `\nDERNIER BILAN HEBDO : ${summary}${latestInsight.content.length > 200 ? "..." : ""}`;
+    if (latestInsight?.summary) {
+      const summary = latestInsight.summary.substring(0, 200);
+      insightMemory = `\nDERNIER BILAN HEBDO : ${summary}${latestInsight.summary.length > 200 ? "..." : ""}`;
     }
 
     // --- Active nutrition plan ---

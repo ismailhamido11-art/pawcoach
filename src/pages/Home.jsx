@@ -16,6 +16,7 @@ import BadgeTeaser from "../components/home/BadgeTeaser";
 import ActiveProgramCards from "../components/home/ActiveProgramCards";
 import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
 import CombinedFAB from "../components/CombinedFAB";
+import { checkStreakBadges } from "@/components/achievements/badgeUtils";
 
 import { Flame } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
@@ -176,6 +177,7 @@ export default function Home() {
         }
       }
       toast.success("Check-in enregistre !");
+      checkStreakBadges(dog.id, user.email).catch(() => {});
     } catch (err) {
       console.error("Check-in error:", err);
       setTodayCheckin(null);

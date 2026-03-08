@@ -150,6 +150,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
   }, []);
 
   const retryGeolocation = () => {
+    if (!navigator.geolocation) { setLoading(false); setError("geo"); return; }
     setError(null);
     setLoading(true);
     navigator.geolocation.getCurrentPosition(

@@ -57,7 +57,18 @@ function getDayAverages(sortedLogs) {
 
 export default function TrackerHistory({ logs, dog }) {
   const sorted = useMemo(() => [...(logs || [])].sort((a, b) => b.date.localeCompare(a.date)), [logs]);
-  const moods = useMemo(() => getMoods(), []);
+  const moods = useMemo(() => {
+    const local = getMoods();
+    // Enrich with DailyLog walk_mood/walk_tags (survives device changes)
+    (logs || []).forEach(l => {
+      if (l.walk_mood && l.date && !local[l.date]) {
+        let tags = [];
+        try { tags = l.walk_tags ? JSON.parse(l.walk_tags) : []; } catch {}
+        local[l.date] = { mood: l.walk_mood, tags };
+      }
+    });
+    return local;
+  }, [logs]);
 
   const chartData = useMemo(() =>
     sorted.slice(0, 14).reverse().map(l => ({
@@ -71,7 +82,7 @@ export default function TrackerHistory({ logs, dog }) {
   const avgMinutes = walkDaysCount > 0 ? Math.round(totalMinutes / walkDaysCount) : 0;
   const daysOver30 = sorted.filter(l => (l.walk_minutes || 0) >= 30).length;
   const longestWalk = sorted.reduce((max, l) => Math.max(max, l.walk_minutes || 0), 0);
-  const totalKm = (totalMinutes * 0.065).toFixed(1);
+  const totalKm = sorted.reduce((acc, l) => acc + (l.walk_distance_km || l.walk_minutes * 0.065 || 0), 0).toFixed(1);
 
   const streaks = useMemo(() => calculateStreaks(sorted), [sorted]);
   const dayAvgs = useMemo(() => getDayAverages(sorted), [sorted]);
@@ -335,7 +346,7 @@ export default function TrackerHistory({ logs, dog }) {
                         <span className="text-[7px] bg-amber-100 text-amber-700 font-bold rounded px-1 py-0.5">Record</span>
                       )}
                     </div>
-                    <p className="text-[10px] text-muted-foreground">{(log.walk_minutes * 0.065).toFixed(1)} km</p>
+                    <p className="text-[10px] text-muted-foreground">{(log.walk_distance_km || log.walk_minutes * 0.065).toFixed(1)} km</p>
                   </>
                 ) : (
                   <span className="text-xs text-muted-foreground">{"\u2014"}</span>
