@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Pause, Play, StopCircle, Timer, Footprints, Zap, TrendingUp, TrendingDown, Minus, Share2 } from "lucide-react";
+import { MapPin, Pause, Play, StopCircle, Timer, Footprints, Zap, TrendingUp, TrendingDown, Minus, Share2, TreePine } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import WalkMap from "./WalkMap";
 import WalkShareCard from "./WalkShareCard";
+import NearbyParks from "./NearbyParks";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 
 function formatTime(seconds) {
@@ -48,13 +49,14 @@ function getWalkInsight(minutes, logs, dogName) {
   return { trend, insight, streak };
 }
 
-export default function WalkMode({ dog, user, logs = [], onLogged }) {
+export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory }) {
   const [status, setStatus] = useState("idle"); // idle | running | paused | done
   const [elapsed, setElapsed] = useState(0);
   const [distance, setDistance] = useState(0);
   const [saving, setSaving] = useState(false);
   const [savedMinutes, setSavedMinutes] = useState(null);
   const [showShare, setShowShare] = useState(false);
+  const [nearPark, setNearPark] = useState(null); // park user is near
   const [path, setPath] = useState([]); // [{lat, lng}]
   const [currentPos, setCurrentPos] = useState(null);
 
@@ -148,7 +150,10 @@ export default function WalkMode({ dog, user, logs = [], onLogged }) {
     }
   };
 
+  const stoppingRef = useRef(false);
   const handleStop = async () => {
+    if (stoppingRef.current) return;
+    stoppingRef.current = true;
     clearInterval(timerRef.current);
     stopGPS();
     setStatus("done");
@@ -187,6 +192,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged }) {
   };
 
   const handleReset = () => {
+    stoppingRef.current = false;
     setStatus("idle");
     setElapsed(0);
     setDistance(0);
@@ -242,6 +248,26 @@ export default function WalkMode({ dog, user, logs = [], onLogged }) {
                 <span className="text-sm font-semibold text-foreground">Balade avec {dog.name}</span>
               </div>
             )}
+
+            {/* Near park banner */}
+            {nearPark && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full bg-emerald-50 border border-emerald-200 rounded-2xl p-3.5 flex items-center gap-3"
+              >
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <TreePine className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold text-emerald-800 truncate">Tu es au {nearPark.name} !</p>
+                  <p className="text-[10px] text-emerald-600 mt-0.5">Appuie sur Démarrer pour tracker ta balade ici</p>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Nearby parks */}
+            <NearbyParks onNearPark={setNearPark} />
           </motion.div>
         )}
 
@@ -411,6 +437,15 @@ export default function WalkMode({ dog, user, logs = [], onLogged }) {
                       Nouvelle balade
                     </button>
                   </div>
+
+                  {onViewHistory && (
+                    <button
+                      onClick={onViewHistory}
+                      className="text-xs text-muted-foreground underline underline-offset-2"
+                    >
+                      Voir l'historique des balades
+                    </button>
+                  )}
 
                   {showShare && (
                     <WalkShareCard

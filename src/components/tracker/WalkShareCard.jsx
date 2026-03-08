@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { X, Download, Share2 } from "lucide-react";
 
@@ -59,7 +60,7 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
   if (km) stats.push({ value: km, unit: "km", label: "Distance" });
   stats.push({ value: `${calories}`, unit: "cal", label: "Calories" });
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-5" onClick={onClose}>
       <div className="w-full max-w-[320px] space-y-4" onClick={e => e.stopPropagation()}>
         {/* 1:1 viral card — scaled preview */}
@@ -174,6 +175,7 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
           <X className="w-4 h-4" /> Fermer
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

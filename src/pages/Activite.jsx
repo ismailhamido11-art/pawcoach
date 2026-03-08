@@ -177,7 +177,8 @@ export default function Activite() {
                 dog={dog}
                 user={user}
                 logs={logs}
-                onLogged={() => { refreshLogs(); changeTab("historique"); }}
+                onLogged={refreshLogs}
+                onViewHistory={() => changeTab("historique")}
               />
             )}
             {activeTab === "historique" && (
