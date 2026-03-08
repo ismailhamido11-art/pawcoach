@@ -560,7 +560,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                     <WalkShareCard
                       minutes={savedMinutes}
                       km={km}
-                      calories={Math.round((savedMinutes || 0) * 5)}
+                      calories={dogCalories || Math.round((savedMinutes || 0) * 5)}
                       dogName={dog?.name}
                       streak={walkInfo.streak}
                       kibbleEquiv={kibbleEquiv}

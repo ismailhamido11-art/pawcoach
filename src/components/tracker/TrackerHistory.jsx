@@ -97,6 +97,15 @@ export default function TrackerHistory({ logs, dog }) {
   const recordDate = longestWalk > 0 ? sorted.find(l => l.walk_minutes === longestWalk)?.date : null;
   const activeDays = sorted.filter(l => (l.walk_minutes || 0) > 0).length;
 
+  // Compile mood tags frequency
+  const tagFreq = useMemo(() => {
+    const freq = {};
+    Object.values(moods).forEach(m => {
+      (m.tags || []).forEach(t => { freq[t] = (freq[t] || 0) + 1; });
+    });
+    return Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  }, [moods]);
+
   if (sorted.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center space-y-3">
@@ -215,6 +224,20 @@ export default function TrackerHistory({ logs, dog }) {
               <p className="text-[10px] font-bold text-emerald-700">Jours 30+ min</p>
               <p className="text-xs font-black text-emerald-800">{daysOver30}</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Behavioral signature from walk tags */}
+      {tagFreq.length > 0 && (
+        <div className="bg-white border border-border rounded-2xl p-4">
+          <p className="text-xs font-bold text-muted-foreground mb-2">Comportements en balade</p>
+          <div className="flex flex-wrap gap-1.5">
+            {tagFreq.map(([tag, count]) => (
+              <span key={tag} className="text-[10px] font-semibold bg-primary/10 text-primary rounded-full px-2.5 py-1">
+                {tag} <span className="text-primary/50">{count}x</span>
+              </span>
+            ))}
           </div>
         </div>
       )}

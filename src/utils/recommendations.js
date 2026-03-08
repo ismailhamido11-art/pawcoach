@@ -131,7 +131,27 @@ export function buildRecommendations({ records = [], exercises = [], scans = [],
     });
   }
 
-  // 7. No weight record in 30 days
+  // 7. No walk in 3+ days
+  const walkLogs = dailyLogs.filter(l => l.walk_minutes > 0).sort((a, b) => b.date.localeCompare(a.date));
+  const lastWalkDate = walkLogs[0]?.date;
+  const daysSinceWalk = lastWalkDate ? Math.floor((Date.now() - new Date(lastWalkDate + "T12:00:00")) / 86400000) : 999;
+  if (daysSinceWalk >= 3 && dailyLogs.length > 0) {
+    recs.push({
+      id: "no_walk",
+      priority: 3,
+      icon: Footprints,
+      iconBg: "bg-amber-50",
+      iconColor: "#f59e0b",
+      label: `Pas de balade depuis ${daysSinceWalk} jours`,
+      sub: "Une petite sortie fait toute la diff\u00e9rence",
+      page: "Activite",
+      tab: "balade",
+      cta: "Lancer une balade",
+      accent: "border-l-amber-400",
+    });
+  }
+
+  // 8. No weight record in 30 days
   const allWeights = [
     ...records.filter(r => r.type === "weight").map(r => r.date),
     ...dailyLogs.filter(l => l.weight_kg).map(l => l.date),
