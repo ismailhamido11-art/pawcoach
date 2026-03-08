@@ -149,7 +149,62 @@ export default function NearbyParks({ dog, user, onNearPark }) {
     return () => { cancelled = true; };
   }, []);
 
-  if (error === "geo") return null;
+  const retryGeolocation = () => {
+    setError(null);
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setUserPos([latitude, longitude]);
+        try {
+          const results = await fetchNearbyParks(latitude, longitude, 3000);
+          setParks(results);
+          const nearest = findNearestPark(latitude, longitude, results, 150);
+          if (nearest && onNearPark) onNearPark(nearest);
+        } catch {
+          setError("api");
+        } finally {
+          setLoading(false);
+        }
+      },
+      () => { setLoading(false); setError("denied"); },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
+  if (error === "geo" || error === "denied") {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, type: "spring", stiffness: 400, damping: 30 }}
+        className="w-full"
+      >
+        <div className="bg-white border border-border rounded-2xl p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+              <MapIcon className="w-5 h-5 text-emerald-600" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-foreground">Parcs canins proches</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">
+                {error === "denied" ? "Localisation refus\u00e9e. V\u00e9rifie les r\u00e9glages de ton navigateur." : "Active la localisation pour voir les parcs autour de toi."}
+              </p>
+            </div>
+          </div>
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            onClick={retryGeolocation}
+            className="mt-3 w-full py-2.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2"
+            style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))" }}
+          >
+            <Navigation className="w-4 h-4" />
+            {loading ? "Recherche..." : "Localiser les parcs"}
+          </motion.button>
+        </div>
+      </motion.div>
+    );
+  }
   if (!loading && parks.length === 0 && error !== "api") return null;
 
   const visibleParks = parks.slice(0, 5);
@@ -227,7 +282,12 @@ export default function NearbyParks({ dog, user, onNearPark }) {
       )}
 
       {error === "api" && (
-        <p className="text-[10px] text-muted-foreground">Impossible de charger les parcs. Réessaie plus tard.</p>
+        <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+          <p className="text-[10px] text-amber-700 font-medium">Impossible de charger les parcs</p>
+          <button onClick={retryGeolocation} className="text-[10px] font-bold text-primary px-2.5 py-1 rounded-lg bg-primary/10">
+            R\u00e9essayer
+          </button>
+        </div>
       )}
 
       {/* Park cards */}

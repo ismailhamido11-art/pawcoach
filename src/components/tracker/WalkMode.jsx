@@ -183,11 +183,15 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     try {
       const today = getTodayString();
       const existing = await base44.entities.DailyLog.filter({ dog_id: dog.id, date: today });
+      // Persist walk data — mood/tags/distance saved to DailyLog fields
+      const distanceKm = finalKm ? parseFloat(finalKm) : null;
       if (existing?.length > 0) {
         const prev = existing[0].walk_minutes || 0;
+        const prevDist = existing[0].walk_distance_km || 0;
         await base44.entities.DailyLog.update(existing[0].id, {
           walk_minutes: prev + minutes,
-          notes: `Balade de ${prev + minutes} min${finalKm ? ` · ${finalKm} km` : ""}`
+          notes: `Balade de ${prev + minutes} min${finalKm ? ` \u00b7 ${finalKm} km` : ""}`,
+          ...(distanceKm && { walk_distance_km: Math.round((prevDist + distanceKm) * 100) / 100 }),
         });
       } else {
         await base44.entities.DailyLog.create({
@@ -195,7 +199,8 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
           owner: user?.email,
           date: today,
           walk_minutes: minutes,
-          notes: `Balade de ${minutes} min${finalKm ? ` · ${finalKm} km` : ""}`
+          notes: `Balade de ${minutes} min${finalKm ? ` \u00b7 ${finalKm} km` : ""}`,
+          ...(distanceKm && { walk_distance_km: distanceKm }),
         });
       }
       // Check walk badges
@@ -209,12 +214,22 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     }
   };
 
-  const saveMoodData = () => {
+  const saveMoodData = async () => {
     if (!walkMood) return;
     try {
-      const existing = JSON.parse(localStorage.getItem(MOOD_KEY) || "{}");
-      existing[getTodayString()] = { mood: walkMood, tags: selectedMoodTags };
-      localStorage.setItem(MOOD_KEY, JSON.stringify(existing));
+      // Persist in localStorage (fallback for offline / pre-schema)
+      const stored = JSON.parse(localStorage.getItem(MOOD_KEY) || "{}");
+      stored[getTodayString()] = { mood: walkMood, tags: selectedMoodTags };
+      localStorage.setItem(MOOD_KEY, JSON.stringify(stored));
+      // Persist in DailyLog entity (survives device changes, visible to backend)
+      const today = getTodayString();
+      const logs = await base44.entities.DailyLog.filter({ dog_id: dog?.id, date: today });
+      if (logs?.length > 0) {
+        await base44.entities.DailyLog.update(logs[0].id, {
+          walk_mood: walkMood,
+          walk_tags: JSON.stringify(selectedMoodTags),
+        }).catch(() => {}); // Silently fail if schema not yet updated
+      }
       setMoodSaved(true);
     } catch {}
   };
