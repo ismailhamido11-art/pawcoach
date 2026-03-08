@@ -210,6 +210,20 @@ Deno.serve(async (req) => {
       activityMemory = `\nACTIVITE (7 derniers jours) :`;
       activityMemory += `\n- ${recentLogs.length} jour(s) de balade, ${totalMinutes} min au total${totalDistance ? `, ${totalDistance.toFixed(1)} km` : ""}`;
       activityMemory += `\n- Moyenne : ${Math.round(totalMinutes / recentLogs.length)} min/jour`;
+      // Walk mood summary
+      const moodCounts: Record<string, number> = {};
+      recentLogs.forEach(l => { if (l.walk_mood) moodCounts[l.walk_mood] = (moodCounts[l.walk_mood] || 0) + 1; });
+      if (Object.keys(moodCounts).length > 0) {
+        activityMemory += `\n- Humeur post-balade : ${Object.entries(moodCounts).map(([m, n]) => `${m} (${n}x)`).join(", ")}`;
+      }
+      // Walk behavior tags
+      const tagCounts: Record<string, number> = {};
+      recentLogs.forEach(l => {
+        if (l.walk_tags) { try { const tags = JSON.parse(l.walk_tags); if (Array.isArray(tags)) tags.forEach((t: string) => { tagCounts[t] = (tagCounts[t] || 0) + 1; }); } catch {} }
+      });
+      if (Object.keys(tagCounts).length > 0) {
+        activityMemory += `\n- Comportements en balade : ${Object.entries(tagCounts).map(([t, n]) => `${t} (${n}x)`).join(", ")}`;
+      }
     }
 
     // --- Streak ---

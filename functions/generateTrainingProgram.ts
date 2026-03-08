@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { dogId, dogName, dogBreed, dogBirthDate, activityLevel, healthIssues, goals, weeklyWalkMinutes, walkDaysLast7, avgWalkMinutes, mode, problemId, problemLabel, problemDescription, previousPrograms, previousBilan } = await req.json();
+    const { dogId, dogName, dogBreed, dogBirthDate, activityLevel, healthIssues, goals, weeklyWalkMinutes, walkDaysLast7, avgWalkMinutes, weeklyWalkDistanceKm, walkMoodSummary, mode, problemId, problemLabel, problemDescription, previousPrograms, previousBilan } = await req.json();
     if (!dogId) return Response.json({ error: 'Missing dogId' }, { status: 400 });
 
     // Calculate age
@@ -151,7 +151,8 @@ PROFIL DU CHIEN :
 - Niveau d'activité : ${activityLabels[activityLevel] || activityLevel || "modéré"}
 - Santé : ${healthIssues || "aucun problème"}
 - Objectifs : ${goals || "bien-être général et lien avec son chien"}
-- Balades actuelles : ${weeklyWalkMinutes ? weeklyWalkMinutes + " min/semaine" : "non renseigné"}${walkDaysLast7 != null ? `, ${walkDaysLast7} jours de balade sur 7` : ""}${avgWalkMinutes ? `, moyenne ${avgWalkMinutes} min/sortie` : ""}
+- Balades actuelles : ${weeklyWalkMinutes ? weeklyWalkMinutes + " min/semaine" : "non renseigné"}${walkDaysLast7 != null ? `, ${walkDaysLast7} jours de balade sur 7` : ""}${avgWalkMinutes ? `, moyenne ${avgWalkMinutes} min/sortie` : ""}${weeklyWalkDistanceKm ? `, ${weeklyWalkDistanceKm} km parcourus cette semaine` : ""}
+${walkMoodSummary ? `- Ressenti post-balade : ${walkMoodSummary}` : ""}
 ${previousBilan ? `
 BILAN DU DERNIER PROGRAMME :
 ${previousBilan.feeling > 0 ? `- Ressenti : ${previousBilan.feeling}/5${previousBilan.feeling <= 2 ? " (pas convaincu — adapter la difficulté, varier les approches)" : previousBilan.feeling >= 4 ? " (très positif — augmenter le challenge)" : ""}` : "- Ressenti : non renseigné"}

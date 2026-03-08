@@ -544,6 +544,13 @@ export default function AITrainingProgram({ dog, logs = [] }) {
   const walkDaysLast7 = last7DayLogs.filter(l => l.walk_minutes > 0).length;
   const recentWalkLogs = logs.filter(l => l.walk_minutes > 0).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 14);
   const avgWalkMinutes = recentWalkLogs.length > 0 ? Math.round(recentWalkLogs.reduce((s, l) => s + l.walk_minutes, 0) / recentWalkLogs.length) : 0;
+  const weeklyWalkDistanceKm = Math.round(last7DayLogs.reduce((acc, l) => acc + (l.walk_distance_km || 0), 0) * 10) / 10;
+  // Mood summary for backend
+  const moodCounts = {};
+  last7DayLogs.forEach(l => { if (l.walk_mood) moodCounts[l.walk_mood] = (moodCounts[l.walk_mood] || 0) + 1; });
+  const walkMoodSummary = Object.keys(moodCounts).length > 0
+    ? Object.entries(moodCounts).map(([m, n]) => `${m} (${n}x)`).join(", ")
+    : null;
 
   const saveProgram = async () => {
     if (!program || !dog || saved) return;
@@ -668,6 +675,8 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         weeklyWalkMinutes,
         walkDaysLast7,
         avgWalkMinutes,
+        weeklyWalkDistanceKm: weeklyWalkDistanceKm || undefined,
+        walkMoodSummary: walkMoodSummary || undefined,
         previousPrograms: pastPrograms.map(p => p.title).filter(Boolean),
         previousBilan: lastBilan ? {
           feeling: lastBilan.feeling,

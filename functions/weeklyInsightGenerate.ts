@@ -77,6 +77,23 @@ Deno.serve(async (req) => {
       const walkDays = weekLogs.filter(l => l.walk_minutes > 0).length;
       const totalWalkMinutes = weekLogs.reduce((s, l) => s + (l.walk_minutes || 0), 0);
       const avgWalkMinutes = walkDays > 0 ? Math.round(totalWalkMinutes / walkDays) : 0;
+      const totalWalkKm = weekLogs.reduce((s, l) => s + (l.walk_distance_km || 0), 0);
+      // Walk mood distribution
+      const moodCounts: Record<string, number> = {};
+      weekLogs.forEach(l => { if (l.walk_mood) moodCounts[l.walk_mood] = (moodCounts[l.walk_mood] || 0) + 1; });
+      const moodText = Object.keys(moodCounts).length > 0
+        ? `, humeur post-balade: ${Object.entries(moodCounts).map(([m, n]) => `${m} (${n}x)`).join(", ")}`
+        : "";
+      // Walk behavior tags
+      const tagCounts: Record<string, number> = {};
+      weekLogs.forEach(l => {
+        if (l.walk_tags) {
+          try { const tags = JSON.parse(l.walk_tags); if (Array.isArray(tags)) tags.forEach((t: string) => { tagCounts[t] = (tagCounts[t] || 0) + 1; }); } catch {}
+        }
+      });
+      const tagText = Object.keys(tagCounts).length > 0
+        ? `, comportements en balade: ${Object.entries(tagCounts).map(([t, n]) => `${t} (${n}x)`).join(", ")}`
+        : "";
 
       // Collect symptoms from this week's check-ins
       const weekSymptoms = {};
@@ -112,7 +129,7 @@ Deno.serve(async (req) => {
 
         const prevBehavior = dog.behavior_summary ? `\nProfil comportemental precedent: "${dog.behavior_summary}"` : "";
         const systemPrompt = `Tu es PawCoach. Genere un bilan hebdomadaire pour ${dog.name} (${dog.breed}).${personalityNote}${statusNote}${prevBehavior} ${toneInstruction} Tutoie. 3-5 phrases max. Reponds en JSON avec: summary (bilan general), highlights (2-3 points cles), recommendations (2-3 conseils pour la semaine prochaine), behavior_summary (profil comportemental synthetique de ${dog.name} en 2-3 phrases — patterns d'humeur, energie, alertes, evolution par rapport au profil precedent si disponible).`;
-        const walkText = walkDays > 0 ? `, ${walkDays} jours de balade (${totalWalkMinutes} min total, moyenne ${avgWalkMinutes} min/sortie)` : ", aucune balade enregistrée cette semaine";
+        const walkText = walkDays > 0 ? `, ${walkDays} jours de balade (${totalWalkMinutes} min total, moyenne ${avgWalkMinutes} min/sortie${totalWalkKm > 0 ? `, ${totalWalkKm.toFixed(1)} km parcourus` : ""}${moodText}${tagText})` : ", aucune balade enregistrée cette semaine";
         const userMessage = `Bilan de la semaine du ${weekStart} au ${weekEnd} pour ${dog.name}: ${checkinCount} check-ins, humeur moyenne ${avgMood}/4, energie moyenne ${avgEnergy}/3, appetit moyen ${avgAppetite}/3, ${exercisesCompleted} exercices completes, ${scansDone} scans alimentaires${walkText}${symptomText}.`;
 
         try {
