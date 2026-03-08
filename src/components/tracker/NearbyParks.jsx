@@ -43,6 +43,7 @@ const TYPE_LABELS = {
   dog_park: { label: "Parc canin", color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200", icon: Dog },
   park_dog_ok: { label: "Chiens acceptés", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", icon: TreePine },
   park_leashed: { label: "En laisse", color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200", icon: TreePine },
+  park_general: { label: "Parc public", color: "text-slate-600", bg: "bg-slate-50", border: "border-slate-200", icon: TreePine },
 };
 
 const SURFACE_LABELS = { grass: "Herbe", sand: "Sable", gravel: "Gravier", asphalt: "Asphalte", earth: "Terre" };
@@ -142,8 +143,8 @@ export default function NearbyParks({ dog, user, onNearPark }) {
           if (!cancelled) setLoading(false);
         }
       },
-      () => { if (!cancelled) { setLoading(false); setError("geo"); } },
-      { enableHighAccuracy: false, timeout: 8000 }
+      (geoErr) => { if (!cancelled) { setLoading(false); setError(geoErr?.code === 1 ? "denied" : "geo"); } },
+      { enableHighAccuracy: false, timeout: 10000 }
     );
 
     return () => { cancelled = true; };
@@ -152,7 +153,10 @@ export default function NearbyParks({ dog, user, onNearPark }) {
   const retryGeolocation = () => {
     if (!navigator.geolocation) { setLoading(false); setError("geo"); return; }
     setError(null);
+    setParks([]);
     setLoading(true);
+    // Clear cache to force fresh results
+    try { localStorage.removeItem("pawcoach_nearby_parks"); } catch {}
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -206,7 +210,36 @@ export default function NearbyParks({ dog, user, onNearPark }) {
       </motion.div>
     );
   }
-  if (!loading && parks.length === 0 && error !== "api") return null;
+  if (!loading && parks.length === 0 && error !== "api") {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, type: "spring", stiffness: 400, damping: 30 }}
+        className="w-full"
+      >
+        <div className="bg-white border border-border rounded-2xl p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0">
+              <TreePine className="w-5 h-5 text-slate-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-foreground">Aucun parc trouvé</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Pas de parc canin dans un rayon de 3 km.</p>
+            </div>
+          </div>
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            onClick={retryGeolocation}
+            className="mt-3 w-full py-2.5 rounded-xl font-bold text-sm text-primary border-2 border-primary/20 bg-primary/5 flex items-center justify-center gap-2"
+          >
+            <Navigation className="w-4 h-4" />
+            Relancer la recherche
+          </motion.button>
+        </div>
+      </motion.div>
+    );
+  }
 
   const visibleParks = parks.slice(0, 5);
 

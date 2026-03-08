@@ -34,7 +34,8 @@ export async function fetchNearbyParks(lat, lng, radiusM = 3000) {
     }
   } catch {}
 
-  // Overpass QL query: dog parks + parks that accept dogs
+  // Overpass QL query: dog parks + parks with dog tags + all public parks (fallback)
+  // Most parks in France/Europe don't have a dog tag on OSM, so we include all parks
   // Note: relations excluded — `out center tags` doesn't return coordinates for relations
   const query = `[out:json][timeout:10];
 (
@@ -44,6 +45,8 @@ export async function fetchNearbyParks(lat, lng, radiusM = 3000) {
   way["leisure"="park"]["dog"="yes"](around:${radiusM},${lat},${lng});
   node["leisure"="park"]["dog"="leashed"](around:${radiusM},${lat},${lng});
   way["leisure"="park"]["dog"="leashed"](around:${radiusM},${lat},${lng});
+  node["leisure"="park"](around:${radiusM},${lat},${lng});
+  way["leisure"="park"](around:${radiusM},${lat},${lng});
 );
 out center tags;`;
 
@@ -76,7 +79,7 @@ out center tags;`;
       lat: elLat,
       lng: elLng,
       distanceKm: haversineKm(lat, lng, elLat, elLng),
-      type: isDogPark ? "dog_park" : (tags.dog === "leashed" ? "park_leashed" : "park_dog_ok"),
+      type: isDogPark ? "dog_park" : tags.dog === "leashed" ? "park_leashed" : tags.dog === "yes" ? "park_dog_ok" : "park_general",
       tags: {
         dog: tags.dog,
         surface: tags.surface,
