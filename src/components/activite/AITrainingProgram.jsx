@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, Clock, RotateCcw, CheckCircle2, BookmarkCheck, Home, Check, CalendarDays, Lightbulb, Eye, Star, MessageSquare } from "lucide-react";
+import { Sparkles, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, Clock, RotateCcw, CheckCircle2, BookmarkCheck, Home, Check, CalendarDays, Lightbulb, Eye, Star, MessageSquare, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { differenceInMonths } from "date-fns";
 import { toast } from "sonner";
@@ -37,6 +37,20 @@ const FEELING_OPTIONS = [
   { emoji: "😄", label: "Super" },
   { emoji: "🤩", label: "Incroyable" },
 ];
+
+function getCoachInsight(feeling, observedCount, totalIndicators, dogName) {
+  const name = dogName || "ton chien";
+  if (feeling >= 4 && observedCount >= 2) {
+    return { emoji: "🌟", title: "Progression remarquable", message: `${observedCount}/${totalIndicators} signes de progression observés — ${name} et toi formez une super équipe. Le prochain programme va consolider ces acquis.` };
+  }
+  if (feeling >= 3 || observedCount >= 1) {
+    return { emoji: "💪", title: "Beau parcours", message: `Les résultats commencent à se voir ! Continue sur cette lancée avec ${name} — la régularité est la clé.` };
+  }
+  if (feeling >= 1) {
+    return { emoji: "🌱", title: "Les bases sont posées", message: `Chaque programme renforce ta relation avec ${name}. Les vrais résultats arrivent souvent au 2e ou 3e programme — persévère.` };
+  }
+  return { emoji: "🐾", title: "Premier pas franchi", message: `Tu as pris le temps de t'investir pour ${name} — c'est déjà énorme. Le prochain programme s'adaptera à tes observations.` };
+}
 
 function addDaysToDate(dateStr, days) {
   const d = new Date(dateStr + "T00:00:00");
@@ -174,13 +188,16 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
 }
 
 // ─── CompletionCard ────────────────────────────────────────
-function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, onNewProgram }) {
+function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, onNewProgram, bilanJustSaved }) {
   const { observed, setObserved, feeling, setFeeling, feedback, setFeedback, nextFocus, setNextFocus, bilanSaved } = bilanState;
   const confetti = Array.from({ length: 10 }, (_, i) => ({
     x: 10 + Math.random() * 80,
     delay: Math.random() * 0.6,
     emoji: ["🎉", "⭐", "🐾", "💪", "🏆"][i % 5],
   }));
+
+  const totalIndicators = program.progression_indicators?.length || 0;
+  const insight = bilanSaved ? getCoachInsight(feeling, observed.length, totalIndicators, dog?.name) : null;
 
   return (
     <div className="space-y-4 pb-8">
@@ -345,20 +362,89 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
             Enregistrer mon bilan
           </Button>
         ) : (
-          <div className="flex items-center justify-center gap-2 py-2 text-blue-700 text-sm font-bold">
-            <CheckCircle2 className="w-4 h-4" /> Bilan enregistré
-          </div>
+          <motion.div
+            initial={bilanJustSaved ? { scale: 0.9, opacity: 0 } : false}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="flex items-center justify-center gap-2 py-2.5 text-blue-700 text-sm font-bold"
+          >
+            <motion.div animate={bilanJustSaved ? { scale: [0, 1.3, 1] } : {}} transition={{ duration: 0.4 }}>
+              <CheckCircle2 className="w-5 h-5" />
+            </motion.div>
+            Bilan enregistré !
+          </motion.div>
         )}
       </div>
 
-      {/* CTA new program */}
-      <Button
-        onClick={onNewProgram}
-        className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
-      >
-        <Sparkles className="w-4 h-4 mr-2" />
-        Nouveau programme 7 jours
-      </Button>
+      {/* ─── Post-Bilan: Coach Insight ─── */}
+      {bilanSaved && insight && (
+        <motion.div
+          initial={bilanJustSaved ? { y: 24, opacity: 0 } : false}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: bilanJustSaved ? 0.3 : 0, type: "spring", stiffness: 400, damping: 30 }}
+          className="bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 rounded-2xl p-4"
+        >
+          <div className="flex items-start gap-3">
+            <motion.span
+              className="text-2xl flex-shrink-0"
+              animate={bilanJustSaved ? { scale: [0, 1.2, 1], rotate: [0, 10, -10, 0] } : {}}
+              transition={{ duration: 0.6, delay: bilanJustSaved ? 0.5 : 0 }}
+            >
+              {insight.emoji}
+            </motion.span>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-sm text-emerald-800">{insight.title}</p>
+              <p className="text-xs text-emerald-700/80 leading-relaxed mt-1">{insight.message}</p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* ─── Post-Bilan: Next Chapter CTA ─── */}
+      {bilanSaved ? (
+        <motion.div
+          initial={bilanJustSaved ? { y: 24, opacity: 0 } : false}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: bilanJustSaved ? 0.7 : 0, type: "spring", stiffness: 400, damping: 30 }}
+          className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-5 text-white space-y-3"
+        >
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-violet-200" />
+            <p className="font-black text-base">Ton prochain chapitre</p>
+          </div>
+          {nextFocus.length > 0 ? (
+            <>
+              <p className="text-white/80 text-xs leading-relaxed">
+                Prochain focus : <strong>{nextFocus.join(", ")}</strong>. Le programme sera taillé sur mesure.
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {nextFocus.map(f => (
+                  <span key={f} className="text-[10px] font-bold bg-white/20 text-white px-2.5 py-1 rounded-full">
+                    {GOAL_SUGGESTIONS.find(g => g.label === f)?.emoji} {f}
+                  </span>
+                ))}
+              </div>
+            </>
+          ) : (
+            <p className="text-white/80 text-xs leading-relaxed">
+              Laisse le coach te surprendre avec un programme adapté aux progrès de {dog?.name || "ton chien"}.
+            </p>
+          )}
+          <Button onClick={onNewProgram} className="w-full bg-white text-violet-700 hover:bg-violet-50 font-bold" size="sm">
+            <Sparkles className="w-4 h-4 mr-2" />
+            Lancer mon prochain programme
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        </motion.div>
+      ) : (
+        <Button
+          onClick={onNewProgram}
+          className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+        >
+          <Sparkles className="w-4 h-4 mr-2" />
+          Nouveau programme 7 jours
+        </Button>
+      )}
     </div>
   );
 }
@@ -383,6 +469,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
   const [bilanFeedback, setBilanFeedback] = useState("");
   const [bilanNextFocus, setBilanNextFocus] = useState([]);
   const [bilanSaved, setBilanSaved] = useState(false);
+  const [bilanJustSaved, setBilanJustSaved] = useState(false);
 
   // Load saved program + past programs from Bookmarks
   useEffect(() => {
@@ -510,6 +597,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     const updatedProgram = { ...program, bilan };
     setProgram(updatedProgram);
     setBilanSaved(true);
+    setBilanJustSaved(true);
     try {
       await base44.entities.Bookmark.update(bookmarkId, { content: JSON.stringify(updatedProgram) });
       toast.success("Bilan enregistré !");
@@ -532,6 +620,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     setBilanFeedback("");
     setBilanNextFocus([]);
     setBilanSaved(false);
+    setBilanJustSaved(false);
   };
 
   async function generate() {
@@ -736,6 +825,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         }}
         onSaveBilan={saveBilan}
         onNewProgram={startNewProgram}
+        bilanJustSaved={bilanJustSaved}
       />
     );
   }
