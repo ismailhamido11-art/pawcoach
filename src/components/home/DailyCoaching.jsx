@@ -88,40 +88,59 @@ export default function DailyCoaching({ dog, records = [], exercises = [], scans
         </div>
       </div>
 
-      {/* Smart recommendations */}
-      {topRecs.length > 0 && (
-        <div className="rounded-2xl border border-border/30 bg-white/80 backdrop-blur-sm p-3.5 relative overflow-hidden">
-          <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full bg-primary opacity-[0.05]" />
-          <div className="relative">
+      {/* Next Best Action — hero + mini badges */}
+      {topRecs.length > 0 && (() => {
+        const hero = topRecs[0];
+        const HeroIcon = hero.icon;
+        const mini = topRecs.slice(1, 3);
+        return (
+          <div>
             <div className="flex items-center gap-2 mb-2.5">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
               <p className="text-[10px] font-bold text-foreground/60 uppercase tracking-wider">Pour {dog?.name || "ton chien"} aujourd'hui</p>
             </div>
-            <div className="space-y-1">
-              {topRecs.map((rec) => (
-                <Link key={rec.id} to={createPageUrl(rec.page) + (rec.tab ? `?tab=${rec.tab}` : "")}>
-                  <div className="flex items-center gap-2.5 py-2 group">
-                    <div
-                      className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                      style={{
-                        background: `linear-gradient(135deg, ${rec.iconColor}20, ${rec.iconColor}10)`,
-                        border: `1px solid ${rec.iconColor}20`,
-                      }}
+
+            {/* Hero card */}
+            <Link to={createPageUrl(hero.page) + (hero.tab ? `?tab=${hero.tab}` : "")}>
+              <motion.div
+                whileTap={{ scale: 0.97 }}
+                className={`flex items-center gap-4 bg-white rounded-2xl px-4 py-4 shadow-md border border-border/30 border-l-4 ${hero.accent} cursor-pointer`}
+              >
+                <div className={`w-12 h-12 rounded-2xl ${hero.iconBg} flex items-center justify-center shrink-0`}>
+                  <HeroIcon className="w-6 h-6" style={{ color: hero.iconColor }} strokeWidth={2} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-black text-foreground text-[15px] leading-tight">{hero.label}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{hero.sub}</p>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <span className="text-xs font-bold text-primary">{hero.cta}</span>
+                  <ChevronRight className="w-4 h-4 text-primary" />
+                </div>
+              </motion.div>
+            </Link>
+
+            {/* Mini badges */}
+            {mini.length > 0 && (
+              <div className="flex gap-2 mt-2">
+                {mini.map((rec) => (
+                  <Link key={rec.id} to={createPageUrl(rec.page) + (rec.tab ? `?tab=${rec.tab}` : "")} className="flex-1">
+                    <motion.div
+                      whileTap={{ scale: 0.96 }}
+                      className="flex items-center gap-2.5 bg-white rounded-xl px-3 py-2.5 border border-border/20 cursor-pointer"
                     >
-                      <rec.icon className="w-3.5 h-3.5" style={{ color: rec.iconColor }} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-semibold text-foreground truncate">{rec.label}</p>
-                      <p className="text-[10px] text-muted-foreground">{rec.sub}</p>
-                    </div>
-                    <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/30 group-hover:text-muted-foreground transition-colors" />
-                  </div>
-                </Link>
-              ))}
-            </div>
+                      <div className={`w-8 h-8 rounded-lg ${rec.iconBg} flex items-center justify-center shrink-0`}>
+                        <rec.icon className="w-4 h-4" style={{ color: rec.iconColor }} strokeWidth={2} />
+                      </div>
+                      <p className="text-[11px] font-semibold text-foreground leading-tight line-clamp-2">{rec.label}</p>
+                    </motion.div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        );
+      })()}
     </motion.div>
   );
 }

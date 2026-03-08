@@ -14,6 +14,7 @@ import DailyCoaching from "../components/home/DailyCoaching";
 import QuickActions from "../components/home/QuickActions";
 import BadgeTeaser from "../components/home/BadgeTeaser";
 import ActiveProgramCards from "../components/home/ActiveProgramCards";
+import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
 import CombinedFAB from "../components/CombinedFAB";
 
 import { Flame } from "lucide-react";
@@ -58,6 +59,12 @@ export default function Home() {
   const [nutritionPlans, setNutritionPlans] = useState([]);
   const [trainingBookmarks, setTrainingBookmarks] = useState([]);
 
+  const [weeklyInsight, setWeeklyInsight] = useState(null);
+  const [previousInsight, setPreviousInsight] = useState(null);
+  const [pastInsights, setPastInsights] = useState([]);
+  const [insightExpanded, setInsightExpanded] = useState(false);
+  const [markingRead, setMarkingRead] = useState(false);
+
   const [milestone, setMilestone] = useState(null);
   const [showPremiumNudge, setShowPremiumNudge] = useState(false);
   const [showPostTrial, setShowPostTrial] = useState(false);
@@ -95,6 +102,19 @@ export default function Home() {
           if (streaks?.length > 0) setStreak(streaks[0]);
           const sorted = (recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7);
           setRecentCheckins(sorted);
+          // Weekly insights (premium only)
+          if (isUserPremium(u)) {
+            try {
+              const allInsights = await base44.entities.WeeklyInsight.filter({ dog_id: d.id }, "-week_start", 10);
+              if (allInsights?.length > 0) {
+                const unread = allInsights.find(i => !i.is_read);
+                const read = allInsights.filter(i => i.is_read);
+                setWeeklyInsight(unread || null);
+                setPreviousInsight(allInsights[1] || null);
+                setPastInsights(read.slice(0, 5));
+              }
+            } catch (e) { console.warn("Weekly insights load failed:", e); }
+          }
           // Premium nudge — declenche a J2+ (pas J0)
           const signupDaysAgo = u.signup_date
             ? Math.floor((Date.now() - new Date(u.signup_date)) / (1000 * 60 * 60 * 24))
@@ -193,8 +213,34 @@ export default function Home() {
         else setTodayCheckin(null);
         if (streaks?.length > 0) setStreak(streaks[0]);
         setRecentCheckins((recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7));
+        // Refresh weekly insights
+        const u = await base44.auth.me();
+        if (isUserPremium(u)) {
+          try {
+            const allInsights = await base44.entities.WeeklyInsight.filter({ dog_id: d.id }, "-week_start", 10);
+            if (allInsights?.length > 0) {
+              const unread = allInsights.find(i => !i.is_read);
+              const read = allInsights.filter(i => i.is_read);
+              setWeeklyInsight(unread || null);
+              setPreviousInsight(allInsights[1] || null);
+              setPastInsights(read.slice(0, 5));
+            }
+          } catch (e) { console.warn("Weekly insights refresh failed:", e); }
+        }
       }
     } catch (e) { console.error(e); }
+  };
+
+  const handleMarkInsightRead = async () => {
+    if (!weeklyInsight || markingRead) return;
+    setMarkingRead(true);
+    try {
+      await base44.entities.WeeklyInsight.update(weeklyInsight.id, { is_read: true });
+      setPastInsights(prev => [weeklyInsight, ...prev].slice(0, 5));
+      setWeeklyInsight(null);
+      setInsightExpanded(false);
+    } catch (e) { console.error("Mark read error:", e); }
+    finally { setMarkingRead(false); }
   };
 
   if (loading) {
@@ -257,7 +303,23 @@ export default function Home() {
           />
         </div>
 
-        {/* Block 2b: Active Program Cards (training + nutrition) */}
+        {/* Block 2b: Weekly Insight (premium) */}
+        {(weeklyInsight || pastInsights.length > 0) && (
+          <div className="mt-3">
+            <WeeklyInsightCard
+              insight={weeklyInsight}
+              previousInsight={previousInsight}
+              pastInsights={pastInsights}
+              dog={dog}
+              expanded={insightExpanded}
+              onToggle={() => setInsightExpanded(e => !e)}
+              onMarkRead={handleMarkInsightRead}
+              markingRead={markingRead}
+            />
+          </div>
+        )}
+
+        {/* Block 2c: Active Program Cards (training + nutrition) */}
         <div className="mt-3">
           <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} />
         </div>

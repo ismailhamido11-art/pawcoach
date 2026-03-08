@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
-import { Sparkles, CheckCircle2, TrendingUp } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { Sparkles, CheckCircle2, ChevronRight, Dumbbell, ScanLine, Stethoscope } from "lucide-react";
 import { MOOD_OPTIONS, ENERGY_OPTIONS, APPETITE_OPTIONS } from "./CheckinCard";
 
 const MOOD_EMOJI = { 1: "😔", 2: "😐", 3: "😊", 4: "🤩" };
@@ -79,27 +81,51 @@ export default function CheckinResult({ checkin, dog }) {
           ))}
         </div>
 
-        {/* AI Response */}
-        {checkin.ai_response && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="mx-4 mb-5 rounded-2xl p-4 border"
-            style={{
-              background: `${dominantColor}12`,
-              borderColor: `${dominantColor}25`,
-            }}
-          >
-            <div className="flex items-center gap-1.5 mb-2">
-              <Sparkles className="w-3 h-3" style={{ color: dominantColor }} />
-              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: dominantColor }}>
-                Analyse PawCoach IA
-              </span>
-            </div>
-            <p className="text-white/80 text-[13px] leading-relaxed">{checkin.ai_response}</p>
-          </motion.div>
-        )}
+        {/* AI Response + contextual CTA */}
+        {checkin.ai_response && (() => {
+          const cta = checkin.energy === 3
+            ? { icon: Dumbbell, label: "Lancer un exercice de dressage", page: "Activite", tab: "dressage", color: "#10b981" }
+            : checkin.appetite === 1
+            ? { icon: ScanLine, label: "Scanner ses croquettes", page: "Scan", tab: null, color: "#3b82f6" }
+            : checkin.mood <= 2
+            ? { icon: Stethoscope, label: "Verifier ses symptomes", page: "Sante", tab: "malade", color: "#ef4444" }
+            : null;
+
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="mx-4 mb-5 rounded-2xl p-4 border"
+              style={{
+                background: `${dominantColor}12`,
+                borderColor: `${dominantColor}25`,
+              }}
+            >
+              <div className="flex items-center gap-1.5 mb-2">
+                <Sparkles className="w-3 h-3" style={{ color: dominantColor }} />
+                <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: dominantColor }}>
+                  Analyse PawCoach IA
+                </span>
+              </div>
+              <p className="text-white/80 text-[13px] leading-relaxed">{checkin.ai_response}</p>
+
+              {cta && (
+                <Link to={createPageUrl(cta.page) + (cta.tab ? `?tab=${cta.tab}` : "")}>
+                  <motion.div
+                    whileTap={{ scale: 0.96 }}
+                    className="mt-3 flex items-center gap-2.5 rounded-xl px-3 py-2.5 cursor-pointer"
+                    style={{ background: `${cta.color}20`, border: `1px solid ${cta.color}30` }}
+                  >
+                    <cta.icon className="w-4 h-4" style={{ color: cta.color }} />
+                    <span className="text-xs font-bold text-white/90 flex-1">{cta.label}</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-white/40" />
+                  </motion.div>
+                </Link>
+              )}
+            </motion.div>
+          );
+        })()}
       </div>
     </motion.div>
   );

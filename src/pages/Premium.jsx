@@ -15,7 +15,7 @@ const MONTHLY_PRICE_ID = "price_1T4tkFDuhaIxY4PGpnhDTx5L";
 const ANNUAL_PRICE_ID = "price_1T4tkFDuhaIxY4PGWLeWApDL";
 
 const FEATURES = [
-  { text: "Chat IA illimité avec PawCoach", premium: true, free: "5/jour" },
+  { text: "Chat IA illimité avec PawCoach", premium: true, free: "10/jour" },
   { text: "Scans alimentaires illimités", premium: true, free: "3/semaine" },
   { text: "Tous les exercices de dressage (10)", premium: true, free: "3 exercices" },
   { text: "Carnet santé complet (visites, médicaments)", premium: true, free: "Vaccins, poids, notes" },

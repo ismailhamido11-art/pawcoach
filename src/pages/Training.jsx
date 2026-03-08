@@ -8,7 +8,7 @@ import MilestoneScreen from "../components/training/MilestoneScreen";
 import FreeExercisesGate from "../components/training/FreeExercisesGate";
 import JourneyCard from "../components/training/JourneyCard";
 import JourneyView from "../components/training/JourneyView";
-import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw } from "lucide-react";
+import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw, ChevronRight, Sparkles, Lock } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
 import { useNavigate, Link } from "react-router-dom";
@@ -65,6 +65,84 @@ const JOURNEYS = [
   },
 ];
 
+const BEHAVIOR_GUIDES = [
+  {
+    id: "reactivity",
+    name: "Reactivite en laisse",
+    emoji: "😤",
+    description: "Ton chien aboie ou tire sur d'autres chiens/personnes en promenade",
+    isFree: true,
+    duration: "2-8 semaines",
+    steps: [
+      "Identifie la distance de declenchement (seuil) — c'est la distance a laquelle ton chien reagit. Reste TOUJOURS en dessous.",
+      "Des que le stimulus (chien, personne) est visible, donne des friandises haute valeur en continu. Quand il disparait, les friandises s'arretent.",
+      "Reduis la distance TRES progressivement (sur plusieurs semaines). Si ton chien reagit, tu es alle trop vite — recule.",
+    ],
+    alarm: "Si ton chien a mordu ou menace de mordre, consulte un comportementaliste certifie (pas un educateur classique).",
+    errors: ["Raccourcir la laisse (augmente la tension)", "Punir les aboiements (augmente le stress)", "Forcer la rencontre avec le stimulus"],
+  },
+  {
+    id: "pulling",
+    name: "Tirage en laisse",
+    emoji: "🦮",
+    description: "Ton chien tire fort en promenade et tu as du mal a le controler",
+    isFree: true,
+    duration: "2-4 semaines",
+    steps: [
+      "Des que la laisse se tend, arrete-toi completement. Ne tire pas, ne parle pas. Attends.",
+      "Quand la laisse se detend naturellement (ton chien se retourne ou recule), repars immediatement en le felicitant.",
+      "Recompense regulierement quand il marche a cote de toi sans tirer. Varie les friandises pour garder son interet.",
+    ],
+    alarm: "Si le tirage est accompagne de grognements ou de reactivite, c'est un probleme de reactivite (voir fiche dediee).",
+    errors: ["Tirer en retour (ca renforce le tirage)", "Utiliser un collier etrangleur (douleur = stress)", "Etre inconsistant (parfois laisser tirer)"],
+  },
+  {
+    id: "barking",
+    name: "Aboiements intempestifs",
+    emoji: "📢",
+    description: "Ton chien aboie excessivement a la maison ou en promenade",
+    isFree: false,
+    duration: "1-4 semaines",
+    steps: [
+      "Identifie le TYPE d'aboiement (territorial, ennui, anxiete, demande d'attention). Chaque type a une solution differente.",
+      "Ne punis JAMAIS l'aboiement — ca augmente le stress. Redirige plutot vers un comportement incompatible (ex: \"va sur ton tapis\").",
+      "Pour les aboiements d'ennui : augmente la stimulation mentale (jeux de flair, Kong, promenades variees). 15 min de stimulation mentale = 1h d'exercice physique.",
+    ],
+    alarm: "Des aboiements soudains et inhabituels peuvent signaler une douleur. Si c'est nouveau, consulte ton veterinaire.",
+    errors: ["Crier pour le faire taire (il pense que tu aboies aussi)", "Ignorer sans proposer d'alternative", "Utiliser un collier anti-aboiement"],
+  },
+  {
+    id: "separation",
+    name: "Anxiete de separation",
+    emoji: "😰",
+    description: "Ton chien panique, detruit ou aboie quand tu pars",
+    isFree: false,
+    duration: "4-12 semaines",
+    steps: [
+      "Exercices d'independance : apprends-lui \"VA SUR TON TAPIS\" et recompense le calme a distance. Objectif : qu'il soit a l'aise sans contact permanent.",
+      "Decouple les indices de depart : prends tes cles, mets ton manteau, puis rassieds-toi. Repete jusqu'a ce que ces gestes ne declenchent plus de stress.",
+      "Desensibilisation progressive : sors 1 seconde, reviens. Puis 5s, 15s, 30s, 1min, 3min... JAMAIS depasser le seuil ou il panique.",
+    ],
+    alarm: "Si ton chien se blesse (griffe les portes, saigne) ou ne mange plus en ton absence, c'est severe — un veterinaire comportementaliste peut prescrire un traitement temporaire.",
+    errors: ["Punir les destructions au retour (il ne comprend pas)", "Partir longtemps sans preparation", "Faire des adieux dramatiques"],
+  },
+  {
+    id: "noise",
+    name: "Peur des bruits",
+    emoji: "🎆",
+    description: "Ton chien tremble, se cache ou panique lors de bruits forts (orage, feux d'artifice, travaux)",
+    isFree: false,
+    duration: "2-6 semaines",
+    steps: [
+      "Desensibilisation sonore : joue les bruits concernes a un volume A PEINE perceptible pendant que ton chien mange ou joue. Association positive uniquement.",
+      "Augmente le volume TRES progressivement (sur plusieurs jours/semaines). Si ton chien montre le moindre signe de stress, baisse le volume.",
+      "Pendant un episode reel : propose un refuge securisant (piece calme, couverture, white noise). Consoler ton chien est OK — le mythe que ca renforce la peur est faux.",
+    ],
+    alarm: "Si la peur est generalisee (pas seulement les bruits) ou empire malgre le travail, consulte un comportementaliste.",
+    errors: ["Forcer l'exposition au bruit (sensibilisation inversee)", "Ignorer le chien pendant une crise", "Utiliser des petards pour l'habituer (traumatisant)"],
+  },
+];
+
 const MILESTONES = [3, 5, 10];
 
 export default function Training() {
@@ -81,6 +159,7 @@ export default function Training() {
    const params = new URLSearchParams(window.location.search);
    const journeyId = params.get("journey");
    const exerciseId = params.get("exercise");
+   const behaviorId = params.get("behavior");
 
    useEffect(() => { loadData(); }, []);
 
@@ -288,6 +367,94 @@ export default function Training() {
      );
    }
 
+  // Behavior guide detail
+  if (behaviorId) {
+    const guide = BEHAVIOR_GUIDES.find(g => g.id === behaviorId);
+    if (!guide) return null;
+    const locked = !guide.isFree && !isPremium;
+    return (
+      <div className="min-h-screen bg-background pb-24">
+        <WellnessBanner />
+        <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] safe-pt-14 pb-6 px-5 relative">
+          <button onClick={() => navigate(createPageUrl("Training"))} className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/20 flex items-center justify-center z-20">
+            <ChevronRight className="w-5 h-5 text-white rotate-180" />
+          </button>
+          <div className="text-center pt-2">
+            <span className="text-4xl mb-2 block">{guide.emoji}</span>
+            <h1 className="text-white font-black text-xl">{guide.name}</h1>
+            <p className="text-white/70 text-sm mt-1">{guide.duration} de travail</p>
+          </div>
+        </div>
+
+        {locked ? (
+          <div className="px-5 pt-6">
+            <div className="bg-muted/50 rounded-2xl p-6 text-center border border-border">
+              <p className="text-lg mb-2">🔒</p>
+              <p className="font-bold text-foreground mb-1">Fiche Premium</p>
+              <p className="text-sm text-muted-foreground mb-4">Accede aux 5 fiches comportement avec Premium</p>
+              <Link to={createPageUrl("Premium") + "?from=training"} className="inline-block bg-primary text-white font-bold text-sm px-6 py-3 rounded-xl">Debloquer</Link>
+            </div>
+          </div>
+        ) : (
+          <div className="px-5 pt-5 space-y-4">
+            {/* Steps */}
+            <div className="space-y-3">
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Les 3 etapes</p>
+              {guide.steps.map((step, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 + i * 0.1 }}
+                  className="flex gap-3 bg-white rounded-2xl p-4 border border-border/30 shadow-sm"
+                >
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-sm font-black text-primary">{i + 1}</span>
+                  </div>
+                  <p className="text-sm text-foreground leading-relaxed">{step}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Errors to avoid */}
+            {guide.errors && (
+              <div className="bg-red-50 rounded-2xl p-4 border border-red-200">
+                <p className="text-xs font-bold text-red-700 uppercase tracking-widest mb-2">A ne surtout PAS faire</p>
+                <ul className="space-y-1.5">
+                  {guide.errors.map((err, i) => (
+                    <li key={i} className="text-sm text-red-700 flex gap-2">
+                      <span className="shrink-0">✕</span>
+                      <span>{err}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Alarm signal */}
+            <div className="bg-amber-50 rounded-2xl p-4 border border-amber-200">
+              <p className="text-xs font-bold text-amber-700 uppercase tracking-widest mb-2">Quand consulter</p>
+              <p className="text-sm text-amber-800 leading-relaxed">{guide.alarm}</p>
+            </div>
+
+            {/* CTA Chat */}
+            <Link to={createPageUrl("Chat") + `?help=${encodeURIComponent(`J'ai un probleme de ${guide.name.toLowerCase()} avec ${dog?.name || "mon chien"}. Peux-tu m'aider ?`)}`}>
+              <div className="bg-primary/10 rounded-2xl p-4 border border-primary/20 flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-primary shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-foreground">Demander conseil a PawCoach</p>
+                  <p className="text-xs text-muted-foreground">L'IA peut t'aider avec ce probleme specifique</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-primary" />
+              </div>
+            </Link>
+          </div>
+        )}
+        <BottomNav currentPage="Training" />
+      </div>
+    );
+  }
+
   // Main journey list
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -367,6 +534,35 @@ export default function Training() {
               isNext={isNext}
               onClick={() => locked ? navigate(createPageUrl("Premium")) : navigate(createPageUrl("Training") + `?journey=${journey.id}`)}
             />
+          );
+        })}
+      </div>
+
+      {/* Behavior guides section */}
+      <div className="px-4 pt-6 space-y-3">
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1 mb-1">Problemes courants</p>
+        {BEHAVIOR_GUIDES.map((guide, idx) => {
+          const locked = !guide.isFree && !isPremium;
+          return (
+            <motion.div
+              key={guide.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 * idx }}
+              onClick={() => locked ? navigate(createPageUrl("Premium") + "?from=training") : navigate(createPageUrl("Training") + `?behavior=${guide.id}`)}
+              className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 border border-border/30 shadow-sm cursor-pointer active:scale-[0.98] transition-transform"
+            >
+              <span className="text-2xl shrink-0">{guide.emoji}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-foreground truncate">{guide.name}</p>
+                <p className="text-xs text-muted-foreground line-clamp-1">{guide.description}</p>
+              </div>
+              {locked ? (
+                <Lock className="w-4 h-4 text-muted-foreground/50 shrink-0" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-muted-foreground/50 shrink-0" />
+              )}
+            </motion.div>
           );
         })}
       </div>

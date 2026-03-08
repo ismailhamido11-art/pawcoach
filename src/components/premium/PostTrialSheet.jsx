@@ -6,7 +6,7 @@ import { X, ChevronRight, MessageCircle, ScanLine, Dumbbell, Bell, Lock } from "
 import Illustration from "../illustrations/Illustration";
 
 const LOST_FEATURES = [
-  { icon: MessageCircle, label: "Chat IA illimite (retour a 5/jour)", color: "#3b82f6" },
+  { icon: MessageCircle, label: "Chat IA illimite (retour a 10/jour)", color: "#3b82f6" },
   { icon: ScanLine, label: "Scans illimites (retour a 3/semaine)", color: "#2d9f82" },
   { icon: Dumbbell, label: "Exercices avances de dressage", color: "#6366f1" },
   { icon: Bell, label: "Rappels sante automatiques", color: "#ef4444" },
