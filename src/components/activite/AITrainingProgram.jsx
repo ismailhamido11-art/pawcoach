@@ -487,6 +487,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
           try {
             const data = typeof bk.content === "string" ? JSON.parse(bk.content) : bk.content;
             if (!data?.start_date || !data?.days || !Array.isArray(data.days)) continue;
+            if (data.archived) continue;
             const elapsed = getElapsedDays(data.start_date);
             const totalDays = data.duration_days || 7;
             const allDone = (data.completed_days || []).length >= totalDays;
@@ -606,7 +607,22 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     }
   };
 
-  const startNewProgram = () => {
+  const startNewProgram = async () => {
+    // Archive old bookmark so it won't reload as active
+    if (bookmarkId && program) {
+      try {
+        const archived = { ...program, archived: true };
+        await base44.entities.Bookmark.update(bookmarkId, { content: JSON.stringify(archived) });
+      } catch {}
+    }
+    // Add to pastPrograms for anti-redundancy
+    if (program?.program_title) {
+      setPastPrograms(prev => [{
+        title: program.program_title, date: program.start_date,
+        themes: program.days?.map(d => d.theme).filter(Boolean) || [],
+        bilan: program.bilan || null,
+      }, ...prev]);
+    }
     // Pre-fill goals from bilan next_focus
     if (bilanNextFocus.length > 0) {
       setSelectedGoals(bilanNextFocus);
@@ -643,17 +659,49 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         weeklyWalkMinutes,
         previousPrograms: pastPrograms.map(p => p.title).filter(Boolean),
       });
-      let prog = resp.data?.program;
+      // Robust response parsing (handles both resp.data.program and resp.program)
+      let respData = resp?.data || resp;
+      if (typeof respData === "string") { try { respData = JSON.parse(respData); } catch {} }
+      let prog = respData?.program;
       if (typeof prog === "string") { try { prog = JSON.parse(prog); } catch {} }
-      setProgram(prog);
+
+      // Validate program structure
+      if (!prog || !Array.isArray(prog.days) || prog.days.length === 0) {
+        console.error("Invalid program response:", resp);
+        toast.error("Le programme généré est invalide. Réessaie.");
+        return;
+      }
+
+      // Auto-save: create bookmark immediately so checkboxes work from the start
+      const startDate = new Date().toISOString().split("T")[0];
+      const payload = { ...prog, start_date: startDate, dog_name: dog.name, completed_days: [] };
+      setProgram(payload);
+      setCompletedDays([]);
       setShowGoalInput(false);
       setOpenDay(0);
+
+      try {
+        const user = await base44.auth.me();
+        const created = await base44.entities.Bookmark.create({
+          dog_id: dog.id, owner: user.email,
+          content: JSON.stringify(payload), source: "training",
+          title: prog.program_title?.slice(0, 60) || "Programme activité",
+          created_at: new Date().toISOString(),
+        });
+        setBookmarkId(created.id);
+        setSaved(true);
+      } catch (saveErr) {
+        console.error("Auto-save failed:", saveErr);
+        // User can still click "Activer" manually
+      }
+
       toast.success("Programme généré !");
       if (!isPremium) await consume();
       if (dog?.id && dog?.owner) {
         checkTrainingBadges(dog.id, dog.owner).catch(() => {});
       }
     } catch (err) {
+      console.error("Generate error:", err);
       toast.error("Erreur lors de la génération.");
     } finally {
       setGenerating(false);
