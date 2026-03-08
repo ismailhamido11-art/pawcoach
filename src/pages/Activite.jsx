@@ -82,9 +82,6 @@ export default function Activite() {
     checkWalkBadges(dog.id, user.email, l || []);
   };
 
-  const totalWalkMinutes = logs.reduce((acc, l) => acc + (l.walk_minutes || 0), 0);
-  const walkDays = logs.filter(l => l.walk_minutes > 0).length;
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <WellnessBanner />
@@ -96,24 +93,6 @@ export default function Activite() {
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
             <h1 className="text-white font-black text-2xl">Activité</h1>
             {dog && <p className="text-white/70 text-xs mt-0.5">Suivi des balades de {dog.name}</p>}
-
-            {/* Quick stats */}
-            {!loading && logs.length > 0 && (
-              <div className="flex gap-2 mt-2">
-                <div className="bg-white/15 rounded-xl px-3 py-1.5 text-center">
-                  <p className="text-white font-black text-base leading-none">{walkDays}</p>
-                  <p className="text-white/70 text-[10px] mt-0.5">Sorties</p>
-                </div>
-                <div className="bg-white/15 rounded-xl px-3 py-1.5 text-center">
-                  <p className="text-white font-black text-base leading-none">{Math.round(totalWalkMinutes / 60)}h</p>
-                  <p className="text-white/70 text-[10px] mt-0.5">Total</p>
-                </div>
-                <div className="bg-white/15 rounded-xl px-3 py-1.5 text-center">
-                  <p className="text-white font-black text-base leading-none">{walkDays > 0 ? Math.round(totalWalkMinutes / walkDays) : 0}</p>
-                  <p className="text-white/70 text-[10px] mt-0.5">Moy. min</p>
-                </div>
-              </div>
-            )}
           </div>
           <motion.div
             animate={{ scale: [1, 1.03, 1] }}
