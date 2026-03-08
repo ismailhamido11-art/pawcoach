@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { format, parseISO, isSameWeek, subDays } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Flame, Trophy, Zap } from "lucide-react";
+import { Flame, Trophy, Zap, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import ActivityCalendar from "./ActivityCalendar";
 
@@ -85,6 +85,14 @@ export default function TrackerHistory({ logs, dog }) {
   }, [sorted]);
   const weeklyProgress = Math.min(weeklyWalks / WEEKLY_GOAL, 1);
 
+  const todayStr = format(new Date(), "yyyy-MM-dd");
+  const todayLog = sorted.find(l => l.date === todayStr);
+  const todayMood = moods[todayStr];
+
+  const DAY_NAMES = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+  const bestDayIdx = dayAvgs.reduce((best, d, i) => d.avg > dayAvgs[best].avg ? i : best, 0);
+  const bestDayInsight = dayAvgs[bestDayIdx].avg > 0 ? `Ton jour le plus actif : le ${DAY_NAMES[bestDayIdx]}` : null;
+
   if (sorted.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center space-y-3">
@@ -97,6 +105,36 @@ export default function TrackerHistory({ logs, dog }) {
 
   return (
     <div className="space-y-4 pb-4">
+      {/* Today card */}
+      <div className="bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/15 rounded-2xl p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-black text-foreground capitalize">
+              {format(new Date(), "EEEE d MMMM", { locale: fr })}
+            </p>
+            {todayLog?.walk_minutes ? (
+              <p className="text-[10px] text-safe font-bold mt-0.5">
+                {todayLog.walk_minutes} min de balade aujourd'hui
+              </p>
+            ) : (
+              <p className="text-[10px] text-muted-foreground mt-0.5">Pas encore de balade aujourd'hui</p>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {todayMood && <span className="text-xl">{MOOD_EMOJIS[todayMood.mood]}</span>}
+            {todayLog?.walk_minutes ? (
+              <div className="w-10 h-10 rounded-full bg-safe/15 flex items-center justify-center">
+                <span className="text-base">{"\u2705"}</span>
+              </div>
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-secondary/30 flex items-center justify-center">
+                <Calendar className="w-5 h-5 text-muted-foreground" />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Streak flame */}
       {streaks.current > 0 && (
         <motion.div
@@ -191,6 +229,9 @@ export default function TrackerHistory({ logs, dog }) {
             </div>
           ))}
         </div>
+        {bestDayInsight && (
+          <p className="text-[10px] text-primary/70 font-semibold mt-2 text-center">{bestDayInsight}</p>
+        )}
       </div>
 
       {/* Bar chart 14 days */}
@@ -219,17 +260,29 @@ export default function TrackerHistory({ logs, dog }) {
         </div>
       )}
 
-      {/* Log list with mood */}
+      {/* Log list with mood + month headers */}
       <div className="space-y-2">
-        {sorted.slice(0, 15).map((log, i) => {
+        {sorted.slice(0, 15).flatMap((log, i, arr) => {
           const mood = moods[log.date];
-          return (
-            <div key={i} className="bg-white border border-border rounded-2xl px-4 py-3 flex items-center justify-between">
+          const logDate = parseISO(log.date);
+          const prevDate = i > 0 ? parseISO(arr[i - 1].date) : null;
+          const showMonthHeader = i === 0 || logDate.getMonth() !== prevDate?.getMonth();
+
+          const elements = [];
+          if (showMonthHeader) {
+            elements.push(
+              <p key={`month-${log.date}`} className="text-[10px] font-bold text-muted-foreground tracking-wide pt-1 capitalize">
+                {format(logDate, "MMMM yyyy", { locale: fr })}
+              </p>
+            );
+          }
+          elements.push(
+            <div key={log.date} className="bg-white border border-border rounded-2xl px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2.5 min-w-0">
                 {mood && <span className="text-base flex-shrink-0">{MOOD_EMOJIS[mood.mood] || ""}</span>}
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-foreground">
-                    {format(parseISO(log.date), "EEEE dd MMM", { locale: fr })}
+                  <p className="text-sm font-bold text-foreground capitalize">
+                    {format(logDate, "EEEE d MMM", { locale: fr })}
                   </p>
                   {log.notes && <p className="text-xs text-muted-foreground mt-0.5 truncate max-w-[180px]">{log.notes}</p>}
                   {mood?.tags?.length > 0 && (
@@ -253,6 +306,7 @@ export default function TrackerHistory({ logs, dog }) {
               </div>
             </div>
           );
+          return elements;
         })}
       </div>
     </div>
