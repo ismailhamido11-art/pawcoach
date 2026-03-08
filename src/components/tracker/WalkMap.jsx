@@ -16,19 +16,18 @@ export default function WalkMap({ path, currentPos }) {
   const lastTwo = path.length >= 2 ? path.slice(-2) : null;
 
   return (
-    <div className="w-full h-52 rounded-2xl overflow-hidden border border-white/10 shadow-xl relative">
+    <div className="w-full h-52 rounded-2xl overflow-hidden border border-border/50 shadow-sm relative">
       <MapContainer
         center={defaultCenter}
         zoom={17}
         zoomControl={false}
         scrollWheelZoom={false}
         className="w-full h-full"
-        style={{ background: "#1a2332" }}
+        style={{ background: "#f0f0f0" }}
         attributionControl={false}
       >
-        {/* Dark map tiles */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
 
         {/* Full path trail */}

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Navigation, TreePine, Dog, Loader2, Shield, Droplets, Sun, Clock, ChevronDown, ExternalLink, Map as MapIcon } from "lucide-react";
 import { fetchNearbyParks, findNearestPark } from "@/utils/overpass";
 import ParkReviews from "./ParkReviews";
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -28,7 +28,16 @@ function createParkIcon(type) {
   });
 }
 
-// No MapFlyTo needed — MapContainer initializes at userPos directly
+/** Auto-fit map to show all parks + user position */
+function FitBounds({ positions }) {
+  const map = useMap();
+  useEffect(() => {
+    if (positions.length >= 2) {
+      map.fitBounds(L.latLngBounds(positions), { padding: [30, 30], maxZoom: 14 });
+    }
+  }, []);
+  return null;
+}
 
 const TYPE_LABELS = {
   dog_park: { label: "Parc canin", color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200", icon: Dog },
@@ -47,9 +56,8 @@ function openDirections(lat, lng) {
   window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=walking`, "_blank");
 }
 
-function openGoogleMaps(lat, lng, name) {
-  const q = name ? `${encodeURIComponent(name)}+${lat},${lng}` : `${lat},${lng}`;
-  window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, "_blank");
+function openGoogleMaps(lat, lng) {
+  window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank");
 }
 
 /** Compute paw rating (1-3) and attribute badges from OSM tags */
@@ -178,7 +186,8 @@ export default function NearbyParks({ dog, user, onNearPark }) {
               attribution='&copy; <a href="https://carto.com">CARTO</a>'
               url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             />
-            {/* Map is already centered on userPos via MapContainer center prop */}
+            {/* Auto-zoom to fit all parks + user */}
+            <FitBounds positions={[userPos, ...visibleParks.map(p => [p.lat, p.lng])]} />
             {/* User position — blue dot */}
             <CircleMarker center={userPos} radius={8} fillColor="#3b82f6" fillOpacity={1} color="white" weight={3} />
             {/* Park markers — colored by type */}
@@ -187,9 +196,26 @@ export default function NearbyParks({ dog, user, onNearPark }) {
               return (
                 <Marker key={park.id} position={[park.lat, park.lng]} icon={createParkIcon(park.type)}>
                   <Popup>
-                    <div className="text-xs">
-                      <p className="font-bold">{park.name}</p>
+                    <div className="text-xs" style={{ minWidth: 140 }}>
+                      <p className="font-bold leading-tight">{park.name}</p>
                       <p className="text-gray-500 mt-0.5">{"🐾".repeat(paws)} · {formatDistance(park.distanceKm)}</p>
+                      <div className="flex gap-2 mt-1.5">
+                        <a
+                          href={`https://www.google.com/maps/dir/?api=1&destination=${park.lat},${park.lng}&travelmode=walking`}
+                          target="_blank" rel="noopener noreferrer"
+                          className="text-[10px] font-bold text-white px-2 py-1 rounded-md no-underline"
+                          style={{ background: "#1A4D3E" }}
+                        >
+                          Itinéraire
+                        </a>
+                        <a
+                          href={`https://www.google.com/maps?q=${park.lat},${park.lng}`}
+                          target="_blank" rel="noopener noreferrer"
+                          className="text-[10px] font-bold text-blue-600 px-2 py-1 rounded-md bg-blue-50 no-underline"
+                        >
+                          Maps
+                        </a>
+                      </div>
                     </div>
                   </Popup>
                 </Marker>
@@ -230,7 +256,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="text-sm font-bold text-foreground truncate">{park.name}</p>
+                      <p className="text-sm font-bold text-foreground line-clamp-2">{park.name}</p>
                       <PawRating paws={paws} />
                     </div>
                     <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
@@ -293,7 +319,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                           </motion.button>
                           <motion.button
                             whileTap={{ scale: 0.96 }}
-                            onClick={(e) => { e.stopPropagation(); openGoogleMaps(park.lat, park.lng, park.name); }}
+                            onClick={(e) => { e.stopPropagation(); openGoogleMaps(park.lat, park.lng); }}
                             className="flex-1 py-2.5 rounded-xl font-bold text-sm text-blue-600 border-2 border-blue-200 bg-blue-50 flex items-center justify-center gap-2"
                           >
                             <ExternalLink className="w-4 h-4" />
