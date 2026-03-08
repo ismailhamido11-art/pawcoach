@@ -106,6 +106,11 @@ export default function Nutri() {
   const [messagesRemaining, setMessagesRemaining] = useState(null);
   const [bookmarked, setBookmarked] = useState({});
   const [dietPrefs, setDietPrefs] = useState(null);
+  const [checkins, setCheckins] = useState([]);
+  const [healthRecords, setHealthRecords] = useState([]);
+  const [dailyLogs, setDailyLogs] = useState([]);
+  const [activePlan, setActivePlan] = useState(null);
+  const [monthlyPlanCount, setMonthlyPlanCount] = useState(0);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -223,13 +228,37 @@ export default function Nutri() {
       if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
         setDog(d);
-        const scans = await base44.entities.FoodScan.filter({ dog_id: d.id }, "-timestamp", 5);
+        const [scans, prefs, ckns, hrecs, dlogs, nplans] = await Promise.all([
+          base44.entities.FoodScan.filter({ dog_id: d.id }, "-timestamp", 5).catch(() => []),
+          base44.entities.DietPreferences.filter({ dog_id: d.id, owner_email: u.email }).catch(() => []),
+          base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 7).catch(() => []),
+          base44.entities.HealthRecord.filter({ dog_id: d.id }, "-date", 10).catch(() => []),
+          base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 7).catch(() => []),
+          base44.entities.NutritionPlan.filter({ dog_id: d.id, owner_email: u.email }, "-generated_at", 10).catch(() => []),
+        ]);
         setRecentScans(scans || []);
-        const prefs = await base44.entities.DietPreferences.filter({ dog_id: d.id, owner_email: u.email });
         if (prefs?.length > 0) setDietPrefs(prefs[0]);
+        setCheckins(ckns || []);
+        setHealthRecords(hrecs || []);
+        setDailyLogs(dlogs || []);
+        const active = (nplans || []).find(p => p.is_active);
+        setActivePlan(active || null);
+        const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+        setMonthlyPlanCount((nplans || []).filter(p => p.generated_at >= monthStart).length);
+        const planInfo = active ? (() => {
+          try {
+            const pd = JSON.parse(active.plan_text);
+            const elapsed = pd.start_date ? Math.floor((Date.now() - new Date(pd.start_date + "T00:00:00").getTime()) / 86400000) : null;
+            const dayNum = elapsed !== null && elapsed >= 0 ? Math.min(elapsed + 1, 7) : null;
+            const expired = elapsed !== null && elapsed >= 7;
+            if (expired) return "\n\nTon plan repas est termin\u00e9 ! Tu peux en g\u00e9n\u00e9rer un nouveau dans l'onglet **Plan repas**.";
+            if (dayNum) return `\n\nTu as un **plan repas actif** (Jour ${dayNum}/7, ${pd.calories_per_day || "?"} kcal/jour). Je peux t'aider \u00e0 l'ajuster ou r\u00e9pondre \u00e0 tes questions dessus !`;
+            return "";
+          } catch { return ""; }
+        })() : "";
         setMessages([{
           role: "assistant",
-          content: `Bonjour ! \u{1F957} Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies && d.allergies.toLowerCase() !== "non" ? ` avec des allergies \u00e0 ${d.allergies}` : ""} et j'ai acc\u00e8s \u00e0 ses derniers scans alimentaires.\n\nPose-moi une question, g\u00e9n\u00e8re un **plan de repas personnalis\u00e9**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
+          content: `Bonjour ! \u{1F957} Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies && d.allergies.toLowerCase() !== "non" ? ` avec des allergies \u00e0 ${d.allergies}` : ""}, ses check-ins, son historique sant\u00e9 et ses pr\u00e9f\u00e9rences alimentaires.${planInfo}\n\nPose-moi une question, g\u00e9n\u00e8re un **plan de repas personnalis\u00e9**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
           timestamp: new Date().toISOString(),
         }]);
       }
@@ -414,7 +443,7 @@ export default function Nutri() {
       {/* Tab: Plan repas */}
       {activeTab === "mealplan" && (
         <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
-          <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={isUserPremium(user)} user={user} dietPrefs={dietPrefs} />
+          <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={isUserPremium(user)} user={user} dietPrefs={dietPrefs} checkins={checkins} healthRecords={healthRecords} dailyLogs={dailyLogs} activePlan={activePlan} monthlyPlanCount={monthlyPlanCount} onPlanSaved={() => { setMonthlyPlanCount(c => c + 1); setActivePlan(null); }} />
         </div>
       )}
 

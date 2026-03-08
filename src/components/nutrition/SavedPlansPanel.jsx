@@ -77,7 +77,7 @@ function PlanContent({ planText }) {
       {/* Supplements */}
       {parsed.supplements?.length > 0 && (
         <div>
-          <p className="text-[10px] font-bold text-foreground mb-1">Complements</p>
+          <p className="text-[10px] font-bold text-foreground mb-1">Compl&#233;ments</p>
           <div className="flex flex-wrap gap-1">
             {parsed.supplements.map((s, i) => (
               <span key={i} className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
@@ -89,7 +89,7 @@ function PlanContent({ planText }) {
       {/* Avoid */}
       {parsed.avoid?.length > 0 && (
         <div>
-          <p className="text-[10px] font-bold text-red-700 mb-1">A eviter</p>
+          <p className="text-[10px] font-bold text-red-700 mb-1">\u00c0 \u00e9viter</p>
           <div className="flex flex-wrap gap-1">
             {parsed.avoid.map((a, i) => (
               <span key={i} className="text-[10px] bg-red-50 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
@@ -179,7 +179,7 @@ export default function SavedPlansPanel({ dog, user }) {
     <div className="text-center py-12">
       <p className="text-4xl mb-3">📅</p>
       <p className="font-semibold text-foreground">Aucun plan sauvegardé</p>
-      <p className="text-sm text-muted-foreground mt-1">Génère un plan dans l'onglet "Plan repas" pour le retrouver ici.</p>
+      <p className="text-sm text-muted-foreground mt-1">G\u00e9n\u00e8re un plan dans l'onglet \u00ab Plan repas \u00bb pour le retrouver ici.</p>
     </div>
   );
 
@@ -211,7 +211,7 @@ export default function SavedPlansPanel({ dog, user }) {
               <div className="flex items-center gap-1.5 mb-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                 <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">
-                  {isExpired ? "Plan termine — genere un nouveau !" : `Plan actif — Jour ${dayNumber || "?"}/7`}
+                  {isExpired ? "Plan termin\u00e9 — g\u00e9n\u00e8re un nouveau !" : `Plan actif — Jour ${dayNumber || "?"}/7`}
                 </span>
               </div>
             )}
@@ -222,10 +222,10 @@ export default function SavedPlansPanel({ dog, user }) {
                     ? format(new Date(plan.generated_at), "d MMMM yyyy 'a' HH:mm", { locale: fr })
                     : "Date inconnue"}
                   {dayNumber && !isExpired ? ` — J${dayNumber}/7` : ""}
-                  {isExpired ? " — Termine" : ""}
+                  {isExpired ? " — Termin\u00e9" : ""}
                 </p>
                 {plan.dog_weight_at_generation && (
-                  <p className="text-xs text-primary font-medium mt-0.5">{plan.dog_weight_at_generation} kg lors de la generation</p>
+                  <p className="text-xs text-primary font-medium mt-0.5">{plan.dog_weight_at_generation} kg lors de la g\u00e9n\u00e9ration</p>
                 )}
               </div>
               <div className="flex gap-1.5">

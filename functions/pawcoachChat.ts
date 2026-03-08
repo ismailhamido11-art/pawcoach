@@ -73,6 +73,7 @@ Deno.serve(async (req) => {
       dailyLogs,
       userProgress,
       dietPrefs,
+      nutritionPlans,
     ] = await Promise.all([
       base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dogId }).catch(() => []),
       base44.asServiceRole.entities.HealthRecord.filter({ dog_id: dogId }).catch(() => []),
@@ -82,6 +83,7 @@ Deno.serve(async (req) => {
       base44.asServiceRole.entities.DailyLog.filter({ dog_id: dogId }).catch(() => []),
       base44.asServiceRole.entities.UserProgress.filter({ user_email: user.email }).catch(() => []),
       base44.asServiceRole.entities.DietPreferences.filter({ dog_id: dogId }).catch(() => []),
+      base44.asServiceRole.entities.NutritionPlan.filter({ dog_id: dogId }).catch(() => []),
     ]);
 
     // ═══════════════════════════════════════════════════════════
@@ -162,13 +164,23 @@ Deno.serve(async (req) => {
       nutritionMemory = `\nNUTRITION :`;
       nutritionMemory += `\n- Aliments scannes recemment : ${recentScans.map(s => `${s.food_name} (${verdictFr(s.verdict)}, ${s.score}/10)`).join(", ")}`;
     }
-    // Diet preferences
+    // Diet preferences (DietPreferences entity)
     const dietPref = (dietPrefs || [])[0];
     if (dietPref) {
-      const prefParts = [];
-      if (dietPref.food_type) prefParts.push(`type: ${dietPref.food_type}`);
-      if (dietPref.brand) prefParts.push(`marque: ${dietPref.brand}`);
-      if (dietPref.allergies) prefParts.push(`allergies: ${dietPref.allergies}`);
+      const prefParts: string[] = [];
+      try {
+        const brands = dietPref.preferred_brands ? JSON.parse(dietPref.preferred_brands) : [];
+        if (Array.isArray(brands) && brands.length > 0) prefParts.push(`marques preferees: ${brands.join(", ")}`);
+      } catch {}
+      if (dietPref.disliked_foods) prefParts.push(`aliments refuses: ${dietPref.disliked_foods}`);
+      const budgetLabels: Record<string, string> = { low: "economique (<30EUR)", medium: "standard (30-70EUR)", high: "premium (>70EUR)" };
+      if (dietPref.budget_monthly) prefParts.push(`budget: ${budgetLabels[dietPref.budget_monthly] || dietPref.budget_monthly}`);
+      if (dietPref.organic_preference) prefParts.push("preference bio/naturel");
+      try {
+        const times = dietPref.meal_times ? JSON.parse(dietPref.meal_times) : {};
+        if (times.morning || times.evening) prefParts.push(`horaires: matin ${times.morning || "?"}, soir ${times.evening || "?"}`);
+      } catch {}
+      if (dietPref.notes) prefParts.push(`notes proprio: ${String(dietPref.notes).substring(0, 100)}`);
       if (prefParts.length > 0) {
         nutritionMemory += `\n- Preferences alimentaires : ${prefParts.join(", ")}`;
       }
@@ -215,8 +227,42 @@ Deno.serve(async (req) => {
       insightMemory = `\nDERNIER BILAN HEBDO : ${summary}${latestInsight.content.length > 200 ? "..." : ""}`;
     }
 
+    // --- Active nutrition plan ---
+    let nutritionPlanMemory = "";
+    const activePlans = (nutritionPlans || []).filter((p: any) => p.is_active);
+    const activePlan = activePlans.length > 0
+      ? activePlans.sort((a: any, b: any) => (b.generated_at || "").localeCompare(a.generated_at || ""))[0]
+      : null;
+    if (activePlan) {
+      try {
+        const planData = JSON.parse(activePlan.plan_text);
+        if (planData.days && Array.isArray(planData.days)) {
+          const startDate = planData.start_date;
+          const elapsed = startDate ? Math.floor((today.getTime() - new Date(startDate + "T00:00:00").getTime()) / 86400000) : null;
+          const dayNumber = elapsed !== null && elapsed >= 0 ? Math.min(elapsed + 1, 7) : null;
+          const isExpired = elapsed !== null && elapsed >= 7;
+          nutritionPlanMemory = `\nPLAN REPAS ACTIF :`;
+          nutritionPlanMemory += `\n- ${planData.calories_per_day || "?"} kcal/jour, ${planData.quantity_summary || ""}`;
+          if (isExpired) {
+            nutritionPlanMemory += `\n- EXPIRE (genere il y a ${elapsed} jours) — suggerer d'en generer un nouveau`;
+          } else if (dayNumber) {
+            nutritionPlanMemory += `\n- Jour ${dayNumber}/7`;
+            const todayDay = planData.days[dayNumber - 1];
+            if (todayDay) {
+              nutritionPlanMemory += ` — Matin: ${todayDay.morning?.food || "?"}, Soir: ${todayDay.evening?.food || "?"}`;
+            }
+          }
+          if (planData.supplements?.length > 0) nutritionPlanMemory += `\n- Complements: ${planData.supplements.join(", ")}`;
+          if (planData.avoid?.length > 0) nutritionPlanMemory += `\n- A eviter: ${planData.avoid.join(", ")}`;
+        }
+      } catch {}
+      if (activePlan.notes) {
+        nutritionPlanMemory += `\n- Note du proprio: "${String(activePlan.notes).substring(0, 100)}"`;
+      }
+    }
+
     // Assemble the full DOG MEMORY
-    const dogMemory = [wellbeingMemory, healthMemory, nutritionMemory, activityMemory, streakMemory, trainingMemory, insightMemory]
+    const dogMemory = [wellbeingMemory, healthMemory, nutritionMemory, nutritionPlanMemory, activityMemory, streakMemory, trainingMemory, insightMemory]
       .filter(s => s.length > 0)
       .join("\n");
 

@@ -166,8 +166,8 @@ function NutritionPlanCard({ plan }) {
                   <Utensils className="w-3.5 h-3.5 text-amber-600" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Plan termine</p>
-                  <p className="text-xs font-semibold text-foreground mt-0.5">Genere un nouveau plan repas</p>
+                  <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Plan termin\u00e9</p>
+                  <p className="text-xs font-semibold text-foreground mt-0.5">G\u00e9n\u00e8re un nouveau plan repas</p>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-amber-400" />
@@ -275,7 +275,7 @@ function NutritionPlanCard({ plan }) {
                 ) : (
                   <div className="bg-white/80 rounded-xl p-3 border border-emerald-100/60">
                     <p className="text-[12px] text-muted-foreground italic">
-                      Pas de detail pour {todayName}. Consulte le plan complet.
+                      Pas de d\u00e9tail pour {todayName}. Consulte le plan complet.
                     </p>
                   </div>
                 )}
