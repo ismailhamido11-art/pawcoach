@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { dogId, dogName, dogBreed, dogBirthDate, activityLevel, healthIssues, goals, weeklyWalkMinutes, mode, problemId, problemLabel, problemDescription } = await req.json();
+    const { dogId, dogName, dogBreed, dogBirthDate, activityLevel, healthIssues, goals, weeklyWalkMinutes, mode, problemId, problemLabel, problemDescription, previousPrograms } = await req.json();
     if (!dogId) return Response.json({ error: 'Missing dogId' }, { status: 400 });
 
     // Calculate age
@@ -182,6 +182,7 @@ PROGRESSION :
 VARIÉTÉ : alterner balade, jeu, exercice mental, repos actif, entraînement
 MATÉRIEL : uniquement ce qu'on trouve à la maison (gobelets, serviettes, carton, friandises, corde)
 ADAPTATION : tout est adapté à ${breedName} (instincts naturels de la race) et à l'âge (${ageLabel})
+${previousPrograms?.length > 0 ? '\nPROGRAMMES DÉJÀ FAITS (varier les thèmes, NE PAS répéter ces programmes) :\n' + previousPrograms.map((p: string) => '- ' + p).join('\n') : ''}
 Langue : français, tutoiement, ton coach bienveillant.`;
 
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
