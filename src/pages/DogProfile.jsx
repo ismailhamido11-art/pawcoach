@@ -192,7 +192,7 @@ export default function DogProfile() {
         <DogDietSection dog={dog} onSave={handleSaveDog} />
 
         {/* Trophies */}
-        <DogTrophiesRow streak={streak} progress={progress} scansCount={scansCount} />
+        <DogTrophiesRow streak={streak} progress={progress} scansCount={scansCount} dailyLogs={dailyLogs} />
 
         {/* Actions */}
         <div className="bg-white rounded-2xl border border-border overflow-hidden">

@@ -12,18 +12,23 @@ function Trophy_({ emoji, label, earned }) {
   );
 }
 
-export default function DogTrophiesRow({ streak, progress, scansCount }) {
+export default function DogTrophiesRow({ streak, progress, scansCount, dailyLogs }) {
   const current = streak?.current_streak || 0;
   const longest = streak?.longest_streak || 0;
   const exerciseCount = (progress || []).filter(p => p.completed).length;
+  const walkDays = (dailyLogs || []).filter(l => (l.walk_minutes || 0) > 0).length;
+  const totalWalkMin = (dailyLogs || []).reduce((s, l) => s + (l.walk_minutes || 0), 0);
 
   const trophies = [
     { emoji: "🔥", label: "1er streak", earned: longest >= 1 },
     { emoji: "⚡", label: "7 jours", earned: longest >= 7 },
     { emoji: "🏅", label: "30 jours", earned: longest >= 30 },
-    { emoji: "🐾", label: "1er exercice", earned: exerciseCount >= 1 },
+    { emoji: "🐾", label: "1re balade", earned: walkDays >= 1 },
+    { emoji: "👟", label: "30 min+", earned: (dailyLogs || []).some(l => l.walk_minutes >= 30) },
+    { emoji: "📅", label: "7j de balade", earned: walkDays >= 7 },
+    { emoji: "🏅", label: "Ultra marcheur", earned: totalWalkMin >= 1000 },
+    { emoji: "✨", label: "1er exercice", earned: exerciseCount >= 1 },
     { emoji: "🎓", label: "3 exercices", earned: exerciseCount >= 3 },
-    { emoji: "🏆", label: "10 exercices", earned: exerciseCount >= 10 },
     { emoji: "🔍", label: "1er scan", earned: scansCount >= 1 },
     { emoji: "🧪", label: "5 scans", earned: scansCount >= 5 },
     { emoji: "💎", label: "100 jours", earned: longest >= 100 },
