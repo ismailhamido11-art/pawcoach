@@ -81,6 +81,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
   const lastPosRef = useRef(null);
   const distanceRef = useRef(0);
   const wakeLockRef = useRef(null);
+  const stoppingRef = useRef(false);
 
   const releaseWakeLock = () => {
     if (wakeLockRef.current) {
@@ -293,7 +294,6 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     }
   };
 
-  const stoppingRef = useRef(false);
   const handleStop = async () => {
     if (stoppingRef.current) return;
     stoppingRef.current = true;
