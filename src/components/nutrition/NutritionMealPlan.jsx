@@ -290,8 +290,6 @@ R\u00c8GLES :
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         let cleaned = jsonMatch[0];
-        // Clean any stray unicode escapes the LLM might have left
-        cleaned = cleaned.replace(/\\u[0-9a-fA-F]{4}/g, "");
         const parsed = JSON.parse(cleaned);
         if (parsed.days && Array.isArray(parsed.days)) {
           setPlan(parsed);
