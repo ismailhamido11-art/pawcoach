@@ -57,8 +57,8 @@ function openDirections(lat, lng) {
 }
 
 function openGoogleMaps(lat, lng) {
-  // Center Google Maps on park location at high zoom — no search to avoid wrong results
-  window.open(`https://www.google.com/maps/@${lat},${lng},18z`, "_blank");
+  // Search "parc" centered on exact coordinates — Google finds the park, not nearby shops
+  window.open(`https://www.google.com/maps/search/parc/@${lat},${lng},18z`, "_blank");
 }
 
 /** Compute paw rating (1-3) and attribute badges from OSM tags */
@@ -210,7 +210,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                           Itinéraire
                         </a>
                         <a
-                          href={`https://www.google.com/maps/@${park.lat},${park.lng},18z`}
+                          href={`https://www.google.com/maps/search/parc/@${park.lat},${park.lng},18z`}
                           target="_blank" rel="noopener noreferrer"
                           className="text-[10px] font-bold text-blue-600 px-2 py-1 rounded-md bg-blue-50 no-underline"
                         >
