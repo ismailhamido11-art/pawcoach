@@ -7,12 +7,23 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 const BUDGET_OPTIONS = [
-  { id: "low",    label: "Économique", desc: "< 30€/mois", emoji: "💚" },
-  { id: "medium", label: "Standard",   desc: "30-70€/mois", emoji: "💛" },
-  { id: "high",   label: "Premium",    desc: "> 70€/mois", emoji: "💜" },
+  { id: "low",    label: "\u00c9conomique", desc: "< 30\u20ac/mois", emoji: "\uD83D\uDC9A" },
+  { id: "medium", label: "Standard",   desc: "30-70\u20ac/mois", emoji: "\uD83D\uDC9B" },
+  { id: "high",   label: "Premium",    desc: "> 70\u20ac/mois", emoji: "\uD83D\uDC9C" },
 ];
 
 const PORTIONS_OPTIONS = [1, 2, 3];
+
+const POPULAR_BRANDS = [
+  "Royal Canin", "Hill's", "Purina Pro Plan", "Orijen",
+  "Acana", "Carnilove", "Edgard & Cooper", "Ownat",
+  "Virbac", "Brit Care",
+];
+
+const COMMON_DISLIKES = [
+  "Poulet", "B\u0153uf", "Porc", "Poisson",
+  "C\u00e9r\u00e9ales", "Gluten", "Soja", "Ma\u00efs",
+];
 
 export default function DietPreferencesPanel({ dog, user }) {
   const [prefs, setPrefs] = useState(null);
@@ -24,6 +35,7 @@ export default function DietPreferencesPanel({ dog, user }) {
   const [preferredBrands, setPreferredBrands] = useState([]);
   const [dislikedFoods, setDislikedFoods] = useState("");
   const [mealMorning, setMealMorning] = useState("07:30");
+  const [mealNoon, setMealNoon] = useState("12:30");
   const [mealEvening, setMealEvening] = useState("18:30");
   const [portionsPerDay, setPortionsPerDay] = useState(2);
   const [budget, setBudget] = useState("medium");
@@ -47,17 +59,29 @@ export default function DietPreferencesPanel({ dog, user }) {
         setDislikedFoods(p.disliked_foods || "");
         const times = p.meal_times ? JSON.parse(p.meal_times) : {};
         setMealMorning(times.morning || "07:30");
+        setMealNoon(times.noon || "12:30");
         setMealEvening(times.evening || "18:30");
         setPortionsPerDay(p.portions_per_day || 2);
         setBudget(p.budget_monthly || "medium");
         setOrganic(p.organic_preference || false);
         setNotes(p.notes || "");
+      } else {
+        // Pre-populate brand from dog profile if available
+        if (dog.diet_brand && dog.diet_brand.trim()) {
+          setPreferredBrands([dog.diet_brand.trim()]);
+        }
       }
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
     }
+  };
+
+  const buildMealTimes = () => {
+    if (portionsPerDay === 1) return { morning: mealMorning };
+    if (portionsPerDay === 3) return { morning: mealMorning, noon: mealNoon, evening: mealEvening };
+    return { morning: mealMorning, evening: mealEvening };
   };
 
   const handleSave = async () => {
@@ -68,7 +92,7 @@ export default function DietPreferencesPanel({ dog, user }) {
       owner_email: user.email,
       preferred_brands: JSON.stringify(preferredBrands),
       disliked_foods: dislikedFoods,
-      meal_times: JSON.stringify({ morning: mealMorning, evening: mealEvening }),
+      meal_times: JSON.stringify(buildMealTimes()),
       portions_per_day: portionsPerDay,
       budget_monthly: budget,
       organic_preference: organic,
@@ -82,7 +106,7 @@ export default function DietPreferencesPanel({ dog, user }) {
         setPrefs(created);
       }
       setSaved(true);
-      toast.success("Préférences sauvegardées !");
+      toast.success("Pr\u00e9f\u00e9rences sauvegard\u00e9es !");
       setTimeout(() => setSaved(false), 3000);
     } catch {
       toast.error("Erreur lors de la sauvegarde");
@@ -91,11 +115,28 @@ export default function DietPreferencesPanel({ dog, user }) {
     }
   };
 
-  const addBrand = () => {
-    if (!newBrand.trim() || preferredBrands.includes(newBrand.trim())) return;
-    setPreferredBrands(prev => [...prev, newBrand.trim()]);
+  const addBrand = (name) => {
+    const brand = (name || newBrand).trim();
+    if (!brand || preferredBrands.includes(brand)) return;
+    setPreferredBrands(prev => [...prev, brand]);
     setNewBrand("");
   };
+
+  const toggleDislike = (food) => {
+    const current = dislikedFoods.split(",").map(s => s.trim()).filter(Boolean);
+    if (current.some(c => c.toLowerCase() === food.toLowerCase())) {
+      setDislikedFoods(current.filter(c => c.toLowerCase() !== food.toLowerCase()).join(", "));
+    } else {
+      setDislikedFoods([...current, food].join(", "));
+    }
+  };
+
+  const isDisliked = (food) => {
+    return dislikedFoods.toLowerCase().includes(food.toLowerCase());
+  };
+
+  // Brands not yet selected, available as suggestions
+  const suggestedBrands = POPULAR_BRANDS.filter(b => !preferredBrands.includes(b));
 
   if (loading) return (
     <div className="space-y-3">
@@ -106,72 +147,125 @@ export default function DietPreferencesPanel({ dog, user }) {
   return (
     <div className="space-y-5 pb-4">
       <div>
-        <h2 className="font-bold text-foreground text-base">Préférences alimentaires</h2>
-        <p className="text-xs text-muted-foreground mt-0.5">Ces données personnalisent les plans générés pour {dog?.name}</p>
+        <h2 className="font-bold text-foreground text-base">Pr\u00e9f\u00e9rences alimentaires</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">Ces donn\u00e9es personnalisent les plans g\u00e9n\u00e9r\u00e9s pour {dog?.name}</p>
       </div>
 
-      {/* Marques préférées */}
+      {/* Marques pr\u00e9f\u00e9r\u00e9es */}
       <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
-        <p className="text-sm font-semibold text-foreground flex items-center gap-2">🏷️ Marques appréciées</p>
-        <div className="flex flex-wrap gap-2">
-          {preferredBrands.map((b, i) => (
-            <motion.span key={i} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-              className="flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-semibold px-3 py-1.5 rounded-full">
-              {b}
-              <button onClick={() => setPreferredBrands(prev => prev.filter((_, idx) => idx !== i))}>
-                <X className="w-3 h-3" />
-              </button>
-            </motion.span>
-          ))}
-        </div>
+        <p className="text-sm font-semibold text-foreground flex items-center gap-2">{"\uD83C\uDFF7\uFE0F"} Marques appr\u00e9ci\u00e9es</p>
+
+        {/* Selected brands */}
+        {preferredBrands.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {preferredBrands.map((b, i) => (
+              <motion.span key={i} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                className="flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-semibold px-3 py-1.5 rounded-full">
+                {b}
+                <button onClick={() => setPreferredBrands(prev => prev.filter((_, idx) => idx !== i))}>
+                  <X className="w-3 h-3" />
+                </button>
+              </motion.span>
+            ))}
+          </div>
+        )}
+
+        {/* Popular brand suggestions */}
+        {suggestedBrands.length > 0 && (
+          <div>
+            <p className="text-[10px] text-muted-foreground mb-1.5 font-medium">Marques populaires (appuie pour ajouter)</p>
+            <div className="flex flex-wrap gap-1.5">
+              {suggestedBrands.map(b => (
+                <button key={b} onClick={() => addBrand(b)}
+                  className="text-[11px] text-muted-foreground bg-muted/50 hover:bg-primary/10 hover:text-primary px-2.5 py-1 rounded-full border border-border/50 transition-colors">
+                  + {b}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Custom brand input */}
         <div className="flex gap-2">
           <Input value={newBrand} onChange={e => setNewBrand(e.target.value)}
-            placeholder="Nom de la marque..." className="text-sm"
+            placeholder="Autre marque..." className="text-sm"
             onKeyDown={e => e.key === "Enter" && addBrand()} />
-          <Button onClick={addBrand} variant="outline" size="sm" className="flex-shrink-0">
+          <Button onClick={() => addBrand()} variant="outline" size="sm" className="flex-shrink-0"
+            disabled={!newBrand.trim()}>
             <Plus className="w-4 h-4" />
           </Button>
         </div>
       </div>
 
-      {/* Aliments refusés */}
-      <div className="bg-white rounded-2xl border border-border p-4 space-y-2">
-        <p className="text-sm font-semibold text-foreground">😤 Aliments refusés / non aimés</p>
+      {/* Aliments refus\u00e9s */}
+      <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
+        <p className="text-sm font-semibold text-foreground">{"\uD83D\uDE24"} Aliments refus\u00e9s / non aim\u00e9s</p>
+
+        {/* Common dislikes quick-pick */}
+        <div>
+          <p className="text-[10px] text-muted-foreground mb-1.5 font-medium">Allerg\u00e8nes et intol\u00e9rances courants</p>
+          <div className="flex flex-wrap gap-1.5">
+            {COMMON_DISLIKES.map(food => (
+              <button key={food} onClick={() => toggleDislike(food)}
+                className={`text-[11px] px-2.5 py-1 rounded-full border transition-colors ${
+                  isDisliked(food)
+                    ? "bg-red-50 text-red-700 border-red-200 font-semibold"
+                    : "text-muted-foreground bg-muted/50 border-border/50 hover:bg-red-50 hover:text-red-600"
+                }`}>
+                {isDisliked(food) ? "\u2715 " : ""}{food}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <textarea
           value={dislikedFoods}
           onChange={e => setDislikedFoods(e.target.value)}
-          placeholder={`Ex: ${dog?.name} refuse le poulet, n'aime pas les carottes...`}
-          className="w-full text-sm rounded-xl border border-border p-3 resize-none h-20 focus:outline-none focus:ring-1 focus:ring-primary"
+          placeholder={`Autres : ${dog?.name} refuse le poulet, n'aime pas les carottes...`}
+          className="w-full text-sm rounded-xl border border-border p-3 resize-none h-16 focus:outline-none focus:ring-1 focus:ring-primary"
         />
       </div>
 
       {/* Horaires & portions */}
       <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
         <p className="text-sm font-semibold text-foreground flex items-center gap-2">
-          <Clock className="w-4 h-4 text-primary" /> Horaires de repas
+          <Clock className="w-4 h-4 text-primary" /> Repas par jour & horaires
         </p>
-        <div className="flex gap-3">
-          <div className="flex-1">
-            <p className="text-xs text-muted-foreground mb-1">🌅 Matin</p>
-            <Input type="time" value={mealMorning} onChange={e => setMealMorning(e.target.value)} className="text-sm" />
-          </div>
-          <div className="flex-1">
-            <p className="text-xs text-muted-foreground mb-1">🌇 Soir</p>
-            <Input type="time" value={mealEvening} onChange={e => setMealEvening(e.target.value)} className="text-sm" />
-          </div>
-        </div>
+
+        {/* Portions selector FIRST — drives the time inputs */}
         <div>
-          <p className="text-xs text-muted-foreground mb-2">Repas par jour</p>
           <div className="flex gap-2">
             {PORTIONS_OPTIONS.map(n => (
               <button key={n} onClick={() => setPortionsPerDay(n)}
                 className={`flex-1 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${
                   portionsPerDay === n ? "border-primary bg-primary/10 text-primary" : "border-border bg-white text-muted-foreground"
                 }`}>
-                {n}x
+                {n} repas
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Dynamic time inputs based on portions */}
+        <div className={`grid gap-3 ${portionsPerDay === 3 ? "grid-cols-3" : portionsPerDay === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
+          {portionsPerDay >= 1 && (
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">{portionsPerDay === 1 ? "\uD83C\uDF1E Repas" : "\uD83C\uDF05 Matin"}</p>
+              <Input type="time" value={mealMorning} onChange={e => setMealMorning(e.target.value)} className="text-sm" />
+            </div>
+          )}
+          {portionsPerDay >= 3 && (
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">{"\u2600\uFE0F"} Midi</p>
+              <Input type="time" value={mealNoon} onChange={e => setMealNoon(e.target.value)} className="text-sm" />
+            </div>
+          )}
+          {portionsPerDay >= 2 && (
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">{"\uD83C\uDF07"} Soir</p>
+              <Input type="time" value={mealEvening} onChange={e => setMealEvening(e.target.value)} className="text-sm" />
+            </div>
+          )}
         </div>
       </div>
 
@@ -202,8 +296,8 @@ export default function DietPreferencesPanel({ dog, user }) {
               <Leaf className={`w-4 h-4 ${organic ? "text-green-600" : "text-muted-foreground"}`} />
             </div>
             <div className="text-left">
-              <p className="text-sm font-semibold text-foreground">Préférence bio / naturel</p>
-              <p className="text-xs text-muted-foreground">Privilégier les ingrédients naturels</p>
+              <p className="text-sm font-semibold text-foreground">Pr\u00e9f\u00e9rence bio / naturel</p>
+              <p className="text-xs text-muted-foreground">Privil\u00e9gier les ingr\u00e9dients naturels</p>
             </div>
           </div>
           <div className={`w-11 h-6 rounded-full transition-all relative ${organic ? "bg-green-500" : "bg-muted"}`}>
@@ -214,11 +308,11 @@ export default function DietPreferencesPanel({ dog, user }) {
 
       {/* Notes */}
       <div className="bg-white rounded-2xl border border-border p-4 space-y-2">
-        <p className="text-sm font-semibold text-foreground">📝 Notes personnelles</p>
+        <p className="text-sm font-semibold text-foreground">{"\uD83D\uDCDD"} Notes personnelles</p>
         <textarea
           value={notes}
           onChange={e => setNotes(e.target.value)}
-          placeholder="Infos supplémentaires pour personnaliser les plans IA..."
+          placeholder="Infos suppl\u00e9mentaires pour personnaliser les plans IA..."
           className="w-full text-sm rounded-xl border border-border p-3 resize-none h-20 focus:outline-none focus:ring-1 focus:ring-primary"
         />
       </div>
@@ -226,7 +320,7 @@ export default function DietPreferencesPanel({ dog, user }) {
       <Button onClick={handleSave} disabled={saving || saved}
         className={`w-full h-12 rounded-2xl text-white font-bold shadow-lg gap-2 transition-all duration-300 ${saved ? "bg-green-500 shadow-green-200" : "bg-safe hover:bg-safe/90 shadow-safe/20"}`}>
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-        {saving ? "Sauvegarde..." : saved ? "Sauvegardé !" : "Sauvegarder mes préférences"}
+        {saving ? "Sauvegarde..." : saved ? "Sauvegard\u00e9 !" : "Sauvegarder mes pr\u00e9f\u00e9rences"}
       </Button>
     </div>
   );

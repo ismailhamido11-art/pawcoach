@@ -90,9 +90,17 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
     if (dietPrefs) {
       let brands = "non pr\u00e9cis\u00e9es";
       try { brands = dietPrefs.preferred_brands ? JSON.parse(dietPrefs.preferred_brands).join(", ") : "non pr\u00e9cis\u00e9es"; } catch { /* invalid JSON */ }
-      let mealMorning = "07:30", mealEvening = "18:30";
-      try { const mt = dietPrefs.meal_times ? JSON.parse(dietPrefs.meal_times) : {}; mealMorning = mt.morning || "07:30"; mealEvening = mt.evening || "18:30"; } catch { /* invalid JSON */ }
-      prefsContext = `\n## PR\u00c9F\u00c9RENCES ALIMENTAIRES DU PROPRI\u00c9TAIRE\n- Marques pr\u00e9f\u00e9r\u00e9es : ${brands}\n- Aliments refus\u00e9s par le chien : ${dietPrefs.disliked_foods || "aucun"}\n- Horaires repas : matin ${mealMorning}, soir ${mealEvening}\n- Budget mensuel : ${({ low: "\u00e9conomique (<30\u20ac)", medium: "standard (30-70\u20ac)", high: "premium (>70\u20ac)" })[dietPrefs.budget_monthly] || "standard"}\n- Pr\u00e9f\u00e9rence bio : ${dietPrefs.organic_preference ? "Oui" : "Non"}\n- Notes : ${dietPrefs.notes || "aucune"}`;
+      let mealTimesStr = "";
+      try {
+        const mt = dietPrefs.meal_times ? JSON.parse(dietPrefs.meal_times) : {};
+        const parts = [];
+        if (mt.morning) parts.push(`matin ${mt.morning}`);
+        if (mt.noon) parts.push(`midi ${mt.noon}`);
+        if (mt.evening) parts.push(`soir ${mt.evening}`);
+        mealTimesStr = parts.length > 0 ? parts.join(", ") : "non pr\u00e9cis\u00e9s";
+      } catch { mealTimesStr = "non pr\u00e9cis\u00e9s"; }
+      const portions = dietPrefs.portions_per_day || 2;
+      prefsContext = `\n## PR\u00c9F\u00c9RENCES ALIMENTAIRES DU PROPRI\u00c9TAIRE\n- Marques pr\u00e9f\u00e9r\u00e9es : ${brands}\n- Aliments refus\u00e9s par le chien : ${dietPrefs.disliked_foods || "aucun"}\n- Repas par jour : ${portions}\n- Horaires repas : ${mealTimesStr}\n- Budget mensuel : ${({ low: "\u00e9conomique (<30\u20ac)", medium: "standard (30-70\u20ac)", high: "premium (>70\u20ac)" })[dietPrefs.budget_monthly] || "standard"}\n- Pr\u00e9f\u00e9rence bio : ${dietPrefs.organic_preference ? "Oui" : "Non"}\n- Notes : ${dietPrefs.notes || "aucune"}`;
     }
 
     // --- Check-ins context (well-being trends, last 7 days) ---

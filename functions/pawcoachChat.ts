@@ -178,7 +178,11 @@ Deno.serve(async (req) => {
       if (dietPref.organic_preference) prefParts.push("preference bio/naturel");
       try {
         const times = dietPref.meal_times ? JSON.parse(dietPref.meal_times) : {};
-        if (times.morning || times.evening) prefParts.push(`horaires: matin ${times.morning || "?"}, soir ${times.evening || "?"}`);
+        const timeParts: string[] = [];
+        if (times.morning) timeParts.push(`matin ${times.morning}`);
+        if (times.noon) timeParts.push(`midi ${times.noon}`);
+        if (times.evening) timeParts.push(`soir ${times.evening}`);
+        if (timeParts.length > 0) prefParts.push(`horaires: ${timeParts.join(", ")}`);
       } catch {}
       if (dietPref.notes) prefParts.push(`notes proprio: ${String(dietPref.notes).substring(0, 100)}`);
       if (prefParts.length > 0) {
