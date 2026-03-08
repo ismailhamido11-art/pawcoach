@@ -53,7 +53,8 @@ export default function ShareCard({ result, dogName, onClose }) {
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-5" onClick={onClose}>
       <div className="w-full max-w-[320px] space-y-4" onClick={e => e.stopPropagation()}>
-        {/* 1:1 viral card */}
+        {/* 1:1 viral card — wrapper constrains the scaled preview */}
+        <div style={{ width: 540 * 0.56, height: 540 * 0.56, overflow: "hidden", borderRadius: 27 }}>
         <div
           ref={cardRef}
           style={{
@@ -143,9 +144,7 @@ export default function ShareCard({ result, dogName, onClose }) {
             </div>
           </div>
         </div>
-
-        {/* Wrapper height fix for the scaled card */}
-        <div style={{ marginTop: -540 * (1 - 0.56) + "px" }} />
+        </div>
 
         <div className="grid grid-cols-2 gap-3">
           <Button variant="outline" onClick={downloadCard} className="h-12 rounded-2xl gap-2 bg-white">

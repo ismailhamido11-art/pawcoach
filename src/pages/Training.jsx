@@ -375,11 +375,11 @@ export default function Training() {
     return (
       <div className="min-h-screen bg-background pb-24">
         <WellnessBanner />
-        <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] safe-pt-14 pb-6 px-5 relative">
-          <button onClick={() => navigate(createPageUrl("Training"))} className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/20 flex items-center justify-center z-20">
+        <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] safe-pt-14 pb-6 px-5">
+          <button onClick={() => navigate(createPageUrl("Training"))} className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-2 hover:bg-white/30 transition-colors">
             <ChevronRight className="w-5 h-5 text-white rotate-180" />
           </button>
-          <div className="text-center pt-2">
+          <div className="text-center">
             <span className="text-4xl mb-2 block">{guide.emoji}</span>
             <h1 className="text-white font-black text-xl">{guide.name}</h1>
             <p className="text-white/70 text-sm mt-1">{guide.duration} de travail</p>
@@ -548,9 +548,10 @@ export default function Training() {
               key={guide.id}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
+              whileTap={{ scale: 0.98 }}
               transition={{ delay: 0.05 * idx }}
               onClick={() => locked ? navigate(createPageUrl("Premium") + "?from=training") : navigate(createPageUrl("Training") + `?behavior=${guide.id}`)}
-              className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 border border-border/30 shadow-sm cursor-pointer active:scale-[0.98] transition-transform"
+              className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 border border-border/30 shadow-sm cursor-pointer"
             >
               <span className="text-2xl shrink-0">{guide.emoji}</span>
               <div className="flex-1 min-w-0">
