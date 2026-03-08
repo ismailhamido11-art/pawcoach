@@ -291,7 +291,7 @@ function NutritionPlanCard({ plan }) {
                 )}
 
                 <Link
-                  to={createPageUrl("Nutri") + "?tab=saved"}
+                  to={createPageUrl("Nutri") + "?tab=mealplan"}
                   className="block text-center text-[11px] font-semibold text-emerald-600 py-1"
                 >
                   Voir le plan complet
