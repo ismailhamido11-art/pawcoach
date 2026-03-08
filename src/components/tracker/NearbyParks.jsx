@@ -56,8 +56,15 @@ function openDirections(lat, lng) {
   window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=walking`, "_blank");
 }
 
-function openGoogleMaps(lat, lng) {
-  window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank");
+function openGoogleMaps(lat, lng, name) {
+  const isGeneric = !name || name === "Parc canin" || name === "Parc";
+  if (isGeneric) {
+    // No specific name — just center map on location
+    window.open(`https://www.google.com/maps/@${lat},${lng},18z`, "_blank");
+  } else {
+    // Search by park name, centered on coordinates — shows place page with photos/reviews
+    window.open(`https://www.google.com/maps/search/${encodeURIComponent(name)}/@${lat},${lng},17z`, "_blank");
+  }
 }
 
 /** Compute paw rating (1-3) and attribute badges from OSM tags */
@@ -209,7 +216,9 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                           Itinéraire
                         </a>
                         <a
-                          href={`https://www.google.com/maps?q=${park.lat},${park.lng}`}
+                          href={(!park.name || park.name === "Parc canin" || park.name === "Parc")
+                            ? `https://www.google.com/maps/@${park.lat},${park.lng},18z`
+                            : `https://www.google.com/maps/search/${encodeURIComponent(park.name)}/@${park.lat},${park.lng},17z`}
                           target="_blank" rel="noopener noreferrer"
                           className="text-[10px] font-bold text-blue-600 px-2 py-1 rounded-md bg-blue-50 no-underline"
                         >
@@ -319,7 +328,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                           </motion.button>
                           <motion.button
                             whileTap={{ scale: 0.96 }}
-                            onClick={(e) => { e.stopPropagation(); openGoogleMaps(park.lat, park.lng); }}
+                            onClick={(e) => { e.stopPropagation(); openGoogleMaps(park.lat, park.lng, park.name); }}
                             className="flex-1 py-2.5 rounded-xl font-bold text-sm text-blue-600 border-2 border-blue-200 bg-blue-50 flex items-center justify-center gap-2"
                           >
                             <ExternalLink className="w-4 h-4" />
