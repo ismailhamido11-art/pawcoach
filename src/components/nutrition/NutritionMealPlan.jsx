@@ -67,7 +67,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
   const [expandedHistoryId, setExpandedHistoryId] = useState(null);
 
   if (!dog) {
-    return <p className="text-muted-foreground text-sm text-center py-10">Aucun chien trouv\u00e9.</p>;
+    return <p className="text-muted-foreground text-sm text-center py-10">Aucun chien trouvé.</p>;
   }
 
   const isMonthlyLimitReached = !isPremium && monthlyPlanCount >= MONTHLY_FREE_LIMIT;
@@ -86,7 +86,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
     try {
       await base44.entities.NutritionPlan.update(activePlan.id, { notes: tempNote });
       setEditingNote(false);
-      toast.success("Note sauvegard\u00e9e");
+      toast.success("Note sauvegardée");
       onPlanSaved?.(); // refresh to get updated notes without mutating props
     } catch {
       toast.error("Erreur");
@@ -97,7 +97,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
     try {
       await base44.entities.NutritionPlan.delete(planId);
       onPlanSaved?.();
-      toast.success("Plan supprim\u00e9");
+      toast.success("Plan supprimé");
     } catch {
       toast.error("Erreur lors de la suppression");
     }
@@ -110,7 +110,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       }
       await base44.entities.NutritionPlan.update(planId, { is_active: true });
       onPlanSaved?.();
-      toast.success("Plan activ\u00e9 !");
+      toast.success("Plan activé !");
     } catch {
       toast.error("Erreur");
     }
@@ -139,7 +139,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       });
       setSaved(true);
       onPlanSaved?.();
-      toast.success("Programme activ\u00e9 !");
+      toast.success("Programme activé !");
       setTimeout(() => { setSaved(false); setPlan(null); setShowGenerator(false); setGenerationNotes(""); }, 2000);
     } catch {
       toast.error("Erreur lors de la sauvegarde");
@@ -154,20 +154,20 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
     setLoading(true);
     setPlan(null);
 
-    const activityMap = { faible: "Faible (< 30 min/jour)", modere: "Mod\u00e9r\u00e9e (30-60 min/jour)", eleve: "\u00c9lev\u00e9e (1-2h/jour)", tres_eleve: "Tr\u00e8s \u00e9lev\u00e9e (> 2h/jour)" };
-    const dietMap = { kibble: "Croquettes s\u00e8ches", barf: "BARF (viande crue)", mixed: "Mixte (croquettes + m\u00e9nager)", homemade: "Ration m\u00e9nag\u00e8re" };
+    const activityMap = { faible: "Faible (< 30 min/jour)", modere: "Modérée (30-60 min/jour)", eleve: "Élevée (1-2h/jour)", tres_eleve: "Très élevée (> 2h/jour)" };
+    const dietMap = { kibble: "Croquettes sèches", barf: "BARF (viande crue)", mixed: "Mixte (croquettes + ménager)", homemade: "Ration ménagère" };
 
     const ageMonths = dog.birth_date ? Math.floor((Date.now() - new Date(dog.birth_date)) / (1000 * 60 * 60 * 24 * 30)) : null;
     const lifeStage = !ageMonths ? "adulte" : ageMonths < 12 ? "chiot" : ageMonths > 84 ? "senior" : "adulte";
 
     const scansContext = recentScans.length > 0
-      ? `\nScans alimentaires r\u00e9cents : ${recentScans.map(s => `${s.food_name} (${s.verdict})`).join(", ")}`
+      ? `\nScans alimentaires récents : ${recentScans.map(s => `${s.food_name} (${s.verdict})`).join(", ")}`
       : "";
 
     let prefsContext = "";
     if (dietPrefs) {
-      let brands = "non pr\u00e9cis\u00e9es";
-      try { brands = dietPrefs.preferred_brands ? JSON.parse(dietPrefs.preferred_brands).join(", ") : "non pr\u00e9cis\u00e9es"; } catch { /* */ }
+      let brands = "non précisées";
+      try { brands = dietPrefs.preferred_brands ? JSON.parse(dietPrefs.preferred_brands).join(", ") : "non précisées"; } catch { /* */ }
       let mealTimesStr = "";
       try {
         const mt = dietPrefs.meal_times ? JSON.parse(dietPrefs.meal_times) : {};
@@ -175,10 +175,10 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
         if (mt.morning) parts.push(`matin ${mt.morning}`);
         if (mt.noon) parts.push(`midi ${mt.noon}`);
         if (mt.evening) parts.push(`soir ${mt.evening}`);
-        mealTimesStr = parts.length > 0 ? parts.join(", ") : "non pr\u00e9cis\u00e9s";
-      } catch { mealTimesStr = "non pr\u00e9cis\u00e9s"; }
+        mealTimesStr = parts.length > 0 ? parts.join(", ") : "non précisés";
+      } catch { mealTimesStr = "non précisés"; }
       const portions = dietPrefs.portions_per_day || 2;
-      prefsContext = `\n## PR\u00c9F\u00c9RENCES ALIMENTAIRES DU PROPRI\u00c9TAIRE\n- Marques pr\u00e9f\u00e9r\u00e9es : ${brands}\n- Aliments refus\u00e9s par le chien : ${dietPrefs.disliked_foods || "aucun"}\n- Repas par jour : ${portions}\n- Horaires repas : ${mealTimesStr}\n- Budget mensuel : ${({ low: "\u00e9conomique (<30\u20ac)", medium: "standard (30-70\u20ac)", high: "premium (>70\u20ac)" })[dietPrefs.budget_monthly] || "standard"}\n- Pr\u00e9f\u00e9rence bio : ${dietPrefs.organic_preference ? "Oui" : "Non"}\n- Notes : ${dietPrefs.notes || "aucune"}`;
+      prefsContext = `\n## PRÉFÉRENCES ALIMENTAIRES DU PROPRIÉTAIRE\n- Marques préférées : ${brands}\n- Aliments refusés par le chien : ${dietPrefs.disliked_foods || "aucun"}\n- Repas par jour : ${portions}\n- Horaires repas : ${mealTimesStr}\n- Budget mensuel : ${({ low: "économique (<30\u20ac)", medium: "standard (30-70\u20ac)", high: "premium (>70\u20ac)" })[dietPrefs.budget_monthly] || "standard"}\n- Préférence bio : ${dietPrefs.organic_preference ? "Oui" : "Non"}\n- Notes : ${dietPrefs.notes || "aucune"}`;
     }
 
     let checkinContext = "";
@@ -186,15 +186,15 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       .filter(c => c.date && (Date.now() - new Date(c.date).getTime()) < 7 * 86400000)
       .sort((a, b) => new Date(b.date) - new Date(a.date));
     if (recentCheckins.length > 0) {
-      const moodMap = { great: "excellent", good: "bon", neutral: "neutre", bad: "mauvais", terrible: "tr\u00e8s mauvais" };
-      const appetiteMap = { normal: "normal", increased: "augment\u00e9", decreased: "diminu\u00e9", none: "aucun" };
+      const moodMap = { great: "excellent", good: "bon", neutral: "neutre", bad: "mauvais", terrible: "très mauvais" };
+      const appetiteMap = { normal: "normal", increased: "augmenté", decreased: "diminué", none: "aucun" };
       const energyMap = { high: "haute", medium: "moyenne", low: "basse" };
       const moods = recentCheckins.map(c => moodMap[c.mood] || c.mood).filter(Boolean);
       const appetites = recentCheckins.map(c => appetiteMap[c.appetite] || c.appetite).filter(Boolean);
       const energies = recentCheckins.map(c => energyMap[c.energy] || c.energy).filter(Boolean);
-      checkinContext = `\n## BIEN-\u00caTRE R\u00c9CENT (${recentCheckins.length} check-ins, 7 derniers jours)\n- App\u00e9tit : ${appetites.join(", ")}\n- Humeur : ${moods.join(", ")}\n- \u00c9nergie : ${energies.join(", ")}`;
-      const hasLowAppetite = appetites.some(a => a === "diminu\u00e9" || a === "aucun");
-      if (hasLowAppetite) checkinContext += "\n- APP\u00c9TIT EN BAISSE : adapter les repas (plus app\u00e9tissants, portions r\u00e9duites, fractionner)";
+      checkinContext = `\n## BIEN-ÊTRE RÉCENT (${recentCheckins.length} check-ins, 7 derniers jours)\n- Appétit : ${appetites.join(", ")}\n- Humeur : ${moods.join(", ")}\n- Énergie : ${energies.join(", ")}`;
+      const hasLowAppetite = appetites.some(a => a === "diminué" || a === "aucun");
+      if (hasLowAppetite) checkinContext += "\n- APPÉTIT EN BAISSE : adapter les repas (plus appétissants, portions réduites, fractionner)";
     }
 
     let healthContext = "";
@@ -207,15 +207,15 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       .sort((a, b) => new Date(b.date || b.created_date) - new Date(a.date || a.created_date))
       .slice(0, 2);
     if (weightRecords.length >= 2 || recentVetVisits.length > 0) {
-      healthContext = "\n## CONTEXTE SANT\u00c9";
+      healthContext = "\n## CONTEXTE SANTÉ";
       if (weightRecords.length >= 2) {
         const latest = parseFloat(weightRecords[0].value);
         const previous = parseFloat(weightRecords[1].value);
         const diff = (latest - previous).toFixed(1);
-        healthContext += `\n- Tendance poids : ${latest} kg (${Number(diff) > 0 ? "+" : ""}${diff} kg r\u00e9cemment)${Number(diff) > 1 ? " \u2192 r\u00e9duire les calories" : Number(diff) < -1 ? " \u2192 augmenter les calories" : ""}`;
+        healthContext += `\n- Tendance poids : ${latest} kg (${Number(diff) > 0 ? "+" : ""}${diff} kg récemment)${Number(diff) > 1 ? " → réduire les calories" : Number(diff) < -1 ? " → augmenter les calories" : ""}`;
       }
       if (recentVetVisits.length > 0) {
-        healthContext += `\n- Derni\u00e8re visite v\u00e9to : ${recentVetVisits[0].title || "visite"}${recentVetVisits[0].details ? ` \u2014 ${recentVetVisits[0].details.substring(0, 80)}` : ""}`;
+        healthContext += `\n- Dernière visite véto : ${recentVetVisits[0].title || "visite"}${recentVetVisits[0].details ? ` — ${recentVetVisits[0].details.substring(0, 80)}` : ""}`;
       }
     }
 
@@ -225,7 +225,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
     if (recentLogs.length > 0) {
       const totalMin = recentLogs.reduce((s, l) => s + (l.walk_minutes || 0), 0);
       const avgMin = Math.round(totalMin / recentLogs.length);
-      activityContext = `\n## ACTIVIT\u00c9 R\u00c9ELLE (7 derniers jours)\n- Moyenne : ${avgMin} min de balade/jour (${recentLogs.length} jours enregistr\u00e9s)\n- Adapter les calories selon l'activit\u00e9 r\u00e9elle, pas seulement le profil`;
+      activityContext = `\n## ACTIVITÉ RÉELLE (7 derniers jours)\n- Moyenne : ${avgMin} min de balade/jour (${recentLogs.length} jours enregistrés)\n- Adapter les calories selon l'activité réelle, pas seulement le profil`;
     }
 
     let previousPlanContext = "";
@@ -234,25 +234,25 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
         const prevData = JSON.parse(activePlan.plan_text);
         if (prevData.days && Array.isArray(prevData.days)) {
           const prevFoods = prevData.days.map(d => `${d.morning?.food || ""}, ${d.evening?.food || ""}`).join("; ");
-          previousPlanContext = `\n## PLAN PR\u00c9C\u00c9DENT (varie les repas !)\nRepas du plan pr\u00e9c\u00e9dent : ${prevFoods.substring(0, 300)}\nIMPORTANT : propose des repas DIFF\u00c9RENTS pour varier l'alimentation.`;
+          previousPlanContext = `\n## PLAN PRÉCÉDENT (varie les repas !)\nRepas du plan précédent : ${prevFoods.substring(0, 300)}\nIMPORTANT : propose des repas DIFFÉRENTS pour varier l'alimentation.`;
         }
       } catch { /* not JSON */ }
     }
 
     // User notes for generation
     const userNotesContext = generationNotes.trim()
-      ? `\n## INSTRUCTIONS SP\u00c9CIALES DU PROPRI\u00c9TAIRE\n${generationNotes.trim()}`
+      ? `\n## INSTRUCTIONS SPÉCIALES DU PROPRIÉTAIRE\n${generationNotes.trim()}`
       : "";
 
     const month = new Date().getMonth();
-    const season = month >= 2 && month <= 4 ? "printemps" : month >= 5 && month <= 7 ? "\u00e9t\u00e9 (adapter hydratation)" : month >= 8 && month <= 10 ? "automne" : "hiver (besoins \u00e9nerg\u00e9tiques plus \u00e9lev\u00e9s)";
+    const season = month >= 2 && month <= 4 ? "printemps" : month >= 5 && month <= 7 ? "été (adapter hydratation)" : month >= 8 && month <= 10 ? "automne" : "hiver (besoins énergétiques plus élevés)";
 
-    const prompt = `Tu es un nutritionniste v\u00e9t\u00e9rinaire expert. G\u00e9n\u00e8re un plan repas de 7 jours pour ce chien.
+    const prompt = `Tu es un nutritionniste vétérinaire expert. Génère un plan repas de 7 jours pour ce chien.
 
-PROFIL : ${dog.name}, ${dog.breed || "race inconnue"}, ${lifeStage} (${getAge(dog.birth_date) || "\u00e2ge inconnu"}), ${dog.weight ? dog.weight + " kg" : "poids inconnu"}, ${dog.sex === "male" ? "m\u00e2le" : dog.sex === "female" ? "femelle" : "sexe inconnu"}, activit\u00e9 ${activityMap[dog.activity_level] || "mod\u00e9r\u00e9e"}, ${dog.neutered ? "st\u00e9rilis\u00e9(e)" : "non st\u00e9rilis\u00e9(e)"}, alimentation ${dietMap[dog.diet_type] || "croquettes"} ${dog.diet_brand ? `(${dog.diet_brand})` : ""}, allergies : ${dog.allergies || "aucune"}, sant\u00e9 : ${dog.health_issues || "aucun probl\u00e8me"}, environnement : ${dog.environment || "non pr\u00e9cis\u00e9"}${dog.status && dog.status !== "healthy" ? `, STATUT : ${dog.status === "recovering" ? "en convalescence (repas doux, faciles \u00e0 dig\u00e9rer)" : dog.status}` : ""}
+PROFIL : ${dog.name}, ${dog.breed || "race inconnue"}, ${lifeStage} (${getAge(dog.birth_date) || "âge inconnu"}), ${dog.weight ? dog.weight + " kg" : "poids inconnu"}, ${dog.sex === "male" ? "mâle" : dog.sex === "female" ? "femelle" : "sexe inconnu"}, activité ${activityMap[dog.activity_level] || "modérée"}, ${dog.neutered ? "stérilisé(e)" : "non stérilisé(e)"}, alimentation ${dietMap[dog.diet_type] || "croquettes"} ${dog.diet_brand ? `(${dog.diet_brand})` : ""}, allergies : ${dog.allergies || "aucune"}, santé : ${dog.health_issues || "aucun problème"}, environnement : ${dog.environment || "non précisé"}${dog.status && dog.status !== "healthy" ? `, STATUT : ${dog.status === "recovering" ? "en convalescence (repas doux, faciles à digérer)" : dog.status}` : ""}
 Saison : ${season}${scansContext}${prefsContext}${checkinContext}${healthContext}${activityContext}${previousPlanContext}${userNotesContext}
 
-R\u00c9PONDS UNIQUEMENT avec un objet JSON valide, sans texte avant ni apr\u00e8s, sans bloc markdown. Structure exacte :
+RÉPONDS UNIQUEMENT avec un objet JSON valide, sans texte avant ni après, sans bloc markdown. Structure exacte :
 {
   "calories_per_day": 850,
   "quantity_summary": "240g de croquettes par jour",
@@ -273,12 +273,12 @@ R\u00c9PONDS UNIQUEMENT avec un objet JSON valide, sans texte avant ni apr\u00e8
   ]
 }
 
-R\u00c8GLES :
+RÈGLES :
 - Le tableau "days" doit contenir exactement 7 jours : Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, Dimanche
-- Varie les prot\u00e9ines et compl\u00e9ments au fil de la semaine
-- Adapte les quantit\u00e9s au poids, \u00e2ge, activit\u00e9, st\u00e9rilisation ET aux donn\u00e9es r\u00e9elles ci-dessus
-- Si l'app\u00e9tit est en baisse, propose des repas plus app\u00e9tissants et fractionn\u00e9s
-- Si le poids augmente, r\u00e9duis les calories ; s'il diminue, augmente-les
+- Varie les protéines et compléments au fil de la semaine
+- Adapte les quantités au poids, âge, activité, stérilisation ET aux données réelles ci-dessus
+- Si l'appétit est en baisse, propose des repas plus appétissants et fractionnés
+- Si le poids augmente, réduis les calories ; s'il diminue, augmente-les
 - Sois concis dans les descriptions (pas de phrases longues)
 - N'utilise PAS de caracteres speciaux, d'emojis ou de sequences Unicode dans le JSON
 - Le champ "rationale" doit contenir 3 a 5 raisons courtes expliquant POURQUOI ce plan est adapte a ce chien specifiquement (basees sur ses donnees reelles : poids, age, activite, appetit, sante, preferences)
@@ -303,7 +303,7 @@ R\u00c8GLES :
     } catch (e) {
       console.error("Nutrition plan parse error:", e);
       setPlan(null);
-      toast.error("Erreur lors de la g\u00e9n\u00e9ration. R\u00e9essaie !");
+      toast.error("Erreur lors de la génération. Réessaie !");
     }
 
     setLoading(false);
@@ -323,12 +323,12 @@ R\u00c8GLES :
             <div>
               <p className="text-white/60 text-[10px] font-bold uppercase tracking-wider">Plan actif</p>
               <p className="text-white font-bold text-lg">
-                {progress.isExpired ? "Plan termin\u00e9" : `Jour ${progress.dayNumber}/7`}
+                {progress.isExpired ? "Plan terminé" : `Jour ${progress.dayNumber}/7`}
               </p>
             </div>
             <div className="text-right">
               <p className="text-white/60 text-[10px]">
-                {format(progress.startDate, "d MMM", { locale: fr })} \u2192 {format(progress.endDate, "d MMM", { locale: fr })}
+                {format(progress.startDate, "d MMM", { locale: fr })} → {format(progress.endDate, "d MMM", { locale: fr })}
               </p>
               {activeData.calories_per_day && (
                 <p className="text-white font-bold text-sm">{activeData.calories_per_day} kcal/jour</p>
@@ -381,15 +381,15 @@ R\u00c8GLES :
 
         {progress.isExpired && (
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">
-            <p className="text-sm font-semibold text-amber-800">Ce plan est termin\u00e9 !</p>
-            <p className="text-xs text-amber-600 mt-1">R\u00e9g\u00e9n\u00e8re un nouveau plan pour continuer.</p>
+            <p className="text-sm font-semibold text-amber-800">Ce plan est terminé !</p>
+            <p className="text-xs text-amber-600 mt-1">Régénère un nouveau plan pour continuer.</p>
           </div>
         )}
 
         {/* Full week (expandable) */}
         <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
           <button onClick={() => setShowWeek(!showWeek)} className="w-full flex items-center justify-between p-4">
-            <p className="text-sm font-semibold text-foreground">Semaine compl\u00e8te</p>
+            <p className="text-sm font-semibold text-foreground">Semaine complète</p>
             {showWeek ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
           </button>
           <AnimatePresence>
@@ -435,7 +435,7 @@ R\u00c8GLES :
         {/* Supplements + Avoid */}
         {activeData.supplements?.length > 0 && (
           <div className="bg-white rounded-2xl border border-border p-4">
-            <p className="text-xs font-bold text-foreground mb-2">Compl\u00e9ments</p>
+            <p className="text-xs font-bold text-foreground mb-2">Compléments</p>
             <div className="flex flex-wrap gap-1.5">
               {activeData.supplements.map((s, i) => (
                 <span key={i} className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
@@ -446,7 +446,7 @@ R\u00c8GLES :
 
         {activeData.avoid?.length > 0 && (
           <div className="bg-red-50 rounded-2xl border border-red-200 p-4">
-            <p className="text-xs font-bold text-red-700 mb-2">\u00c0 \u00e9viter</p>
+            <p className="text-xs font-bold text-red-700 mb-2">À éviter</p>
             <div className="flex flex-wrap gap-1.5">
               {activeData.avoid.map((a, i) => (
                 <span key={i} className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
@@ -494,7 +494,7 @@ R\u00c8GLES :
               <textarea
                 value={tempNote}
                 onChange={e => setTempNote(e.target.value)}
-                placeholder="Observations, ajustements, r\u00e9actions de ton chien..."
+                placeholder="Observations, ajustements, réactions de ton chien..."
                 className="w-full text-xs rounded-xl border border-border p-2.5 resize-none h-16 focus:outline-none focus:ring-1 focus:ring-primary"
                 autoFocus
               />
@@ -525,7 +525,7 @@ R\u00c8GLES :
             className="flex items-center gap-2 text-sm font-semibold text-primary"
           >
             <RefreshCw className="w-4 h-4" />
-            {showGenerator ? "Masquer" : "Reg\u00e9n\u00e9rer un nouveau plan"}
+            {showGenerator ? "Masquer" : "Regénérer un nouveau plan"}
           </button>
         </div>
       </div>
@@ -546,9 +546,9 @@ R\u00c8GLES :
             {!activeData && (
               <>
                 <div className="text-5xl mb-1">{"\u{1F37D}\uFE0F"}</div>
-                <h3 className="font-bold text-foreground">Plan de repas personnalis\u00e9 IA</h3>
+                <h3 className="font-bold text-foreground">Plan de repas personnalisé IA</h3>
                 <p className="text-sm text-muted-foreground px-2">
-                  G\u00e9n\u00e8re un plan hebdomadaire adapt\u00e9 au profil de {dog.name}, avec quantit\u00e9s pr\u00e9cises et aliments \u00e0 \u00e9viter.
+                  Génère un plan hebdomadaire adapté au profil de {dog.name}, avec quantités précises et aliments à éviter.
                 </p>
               </>
             )}
@@ -556,20 +556,20 @@ R\u00c8GLES :
             {/* Data richness badges */}
             {(checkins.length > 0 || healthRecords.length > 0 || dietPrefs) && (
               <div className="flex flex-wrap gap-1.5 justify-center">
-                {checkins.length > 0 && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Check-ins int\u00e9gr\u00e9s</span>}
-                {healthRecords.length > 0 && <span className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">Sant\u00e9 int\u00e9gr\u00e9e</span>}
-                {dietPrefs && <span className="text-[10px] bg-violet-50 text-violet-700 px-2 py-0.5 rounded-full">Pr\u00e9f\u00e9rences int\u00e9gr\u00e9es</span>}
-                {dailyLogs.length > 0 && <span className="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full">Activit\u00e9 int\u00e9gr\u00e9e</span>}
+                {checkins.length > 0 && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Check-ins intégrés</span>}
+                {healthRecords.length > 0 && <span className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">Santé intégrée</span>}
+                {dietPrefs && <span className="text-[10px] bg-violet-50 text-violet-700 px-2 py-0.5 rounded-full">Préférences intégrées</span>}
+                {dailyLogs.length > 0 && <span className="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full">Activité intégrée</span>}
               </div>
             )}
 
             {/* Notes for AI before generating */}
             <div>
-              <p className="text-xs font-medium text-foreground mb-1.5 text-left">Instructions sp\u00e9ciales (optionnel)</p>
+              <p className="text-xs font-medium text-foreground mb-1.5 text-left">Instructions spéciales (optionnel)</p>
               <textarea
                 value={generationNotes}
                 onChange={e => setGenerationNotes(e.target.value)}
-                placeholder={`Ex : ${dog.name} mange trop vite, plus de l\u00e9gumes, \u00e9viter les sous-produits...`}
+                placeholder={`Ex : ${dog.name} mange trop vite, plus de légumes, éviter les sous-produits...`}
                 className="w-full text-sm rounded-xl border border-border p-3 resize-none h-16 focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
@@ -580,7 +580,7 @@ R\u00c8GLES :
                   <AlertTriangle className="w-4 h-4 text-amber-500" />
                   <p className="text-sm font-semibold text-amber-800">Limite atteinte</p>
                 </div>
-                <p className="text-xs text-amber-700">Tu as utilis\u00e9 tes {MONTHLY_FREE_LIMIT} g\u00e9n\u00e9rations gratuites ce mois-ci. Passe en Premium pour des plans illimit\u00e9s.</p>
+                <p className="text-xs text-amber-700">Tu as utilisé tes {MONTHLY_FREE_LIMIT} générations gratuites ce mois-ci. Passe en Premium pour des plans illimités.</p>
                 <UpgradePrompt type="action" from="nutrition-plan-monthly" />
               </div>
             ) : !isPremium && !hasCredits ? (
@@ -589,11 +589,11 @@ R\u00c8GLES :
               <>
                 {!isPremium && (
                   <p className="text-xs text-muted-foreground text-center">
-                    {MONTHLY_FREE_LIMIT - monthlyPlanCount} g\u00e9n\u00e9ration{MONTHLY_FREE_LIMIT - monthlyPlanCount !== 1 ? "s" : ""} restante{MONTHLY_FREE_LIMIT - monthlyPlanCount !== 1 ? "s" : ""} ce mois
+                    {MONTHLY_FREE_LIMIT - monthlyPlanCount} génération{MONTHLY_FREE_LIMIT - monthlyPlanCount !== 1 ? "s" : ""} restante{MONTHLY_FREE_LIMIT - monthlyPlanCount !== 1 ? "s" : ""} ce mois
                   </p>
                 )}
                 <Button onClick={generate} className="w-full bg-safe hover:bg-safe/90 text-white font-bold h-12 rounded-2xl shadow-lg shadow-safe/30">
-                  {activePlan ? "R\u00e9g\u00e9n\u00e9rer un nouveau plan" : "G\u00e9n\u00e9rer mon plan de repas"}
+                  {activePlan ? "Régénérer un nouveau plan" : "Générer mon plan de repas"}
                 </Button>
               </>
             )}
@@ -607,8 +607,8 @@ R\u00c8GLES :
               <p className="font-semibold text-foreground">NutriCoach analyse le profil de {dog.name}...</p>
               <p className="text-xs text-muted-foreground mt-1">
                 {checkins.length > 0 || healthRecords.length > 0
-                  ? "Int\u00e9gration des donn\u00e9es sant\u00e9, activit\u00e9 et pr\u00e9f\u00e9rences"
-                  : "Cr\u00e9ation du plan personnalis\u00e9"}
+                  ? "Intégration des données santé, activité et préférences"
+                  : "Création du plan personnalisé"}
               </p>
             </div>
           </div>
@@ -665,7 +665,7 @@ R\u00c8GLES :
             {/* Supplements + Avoid */}
             {plan.supplements?.length > 0 && (
               <div className="bg-white rounded-2xl border border-border p-4">
-                <p className="text-xs font-bold text-foreground mb-2">Compl\u00e9ments</p>
+                <p className="text-xs font-bold text-foreground mb-2">Compléments</p>
                 <div className="flex flex-wrap gap-1.5">
                   {plan.supplements.map((s, i) => (
                     <span key={i} className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
@@ -676,7 +676,7 @@ R\u00c8GLES :
 
             {plan.avoid?.length > 0 && (
               <div className="bg-red-50 rounded-2xl border border-red-200 p-4">
-                <p className="text-xs font-bold text-red-700 mb-2">\u00c0 \u00e9viter</p>
+                <p className="text-xs font-bold text-red-700 mb-2">À éviter</p>
                 <div className="flex flex-wrap gap-1.5">
                   {plan.avoid.map((a, i) => (
                     <span key={i} className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
@@ -720,7 +720,7 @@ R\u00c8GLES :
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : saved ? (
                     <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-2">
-                      <Check className="w-4 h-4" /> Activ\u00e9 !
+                      <Check className="w-4 h-4" /> Activé !
                     </motion.div>
                   ) : (
                     <><Home className="w-4 h-4" /> Activer ce programme</>
@@ -765,8 +765,8 @@ R\u00c8GLES :
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-muted-foreground">
                           {p.generated_at ? format(new Date(p.generated_at), "d MMM yyyy", { locale: fr }) : "Date inconnue"}
-                          {pData?.calories_per_day ? ` \u2022 ${pData.calories_per_day} kcal` : ""}
-                          {pProgress?.isExpired ? " \u2022 Termin\u00e9" : ""}
+                          {pData?.calories_per_day ? ` • ${pData.calories_per_day} kcal` : ""}
+                          {pProgress?.isExpired ? " • Terminé" : ""}
                         </p>
                         {p.notes && <p className="text-[10px] text-muted-foreground truncate mt-0.5">{p.notes}</p>}
                       </div>

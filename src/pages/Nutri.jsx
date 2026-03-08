@@ -67,7 +67,7 @@ function getTimeStr(timestamp) {
 const TABS = [
   { id: "coach",    label: "NutriCoach", emoji: "\u{1F957}", bg: "from-emerald-500 to-emerald-700" },
   { id: "mealplan", label: "Plan repas",  emoji: "\u{1F4C5}", bg: "from-amber-500 to-amber-600" },
-  { id: "prefs",    label: "Pr\u00e9f\u00e9rences", emoji: "\u2699\uFE0F", bg: "from-slate-500 to-slate-700" },
+  { id: "prefs",    label: "Préférences", emoji: "\u2699\uFE0F", bg: "from-slate-500 to-slate-700" },
   { id: "compare",  label: "Comparer",   emoji: "\u2696\uFE0F", bg: "from-blue-500 to-indigo-600" },
   { id: "scan",     label: "Scanner",    emoji: "\u{1F4F7}", bg: "from-violet-500 to-purple-600" },
 ];
@@ -192,7 +192,7 @@ export default function Nutri() {
         created_at: new Date().toISOString(),
       });
       setBookmarked(prev => ({ ...prev, [msg.timestamp]: true }));
-      toast.success("Sauvegard\u00e9 !", { description: "Conseil ajout\u00e9 \u00e0 ta biblioth\u00e8que" });
+      toast.success("Sauvegardé !", { description: "Conseil ajouté à ta bibliothèque" });
     } catch {
       toast.error("Erreur", { description: "Impossible de sauvegarder" });
     }
@@ -200,7 +200,7 @@ export default function Nutri() {
 
   const handleCopy = (content) => {
     navigator.clipboard?.writeText(content).then(() => {
-      toast.success("Copi\u00e9 !");
+      toast.success("Copié !");
     }).catch(() => {});
   };
 
@@ -266,14 +266,14 @@ export default function Nutri() {
             const elapsed = pd.start_date ? Math.floor((Date.now() - new Date(pd.start_date + "T00:00:00").getTime()) / 86400000) : null;
             const dayNum = elapsed !== null && elapsed >= 0 ? Math.min(elapsed + 1, 7) : null;
             const expired = elapsed !== null && elapsed >= 7;
-            if (expired) return "\n\nTon plan repas est termin\u00e9 ! Tu peux en g\u00e9n\u00e9rer un nouveau dans l'onglet **Plan repas**.";
-            if (dayNum) return `\n\nTu as un **plan repas actif** (Jour ${dayNum}/7, ${pd.calories_per_day || "?"} kcal/jour). Je peux t'aider \u00e0 l'ajuster ou r\u00e9pondre \u00e0 tes questions dessus !`;
+            if (expired) return "\n\nTon plan repas est terminé ! Tu peux en générer un nouveau dans l'onglet **Plan repas**.";
+            if (dayNum) return `\n\nTu as un **plan repas actif** (Jour ${dayNum}/7, ${pd.calories_per_day || "?"} kcal/jour). Je peux t'aider à l'ajuster ou répondre à tes questions dessus !`;
             return "";
           } catch { return ""; }
         })() : "";
         setMessages([{
           role: "assistant",
-          content: `Bonjour ! \u{1F957} Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies && d.allergies.toLowerCase() !== "non" ? ` avec des allergies \u00e0 ${d.allergies}` : ""}, ses check-ins, son historique sant\u00e9 et ses pr\u00e9f\u00e9rences alimentaires.${planInfo}\n\nPose-moi une question, g\u00e9n\u00e8re un **plan de repas personnalis\u00e9**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
+          content: `Bonjour ! \u{1F957} Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies && d.allergies.toLowerCase() !== "non" ? ` avec des allergies à ${d.allergies}` : ""}, ses check-ins, son historique santé et ses préférences alimentaires.${planInfo}\n\nPose-moi une question, génère un **plan de repas personnalisé**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
           timestamp: new Date().toISOString(),
         }]);
       }
@@ -302,7 +302,7 @@ export default function Nutri() {
       contextMsgs.push({ role: "user", content });
       const response = await base44.functions.invoke("pawcoachChat", { dogId: dog.id, mode: "nutrition", messages: contextMsgs });
       if (response.data?.error === "quota_exceeded") { setMessagesRemaining(0); return; }
-      const assistantContent = response.data?.content || "D\u00e9sol\u00e9, je n'ai pas pu r\u00e9pondre.";
+      const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
       const assistantTs = new Date().toISOString();
 
       startStreaming(assistantContent, assistantTs);
@@ -314,7 +314,7 @@ export default function Nutri() {
       console.error("Nutri send error:", err);
       if (err?.message?.includes?.("quota_exceeded") || err?.status === 429) { setMessagesRemaining(0); return; }
       setLastFailedInput(content);
-      setMessages(prev => [...prev, { role: "assistant", content: "Oups, une erreur est survenue. R\u00e9essaie dans un instant.", timestamp: new Date().toISOString(), isError: true }]);
+      setMessages(prev => [...prev, { role: "assistant", content: "Oups, une erreur est survenue. Réessaie dans un instant.", timestamp: new Date().toISOString(), isError: true }]);
     } finally {
       setLoading(false);
     }
@@ -337,8 +337,8 @@ export default function Nutri() {
   const quickActions = dog ? [
     `Plan de repas hebdomadaire pour ${dog.name}`,
     `Meilleures croquettes pour ${dog.breed || "mon chien"}`,
-    `Quelle quantit\u00e9 donner \u00e0 ${dog.name} ?`,
-    `Aliments \u00e0 \u00e9viter absolument`,
+    `Quelle quantité donner à ${dog.name} ?`,
+    `Aliments à éviter absolument`,
   ] : [];
 
   return (
