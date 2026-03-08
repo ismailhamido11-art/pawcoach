@@ -180,7 +180,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
 
       {/* Interactive map */}
       {showMap && !loading && visibleParks.length > 0 && userPos && (
-        <div className="rounded-2xl overflow-hidden border border-border/50 shadow-sm" style={{ height: 200 }}>
+        <div className="rounded-2xl overflow-hidden border border-border/50 shadow-sm relative z-0" style={{ height: 200 }}>
           <MapContainer center={userPos} zoom={14} style={{ height: "100%", width: "100%" }} zoomControl={false}>
             <TileLayer
               attribution='&copy; <a href="https://carto.com">CARTO</a>'
@@ -256,7 +256,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="text-sm font-bold text-foreground line-clamp-2">{park.name}</p>
+                      <p className="text-sm font-bold text-foreground">{park.name}</p>
                       <PawRating paws={paws} />
                     </div>
                     <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">

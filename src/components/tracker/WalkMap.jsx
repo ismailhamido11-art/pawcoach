@@ -16,7 +16,7 @@ export default function WalkMap({ path, currentPos }) {
   const lastTwo = path.length >= 2 ? path.slice(-2) : null;
 
   return (
-    <div className="w-full h-52 rounded-2xl overflow-hidden border border-border/50 shadow-sm relative">
+    <div className="w-full h-52 rounded-2xl overflow-hidden border border-border/50 shadow-sm relative z-0">
       <MapContainer
         center={defaultCenter}
         zoom={17}
