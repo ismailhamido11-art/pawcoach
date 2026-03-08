@@ -267,7 +267,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
             )}
 
             {/* Nearby parks */}
-            <NearbyParks onNearPark={setNearPark} />
+            <NearbyParks dog={dog} onNearPark={setNearPark} />
           </motion.div>
         )}
 

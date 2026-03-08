@@ -82,6 +82,9 @@ out center tags;`;
         surface: tags.surface,
         fenced: tags.fenced,
         opening_hours: tags.opening_hours,
+        lit: tags.lit,
+        drinking_water: tags.drinking_water,
+        description: tags.description,
       },
     };
   }).filter(Boolean).sort((a, b) => a.distanceKm - b.distanceKm);
