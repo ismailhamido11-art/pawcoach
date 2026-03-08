@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, Clock, RotateCcw, CheckCircle2, BookmarkCheck, Home, Check, CalendarDays } from "lucide-react";
+import { Sparkles, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, Clock, RotateCcw, CheckCircle2, BookmarkCheck, Home, Check, CalendarDays, Lightbulb, Eye, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { differenceInMonths } from "date-fns";
 import { toast } from "sonner";
@@ -13,8 +13,9 @@ const ACTIVITY_LABELS = {
   faible: "Faible", modere: "Modéré", eleve: "Élevé", tres_eleve: "Très élevé"
 };
 
-const SESSION_ICONS = {
-  balade: "🐾", jeu: "🎾", "exercice mental": "🧠", repos: "💤", entraînement: "🎯"
+const ACTIVITY_ICONS = {
+  balade: "🐾", jeu: "🎾", "exercice mental": "🧠",
+  "repos actif": "💆", repos: "💤", entraînement: "🎯",
 };
 
 const JOURS_COURTS = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
@@ -45,39 +46,63 @@ function isSameDay(date) {
   return d.getTime() === now.getTime();
 }
 
-function WeekCard({ week, weekIdx, isOpen, onToggle, startDate, completedSessions, onToggleSession }) {
-  const weekSessions = week.daily_sessions || [];
-  const doneCount = weekSessions.filter((_, i) => completedSessions?.includes(`w${weekIdx}-d${i}`)).length;
-  const allDone = doneCount === weekSessions.length && weekSessions.length > 0;
+function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleComplete }) {
+  const realDate = startDate ? addDaysToDate(startDate, dayIdx) : null;
+  const today = realDate ? isSameDay(realDate) : false;
+  const actType = day.activity?.type || "balade";
+  const icon = ACTIVITY_ICONS[actType] || "🐶";
 
   return (
-    <div className={`bg-white border rounded-2xl overflow-hidden shadow-sm ${allDone ? "border-emerald-200" : "border-border"}`}>
-      <button
-        onClick={onToggle}
-        className="w-full flex items-center justify-between p-4 text-left"
-      >
-        <div className="flex items-center gap-3">
-          <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${allDone ? "bg-emerald-100" : "bg-primary/10"}`}>
-            {allDone
-              ? <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              : <span className="text-xs font-black text-primary">S{week.week}</span>
-            }
-          </div>
-          <div>
-            <p className="font-bold text-sm text-foreground">{week.theme}</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5">{week.focus}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          {doneCount > 0 && (
-            <span className={`text-[10px] font-bold ${allDone ? "text-emerald-600" : "text-violet-600"}`}>
-              {doneCount}/{weekSessions.length}
-            </span>
-          )}
-          {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" /> : <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
-        </div>
-      </button>
+    <div className={`bg-white border rounded-2xl overflow-hidden shadow-sm transition-colors ${
+      isDone ? "border-emerald-200" : today ? "border-violet-300 shadow-violet-100" : "border-border"
+    }`}>
+      {/* Header — always visible */}
+      <div className="flex items-start gap-3 p-4">
+        {/* Completion toggle */}
+        {startDate && onToggleComplete && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggleComplete(); }}
+            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
+              isDone ? "bg-emerald-500 border-emerald-500" : "border-border/60 hover:border-violet-400"
+            }`}
+          >
+            {isDone && <Check className="w-3.5 h-3.5 text-white" />}
+          </button>
+        )}
 
+        {/* Main content */}
+        <button onClick={onToggle} className="flex-1 text-left min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span className={`text-xs font-bold ${isDone ? "text-muted-foreground line-through" : "text-foreground"}`}>
+              {realDate ? formatDateFr(realDate) : `Jour ${dayIdx + 1}`}
+            </span>
+            {today && <span className="text-[9px] font-bold bg-violet-200 text-violet-700 px-1.5 py-0.5 rounded-full leading-none">Aujourd'hui</span>}
+            {isDone && <span className="text-[9px] font-bold bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full leading-none">Fait</span>}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-lg leading-none">{icon}</span>
+            <p className={`text-sm font-bold flex-1 ${isDone ? "text-muted-foreground" : "text-foreground"}`}>
+              {day.title || day.activity?.name || `Jour ${dayIdx + 1}`}
+            </p>
+            <span className="text-[10px] font-bold text-primary flex items-center gap-0.5 flex-shrink-0">
+              <Clock className="w-3 h-3" />{day.activity?.duration_min || 20} min
+            </span>
+          </div>
+
+          {/* Fun fact teaser when collapsed */}
+          {!isOpen && day.fun_fact && (
+            <p className="text-[10px] text-amber-700/70 mt-1.5 line-clamp-1 italic ml-7">
+              📖 {day.fun_fact}
+            </p>
+          )}
+        </button>
+
+        <button onClick={onToggle} className="flex-shrink-0 mt-1">
+          {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+        </button>
+      </div>
+
+      {/* Expanded content */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -86,54 +111,80 @@ function WeekCard({ week, weekIdx, isOpen, onToggle, startDate, completedSession
             exit={{ height: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 space-y-1 border-t border-border pt-3">
-              {weekSessions.map((session, i) => {
-                const sessionKey = `w${weekIdx}-d${i}`;
-                const isDone = completedSessions?.includes(sessionKey);
-                const realDate = startDate ? addDaysToDate(startDate, weekIdx * 7 + i) : null;
-                const today = realDate ? isSameDay(realDate) : false;
+            <div className="px-4 pb-4 space-y-3 border-t border-border pt-3">
+              {/* Theme */}
+              {day.theme && (
+                <p className="text-[10px] font-bold text-violet-600 uppercase tracking-wider">{day.theme}</p>
+              )}
 
-                return (
-                  <div
-                    key={i}
-                    className={`flex items-start gap-2.5 py-2.5 px-2 -mx-2 rounded-xl border transition-colors ${
-                      today ? "bg-violet-50 border-violet-200" :
-                      isDone ? "bg-muted/30 border-transparent" :
-                      "border-transparent"
-                    }`}
-                  >
-                    {startDate && onToggleSession && (
-                      <button
-                        onClick={() => onToggleSession(sessionKey)}
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-1 transition-all ${
-                          isDone ? "bg-emerald-500 border-emerald-500" : "border-border/60 hover:border-violet-400"
-                        }`}
-                      >
-                        {isDone && <Check className="w-3 h-3 text-white" />}
-                      </button>
-                    )}
-                    <span className="text-lg leading-none mt-1">{SESSION_ICONS[session.type] || "🐶"}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`text-xs font-bold ${isDone ? "line-through text-muted-foreground" : "text-foreground"}`}>
-                          {realDate ? formatDateFr(realDate) : session.day}
-                        </span>
-                        {today && <span className="text-[9px] font-bold bg-violet-200 text-violet-700 px-1.5 py-0.5 rounded-full leading-none">Aujourd'hui</span>}
-                        <span className="text-[10px] text-muted-foreground capitalize">{session.type}</span>
-                        <span className="ml-auto text-[10px] font-bold text-primary flex items-center gap-0.5">
-                          <Clock className="w-3 h-3" />{session.duration_min} min
-                        </span>
+              {/* Activity with steps */}
+              <div className="bg-violet-50/80 rounded-xl p-3 space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg leading-none">{icon}</span>
+                  <p className="text-xs font-bold text-foreground">{day.activity?.name}</p>
+                  <span className="text-[10px] text-muted-foreground capitalize ml-auto">{actType}</span>
+                </div>
+                {day.activity?.description && (
+                  <p className="text-xs text-foreground/80 leading-relaxed">{day.activity.description}</p>
+                )}
+                {day.activity?.steps?.length > 0 && (
+                  <div className="space-y-1.5 mt-1">
+                    {day.activity.steps.map((step, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <div className="w-5 h-5 rounded-full bg-violet-200 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-[10px] font-black text-violet-700">{i + 1}</span>
+                        </div>
+                        <p className="text-xs text-foreground/80 leading-relaxed">{step}</p>
                       </div>
-                      <p className={`text-xs mt-0.5 ${isDone ? "line-through text-muted-foreground/50" : "text-muted-foreground"}`}>
-                        {session.activity}
-                      </p>
-                      {session.tips && !isDone && (
-                        <p className="text-[10px] text-amber-600 mt-0.5 italic">💡 {session.tips}</p>
-                      )}
-                    </div>
+                    ))}
                   </div>
-                );
-              })}
+                )}
+              </div>
+
+              {/* Fun fact */}
+              {day.fun_fact && (
+                <div className="bg-amber-50 rounded-xl p-3 border border-amber-100">
+                  <p className="text-[10px] font-bold text-amber-700 mb-1 flex items-center gap-1.5">
+                    📖 Le savais-tu ?
+                  </p>
+                  <p className="text-xs text-amber-900/80 leading-relaxed">{day.fun_fact}</p>
+                </div>
+              )}
+
+              {/* Coach tip */}
+              {day.coach_tip && (
+                <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-100">
+                  <p className="text-[10px] font-bold text-emerald-700 mb-1 flex items-center gap-1.5">
+                    <Lightbulb className="w-3 h-3" /> Conseil du coach
+                  </p>
+                  <p className="text-xs text-emerald-900/80 leading-relaxed">{day.coach_tip}</p>
+                </div>
+              )}
+
+              {/* Observe */}
+              {day.observe && (
+                <div className="bg-blue-50 rounded-xl p-3 border border-blue-100">
+                  <p className="text-[10px] font-bold text-blue-700 mb-1 flex items-center gap-1.5">
+                    <Eye className="w-3 h-3" /> Observe
+                  </p>
+                  <p className="text-xs text-blue-900/80 leading-relaxed">{day.observe}</p>
+                </div>
+              )}
+
+              {/* Bonus challenge */}
+              {day.bonus_challenge && (
+                <div className="bg-purple-50 rounded-xl p-3 border border-purple-100">
+                  <p className="text-[10px] font-bold text-purple-700 mb-1 flex items-center gap-1.5">
+                    <Star className="w-3 h-3" /> Défi bonus
+                  </p>
+                  <p className="text-xs text-purple-900/80 leading-relaxed">{day.bonus_challenge}</p>
+                </div>
+              )}
+
+              {/* Motivation */}
+              {day.motivation && (
+                <p className="text-xs text-violet-600 italic text-center pt-1">{day.motivation}</p>
+              )}
             </div>
           </motion.div>
         )}
@@ -147,12 +198,12 @@ export default function AITrainingProgram({ dog, logs = [] }) {
   const [program, setProgram] = useState(null);
   const [generating, setGenerating] = useState(false);
   const [loadingBookmarks, setLoadingBookmarks] = useState(true);
-  const [openWeek, setOpenWeek] = useState(0);
+  const [openDay, setOpenDay] = useState(-1);
   const [goals, setGoals] = useState("");
   const [showGoalInput, setShowGoalInput] = useState(false);
   const [saved, setSaved] = useState(false);
   const [bookmarkId, setBookmarkId] = useState(null);
-  const [completedSessions, setCompletedSessions] = useState([]);
+  const [completedDays, setCompletedDays] = useState([]);
 
   // Load saved program from Bookmarks on mount
   useEffect(() => {
@@ -167,16 +218,16 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         for (const bk of (bookmarks || [])) {
           try {
             const data = typeof bk.content === "string" ? JSON.parse(bk.content) : bk.content;
-            if (data?.start_date && data?.weeks) {
+            if (data?.start_date && data?.days && Array.isArray(data.days)) {
               const elapsed = getElapsedDays(data.start_date);
-              const totalDays = (data.duration_weeks || 4) * 7;
+              const totalDays = data.duration_days || 7;
               if (elapsed >= 0 && elapsed < totalDays) {
                 setProgram(data);
                 setSaved(true);
                 setBookmarkId(bk.id);
-                setCompletedSessions(data.completed_sessions || []);
-                const currentWeekIdx = Math.min(Math.floor(elapsed / 7), (data.duration_weeks || 4) - 1);
-                setOpenWeek(currentWeekIdx);
+                setCompletedDays(data.completed_days || []);
+                // Auto-open today's day
+                setOpenDay(Math.min(elapsed, totalDays - 1));
                 break;
               }
             }
@@ -203,7 +254,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         ...program,
         start_date: startDate,
         dog_name: dog.name,
-        completed_sessions: [],
+        completed_days: [],
       };
       const created = await base44.entities.Bookmark.create({
         dog_id: dog.id,
@@ -215,9 +266,9 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       });
       setProgram(payload);
       setBookmarkId(created.id);
-      setCompletedSessions([]);
+      setCompletedDays([]);
       setSaved(true);
-      setOpenWeek(0);
+      setOpenDay(0);
       toast.success("Programme activé ! Retrouve-le sur ton accueil.");
     } catch (e) {
       console.error(e);
@@ -225,14 +276,15 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     }
   };
 
-  const toggleSession = async (sessionKey) => {
+  const toggleDay = async (dayIdx) => {
     if (!bookmarkId) return;
-    const prev = completedSessions;
-    const next = prev.includes(sessionKey)
-      ? prev.filter(k => k !== sessionKey)
-      : [...prev, sessionKey];
-    setCompletedSessions(next);
-    const updatedProgram = { ...program, completed_sessions: next };
+    const key = `d${dayIdx}`;
+    const prev = completedDays;
+    const next = prev.includes(key)
+      ? prev.filter(k => k !== key)
+      : [...prev, key];
+    setCompletedDays(next);
+    const updatedProgram = { ...program, completed_days: next };
     setProgram(updatedProgram);
     try {
       await base44.entities.Bookmark.update(bookmarkId, {
@@ -240,8 +292,8 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       });
     } catch (e) {
       console.error(e);
-      setCompletedSessions(prev);
-      setProgram({ ...program, completed_sessions: prev });
+      setCompletedDays(prev);
+      setProgram({ ...program, completed_days: prev });
     }
   };
 
@@ -251,7 +303,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     setProgram(null);
     setSaved(false);
     setBookmarkId(null);
-    setCompletedSessions([]);
+    setCompletedDays([]);
     try {
       const resp = await base44.functions.invoke("generateTrainingProgram", {
         dogId: dog.id,
@@ -263,9 +315,11 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         goals: goals || null,
         weeklyWalkMinutes,
       });
-      setProgram(resp.data?.program);
+      let prog = resp.data?.program;
+      if (typeof prog === "string") { try { prog = JSON.parse(prog); } catch {} }
+      setProgram(prog);
       setShowGoalInput(false);
-      setOpenWeek(0);
+      setOpenDay(0);
       toast.success("Programme généré !");
       if (!isPremium) await consume();
       if (dog?.id && dog?.owner) {
@@ -285,7 +339,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
           <Sparkles className="w-5 h-5 text-purple-600 animate-pulse" />
         </div>
-        <p className="text-xs text-muted-foreground">Chargement du programme…</p>
+        <p className="text-xs text-muted-foreground">Chargement…</p>
       </div>
     );
   }
@@ -300,9 +354,9 @@ export default function AITrainingProgram({ dog, logs = [] }) {
               <Sparkles className="w-6 h-6 text-purple-600" />
             </div>
             <div>
-              <p className="font-bold text-sm text-foreground">Programme d'activité sur mesure</p>
+              <p className="font-bold text-sm text-foreground">Programme 7 jours sur mesure</p>
               <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-                Génère un programme d'activité 4 semaines adapté à {dog?.name}, sa race ({dog?.breed || "…"}) et son niveau d'activité actuel.
+                7 jours de coaching personnalisé pour {dog?.name} — chaque jour : activité guidée pas à pas, fait surprenant, conseil de pro.
               </p>
             </div>
           </div>
@@ -340,7 +394,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
               {!isPremium && credits != null && <CreditBadge remaining={credits} className="mb-2" />}
               <Button onClick={generate} className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white">
                 <Sparkles className="w-4 h-4 mr-2" />
-                Générer le programme
+                Générer mon programme 7 jours
               </Button>
             </>
           )}
@@ -357,27 +411,26 @@ export default function AITrainingProgram({ dog, logs = [] }) {
           <Sparkles className="w-8 h-8 text-purple-600 animate-pulse" />
         </div>
         <p className="font-bold text-sm text-center">Création du programme en cours…</p>
-        <p className="text-xs text-muted-foreground text-center max-w-52">L'IA analyse le profil de {dog?.name} et conçoit un plan adapté</p>
+        <p className="text-xs text-muted-foreground text-center max-w-52">L'IA conçoit 7 jours de coaching personnalisé pour {dog?.name}</p>
       </div>
     );
   }
 
   // Program display
-  const totalSessions = program.weeks?.reduce((acc, w) => acc + (w.daily_sessions?.length || 0), 0) || 0;
-  const completedCount = completedSessions.length;
-  const overallProgress = totalSessions > 0 ? Math.round((completedCount / totalSessions) * 100) : 0;
+  const days = program.days || [];
+  const totalDays = days.length || 7;
+  const completedCount = completedDays.length;
+  const overallProgress = totalDays > 0 ? Math.round((completedCount / totalDays) * 100) : 0;
+  const totalMinutes = days.reduce((acc, d) => acc + (d.activity?.duration_min || 0), 0);
 
   return (
     <div className="space-y-4 pb-8">
       {/* Program header */}
       <div className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-5 text-white">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider mb-1">Programme d'activité</p>
-            <h3 className="font-black text-lg leading-tight">{program.program_title}</h3>
-            <p className="text-white/80 text-xs mt-1.5 leading-relaxed">{program.summary}</p>
-          </div>
-        </div>
+        <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider mb-1">Programme 7 jours</p>
+        <h3 className="font-black text-lg leading-tight">{program.program_title}</h3>
+        <p className="text-white/80 text-xs mt-1.5 leading-relaxed">{program.summary}</p>
+
         <div className="flex gap-2 mt-3 flex-wrap">
           {program.difficulty && (
             <span className="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full capitalize">
@@ -385,21 +438,21 @@ export default function AITrainingProgram({ dog, logs = [] }) {
             </span>
           )}
           <span className="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
-            {program.duration_weeks} semaines
+            7 jours
           </span>
-          {program.weekly_goal_minutes && (
+          {totalMinutes > 0 && (
             <span className="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
-              ~{program.weekly_goal_minutes} min/sem
+              ~{totalMinutes} min total
             </span>
           )}
         </div>
 
         {/* Progress bar for saved programs */}
-        {saved && totalSessions > 0 && (
+        {saved && (
           <div className="mt-4">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-white/70 text-[10px] font-bold">Progression</span>
-              <span className="text-white text-[10px] font-bold">{completedCount}/{totalSessions} séances</span>
+              <span className="text-white text-[10px] font-bold">{completedCount}/{totalDays} jours</span>
             </div>
             <div className="h-2 bg-white/20 rounded-full overflow-hidden">
               <motion.div
@@ -417,25 +470,33 @@ export default function AITrainingProgram({ dog, logs = [] }) {
           <div className="mt-2 flex items-center gap-1.5">
             <CalendarDays className="w-3 h-3 text-white/50" />
             <span className="text-white/60 text-[10px]">
-              {formatDateFr(new Date(program.start_date + "T00:00:00"))} → {formatDateFr(addDaysToDate(program.start_date, (program.duration_weeks || 4) * 7 - 1))}
+              {formatDateFr(new Date(program.start_date + "T00:00:00"))} → {formatDateFr(addDaysToDate(program.start_date, totalDays - 1))}
             </span>
           </div>
         )}
       </div>
 
-      {/* Weekly plan */}
+      {/* Program goal */}
+      {program.program_goal && (
+        <div className="bg-violet-50 border border-violet-100 rounded-2xl px-4 py-3">
+          <p className="text-[10px] font-bold text-violet-600 uppercase tracking-wider mb-0.5">Objectif du programme</p>
+          <p className="text-xs text-foreground/80">{program.program_goal}</p>
+        </div>
+      )}
+
+      {/* Days */}
       <div className="space-y-2">
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Plan hebdomadaire</p>
-        {program.weeks?.map((week, i) => (
-          <WeekCard
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Tes 7 jours</p>
+        {days.map((day, i) => (
+          <DayCard
             key={i}
-            week={week}
-            weekIdx={i}
-            isOpen={openWeek === i}
-            onToggle={() => setOpenWeek(openWeek === i ? -1 : i)}
+            day={day}
+            dayIdx={i}
+            isOpen={openDay === i}
+            onToggle={() => setOpenDay(openDay === i ? -1 : i)}
             startDate={program.start_date}
-            completedSessions={completedSessions}
-            onToggleSession={saved ? toggleSession : undefined}
+            isDone={completedDays.includes(`d${i}`)}
+            onToggleComplete={saved ? () => toggleDay(i) : undefined}
           />
         ))}
       </div>
@@ -459,7 +520,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       {program.warning_signs?.length > 0 && (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
           <p className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4" /> Signes d'épuisement à surveiller
+            <AlertTriangle className="w-4 h-4" /> Signes à surveiller
           </p>
           <div className="space-y-1">
             {program.warning_signs.map((sign, i) => (
@@ -496,7 +557,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
             <BookmarkCheck className="w-4 h-4" /> Programme actif
           </div>
         )}
-        <Button variant="outline" size="sm" onClick={() => { setProgram(null); setSaved(false); setBookmarkId(null); setCompletedSessions([]); }}>
+        <Button variant="outline" size="sm" onClick={() => { setProgram(null); setSaved(false); setBookmarkId(null); setCompletedDays([]); }}>
           <RotateCcw className="w-4 h-4 mr-2" /> Nouveau
         </Button>
       </div>

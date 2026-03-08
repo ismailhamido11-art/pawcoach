@@ -132,52 +132,57 @@ Réponds en JSON avec ce format exact :
     }
 
     // ═══════════════════════════════════════════════════════════
-    // MODE STANDARD — Programme d'entraînement 4 semaines
+    // MODE STANDARD — Programme d'activité 7 jours (riche)
     // ═══════════════════════════════════════════════════════════
-    const prompt = `Tu es un coach canin expert certifié. Génère un programme d'entraînement personnalisé sur 4 semaines pour ce chien:
+    const breedName = dogBreed || "chien";
+    const prompt = `Tu es un coach canin d'élite — éducateur certifié, comportementaliste et passionné de science animale. Tu crées un programme de 7 jours EXCEPTIONNEL qui transforme la relation maître-chien.
 
-- Nom: ${dogName || "chien"}
-- Race: ${dogBreed || "inconnue"}
-- Âge: ${ageLabel}
-- Niveau d'activité actuel: ${activityLabels[activityLevel] || activityLevel || "modéré"}
-- Problèmes de santé: ${healthIssues || "aucun"}
-- Objectifs: ${goals || "condition physique générale"}
-- Temps de balade hebdomadaire actuel: ${weeklyWalkMinutes ? weeklyWalkMinutes + " min/semaine" : "inconnu"}
+CHAQUE JOUR doit être un mini-cours qui :
+1. Propose une activité CONCRÈTE avec des étapes précises (pas de vague)
+2. Apprend un FAIT SCIENTIFIQUE surprenant au propriétaire (chiffres, études, spécifique à la race)
+3. Donne un CONSEIL DE PRO non-évident et actionnable immédiatement
+4. Enseigne à LIRE son chien (observation comportementale précise)
+5. Propose un DÉFI BONUS amusant et mesurable
 
-Génère un programme structuré, progressif et adapté. Inclus:
-1. Des séances quotidiennes avec durée et type d'activité
-2. Une progression semaine par semaine
-3. Des exercices spécifiques à la race (instincts naturels)
-4. Des conseils de récupération et repos
-5. Des indicateurs de progression
+PROFIL DU CHIEN :
+- Nom : ${dogName || "chien"}
+- Race : ${breedName}
+- Âge : ${ageLabel}
+- Niveau d'activité : ${activityLabels[activityLevel] || activityLevel || "modéré"}
+- Santé : ${healthIssues || "aucun problème"}
+- Objectifs : ${goals || "bien-être général et lien avec son chien"}
+- Balades actuelles : ${weeklyWalkMinutes ? weeklyWalkMinutes + " min/semaine" : "non renseigné"}
 
-Réponds en JSON avec ce format exact:
-{
-  "program_title": "<titre accrocheur>",
-  "duration_weeks": 4,
-  "difficulty": "<débutant|intermédiaire|avancé>",
-  "summary": "<résumé en 2-3 phrases du programme>",
-  "weekly_goal_minutes": <minutes d'activité totale recommandées par semaine>,
-  "weeks": [
-    {
-      "week": 1,
-      "theme": "<thème de la semaine>",
-      "focus": "<objectif principal>",
-      "daily_sessions": [
-        {
-          "day": "Lundi",
-          "type": "<balade|jeu|exercice mental|repos|entraînement>",
-          "duration_min": <minutes>,
-          "activity": "<description courte>",
-          "tips": "<conseil pratique>"
-        }
-      ]
-    }
-  ],
-  "breed_specific_tips": ["<conseil 1>", "<conseil 2>", "<conseil 3>"],
-  "warning_signs": ["<signe d'épuisement 1>", "<signe 2>"],
-  "progression_indicators": ["<indicateur 1>", "<indicateur 2>", "<indicateur 3>"]
-}`;
+RÈGLES DE QUALITÉ ABSOLUES :
+
+ACTIVITÉS — Être ULTRA-CONCRET avec 3-4 étapes :
+- INTERDIT : "Fais un jeu de puzzle" (le propriétaire ne sait pas comment)
+- CORRECT : "Prends 3 gobelets opaques. Cache une friandise sous l'un d'eux. Mélange lentement. Récompense dès qu'il touche le bon."
+- INTERDIT : "Balade tranquille" (zéro valeur)
+- CORRECT : "Balade des 5 sens : laisse ${dogName || "ton chien"} choisir le chemin pendant 15 min. Observe ses 3 spots préférés."
+
+FAITS SURPRENANTS — Des VRAIS chiffres spécifiques à la race :
+- INTERDIT : "Les chiens ont un bon odorat" (banal)
+- CORRECT : "Le nez d'un ${breedName} contient 300 millions de récepteurs olfactifs. 30 min de reniflage fatigue autant qu'1h de balade."
+
+CONSEILS COACH — NON-ÉVIDENTS :
+- INTERDIT : "Sois patient" (creux)
+- CORRECT : "Après un exercice mental, laisse ${dogName || "ton chien"} dormir 20 min. C'est pendant le sommeil que le cerveau consolide les apprentissages."
+
+OBSERVATIONS — Apprendre à LIRE son chien :
+- INTERDIT : "Observe ton chien" (vague)
+- CORRECT : "Si ${dogName || "ton chien"} se lèche les babines sans avoir mangé, c'est un signe d'inconfort. Réduis la difficulté."
+
+PROGRESSION :
+- Jour 1-2 : Découverte et observation (facile)
+- Jour 3-4 : Stimulation et apprentissage (moyen)
+- Jour 5-6 : Challenge et consolidation (avancé)
+- Jour 7 : Bilan et célébration
+
+VARIÉTÉ : alterner balade, jeu, exercice mental, repos actif, entraînement
+MATÉRIEL : uniquement ce qu'on trouve à la maison (gobelets, serviettes, carton, friandises, corde)
+ADAPTATION : tout est adapté à ${breedName} (instincts naturels de la race) et à l'âge (${ageLabel})
+Langue : français, tutoiement, ton coach bienveillant.`;
 
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt,
@@ -185,31 +190,33 @@ Réponds en JSON avec ce format exact:
         type: "object",
         properties: {
           program_title: { type: "string" },
-          duration_weeks: { type: "number" },
+          duration_days: { type: "number" },
           difficulty: { type: "string" },
           summary: { type: "string" },
-          weekly_goal_minutes: { type: "number" },
-          weeks: {
+          program_goal: { type: "string" },
+          days: {
             type: "array",
             items: {
               type: "object",
               properties: {
-                week: { type: "number" },
+                day: { type: "number" },
+                title: { type: "string" },
                 theme: { type: "string" },
-                focus: { type: "string" },
-                daily_sessions: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      day: { type: "string" },
-                      type: { type: "string" },
-                      duration_min: { type: "number" },
-                      activity: { type: "string" },
-                      tips: { type: "string" }
-                    }
+                activity: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string" },
+                    type: { type: "string" },
+                    duration_min: { type: "number" },
+                    description: { type: "string" },
+                    steps: { type: "array", items: { type: "string" } }
                   }
-                }
+                },
+                fun_fact: { type: "string" },
+                coach_tip: { type: "string" },
+                observe: { type: "string" },
+                bonus_challenge: { type: "string" },
+                motivation: { type: "string" }
               }
             }
           },

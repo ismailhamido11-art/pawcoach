@@ -30,30 +30,30 @@ function getElapsedDays(startDate) {
   return Math.floor((now - start) / (1000 * 60 * 60 * 24));
 }
 
+const ACTIVITY_ICONS = {
+  balade: "\uD83D\uDC3E", jeu: "\uD83C\uDFBE", "exercice mental": "\uD83E\uDDE0",
+  "repos actif": "\uD83D\uDC86", repos: "\uD83D\uDCA4", "entra\u00EEnement": "\uD83C\uDFAF",
+};
+
 function TrainingCard({ program }) {
   const elapsed = getElapsedDays(program.start_date);
-  const totalDays = (program.duration_weeks || 4) * 7;
+  const totalDays = program.duration_days || 7;
 
   if (elapsed < 0 || elapsed >= totalDays) return null;
 
-  const currentWeekIndex = Math.floor(elapsed / 7);
-  const currentDayIndex = elapsed % 7;
-  const week = program.weeks?.[currentWeekIndex];
-  if (!week) return null;
-
-  const session = week.daily_sessions?.[currentDayIndex] || week.daily_sessions?.[0];
-  if (!session) return null;
+  const days = program.days || [];
+  const today = days[Math.min(elapsed, days.length - 1)];
+  if (!today) return null;
 
   const realDate = addDaysToDate(program.start_date, elapsed);
-  const icon = SESSION_ICONS[session.type] || "\uD83D\uDC36";
+  const actType = today.activity?.type || "balade";
+  const icon = ACTIVITY_ICONS[actType] || SESSION_ICONS[actType] || "\uD83D\uDC36";
 
   // Completion tracking
-  const completedSessions = program.completed_sessions || [];
-  const totalSessions = program.weeks?.reduce((acc, w) => acc + (w.daily_sessions?.length || 0), 0) || 0;
-  const completedCount = completedSessions.length;
-  const progress = totalSessions > 0 ? Math.round((completedCount / totalSessions) * 100) : Math.round(((elapsed + 1) / totalDays) * 100);
-  const todayKey = `w${currentWeekIndex}-d${currentDayIndex}`;
-  const todayDone = completedSessions.includes(todayKey);
+  const completedDays = program.completed_days || [];
+  const completedCount = completedDays.length;
+  const progress = totalDays > 0 ? Math.round((completedCount / totalDays) * 100) : 0;
+  const todayDone = completedDays.includes(`d${elapsed}`);
 
   return (
     <motion.div
@@ -71,40 +71,61 @@ function TrainingCard({ program }) {
                 <Dumbbell className="w-3.5 h-3.5 text-violet-600" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-violet-600 uppercase tracking-wider">Programme d'activité</p>
+                <p className="text-[10px] font-bold text-violet-600 uppercase tracking-wider">Programme 7 jours</p>
                 <p className="text-[10px] text-muted-foreground">
-                  Semaine {currentWeekIndex + 1}/{program.duration_weeks || 4} — {formatDateFr(realDate)}
+                  Jour {elapsed + 1}/{totalDays} — {formatDateFr(realDate)}
                 </p>
               </div>
             </div>
             <ChevronRight className="w-4 h-4 text-muted-foreground/30 group-hover:text-violet-400 transition-colors" />
           </div>
 
-          <div className={`flex items-start gap-3 rounded-xl p-3 border ${
+          {/* Today's activity */}
+          <div className={`rounded-xl p-3 border ${
             todayDone ? "bg-emerald-50/80 border-emerald-100/60" : "bg-white/80 border-violet-100/60"
           }`}>
-            <span className="text-2xl leading-none mt-0.5">{icon}</span>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-0.5">
-                <span className={`text-xs font-bold ${todayDone ? "line-through text-muted-foreground" : "text-foreground"}`}>
-                  {session.activity?.split(".")[0]?.slice(0, 40) || session.type}
-                </span>
-                <span className="ml-auto text-[10px] font-bold text-violet-600 flex items-center gap-0.5">
-                  <Clock className="w-3 h-3" />{session.duration_min} min
-                </span>
+            <div className="flex items-start gap-3">
+              <span className="text-2xl leading-none mt-0.5">{icon}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className={`text-xs font-bold ${todayDone ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                    {today.activity?.name || today.title}
+                  </span>
+                  <span className="ml-auto text-[10px] font-bold text-violet-600 flex items-center gap-0.5">
+                    <Clock className="w-3 h-3" />{today.activity?.duration_min || 20} min
+                  </span>
+                </div>
+                {today.activity?.description && (
+                  <p className="text-[11px] text-foreground/70 leading-relaxed line-clamp-2">{today.activity.description}</p>
+                )}
+                {todayDone && (
+                  <p className="text-[10px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> Fait !
+                  </p>
+                )}
               </div>
-              <p className="text-[11px] text-foreground/70 leading-relaxed line-clamp-2">{session.activity}</p>
-              {session.tips && (
-                <p className="text-[10px] text-amber-600 mt-1 italic line-clamp-1">💡 {session.tips}</p>
-              )}
-              {todayDone && (
-                <p className="text-[10px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3" /> Fait !
-                </p>
-              )}
             </div>
           </div>
 
+          {/* Fun fact hook */}
+          {today.fun_fact && !todayDone && (
+            <div className="mt-2 bg-amber-50/60 rounded-lg px-3 py-2 border border-amber-100/50">
+              <p className="text-[10px] text-amber-800/80 line-clamp-2 italic">
+                📖 {today.fun_fact}
+              </p>
+            </div>
+          )}
+
+          {/* Coach tip when done */}
+          {today.coach_tip && todayDone && (
+            <div className="mt-2 bg-emerald-50/60 rounded-lg px-3 py-2 border border-emerald-100/50">
+              <p className="text-[10px] text-emerald-800/80 line-clamp-2 italic">
+                💡 {today.coach_tip}
+              </p>
+            </div>
+          )}
+
+          {/* Progress */}
           <div className="mt-3 flex items-center gap-2">
             <div className="flex-1 h-1.5 bg-violet-100 rounded-full overflow-hidden">
               <motion.div
@@ -115,14 +136,15 @@ function TrainingCard({ program }) {
               />
             </div>
             <span className="text-[10px] font-bold text-violet-600">
-              {completedCount > 0 ? `${completedCount}/${totalSessions}` : `${progress}%`}
+              {completedCount}/{totalDays}
             </span>
           </div>
 
-          {week.theme && (
+          {/* Today's theme */}
+          {today.theme && (
             <div className="mt-2 flex items-center gap-1.5">
               <Target className="w-3 h-3 text-violet-400" />
-              <p className="text-[10px] text-muted-foreground truncate">{week.theme}</p>
+              <p className="text-[10px] text-muted-foreground truncate">{today.theme}</p>
             </div>
           )}
         </div>
@@ -484,9 +506,10 @@ export default function ActiveProgramCards({ trainingBookmarks = [], nutritionPl
     for (const bk of trainingBookmarks) {
       try {
         const data = JSON.parse(bk.content);
-        if (data.start_date && data.weeks) {
+        if (data.start_date && data.days && Array.isArray(data.days)) {
+          // New 7-day format
           const elapsed = getElapsedDays(data.start_date);
-          const totalDays = (data.duration_weeks || 4) * 7;
+          const totalDays = data.duration_days || 7;
           if (elapsed >= 0 && elapsed < totalDays) return data;
         }
       } catch {
