@@ -52,7 +52,7 @@ const AFFILIATE_BRANDS = [
   { name: "Acana", url: "https://www.zooplus.fr", emoji: "\u{1F33F}" },
 ];
 
-export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPremiumProp, user, dietPrefs, checkins = [], healthRecords = [], dailyLogs = [], activePlan, monthlyPlanCount = 0, onPlanSaved, allPlans = [] }) {
+export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPremiumProp, user, dietPrefs, checkins = [], healthRecords = [], dailyLogs = [], activePlan, monthlyPlanCount = 0, onPlanSaved, allPlans = [], onSwitchToCoach }) {
   const { credits, hasCredits, isPremium, consume } = useActionCredits();
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -85,9 +85,9 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
     if (!activePlan) return;
     try {
       await base44.entities.NutritionPlan.update(activePlan.id, { notes: tempNote });
-      activePlan.notes = tempNote;
       setEditingNote(false);
       toast.success("Note sauvegard\u00e9e");
+      onPlanSaved?.(); // refresh to get updated notes without mutating props
     } catch {
       toast.error("Erreur");
     }
@@ -263,9 +263,14 @@ R\u00c9PONDS UNIQUEMENT avec un objet JSON valide, sans texte avant ni apr\u00e8
       "evening": { "food": "Croquettes + courgette cuite", "quantity": "95g + 30g" }
     }
   ],
-  "supplements": ["Carotte crue (2x/sem)", "Pomme sans p\u00e9pins (1x/sem)"],
+  "supplements": ["Carotte crue (2x/sem)", "Pomme sans pepins (1x/sem)"],
   "avoid": ["Raisins", "Chocolat", "Oignons"],
-  "tip": "Un conseil personnalis\u00e9 pour ce chien."
+  "tip": "Un conseil personnalise pour ce chien.",
+  "rationale": [
+    "Proteines variees pour couvrir tous les acides amines essentiels",
+    "Calories adaptees au poids et au niveau d'activite",
+    "Huile de saumon pour le pelage et les articulations"
+  ]
 }
 
 R\u00c8GLES :
@@ -275,7 +280,8 @@ R\u00c8GLES :
 - Si l'app\u00e9tit est en baisse, propose des repas plus app\u00e9tissants et fractionn\u00e9s
 - Si le poids augmente, r\u00e9duis les calories ; s'il diminue, augmente-les
 - Sois concis dans les descriptions (pas de phrases longues)
-- N'utilise PAS de caract\u00e8res sp\u00e9ciaux, d'emojis ou de s\u00e9quences Unicode dans le JSON
+- N'utilise PAS de caracteres speciaux, d'emojis ou de sequences Unicode dans le JSON
+- Le champ "rationale" doit contenir 3 a 5 raisons courtes expliquant POURQUOI ce plan est adapte a ce chien specifiquement (basees sur ses donnees reelles : poids, age, activite, appetit, sante, preferences)
 - Retourne UNIQUEMENT le JSON, rien d'autre`;
 
     try {
@@ -455,6 +461,31 @@ R\u00c8GLES :
           <div className="bg-amber-50 rounded-2xl border border-amber-200 p-4">
             <p className="text-xs text-amber-800">{activeData.tip}</p>
           </div>
+        )}
+
+        {/* Rationale — why this plan */}
+        {activeData.rationale?.length > 0 && (
+          <div className="bg-primary/5 rounded-2xl border border-primary/15 p-4">
+            <p className="text-xs font-bold text-primary mb-2">Pourquoi ce plan ?</p>
+            <div className="space-y-1.5">
+              {activeData.rationale.map((r, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <span className="text-[10px] text-primary mt-0.5 font-bold">{i + 1}.</span>
+                  <p className="text-xs text-foreground/80">{r}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* NutriCoach bridge */}
+        {onSwitchToCoach && !progress.isExpired && (
+          <button
+            onClick={() => onSwitchToCoach(`Je suis au jour ${progress.dayNumber}/7 de mon plan (${activeData.calories_per_day || "?"} kcal/jour). J'aimerais un conseil ou un ajustement.`)}
+            className="w-full flex items-center justify-center gap-2 bg-emerald-50 border border-emerald-200 rounded-2xl py-3 text-sm font-semibold text-emerald-700 active:bg-emerald-100 transition-colors"
+          >
+            {"\u{1F4AC}"} Ajuster via NutriCoach
+          </button>
         )}
 
         {/* Notes */}
@@ -659,6 +690,21 @@ R\u00c8GLES :
             {plan.tip && (
               <div className="bg-amber-50 rounded-2xl border border-amber-200 p-4">
                 <p className="text-xs text-amber-800">{plan.tip}</p>
+              </div>
+            )}
+
+            {/* Rationale — why this plan (generated) */}
+            {plan.rationale?.length > 0 && (
+              <div className="bg-primary/5 rounded-2xl border border-primary/15 p-4">
+                <p className="text-xs font-bold text-primary mb-2">Pourquoi ce plan pour {dog.name} ?</p>
+                <div className="space-y-1.5">
+                  {plan.rationale.map((r, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      <span className="text-[10px] text-primary mt-0.5 font-bold">{i + 1}.</span>
+                      <p className="text-xs text-foreground/80">{r}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 

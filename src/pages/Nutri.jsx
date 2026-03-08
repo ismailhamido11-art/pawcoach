@@ -458,7 +458,7 @@ export default function Nutri() {
       {/* Tab: Plan repas */}
       {activeTab === "mealplan" && (
         <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
-          <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={isUserPremium(user)} user={user} dietPrefs={dietPrefs} checkins={checkins} healthRecords={healthRecords} dailyLogs={dailyLogs} activePlan={activePlan} monthlyPlanCount={monthlyPlanCount} allPlans={allPlans} onPlanSaved={refreshPlans} />
+          <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={isUserPremium(user)} user={user} dietPrefs={dietPrefs} checkins={checkins} healthRecords={healthRecords} dailyLogs={dailyLogs} activePlan={activePlan} monthlyPlanCount={monthlyPlanCount} allPlans={allPlans} onPlanSaved={refreshPlans} onSwitchToCoach={(msg) => { changeTab("coach"); if (msg) setTimeout(() => setInput(msg), 300); }} />
         </div>
       )}
 
