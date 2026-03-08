@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Pause, Play, StopCircle, Timer, Footprints, Zap, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { MapPin, Pause, Play, StopCircle, Timer, Footprints, Zap, TrendingUp, TrendingDown, Minus, Share2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import WalkMap from "./WalkMap";
+import WalkShareCard from "./WalkShareCard";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 
 function formatTime(seconds) {
@@ -53,6 +54,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged }) {
   const [distance, setDistance] = useState(0);
   const [saving, setSaving] = useState(false);
   const [savedMinutes, setSavedMinutes] = useState(null);
+  const [showShare, setShowShare] = useState(false);
   const [path, setPath] = useState([]); // [{lat, lng}]
   const [currentPos, setCurrentPos] = useState(null);
 
@@ -189,6 +191,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged }) {
     setElapsed(0);
     setDistance(0);
     setSavedMinutes(null);
+    setShowShare(false);
   };
 
   const minutes = Math.floor(elapsed / 60);
@@ -370,35 +373,58 @@ export default function WalkMode({ dog, user, logs = [], onLogged }) {
 
             {/* Walk Intelligence — contextual insight */}
             {savedMinutes && (() => {
-              const { trend, insight, streak: walkStreak } = getWalkInsight(savedMinutes, logs, dog?.name);
+              const walkInfo = getWalkInsight(savedMinutes, logs, dog?.name);
               return (
-                <motion.div
-                  initial={{ y: 16, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.5, type: "spring", stiffness: 400, damping: 30 }}
-                  className="bg-white border border-border rounded-2xl p-4 w-full space-y-2 text-left"
-                >
-                  {trend && (
-                    <div className="flex items-center gap-2">
-                      <trend.icon className={`w-4 h-4 ${trend.color} flex-shrink-0`} />
-                      <p className={`text-xs font-bold ${trend.color}`}>{trend.text}</p>
-                    </div>
+                <>
+                  <motion.div
+                    initial={{ y: 16, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.5, type: "spring", stiffness: 400, damping: 30 }}
+                    className="bg-white border border-border rounded-2xl p-4 w-full space-y-2 text-left"
+                  >
+                    {walkInfo.trend && (
+                      <div className="flex items-center gap-2">
+                        <walkInfo.trend.icon className={`w-4 h-4 ${walkInfo.trend.color} flex-shrink-0`} />
+                        <p className={`text-xs font-bold ${walkInfo.trend.color}`}>{walkInfo.trend.text}</p>
+                      </div>
+                    )}
+                    <p className="text-xs text-foreground/80 leading-relaxed">{walkInfo.insight}</p>
+                    {walkInfo.streak && (
+                      <p className="text-[10px] font-bold text-primary">{walkInfo.streak}</p>
+                    )}
+                  </motion.div>
+
+                  <div className="grid grid-cols-2 gap-3 w-full">
+                    <motion.button
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => setShowShare(true)}
+                      className="py-3.5 rounded-2xl font-bold text-sm border-2 border-primary/30 bg-white text-primary flex items-center justify-center gap-2"
+                    >
+                      <Share2 className="w-4 h-4" />
+                      Partager
+                    </motion.button>
+                    <button
+                      onClick={handleReset}
+                      className="py-3.5 rounded-2xl font-bold text-sm"
+                      style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))", color: "white" }}
+                    >
+                      Nouvelle balade
+                    </button>
+                  </div>
+
+                  {showShare && (
+                    <WalkShareCard
+                      minutes={savedMinutes}
+                      km={km}
+                      calories={Math.round((savedMinutes || 0) * 5)}
+                      dogName={dog?.name}
+                      streak={walkInfo.streak}
+                      onClose={() => setShowShare(false)}
+                    />
                   )}
-                  <p className="text-xs text-foreground/80 leading-relaxed">{insight}</p>
-                  {walkStreak && (
-                    <p className="text-[10px] font-bold text-primary">{walkStreak}</p>
-                  )}
-                </motion.div>
+                </>
               );
             })()}
-
-            <button
-              onClick={handleReset}
-              className="w-full py-3.5 rounded-2xl font-bold text-sm"
-              style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))", color: "white" }}
-            >
-              Nouvelle balade
-            </button>
           </motion.div>
         )}
       </AnimatePresence>
