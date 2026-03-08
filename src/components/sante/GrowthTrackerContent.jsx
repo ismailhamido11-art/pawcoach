@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Camera, Plus, TrendingUp, Weight, Ruler, Sparkles, ChevronRight, Trash2, Check, X } from "lucide-react";
@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useActionCredits } from "@/utils/ai-credits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
+import Illustration from "@/components/illustrations/Illustration";
 
 // Breed reference curves (weight in kg by age in months)
 const BREED_REFERENCES = {
@@ -33,8 +34,8 @@ function getRefWeight(ageMonths, category) {
 }
 
 function getBcsLabel(score) {
-  if (score <= 3) return { label: "Trop maigre", color: "text-blue-600" };
-  if (score <= 4) return { label: "Sous le poids idéal", color: "text-sky-500" };
+  if (score <= 3) return { label: "Trop maigre", color: "text-primary" };
+  if (score <= 4) return { label: "Sous le poids idéal", color: "text-primary/70" };
   if (score === 5) return { label: "Poids idéal", color: "text-emerald-500" };
   if (score <= 6) return { label: "Légèrement en surpoids", color: "text-amber-500" };
   if (score <= 7) return { label: "En surpoids", color: "text-amber-500" };
@@ -114,44 +115,53 @@ export default function GrowthTrackerContent({ dog, user }) {
 
   async function saveAnalysis() {
     if (!analysisResult) return;
-    setSavedAnalysis(true);
-    await base44.entities.GrowthEntry.create({
-      dog_id: dog.id,
-      owner_email: user.email,
-      date: format(new Date(), "yyyy-MM-dd"),
-      weight_kg: analysisResult.weight_kg,
-      height_cm: analysisResult.height_cm,
-      body_condition_score: analysisResult.body_condition_score,
-      growth_stage: analysisResult.growth_stage,
-      ai_notes: analysisResult.ai_notes,
-      photo_url: analysisResult.photo_url,
-      source: "photo_ai",
-    });
-    toast.success("Mesure enregistrée !");
-    setTimeout(() => {
-      setSavedAnalysis(false);
-      setAnalysisResult(null);
-      setPreviewUrl(null);
-      loadEntries();
-    }, 1200);
+    try {
+      await base44.entities.GrowthEntry.create({
+        dog_id: dog.id,
+        owner_email: user.email,
+        date: format(new Date(), "yyyy-MM-dd"),
+        weight_kg: analysisResult.weight_kg,
+        height_cm: analysisResult.height_cm,
+        body_condition_score: analysisResult.body_condition_score,
+        growth_stage: analysisResult.growth_stage,
+        ai_notes: analysisResult.ai_notes,
+        photo_url: analysisResult.photo_url,
+        source: "photo_ai",
+      });
+      setSavedAnalysis(true);
+      toast.success("Mesure enregistrée !");
+      setTimeout(() => {
+        setSavedAnalysis(false);
+        setAnalysisResult(null);
+        setPreviewUrl(null);
+        loadEntries();
+      }, 1200);
+    } catch {
+      toast.error("Erreur de sauvegarde");
+    }
   }
 
   async function saveManual() {
     if (!manualForm.weight_kg && !manualForm.height_cm) return;
     setSavingManual(true);
-    await base44.entities.GrowthEntry.create({
-      dog_id: dog.id,
-      owner_email: user.email,
-      date: manualForm.date,
-      weight_kg: manualForm.weight_kg ? parseFloat(manualForm.weight_kg) : undefined,
-      height_cm: manualForm.height_cm ? parseFloat(manualForm.height_cm) : undefined,
-      source: "manual",
-    });
-    toast.success("Mesure ajoutée !");
-    setSavingManual(false);
-    setShowAddManual(false);
-    setManualForm({ date: format(new Date(), "yyyy-MM-dd"), weight_kg: "", height_cm: "" });
-    loadEntries();
+    try {
+      await base44.entities.GrowthEntry.create({
+        dog_id: dog.id,
+        owner_email: user.email,
+        date: manualForm.date,
+        weight_kg: manualForm.weight_kg ? parseFloat(manualForm.weight_kg) : undefined,
+        height_cm: manualForm.height_cm ? parseFloat(manualForm.height_cm) : undefined,
+        source: "manual",
+      });
+      toast.success("Mesure ajoutée !");
+      setShowAddManual(false);
+      setManualForm({ date: format(new Date(), "yyyy-MM-dd"), weight_kg: "", height_cm: "" });
+      loadEntries();
+    } catch {
+      toast.error("Erreur de sauvegarde");
+    } finally {
+      setSavingManual(false);
+    }
   }
 
   async function deleteEntry(id) {
@@ -161,7 +171,7 @@ export default function GrowthTrackerContent({ dog, user }) {
 
   // Build chart data
   const category = getBreedCategory(dog?.breed);
-  const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date));
+  const sorted = useMemo(() => [...entries].sort((a, b) => a.date.localeCompare(b.date)), [entries]);
 
   const chartData = sorted.map(e => {
     let ageM = null;
@@ -179,6 +189,7 @@ export default function GrowthTrackerContent({ dog, user }) {
 
   const latest = sorted[sorted.length - 1];
   const bcsInfo = latest?.body_condition_score ? getBcsLabel(latest.body_condition_score) : null;
+  const historyEntries = useMemo(() => [...sorted].reverse(), [sorted]);
 
   return (
     <div className="px-4 py-4 pb-8 space-y-4">
@@ -215,26 +226,30 @@ export default function GrowthTrackerContent({ dog, user }) {
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-sm text-foreground">Courbe de croissance</h3>
             <div className="flex gap-1">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.93 }}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 onClick={() => setActiveChart("weight")}
                 className={`text-[10px] font-bold px-2 py-1 rounded-lg transition-all ${activeChart === "weight" ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}
-              >Poids</button>
-              <button
+              >Poids</motion.button>
+              <motion.button
+                whileTap={{ scale: 0.93 }}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 onClick={() => setActiveChart("height")}
                 className={`text-[10px] font-bold px-2 py-1 rounded-lg transition-all ${activeChart === "height" ? "bg-accent text-white" : "bg-muted text-muted-foreground"}`}
-              >Taille</button>
+              >Taille</motion.button>
             </div>
           </div>
           <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -15, bottom: 0 }}>
               <defs>
                 <linearGradient id="gWeight" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(160,50%,22%)" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="hsl(160,50%,22%)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#1A4D3E" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#1A4D3E" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="gRef" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(38,92%,55%)" stopOpacity={0.1} />
-                  <stop offset="95%" stopColor="hsl(38,92%,55%)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#d4a855" stopOpacity={0.1} />
+                  <stop offset="95%" stopColor="#d4a855" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -243,14 +258,14 @@ export default function GrowthTrackerContent({ dog, user }) {
               <Tooltip content={<CustomTooltip />} />
               {activeChart === "weight" && (
                 <>
-                  <Area type="monotone" dataKey="weight" name="Poids (kg)" stroke="hsl(160,50%,22%)" fill="url(#gWeight)" strokeWidth={2} dot={{ r: 3, fill: "hsl(160,50%,22%)" }} connectNulls />
+                  <Area type="monotone" dataKey="weight" name="Poids (kg)" stroke="#1A4D3E" fill="url(#gWeight)" strokeWidth={2} dot={{ r: 3, fill: "#1A4D3E" }} connectNulls />
                   {chartData.some(d => d.ref_weight) && (
-                    <Area type="monotone" dataKey="ref_weight" name="Réf. race (kg)" stroke="hsl(38,92%,55%)" fill="url(#gRef)" strokeWidth={1.5} strokeDasharray="4 3" dot={false} connectNulls />
+                    <Area type="monotone" dataKey="ref_weight" name="Réf. race (kg)" stroke="#d4a855" fill="url(#gRef)" strokeWidth={1.5} strokeDasharray="4 3" dot={false} connectNulls />
                   )}
                 </>
               )}
               {activeChart === "height" && (
-                <Area type="monotone" dataKey="height" name="Hauteur (cm)" stroke="hsl(162,55%,42%)" fill="url(#gWeight)" strokeWidth={2} dot={{ r: 3, fill: "hsl(162,55%,42%)" }} connectNulls />
+                <Area type="monotone" dataKey="height" name="Hauteur (cm)" stroke="#2D9F82" fill="url(#gWeight)" strokeWidth={2} dot={{ r: 3, fill: "#2D9F82" }} connectNulls />
               )}
             </AreaChart>
           </ResponsiveContainer>
@@ -390,7 +405,7 @@ export default function GrowthTrackerContent({ dog, user }) {
       {entries.length > 0 && (
         <div className="space-y-2">
           <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Historique</p>
-          {sorted.slice().reverse().map(entry => (
+          {historyEntries.map(entry => (
             <div key={entry.id} className="bg-white border border-border rounded-2xl p-3 flex items-center gap-3 shadow-sm">
               {entry.photo_url ? (
                 <img src={entry.photo_url} alt="" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
@@ -418,7 +433,9 @@ export default function GrowthTrackerContent({ dog, user }) {
 
       {entries.length === 0 && !loading && (
         <div className="text-center py-8 text-muted-foreground">
-          <TrendingUp className="w-10 h-10 mx-auto mb-2 opacity-30" />
+          <div className="w-24 h-24 mx-auto mb-3 opacity-70">
+            <Illustration name="goodDoggy" className="w-full h-full" />
+          </div>
           <p className="text-sm font-medium">Aucune mesure enregistrée</p>
           <p className="text-xs mt-1">Prends une photo de {dog?.name} pour commencer</p>
         </div>

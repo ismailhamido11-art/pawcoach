@@ -8,21 +8,16 @@ import SectionVaccins from "../notebook/SectionVaccins";
 import SectionPoids from "../notebook/SectionPoids";
 import PremiumSection from "../notebook/PremiumSection";
 import UpcomingReminders from "../notebook/UpcomingReminders";
-import SmartHealthAssistant from "../notebook/SmartHealthAssistant";
-import GuidanceTip from "../notebook/GuidanceTip";
 import QRCodeCard from "../notebook/QRCodeCard";
 import VetNotesList from "../vet/VetNotesList";
 import ShareVetModal from "../vet/ShareVetModal";
 import { RecordRow } from "../notebook/SectionVaccins";
-import { updateStreakSilently } from "../streakHelper";
 import {
   Syringe, Stethoscope, Weight, Pill, FileText,
   ShieldCheck, HeartPulse, PawPrint, Shield, TrendingUp,
-  Share2, ChevronDown, ChevronUp, ClipboardList, Sparkles,
-  AlertTriangle, Camera
+  Share2, ChevronDown, ChevronUp, ClipboardList
 } from "lucide-react";
 import heroDogImg from "../../assets/images/hero-dog.jpg";
-import vetCareImg from "../../assets/images/vet-care.jpg";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
@@ -39,8 +34,8 @@ const PREMIUM_CONFIGS = {
   vet_visit: {
     label: "Visites vétérinaire", emptyText: "Aucune visite vétérinaire enregistrée",
     placeholder: "Ex: Visite de contrôle annuelle", addLabel: "Ajouter une visite",
-    showNextDate: true, Icon: Stethoscope, bgClass: "bg-purple-50", borderClass: "border-purple-200",
-    textClass: "text-purple-600", btnClass: "bg-purple-600 hover:bg-purple-700",
+    showNextDate: true, Icon: Stethoscope, bgClass: "bg-primary/5", borderClass: "border-primary/20",
+    textClass: "text-primary", btnClass: "bg-primary hover:bg-primary/90",
   },
   medication: {
     label: "Médicaments", emptyText: "Aucun médicament enregistré",
@@ -51,14 +46,14 @@ const PREMIUM_CONFIGS = {
   note: {
     label: "Notes", emptyText: "Aucune note enregistrée",
     placeholder: "Titre de la note", addLabel: "Ajouter une note",
-    showNextDate: false, Icon: FileText, bgClass: "bg-gray-50", borderClass: "border-gray-200",
-    textClass: "text-gray-600", btnClass: "bg-gray-600 hover:bg-gray-700",
+    showNextDate: false, Icon: FileText, bgClass: "bg-secondary", borderClass: "border-border",
+    textClass: "text-muted-foreground", btnClass: "bg-muted-foreground hover:bg-muted-foreground/90",
   },
 };
 
 export default function NotebookContent({ dog, user, records = [], setRecords, dailyLogs = [], isPremium, loading, initialSubTab, showShareModalInit, scrollToQR }) {
   const [activeTab, setActiveTab] = useState(initialSubTab || "all");
-  const [showRecords, setShowRecords] = useState(!!initialSubTab);
+  const [showRecords, setShowRecords] = useState(records.length > 0 || !!initialSubTab);
   const [showShareModal, setShowShareModal] = useState(!!showShareModalInit);
   const [vetNotes, setVetNotes] = useState([]);
   const [vetNotesLoaded, setVetNotesLoaded] = useState(false);
@@ -83,13 +78,6 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
       console.warn("Failed to load vet notes:", e?.message || String(e));
     }
     setVetNotesLoaded(true);
-  };
-
-  const handleAdd = async (rec) => {
-    setRecords(prev => [...prev, rec]);
-    setShowRecords(true);
-    if (navigator.vibrate) navigator.vibrate(30);
-    if (dog && user) await updateStreakSilently(dog.id, user.email);
   };
 
   const handleDelete = async (id) => {
@@ -137,9 +125,10 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
   const sortedRecords = [...allRecords].sort((a, b) => new Date(b.date) - new Date(a.date));
   const countForTab = (id) => id === "all" ? allRecords.length : allRecords.filter(r => r.type === id).length;
 
-  const lastWeight = records.find(r => r.type === 'weight');
-  const lastVaccine = records.find(r => r.type === 'vaccine');
-  const lastVet = records.find(r => r.type === 'vet_visit');
+  const sortedByDate = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const lastWeight = sortedByDate.find(r => r.type === 'weight');
+  const lastVaccine = sortedByDate.find(r => r.type === 'vaccine');
+  const lastVet = sortedByDate.find(r => r.type === 'vet_visit');
 
   if (loading) {
     return (
@@ -165,12 +154,12 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
                 <p className="text-xs text-muted-foreground">{dog.breed} · {dog.weight}kg</p>
                 <div className="flex gap-1.5 mt-1.5 flex-wrap">
                   {lastVaccine && (
-                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-[10px] font-bold text-green-700">
+                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-[10px] font-bold text-primary">
                       <ShieldCheck className="w-2.5 h-2.5" /> Vaccins
                     </span>
                   )}
                   {lastWeight && (
-                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-100 text-[10px] font-bold text-blue-700">
+                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/5 text-[10px] font-bold text-primary">
                       <TrendingUp className="w-2.5 h-2.5" /> Poids suivi
                     </span>
                   )}
@@ -196,38 +185,6 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
         {/* Reminders */}
         <UpcomingReminders records={records} isPremium={isPremium} />
 
-        {/* QR Code */}
-        {dog && <div id="qr-code-section"><QRCodeCard dog={dog} /></div>}
-
-        {/* Vet care image */}
-        <div className="relative overflow-hidden rounded-2xl border border-border">
-          <div className="relative h-28">
-            <img src={vetCareImg} alt="Soins vétérinaires" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-transparent" />
-            <div className="absolute inset-0 flex items-center p-4">
-              <div>
-                <p className="text-xs font-semibold text-primary uppercase tracking-wider">Suivi vétérinaire</p>
-                <p className="text-base font-bold text-foreground mt-1">Chaque visite compte</p>
-                <p className="text-xs text-muted-foreground mt-1 max-w-[200px]">
-                  Garde un historique complet pour {dog?.name || "ton chien"}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* AI Assistant tip */}
-        <GuidanceTip
-          id="assistant"
-          title="Ton assistant personnel"
-          description={`Parle-lui : "${dog?.name || "Mon chien"} a été vacciné aujourd'hui" ou "Il pèse 32kg". Il s'occupe de tout.`}
-          icon={<Sparkles className="w-5 h-5" />}
-          variant="accent"
-        />
-
-        {/* Smart Health Assistant */}
-        <SmartHealthAssistant dogId={dog?.id} onRecordAdded={handleAdd} />
-
         {/* Records section */}
         <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
           <button
@@ -238,9 +195,9 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
               <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
                 <ClipboardList className="w-4 h-4 text-primary" />
               </div>
-              <span>Historique ({records.length})</span>
+              <span>Historique ({allRecords.length})</span>
             </div>
-            {records.length > 0 && (showRecords ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />)}
+            {allRecords.length > 0 && (showRecords ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />)}
           </button>
         </div>
 
@@ -311,6 +268,9 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
             )}
           </div>
         )}
+
+        {/* QR Code — partage avec le veto */}
+        {dog && <div id="qr-code-section"><QRCodeCard dog={dog} /></div>}
 
         {/* Vet notes */}
         {vetNotes.length > 0 && (

@@ -26,7 +26,7 @@ L.Icon.Default.mergeOptions({
 const PLACE_TYPES = [
   { id: "vet",     label: "Vétérinaires", icon: Stethoscope, color: "#ef4444", searchTerm: "clinique vétérinaire" },
   { id: "groomer", label: "Toiletteurs",  icon: Scissors,    color: "#8b5cf6", searchTerm: "toiletteur chien" },
-  { id: "store",   label: "Animaleries", icon: ShoppingBag,  color: "#10b981", searchTerm: "animalerie magasin animaux" },
+  { id: "store",   label: "Animaleries", icon: ShoppingBag,  color: "#2D9F82", searchTerm: "animalerie magasin animaux" },
 ];
 
 function MapFlyTo({ center }) {
@@ -47,7 +47,7 @@ function createColoredIcon(color) {
   });
 }
 
-export default function FindVetContent({ dog }) {
+export default function FindVetContent({ dog, user }) {
   const { credits, hasCredits, isPremium, consume } = useActionCredits();
   const [query, setQuery] = useState(dog?.vet_city || "");
   const [results, setResults] = useState([]);
@@ -57,15 +57,13 @@ export default function FindVetContent({ dog }) {
   const [mapCenter, setMapCenter] = useState([46.603354, 1.888334]); // France center
   const [favorites, setFavorites] = useState([]);
   const [showFavorites, setShowFavorites] = useState(false);
-  const [user, setUser] = useState(null);
   const [loadingFavs, setLoadingFavs] = useState(true);
 
   useEffect(() => {
-    async function loadUser() {
+    async function loadFavorites() {
+      if (!user?.email) return;
       try {
-        const u = await base44.auth.me();
-        setUser(u);
-        const favs = await base44.entities.PlaceFavorite.filter({ owner: u.email });
+        const favs = await base44.entities.PlaceFavorite.filter({ owner: user.email });
         setFavorites(favs || []);
       } catch (e) {
         console.error(e);
@@ -73,8 +71,8 @@ export default function FindVetContent({ dog }) {
         setLoadingFavs(false);
       }
     }
-    loadUser();
-  }, []);
+    loadFavorites();
+  }, [user]);
 
   const handleGeolocate = () => {
     if (!navigator.geolocation) { toast.error("Géolocalisation non supportée"); return; }
@@ -128,8 +126,9 @@ export default function FindVetContent({ dog }) {
       if (!isPremium) await consume();
     } catch {
       toast.error("Erreur lors de la recherche. Réessaie.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const getFavoriteForPlace = (place) =>
@@ -185,7 +184,7 @@ export default function FindVetContent({ dog }) {
             />
           </div>
           <button onClick={handleGeolocate}
-            className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0">
+            className="w-10 h-10 rounded-2xl bg-secondary border border-border flex items-center justify-center text-primary flex-shrink-0">
             <Navigation className="w-4 h-4" />
           </button>
           <Button onClick={handleSearch} disabled={loading || !query.trim()}>
@@ -200,7 +199,7 @@ export default function FindVetContent({ dog }) {
           </p>
           <button
             onClick={() => setShowFavorites(s => !s)}
-            className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl transition-all ${
+            className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-2xl transition-all ${
               showFavorites ? "bg-red-50 text-red-500" : "bg-muted/50 text-muted-foreground"
             }`}
           >
@@ -236,7 +235,7 @@ export default function FindVetContent({ dog }) {
       </div>
 
       {/* Disclaimer */}
-      <div className="mx-4 mt-3 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">
+      <div className="mx-4 mt-3 bg-amber-50 border border-amber-100 rounded-2xl px-3 py-2">
         <p className="text-xs text-amber-700 font-medium">Résultats générés par IA — vérifie les coordonnées avant de te déplacer.</p>
       </div>
 
@@ -294,14 +293,14 @@ export default function FindVetContent({ dog }) {
       {/* Portail vétérinaire */}
       <div className="mx-4 mt-4 pt-4 border-t border-border">
         <Link to={createPageUrl("VetPortal")}>
-          <div className="flex items-center justify-between bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
+          <div className="flex items-center justify-between bg-primary/5 border border-primary/15 rounded-2xl px-4 py-3">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                <Stethoscope className="w-4 h-4 text-blue-600" />
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Stethoscope className="w-4 h-4 text-primary" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-blue-800">Tu es vétérinaire ?</p>
-                <p className="text-xs text-blue-500">Accéder à ton espace professionnel →</p>
+                <p className="text-sm font-semibold text-primary">Tu es vétérinaire ?</p>
+                <p className="text-xs text-primary/70">Accéder à ton espace professionnel →</p>
               </div>
             </div>
           </div>

@@ -3,8 +3,10 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog, createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
-import ChatFAB from "../components/ChatFAB";
 import WellnessBanner from "../components/WellnessBanner";
+import HealthAssistantBar from "@/components/sante/HealthAssistantBar";
+import HealthAssistantSheet from "@/components/sante/HealthAssistantSheet";
+import { updateStreakSilently } from "@/components/streakHelper";
 import Illustration from "../components/illustrations/Illustration";
 import { motion, AnimatePresence } from "framer-motion";
 import { isUserPremium } from "@/utils/premium";
@@ -42,7 +44,8 @@ export default function Sante() {
    const [records, setRecords] = useState([]);
    const [dailyLogs, setDailyLogs] = useState([]);
    const [loading, setLoading] = useState(true);
-   
+   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+
    // URL-based tab navigation (enables back button between sub-tabs)
    const [searchParams, setSearchParams] = useSearchParams();
    const urlTab = searchParams.get("tab");
@@ -73,30 +76,35 @@ export default function Sante() {
    const [initialSubTab] = useState(isDeepLink && validSubTabs.includes(urlTab) ? urlTab : null);
    const [showShareModal, setShowShareModal] = useState(urlTab === "vet");
 
-   useEffect(() => {
-     async function load() {
-       try {
-         const u = await base44.auth.me();
-         setUser(u);
-         const dogs = await base44.entities.Dog.filter({ owner: u.email });
-         if (dogs?.length > 0) {
-           const d = getActiveDog(dogs);
-           setDog(d);
-           const [recs, logs] = await Promise.all([
-             base44.entities.HealthRecord.filter({ dog_id: d.id }),
-             base44.entities.DailyLog.filter({ dog_id: d.id }),
-           ]);
-           setRecords(recs || []);
-           setDailyLogs(logs || []);
-         }
-       } catch (e) {
-         console.error(e);
-       } finally {
-         setLoading(false);
+   const loadData = async () => {
+     try {
+       const u = await base44.auth.me();
+       setUser(u);
+       const dogs = await base44.entities.Dog.filter({ owner: u.email });
+       if (dogs?.length > 0) {
+         const d = getActiveDog(dogs);
+         setDog(d);
+         const [recs, logs] = await Promise.all([
+           base44.entities.HealthRecord.filter({ dog_id: d.id }),
+           base44.entities.DailyLog.filter({ dog_id: d.id }),
+         ]);
+         setRecords(recs || []);
+         setDailyLogs(logs || []);
        }
+     } catch (e) {
+       console.error(e);
+     } finally {
+       setLoading(false);
      }
-     load();
-   }, []);
+   };
+
+   useEffect(() => { loadData(); }, []);
+
+   const handleAddFromSheet = async (record) => {
+     setRecords(prev => [...prev, record]);
+     if (navigator.vibrate) navigator.vibrate(30);
+     if (dog && user) await updateStreakSilently(dog.id, user.email);
+   };
 
   const vaccineCount = records.filter(r => r.type === "vaccine").length;
   const vetCount = records.filter(r => r.type === "vet_visit").length;
@@ -178,22 +186,7 @@ export default function Sante() {
       </div>
 
       {/* Tab content */}
-      <PullToRefresh onRefresh={async () => {
-        try {
-          const u = await base44.auth.me();
-          const dogs = await base44.entities.Dog.filter({ owner: u.email });
-          if (dogs?.length > 0) {
-            const d = getActiveDog(dogs);
-            setDog(d);
-            const [recs, logs] = await Promise.all([
-              base44.entities.HealthRecord.filter({ dog_id: d.id }),
-              base44.entities.DailyLog.filter({ dog_id: d.id }),
-            ]);
-            setRecords(recs || []);
-            setDailyLogs(logs || []);
-          }
-        } catch (e) { console.error(e); }
-      }}>
+      <PullToRefresh onRefresh={loadData}>
         <AnimatePresence mode="wait" custom={tabDir}>
           <motion.div
             key={activeTab}
@@ -228,7 +221,7 @@ export default function Sante() {
               <GrowthTrackerContent dog={dog} user={user} />
             )}
             {activeTab === "findvet" && (
-              <FindVetContent dog={dog} />
+              <FindVetContent dog={dog} user={user} />
             )}
           </motion.div>
         </AnimatePresence>
@@ -239,7 +232,14 @@ export default function Sante() {
           <DownloadHealthPDF dogId={dog.id} dogName={dog.name} />
         </div>
       )}
-      <ChatFAB />
+      <HealthAssistantBar onClick={() => setIsAssistantOpen(true)} />
+      <HealthAssistantSheet
+        visible={isAssistantOpen}
+        onClose={() => setIsAssistantOpen(false)}
+        dogId={dog?.id}
+        dog={dog}
+        onRecordAdded={handleAddFromSheet}
+      />
       <BottomNav currentPage="Sante" />
     </div>
   );

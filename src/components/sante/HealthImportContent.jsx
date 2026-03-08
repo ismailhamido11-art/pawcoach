@@ -15,18 +15,18 @@ import Illustration from "../illustrations/Illustration";
 const STEPS = { SELECT: "select", INPUT: "input", ANALYZING: "analyzing", REVIEW: "review", SUCCESS: "success" };
 
 const SOURCES = [
-  { id: "file", icon: FileText, label: "Document / PDF", desc: "Ordonnance, bilan de santé, carnet de vaccins", color: "#2d9f82", accept: ".pdf,.jpg,.jpeg,.png,.webp,.csv,.xlsx,.xls" },
-  { id: "photo", icon: Camera, label: "Photo d'un document", desc: "Prends en photo une ordonnance ou un document", color: "#10b981", accept: "image/*", capture: "environment" },
-  { id: "text", icon: ClipboardPaste, label: "Coller du texte", desc: "Email du vétérinaire, résultats d'analyses", color: "#8b5cf6", accept: null },
+  { id: "file", icon: FileText, label: "Document / PDF", desc: "Ordonnance, bilan de santé, carnet de vaccins", colorClass: "text-primary", bgClass: "bg-primary/10", accept: ".pdf,.jpg,.jpeg,.png,.webp,.csv,.xlsx,.xls" },
+  { id: "photo", icon: Camera, label: "Photo d'un document", desc: "Prends en photo une ordonnance ou un document", colorClass: "text-primary", bgClass: "bg-primary/10", accept: "image/*", capture: "environment" },
+  { id: "text", icon: ClipboardPaste, label: "Coller du texte", desc: "Email du vétérinaire, résultats d'analyses", colorClass: "text-primary/80", bgClass: "bg-primary/5", accept: null },
 ];
 
 const TYPE_CONFIG = {
-  vaccine:   { icon: Syringe,     color: "#2d9f82", label: "Vaccin",      bg: "#2d9f8218" },
-  vet_visit: { icon: Stethoscope, color: "#3b82f6", label: "Visite véto", bg: "#3b82f618" },
-  weight:    { icon: Weight,      color: "#10b981", label: "Poids",       bg: "#10b98118" },
-  medication:{ icon: Pill,        color: "#8b5cf6", label: "Médicament",  bg: "#8b5cf618" },
-  allergy:   { icon: AlertCircle, color: "#ef4444", label: "Allergie",    bg: "#ef444418" },
-  note:      { icon: StickyNote,  color: "#64748b", label: "Note",        bg: "#64748b18" },
+  vaccine:   { icon: Syringe,     colorClass: "text-emerald-600", label: "Vaccin",      bgClass: "bg-emerald-600/10" },
+  vet_visit: { icon: Stethoscope, colorClass: "text-primary",     label: "Visite véto", bgClass: "bg-primary/10" },
+  weight:    { icon: Weight,      colorClass: "text-amber-600",   label: "Poids",       bgClass: "bg-amber-600/10" },
+  medication:{ icon: Pill,        colorClass: "text-primary/80",  label: "Médicament",  bgClass: "bg-primary/10" },
+  allergy:   { icon: AlertCircle, colorClass: "text-red-600",     label: "Allergie",    bgClass: "bg-red-600/10" },
+  note:      { icon: StickyNote,  colorClass: "text-muted-foreground", label: "Note",   bgClass: "bg-muted" },
 };
 
 const ANALYZING_STEPS = ["Lecture du document", "Analyse IA vétérinaire", "Extraction des données de santé"];
@@ -132,17 +132,25 @@ export default function HealthImportContent({ dog, onImported }) {
   const handleImport = async () => {
     const toImport = records.filter((_, i) => selected.has(i));
     const created = [];
+    let failedCount = 0;
     for (const record of toImport) {
-      const r = await base44.entities.HealthRecord.create({
-        dog_id: dog.id, type: record.type || "note", title: record.title, date: record.date,
-        ...(record.next_date && { next_date: record.next_date }),
-        ...(record.details && { details: record.details }),
-        ...(record.value && { value: record.value }),
-      });
-      created.push(r);
+      try {
+        const r = await base44.entities.HealthRecord.create({
+          dog_id: dog.id, type: record.type || "note", title: record.title, date: record.date,
+          ...(record.next_date && { next_date: record.next_date }),
+          ...(record.details && { details: record.details }),
+          ...(record.value && { value: record.value }),
+        });
+        created.push(r);
+      } catch {
+        failedCount++;
+      }
     }
     if (onImported) onImported(created);
-    setImportedCount(toImport.length);
+    if (failedCount > 0) {
+      toast.warning(`${failedCount} enregistrement${failedCount > 1 ? "s" : ""} n'ont pas pu être importés`);
+    }
+    setImportedCount(created.length);
     setStep(STEPS.SUCCESS);
   };
 
@@ -152,7 +160,7 @@ export default function HealthImportContent({ dog, onImported }) {
   };
 
   return (
-    <div className="px-5 py-4">
+    <div className="px-4 py-4">
       <div className="mb-4">
         <h2 className="font-bold text-foreground text-base">Import IA</h2>
         <p className="text-xs text-muted-foreground mt-0.5">
@@ -168,8 +176,8 @@ export default function HealthImportContent({ dog, onImported }) {
               return (
                 <motion.button key={src.id} whileTap={{ scale: 0.97 }} onClick={() => handleSourceSelect(src)}
                   className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 text-left hover:border-primary/30 transition-all">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${src.color}15` }}>
-                    <Icon style={{ color: src.color, width: 22, height: 22 }} />
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${src.bgClass}`}>
+                    <Icon className={`w-[22px] h-[22px] ${src.colorClass}`} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-foreground text-sm">{src.label}</p>
@@ -262,13 +270,13 @@ export default function HealthImportContent({ dog, onImported }) {
                         suspicious ? "bg-red-50 border-red-300" : isSelected ? "bg-white border-primary/30 shadow-sm" : "bg-white/40 border-border/20 opacity-45"
                       }`}
                     >
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: cfg.bg }}>
-                        <Icon style={{ color: cfg.color, width: 18, height: 18 }} />
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${cfg.bgClass}`}>
+                        <Icon className={`w-[18px] h-[18px] ${cfg.colorClass}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-sm text-foreground truncate">{record.title}</p>
                         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: `${cfg.color}18`, color: cfg.color }}>{cfg.label}</span>
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${cfg.bgClass} ${cfg.colorClass}`}>{cfg.label}</span>
                           {record.date && <span className="text-xs text-muted-foreground">{record.date}</span>}
                           {record.value != null && <span className="text-xs font-medium text-muted-foreground">{record.value} kg</span>}
                         </div>

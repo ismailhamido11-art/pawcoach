@@ -72,13 +72,23 @@ export default function DiagnosisContent({ dog }) {
       <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
         <p className="font-bold text-sm text-foreground">🚨 En cas d'urgence</p>
         <a
-          href="tel:0478871040"
+          href="tel:3115"
           className="flex items-center gap-3 p-3 bg-red-50 border border-red-200 rounded-xl"
         >
           <Phone className="w-4 h-4 text-red-600 flex-shrink-0" />
           <div>
-            <p className="text-xs font-bold text-red-700">Centre antipoison animaux</p>
-            <p className="text-sm font-black text-red-600">04 78 87 10 40</p>
+            <p className="text-xs font-bold text-red-700">Urgence vétérinaire nationale</p>
+            <p className="text-sm font-black text-red-600">3115</p>
+          </div>
+        </a>
+        <a
+          href="tel:0140050670"
+          className="flex items-center gap-3 p-3 bg-red-50 border border-red-200 rounded-xl"
+        >
+          <Phone className="w-4 h-4 text-red-600 flex-shrink-0" />
+          <div>
+            <p className="text-xs font-bold text-red-700">Centre antipoison vétérinaire (CNITV)</p>
+            <p className="text-sm font-black text-red-600">01 40 05 06 70</p>
           </div>
         </a>
         <a
