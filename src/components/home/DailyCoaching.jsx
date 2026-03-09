@@ -100,7 +100,7 @@ export default function DailyCoaching({ dog, records = [], exercises = [], scans
             </div>
 
             {/* Hero card */}
-            <Link to={createPageUrl(hero.page) + (hero.tab ? `?tab=${hero.tab}` : "")}>
+            <Link to={createPageUrl(hero.page) + (hero.tab ? `?tab=${hero.tab}` : "") + (hero.vaccineKey ? `&vaccineKey=${hero.vaccineKey}` : "")}>
               <motion.div
                 whileTap={{ scale: 0.97 }}
                 className={`flex items-center gap-4 bg-white rounded-2xl px-4 py-4 shadow-md border border-border/30 border-l-4 ${hero.accent} cursor-pointer`}
@@ -123,7 +123,7 @@ export default function DailyCoaching({ dog, records = [], exercises = [], scans
             {mini.length > 0 && (
               <div className="flex gap-2 mt-2">
                 {mini.map((rec) => (
-                  <Link key={rec.id} to={createPageUrl(rec.page) + (rec.tab ? `?tab=${rec.tab}` : "")} className="flex-1">
+                  <Link key={rec.id} to={createPageUrl(rec.page) + (rec.tab ? `?tab=${rec.tab}` : "") + (rec.vaccineKey ? `&vaccineKey=${rec.vaccineKey}` : "")} className="flex-1">
                     <motion.div
                       whileTap={{ scale: 0.96 }}
                       className="flex items-center gap-2.5 bg-white rounded-xl px-3 py-2.5 border border-border/20 cursor-pointer"
