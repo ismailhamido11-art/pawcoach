@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 import Illustration from "../illustrations/Illustration";
@@ -67,6 +67,7 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
   const [showShareModal, setShowShareModal] = useState(!!showShareModalInit);
   const [vetNotes, setVetNotes] = useState([]);
   const [vetNotesLoaded, setVetNotesLoaded] = useState(false);
+  const recordsSectionRef = useRef(null);
 
   // Persist sub-tab to sessionStorage
   useEffect(() => {
@@ -177,6 +178,10 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
     setShowRecords(true);
     setActiveTab(tabId);
     ensureVetNotes();
+    // Scroll to the records section so user sees the result
+    setTimeout(() => {
+      recordsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 150);
   };
 
   const handlePillClick = (pillId) => {
@@ -254,7 +259,7 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
       {/* ================================================================ */}
       {/* SECTION 3 : DATA SECOND — Raw records (accordion)               */}
       {/* ================================================================ */}
-      <div className="px-4 space-y-3">
+      <div ref={recordsSectionRef} className="px-4 space-y-3">
         {/* Records accordion header */}
         <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
           <button
