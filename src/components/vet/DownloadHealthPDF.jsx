@@ -376,7 +376,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
         Object.entries(vaccineMap).forEach(([key, v]) => {
           if (v.lastRecord) {
             tableRows.push([
-              v.ref.shortName,
+              v.ref.name,
               v.ref.label,
               fmtShortDate(v.lastRecord.date),
               v.nextDue ? fmtShortDate(v.nextDue) : "\u2014",

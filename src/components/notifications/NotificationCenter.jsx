@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Bell, X, Syringe, Stethoscope, Pill, ChevronRight, CheckCheck } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
-import { matchVaccineKey } from "@/utils/healthStatus";
+import { matchVaccineKey, getVaccineDisplayName } from "@/utils/healthStatus";
 
 const TYPE_CONFIG = {
   vaccine:    { icon: Syringe,     color: "text-safe",        bg: "bg-safe/10",    label: "Vaccin",      gradient: "from-safe to-green-500" },
@@ -285,7 +285,7 @@ function NotifRow({ n, isRead, onNavigate }) {
       </motion.div>
 
       <div className="flex-1 min-w-0">
-        <p className={`text-xs font-bold ${isRead ? "text-muted-foreground" : "text-foreground"}`}>{n.title}</p>
+        <p className={`text-xs font-bold ${isRead ? "text-muted-foreground" : "text-foreground"}`}>{n.type === "vaccine" ? getVaccineDisplayName(n.title) : n.title}</p>
         <p className="text-[10px] text-muted-foreground mt-0.5">
           {n.dogName && <span className="font-medium">{n.dogName} · </span>}
           {new Date(n.next_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}

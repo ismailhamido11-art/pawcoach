@@ -5,7 +5,7 @@ import { Bell, X, Syringe, Stethoscope, Pill, ChevronRight } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
-import { matchVaccineKey } from "@/utils/healthStatus";
+import { matchVaccineKey, getVaccineDisplayName } from "@/utils/healthStatus";
 
 const TYPE_CONFIG = {
   vaccine:   { icon: Syringe,      color: "text-green-600",  bg: "bg-green-50",  border: "border-green-200",  label: "Vaccin" },
@@ -127,7 +127,7 @@ export default function ReminderAlert() {
                     <Icon className={`w-4 h-4 ${cfg.color}`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-foreground truncate">{alert.title}</p>
+                    <p className="text-xs font-semibold text-foreground truncate">{alert.type === "vaccine" ? getVaccineDisplayName(alert.title) : alert.title}</p>
                     <p className="text-[10px] text-muted-foreground">
                       {new Date(alert.next_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
                     </p>

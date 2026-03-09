@@ -2,7 +2,7 @@ import {
   Syringe, Dumbbell, ScanLine, MessageCircle,
   Footprints, Scale, Stethoscope, Utensils, AlertTriangle as AlertTriangleIcon
 } from "lucide-react";
-import { matchVaccineKey } from "@/utils/healthStatus";
+import { matchVaccineKey, getVaccineDisplayName } from "@/utils/healthStatus";
 
 export function getTodayString() {
   const d = new Date();
@@ -34,7 +34,7 @@ export function buildRecommendations({ records = [], exercises = [], scans = [],
       iconBg: "bg-red-50",
       iconColor: "#ef4444",
       label: "Rappel vaccin en retard",
-      sub: `${overdueVaccine.title} — depuis le ${overdueVaccine.next_date}`,
+      sub: `${getVaccineDisplayName(overdueVaccine.title)} — depuis le ${overdueVaccine.next_date}`,
       page: "Sante",
       tab: "vaccine",
       vaccineKey: vKey || null,
@@ -55,7 +55,7 @@ export function buildRecommendations({ records = [], exercises = [], scans = [],
         iconBg: "bg-primary/10",
         iconColor: "#2d9f82",
         label: "Vaccin a prevoir bientot",
-        sub: `${soonVaccine.title} — le ${soonVaccine.next_date}`,
+        sub: `${getVaccineDisplayName(soonVaccine.title)} — le ${soonVaccine.next_date}`,
         page: "Sante",
         tab: "vaccine",
         vaccineKey: vKey || null,

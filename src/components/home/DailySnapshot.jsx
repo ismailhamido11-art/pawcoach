@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Minus, Dumbbell, Syringe, Scale, Smile, Footprints } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { matchVaccineKey } from "@/utils/healthStatus";
+import { matchVaccineKey, getVaccineDisplayName } from "@/utils/healthStatus";
 
 function getTodayString() {
   const d = new Date();
@@ -187,7 +187,7 @@ function VaccineCard({ records = [] }) {
             <p className="text-2xl font-black leading-none" style={{ color: urgent ? "#d97706" : "#10b981" }}>
               {daysUntil}<span className="text-sm font-medium text-muted-foreground ml-1">j</span>
             </p>
-            <p className="text-[11px] text-muted-foreground mt-1 truncate">{next.title}</p>
+            <p className="text-[11px] text-muted-foreground mt-1 truncate">{getVaccineDisplayName(next.title)}</p>
           </>
         ) : hasAnyVaccine ? (
           <>

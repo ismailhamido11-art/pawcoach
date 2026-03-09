@@ -122,7 +122,7 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded
           <Syringe className={`w-4 h-4 ${cfg.color}`} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-foreground">{data.ref.shortName}</p>
+          <p className="text-sm font-semibold text-foreground">{data.ref.name}</p>
           <div className="flex items-center gap-1.5 mt-0.5">
             <Icon className={`w-3 h-3 ${cfg.color}`} />
             <span className={`text-[11px] font-medium ${cfg.color}`}>{cfg.label}</span>

@@ -13,24 +13,30 @@
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
-/** WSAVA 2024 vaccine reference for France */
+/** WSAVA 2024 vaccine reference for France
+ * name = nom complet en francais (affiche a l'utilisateur)
+ * shortName = abbreviation (espaces restreints)
+ * abbrev = sigle veterinaire (pour info, entre parentheses si besoin)
+ */
 export const VACCINE_REFERENCE = {
   // Core vaccines (WSAVA essential)
   chp: {
-    name: "CHP (Carre-Hepatite-Parvo)",
-    shortName: "CHP",
+    name: "Carre, Hepatite, Parvovirose",
+    shortName: "Carre-Hepatite-Parvo",
+    abbrev: "CHPPi / DHPP",
     category: "core",
     label: "Essentiel",
     frequencyMonths: 36, // every 3 years after primo-vaccination
     primoWeeks: [8, 12, 16], // primo-vaccination schedule
     boosterMonths: 12, // first booster at 12 months
-    description: "Protege contre 3 maladies graves : maladie de Carre, hepatite, parvovirose.",
+    description: "Protege contre 3 maladies graves : la maladie de Carre, l'hepatite de Rubarth et la parvovirose. Aussi appele CHPPi ou DHPP sur le carnet de votre veto.",
     urgency: "Obligatoire pour tous les chiens.",
   },
   // Essential in France (promoted from optional by WSAVA for endemic zones)
   leptospirose: {
     name: "Leptospirose",
-    shortName: "Lepto",
+    shortName: "Leptospirose",
+    abbrev: "Lepto",
     category: "core",
     label: "Essentiel (France)",
     frequencyMonths: 12,
@@ -40,6 +46,7 @@ export const VACCINE_REFERENCE = {
   rage: {
     name: "Rage",
     shortName: "Rage",
+    abbrev: "Rage",
     category: "recommended",
     label: "Recommande",
     frequencyMonths: 12, // AMM France: annual for most vaccines
@@ -49,7 +56,8 @@ export const VACCINE_REFERENCE = {
   // Optional vaccines
   toux_chenil: {
     name: "Toux de chenil",
-    shortName: "Toux chenil",
+    shortName: "Toux de chenil",
+    abbrev: "Bordetella",
     category: "optional",
     label: "Optionnel",
     frequencyMonths: 12,
@@ -57,34 +65,43 @@ export const VACCINE_REFERENCE = {
     urgency: "Selon mode de vie.",
   },
   piroplasmose: {
-    name: "Piroplasmose",
-    shortName: "Piro",
+    name: "Piroplasmose (tiques)",
+    shortName: "Piroplasmose",
+    abbrev: "Piro",
     category: "optional",
     label: "Optionnel",
     frequencyMonths: 12,
-    description: "Maladie transmise par les tiques. Recommande en zone a risque.",
+    description: "Maladie transmise par les tiques. Recommande en zone a risque (campagne, foret).",
     urgency: "Selon region et exposition aux tiques.",
   },
   leishmaniose: {
     name: "Leishmaniose",
-    shortName: "Leishma",
+    shortName: "Leishmaniose",
+    abbrev: "Leishma",
     category: "optional",
     label: "Optionnel",
     frequencyMonths: 12,
-    description: "Transmise par les phlebotomes (moustiques des sables). Sud de la France principalement.",
-    urgency: "Selon region (Sud/Mediterranee).",
+    description: "Transmise par les phlebotomes (petits moustiques). Surtout dans le sud de la France.",
+    urgency: "Selon region (Sud / Mediterranee).",
   },
 };
 
-/** Vaccine aliases — maps user-entered titles to reference keys */
+/** Vaccine aliases — maps user-entered titles to reference keys.
+ * matchVaccineKey does lower.includes(alias), so "dhppi" matches "dhpp". */
 const VACCINE_ALIASES = {
-  chp: "chp", carre: "chp", hepatite: "chp", parvo: "chp", parvovirose: "chp",
-  dhpp: "chp", dhlpp: "chp",
+  // CHP / CHPPi / DHPP / DHPPI — all the same vaccine
+  chp: "chp", chppi: "chp", carre: "chp", hepatite: "chp", parvo: "chp", parvovirose: "chp",
+  dhpp: "chp", dhlpp: "chp", rubarth: "chp",
+  // Leptospirose
   lepto: "leptospirose", leptospirose: "leptospirose",
+  // Rage
   rage: "rage", rabies: "rage", antirabique: "rage",
-  toux: "toux_chenil", chenil: "toux_chenil", bordetella: "toux_chenil", "toux de chenil": "toux_chenil",
-  piro: "piroplasmose", piroplasmose: "piroplasmose", babesiose: "piroplasmose",
-  leishma: "leishmaniose", leishmaniose: "leishmaniose",
+  // Toux de chenil
+  toux: "toux_chenil", chenil: "toux_chenil", bordetella: "toux_chenil", "toux de chenil": "toux_chenil", kennel: "toux_chenil",
+  // Piroplasmose
+  piro: "piroplasmose", piroplasmose: "piroplasmose", babesiose: "piroplasmose", babesia: "piroplasmose", tique: "piroplasmose",
+  // Leishmaniose
+  leishma: "leishmaniose", leishmaniose: "leishmaniose", phlebotome: "leishmaniose",
 };
 
 // ---------------------------------------------------------------------------
@@ -138,6 +155,15 @@ export function matchVaccineKey(title) {
     if (lower.includes(alias)) return key;
   }
   return null;
+}
+
+/** Resolve any vaccine title (raw DB, abbreviation, alias) to the canonical user-friendly display name.
+ *  Falls back to the original title if no match. */
+export function getVaccineDisplayName(title) {
+  if (!title) return "";
+  const key = matchVaccineKey(title);
+  if (key && VACCINE_REFERENCE[key]) return VACCINE_REFERENCE[key].name;
+  return title; // fallback: return as-is
 }
 
 // ---------------------------------------------------------------------------
@@ -420,7 +446,7 @@ export function computeNextAction(records, dog) {
     const daysLate = Math.abs(v.daysUntilDue);
     return {
       type: "vaccine_overdue",
-      title: `Vaccin ${v.ref.shortName} en retard`,
+      title: `Vaccin en retard : ${v.ref.name}`,
       description: `Le rappel etait prevu il y a ${daysLate} jours. Mets a jour si c'est fait, ou prends rendez-vous.`,
       urgency: "critical",
       ctaLabel: "Mettre a jour",
@@ -438,7 +464,7 @@ export function computeNextAction(records, dog) {
     const isPuppy = ageMonths !== null && ageMonths < 6;
     return {
       type: "vaccine_missing",
-      title: isPuppy ? "Primo-vaccination a planifier" : `Vaccin ${v.ref.shortName} non enregistre`,
+      title: isPuppy ? "Primo-vaccination a planifier" : `Vaccin non enregistre : ${v.ref.name}`,
       description: isPuppy
         ? "Les chiots doivent recevoir leurs premiers vaccins entre 8 et 16 semaines."
         : `Si ${dog?.name || "ton chien"} a deja recu ce vaccin, enregistre-le ici.`,
@@ -485,8 +511,8 @@ export function computeNextAction(records, dog) {
     const [key, v] = dueSoon[0];
     return {
       type: "vaccine_due_soon",
-      title: `Vaccin ${v.ref.shortName} dans ${v.daysUntilDue}j`,
-      description: `Pense a prendre rendez-vous pour le rappel de ${v.ref.name}.`,
+      title: `Vaccin a prevoir : ${v.ref.name}`,
+      description: `Rappel dans ${v.daysUntilDue} jours. Pense a prendre rendez-vous chez ton veto.`,
       urgency: "suggested",
       ctaLabel: "Voir le vaccin",
       targetTab: "vaccine",
