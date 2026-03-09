@@ -43,6 +43,7 @@ export default function Sante() {
    const [user, setUser] = useState(null);
    const [records, setRecords] = useState([]);
    const [dailyLogs, setDailyLogs] = useState([]);
+   const [growthEntries, setGrowthEntries] = useState([]);
    const [loading, setLoading] = useState(true);
    const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
@@ -84,12 +85,14 @@ export default function Sante() {
        if (dogs?.length > 0) {
          const d = getActiveDog(dogs);
          setDog(d);
-         const [recs, logs] = await Promise.all([
+         const [recs, logs, growths] = await Promise.all([
            base44.entities.HealthRecord.filter({ dog_id: d.id }),
            base44.entities.DailyLog.filter({ dog_id: d.id }),
+           base44.entities.GrowthEntry.filter({ dog_id: d.id }),
          ]);
          setRecords(recs || []);
          setDailyLogs(logs || []);
+         setGrowthEntries(growths || []);
        }
      } catch (e) {
        console.error(e);
@@ -218,7 +221,13 @@ export default function Sante() {
               <HealthImportContent dog={dog} onImported={(newRecs) => setRecords(prev => [...prev, ...newRecs])} />
             )}
             {activeTab === "growth" && (
-              <GrowthTrackerContent dog={dog} user={user} />
+              <GrowthTrackerContent
+                dog={dog}
+                user={user}
+                healthRecords={records}
+                dailyLogs={dailyLogs}
+                onGrowthAdded={(entry) => setGrowthEntries(prev => [...prev, entry])}
+              />
             )}
             {activeTab === "findvet" && (
               <FindVetContent dog={dog} user={user} />

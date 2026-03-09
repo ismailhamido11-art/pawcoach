@@ -421,9 +421,9 @@ export function computeNextAction(records, dog) {
     return {
       type: "vaccine_overdue",
       title: `Vaccin ${v.ref.shortName} en retard`,
-      description: `Le rappel etait prevu il y a ${daysLate} jours. Contacte ton veterinaire pour le mettre a jour.`,
+      description: `Le rappel etait prevu il y a ${daysLate} jours. Mets a jour le carnet si c'est fait, ou prends rendez-vous.`,
       urgency: "critical",
-      ctaLabel: "Voir les vaccins",
+      ctaLabel: "Enregistrer le vaccin",
       targetTab: "vaccine",
     };
   }
@@ -485,7 +485,7 @@ export function computeNextAction(records, dog) {
       title: `Vaccin ${v.ref.shortName} dans ${v.daysUntilDue}j`,
       description: `Pense a prendre rendez-vous pour le rappel de ${v.ref.name}.`,
       urgency: "suggested",
-      ctaLabel: "Voir les vaccins",
+      ctaLabel: "Voir le calendrier",
       targetTab: "vaccine",
     };
   }
@@ -500,7 +500,7 @@ export function computeNextAction(records, dog) {
         title: "Poids a mettre a jour",
         description: `La derniere pesee date de ${Math.round(daysSince / 30)} mois. Pese ${dog?.name || "ton chien"} pour suivre sa courbe.`,
         urgency: "suggested",
-        ctaLabel: "Ajouter un poids",
+        ctaLabel: "Enregistrer un poids",
         targetTab: "weight",
       };
     }

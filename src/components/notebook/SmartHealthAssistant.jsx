@@ -484,44 +484,63 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                 )}
               </div>
 
-              {/* VET CARD */}
-              {msg.role === "assistant" && msg.show_vet_map && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-2 mb-2 bg-white rounded-xl shadow-md border border-red-100 overflow-hidden"
-                >
-                  <div className="bg-red-50 px-3 py-2 border-b border-red-100 flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center">
-                      <AlertCircle className="w-4 h-4 text-red-600" />
+              {/* VET CARD — graduated severity */}
+              {msg.role === "assistant" && msg.show_vet_map && msg.show_vet_map !== "none" && (() => {
+                const level = typeof msg.show_vet_map === "string" ? msg.show_vet_map : "routine";
+                const VET_CARD_STYLES = {
+                  routine: { bg: "bg-blue-50", border: "border-blue-100", iconBg: "bg-blue-100", iconColor: "text-blue-600", titleColor: "text-blue-900", subColor: "text-blue-700", title: "Check-up conseille", sub: "Prends rendez-vous quand tu peux" },
+                  important: { bg: "bg-amber-50", border: "border-amber-100", iconBg: "bg-amber-100", iconColor: "text-amber-600", titleColor: "text-amber-900", subColor: "text-amber-700", title: "Consultation recommandee", sub: "Dans les prochains jours" },
+                  urgent: { bg: "bg-red-50", border: "border-red-100", iconBg: "bg-red-100", iconColor: "text-red-600", titleColor: "text-red-900", subColor: "text-red-700", title: "Urgence veterinaire", sub: "Contacte rapidement un professionnel" },
+                };
+                const style = VET_CARD_STYLES[level] || VET_CARD_STYLES.important;
+                return (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`mt-2 mb-2 bg-white rounded-xl shadow-md border ${style.border} overflow-hidden`}
+                  >
+                    <div className={`${style.bg} px-3 py-2 border-b ${style.border} flex items-center gap-2`}>
+                      <div className={`w-7 h-7 rounded-full ${style.iconBg} flex items-center justify-center`}>
+                        <AlertCircle className={`w-4 h-4 ${style.iconColor}`} />
+                      </div>
+                      <div>
+                        <h4 className={`font-bold ${style.titleColor} text-xs`}>{style.title}</h4>
+                        <p className={`text-[10px] ${style.subColor}`}>{style.sub}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-bold text-red-900 text-xs">Consultation recommand&eacute;e</h4>
-                      <p className="text-[10px] text-red-700">Trouver un professionnel</p>
+                    <div className="p-2 grid grid-cols-2 gap-2">
+                      <a
+                        href="https://www.google.com/maps/search/v%C3%A9t%C3%A9rinaire+%C3%A0+proximit%C3%A9"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-slate-50 transition-colors"
+                      >
+                        <MapPin className="w-4 h-4 text-blue-600" />
+                        <span className="text-xs font-semibold text-slate-700">Maps</span>
+                      </a>
+                      {level === "urgent" ? (
+                        <a
+                          href="tel:3115"
+                          className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-slate-50 transition-colors"
+                        >
+                          <Phone className="w-4 h-4 text-red-600" />
+                          <span className="text-xs font-semibold text-slate-700">Urgences (3115)</span>
+                        </a>
+                      ) : (
+                        <a
+                          href="https://www.google.com/search?q=v%C3%A9t%C3%A9rinaire+%C3%A0+proximit%C3%A9"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-slate-50 transition-colors"
+                        >
+                          <Phone className="w-4 h-4 text-primary" />
+                          <span className="text-xs font-semibold text-slate-700">Rechercher</span>
+                        </a>
+                      )}
                     </div>
-                  </div>
-                  <div className="p-2 grid grid-cols-2 gap-2">
-                    <a
-                      href="https://www.google.com/maps/search/v%C3%A9t%C3%A9rinaire+%C3%A0+proximit%C3%A9"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-slate-50 transition-colors"
-                    >
-                      <MapPin className="w-4 h-4 text-blue-600" />
-                      <span className="text-xs font-semibold text-slate-700">Maps</span>
-                    </a>
-                    <a
-                      href="https://www.google.com/search?q=urgence+v%C3%A9t%C3%A9rinaire+%C3%A0+proximit%C3%A9"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-slate-50 transition-colors"
-                    >
-                      <Phone className="w-4 h-4 text-red-600" />
-                      <span className="text-xs font-semibold text-slate-700">Urgences</span>
-                    </a>
-                  </div>
-                </motion.div>
-              )}
+                  </motion.div>
+                );
+              })()}
             </div>
           ))}
 

@@ -60,11 +60,18 @@ const PREMIUM_CONFIGS = {
 const PILL_TO_TAB = { vaccines: "vaccine", weight: "weight", vet: "vet_visit" };
 
 export default function NotebookContent({ dog, user, records = [], setRecords, dailyLogs = [], isPremium, loading, initialSubTab, showShareModalInit, scrollToQR }) {
-  const [activeTab, setActiveTab] = useState(initialSubTab || "all");
-  const [showRecords, setShowRecords] = useState(records.length > 0 || !!initialSubTab);
+  // Sub-tab persistence: initialSubTab (from URL) > sessionStorage > default
+  const savedSubTab = typeof window !== "undefined" ? sessionStorage.getItem("subTab_Sante_carnet") : null;
+  const [activeTab, setActiveTab] = useState(initialSubTab || savedSubTab || "all");
+  const [showRecords, setShowRecords] = useState(records.length > 0 || !!initialSubTab || !!savedSubTab);
   const [showShareModal, setShowShareModal] = useState(!!showShareModalInit);
   const [vetNotes, setVetNotes] = useState([]);
   const [vetNotesLoaded, setVetNotesLoaded] = useState(false);
+
+  // Persist sub-tab to sessionStorage
+  useEffect(() => {
+    sessionStorage.setItem("subTab_Sante_carnet", activeTab);
+  }, [activeTab]);
 
   // Scroll to QR if deep-linked
   useEffect(() => {
@@ -294,10 +301,10 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
               </div>
             )}
             {activeTab === "vaccine" && (
-              <SectionVaccins records={records} dogId={dog?.id} onDelete={handleDelete} />
+              <SectionVaccins records={records} dogId={dog?.id} onDelete={handleDelete} onRecordAdded={(rec) => setRecords(prev => [...prev, rec])} />
             )}
             {activeTab === "weight" && (
-              <SectionPoids records={allRecords} dogId={dog?.id} onDelete={handleDelete} />
+              <SectionPoids records={allRecords} dogId={dog?.id} onDelete={handleDelete} onRecordAdded={(rec) => setRecords(prev => [...prev, rec])} />
             )}
             {(activeTab === "vet_visit" || activeTab === "medication" || activeTab === "note") && (
               <PremiumSection

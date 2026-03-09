@@ -54,7 +54,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-export default function GrowthTrackerContent({ dog, user }) {
+export default function GrowthTrackerContent({ dog, user, healthRecords = [], dailyLogs = [], onGrowthAdded }) {
   const { credits, hasCredits, isPremium, consume } = useActionCredits();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -116,7 +116,7 @@ export default function GrowthTrackerContent({ dog, user }) {
   async function saveAnalysis() {
     if (!analysisResult) return;
     try {
-      await base44.entities.GrowthEntry.create({
+      const entry = await base44.entities.GrowthEntry.create({
         dog_id: dog.id,
         owner_email: user.email,
         date: format(new Date(), "yyyy-MM-dd"),
@@ -128,6 +128,7 @@ export default function GrowthTrackerContent({ dog, user }) {
         photo_url: analysisResult.photo_url,
         source: "photo_ai",
       });
+      if (onGrowthAdded) onGrowthAdded(entry);
       setSavedAnalysis(true);
       toast.success("Mesure enregistrée !");
       setTimeout(() => {
@@ -145,7 +146,7 @@ export default function GrowthTrackerContent({ dog, user }) {
     if (!manualForm.weight_kg && !manualForm.height_cm) return;
     setSavingManual(true);
     try {
-      await base44.entities.GrowthEntry.create({
+      const entry = await base44.entities.GrowthEntry.create({
         dog_id: dog.id,
         owner_email: user.email,
         date: manualForm.date,
@@ -153,6 +154,7 @@ export default function GrowthTrackerContent({ dog, user }) {
         height_cm: manualForm.height_cm ? parseFloat(manualForm.height_cm) : undefined,
         source: "manual",
       });
+      if (onGrowthAdded) onGrowthAdded(entry);
       toast.success("Mesure ajoutée !");
       setShowAddManual(false);
       setManualForm({ date: format(new Date(), "yyyy-MM-dd"), weight_kg: "", height_cm: "" });
@@ -169,11 +171,53 @@ export default function GrowthTrackerContent({ dog, user }) {
     setEntries(prev => prev.filter(e => e.id !== id));
   }
 
-  // Build chart data
+  // Build chart data — merge all weight sources for a unified view
   const category = getBreedCategory(dog?.breed);
+
+  // Merge GrowthEntry + HealthRecord weights + DailyLog weights (deduped by date, priority: GrowthEntry > HealthRecord > DailyLog)
+  const unifiedEntries = useMemo(() => {
+    const byDate = new Map();
+
+    // Priority 1: GrowthEntry (richest — has height, BCS, photo)
+    for (const e of entries) {
+      if (!e.date) continue;
+      byDate.set(e.date, {
+        date: e.date,
+        weight_kg: e.weight_kg || null,
+        height_cm: e.height_cm || null,
+        body_condition_score: e.body_condition_score || null,
+        photo_url: e.photo_url || null,
+        ai_notes: e.ai_notes || null,
+        source: "growth",
+        id: e.id,
+      });
+    }
+
+    // Priority 2: HealthRecord type="weight"
+    for (const r of (healthRecords || [])) {
+      if (r.type !== "weight" || !r.date || !r.value) continue;
+      if (byDate.has(r.date)) {
+        // Fill weight if GrowthEntry had no weight
+        const existing = byDate.get(r.date);
+        if (!existing.weight_kg) existing.weight_kg = r.value;
+        continue;
+      }
+      byDate.set(r.date, { date: r.date, weight_kg: r.value, height_cm: null, body_condition_score: null, source: "carnet", id: r.id });
+    }
+
+    // Priority 3: DailyLog.weight_kg
+    for (const l of (dailyLogs || [])) {
+      if (!l.date || !l.weight_kg || l.weight_kg <= 0) continue;
+      if (byDate.has(l.date)) continue;
+      byDate.set(l.date, { date: l.date, weight_kg: l.weight_kg, height_cm: null, body_condition_score: null, source: "balade", id: `dl-${l.id}` });
+    }
+
+    return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+  }, [entries, healthRecords, dailyLogs]);
+
   const sorted = useMemo(() => [...entries].sort((a, b) => a.date.localeCompare(b.date)), [entries]);
 
-  const chartData = sorted.map(e => {
+  const chartData = unifiedEntries.map(e => {
     let ageM = null;
     if (dog?.birth_date) {
       ageM = differenceInMonths(new Date(e.date), new Date(dog.birth_date));
@@ -187,7 +231,7 @@ export default function GrowthTrackerContent({ dog, user }) {
     };
   });
 
-  const latest = sorted[sorted.length - 1];
+  const latest = unifiedEntries[unifiedEntries.length - 1] || sorted[sorted.length - 1];
   const bcsInfo = latest?.body_condition_score ? getBcsLabel(latest.body_condition_score) : null;
   const historyEntries = useMemo(() => [...sorted].reverse(), [sorted]);
 

@@ -2,12 +2,43 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Weight, Plus, X } from "lucide-react";
+import { Weight, Plus, X, Check } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
-export default function SectionPoids({ records = [], dogId, onDelete }) {
+const spring = { type: "spring", stiffness: 400, damping: 30 };
+
+export default function SectionPoids({ records = [], dogId, onDelete, onRecordAdded }) {
   const [period, setPeriod] = useState("All");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ weight: "", date: new Date().toISOString().split("T")[0] });
+
+  const handleSaveWeight = async () => {
+    const w = parseFloat(form.weight);
+    if (!w || w <= 0 || w > 200) { toast.error("Poids invalide."); return; }
+    if (!form.date) { toast.error("Date requise."); return; }
+    setSaving(true);
+    try {
+      const record = await base44.entities.HealthRecord.create({
+        dog_id: dogId,
+        type: "weight",
+        title: "Pesee",
+        date: form.date,
+        value: w,
+      });
+      if (onRecordAdded) onRecordAdded(record);
+      toast.success("Poids enregistre !");
+      setShowAddForm(false);
+      setForm({ weight: "", date: new Date().toISOString().split("T")[0] });
+    } catch (e) {
+      toast.error("Erreur lors de l'enregistrement.");
+      console.error(e);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const allWeights = records.filter(r => r.type === "weight" && r.value)
     .sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -31,6 +62,63 @@ export default function SectionPoids({ records = [], dogId, onDelete }) {
 
   return (
     <div className="space-y-3">
+      {/* Add weight button */}
+      <motion.button
+        whileTap={{ scale: 0.97 }}
+        transition={spring}
+        onClick={() => setShowAddForm(!showAddForm)}
+        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-emerald-300 bg-emerald-50 text-primary text-sm font-semibold hover:bg-emerald-100 transition-colors"
+      >
+        <Plus className="w-4 h-4" />
+        Ajouter un poids
+      </motion.button>
+
+      {/* Inline add form */}
+      <AnimatePresence>
+        {showAddForm && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="bg-white border border-emerald-200 rounded-2xl p-4 space-y-3 shadow-sm">
+              <p className="text-sm font-bold text-foreground">Enregistrer un poids</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Poids (kg)</label>
+                  <Input
+                    type="number"
+                    step="0.1"
+                    value={form.weight}
+                    onChange={e => setForm(p => ({ ...p, weight: e.target.value }))}
+                    placeholder="Ex: 12.5"
+                    className="mt-1 rounded-xl"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Date</label>
+                  <input
+                    type="date"
+                    value={form.date}
+                    onChange={e => setForm(p => ({ ...p, date: e.target.value }))}
+                    className="w-full mt-1 text-sm border border-border rounded-xl px-3 py-2.5 bg-background"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-2 pt-1">
+                <Button size="sm" className="flex-1 rounded-xl" onClick={handleSaveWeight} disabled={saving}>
+                  {saving ? <><span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin mr-1" />Enregistrement...</> : <><Check className="w-3.5 h-3.5 mr-1" />Enregistrer</>}
+                </Button>
+                <Button size="sm" variant="outline" className="rounded-xl" onClick={() => setShowAddForm(false)}>
+                  Annuler
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {allWeights.length >= 2 && (
         <div className="bg-white border border-border rounded-2xl p-4">
           <div className="flex justify-between items-center mb-3">
