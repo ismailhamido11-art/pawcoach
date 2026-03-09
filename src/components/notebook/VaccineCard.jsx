@@ -232,13 +232,14 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded
 export default function VaccineCard({ vaccineMap, dogId, onRecordAdded, onFindVet, autoExpandKey, onAutoExpandConsumed }) {
   const [expandedKey, setExpandedKey] = useState(null);
 
-  // Auto-expand a specific vaccine row when deep-linked from NextActionCard
+  // Auto-expand a specific vaccine row when deep-linked (NextActionCard, URL, etc.)
+  // vaccineMap in deps: handles race condition where autoExpandKey arrives before data loads
   useEffect(() => {
     if (autoExpandKey && vaccineMap?.[autoExpandKey]) {
       setExpandedKey(autoExpandKey);
       onAutoExpandConsumed?.();
     }
-  }, [autoExpandKey]);
+  }, [autoExpandKey, vaccineMap]);
 
   if (!vaccineMap) return null;
 

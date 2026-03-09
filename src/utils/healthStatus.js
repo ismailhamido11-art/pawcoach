@@ -89,9 +89,9 @@ export const VACCINE_REFERENCE = {
 /** Vaccine aliases — maps user-entered titles to reference keys.
  * matchVaccineKey does lower.includes(alias), so "dhppi" matches "dhpp". */
 const VACCINE_ALIASES = {
-  // CHP / CHPPi / DHPP / DHPPI — all the same vaccine
+  // CHP / CHPPi / DHPP / DHPPI / DAPPi — all the same core vaccine
   chp: "chp", chppi: "chp", carre: "chp", hepatite: "chp", parvo: "chp", parvovirose: "chp",
-  dhpp: "chp", dhlpp: "chp", rubarth: "chp",
+  dhpp: "chp", dhlpp: "chp", rubarth: "chp", dappi: "chp", dapp: "chp",
   // Leptospirose
   lepto: "leptospirose", leptospirose: "leptospirose",
   // Rage

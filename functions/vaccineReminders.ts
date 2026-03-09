@@ -1,5 +1,32 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
+// Lightweight vaccine name resolution for emails (mirrors frontend healthStatus.js)
+const VACCINE_NAMES: Record<string, string> = {
+  chp: "Carre, Hepatite, Parvovirose",
+  leptospirose: "Leptospirose",
+  rage: "Rage",
+  toux_chenil: "Toux de chenil",
+  piroplasmose: "Piroplasmose",
+  leishmaniose: "Leishmaniose",
+};
+const VACCINE_ALIASES: Record<string, string> = {
+  chp: "chp", chppi: "chp", carre: "chp", hepatite: "chp", parvo: "chp", parvovirose: "chp",
+  dhpp: "chp", dhlpp: "chp", rubarth: "chp", dappi: "chp", dapp: "chp",
+  lepto: "leptospirose", leptospirose: "leptospirose",
+  rage: "rage", rabies: "rage", antirabique: "rage",
+  toux: "toux_chenil", chenil: "toux_chenil", bordetella: "toux_chenil", kennel: "toux_chenil",
+  piro: "piroplasmose", piroplasmose: "piroplasmose", babesiose: "piroplasmose", babesia: "piroplasmose", tique: "piroplasmose",
+  leishma: "leishmaniose", leishmaniose: "leishmaniose", phlebotome: "leishmaniose",
+};
+function resolveVaccineName(title: string): string {
+  if (!title) return "";
+  const lower = title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  for (const [alias, key] of Object.entries(VACCINE_ALIASES)) {
+    if (lower.includes(alias)) return VACCINE_NAMES[key] || title;
+  }
+  return title;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -53,7 +80,7 @@ Deno.serve(async (req) => {
         to: user.email,
         from_name: "PawCoach",
         subject: `🐾 Rappel vaccin pour ${dog.name}`,
-        body: `Bonjour !\n\nRappel vaccin pour ${dog.name} : le vaccin "${vaccine.title}" est prévu le ${formattedDate} (dans ${diffDays} jour${diffDays > 1 ? "s" : ""}).\n\nPense à prendre rendez-vous chez ton vétérinaire. 🏥\n\n— PawCoach`,
+        body: `Bonjour !\n\nRappel vaccin pour ${dog.name} : le vaccin "${resolveVaccineName(vaccine.title)}" est prévu le ${formattedDate} (dans ${diffDays} jour${diffDays > 1 ? "s" : ""}).\n\nPense à prendre rendez-vous chez ton vétérinaire. 🏥\n\n— PawCoach`,
       });
 
       // Mark as reminded today (prevents duplicate sends)
