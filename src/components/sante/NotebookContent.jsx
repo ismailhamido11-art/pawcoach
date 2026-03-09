@@ -233,13 +233,18 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
       {/* ================================================================ */}
       <div className="px-4 space-y-3">
         {/* Vaccine calendar — WSAVA 2024 reference */}
-        <VaccineCard vaccineMap={summary.vaccineMap} onNavigate={handleNavigateToTab} />
+        <VaccineCard
+          vaccineMap={summary.vaccineMap}
+          dogId={dog?.id}
+          onRecordAdded={(rec) => setRecords(prev => [...prev, rec])}
+        />
 
         {/* Weight trend with interpretation */}
         <WeightCard
           weightTrend={summary.weightTrend}
           dogName={dog?.name}
-          onNavigate={handleNavigateToTab}
+          dogId={dog?.id}
+          onRecordAdded={(rec) => setRecords(prev => [...prev, rec])}
         />
 
         {/* Share button */}

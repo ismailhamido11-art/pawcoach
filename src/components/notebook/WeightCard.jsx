@@ -1,6 +1,8 @@
-import { useMemo } from "react";
-import { motion } from "framer-motion";
-import { Weight, TrendingUp, TrendingDown, Minus, AlertTriangle, Plus } from "lucide-react";
+import { useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Weight, TrendingUp, TrendingDown, Minus, AlertTriangle, Plus, Check, X } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { toast } from "sonner";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
@@ -11,7 +13,91 @@ const DIRECTION_CONFIG = {
   unknown: { Icon: Weight, color: "text-muted-foreground", bg: "bg-secondary", label: "Donnees insuffisantes" },
 };
 
-export default function WeightCard({ weightTrend, dogName, onNavigate }) {
+function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
+  const [weight, setWeight] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    const w = parseFloat(weight);
+    if (!w || w <= 0 || w > 200) { toast.error("Poids invalide"); return; }
+    if (!date) { toast.error("Date requise"); return; }
+    setSaving(true);
+    try {
+      const record = await base44.entities.HealthRecord.create({
+        dog_id: dogId,
+        type: "weight",
+        title: "Pesee",
+        date,
+        value: w,
+      });
+      if (onRecordAdded) onRecordAdded(record);
+      toast.success("Poids enregistre !");
+      onClose();
+    } catch (e) {
+      console.error("InlineWeightForm save error:", e);
+      toast.error("Erreur lors de l'enregistrement");
+    }
+    setSaving(false);
+  };
+
+  return (
+    <motion.div
+      initial={{ height: 0, opacity: 0 }}
+      animate={{ height: "auto", opacity: 1 }}
+      exit={{ height: 0, opacity: 0 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      className="overflow-hidden"
+    >
+      <div className="mx-4 mb-3.5 bg-white rounded-xl border border-primary/20 p-3 space-y-2.5">
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-bold text-foreground">Enregistrer un poids</p>
+          <button onClick={onClose} className="p-1 hover:bg-muted rounded-lg transition-colors">
+            <X className="w-3.5 h-3.5 text-muted-foreground" />
+          </button>
+        </div>
+        <div className="grid grid-cols-2 gap-2.5">
+          <div>
+            <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Poids (kg)</label>
+            <input
+              type="number"
+              step="0.1"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              placeholder="Ex: 12.5"
+              className="w-full mt-1 text-sm border border-border rounded-xl px-3 py-2 bg-background"
+            />
+          </div>
+          <div>
+            <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Date</label>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="w-full mt-1 text-sm border border-border rounded-xl px-3 py-2 bg-background"
+            />
+          </div>
+        </div>
+        <motion.button
+          whileTap={{ scale: 0.96 }}
+          onClick={handleSave}
+          disabled={saving}
+          className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold disabled:opacity-50"
+        >
+          {saving ? (
+            <><span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Enregistrement...</>
+          ) : (
+            <><Check className="w-3.5 h-3.5" /> Enregistrer</>
+          )}
+        </motion.button>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded }) {
+  const [showForm, setShowForm] = useState(false);
+
   if (!weightTrend) return null;
 
   const config = DIRECTION_CONFIG[weightTrend.direction] || DIRECTION_CONFIG.unknown;
@@ -91,10 +177,10 @@ export default function WeightCard({ weightTrend, dogName, onNavigate }) {
                   Derniere pesee : {lastDateFormatted}
                 </p>
               )}
-              {onNavigate && (
+              {dogId && (
                 <motion.button
                   whileTap={{ scale: 0.96 }}
-                  onClick={() => onNavigate("weight")}
+                  onClick={() => setShowForm(true)}
                   className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary/10 text-primary text-[10px] font-bold"
                 >
                   <Plus className="w-3 h-3" />
@@ -110,10 +196,10 @@ export default function WeightCard({ weightTrend, dogName, onNavigate }) {
             <p className="text-xs text-muted-foreground mt-1">
               Ajoute le poids de {dogName || "ton chien"} pour suivre sa courbe.
             </p>
-            {onNavigate && (
+            {dogId && (
               <motion.button
                 whileTap={{ scale: 0.96 }}
-                onClick={() => onNavigate("weight")}
+                onClick={() => setShowForm(true)}
                 className="mt-3 mx-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold"
               >
                 <Plus className="w-3.5 h-3.5" />
@@ -123,6 +209,17 @@ export default function WeightCard({ weightTrend, dogName, onNavigate }) {
           </div>
         )}
       </div>
+
+      {/* Inline form — appears directly in the card */}
+      <AnimatePresence>
+        {showForm && (
+          <InlineWeightForm
+            dogId={dogId}
+            onRecordAdded={(rec) => { onRecordAdded?.(rec); setShowForm(false); }}
+            onClose={() => setShowForm(false)}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
