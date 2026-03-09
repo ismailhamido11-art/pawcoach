@@ -397,6 +397,18 @@ export function computeNextAction(records, dog) {
   const recs = records || [];
   const t = today();
 
+  // Priority 0: Empty notebook — show welcome before vaccine warnings
+  if (recs.length === 0) {
+    return {
+      type: "empty_notebook",
+      title: "Commence le carnet de sante",
+      description: `Ajoute le premier vaccin ou la derniere pesee de ${dog?.name || "ton chien"}.`,
+      urgency: "suggested",
+      ctaLabel: "Utiliser l'assistant",
+      targetTab: null,
+    };
+  }
+
   // Priority 1: Overdue core vaccines
   const vaccineMap = computeVaccineMap(recs);
   const overdueCore = Object.entries(vaccineMap)
@@ -513,18 +525,6 @@ export function computeNextAction(records, dog) {
       urgency: "important",
       ctaLabel: "Voir la courbe",
       targetTab: "weight",
-    };
-  }
-
-  // Priority 7: Empty notebook
-  if (recs.length === 0) {
-    return {
-      type: "empty_notebook",
-      title: "Commence le carnet de sante",
-      description: `Ajoute le premier vaccin ou la derniere pesee de ${dog?.name || "ton chien"}.`,
-      urgency: "suggested",
-      ctaLabel: "Utiliser l'assistant",
-      targetTab: null,
     };
   }
 

@@ -79,13 +79,13 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
   // Load vet notes lazily
   const ensureVetNotes = async () => {
     if (vetNotesLoaded || !dog) return;
+    setVetNotesLoaded(true); // guard immediately to prevent double-fetch
     try {
       const notes = await base44.entities.VetNote.filter({ dog_id: dog.id });
       setVetNotes(notes || []);
     } catch (e) {
       console.warn("Failed to load vet notes:", e?.message || String(e));
     }
-    setVetNotesLoaded(true);
   };
 
   const handleDelete = async (id) => {
