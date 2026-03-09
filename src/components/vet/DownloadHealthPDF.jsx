@@ -280,7 +280,8 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
         return;
       }
 
-      const { dog, records, checkins } = res.data;
+      const { dog, records: rawRecords, checkins } = res.data;
+      const records = rawRecords || [];
       const doc = new jsPDF();
       const pageW = doc.internal.pageSize.getWidth();
       let y = 20;
