@@ -2,7 +2,7 @@ import {
   Syringe, Dumbbell, ScanLine, MessageCircle,
   Footprints, Scale, Stethoscope, Utensils, AlertTriangle as AlertTriangleIcon
 } from "lucide-react";
-import { VACCINE_REFERENCE } from "@/utils/healthStatus";
+import { matchVaccineKey } from "@/utils/healthStatus";
 
 export function getTodayString() {
   const d = new Date();
@@ -26,7 +26,7 @@ export function buildRecommendations({ records = [], exercises = [], scans = [],
   const vaccines = records.filter(r => r.type === "vaccine" && r.next_date);
   const overdueVaccine = vaccines.find(v => v.next_date < today);
   if (overdueVaccine) {
-    const vKey = Object.entries(VACCINE_REFERENCE).find(([_, ref]) => ref.name === overdueVaccine.title || ref.shortName === overdueVaccine.title)?.[0];
+    const vKey = matchVaccineKey(overdueVaccine.title);
     recs.push({
       id: "vaccine_overdue",
       priority: 1,
@@ -47,7 +47,7 @@ export function buildRecommendations({ records = [], exercises = [], scans = [],
   if (!overdueVaccine) {
     const soonVaccine = vaccines.find(v => v.next_date >= today && v.next_date <= new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10));
     if (soonVaccine) {
-      const vKey = Object.entries(VACCINE_REFERENCE).find(([_, ref]) => ref.name === soonVaccine.title || ref.shortName === soonVaccine.title)?.[0];
+      const vKey = matchVaccineKey(soonVaccine.title);
       recs.push({
         id: "vaccine_soon",
         priority: 2,

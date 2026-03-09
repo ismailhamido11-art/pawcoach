@@ -131,7 +131,7 @@ function dogAgeMonths(dog) {
 }
 
 /** Normalize a vaccine title to a reference key */
-function matchVaccineKey(title) {
+export function matchVaccineKey(title) {
   if (!title) return null;
   const lower = title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   for (const [alias, key] of Object.entries(VACCINE_ALIASES)) {

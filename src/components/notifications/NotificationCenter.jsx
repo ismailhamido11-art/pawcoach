@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Bell, X, Syringe, Stethoscope, Pill, ChevronRight, CheckCheck } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
-import { VACCINE_REFERENCE } from "@/utils/healthStatus";
+import { matchVaccineKey } from "@/utils/healthStatus";
 
 const TYPE_CONFIG = {
   vaccine:    { icon: Syringe,     color: "text-safe",        bg: "bg-safe/10",    label: "Vaccin",      gradient: "from-safe to-green-500" },
@@ -42,11 +42,9 @@ function markAllAsRead(notifications) {
   localStorage.setItem(READ_KEY, JSON.stringify(ids));
 }
 
-// Resolve vaccineKey from notification title
+// Resolve vaccineKey from notification title (uses alias-based matching)
 function resolveVaccineKey(title) {
-  return Object.entries(VACCINE_REFERENCE).find(([_, ref]) =>
-    ref.name === title || ref.shortName === title
-  )?.[0] || null;
+  return matchVaccineKey(title);
 }
 
 // Shared state across instances

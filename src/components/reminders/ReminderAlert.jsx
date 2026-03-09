@@ -5,7 +5,7 @@ import { Bell, X, Syringe, Stethoscope, Pill, ChevronRight } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
-import { VACCINE_REFERENCE } from "@/utils/healthStatus";
+import { matchVaccineKey } from "@/utils/healthStatus";
 
 const TYPE_CONFIG = {
   vaccine:   { icon: Syringe,      color: "text-green-600",  bg: "bg-green-50",  border: "border-green-200",  label: "Vaccin" },
@@ -113,7 +113,7 @@ export default function ReminderAlert() {
               const handleAlertClick = () => {
                 setVisible(false);
                 if (alert.type === "vaccine") {
-                  const vKey = Object.entries(VACCINE_REFERENCE).find(([_, ref]) => ref.name === alert.title || ref.shortName === alert.title)?.[0];
+                  const vKey = matchVaccineKey(alert.title);
                   navigate(createPageUrl("Sante") + `?tab=vaccine${vKey ? `&vaccineKey=${vKey}` : ""}`);
                 } else if (alert.type === "vet_visit") {
                   navigate(createPageUrl("Sante") + "?tab=findvet");

@@ -73,12 +73,13 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
   const [autoExpandVaccineKey, setAutoExpandVaccineKey] = useState(initialVaccineKey || null);
   const [autoOpenWeightForm, setAutoOpenWeightForm] = useState(false);
 
-  // Cross-page deep-link: scroll to VaccineCard on mount if initialVaccineKey is provided
+  // Cross-page deep-link: expand + scroll when initialVaccineKey changes (reactive to URL)
   useEffect(() => {
-    if (initialVaccineKey && vaccineCardRef.current) {
+    if (initialVaccineKey) {
+      setAutoExpandVaccineKey(initialVaccineKey);
       setTimeout(() => {
         vaccineCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 300);
+      }, 350);
     }
   }, [initialVaccineKey]);
 
@@ -192,7 +193,7 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
       if (targetKey) setAutoExpandVaccineKey(targetKey);
       setTimeout(() => {
         vaccineCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
+      }, 350);
       return;
     }
     // Weight deep-link: scroll to WeightCard and auto-open form
@@ -200,7 +201,7 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
       setAutoOpenWeightForm(true);
       setTimeout(() => {
         weightCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
+      }, 350);
       return;
     }
     // Normal sub-tab navigation within Carnet

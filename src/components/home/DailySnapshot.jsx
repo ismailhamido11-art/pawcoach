@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Minus, Dumbbell, Syringe, Scale, Smile, Footprints } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { VACCINE_REFERENCE } from "@/utils/healthStatus";
+import { matchVaccineKey } from "@/utils/healthStatus";
 
 function getTodayString() {
   const d = new Date();
@@ -171,7 +171,7 @@ function VaccineCard({ records = [] }) {
 
   const urgent = daysUntil !== null && daysUntil <= 30;
   const hasAnyVaccine = allVaccines.length > 0;
-  const vaccineKey = next ? Object.entries(VACCINE_REFERENCE).find(([_, ref]) => ref.name === next.title || ref.shortName === next.title)?.[0] : null;
+  const vaccineKey = next ? matchVaccineKey(next.title) : null;
 
   return (
     <Link to={createPageUrl("Sante") + `?tab=vaccine${vaccineKey ? `&vaccineKey=${vaccineKey}` : ""}`} className="block">
