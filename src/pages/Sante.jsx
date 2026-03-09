@@ -228,7 +228,7 @@ export default function Sante() {
       </PullToRefresh>
       {/* PDF export — visible uniquement sur l'onglet carnet */}
       {activeTab === "carnet" && dog && !loading && (
-        <div className="px-5 pb-4">
+        <div className="px-4 pb-4">
           <DownloadHealthPDF dogId={dog.id} dogName={dog.name} />
         </div>
       )}

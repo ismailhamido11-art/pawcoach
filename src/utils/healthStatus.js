@@ -559,9 +559,10 @@ export function getDogAgeLabel(dog) {
  */
 export function computeNotebookSummary(records, dog) {
   const recs = records || [];
+  const score = computeHealthScore(recs, dog);
   return {
-    score: computeHealthScore(recs, dog),
-    scoreLevel: getScoreLevel(computeHealthScore(recs, dog)),
+    score,
+    scoreLevel: getScoreLevel(score),
     pills: computeStatusPills(recs, dog),
     nextAction: computeNextAction(recs, dog),
     vaccineMap: computeVaccineMap(recs),

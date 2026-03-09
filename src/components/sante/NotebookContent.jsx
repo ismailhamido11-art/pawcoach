@@ -115,22 +115,27 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
     }
   };
 
-  // Merge DailyLog weight entries as pseudo-records
-  const dailyLogRecords = (dailyLogs || [])
-    .filter(l => l.weight_kg && l.weight_kg > 0)
-    .map(l => ({
-      id: `dl-${l.id}`,
-      type: "weight",
-      title: "Poids (log rapide)",
-      date: l.date,
-      value: l.weight_kg,
-      _fromDailyLog: true,
-    }));
-  const hrWeightDates = new Set(records.filter(r => r.type === "weight").map(r => r.date));
-  const uniqueDailyLogRecords = dailyLogRecords.filter(r => !hrWeightDates.has(r.date));
-  const allRecords = [...records, ...uniqueDailyLogRecords];
+  // Merge DailyLog weight entries as pseudo-records (memoized for stable ref)
+  const allRecords = useMemo(() => {
+    const dailyLogRecords = (dailyLogs || [])
+      .filter(l => l.weight_kg && l.weight_kg > 0)
+      .map(l => ({
+        id: `dl-${l.id}`,
+        type: "weight",
+        title: "Poids (log rapide)",
+        date: l.date,
+        value: l.weight_kg,
+        _fromDailyLog: true,
+      }));
+    const hrWeightDates = new Set(records.filter(r => r.type === "weight").map(r => r.date));
+    const uniqueDailyLogRecords = dailyLogRecords.filter(r => !hrWeightDates.has(r.date));
+    return [...records, ...uniqueDailyLogRecords];
+  }, [records, dailyLogs]);
 
-  const sortedRecords = [...allRecords].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const sortedRecords = useMemo(
+    () => [...allRecords].sort((a, b) => new Date(b.date) - new Date(a.date)),
+    [allRecords]
+  );
   const countForTab = (id) => id === "all" ? allRecords.length : allRecords.filter(r => r.type === id).length;
 
   // --- Smart Notebook summary (memoized) ---
