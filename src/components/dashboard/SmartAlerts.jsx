@@ -11,6 +11,7 @@ import {
   Zap, CheckCircle, ChevronRight, Brain, Flame,
   Footprints, Activity
 } from "lucide-react";
+import { computeVaccineMap, getVaccineDisplayName } from "@/utils/healthStatus";
 
 const SEVERITY = {
   critical: { bg: "bg-red-50", border: "border-red-200", dot: "bg-red-500", text: "text-red-700", label: "Urgent" },
@@ -86,11 +87,11 @@ export function computeAlerts({ dog, checkins = [], records = [], streak, dailyL
     });
   }
 
-  // ── 2. PRÉDICTION VACCINS ──
-  const vaccines = records.filter(r => r.type === "vaccine");
-  const overdueVax = vaccines.filter(r => r.next_date && r.next_date < today);
-  const in30Vax  = vaccines.filter(r => r.next_date && r.next_date >= today && r.next_date <= new Date(Date.now() + 30 * 864e5).toISOString().split("T")[0]);
-  const in90Vax  = vaccines.filter(r => r.next_date && r.next_date >= today && r.next_date <= new Date(Date.now() + 90 * 864e5).toISOString().split("T")[0] && r.next_date > new Date(Date.now() + 30 * 864e5).toISOString().split("T")[0]);
+  // ── 2. PRÉDICTION VACCINS (smart: unique vaccines, not raw records) ──
+  const vaccineMap = computeVaccineMap(records);
+  const vaccineEntries = Object.entries(vaccineMap);
+  const overdueVax = vaccineEntries.filter(([, v]) => v.status === "overdue");
+  const dueSoonVax = vaccineEntries.filter(([, v]) => v.status === "due_soon");
 
   if (overdueVax.length > 0) {
     alerts.push({
@@ -98,35 +99,24 @@ export function computeAlerts({ dog, checkins = [], records = [], streak, dailyL
       severity: "critical",
       icon: Syringe,
       iconColor: "#ef4444",
-      title: `${overdueVax.length} vaccin(s) en retard !`,
-      desc: overdueVax.map(v => v.title).join(", ") + " — rappel dépassé.",
+      title: `${overdueVax.length} vaccin${overdueVax.length > 1 ? "s" : ""} en retard !`,
+      desc: overdueVax.map(([, v]) => v.ref.name).join(", ") + " — rappel dépassé.",
       cta: "Voir le carnet",
       to: createPageUrl("Sante"),
     });
-  } else if (in30Vax.length > 0) {
-    const daysUntil = Math.ceil((new Date(in30Vax[0].next_date) - new Date()) / 864e5);
+  } else if (dueSoonVax.length > 0) {
+    const closest = dueSoonVax.sort((a, b) => a[1].daysUntilDue - b[1].daysUntilDue)[0];
     alerts.push({
       id: "vaccine_soon",
       severity: "warning",
       icon: Syringe,
       iconColor: "#d97706",
-      title: `Rappel vaccin dans ${daysUntil} jours`,
-      desc: in30Vax.map(v => v.title).join(", ") + " — prends rendez-vous bientôt.",
+      title: `Rappel vaccin dans ${closest[1].daysUntilDue} jours`,
+      desc: dueSoonVax.map(([, v]) => v.ref.name).join(", ") + " — prends rendez-vous bientôt.",
       cta: "Planifier",
       to: createPageUrl("Sante"),
     });
-  } else if (in90Vax.length > 0) {
-    alerts.push({
-      id: "vaccine_upcoming",
-      severity: "info",
-      icon: Syringe,
-      iconColor: "#3b82f6",
-      title: "Rappel vaccin à venir",
-      desc: in90Vax.map(v => `${v.title} — ${v.next_date}`).join(", "),
-      cta: null,
-      to: null,
-    });
-  } else if (vaccines.length === 0) {
+  } else if (vaccineEntries.every(([, v]) => v.status === "never") || vaccineEntries.length === 0) {
     alerts.push({
       id: "vaccine_none",
       severity: "info",

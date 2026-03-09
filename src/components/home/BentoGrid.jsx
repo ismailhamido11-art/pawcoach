@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Heart, Utensils, Dumbbell, MessageCircle } from "lucide-react";
 import { isUserPremium } from "@/utils/premium";
+import { computeVaccineMap } from "@/utils/healthStatus";
 import FeatureTile from "./FeatureTile";
 
 function getTodayString() {
@@ -23,9 +24,9 @@ function computeTileData({ records = [], exercises = [], scans = [], user, check
   const isPremium = isUserPremium(user);
   const last7 = getLast7Days();
 
-  // --- SANTE ---
-  const vaccines = (records || []).filter(r => r.type === "vaccine" && r.next_date);
-  const overdueCount = vaccines.filter(v => v.next_date < today).length;
+  // --- SANTE --- (smart count via vaccineMap, not raw records)
+  const vaccineMap = computeVaccineMap(records);
+  const overdueCount = Object.values(vaccineMap).filter(v => v.status === "overdue").length;
   const totalRecords = (records || []).length;
 
   let santeData, santeSub, santeBadge;
