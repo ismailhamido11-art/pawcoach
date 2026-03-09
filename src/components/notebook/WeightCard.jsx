@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Weight, TrendingUp, TrendingDown, Minus, AlertTriangle, Plus, Check, X } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -51,11 +51,14 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
     >
       <div className="mx-4 mb-3.5 bg-white rounded-xl border border-primary/20 p-3 space-y-2.5">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-bold text-foreground">Enregistrer un poids</p>
+          <p className="text-xs font-bold text-foreground">Nouvelle pesee</p>
           <button onClick={onClose} className="p-1 hover:bg-muted rounded-lg transition-colors">
             <X className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         </div>
+        <p className="text-[10px] text-muted-foreground leading-relaxed">
+          Pese ton chien et note le resultat. Le suivi de la courbe se met a jour automatiquement.
+        </p>
         <div className="grid grid-cols-2 gap-2.5">
           <div>
             <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Poids (kg)</label>
@@ -87,7 +90,7 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
           {saving ? (
             <><span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Enregistrement...</>
           ) : (
-            <><Check className="w-3.5 h-3.5" /> Enregistrer</>
+            <><Check className="w-3.5 h-3.5" /> C'est note !</>
           )}
         </motion.button>
       </div>
@@ -95,8 +98,16 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
   );
 }
 
-export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded }) {
+export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded, autoOpenForm, onAutoOpenConsumed }) {
   const [showForm, setShowForm] = useState(false);
+
+  // Auto-open form when deep-linked from NextActionCard
+  useEffect(() => {
+    if (autoOpenForm && dogId) {
+      setShowForm(true);
+      onAutoOpenConsumed?.();
+    }
+  }, [autoOpenForm]);
 
   if (!weightTrend) return null;
 
@@ -134,7 +145,10 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded 
           <div className="w-8 h-8 rounded-xl bg-primary/5 flex items-center justify-center">
             <Weight className="w-4 h-4 text-primary" />
           </div>
-          <p className="text-sm font-bold text-foreground">Suivi du poids</p>
+          <div>
+            <p className="text-sm font-bold text-foreground">Suivi du poids</p>
+            <p className="text-[10px] text-muted-foreground">Pese regulierement pour suivre la courbe</p>
+          </div>
         </div>
       </div>
 

@@ -6,8 +6,8 @@ const spring = { type: "spring", stiffness: 400, damping: 30 };
 export default function HealthAssistantBar({ onClick }) {
   return (
     <div
-      className="fixed right-4 z-20 pointer-events-none"
-      style={{ bottom: "calc(4.5rem + env(safe-area-inset-bottom, 0px))" }}
+      className="fixed right-4 z-50 pointer-events-none"
+      style={{ bottom: "calc(5rem + env(safe-area-inset-bottom, 0px))" }}
     >
       <motion.button
         initial={{ y: 20, opacity: 0 }}

@@ -421,10 +421,11 @@ export function computeNextAction(records, dog) {
     return {
       type: "vaccine_overdue",
       title: `Vaccin ${v.ref.shortName} en retard`,
-      description: `Le rappel etait prevu il y a ${daysLate} jours. Mets a jour le carnet si c'est fait, ou prends rendez-vous.`,
+      description: `Le rappel etait prevu il y a ${daysLate} jours. Mets a jour si c'est fait, ou prends rendez-vous.`,
       urgency: "critical",
-      ctaLabel: "Enregistrer le vaccin",
+      ctaLabel: "Mettre a jour",
       targetTab: "vaccine",
+      targetKey: key,
     };
   }
 
@@ -432,17 +433,19 @@ export function computeNextAction(records, dog) {
   const neverCore = Object.entries(vaccineMap)
     .filter(([_, v]) => v.ref.category === "core" && v.status === "never");
   if (neverCore.length > 0) {
+    const [key, v] = neverCore[0];
     const ageMonths = dogAgeMonths(dog);
     const isPuppy = ageMonths !== null && ageMonths < 6;
     return {
       type: "vaccine_missing",
-      title: isPuppy ? "Primo-vaccination a planifier" : `Vaccin ${neverCore[0][1].ref.shortName} non enregistre`,
+      title: isPuppy ? "Primo-vaccination a planifier" : `Vaccin ${v.ref.shortName} non enregistre`,
       description: isPuppy
         ? "Les chiots doivent recevoir leurs premiers vaccins entre 8 et 16 semaines."
-        : `Ajoute les vaccins de ${dog?.name || "ton chien"} pour un suivi complet.`,
+        : `Si ${dog?.name || "ton chien"} a deja recu ce vaccin, enregistre-le ici.`,
       urgency: "important",
-      ctaLabel: "Ajouter un vaccin",
+      ctaLabel: "Mettre a jour",
       targetTab: "vaccine",
+      targetKey: key,
     };
   }
 
@@ -485,8 +488,9 @@ export function computeNextAction(records, dog) {
       title: `Vaccin ${v.ref.shortName} dans ${v.daysUntilDue}j`,
       description: `Pense a prendre rendez-vous pour le rappel de ${v.ref.name}.`,
       urgency: "suggested",
-      ctaLabel: "Voir le calendrier",
+      ctaLabel: "Voir le vaccin",
       targetTab: "vaccine",
+      targetKey: key,
     };
   }
 

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Syringe, ChevronDown, ChevronUp, Calendar, AlertTriangle, CheckCircle, Clock, HelpCircle, Plus, Check, X } from "lucide-react";
+import { Syringe, ChevronDown, ChevronUp, Calendar, AlertTriangle, CheckCircle, Clock, HelpCircle, Check, X, MapPin } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 
@@ -15,7 +15,15 @@ const STATUS_CONFIG = {
 
 const CATEGORY_ORDER = ["core", "recommended", "optional"];
 
-function InlineVaccineForm({ vaccineKey, data, dogId, onRecordAdded, onClose }) {
+// Status-specific CTA text and guidance
+const STATUS_CTA = {
+  overdue: { btn: "C'est fait, mettre a jour", guidance: "Ce vaccin est en retard. Si tu y es deja alle, indique la date ci-dessous." },
+  due_soon: { btn: "C'est fait, mettre a jour", guidance: "Ce vaccin arrive bientot. Pense a prendre rendez-vous chez ton veto." },
+  never: { btn: "Mon chien l'a deja recu", guidance: "Aucun enregistrement pour ce vaccin. Si ton chien l'a deja recu, note-le ici." },
+  up_to_date: { btn: "Corriger la date", guidance: "Tout est a jour. Tu peux modifier la date si besoin." },
+};
+
+function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [saving, setSaving] = useState(false);
 
@@ -35,7 +43,7 @@ function InlineVaccineForm({ vaccineKey, data, dogId, onRecordAdded, onClose }) 
         next_date: nextDate.toISOString().split("T")[0],
       });
       if (onRecordAdded) onRecordAdded(record);
-      toast.success(`${ref.shortName} enregistre !`);
+      toast.success(`${ref.shortName} mis a jour !`);
       onClose();
     } catch (e) {
       console.error("InlineVaccineForm save error:", e);
@@ -43,6 +51,9 @@ function InlineVaccineForm({ vaccineKey, data, dogId, onRecordAdded, onClose }) 
     }
     setSaving(false);
   };
+
+  const isFirstTime = data.status === "never";
+  const formTitle = isFirstTime ? `Enregistrer : ${data.ref.shortName}` : `Mettre a jour : ${data.ref.shortName}`;
 
   return (
     <motion.div
@@ -54,11 +65,14 @@ function InlineVaccineForm({ vaccineKey, data, dogId, onRecordAdded, onClose }) 
     >
       <div className="mx-3.5 mb-3.5 bg-white rounded-xl border border-primary/20 p-3 space-y-2.5">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-bold text-foreground">Enregistrer : {data.ref.shortName}</p>
+          <p className="text-xs font-bold text-foreground">{formTitle}</p>
           <button onClick={onClose} className="p-1 hover:bg-muted rounded-lg transition-colors">
             <X className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         </div>
+        <p className="text-[10px] text-muted-foreground leading-relaxed">
+          Indique la date de la derniere injection. Le prochain rappel sera calcule automatiquement.
+        </p>
         <div>
           <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Date du vaccin</label>
           <input
@@ -69,7 +83,7 @@ function InlineVaccineForm({ vaccineKey, data, dogId, onRecordAdded, onClose }) 
           />
         </div>
         <p className="text-[10px] text-muted-foreground">
-          Prochain rappel auto-calcule : tous les {data.ref.frequencyMonths >= 12 ? `${data.ref.frequencyMonths / 12} an${data.ref.frequencyMonths > 12 ? "s" : ""}` : `${data.ref.frequencyMonths} mois`}
+          Prochain rappel : tous les {data.ref.frequencyMonths >= 12 ? `${data.ref.frequencyMonths / 12} an${data.ref.frequencyMonths > 12 ? "s" : ""}` : `${data.ref.frequencyMonths} mois`}
         </p>
         <motion.button
           whileTap={{ scale: 0.96 }}
@@ -80,7 +94,7 @@ function InlineVaccineForm({ vaccineKey, data, dogId, onRecordAdded, onClose }) 
           {saving ? (
             <><span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Enregistrement...</>
           ) : (
-            <><Check className="w-3.5 h-3.5" /> Enregistrer</>
+            <><Check className="w-3.5 h-3.5" /> Mettre a jour</>
           )}
         </motion.button>
       </div>
@@ -88,11 +102,15 @@ function InlineVaccineForm({ vaccineKey, data, dogId, onRecordAdded, onClose }) 
   );
 }
 
-function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded }) {
+function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded, onFindVet }) {
   const [showForm, setShowForm] = useState(false);
   const cfg = STATUS_CONFIG[data.status];
+  const cta = STATUS_CTA[data.status] || STATUS_CTA.up_to_date;
   const Icon = cfg.Icon;
   const fmtDate = (d) => d ? new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "";
+
+  const showFindVet = data.status === "overdue" || data.status === "due_soon";
+  const isPrimary = data.status !== "up_to_date";
 
   return (
     <div className={`border rounded-xl overflow-hidden transition-colors ${cfg.border} ${cfg.bg}`}>
@@ -131,10 +149,20 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded
             className="overflow-hidden"
           >
             <div className="px-3.5 pb-3.5 pt-0 space-y-2">
+              {/* Description + urgency */}
               <div className="bg-white/80 rounded-lg p-3">
                 <p className="text-xs text-foreground leading-relaxed">{data.ref.description}</p>
                 <p className="text-[11px] text-muted-foreground mt-1.5 font-medium">{data.ref.urgency}</p>
               </div>
+
+              {/* Guidance text — tells user what to do */}
+              <div className={`rounded-lg p-2.5 ${data.status === "overdue" ? "bg-red-50 border border-red-100" : data.status === "due_soon" ? "bg-amber-50 border border-amber-100" : "bg-primary/5 border border-primary/10"}`}>
+                <p className={`text-[11px] leading-relaxed font-medium ${data.status === "overdue" ? "text-red-700" : data.status === "due_soon" ? "text-amber-700" : "text-foreground/70"}`}>
+                  {cta.guidance}
+                </p>
+              </div>
+
+              {/* Date pills */}
               <div className="flex gap-2 flex-wrap">
                 {data.lastRecord && (
                   <div className="flex items-center gap-1.5 bg-white/80 rounded-lg px-2.5 py-1.5">
@@ -152,22 +180,34 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded
                     </span>
                   </div>
                 )}
-                <div className="flex items-center gap-1.5 bg-white/80 rounded-lg px-2.5 py-1.5">
-                  <span className="text-[11px] text-muted-foreground font-medium">
-                    Frequence : tous les {data.ref.frequencyMonths >= 12 ? `${data.ref.frequencyMonths / 12} an${data.ref.frequencyMonths > 12 ? "s" : ""}` : `${data.ref.frequencyMonths} mois`}
-                  </span>
-                </div>
               </div>
-              {/* CTA: inline form to record this vaccine */}
-              {(data.status === "overdue" || data.status === "never") && dogId && !showForm && (
-                <motion.button
-                  whileTap={{ scale: 0.96 }}
-                  onClick={(e) => { e.stopPropagation(); setShowForm(true); }}
-                  className="w-full mt-2 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  Enregistrer ce vaccin
-                </motion.button>
+
+              {/* Action buttons — visible for ALL statuses */}
+              {dogId && !showForm && (
+                <div className="flex gap-2 mt-1">
+                  <motion.button
+                    whileTap={{ scale: 0.96 }}
+                    onClick={(e) => { e.stopPropagation(); setShowForm(true); }}
+                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold ${
+                      isPrimary
+                        ? "bg-primary text-white"
+                        : "bg-primary/10 text-primary border border-primary/20"
+                    }`}
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    {cta.btn}
+                  </motion.button>
+                  {showFindVet && onFindVet && (
+                    <motion.button
+                      whileTap={{ scale: 0.96 }}
+                      onClick={(e) => { e.stopPropagation(); onFindVet(); }}
+                      className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-white border border-border text-xs font-medium text-foreground"
+                    >
+                      <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+                      Trouver un veto
+                    </motion.button>
+                  )}
+                </div>
               )}
             </div>
           </motion.div>
@@ -178,7 +218,6 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded
       <AnimatePresence>
         {showForm && (
           <InlineVaccineForm
-            vaccineKey={vaccineKey}
             data={data}
             dogId={dogId}
             onRecordAdded={(rec) => { onRecordAdded?.(rec); setShowForm(false); }}
@@ -190,8 +229,16 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded
   );
 }
 
-export default function VaccineCard({ vaccineMap, dogId, onRecordAdded }) {
+export default function VaccineCard({ vaccineMap, dogId, onRecordAdded, onFindVet, autoExpandKey, onAutoExpandConsumed }) {
   const [expandedKey, setExpandedKey] = useState(null);
+
+  // Auto-expand a specific vaccine row when deep-linked from NextActionCard
+  useEffect(() => {
+    if (autoExpandKey && vaccineMap?.[autoExpandKey]) {
+      setExpandedKey(autoExpandKey);
+      onAutoExpandConsumed?.();
+    }
+  }, [autoExpandKey]);
 
   if (!vaccineMap) return null;
 
@@ -227,7 +274,7 @@ export default function VaccineCard({ vaccineMap, dogId, onRecordAdded }) {
             </div>
             <div>
               <p className="text-sm font-bold text-foreground">Calendrier vaccinal</p>
-              <p className="text-[10px] text-muted-foreground">Reference WSAVA 2024 — France</p>
+              <p className="text-[10px] text-muted-foreground">Appuie sur un vaccin pour le mettre a jour</p>
             </div>
           </div>
           {overdueCount > 0 && (
@@ -263,6 +310,7 @@ export default function VaccineCard({ vaccineMap, dogId, onRecordAdded }) {
                 onToggle={() => setExpandedKey(expandedKey === key ? null : key)}
                 dogId={dogId}
                 onRecordAdded={onRecordAdded}
+                onFindVet={onFindVet}
               />
             ))}
           </div>

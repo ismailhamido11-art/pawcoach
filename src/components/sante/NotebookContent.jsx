@@ -68,6 +68,10 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
   const [vetNotes, setVetNotes] = useState([]);
   const [vetNotesLoaded, setVetNotesLoaded] = useState(false);
   const recordsSectionRef = useRef(null);
+  const vaccineCardRef = useRef(null);
+  const weightCardRef = useRef(null);
+  const [autoExpandVaccineKey, setAutoExpandVaccineKey] = useState(null);
+  const [autoOpenWeightForm, setAutoOpenWeightForm] = useState(false);
 
   // Persist sub-tab to sessionStorage
   useEffect(() => {
@@ -169,11 +173,27 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
   );
 
   // Navigate to a tab from NextActionCard, StatusPills, or smart cards
-  const handleNavigateToTab = (tabId) => {
+  const handleNavigateToTab = (tabId, targetKey) => {
     if (!tabId) return;
     // Special targets: delegate to parent (Sante.jsx)
     if (tabId === "assistant") { onOpenAssistant?.(); return; }
     if (tabId === "findvet" || tabId === "growth") { onChangeMainTab?.(tabId); return; }
+    // Vaccine deep-link: scroll to VaccineCard and auto-expand the specific row
+    if (tabId === "vaccine") {
+      if (targetKey) setAutoExpandVaccineKey(targetKey);
+      setTimeout(() => {
+        vaccineCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+      return;
+    }
+    // Weight deep-link: scroll to WeightCard and auto-open form
+    if (tabId === "weight") {
+      setAutoOpenWeightForm(true);
+      setTimeout(() => {
+        weightCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+      return;
+    }
     // Normal sub-tab navigation within Carnet
     setShowRecords(true);
     setActiveTab(tabId);
@@ -233,19 +253,28 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
       {/* ================================================================ */}
       <div className="px-4 space-y-3">
         {/* Vaccine calendar — WSAVA 2024 reference */}
-        <VaccineCard
-          vaccineMap={summary.vaccineMap}
-          dogId={dog?.id}
-          onRecordAdded={(rec) => setRecords(prev => [...prev, rec])}
-        />
+        <div ref={vaccineCardRef}>
+          <VaccineCard
+            vaccineMap={summary.vaccineMap}
+            dogId={dog?.id}
+            onRecordAdded={(rec) => setRecords(prev => [...prev, rec])}
+            onFindVet={() => onChangeMainTab?.("findvet")}
+            autoExpandKey={autoExpandVaccineKey}
+            onAutoExpandConsumed={() => setAutoExpandVaccineKey(null)}
+          />
+        </div>
 
         {/* Weight trend with interpretation */}
-        <WeightCard
-          weightTrend={summary.weightTrend}
-          dogName={dog?.name}
-          dogId={dog?.id}
-          onRecordAdded={(rec) => setRecords(prev => [...prev, rec])}
-        />
+        <div ref={weightCardRef}>
+          <WeightCard
+            weightTrend={summary.weightTrend}
+            dogName={dog?.name}
+            dogId={dog?.id}
+            onRecordAdded={(rec) => setRecords(prev => [...prev, rec])}
+            autoOpenForm={autoOpenWeightForm}
+            onAutoOpenConsumed={() => setAutoOpenWeightForm(false)}
+          />
+        </div>
 
         {/* Share button */}
         {dog && (

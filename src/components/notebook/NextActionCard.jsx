@@ -68,7 +68,7 @@ export default function NextActionCard({ action, onNavigate }) {
           <motion.button
             whileTap={{ scale: 0.96 }}
             transition={spring}
-            onClick={() => onNavigate(action.targetTab)}
+            onClick={() => onNavigate(action.targetTab, action.targetKey)}
             className={`mt-3 w-full flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-white text-xs font-bold ${config.btnBg}`}
           >
             {action.ctaLabel}
