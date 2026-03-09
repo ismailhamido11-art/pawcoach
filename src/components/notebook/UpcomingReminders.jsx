@@ -1,4 +1,5 @@
 import { Bell, Lock, ChevronRight } from "lucide-react";
+import { getVaccineDisplayName } from "@/utils/healthStatus";
 
 export default function UpcomingReminders({ records = [], isPremium, onNavigate }) {
   const today = new Date();
@@ -43,7 +44,7 @@ export default function UpcomingReminders({ records = [], isPremium, onNavigate 
                 className="w-full flex items-center justify-between px-4 py-2.5 text-left hover:bg-muted/30 transition-colors"
               >
                 <div>
-                  <p className="text-xs font-semibold text-foreground">{r.title}</p>
+                  <p className="text-xs font-semibold text-foreground">{r.type === "vaccine" ? getVaccineDisplayName(r.title) : r.title}</p>
                   <p className="text-[10px] text-muted-foreground">
                     {new Date(r.next_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                   </p>

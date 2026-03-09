@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Syringe, Plus, X, Calendar, ChevronDown, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { VACCINE_REFERENCE } from "@/utils/healthStatus";
+import { VACCINE_REFERENCE, getVaccineDisplayName } from "@/utils/healthStatus";
 
 const VACCINE_OPTIONS = Object.entries(VACCINE_REFERENCE).map(([key, ref]) => ({
   key,
@@ -246,7 +246,7 @@ export function RecordRow({ record, onDelete, icon, accentClass, extra }) {
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-sm text-foreground">{record.title}</p>
+        <p className="font-semibold text-sm text-foreground">{getVaccineDisplayName(record.title)}</p>
         <p className="text-xs text-muted-foreground mt-0.5">{fmtDate(record.date)}</p>
         {extra}
         {record.details && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{record.details}</p>}

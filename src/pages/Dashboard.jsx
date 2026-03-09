@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
+import { getVaccineDisplayName } from "@/utils/healthStatus";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Area, AreaChart
@@ -183,15 +184,15 @@ export default function Dashboard() {
   const upcomingVaccines = vaccines.filter(r => r.next_date && r.next_date >= today && r.next_date <= new Date(Date.now() + 30 * 864e5).toISOString().split("T")[0]);
 
   if (overdueVaccines.length > 0) {
-    alerts.push({ type: "warning", title: `${overdueVaccines.length} vaccin(s) à renouveler`, desc: overdueVaccines.map(v => v.title).join(", "), cta: "Voir", to: createPageUrl("Sante") });
+    alerts.push({ type: "warning", title: `${overdueVaccines.length} vaccin(s) à renouveler`, desc: overdueVaccines.map(v => getVaccineDisplayName(v.title)).join(", "), cta: "Voir", to: createPageUrl("Sante") });
   } else if (vaccines.length > 0) {
-    alerts.push({ type: "ok", title: "Vaccins à jour ✓", desc: `Dernier : ${vaccines.sort((a,b) => b.date > a.date ? 1 : -1)[0]?.title}`, cta: "Carnet", to: createPageUrl("Sante") });
+    alerts.push({ type: "ok", title: "Vaccins à jour ✓", desc: `Dernier : ${getVaccineDisplayName(vaccines.sort((a,b) => b.date > a.date ? 1 : -1)[0]?.title)}`, cta: "Carnet", to: createPageUrl("Sante") });
   } else {
     alerts.push({ type: "warning", title: "Aucun vaccin enregistré", desc: "Renseigne les vaccins dans le carnet de santé", cta: "Ajouter", to: createPageUrl("Sante") });
   }
 
   if (upcomingVaccines.length > 0) {
-    alerts.push({ type: "info", title: `Rappel vaccin dans 30j`, desc: upcomingVaccines.map(v => `${v.title} — ${v.next_date}`).join(", ") });
+    alerts.push({ type: "info", title: `Rappel vaccin dans 30j`, desc: upcomingVaccines.map(v => `${getVaccineDisplayName(v.title)} — ${v.next_date}`).join(", ") });
   }
 
   const vetVisits = records.filter(r => r.type === "vet_visit").sort((a, b) => b.date > a.date ? 1 : -1);

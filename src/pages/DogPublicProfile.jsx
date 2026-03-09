@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 import { Syringe, Weight, Stethoscope, Pill, AlertTriangle, Heart, Calendar, MapPin, PawPrint, Phone, ShieldCheck, FileText, Loader2 } from "lucide-react";
+import { getVaccineDisplayName } from "@/utils/healthStatus";
 
 // Public page — no login required
 // URL: /DogPublicProfile?dogId=xxx
@@ -36,7 +37,7 @@ function RecordItem({ record }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm font-semibold text-slate-800 truncate">{record.title}</p>
+          <p className="text-sm font-semibold text-slate-800 truncate">{record.type === "vaccine" ? getVaccineDisplayName(record.title) : record.title}</p>
           <span className="text-[10px] text-slate-400 flex-shrink-0">{record.date}</span>
         </div>
         {record.details && <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{record.details}</p>}
