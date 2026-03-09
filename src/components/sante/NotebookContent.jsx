@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
-import { createPageUrl } from "@/utils";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Illustration from "../illustrations/Illustration";
 import SectionVaccins from "../notebook/SectionVaccins";
@@ -12,44 +10,54 @@ import QRCodeCard from "../notebook/QRCodeCard";
 import VetNotesList from "../vet/VetNotesList";
 import ShareVetModal from "../vet/ShareVetModal";
 import { RecordRow } from "../notebook/SectionVaccins";
+
+// Smart Notebook components
+import HealthScoreCard from "../notebook/HealthScoreCard";
+import NextActionCard from "../notebook/NextActionCard";
+import StatusPills from "../notebook/StatusPills";
+import VaccineCard from "../notebook/VaccineCard";
+import WeightCard from "../notebook/WeightCard";
+import { computeNotebookSummary } from "@/utils/healthStatus";
+
 import {
   Syringe, Stethoscope, Weight, Pill, FileText,
-  ShieldCheck, HeartPulse, PawPrint, Shield, TrendingUp,
   Share2, ChevronDown, ChevronUp, ClipboardList
 } from "lucide-react";
-import heroDogImg from "../../assets/images/hero-dog.jpg";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
   { id: "vaccine",    label: "Vaccins",  shortLabel: "Vaccins" },
-  { id: "vet_visit",  label: "Visites",  shortLabel: "Vétérinaire" },
+  { id: "vet_visit",  label: "Visites",  shortLabel: "Veterinaire" },
   { id: "weight",     label: "Poids",    shortLabel: "Poids" },
-  { id: "medication", label: "Médoc.",   shortLabel: "Médicaments" },
+  { id: "medication", label: "Medoc.",   shortLabel: "Medicaments" },
   { id: "note",       label: "Notes",    shortLabel: "Notes" },
 ];
 
 const PREMIUM_CONFIGS = {
   vet_visit: {
-    label: "Visites vétérinaire", emptyText: "Aucune visite vétérinaire enregistrée",
-    placeholder: "Ex: Visite de contrôle annuelle", addLabel: "Ajouter une visite",
+    label: "Visites veterinaire", emptyText: "Aucune visite veterinaire enregistree",
+    placeholder: "Ex: Visite de controle annuelle", addLabel: "Ajouter une visite",
     showNextDate: true, Icon: Stethoscope, bgClass: "bg-primary/5", borderClass: "border-primary/20",
     textClass: "text-primary", btnClass: "bg-primary hover:bg-primary/90",
   },
   medication: {
-    label: "Médicaments", emptyText: "Aucun médicament enregistré",
-    placeholder: "Ex: Antiparasitaire Frontline", addLabel: "Ajouter un médicament",
+    label: "Medicaments", emptyText: "Aucun medicament enregistre",
+    placeholder: "Ex: Antiparasitaire Frontline", addLabel: "Ajouter un medicament",
     showNextDate: true, Icon: Pill, bgClass: "bg-emerald-50", borderClass: "border-emerald-200",
     textClass: "text-emerald-600", btnClass: "bg-emerald-600 hover:bg-emerald-700",
   },
   note: {
-    label: "Notes", emptyText: "Aucune note enregistrée",
+    label: "Notes", emptyText: "Aucune note enregistree",
     placeholder: "Titre de la note", addLabel: "Ajouter une note",
     showNextDate: false, Icon: FileText, bgClass: "bg-secondary", borderClass: "border-border",
     textClass: "text-muted-foreground", btnClass: "bg-muted-foreground hover:bg-muted-foreground/90",
   },
 };
+
+// Map pill IDs to tab IDs for navigation
+const PILL_TO_TAB = { vaccines: "vaccine", weight: "weight", vet: "vet_visit" };
 
 export default function NotebookContent({ dog, user, records = [], setRecords, dailyLogs = [], isPremium, loading, initialSubTab, showShareModalInit, scrollToQR }) {
   const [activeTab, setActiveTab] = useState(initialSubTab || "all");
@@ -125,10 +133,25 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
   const sortedRecords = [...allRecords].sort((a, b) => new Date(b.date) - new Date(a.date));
   const countForTab = (id) => id === "all" ? allRecords.length : allRecords.filter(r => r.type === id).length;
 
-  const sortedByDate = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
-  const lastWeight = sortedByDate.find(r => r.type === 'weight');
-  const lastVaccine = sortedByDate.find(r => r.type === 'vaccine');
-  const lastVet = sortedByDate.find(r => r.type === 'vet_visit');
+  // --- Smart Notebook summary (memoized) ---
+  const summary = useMemo(
+    () => computeNotebookSummary(allRecords, dog),
+    [allRecords, dog]
+  );
+
+  // Navigate to a tab from NextActionCard or StatusPills
+  const handleNavigateToTab = (tabId) => {
+    if (tabId) {
+      setShowRecords(true);
+      setActiveTab(tabId);
+      ensureVetNotes();
+    }
+  };
+
+  const handlePillClick = (pillId) => {
+    const tabId = PILL_TO_TAB[pillId];
+    if (tabId) handleNavigateToTab(tabId);
+  };
 
   if (loading) {
     return (
@@ -142,50 +165,65 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
 
   return (
     <div className="space-y-4">
-      {/* Dog header card */}
-      {dog && (
-        <div className="mx-4 mt-4 bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
-          <div className="relative h-28">
-            <img src={dog.photo || heroDogImg} alt={dog.name} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-transparent" />
-            <div className="absolute inset-0 flex items-center p-4">
-              <div className="flex-1">
-                <p className="font-black text-foreground text-lg">{dog.name}</p>
-                <p className="text-xs text-muted-foreground">{dog.breed} · {dog.weight}kg</p>
-                <div className="flex gap-1.5 mt-1.5 flex-wrap">
-                  {lastVaccine && (
-                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-[10px] font-bold text-primary">
-                      <ShieldCheck className="w-2.5 h-2.5" /> Vaccins
-                    </span>
-                  )}
-                  {lastWeight && (
-                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/5 text-[10px] font-bold text-primary">
-                      <TrendingUp className="w-2.5 h-2.5" /> Poids suivi
-                    </span>
-                  )}
-                  {lastVaccine && lastVet && lastWeight && (
-                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-[10px] font-bold text-primary">
-                      <HeartPulse className="w-2.5 h-2.5" /> En forme
-                    </span>
-                  )}
-                </div>
-              </div>
-              <button
-                onClick={() => setShowShareModal(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold"
-              >
-                <Share2 className="w-3.5 h-3.5" /> Partager
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* ================================================================ */}
+      {/* SECTION 1 : STATUS FIRST — Health Dashboard                     */}
+      {/* ================================================================ */}
+      <div className="px-4 pt-4 space-y-3">
+        {/* Health Score */}
+        <HealthScoreCard
+          score={summary.score}
+          scoreLevel={summary.scoreLevel}
+          dogName={dog?.name}
+        />
 
-      <div className="px-4 space-y-3">
-        {/* Reminders */}
+        {/* Status Pills — quick glance badges */}
+        <StatusPills
+          pills={summary.pills}
+          onPillClick={handlePillClick}
+        />
+
+        {/* Next Action — THE thing to do */}
+        <NextActionCard
+          action={summary.nextAction}
+          onNavigate={handleNavigateToTab}
+        />
+
+        {/* Upcoming reminders */}
         <UpcomingReminders records={records} isPremium={isPremium} />
+      </div>
 
-        {/* Records section */}
+      {/* ================================================================ */}
+      {/* SECTION 2 : SMART CARDS — Interpreted data                      */}
+      {/* ================================================================ */}
+      <div className="px-4 space-y-3">
+        {/* Vaccine calendar — WSAVA 2024 reference */}
+        <VaccineCard vaccineMap={summary.vaccineMap} />
+
+        {/* Weight trend with interpretation */}
+        <WeightCard
+          weightTrend={summary.weightTrend}
+          dogName={dog?.name}
+        />
+
+        {/* Share button */}
+        {dog && (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            onClick={() => setShowShareModal(true)}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-primary/20 bg-primary/5 text-primary text-sm font-semibold"
+          >
+            <Share2 className="w-4 h-4" /> Partager le carnet
+          </motion.button>
+        )}
+      </div>
+
+      {/* ================================================================ */}
+      {/* SECTION 3 : DATA SECOND — Raw records (accordion)               */}
+      {/* ================================================================ */}
+      <div className="px-4 space-y-3">
+        {/* Records accordion header */}
         <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
           <button
             onClick={() => { setShowRecords(!showRecords); ensureVetNotes(); }}
@@ -233,8 +271,8 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
                 {sortedRecords.length === 0 ? (
                   <div className="flex flex-col items-center py-10 text-center bg-white rounded-2xl border border-border">
                     <Illustration name="goodDoggy" className="w-24 h-24 mb-3 opacity-80" alt="Chien content" />
-                    <p className="text-sm font-semibold text-foreground">Le carnet est prêt</p>
-                    <p className="text-xs text-muted-foreground mt-1">Utilise l'assistant pour ajouter des entrées</p>
+                    <p className="text-sm font-semibold text-foreground">Le carnet est pret</p>
+                    <p className="text-xs text-muted-foreground mt-1">Utilise l'assistant pour ajouter des entrees</p>
                   </div>
                 ) : (
                   sortedRecords.map(r => (
@@ -280,7 +318,7 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
                 <Stethoscope className="w-4 h-4 text-primary" />
               </div>
               <h3 className="text-sm font-semibold text-foreground">
-                Notes de ton vétérinaire ({vetNotes.length})
+                Notes de ton veterinaire ({vetNotes.length})
               </h3>
             </div>
             <VetNotesList notes={vetNotes} />

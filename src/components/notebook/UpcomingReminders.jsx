@@ -22,7 +22,7 @@ export default function UpcomingReminders({ records = [], isPremium }) {
   if (upcoming.length === 0) return null;
 
   return (
-    <div className="mx-4 mt-3 mb-1">
+    <div>
       <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm">
         <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-emerald-50">
           <Bell className="w-4 h-4 text-emerald-500" />
