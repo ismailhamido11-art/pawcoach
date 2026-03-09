@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { useActionCredits } from "@/utils/ai-credits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
-export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
+export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedSymptom }) {
   const { credits, hasCredits, isPremium, consume } = useActionCredits();
   // Steps: form → loading1 → questions → loading2 → report
   const [step, setStep] = useState("form");
@@ -33,6 +33,13 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog }) {
   const [downloading, setDownloading] = useState(false);
 
   const reportDate = new Date().toISOString().split("T")[0];
+
+  // Pre-fill symptoms from shortcut buttons
+  useEffect(() => {
+    if (open && preSelectedSymptom && step === "form") {
+      setSymptoms(preSelectedSymptom);
+    }
+  }, [open, preSelectedSymptom]);
 
   const resetAndClose = () => {
     setStep("form");

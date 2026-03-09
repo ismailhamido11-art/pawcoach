@@ -405,7 +405,7 @@ export function computeNextAction(records, dog) {
       description: `Ajoute le premier vaccin ou la derniere pesee de ${dog?.name || "ton chien"}.`,
       urgency: "suggested",
       ctaLabel: "Utiliser l'assistant",
-      targetTab: null,
+      targetTab: "assistant",
     };
   }
 
@@ -459,7 +459,7 @@ export function computeNextAction(records, dog) {
         description: `La derniere visite date de ${months} mois. Un bilan annuel est recommande.`,
         urgency: "important",
         ctaLabel: "Trouver un veto",
-        targetTab: "vet_visit",
+        targetTab: "findvet",
       };
     }
   } else if (recs.length > 0) {
@@ -514,7 +514,7 @@ export function computeNextAction(records, dog) {
       description: `${dog?.name || "Ton chien"} a pris ${weightTrend.changePct}% en ${weightTrend.period} jours. Consulte ton veto si ca continue.`,
       urgency: "important",
       ctaLabel: "Voir la courbe",
-      targetTab: "weight",
+      targetTab: "growth",
     };
   }
   if (weightTrend.direction === "down" && Math.abs(weightTrend.changePct) > 5) {
@@ -524,7 +524,7 @@ export function computeNextAction(records, dog) {
       description: `${dog?.name || "Ton chien"} a perdu ${Math.abs(weightTrend.changePct)}% en ${weightTrend.period} jours. A surveiller.`,
       urgency: "important",
       ctaLabel: "Voir la courbe",
-      targetTab: "weight",
+      targetTab: "growth",
     };
   }
 

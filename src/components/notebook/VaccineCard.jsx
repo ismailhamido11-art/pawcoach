@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Syringe, ChevronDown, ChevronUp, Calendar, AlertTriangle, CheckCircle, Clock, HelpCircle } from "lucide-react";
+import { Syringe, ChevronDown, ChevronUp, Calendar, AlertTriangle, CheckCircle, Clock, HelpCircle, Plus } from "lucide-react";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
@@ -13,7 +13,7 @@ const STATUS_CONFIG = {
 
 const CATEGORY_ORDER = ["core", "recommended", "optional"];
 
-function VaccineRow({ vaccineKey, data, expanded, onToggle }) {
+function VaccineRow({ vaccineKey, data, expanded, onToggle, onMarkDone }) {
   const cfg = STATUS_CONFIG[data.status];
   const Icon = cfg.Icon;
   const fmtDate = (d) => d ? new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "";
@@ -82,6 +82,17 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle }) {
                   </span>
                 </div>
               </div>
+              {/* CTA: navigate to vaccine form to record this vaccine */}
+              {(data.status === "overdue" || data.status === "never") && onMarkDone && (
+                <motion.button
+                  whileTap={{ scale: 0.96 }}
+                  onClick={(e) => { e.stopPropagation(); onMarkDone(vaccineKey); }}
+                  className="w-full mt-2 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  Enregistrer ce vaccin
+                </motion.button>
+              )}
             </div>
           </motion.div>
         )}
@@ -90,7 +101,7 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle }) {
   );
 }
 
-export default function VaccineCard({ vaccineMap }) {
+export default function VaccineCard({ vaccineMap, onNavigate }) {
   const [expandedKey, setExpandedKey] = useState(null);
 
   if (!vaccineMap) return null;
@@ -161,6 +172,7 @@ export default function VaccineCard({ vaccineMap }) {
                 data={data}
                 expanded={expandedKey === key}
                 onToggle={() => setExpandedKey(expandedKey === key ? null : key)}
+                onMarkDone={onNavigate ? () => onNavigate("vaccine") : undefined}
               />
             ))}
           </div>

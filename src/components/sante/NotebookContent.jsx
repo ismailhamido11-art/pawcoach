@@ -59,7 +59,7 @@ const PREMIUM_CONFIGS = {
 // Map pill IDs to tab IDs for navigation
 const PILL_TO_TAB = { vaccines: "vaccine", weight: "weight", vet: "vet_visit" };
 
-export default function NotebookContent({ dog, user, records = [], setRecords, dailyLogs = [], isPremium, loading, initialSubTab, showShareModalInit, scrollToQR }) {
+export default function NotebookContent({ dog, user, records = [], setRecords, dailyLogs = [], growthEntries = [], isPremium, loading, initialSubTab, showShareModalInit, scrollToQR, onOpenAssistant, onChangeMainTab }) {
   // Sub-tab persistence: initialSubTab (from URL) > sessionStorage > default
   const savedSubTab = typeof window !== "undefined" ? sessionStorage.getItem("subTab_Sante_carnet") : null;
   const [activeTab, setActiveTab] = useState(initialSubTab || savedSubTab || "all");
@@ -122,10 +122,13 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
     }
   };
 
-  // Merge DailyLog weight entries as pseudo-records (memoized for stable ref)
+  // Merge DailyLog + GrowthEntry weight entries as pseudo-records (memoized)
   const allRecords = useMemo(() => {
+    const hrWeightDates = new Set(records.filter(r => r.type === "weight").map(r => r.date));
+
+    // DailyLog weights (priority 2 — fill gaps where HealthRecord doesn't exist)
     const dailyLogRecords = (dailyLogs || [])
-      .filter(l => l.weight_kg && l.weight_kg > 0)
+      .filter(l => l.weight_kg && l.weight_kg > 0 && !hrWeightDates.has(l.date))
       .map(l => ({
         id: `dl-${l.id}`,
         type: "weight",
@@ -134,10 +137,23 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
         value: l.weight_kg,
         _fromDailyLog: true,
       }));
-    const hrWeightDates = new Set(records.filter(r => r.type === "weight").map(r => r.date));
-    const uniqueDailyLogRecords = dailyLogRecords.filter(r => !hrWeightDates.has(r.date));
-    return [...records, ...uniqueDailyLogRecords];
-  }, [records, dailyLogs]);
+
+    const usedDates = new Set([...hrWeightDates, ...dailyLogRecords.map(r => r.date)]);
+
+    // GrowthEntry weights (priority 3 — fill remaining gaps)
+    const growthRecords = (growthEntries || [])
+      .filter(g => g.weight_kg && g.weight_kg > 0 && g.date && !usedDates.has(g.date))
+      .map(g => ({
+        id: `ge-${g.id}`,
+        type: "weight",
+        title: "Poids (croissance)",
+        date: g.date,
+        value: g.weight_kg,
+        _fromGrowth: true,
+      }));
+
+    return [...records, ...dailyLogRecords, ...growthRecords];
+  }, [records, dailyLogs, growthEntries]);
 
   const sortedRecords = useMemo(
     () => [...allRecords].sort((a, b) => new Date(b.date) - new Date(a.date)),
@@ -151,13 +167,16 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
     [allRecords, dog]
   );
 
-  // Navigate to a tab from NextActionCard or StatusPills
+  // Navigate to a tab from NextActionCard, StatusPills, or smart cards
   const handleNavigateToTab = (tabId) => {
-    if (tabId) {
-      setShowRecords(true);
-      setActiveTab(tabId);
-      ensureVetNotes();
-    }
+    if (!tabId) return;
+    // Special targets: delegate to parent (Sante.jsx)
+    if (tabId === "assistant") { onOpenAssistant?.(); return; }
+    if (tabId === "findvet" || tabId === "growth") { onChangeMainTab?.(tabId); return; }
+    // Normal sub-tab navigation within Carnet
+    setShowRecords(true);
+    setActiveTab(tabId);
+    ensureVetNotes();
   };
 
   const handlePillClick = (pillId) => {
@@ -201,7 +220,7 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
         />
 
         {/* Upcoming reminders */}
-        <UpcomingReminders records={records} isPremium={isPremium} />
+        <UpcomingReminders records={records} isPremium={isPremium} onNavigate={handleNavigateToTab} />
       </div>
 
       {/* ================================================================ */}
@@ -209,12 +228,13 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
       {/* ================================================================ */}
       <div className="px-4 space-y-3">
         {/* Vaccine calendar — WSAVA 2024 reference */}
-        <VaccineCard vaccineMap={summary.vaccineMap} />
+        <VaccineCard vaccineMap={summary.vaccineMap} onNavigate={handleNavigateToTab} />
 
         {/* Weight trend with interpretation */}
         <WeightCard
           weightTrend={summary.weightTrend}
           dogName={dog?.name}
+          onNavigate={handleNavigateToTab}
         />
 
         {/* Share button */}
@@ -313,6 +333,7 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
                 dogId={dog?.id}
                 isPremium={activeTab === "note" ? true : isPremium}
                 onDelete={handleDelete}
+                onRecordAdded={(rec) => setRecords(prev => [...prev, rec])}
                 config={PREMIUM_CONFIGS[activeTab]}
               />
             )}

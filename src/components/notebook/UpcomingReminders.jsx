@@ -1,6 +1,6 @@
-import { Bell, Lock } from "lucide-react";
+import { Bell, Lock, ChevronRight } from "lucide-react";
 
-export default function UpcomingReminders({ records = [], isPremium }) {
+export default function UpcomingReminders({ records = [], isPremium, onNavigate }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -34,25 +34,35 @@ export default function UpcomingReminders({ records = [], isPremium }) {
           )}
         </div>
         <div className="divide-y divide-border">
-          {upcoming.map(r => (
-            <div key={r.id} className="flex items-center justify-between px-4 py-2.5">
-              <div>
-                <p className="text-xs font-semibold text-foreground">{r.title}</p>
-                <p className="text-[10px] text-muted-foreground">
-                  {new Date(r.next_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
-                </p>
-              </div>
-              <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-                r.daysLeft <= 7
-                  ? "bg-red-100 text-red-600"
-                  : r.daysLeft <= 14
-                  ? "bg-emerald-100 text-emerald-600"
-                  : "bg-secondary text-secondary-foreground"
-              }`}>
-                {r.daysLeft === 0 ? "Aujourd'hui !" : `dans ${r.daysLeft}j`}
-              </span>
-            </div>
-          ))}
+          {upcoming.map(r => {
+            const tabId = r.type === "vaccine" ? "vaccine" : r.type === "medication" ? "medication" : r.type;
+            return (
+              <button
+                key={r.id}
+                onClick={() => onNavigate?.(tabId)}
+                className="w-full flex items-center justify-between px-4 py-2.5 text-left hover:bg-muted/30 transition-colors"
+              >
+                <div>
+                  <p className="text-xs font-semibold text-foreground">{r.title}</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    {new Date(r.next_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                    r.daysLeft <= 7
+                      ? "bg-red-100 text-red-600"
+                      : r.daysLeft <= 14
+                      ? "bg-emerald-100 text-emerald-600"
+                      : "bg-secondary text-secondary-foreground"
+                  }`}>
+                    {r.daysLeft === 0 ? "Aujourd'hui !" : `dans ${r.daysLeft}j`}
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

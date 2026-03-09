@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Weight, TrendingUp, TrendingDown, Minus, AlertTriangle } from "lucide-react";
+import { Weight, TrendingUp, TrendingDown, Minus, AlertTriangle, Plus } from "lucide-react";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 
@@ -11,7 +11,7 @@ const DIRECTION_CONFIG = {
   unknown: { Icon: Weight, color: "text-muted-foreground", bg: "bg-secondary", label: "Donnees insuffisantes" },
 };
 
-export default function WeightCard({ weightTrend, dogName }) {
+export default function WeightCard({ weightTrend, dogName, onNavigate }) {
   if (!weightTrend) return null;
 
   const config = DIRECTION_CONFIG[weightTrend.direction] || DIRECTION_CONFIG.unknown;
@@ -84,12 +84,24 @@ export default function WeightCard({ weightTrend, dogName }) {
               </div>
             </div>
 
-            {/* Last weighed */}
-            {lastDateFormatted && (
-              <p className="text-[10px] text-muted-foreground text-center">
-                Derniere pesee : {lastDateFormatted}
-              </p>
-            )}
+            {/* Last weighed + CTA */}
+            <div className="flex items-center justify-between">
+              {lastDateFormatted && (
+                <p className="text-[10px] text-muted-foreground">
+                  Derniere pesee : {lastDateFormatted}
+                </p>
+              )}
+              {onNavigate && (
+                <motion.button
+                  whileTap={{ scale: 0.96 }}
+                  onClick={() => onNavigate("weight")}
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary/10 text-primary text-[10px] font-bold"
+                >
+                  <Plus className="w-3 h-3" />
+                  Nouvelle pesee
+                </motion.button>
+              )}
+            </div>
           </div>
         ) : (
           <div className="text-center py-4">
@@ -98,6 +110,16 @@ export default function WeightCard({ weightTrend, dogName }) {
             <p className="text-xs text-muted-foreground mt-1">
               Ajoute le poids de {dogName || "ton chien"} pour suivre sa courbe.
             </p>
+            {onNavigate && (
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                onClick={() => onNavigate("weight")}
+                className="mt-3 mx-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Ajouter un poids
+              </motion.button>
+            )}
           </div>
         )}
       </div>
