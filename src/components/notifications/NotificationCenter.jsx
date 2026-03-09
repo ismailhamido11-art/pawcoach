@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, X, Syringe, Stethoscope, Pill, ChevronRight, CheckCheck } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
+import { VACCINE_REFERENCE } from "@/utils/healthStatus";
 
 const TYPE_CONFIG = {
   vaccine:    { icon: Syringe,     color: "text-safe",        bg: "bg-safe/10",    label: "Vaccin",      gradient: "from-safe to-green-500" },
-  vet_visit:  { icon: Stethoscope, color: "text-accent",      bg: "bg-accent/10",  label: "Véto",        gradient: "from-accent to-emerald-400" },
+  vet_visit:  { icon: Stethoscope, color: "text-accent",      bg: "bg-accent/10",  label: "Veto",        gradient: "from-accent to-emerald-400" },
   medication: { icon: Pill,        color: "text-caution",     bg: "bg-caution/10", label: "Traitement",  gradient: "from-caution to-amber-400" },
 };
 
@@ -20,11 +21,32 @@ function getDaysLeft(dateStr) {
 }
 
 function urgencyBadge(days) {
-  if (days < 0)  return { label: "Dépassé", cls: "bg-red-100 text-red-600" };
+  if (days < 0)  return { label: "Depasse", cls: "bg-red-100 text-red-600" };
   if (days === 0) return { label: "Auj. !", cls: "bg-red-100 text-red-600" };
   if (days <= 3)  return { label: `${days}j`, cls: "bg-amber-100 text-amber-600" };
   if (days <= 7)  return { label: `${days}j`, cls: "bg-amber-100 text-amber-600" };
   return { label: `${days}j`, cls: "bg-green-100 text-green-600" };
+}
+
+// Read state — localStorage
+const READ_KEY = "pawcoach_read_notifs";
+function getReadIds() {
+  try { return JSON.parse(localStorage.getItem(READ_KEY) || "[]"); } catch { return []; }
+}
+function markAsRead(id) {
+  const ids = getReadIds();
+  if (!ids.includes(id)) { ids.push(id); localStorage.setItem(READ_KEY, JSON.stringify(ids)); }
+}
+function markAllAsRead(notifications) {
+  const ids = notifications.map(n => n.id);
+  localStorage.setItem(READ_KEY, JSON.stringify(ids));
+}
+
+// Resolve vaccineKey from notification title
+function resolveVaccineKey(title) {
+  return Object.entries(VACCINE_REFERENCE).find(([_, ref]) =>
+    ref.name === title || ref.shortName === title
+  )?.[0] || null;
 }
 
 // Shared state across instances
@@ -47,7 +69,7 @@ export async function loadNotifications() {
       if (dog.next_vet_appointment) {
         const days = getDaysLeft(dog.next_vet_appointment);
         if (days >= -3 && days <= 30) {
-          items.push({ id: `dog-${dog.id}-vet`, type: "vet_visit", title: `RDV véto · ${dog.name}`, daysLeft: days, next_date: dog.next_vet_appointment, dogName: dog.name });
+          items.push({ id: `dog-${dog.id}-vet`, type: "vet_visit", title: `RDV veto · ${dog.name}`, daysLeft: days, next_date: dog.next_vet_appointment, dogName: dog.name });
         }
       }
       // Health records with next_date
@@ -81,60 +103,75 @@ export default function NotificationCenter() {
   const [open, setOpen] = useState(false);
   const notifications = useNotifications();
   const navigate = useNavigate();
+  const [readIds, setReadIds] = useState(getReadIds);
+
+  // Refresh read state when panel opens
+  useEffect(() => { if (open) setReadIds(getReadIds()); }, [open]);
 
   const urgent = notifications.filter(n => n.daysLeft <= 7);
-  const count = urgent.length;
+  const unreadCount = urgent.filter(n => !readIds.includes(n.id)).length;
+
+  const handleNotifClick = useCallback((n) => {
+    markAsRead(n.id);
+    setReadIds(getReadIds());
+    setOpen(false);
+
+    // Navigate to specific section
+    if (n.type === "vaccine") {
+      const vKey = resolveVaccineKey(n.title);
+      navigate(createPageUrl("Sante") + `?tab=vaccine${vKey ? `&vaccineKey=${vKey}` : ""}`);
+    } else if (n.type === "vet_visit") {
+      navigate(createPageUrl("Sante") + "?tab=findvet");
+    } else {
+      navigate(createPageUrl("Sante") + "?tab=carnet");
+    }
+  }, [navigate]);
+
+  const handleMarkAllRead = useCallback(() => {
+    markAllAsRead(notifications);
+    setReadIds(getReadIds());
+  }, [notifications]);
 
   return (
     <>
-      {/* Bell button — Premium style */}
+      {/* Bell button */}
       <motion.button
         onClick={() => setOpen(true)}
         whileHover={{ scale: 1.12 }}
         whileTap={{ scale: 0.92 }}
         className={`relative p-3 rounded-full transition-all ${
-          count > 0
+          unreadCount > 0
             ? "bg-gradient-to-br from-primary via-primary to-accent shadow-xl"
             : "bg-gradient-to-br from-primary/20 to-accent/20 hover:from-primary/30 hover:to-accent/30 shadow-md"
         }`}
       >
         <motion.div
-          animate={count > 0 ? { scale: [1, 1.08, 1] } : {}}
+          animate={unreadCount > 0 ? { scale: [1, 1.08, 1] } : {}}
           transition={{ duration: 2.5, repeat: Infinity }}
           className="relative"
         >
-          <Bell className={`w-6 h-6 ${count > 0 ? "text-white drop-shadow-lg" : "text-primary"}`} strokeWidth={count > 0 ? 2 : 1.5} />
+          <Bell className={`w-6 h-6 ${unreadCount > 0 ? "text-white drop-shadow-lg" : "text-primary"}`} strokeWidth={unreadCount > 0 ? 2 : 1.5} />
         </motion.div>
-        {count > 0 && (
+        {unreadCount > 0 && (
             <>
-              {/* Animated glow rings */}
               <motion.div
                 animate={{ scale: [1, 1.25, 1], opacity: [1, 0.4, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
                 className="absolute inset-0 rounded-full border-2 border-red-400/50"
               />
-              <motion.div
-                animate={{ scale: [1, 1.4, 1], opacity: [0.8, 0, 0.8] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
-                className="absolute inset-0 rounded-full border border-red-300/30"
-              />
-              {/* Badge — Shake animation on urgent */}
               <motion.span
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0, x: [0, -2, 2, -2, 0] }}
-                transition={{ 
-                  scale: { type: "spring", stiffness: 260, damping: 20 },
-                  x: { duration: 0.5, repeat: Infinity, repeatDelay: 1.5 }
-                }}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 260, damping: 20 }}
                 className="absolute -top-1.5 -right-1.5 min-w-[24px] h-6 px-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-2xl ring-2 ring-white"
               >
-                {count > 9 ? "9+" : count}
+                {unreadCount > 9 ? "9+" : unreadCount}
               </motion.span>
             </>
           )}
       </motion.button>
 
-      {/* Backdrop */}
+      {/* Panel */}
       <AnimatePresence>
         {open && (
           <>
@@ -145,7 +182,6 @@ export default function NotificationCenter() {
               onClick={() => setOpen(false)}
               className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[70]"
             />
-            {/* Slide-in panel */}
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
@@ -160,13 +196,20 @@ export default function NotificationCenter() {
                 <div className="flex items-center gap-2">
                   <Bell className="w-5 h-5 text-primary" />
                   <h2 className="font-black text-foreground text-base">Notifications</h2>
-                  {count > 0 && (
-                    <span className="px-2 py-0.5 bg-red-100 text-red-600 text-xs font-bold rounded-full">{count}</span>
+                  {unreadCount > 0 && (
+                    <span className="px-2 py-0.5 bg-red-100 text-red-600 text-xs font-bold rounded-full">{unreadCount}</span>
                   )}
                 </div>
-                <button onClick={() => setOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-secondary/50 transition-colors">
-                  <X className="w-4 h-4 text-foreground" />
-                </button>
+                <div className="flex items-center gap-2">
+                  {unreadCount > 0 && (
+                    <button onClick={handleMarkAllRead} className="text-[10px] text-primary font-bold px-2 py-1 rounded-lg hover:bg-primary/10 transition-colors">
+                      Tout lu
+                    </button>
+                  )}
+                  <button onClick={() => setOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-secondary/50 transition-colors">
+                    <X className="w-4 h-4 text-foreground" />
+                  </button>
+                </div>
               </div>
 
               {/* Content */}
@@ -176,7 +219,7 @@ export default function NotificationCenter() {
                     <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
                       <CheckCheck className="w-8 h-8 text-green-500" />
                     </div>
-                    <p className="font-bold text-foreground">Tout est à jour !</p>
+                    <p className="font-bold text-foreground">Tout est a jour !</p>
                     <p className="text-sm text-muted-foreground mt-1">Aucun rappel dans les 30 prochains jours</p>
                   </div>
                 ) : (
@@ -186,16 +229,16 @@ export default function NotificationCenter() {
                       <div>
                         <p className="px-5 pt-4 pb-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Urgent · cette semaine</p>
                         <div className="divide-y divide-border">
-                          {urgent.map(n => <NotifRow key={n.id} n={n} onNavigate={() => { setOpen(false); navigate(createPageUrl("Sante") + "?tab=carnet"); }} />)}
+                          {urgent.map(n => <NotifRow key={n.id} n={n} isRead={readIds.includes(n.id)} onNavigate={() => handleNotifClick(n)} />)}
                         </div>
                       </div>
                     )}
                     {/* Upcoming */}
                     {notifications.filter(n => n.daysLeft > 7).length > 0 && (
                       <div>
-                        <p className="px-5 pt-4 pb-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">À venir · 30 jours</p>
+                        <p className="px-5 pt-4 pb-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">A venir · 30 jours</p>
                         <div className="divide-y divide-border">
-                          {notifications.filter(n => n.daysLeft > 7).map(n => <NotifRow key={n.id} n={n} onNavigate={() => { setOpen(false); navigate(createPageUrl("Sante") + "?tab=carnet"); }} />)}
+                          {notifications.filter(n => n.daysLeft > 7).map(n => <NotifRow key={n.id} n={n} isRead={readIds.includes(n.id)} onNavigate={() => handleNotifClick(n)} />)}
                         </div>
                       </div>
                     )}
@@ -203,13 +246,13 @@ export default function NotificationCenter() {
                 )}
               </div>
 
-              {/* Footer CTA */}
+              {/* Footer */}
               <div className="p-4 border-t border-border">
                 <button
                   onClick={() => { setOpen(false); navigate(createPageUrl("Sante") + "?tab=carnet"); }}
                   className="w-full py-3 bg-primary text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2"
                 >
-                  Gérer le carnet santé <ChevronRight className="w-4 h-4" />
+                  Gerer le carnet sante <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </motion.div>
@@ -220,46 +263,45 @@ export default function NotificationCenter() {
   );
 }
 
-function NotifRow({ n, onNavigate }) {
+function NotifRow({ n, isRead, onNavigate }) {
   const cfg = TYPE_CONFIG[n.type] || TYPE_CONFIG.vet_visit;
   const Icon = cfg.icon;
   const badge = urgencyBadge(n.daysLeft);
   const isUrgent = n.daysLeft <= 3;
 
   return (
-    <motion.button 
-      onClick={onNavigate} 
+    <motion.button
+      onClick={onNavigate}
       whileHover={{ x: 4 }}
       whileTap={{ scale: 0.98 }}
       className={`w-full flex items-center gap-3 px-5 py-4 transition-all text-left ${
-        isUrgent ? "bg-red-50/50 hover:bg-red-50" : "hover:bg-secondary/30"
+        isRead ? "opacity-60" : isUrgent ? "bg-red-50/50 hover:bg-red-50" : "hover:bg-secondary/30"
       }`}
     >
-      {/* Icon with gradient background */}
-      <motion.div 
-        animate={isUrgent ? { scale: [1, 1.1, 1] } : {}}
+      <motion.div
+        animate={isUrgent && !isRead ? { scale: [1, 1.1, 1] } : {}}
         transition={{ duration: 1.5, repeat: Infinity }}
         className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br ${cfg.gradient} shadow-md`}
       >
         <Icon className="w-5 h-5 text-white" strokeWidth={2} />
       </motion.div>
-      
+
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-bold text-foreground">{n.title}</p>
+        <p className={`text-xs font-bold ${isRead ? "text-muted-foreground" : "text-foreground"}`}>{n.title}</p>
         <p className="text-[10px] text-muted-foreground mt-0.5">
           {n.dogName && <span className="font-medium">{n.dogName} · </span>}
           {new Date(n.next_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
         </p>
       </div>
-      
-      {/* Animated urgency badge */}
-      <motion.span 
-        animate={isUrgent ? { scale: [1, 1.05, 1] } : {}}
+
+      <motion.span
+        animate={isUrgent && !isRead ? { scale: [1, 1.05, 1] } : {}}
         transition={{ duration: 1, repeat: Infinity }}
         className={`text-[11px] font-black px-2.5 py-1 rounded-full flex-shrink-0 ${badge.cls}`}
       >
         {badge.label}
       </motion.span>
+      <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 flex-shrink-0" />
     </motion.button>
   );
 }

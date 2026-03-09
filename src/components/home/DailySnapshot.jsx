@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Minus, Dumbbell, Syringe, Scale, Smile, Footprints } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { VACCINE_REFERENCE } from "@/utils/healthStatus";
 
 function getTodayString() {
   const d = new Date();
@@ -170,9 +171,10 @@ function VaccineCard({ records = [] }) {
 
   const urgent = daysUntil !== null && daysUntil <= 30;
   const hasAnyVaccine = allVaccines.length > 0;
+  const vaccineKey = next ? Object.entries(VACCINE_REFERENCE).find(([_, ref]) => ref.name === next.title || ref.shortName === next.title)?.[0] : null;
 
   return (
-    <Link to={createPageUrl("Sante") + "?tab=vaccine"} className="block">
+    <Link to={createPageUrl("Sante") + `?tab=vaccine${vaccineKey ? `&vaccineKey=${vaccineKey}` : ""}`} className="block">
       <div className="bg-white rounded-2xl p-4 border border-border/30 shadow-sm h-full">
         <div className="flex items-center justify-between mb-2">
           <div className="w-7 h-7 rounded-xl bg-emerald-50 flex items-center justify-center">

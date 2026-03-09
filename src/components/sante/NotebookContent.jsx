@@ -59,7 +59,7 @@ const PREMIUM_CONFIGS = {
 // Map pill IDs to tab IDs for navigation
 const PILL_TO_TAB = { vaccines: "vaccine", weight: "weight", vet: "vet_visit" };
 
-export default function NotebookContent({ dog, user, records = [], setRecords, dailyLogs = [], growthEntries = [], isPremium, loading, initialSubTab, showShareModalInit, scrollToQR, onOpenAssistant, onChangeMainTab }) {
+export default function NotebookContent({ dog, user, records = [], setRecords, dailyLogs = [], growthEntries = [], isPremium, loading, initialSubTab, initialVaccineKey, showShareModalInit, scrollToQR, onOpenAssistant, onChangeMainTab }) {
   // Sub-tab persistence: initialSubTab (from URL) > sessionStorage > default
   const savedSubTab = typeof window !== "undefined" ? sessionStorage.getItem("subTab_Sante_carnet") : null;
   const [activeTab, setActiveTab] = useState(initialSubTab || savedSubTab || "all");
@@ -70,8 +70,17 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
   const recordsSectionRef = useRef(null);
   const vaccineCardRef = useRef(null);
   const weightCardRef = useRef(null);
-  const [autoExpandVaccineKey, setAutoExpandVaccineKey] = useState(null);
+  const [autoExpandVaccineKey, setAutoExpandVaccineKey] = useState(initialVaccineKey || null);
   const [autoOpenWeightForm, setAutoOpenWeightForm] = useState(false);
+
+  // Cross-page deep-link: scroll to VaccineCard on mount if initialVaccineKey is provided
+  useEffect(() => {
+    if (initialVaccineKey && vaccineCardRef.current) {
+      setTimeout(() => {
+        vaccineCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 300);
+    }
+  }, [initialVaccineKey]);
 
   // Persist sub-tab to sessionStorage
   useEffect(() => {

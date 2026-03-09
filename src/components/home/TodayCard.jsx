@@ -39,7 +39,7 @@ export default function TodayCard({ dog, user, todayCheckin, streak, records = [
         transition={{ type: "spring", stiffness: 400, damping: 30 }}
         className="mx-4"
       >
-        <Link to={createPageUrl(topRec.page) + (topRec.tab ? `?tab=${topRec.tab}` : "")}>
+        <Link to={createPageUrl(topRec.page) + (topRec.tab ? `?tab=${topRec.tab}` : "") + (topRec.vaccineKey ? `&vaccineKey=${topRec.vaccineKey}` : "")}>
           <div className="rounded-2xl bg-red-50 border border-red-200 p-4 shadow-sm">
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
@@ -126,7 +126,7 @@ export default function TodayCard({ dog, user, todayCheckin, streak, records = [
       )}
 
       {topRec && (
-        <Link to={createPageUrl(topRec.page) + (topRec.tab ? `?tab=${topRec.tab}` : "")}>
+        <Link to={createPageUrl(topRec.page) + (topRec.tab ? `?tab=${topRec.tab}` : "") + (topRec.vaccineKey ? `&vaccineKey=${topRec.vaccineKey}` : "")}>
           <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-xl px-3 py-2.5 border border-border/20 transition-colors hover:bg-white">
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"

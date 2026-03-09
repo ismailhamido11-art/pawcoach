@@ -75,6 +75,7 @@ export default function Sante() {
    useEffect(() => { prevTabIdx.current = tabIndex; }, [tabIndex]);
 
    const [initialSubTab] = useState(isDeepLink && validSubTabs.includes(urlTab) ? urlTab : null);
+   const [initialVaccineKey] = useState(searchParams.get("vaccineKey") || null);
    const [showShareModal, setShowShareModal] = useState(urlTab === "vet");
 
    const loadData = async () => {
@@ -211,6 +212,7 @@ export default function Sante() {
                 isPremium={isUserPremium(user)}
                 loading={loading}
                 initialSubTab={initialSubTab}
+                initialVaccineKey={initialVaccineKey}
                 showShareModalInit={showShareModal}
                 scrollToQR={urlTab === "qr"}
                 onOpenAssistant={() => setIsAssistantOpen(true)}
