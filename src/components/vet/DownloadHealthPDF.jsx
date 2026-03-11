@@ -317,6 +317,14 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
         doc.text(sanitize(`Puce : ${dog.chip_number}`), 14, 33);
       }
 
+      // Vet info in header
+      if (dog.vet_name || dog.vet_city) {
+        const vetLine = [dog.vet_name, dog.vet_city].filter(Boolean).join(" — ");
+        doc.setFontSize(9);
+        doc.setTextColor(200, 220, 210);
+        doc.text(sanitize(`Veterinaire : ${vetLine}`), 14, dog.chip_number ? 38 : 33);
+      }
+
       doc.setFontSize(8);
       doc.setTextColor(200, 220, 210);
       doc.text(sanitize(`Genere le ${fmtDate(new Date().toISOString())} via PawCoach`), 14, 40);
@@ -517,6 +525,26 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
         ]);
         y = drawTable(doc, y, ["Date", "Motif", "Details"], rows, [0.22, 0.35, 0.43]);
         y += 6;
+        if (dog.next_vet_appointment) {
+          checkPage(10);
+          doc.setFontSize(8);
+          doc.setTextColor(...COLORS.emerald);
+          doc.setFont("helvetica", "bold");
+          doc.text(sanitize(`Prochain RDV : ${fmtDate(dog.next_vet_appointment)}`), 14, y);
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(...COLORS.text);
+          y += 6;
+        }
+      } else if (dog.next_vet_appointment) {
+        y = drawSectionHeader(doc, y, "Veterinaire");
+        checkPage(10);
+        doc.setFontSize(8);
+        doc.setTextColor(...COLORS.emerald);
+        doc.setFont("helvetica", "bold");
+        doc.text(sanitize(`Prochain RDV : ${fmtDate(dog.next_vet_appointment)}`), 14, y);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(...COLORS.text);
+        y += 8;
       }
 
       // ================================================================
