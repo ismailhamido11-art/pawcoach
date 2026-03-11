@@ -1,31 +1,41 @@
 import { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { AlertCircle, TrendingDown, Lock } from 'lucide-react';
+import { AlertCircle, Lock } from 'lucide-react';
 import { isUserPremium } from '@/utils/premium';
+import { computeHealthScore, getScoreLevel, computeStatusPills } from '@/utils/healthStatus';
 import { motion } from 'framer-motion';
 
-export default function HealthScore({ dog, user, todayCheckin, records = [], scans = [], dailyLogs = [] }) {
+export default function HealthScore({ dog, user }) {
   const [score, setScore] = useState(null);
-  const [insights, setInsights] = useState([]);
-  const [alert, setAlert] = useState(null);
+  const [level, setLevel] = useState(null);
+  const [pills, setPills] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isEstimate, setIsEstimate] = useState(false);
   const isPremium = isUserPremium(user);
 
   useEffect(() => {
     async function calculate() {
       if (!dog?.id) return;
       try {
-        const response = await base44.functions.invoke('healthScoreCalculate', { dogId: dog.id });
-        const data = response.data || {};
-        setScore(data.score ?? 50);
-        setInsights(data.insights || []);
-        setAlert(data.alert || null);
-        setIsEstimate(!data.insights || data.insights.length === 0);
+        const [records, growthEntries, dailyLogs] = await Promise.all([
+          base44.entities.HealthRecord.filter({ dog_id: dog.id }).catch(() => []),
+          base44.entities.GrowthEntry.filter({ dog_id: dog.id }).catch(() => []),
+          base44.entities.DailyLog.filter({ dog_id: dog.id }).catch(() => []),
+        ]);
+
+        // Normaliser GrowthEntry et DailyLog comme sources de poids supplementaires
+        const extraWeightSources = [
+          ...(growthEntries || []).filter(g => g.weight_kg && g.date),
+          ...(dailyLogs || []).filter(l => l.weight_kg && l.date),
+        ];
+
+        const computed = computeHealthScore(records || [], dog, extraWeightSources);
+        setScore(computed);
+        setLevel(getScoreLevel(computed));
+        setPills(computeStatusPills(records || [], dog));
       } catch (err) {
         console.error('Health score error:', err);
         setScore(50);
-        setIsEstimate(true);
+        setLevel(getScoreLevel(50));
       } finally {
         setLoading(false);
       }
@@ -39,8 +49,9 @@ export default function HealthScore({ dog, user, todayCheckin, records = [], sca
     );
   }
 
-  const scoreColor = score < 40 ? '#ef4444' : score < 60 ? '#f59e0b' : score < 80 ? '#3b82f6' : '#10b981';
-  const scoreLabel = score < 40 ? 'À surveiller' : score < 60 ? 'Correct' : score < 80 ? 'Bon' : 'Excellent';
+  const scoreColor = level?.barColor || '#10b981';
+  const scoreLabel = level?.label || 'Bon';
+  const hasData = pills.some(p => p.status !== 'empty');
 
   return (
     <motion.div
@@ -50,7 +61,7 @@ export default function HealthScore({ dog, user, todayCheckin, records = [], sca
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-bold text-foreground">Santé du jour</h3>
+        <h3 className="text-lg font-bold text-foreground">Sante du jour</h3>
         {!isPremium && <Lock className="w-4 h-4 text-muted-foreground" />}
       </div>
 
@@ -96,42 +107,26 @@ export default function HealthScore({ dog, user, todayCheckin, records = [], sca
             {scoreLabel}
           </p>
           <div className="space-y-1.5">
-            {isEstimate ? (
+            {!hasData ? (
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Ajoute des données (check-ins, poids, vaccins) pour affiner le score de {dog?.name || "ton chien"}.
+                Ajoute des donnees (pesees, vaccins, visites veto) pour affiner le score de {dog?.name || "ton chien"}.
               </p>
             ) : (
-              insights.map((insight, i) => (
+              pills.slice(0, 3).map((pill, i) => (
                 <motion.p
-                  key={i}
+                  key={pill.id}
                   className="text-sm text-foreground/80"
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5 + i * 0.1 }}
                 >
-                  • {insight}
+                  • {pill.label} : {pill.value}
                 </motion.p>
               ))
             )}
           </div>
         </div>
       </div>
-
-      {/* Alert Section */}
-      {alert && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 pt-6 border-t border-border/30"
-        >
-          <div className="flex gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-100">
-            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm font-semibold text-amber-900">{alert.message}</p>
-            </div>
-          </div>
-        </motion.div>
-      )}
 
       {/* Premium gate */}
       {!isPremium && (
@@ -140,7 +135,7 @@ export default function HealthScore({ dog, user, todayCheckin, records = [], sca
           animate={{ opacity: 1 }}
           className="mt-4 p-3 bg-primary/10 rounded-xl text-xs text-primary font-medium text-center"
         >
-          Premium : Historique complet + Prédictions détaillées
+          Premium : Historique complet + Predictions detaillees
         </motion.div>
       )}
     </motion.div>
