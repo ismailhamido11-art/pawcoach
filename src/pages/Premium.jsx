@@ -260,7 +260,20 @@ export default function Premium() {
               </Button>
             ) : (
               <Button
-                onClick={() => navigate(createPageUrl("Home"))}
+                onClick={() => {
+                  const params = new URLSearchParams(window.location.search);
+                  const from = params.get("from");
+                  const FROM_PAGE_MAP = {
+                    chat: "Chat", scan: "Scan", training: "Training",
+                    notebook: "Sante", nutrition: "Nutri", profile: "Profile",
+                    "behavior-program": "Training", "nutrition-plan": "Nutri",
+                    "nutrition-plan-monthly": "Nutri", comparateur: "Nutri",
+                    diagnostic: "Sante", "video-coaching": "Training",
+                    "health-assistant": "Sante",
+                  };
+                  const dest = (from && FROM_PAGE_MAP[from]) || "Home";
+                  navigate(createPageUrl(dest));
+                }}
                 className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
               >
                 Commencer <ChevronRight className="w-5 h-5" />
