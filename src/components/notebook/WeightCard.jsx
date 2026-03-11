@@ -3,8 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Weight, TrendingUp, TrendingDown, Minus, AlertTriangle, Plus, Check, X } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
-
-const spring = { type: "spring", stiffness: 400, damping: 30 };
+import { spring } from "@/lib/animations";
 
 const DIRECTION_CONFIG = {
   stable: { Icon: Minus, color: "text-emerald-600", bg: "bg-emerald-50", label: "Poids stable" },

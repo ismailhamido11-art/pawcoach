@@ -18,9 +18,9 @@ import { getTodayString } from "@/utils/recommendations";
 import { getDogAgeLabel } from "@/utils/healthStatus";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
 import { motion, AnimatePresence } from "framer-motion";
+import { spring, springGentle } from "@/lib/animations";
 
-const spring = { type: "spring", stiffness: 400, damping: 30 };
-const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { type: "spring", stiffness: 120, damping: 20 } };
+const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: springGentle };
 
 const mdComponents = {
   p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,

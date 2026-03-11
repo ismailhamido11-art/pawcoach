@@ -8,8 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { useActionCredits } from "@/utils/ai-credits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
-
-const spring = { type: "spring", stiffness: 400, damping: 30 };
+import { spring } from "@/lib/animations";
 
 const SCORE_COLOR = (s) => {
   if (s >= 7.5) return { ring: "#22c55e", bg: "bg-green-50", text: "text-green-700", border: "border-green-200" };

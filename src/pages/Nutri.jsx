@@ -22,8 +22,8 @@ import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
+import { spring, springGentle } from "@/lib/animations";
 
-const spring = { type: "spring", stiffness: 400, damping: 30 };
 const tabVariants = {
   enter: (d) => ({ opacity: 0, x: d * 60 }),
   center: { opacity: 1, x: 0 },
@@ -32,7 +32,7 @@ const tabVariants = {
 const msgAnim = {
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
-  transition: { type: "spring", stiffness: 120, damping: 20 }
+  transition: springGentle
 };
 
 const mdComponents = {

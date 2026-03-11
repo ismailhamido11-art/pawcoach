@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { AlertTriangle, Info, CheckCircle, ChevronRight } from "lucide-react";
-
-const spring = { type: "spring", stiffness: 400, damping: 30 };
+import { spring } from "@/lib/animations";
 
 const URGENCY_CONFIG = {
   critical: {

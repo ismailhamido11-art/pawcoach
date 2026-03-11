@@ -6,8 +6,7 @@ import { Weight, Plus, X, Check } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-
-const spring = { type: "spring", stiffness: 400, damping: 30 };
+import { spring } from "@/lib/animations";
 
 export default function SectionPoids({ records = [], dogId, onDelete, onRecordAdded }) {
   const [period, setPeriod] = useState("All");

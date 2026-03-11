@@ -23,8 +23,7 @@ import {
   Syringe, Stethoscope, Weight, Pill, FileText,
   Share2, ChevronDown, ChevronUp, ClipboardList
 } from "lucide-react";
-
-const spring = { type: "spring", stiffness: 400, damping: 30 };
+import { spring } from "@/lib/animations";
 
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },

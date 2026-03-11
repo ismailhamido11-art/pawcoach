@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
-
-const spring = { type: "spring", stiffness: 400, damping: 30 };
+import { spring } from "@/lib/animations";
 
 export default function HealthAssistantBar({ onClick }) {
   return (

@@ -13,8 +13,7 @@ import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Footprints, History, Dumbbell, Sparkles, ExternalLink } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
-
-const spring = { type: "spring", stiffness: 400, damping: 30 };
+import { spring } from "@/lib/animations";
 const tabVariants = {
   enter: (d) => ({ opacity: 0, x: d * 60 }),
   center: { opacity: 1, x: 0 },

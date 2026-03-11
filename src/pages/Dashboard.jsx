@@ -19,8 +19,7 @@ import WellnessBanner from "../components/WellnessBanner";
 import IconBadge from "@/components/ui/IconBadge";
 import Illustration from "../components/illustrations/Illustration";
 import SmartAlerts from "../components/dashboard/SmartAlerts";
-
-const spring = { type: "spring", stiffness: 300, damping: 25 };
+import { springSnappy as spring } from "@/lib/animations";
 
 const MOOD_LABELS = { 1: "😔", 2: "😐", 3: "😊", 4: "🤩" };
 const ENERGY_LABELS = { 1: "💤", 2: "⚡", 3: "🔥" };

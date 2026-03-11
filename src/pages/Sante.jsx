@@ -21,8 +21,7 @@ import GrowthTrackerContent from "@/components/sante/GrowthTrackerContent";
 import { BookHeart, Camera, MapPin, AlertTriangle, TrendingUp } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
 import DownloadHealthPDF from "@/components/vet/DownloadHealthPDF";
-
-const spring = { type: "spring", stiffness: 400, damping: 30 };
+import { spring } from "@/lib/animations";
 const tabVariants = {
   enter: (d) => ({ opacity: 0, x: d * 60 }),
   center: { opacity: 1, x: 0 },

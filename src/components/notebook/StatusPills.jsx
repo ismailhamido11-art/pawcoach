@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Syringe, Weight, Stethoscope } from "lucide-react";
-
-const spring = { type: "spring", stiffness: 400, damping: 30 };
+import { spring } from "@/lib/animations";
 
 const PILL_ICONS = {
   vaccines: Syringe,

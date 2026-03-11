@@ -10,8 +10,7 @@ import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import WelcomeScreen from "../components/onboarding/WelcomeScreen";
 import Illustration from "../components/illustrations/Illustration";
-
-const spring = { type: "spring", stiffness: 400, damping: 30 };
+import { spring } from "@/lib/animations";
 
 const GOAL_OPTIONS = [
   { icon: HeartPulse, color: "#ef4444", label: "Qu'il soit en bonne santé", bg: "#ef444415" },

@@ -10,8 +10,7 @@ import { RecordRow } from "./SectionVaccins";
 import { isValidDate } from "@/utils/healthStatus";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-
-const spring = { type: "spring", stiffness: 400, damping: 30 };
+import { spring } from "@/lib/animations";
 
 const GATE_CONTENT = {
   vet_visit: {

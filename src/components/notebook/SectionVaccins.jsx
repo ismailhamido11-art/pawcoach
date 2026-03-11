@@ -6,6 +6,7 @@ import { Syringe, Plus, X, Calendar, ChevronDown, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { VACCINE_REFERENCE, getVaccineDisplayName, isValidDate } from "@/utils/healthStatus";
+import { spring } from "@/lib/animations";
 
 const VACCINE_OPTIONS = Object.entries(VACCINE_REFERENCE).map(([key, ref]) => ({
   key,
@@ -14,8 +15,6 @@ const VACCINE_OPTIONS = Object.entries(VACCINE_REFERENCE).map(([key, ref]) => ({
   category: ref.category,
   frequencyMonths: ref.frequencyMonths,
 }));
-
-const spring = { type: "spring", stiffness: 400, damping: 30 };
 
 export default function SectionVaccins({ records = [], dogId, onDelete, onRecordAdded }) {
   const [showAddForm, setShowAddForm] = useState(false);
