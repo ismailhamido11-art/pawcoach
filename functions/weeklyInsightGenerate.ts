@@ -42,11 +42,12 @@ Deno.serve(async (req) => {
       if (existing && existing.length > 0) continue;
 
       // Fetch data filtered per dog (avoids loading entire DB)
-      const [checkins, dogProgress, dogScans, dogDailyLogs] = await Promise.all([
+      const [checkins, dogProgress, dogScans, dogDailyLogs, dogHealthRecords] = await Promise.all([
         base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dog.id }).catch(() => []),
         base44.asServiceRole.entities.UserProgress.filter({ dog_id: dog.id }).catch(() => []),
         base44.asServiceRole.entities.FoodScan.filter({ dog_id: dog.id }).catch(() => []),
         base44.asServiceRole.entities.DailyLog.filter({ dog_id: dog.id }).catch(() => []),
+        base44.asServiceRole.entities.HealthRecord.filter({ dog_id: dog.id }).catch(() => []),
       ]);
 
       // Filter DailyCheckins for the week
@@ -106,6 +107,49 @@ Deno.serve(async (req) => {
       });
       const symptomText = Object.keys(weekSymptoms).length > 0
         ? `, symptomes signales: ${Object.entries(weekSymptoms).map(([s, n]) => `${s} (${n}x)`).join(", ")}`
+        : "";
+
+      // Health events from HealthRecord for this week
+      const todayStr = today.toISOString().slice(0, 10);
+      const weekHealthRecords = (dogHealthRecords || []).filter(r => r.date >= weekStart && r.date <= weekEnd);
+      const healthEvents: string[] = [];
+
+      // Vet visits this week
+      const vetVisits = weekHealthRecords.filter(r => r.type === "vet_visit");
+      if (vetVisits.length > 0) {
+        healthEvents.push(`${vetVisits.length} visite(s) vet cette semaine${vetVisits[0].label ? ` (${String(vetVisits[0].label).substring(0, 50)})` : ""}`);
+      }
+
+      // Overdue vaccinations (next_date < today)
+      const overdueVaccines = (dogHealthRecords || []).filter(r =>
+        r.type === "vaccination" && r.next_date && r.next_date < todayStr
+      );
+      if (overdueVaccines.length > 0) {
+        const names = overdueVaccines.slice(0, 3).map(r => String(r.label || "vaccin").substring(0, 30)).join(", ");
+        healthEvents.push(`vaccin(s) en retard : ${names}`);
+      }
+
+      // Active medications (next_date >= today = still ongoing)
+      const activeMeds = (dogHealthRecords || []).filter(r =>
+        r.type === "medication" && r.next_date && r.next_date >= todayStr
+      );
+      if (activeMeds.length > 0) {
+        const names = activeMeds.slice(0, 3).map(r => String(r.label || "medicament").substring(0, 30)).join(", ");
+        healthEvents.push(`medicament(s) en cours : ${names}`);
+      }
+
+      const healthContext = healthEvents.length > 0
+        ? `\n\nEVENEMENTS SANTE DE LA SEMAINE (a mentionner si pertinent) : ${healthEvents.join(". ")}.`
+        : "";
+
+      // Notes and behavior_notes from check-ins
+      const weekNotes: string[] = [];
+      weekCheckins.forEach(c => {
+        if (c.notes && String(c.notes).trim()) weekNotes.push(String(c.notes).substring(0, 100));
+        if (c.behavior_notes && String(c.behavior_notes).trim()) weekNotes.push(String(c.behavior_notes).substring(0, 100));
+      });
+      const notesContext = weekNotes.length > 0
+        ? `\n\nNOTES DU PROPRIETAIRE CETTE SEMAINE : ${weekNotes.slice(0, 5).join(" | ")}.`
         : "";
 
       // Generate AI summary
@@ -179,7 +223,7 @@ Deno.serve(async (req) => {
           }
         } catch {}
 
-        const systemPrompt = `Tu es PawCoach. Genere un bilan hebdomadaire personnalise.\n\nPROFIL DU CHIEN :\n${dogProfile}${prevBehavior}${ownerGoalLine}${topicsLine}\n\nINTERPRETATION DES DONNEES :\n- 0 check-ins = le proprio n'a pas rempli, PAS que le chien va mal.\n- "aucune balade" = pas de GPS utilise, PAS que le chien ne sort pas.\n- 0 scans = fonctionnalite pas utilisee, PAS mauvaise alimentation.\n- Ne signale une tendance que sur 3+ points de donnees.\n- Adapte tes recommandations a l'objectif du proprietaire si present.\n\n${toneInstruction} Tutoie. 3-5 phrases max. Reponds en JSON avec: summary (bilan general), highlights (2-3 points cles), recommendations (2-3 conseils pour la semaine prochaine), behavior_summary (profil comportemental synthetique de ${safeName} en 2-3 phrases — patterns d'humeur, energie, alertes, evolution par rapport au profil precedent si disponible).`;
+        const systemPrompt = `Tu es PawCoach. Genere un bilan hebdomadaire personnalise.\n\nPROFIL DU CHIEN :\n${dogProfile}${prevBehavior}${ownerGoalLine}${topicsLine}\n\nINTERPRETATION DES DONNEES :\n- 0 check-ins = le proprio n'a pas rempli, PAS que le chien va mal.\n- "aucune balade" = pas de GPS utilise, PAS que le chien ne sort pas.\n- 0 scans = fonctionnalite pas utilisee, PAS mauvaise alimentation.\n- Ne signale une tendance que sur 3+ points de donnees.\n- Adapte tes recommandations a l'objectif du proprietaire si present.\n\n${toneInstruction} Tutoie. 3-5 phrases max. Reponds en JSON avec: summary (bilan general), highlights (2-3 points cles), recommendations (2-3 conseils pour la semaine prochaine), behavior_summary (profil comportemental synthetique de ${safeName} en 2-3 phrases — patterns d'humeur, energie, alertes, evolution par rapport au profil precedent si disponible).${healthContext}${notesContext}`;
         const walkText = walkDays > 0 ? `, ${walkDays} jours de balade (${totalWalkMinutes} min total, moyenne ${avgWalkMinutes} min/sortie${totalWalkKm > 0 ? `, ${totalWalkKm.toFixed(1)} km parcourus` : ""}${moodText}${tagText})` : ", aucune balade enregistrée cette semaine";
         const userMessage = `Bilan de la semaine du ${weekStart} au ${weekEnd} pour ${safeName}: ${checkinCount} check-ins, humeur moyenne ${avgMood}/4, energie moyenne ${avgEnergy}/3, appetit moyen ${avgAppetite}/3, ${exercisesCompleted} exercices completes, ${scansDone} scans alimentaires${walkText}${symptomText}.`;
 
