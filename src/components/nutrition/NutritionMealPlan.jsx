@@ -233,7 +233,9 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       try {
         const prevData = JSON.parse(activePlan.plan_text);
         if (prevData.days && Array.isArray(prevData.days)) {
-          const prevFoods = prevData.days.map(d => `${d.morning?.food || ""}, ${d.evening?.food || ""}`).join("; ");
+          const prevFoods = prevData.days.map(d =>
+            [d.morning?.food, d.noon?.food, d.evening?.food].filter(Boolean).join(", ")
+          ).join("; ");
           previousPlanContext = `\n## PLAN PRÉCÉDENT (varie les repas !)\nRepas du plan précédent : ${prevFoods.substring(0, 300)}\nIMPORTANT : propose des repas DIFFÉRENTS pour varier l'alimentation.`;
         }
       } catch { /* not JSON */ }
@@ -260,6 +262,7 @@ RÉPONDS UNIQUEMENT avec un objet JSON valide, sans texte avant ni après, sans 
     {
       "day": "Lundi",
       "morning": { "food": "Croquettes + huile de saumon", "quantity": "145g + 1 c.c." },
+      "noon": { "food": "Crostille ou friandise faible en calories", "quantity": "10g" },
       "evening": { "food": "Croquettes + courgette cuite", "quantity": "95g + 30g" }
     }
   ],
@@ -275,6 +278,7 @@ RÉPONDS UNIQUEMENT avec un objet JSON valide, sans texte avant ni après, sans 
 
 RÈGLES :
 - Le tableau "days" doit contenir exactement 7 jours : Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, Dimanche
+- Si le chien mange 3 fois par jour (portions_per_day >= 3 ou précisé dans les préférences), inclure un champ "noon" pour le repas de midi. Sinon, omets le champ "noon".
 - Varie les protéines et compléments au fil de la semaine
 - Adapte les quantités au poids, âge, activité, stérilisation ET aux données réelles ci-dessus
 - Si l'appétit est en baisse, propose des repas plus appétissants et fractionnés
@@ -366,6 +370,16 @@ RÈGLES :
                   </div>
                 </div>
               )}
+              {todayMeal.noon && (
+                <div className="flex items-start gap-3">
+                  <span className="text-lg leading-none">&#x2600;&#xFE0F;</span>
+                  <div>
+                    <p className="text-xs font-bold text-amber-600 mb-0.5">Midi</p>
+                    <p className="text-sm font-medium text-foreground">{todayMeal.noon.food}</p>
+                    <p className="text-xs text-muted-foreground">{todayMeal.noon.quantity}</p>
+                  </div>
+                </div>
+              )}
               {todayMeal.evening && (
                 <div className="flex items-start gap-3 bg-blue-50/50 rounded-xl p-3">
                   <span className="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded-lg mt-0.5">Soir</span>
@@ -410,6 +424,15 @@ RÈGLES :
                               <div>
                                 <p className="text-xs text-foreground">{d.morning.food}</p>
                                 <p className="text-[10px] text-muted-foreground">{d.morning.quantity}</p>
+                              </div>
+                            </div>
+                          )}
+                          {d.noon && (
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded flex-shrink-0">Midi</span>
+                              <div>
+                                <p className="text-xs text-foreground">{d.noon.food}</p>
+                                <p className="text-[10px] text-muted-foreground">{d.noon.quantity}</p>
                               </div>
                             </div>
                           )}
@@ -648,6 +671,15 @@ RÈGLES :
                         </div>
                       </div>
                     )}
+                    {d.noon && (
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded mt-0.5">Midi</span>
+                        <div className="flex-1">
+                          <p className="text-xs text-foreground">{d.noon.food}</p>
+                          <p className="text-[10px] text-muted-foreground">{d.noon.quantity}</p>
+                        </div>
+                      </div>
+                    )}
                     {d.evening && (
                       <div className="flex items-start gap-2">
                         <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5">Soir</span>
@@ -790,6 +822,7 @@ RÈGLES :
                               <div key={i} className="bg-white rounded-lg p-2">
                                 <p className="text-[10px] font-bold text-foreground mb-1">{d.day}</p>
                                 {d.morning && <p className="text-[10px] text-foreground/70">Matin : {d.morning.food} ({d.morning.quantity})</p>}
+                                {d.noon && <p className="text-[10px] text-foreground/70">Midi : {d.noon.food} ({d.noon.quantity})</p>}
                                 {d.evening && <p className="text-[10px] text-foreground/70">Soir : {d.evening.food} ({d.evening.quantity})</p>}
                               </div>
                             ))}
