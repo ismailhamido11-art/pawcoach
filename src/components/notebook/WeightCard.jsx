@@ -26,7 +26,7 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
       const record = await base44.entities.HealthRecord.create({
         dog_id: dogId,
         type: "weight",
-        title: "Pesee",
+        title: "Pesée",
         date,
         value: w,
       });
@@ -189,7 +189,7 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
             <div className="flex items-center justify-between">
               {lastDateFormatted && (
                 <p className="text-[10px] text-muted-foreground">
-                  Derniere pesee : {lastDateFormatted}
+                  Dernière pesée : {lastDateFormatted}
                 </p>
               )}
               {dogId && (

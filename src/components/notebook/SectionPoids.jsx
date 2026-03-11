@@ -23,7 +23,7 @@ export default function SectionPoids({ records = [], dogId, onDelete, onRecordAd
       const record = await base44.entities.HealthRecord.create({
         dog_id: dogId,
         type: "weight",
-        title: "Pesee",
+        title: "Pesée",
         date: form.date,
         value: w,
       });

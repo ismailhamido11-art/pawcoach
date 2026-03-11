@@ -42,11 +42,11 @@ const SEGMENT_HERO = {
   },
   adult: {
     subtitle: (name) => `Le meilleur suivi au quotidien pour ${name}`,
-    urgency: (name, days) => `Garde l'historique sante de ${name} — essai expire dans ${days} jour${days > 1 ? "s" : ""}`,
+    urgency: (name, days) => `Garde l'historique santé de ${name} — essai expire dans ${days} jour${days > 1 ? "s" : ""}`,
   },
   senior: {
     subtitle: (name) => `${name} mérite un suivi attentif à son âge`,
-    urgency: (name, days) => `Les rappels sante de ${name} expirent dans ${days} jour${days > 1 ? "s" : ""}`,
+    urgency: (name, days) => `Les rappels santé de ${name} expirent dans ${days} jour${days > 1 ? "s" : ""}`,
   },
 };
 

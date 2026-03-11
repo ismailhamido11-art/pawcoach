@@ -740,7 +740,7 @@ export default function Training() {
 
       {/* Behavior guides section */}
       <div className="px-4 pt-6 space-y-3">
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1 mb-1">Problemes courants</p>
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1 mb-1">Problèmes courants</p>
         {BEHAVIOR_GUIDES.map((guide, idx) => {
           const locked = !guide.isFree && !isPremium;
           return (

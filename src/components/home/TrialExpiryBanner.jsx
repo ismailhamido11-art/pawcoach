@@ -14,14 +14,14 @@ const SEGMENT_MESSAGES = {
   },
   adult: {
     title: (name, days) => days === 1
-      ? `Dernier jour pour garder l'historique sante de ${name} !`
+      ? `Dernier jour pour garder l'historique santé de ${name} !`
       : `${name} a déjà son suivi en place — encore ${days} jours d'essai`,
     sub: "Un suivi régulier prévient les problèmes courants",
   },
   senior: {
     title: (name, days) => days === 1
-      ? `Dernier jour pour proteger la sante de ${name} !`
-      : `${name} merite un suivi attentif — encore ${days} jours d'essai`,
+      ? `Dernier jour pour protéger la santé de ${name} !`
+      : `${name} mérite un suivi attentif — encore ${days} jours d'essai`,
     sub: "Les rappels vaccins et le carnet santé sont essentiels à son âge",
   },
 };

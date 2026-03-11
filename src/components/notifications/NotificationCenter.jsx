@@ -243,7 +243,7 @@ export default function NotificationCenter() {
                   onClick={() => { setOpen(false); navigate(createPageUrl("Sante") + "?tab=carnet"); }}
                   className="w-full py-3 bg-primary text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2"
                 >
-                  Gerer le carnet sante <ChevronRight className="w-4 h-4" />
+                  Gérer le carnet santé <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </motion.div>

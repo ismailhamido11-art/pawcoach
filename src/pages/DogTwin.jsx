@@ -81,7 +81,7 @@ export default function DogTwin() {
         const weightDays = lastWeight ? daysSince(lastWeight.date) : 9999;
         const weightScore = weightDays <= 30 ? 90 : weightDays <= 90 ? 70 : weightDays <= 180 ? 50 : 30;
         const weightDetail = lastWeight
-          ? `Derniere pesee il y a ${weightDays <= 1 ? "aujourd'hui" : weightDays + " jours"}${lastWeight.value ? " : " + lastWeight.value + " kg" : ""}`
+          ? `Dernière pesée il y a ${weightDays <= 1 ? "aujourd'hui" : weightDays + " jours"}${lastWeight.value ? " : " + lastWeight.value + " kg" : ""}`
           : "Aucune pesée enregistrée";
 
         // Vet visit zone — based on recent vet visits

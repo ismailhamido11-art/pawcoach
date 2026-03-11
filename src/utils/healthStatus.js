@@ -437,16 +437,16 @@ export function computeStatusPills(records, dog) {
     .filter(r => r.type === "vet_visit" && isValidDate(r.date))
     .sort((a, b) => new Date(b.date) - new Date(a.date));
   if (vetVisits.length === 0) {
-    pills.push({ id: "vet", label: "Veterinaire", value: "Aucune visite", status: "empty" });
+    pills.push({ id: "vet", label: "Vétérinaire", value: "Aucune visite", status: "empty" });
   } else {
     const lastVet = vetVisits[0];
     const months = monthsAgo(parseDate(lastVet.date));
     if (months <= 6) {
-      pills.push({ id: "vet", label: "Veterinaire", value: months === 0 ? "Ce mois-ci" : `il y a ${months} mois`, status: "good" });
+      pills.push({ id: "vet", label: "Vétérinaire", value: months === 0 ? "Ce mois-ci" : `il y a ${months} mois`, status: "good" });
     } else if (months <= 12) {
-      pills.push({ id: "vet", label: "Veterinaire", value: `il y a ${months} mois`, status: "warning" });
+      pills.push({ id: "vet", label: "Vétérinaire", value: `il y a ${months} mois`, status: "warning" });
     } else {
-      pills.push({ id: "vet", label: "Veterinaire", value: `il y a ${months} mois`, status: "alert" });
+      pills.push({ id: "vet", label: "Vétérinaire", value: `il y a ${months} mois`, status: "alert" });
     }
   }
 
@@ -467,8 +467,8 @@ export function computeNextAction(records, dog) {
   if (recs.length === 0) {
     return {
       type: "empty_notebook",
-      title: "Commence le carnet de sante",
-      description: `Ajoute le premier vaccin ou la derniere pesee de ${dog?.name || "ton chien"}.`,
+      title: "Commence le carnet de santé",
+      description: `Ajoute le premier vaccin ou la dernière pesée de ${dog?.name || "ton chien"}.`,
       urgency: "suggested",
       ctaLabel: "Utiliser l'assistant",
       targetTab: "assistant",
@@ -568,7 +568,7 @@ export function computeNextAction(records, dog) {
       return {
         type: "weight_stale",
         title: "Poids à mettre à jour",
-        description: `La derniere pesee date de ${Math.round(daysSince / 30)} mois. Pese ${dog?.name || "ton chien"} pour suivre sa courbe.`,
+        description: `La dernière pesée date de ${Math.round(daysSince / 30)} mois. Pèse ${dog?.name || "ton chien"} pour suivre sa courbe.`,
         urgency: "suggested",
         ctaLabel: "Enregistrer un poids",
         targetTab: "weight",
