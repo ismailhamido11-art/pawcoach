@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-03-11T06:47:06.973Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-03-11T06:51:38.909Z"
 last_activity: "2026-03-11 — Plan 04-04 complete (SANTE-01/02: vetScore bonus next_vet_appointment + vet_name/vet_city/next_vet_appointment dans PDF)"
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 12
-  completed_plans: 11
+  completed_plans: 12
   percent: 30
 ---
 
@@ -57,6 +57,7 @@ Progress: [███░░░░░░░] 30%
 | Phase 04-independent-fixes P01 | 5 | 2 tasks | 2 files |
 | Phase 04-independent-fixes P02 | 5 | 2 tasks | 2 files |
 | Phase 04-independent-fixes P04 | 4min | 2 tasks | 2 files |
+| Phase 04-independent-fixes P03 | 5 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,7 @@ Recent decisions affecting current work:
 - [Phase 04-independent-fixes]: noon est champ JSON optionnel dans plan nutritionnel — LLM ne le genere que si portions >= 3, UI affiche conditionnellement, zero regression plans 2 repas existants
 - [Phase 04-independent-fixes]: next_vet_appointment bonus +15 vetScore plafonne a 25 — pas de double boost si visite recente + RDV programme
 - [Phase 04-independent-fixes]: vet_name/vet_city dans header PDF Y=38 (chip present) ou Y=33 (sans chip) — else if pour section minimale veterinaire si aucune visite passee
+- [Phase 04-independent-fixes]: BehaviorProgramCard completed_days: reads from bk.completed_days (Bookmark entity), localCompleted null sentinel for optimistic update with rollback on error
 
 ### Pending Todos
 
@@ -99,6 +101,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T07:00:00.000Z
-Stopped at: Completed 04-04-PLAN.md
+Last session: 2026-03-11T06:51:38.899Z
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None

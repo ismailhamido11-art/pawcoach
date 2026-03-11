@@ -37,7 +37,7 @@ Requirements pour le milestone Data Flow Integrity. Chaque requirement corrige u
 ### Activite
 
 - [x] **ACT-01**: Une balade enregistree (DailyLog) contribue au streak quotidien
-- [ ] **ACT-02**: Les programmes comportement 7j ont un tracking de completion jour par jour (comme les programmes forme)
+- [x] **ACT-02**: Les programmes comportement 7j ont un tracking de completion jour par jour (comme les programmes forme)
 
 ### Sante
 
@@ -81,7 +81,7 @@ Deferred au prochain milestone.
 | DASH-01 | Phase 4 | Complete |
 | NUTRI-01 | Phase 4 | Complete |
 | ACT-01 | Phase 4 | Complete |
-| ACT-02 | Phase 4 | Pending |
+| ACT-02 | Phase 4 | Complete |
 | SANTE-01 | Phase 4 | Pending |
 | SANTE-02 | Phase 4 | Pending |
 
