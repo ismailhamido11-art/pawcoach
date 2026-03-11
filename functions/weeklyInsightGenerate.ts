@@ -274,22 +274,31 @@ Deno.serve(async (req) => {
       if (typeof highlights === "object") highlights = JSON.stringify(highlights);
       if (typeof recommendations === "object") recommendations = JSON.stringify(recommendations);
 
-      // Create WeeklyInsight
-      await base44.asServiceRole.entities.WeeklyInsight.create({
-        dog_id: dog.id,
-        owner_email: dog.owner || "",
-        week_start: weekStart,
-        checkin_count: checkinCount,
-        avg_mood: avgMood,
-        avg_energy: avgEnergy,
-        avg_appetite: avgAppetite,
-        exercises_completed: exercisesCompleted,
-        scans_done: scansDone,
-        summary,
-        highlights,
-        recommendations,
-        is_read: false,
-      });
+      // Create WeeklyInsight — wrapped in try/catch to handle race condition duplicates.
+      // The dedup check above (filter existing) is not atomic with this create, so two
+      // concurrent invocations could both pass the check. If create fails due to a
+      // duplicate, we skip silently instead of crashing the entire function.
+      try {
+        await base44.asServiceRole.entities.WeeklyInsight.create({
+          dog_id: dog.id,
+          owner_email: dog.owner || "",
+          week_start: weekStart,
+          checkin_count: checkinCount,
+          avg_mood: avgMood,
+          avg_energy: avgEnergy,
+          avg_appetite: avgAppetite,
+          exercises_completed: exercisesCompleted,
+          scans_done: scansDone,
+          summary,
+          highlights,
+          recommendations,
+          is_read: false,
+        });
+      } catch (createErr) {
+        // Duplicate insight — another concurrent invocation already created it. Skip silently.
+        console.warn(`weeklyInsightGenerate: create skipped for dog ${dog.id} week ${weekStart} (likely duplicate):`, createErr?.message || String(createErr));
+        continue;
+      }
 
       // Update Dog.behavior_summary (Memory Coach F07)
       if (behaviorSummary) {
