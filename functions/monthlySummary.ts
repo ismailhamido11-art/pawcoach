@@ -14,6 +14,7 @@ Deno.serve(async (req) => {
     const dogs = await base44.asServiceRole.entities.Dog.list();
     const allUsers = await base44.asServiceRole.entities.User.list();
     const allRecords = await base44.asServiceRole.entities.HealthRecord.list();
+    const allCheckins = await base44.asServiceRole.entities.DailyCheckin.list().catch(() => []);
 
     const userMap = new Map((allUsers || []).map(u => [u.email, u]));
 
@@ -50,9 +51,8 @@ Deno.serve(async (req) => {
         ? `• Variation de poids : ${weightChange > 0 ? "+" : ""}${weightChange} kg`
         : "• Poids : pas de nouvelle mesure ce mois-ci";
 
-      // Fetch DailyCheckins for this dog this month
-      const allDogCheckins = await base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dog.id }).catch(() => []);
-      const monthCheckins = (allDogCheckins || []).filter(c => c.date && c.date.startsWith(monthStr));
+      // Filter DailyCheckins in memory for this dog this month (loaded upfront to avoid N+1)
+      const monthCheckins = (allCheckins || []).filter(c => c.dog_id === dog.id && c.date && c.date.startsWith(monthStr));
 
       const checkinCount = monthCheckins.length;
 
