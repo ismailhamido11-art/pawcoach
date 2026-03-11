@@ -17,7 +17,7 @@ Requirements pour le milestone Data Flow Integrity. Chaque requirement corrige u
 ### Flux IA
 
 - [ ] **AI-01**: La reponse IA post check-in utilise les 7 derniers check-ins pour detecter les tendances (mood, energy, appetite, symptoms)
-- [ ] **AI-02**: Le weekly insight integre les donnees HealthRecord (vaccins en retard, visites, medicaments) ET les behavior_notes/notes des check-ins
+- [x] **AI-02**: Le weekly insight integre les donnees HealthRecord (vaccins en retard, visites, medicaments) ET les behavior_notes/notes des check-ins
 - [x] **AI-03**: Le monthly summary integre les check-ins (mood moyen, energy moyen, symptoms signales, streak)
 
 ### Notifications
@@ -73,7 +73,7 @@ Deferred au prochain milestone.
 | DATA-03 | Phase 1 | Done — 01-03 |
 | DATA-04 | Phase 1 | Complete (2026-03-11) |
 | AI-01 | Phase 2 | Pending |
-| AI-02 | Phase 2 | Pending |
+| AI-02 | Phase 2 | Complete |
 | AI-03 | Phase 2 | Complete |
 | NOTIF-01 | Phase 3 | Pending |
 | NOTIF-02 | Phase 3 | Pending |
