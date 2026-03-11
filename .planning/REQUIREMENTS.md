@@ -28,7 +28,7 @@ Requirements pour le milestone Data Flow Integrity. Chaque requirement corrige u
 
 ### Dashboard
 
-- [ ] **DASH-01**: SmartAlerts detecte les tendances d'appetite en plus de mood et energy
+- [x] **DASH-01**: SmartAlerts detecte les tendances d'appetite en plus de mood et energy
 
 ### Nutrition
 
@@ -36,7 +36,7 @@ Requirements pour le milestone Data Flow Integrity. Chaque requirement corrige u
 
 ### Activite
 
-- [ ] **ACT-01**: Une balade enregistree (DailyLog) contribue au streak quotidien
+- [x] **ACT-01**: Une balade enregistree (DailyLog) contribue au streak quotidien
 - [ ] **ACT-02**: Les programmes comportement 7j ont un tracking de completion jour par jour (comme les programmes forme)
 
 ### Sante
@@ -78,9 +78,9 @@ Deferred au prochain milestone.
 | NOTIF-01 | Phase 3 | Complete |
 | NOTIF-02 | Phase 3 | Complete |
 | NOTIF-03 | Phase 3 | Complete |
-| DASH-01 | Phase 4 | Pending |
+| DASH-01 | Phase 4 | Complete |
 | NUTRI-01 | Phase 4 | Pending |
-| ACT-01 | Phase 4 | Pending |
+| ACT-01 | Phase 4 | Complete |
 | ACT-02 | Phase 4 | Pending |
 | SANTE-01 | Phase 4 | Pending |
 | SANTE-02 | Phase 4 | Pending |

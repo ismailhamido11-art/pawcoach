@@ -71,7 +71,7 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — SmartAlerts : detection tendance appetit + WalkMode : streak apres balade
+- [x] 04-01-PLAN.md — SmartAlerts : detection tendance appetit + WalkMode : streak apres balade
 - [ ] 04-02-PLAN.md — NutritionMealPlan : noon dans le prompt JSON + affichage UI repas midi
 - [ ] 04-03-PLAN.md — BehaviorProgramCard : tracking completion jour par jour (completed_days)
 - [ ] 04-04-PLAN.md — DownloadHealthPDF : vet_name + vet_city + next_vet_appointment dans PDF et score sante
@@ -86,7 +86,7 @@ Phases executees en ordre numerique : 1 → 2 → 3 → 4
 | 1. Data Coherence | 3/3 | Complete | 2026-03-11 |
 | 2. AI Enrichment | 3/3 | Complete   | 2026-03-11 |
 | 3. Notifications | 2/2 | Complete   | 2026-03-11 |
-| 4. Independent Fixes | 0/4 | Not started | - |
+| 4. Independent Fixes | 1/4 | In progress | - |
 
 ---
 *Roadmap created: 2026-03-11 — Milestone v1.0 Data Flow Integrity*

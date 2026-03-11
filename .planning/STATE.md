@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: "Checkpoint 03-01 Task 3: CRON registration Base44 UI (human-action required)"
-last_updated: "2026-03-11T06:28:03.240Z"
-last_activity: "2026-03-11 — Plan 01-03 complete (DATA-03: PDF sante merge GrowthEntry + DailyLog dans section Suivi du poids)"
+status: executing
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-03-11T06:46:55.354Z"
+last_activity: "2026-03-11 — Plan 04-04 complete (SANTE-01/02: vetScore bonus next_vet_appointment + vet_name/vet_city/next_vet_appointment dans PDF)"
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
-  percent: 24
+  total_plans: 12
+  completed_plans: 11
+  percent: 30
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-11)
 
 **Core value:** Les donnees collectees doivent etre utilisees partout ou elles ont du sens — pas de champs fantomes, pas de flux casses.
-**Current focus:** Phase 1 — Data Coherence
+**Current focus:** Phase 4 — Independent Fixes
 
 ## Current Position
 
-Phase: 1 of 4 (Data Coherence)
-Plan: 3 of 3 in current phase
-Status: Phase complete
-Last activity: 2026-03-11 — Plan 01-03 complete (DATA-03: PDF sante merge GrowthEntry + DailyLog dans section Suivi du poids)
+Phase: 4 of 4 (Independent Fixes)
+Plan: 4 of 4 in current phase
+Status: In progress
+Last activity: 2026-03-11 — Plan 04-04 complete (SANTE-01/02: vetScore bonus next_vet_appointment + vet_name/vet_city/next_vet_appointment dans PDF)
 
-Progress: [███░░░░░░░] 24%
+Progress: [███░░░░░░░] 30%
 
 ## Performance Metrics
 
@@ -54,6 +54,8 @@ Progress: [███░░░░░░░] 24%
 | Phase 02-ai-enrichment P02 | 5 | 1 tasks | 1 files |
 | Phase 03-notifications P02 | 5 | 1 tasks | 1 files |
 | Phase 03-notifications P01 | 5 | 2 tasks | 2 files |
+| Phase 04-independent-fixes P01 | 5 | 2 tasks | 2 files |
+| Phase 04-independent-fixes P02 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -78,6 +80,9 @@ Recent decisions affecting current work:
 - [Phase 03-notifications]: vetVisitReminders: pas de filtre isPremium — rappels vet pour tous les utilisateurs
 - [Phase 03-notifications]: vetVisitReminders: record.title||'Consultation' fallback + getTime() pour compat TypeScript
 - [Phase 03-notifications]: NOTIF-01: medicationReminders suit exactement le pattern vaccineReminders — titres medicaments utilises tels quels (pas de resolveVaccineName)
+- [Phase 04-independent-fixes]: Appetite scoring none=0/decreased=1/normal=2/increased=3 — symmetric around 2, same drop-threshold logic as mood/energy
+- [Phase 04-independent-fixes]: ok appetite alert suppressed if critical vitality alert already present to avoid contradictory signals
+- [Phase 04-independent-fixes]: updateStreakSilently called fire-and-forget from WalkMode handleStop — dedup guard in streakHelper prevents double-counting
 
 ### Pending Todos
 
@@ -90,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T06:17:21.246Z
-Stopped at: Checkpoint 03-01 Task 3: CRON registration Base44 UI (human-action required)
+Last session: 2026-03-11T06:35:00.000Z
+Stopped at: Completed 04-01-PLAN.md
 Resume file: None
