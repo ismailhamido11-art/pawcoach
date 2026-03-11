@@ -56,6 +56,7 @@ Progress: [███░░░░░░░] 30%
 | Phase 03-notifications P01 | 5 | 2 tasks | 2 files |
 | Phase 04-independent-fixes P01 | 5 | 2 tasks | 2 files |
 | Phase 04-independent-fixes P02 | 5 | 2 tasks | 2 files |
+| Phase 04-independent-fixes P04 | 4min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -84,6 +85,8 @@ Recent decisions affecting current work:
 - [Phase 04-independent-fixes]: ok appetite alert suppressed if critical vitality alert already present to avoid contradictory signals
 - [Phase 04-independent-fixes]: updateStreakSilently called fire-and-forget from WalkMode handleStop — dedup guard in streakHelper prevents double-counting
 - [Phase 04-independent-fixes]: noon est champ JSON optionnel dans plan nutritionnel — LLM ne le genere que si portions >= 3, UI affiche conditionnellement, zero regression plans 2 repas existants
+- [Phase 04-independent-fixes]: next_vet_appointment bonus +15 vetScore plafonne a 25 — pas de double boost si visite recente + RDV programme
+- [Phase 04-independent-fixes]: vet_name/vet_city dans header PDF Y=38 (chip present) ou Y=33 (sans chip) — else if pour section minimale veterinaire si aucune visite passee
 
 ### Pending Todos
 
@@ -96,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T06:47:06.969Z
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-03-11T07:00:00.000Z
+Stopped at: Completed 04-04-PLAN.md
 Resume file: None
