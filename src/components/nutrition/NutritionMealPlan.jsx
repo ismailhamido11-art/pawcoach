@@ -296,6 +296,10 @@ RÈGLES :
         let cleaned = jsonMatch[0];
         const parsed = JSON.parse(cleaned);
         if (parsed.days && Array.isArray(parsed.days)) {
+          const portions = dietPrefs?.portions_per_day || 2;
+          if (portions < 3) {
+            parsed.days.forEach(d => { delete d.noon; });
+          }
           setPlan(parsed);
         } else {
           throw new Error("Invalid structure");

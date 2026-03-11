@@ -117,15 +117,15 @@ Deno.serve(async (req) => {
       // Vet visits this week
       const vetVisits = weekHealthRecords.filter(r => r.type === "vet_visit");
       if (vetVisits.length > 0) {
-        healthEvents.push(`${vetVisits.length} visite(s) vet cette semaine${vetVisits[0].label ? ` (${String(vetVisits[0].label).substring(0, 50)})` : ""}`);
+        healthEvents.push(`${vetVisits.length} visite(s) vet cette semaine${vetVisits[0].title ? ` (${String(vetVisits[0].title).substring(0, 50)})` : ""}`);
       }
 
-      // Overdue vaccinations (next_date < today)
+      // Overdue vaccines (next_date < today)
       const overdueVaccines = (dogHealthRecords || []).filter(r =>
-        r.type === "vaccination" && r.next_date && r.next_date < todayStr
+        r.type === "vaccine" && r.next_date && r.next_date < todayStr
       );
       if (overdueVaccines.length > 0) {
-        const names = overdueVaccines.slice(0, 3).map(r => String(r.label || "vaccin").substring(0, 30)).join(", ");
+        const names = overdueVaccines.slice(0, 3).map(r => String(r.title || "vaccin").substring(0, 30)).join(", ");
         healthEvents.push(`vaccin(s) en retard : ${names}`);
       }
 
@@ -134,7 +134,7 @@ Deno.serve(async (req) => {
         r.type === "medication" && r.next_date && r.next_date >= todayStr
       );
       if (activeMeds.length > 0) {
-        const names = activeMeds.slice(0, 3).map(r => String(r.label || "medicament").substring(0, 30)).join(", ");
+        const names = activeMeds.slice(0, 3).map(r => String(r.title || "medicament").substring(0, 30)).join(", ");
         healthEvents.push(`medicament(s) en cours : ${names}`);
       }
 
