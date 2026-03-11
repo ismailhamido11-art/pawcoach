@@ -1,6 +1,15 @@
 /**
- * dateHelpers.js — Shared date formatting helpers for chat-style UIs.
+ * dateHelpers.js — Shared date formatting & calculation helpers.
  */
+
+/** Number of days from today to a future date string. Negative if past. */
+export function getDaysLeft(dateStr) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(dateStr);
+  due.setHours(0, 0, 0, 0);
+  return Math.round((due - today) / (1000 * 60 * 60 * 24));
+}
 
 /** Format a timestamp as "Aujourd'hui", "Hier", or "3 mars" */
 export function getDateLabel(timestamp) {

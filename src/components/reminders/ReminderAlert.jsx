@@ -6,20 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
 import { matchVaccineKey, getVaccineDisplayName } from "@/utils/healthStatus";
+import { getDaysLeft } from "@/utils/dateHelpers";
 
 const TYPE_CONFIG = {
   vaccine:   { icon: Syringe,      color: "text-green-600",  bg: "bg-green-50",  border: "border-green-200",  label: "Vaccin" },
   vet_visit: { icon: Stethoscope,  color: "text-purple-600", bg: "bg-purple-50", border: "border-purple-200", label: "Véto" },
   medication: { icon: Pill,        color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200", label: "Traitement" },
 };
-
-function getDaysLeft(nextDate) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const due = new Date(nextDate);
-  due.setHours(0, 0, 0, 0);
-  return Math.round((due - today) / (1000 * 60 * 60 * 24));
-}
 
 // Key to avoid showing same alert twice per session
 const SESSION_KEY = "reminders_shown_at";
