@@ -256,8 +256,7 @@ export default function ParkReviews({ park, dog, user }) {
               whileTap={{ scale: 0.96 }}
               onClick={handleSubmit}
               disabled={submitting || rating === 0}
-              className="flex-1 py-2 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-1.5 disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))" }}
+              className="flex-1 py-2 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-1.5 disabled:opacity-50 gradient-primary"
             >
               {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
               Publier
@@ -333,8 +332,7 @@ export function PostWalkReviewPrompt({ park, dog, user, onDone }) {
           whileTap={{ scale: 0.9 }}
           onClick={submit}
           disabled={submitting || rating === 0}
-          className="px-3 py-1.5 rounded-xl text-[10px] font-bold text-white disabled:opacity-40"
-          style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))" }}
+          className="px-3 py-1.5 rounded-xl text-[10px] font-bold text-white disabled:opacity-40 gradient-primary"
         >
           {submitting ? <Loader2 className="w-3 h-3 animate-spin" /> : "Envoyer"}
         </motion.button>

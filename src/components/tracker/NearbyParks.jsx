@@ -200,8 +200,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
           <motion.button
             whileTap={{ scale: 0.96 }}
             onClick={retryGeolocation}
-            className="mt-3 w-full py-2.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2"
-            style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))" }}
+            className="mt-3 w-full py-2.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2 gradient-primary"
           >
             <Navigation className="w-4 h-4" />
             {loading ? "Recherche..." : "Localiser les parcs"}
@@ -406,8 +405,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                           <motion.button
                             whileTap={{ scale: 0.96 }}
                             onClick={(e) => { e.stopPropagation(); openDirections(park.lat, park.lng); }}
-                            className="flex-1 py-2.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2"
-                            style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))" }}
+                            className="flex-1 py-2.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2 gradient-primary"
                           >
                             <Navigation className="w-4 h-4" />
                             Y aller

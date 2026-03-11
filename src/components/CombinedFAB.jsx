@@ -187,8 +187,8 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
                   <button
                     onClick={handleSave}
                     disabled={saving || saved}
-                    className="w-full py-3 rounded-2xl font-bold text-white text-sm flex items-center justify-center gap-2 transition-all"
-                    style={{ background: saved ? "#10b981" : "linear-gradient(135deg, #0f4c3a, #2d9f82)" }}
+                    className={`w-full py-3 rounded-2xl font-bold text-white text-sm flex items-center justify-center gap-2 transition-all ${saved ? "" : "gradient-primary"}`}
+                    style={saved ? { background: "#10b981" } : {}}
                   >
                     {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : null}
                     {saved ? "Enregistré !" : saving ? "Enregistrement..." : "Enregistrer"}
@@ -220,8 +220,8 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
         whileTap={{ scale: 0.9 }}
         animate={{ scale: open ? 0 : 1, opacity: open ? 0 : 1 }}
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
-        className="fixed right-5 z-[45] w-14 h-14 rounded-full shadow-2xl flex items-center justify-center"
-        style={{ bottom: "calc(6rem + env(safe-area-inset-bottom, 0px))", background: "linear-gradient(135deg, #0f4c3a, #2d9f82)" }}
+        className="fixed right-5 z-[45] w-14 h-14 rounded-full shadow-2xl flex items-center justify-center gradient-primary"
+        style={{ bottom: "calc(6rem + env(safe-area-inset-bottom, 0px))" }}
       >
         <Plus className="w-6 h-6 text-white" strokeWidth={2.5} />
       </motion.button>

@@ -16,9 +16,8 @@ export default function HealthAssistantBar({ onClick }) {
         whileTap={{ scale: 0.96 }}
         onClick={onClick}
         aria-label="Ouvrir l'assistant sante"
-        className="pointer-events-auto flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg text-white text-sm font-bold"
+        className="pointer-events-auto flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg text-white text-sm font-bold gradient-primary"
         style={{
-          background: "linear-gradient(135deg, #1A4D3E 0%, #2D9F82 100%)",
           boxShadow: "0 4px 20px rgba(45,159,130,0.40)",
         }}
       >

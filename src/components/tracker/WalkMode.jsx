@@ -438,8 +438,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
             <motion.button
               onClick={handleStart}
               whileTap={{ scale: 0.94 }}
-              className="relative w-52 h-52 rounded-full shadow-2xl flex flex-col items-center justify-center gap-2 overflow-hidden"
-              style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))" }}
+              className="relative w-52 h-52 rounded-full shadow-2xl flex flex-col items-center justify-center gap-2 overflow-hidden gradient-primary"
             >
               {/* Pulsing rings */}
               {[1, 2, 3].map(i => (
@@ -688,8 +687,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                           </div>
                           <button
                             onClick={saveMoodData}
-                            className="w-full py-2 rounded-xl text-xs font-bold text-white"
-                            style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))" }}
+                            className="w-full py-2 rounded-xl text-xs font-bold text-white gradient-primary"
                           >
                             Enregistrer
                           </button>
@@ -718,8 +716,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                     </motion.button>
                     <button
                       onClick={handleReset}
-                      className="py-3.5 rounded-2xl font-bold text-sm"
-                      style={{ background: "linear-gradient(135deg, hsl(160,50%,22%), hsl(162,45%,38%))", color: "white" }}
+                      className="py-3.5 rounded-2xl font-bold text-sm text-white gradient-primary"
                     >
                       Nouvelle balade
                     </button>

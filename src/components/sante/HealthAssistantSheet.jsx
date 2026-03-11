@@ -40,8 +40,7 @@ export default function HealthAssistantSheet({ visible, onClose, dogId, dog, onR
             <div className="flex items-center justify-between px-4 pb-3 flex-shrink-0 border-b border-border">
               <div className="flex items-center gap-2.5">
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{ background: "linear-gradient(135deg, #1A4D3E 0%, #2D9F82 100%)" }}
+                  className="w-8 h-8 rounded-full flex items-center justify-center gradient-primary"
                 >
                   <Sparkles className="w-4 h-4 text-white" />
                 </div>
