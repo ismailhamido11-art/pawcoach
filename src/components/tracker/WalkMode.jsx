@@ -8,6 +8,7 @@ import WalkShareCard from "./WalkShareCard";
 import NearbyParks from "./NearbyParks";
 import { PostWalkReviewPrompt } from "./ParkReviews";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
+import { updateStreakSilently } from "@/components/streakHelper";
 
 const WALK_MOODS = [
   { id: "super", emoji: "😊", label: "Super" },
@@ -347,6 +348,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
       // Check walk badges
       const allLogs = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 60);
       checkWalkBadges(dog.id, user?.email, allLogs || []).catch(() => {});
+      updateStreakSilently(dog.id, user?.email).catch(() => {});
       onLogged?.();
     } catch (e) {
       // Save to localStorage for later retry
