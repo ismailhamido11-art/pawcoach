@@ -338,6 +338,18 @@ export function computeHealthScore(records, dog, extraWeightSources = []) {
     else vetScore = 5;
   }
 
+  // Bonus next_vet_appointment : un RDV programme dans les 30 jours montre une demarche proactive
+  if (dog?.next_vet_appointment && isValidDate(dog.next_vet_appointment)) {
+    const apptDate = parseDate(dog.next_vet_appointment);
+    if (apptDate) {
+      const daysUntil = daysBetween(t, apptDate); // positif si date future
+      if (daysUntil >= 0 && daysUntil <= 30) {
+        // RDV dans les 30j : +15 pts, plafonne a 25 (pas de double boost)
+        vetScore = Math.min(25, vetScore + 15);
+      }
+    }
+  }
+
   // --- Activity score (0-15) — based on record freshness ---
   const allDated = recs.filter(r => isValidDate(r.date));
   let activityScore = 0;
