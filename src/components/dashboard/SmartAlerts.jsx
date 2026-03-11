@@ -102,10 +102,15 @@ export function computeAlerts({ dog, checkins = [], records = [], streak, dailyL
 
   // ── 1b. TENDANCE APPÉTIT (7 derniers vs 7 précédents) ──
   if (last7.length >= 3 && prev7.length >= 3) {
-    const appetiteScore = { normal: 2, increased: 3, decreased: 1, none: 0 };
-    // undefined/missing appetite defaults to "normal" (score 2) — most check-ins skip appetite field
-    const avgAppetiteLast = last7.reduce((s, c) => s + (appetiteScore[c.appetite || "normal"]), 0) / last7.length;
-    const avgAppetitePrev = prev7.reduce((s, c) => s + (appetiteScore[c.appetite || "normal"]), 0) / prev7.length;
+    // appetite is stored as number (1=none, 2=normal, 3=increased) from InlineCheckin
+    // or as string ("none","decreased","normal","increased") from older data
+    const parseAppetite = (val) => {
+      if (typeof val === "number") return val; // 1, 2, 3 from InlineCheckin
+      const stringMap = { none: 0, decreased: 1, normal: 2, increased: 3 };
+      return stringMap[val] ?? 2; // default to normal if missing/unknown
+    };
+    const avgAppetiteLast = last7.reduce((s, c) => s + parseAppetite(c.appetite), 0) / last7.length;
+    const avgAppetitePrev = prev7.reduce((s, c) => s + parseAppetite(c.appetite), 0) / prev7.length;
     const appetiteDrop = avgAppetitePrev - avgAppetiteLast;
 
     const hasCriticalVitality = alerts.some(a => a.id === "vitality_drop_critical");
