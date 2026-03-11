@@ -186,9 +186,10 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       .filter(c => c.date && (Date.now() - new Date(c.date).getTime()) < 7 * 86400000)
       .sort((a, b) => new Date(b.date) - new Date(a.date));
     if (recentCheckins.length > 0) {
-      const moodMap = { great: "excellent", good: "bon", neutral: "neutre", bad: "mauvais", terrible: "très mauvais" };
-      const appetiteMap = { normal: "normal", increased: "augmenté", decreased: "diminué", none: "aucun" };
-      const energyMap = { high: "haute", medium: "moyenne", low: "basse" };
+      // InlineCheckin stores mood (1-4), energy (1-3), appetite (1-3) as numbers
+      const moodMap = { 1: "triste", 2: "neutre", 3: "bon", 4: "excellent", great: "excellent", good: "bon", neutral: "neutre", bad: "mauvais", terrible: "très mauvais" };
+      const appetiteMap = { 1: "aucun", 2: "normal", 3: "augmenté", normal: "normal", increased: "augmenté", decreased: "diminué", none: "aucun" };
+      const energyMap = { 1: "basse", 2: "moyenne", 3: "haute", high: "haute", medium: "moyenne", low: "basse" };
       const moods = recentCheckins.map(c => moodMap[c.mood] || c.mood).filter(Boolean);
       const appetites = recentCheckins.map(c => appetiteMap[c.appetite] || c.appetite).filter(Boolean);
       const energies = recentCheckins.map(c => energyMap[c.energy] || c.energy).filter(Boolean);
