@@ -284,13 +284,26 @@ export function computeWeightTrend(records) {
 /**
  * Compute overall health score (0-100).
  * Weighted: vaccines 40%, weight 20%, vet visits 25%, activity 15%.
+ *
+ * @param {Array} records - HealthRecord[]
+ * @param {Object} dog - dog object
+ * @param {Array} extraWeightSources - optional additional weight sources (GrowthEntry[], DailyLog[])
+ *   Each entry must have { weight_kg, date }. Deduplicated against HealthRecord by date (HealthRecord wins).
  */
-export function computeHealthScore(records, dog) {
+export function computeHealthScore(records, dog, extraWeightSources = []) {
   const t = today();
   const recs = records || [];
 
+  // Pre-merge extra weight sources (GrowthEntry, DailyLog) as pseudo-records
+  const extraWeights = (extraWeightSources || [])
+    .filter(s => s.weight_kg && s.date && isValidDate(s.date))
+    .map(s => ({ type: "weight", value: s.weight_kg, date: s.date, id: s.id }));
+  const hrDates = new Set(recs.filter(r => r.type === "weight").map(r => r.date));
+  const deduped = extraWeights.filter(w => !hrDates.has(w.date));
+  const enrichedRecs = [...recs, ...deduped];
+
   // --- Vaccine score (0-40) ---
-  const vaccineMap = computeVaccineMap(recs);
+  const vaccineMap = computeVaccineMap(enrichedRecs);
   const coreVaccines = Object.entries(vaccineMap).filter(([_, v]) => v.ref.category === "core");
   let vaccineScore = 0;
   if (coreVaccines.length > 0) {
@@ -301,8 +314,8 @@ export function computeHealthScore(records, dog) {
     vaccineScore = ((upToDate * 1 + dueSoon * 0.6) / total) * 40;
   }
 
-  // --- Weight score (0-20) ---
-  const weightTrend = computeWeightTrend(recs);
+  // --- Weight score (0-20) — uses enrichedRecs to include GrowthEntry + DailyLog weights ---
+  const weightTrend = computeWeightTrend(enrichedRecs);
   let weightScore = 0;
   if (weightTrend.current !== null) {
     const lastWeightDate = parseDate(weightTrend.lastDate);
