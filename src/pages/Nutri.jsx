@@ -478,7 +478,7 @@ export default function Nutri() {
               Scanne 2 emballages et l'IA compare leur composition pour {dog?.name || "ton chien"}
             </p>
           </div>
-          <FoodComparator dog={dog} />
+          <FoodComparator dog={dog} dietPreferences={dietPrefs} />
         </div>
       )}
 

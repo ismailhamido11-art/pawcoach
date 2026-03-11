@@ -106,8 +106,9 @@ function ProductSlot({ index, product, onAdd, onRemove }) {
   );
 }
 
-export default function FoodComparator({ dog }) {
+export default function FoodComparator({ dog, dietPreferences }) {
   const { credits, hasCredits, isPremium, consume } = useActionCredits();
+  const dislikedFoods = dietPreferences?.disliked_foods || "aucun";
   const [products, setProducts] = useState([null, null]);
   const [comparing, setComparing] = useState(false);
   const [comparison, setComparison] = useState(null);
@@ -162,7 +163,8 @@ export default function FoodComparator({ dog }) {
         : "âge inconnu";
 
       const prompt = `Tu es PawCoach, expert en nutrition canine. Analyse cette étiquette ou photo d'aliment pour chien.
-Chien : ${dog?.name || "chien"}, race : ${dog?.breed || "inconnue"}, âge : ${ageText}, poids : ${dog?.weight ? dog.weight + "kg" : "inconnu"}, allergies : ${dog?.allergies || "aucune"}, régime : ${dog?.diet_type || "inconnu"}.
+Chien : ${dog?.name || "chien"}, race : ${dog?.breed || "inconnue"}, âge : ${ageText}, poids : ${dog?.weight ? dog.weight + "kg" : "inconnu"}, allergies : ${dog?.allergies || "aucune"}, aliments indésirables : ${dislikedFoods}, régime : ${dog?.diet_type || "inconnu"}.
+Si un ingrédient correspond aux aliments indésirables, le signaler dans l'analyse.
 Fournis une analyse nutritionnelle détaillée en JSON. Réponds UNIQUEMENT en français. Sois précis sur la composition.`;
 
       const aiResult = await base44.integrations.Core.InvokeLLM({
@@ -216,7 +218,7 @@ Fournis une analyse nutritionnelle détaillée en JSON. Réponds UNIQUEMENT en f
     setComparing(true);
     setComparison(null);
     try {
-      const prompt = `Tu es PawCoach, expert nutrition canine. Compare ces deux produits pour le chien ${dog?.name || "ce chien"} (${dog?.breed || ""}, ${dog?.weight ? dog.weight + "kg" : ""}, allergies : ${dog?.allergies || "aucune"}).
+      const prompt = `Tu es PawCoach, expert nutrition canine. Compare ces deux produits pour le chien ${dog?.name || "ce chien"} (${dog?.breed || ""}, ${dog?.weight ? dog.weight + "kg" : ""}, allergies : ${dog?.allergies || "aucune"}, aliments indésirables : ${dislikedFoods}).
 
 Produit A : ${a.result.food_name} (score ${a.result.score}/10)
 - Points forts : ${(a.result.pros || []).join(", ")}
