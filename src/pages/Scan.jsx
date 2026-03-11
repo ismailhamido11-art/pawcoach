@@ -252,7 +252,7 @@ export default function Scan() {
             return months < 12 ? `${months} mois` : `${Math.floor(months / 12)} ans`;
           })()
         : "âge inconnu";
-      const prompt = `Tu es PawCoach, un analyseur de sécurité alimentaire pour chiens. Analyse cette image. Si c'est un aliment brut, identifie-le et classe-le en : TOXIQUE (avec emoji crâne), AVEC PRECAUTION (avec emoji avertissement), ou SANS DANGER (avec emoji coche verte). Si c'est une étiquette de croquettes/aliment pour animaux, analyse la composition nutritionnelle et donne un score sur 10. Personnalise pour ce chien : ${dog.name}, ${dog.breed || "race inconnue"}, ${ageText}, ${dog.weight ? dog.weight + "kg" : "poids inconnu"}, allergies : ${dog.allergies || "aucune"}, aliments indésirables (préférences) : ${dietPreferences?.disliked_foods || "aucun"}. Si un des aliments identifiés correspond aux aliments indésirables, indique-le clairement dans la recommandation, même si ce n'est pas toxique. Réponds en français. Utilise le tutoiement. Formate ta réponse en JSON avec ces champs : food_name (string), verdict ("toxic", "caution", ou "safe"), score (number 1-10, null si aliment brut), summary (résumé de 2-3 lignes), details (analyse nutritionnelle ou explication détaillée), recommendation (conseil personnalisé pour ${dog.name}). Sois concis et chaleureux.`;
+      const prompt = `Tu es PawCoach, un analyseur de sécurité alimentaire pour chiens. Analyse cette image. Si c'est un aliment brut, identifie-le et classe-le en : TOXIQUE (avec emoji crâne), AVEC PRECAUTION (avec emoji avertissement), ou SANS DANGER (avec emoji coche verte). Si c'est une étiquette de croquettes/aliment pour animaux, analyse la composition nutritionnelle et donne un score sur 10. Personnalise pour ce chien : ${dog.name}, ${dog.breed || "race inconnue"}, ${ageText}, ${dog.weight ? dog.weight + "kg" : "poids inconnu"}, allergies : ${dog.allergies || "aucune"}, aliments indésirables (préférences) : ${dietPreferences?.disliked_foods || "aucun"}. Si un des aliments identifiés correspond aux aliments indésirables (disliked_foods), liste-les dans allergen_alerts avec la mention "(préférence)". Réponds en français. Utilise le tutoiement. Formate ta réponse en JSON avec ces champs : food_name (string), verdict ("toxic", "caution", ou "safe"), score (number 1-10, null si aliment brut), summary (résumé de 2-3 lignes), details (analyse nutritionnelle ou explication détaillée), recommendation (conseil personnalisé pour ${dog.name}), allergen_alerts (array de strings, aliments problématiques ou indésirables détectés). Sois concis et chaleureux.`;
       const aiResult = await base44.integrations.Core.InvokeLLM({
         prompt,
         file_urls: [file_url],
@@ -265,6 +265,7 @@ export default function Scan() {
             summary: { type: "string" },
             details: { type: "string" },
             recommendation: { type: "string" },
+            allergen_alerts: { type: "array", items: { type: "string" } },
           },
         },
       });
@@ -597,6 +598,18 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                       </div>
                     </div>
                     <p className="text-sm text-foreground/80 leading-relaxed">{result.summary}</p>
+                    {result.allergen_alerts?.length > 0 && (
+                      <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl">
+                        <p className="text-xs font-bold text-amber-700 mb-1.5">⚠️ Aliments indésirables détectés</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {result.allergen_alerts.map((alert, i) => (
+                            <span key={i} className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                              {alert}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {result.verdict === "toxic" && (
                       <div className={`p-3 rounded-2xl border-2 ${dogAteIt ? "bg-red-100 border-red-400" : "bg-red-50 border-red-200"}`}>
                         <p className="text-sm font-bold text-red-700 mb-2">⚠️ {dog?.name} a-t-il/elle mangé cet aliment ?</p>
