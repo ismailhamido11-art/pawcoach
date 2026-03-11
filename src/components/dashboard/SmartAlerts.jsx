@@ -3,7 +3,7 @@
  * Analyse : baisse de vitalité, prédiction vaccins, poids, activité, streak
  */
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
@@ -249,7 +249,7 @@ export function computeAlerts({ dog, checkins = [], records = [], streak, dailyL
   return alerts;
 }
 
-function AlertRow({ alert, index }) {
+const AlertRow = memo(function AlertRow({ alert, index }) {
   const cfg = SEVERITY[alert.severity];
   const Icon = alert.icon;
 
@@ -282,11 +282,11 @@ function AlertRow({ alert, index }) {
       )}
     </motion.div>
   );
-}
+});
 
 export default function SmartAlerts({ dog, checkins = [], records = [], streak, dailyLogs = [], scans = [] }) {
   const [expanded, setExpanded] = useState(false);
-  const alerts = computeAlerts({ dog, checkins, records, streak, dailyLogs, scans });
+  const alerts = useMemo(() => computeAlerts({ dog, checkins, records, streak, dailyLogs, scans }), [dog, checkins, records, streak, dailyLogs, scans]);
 
   const criticalCount = alerts.filter(a => a.severity === "critical").length;
   const warningCount  = alerts.filter(a => a.severity === "warning").length;

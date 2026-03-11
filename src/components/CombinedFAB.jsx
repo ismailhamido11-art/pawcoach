@@ -110,6 +110,8 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            role="dialog"
+            aria-label="Log rapide"
             className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl shadow-2xl"
             style={{ paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))" }}
           >
@@ -153,6 +155,7 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
                         <p className="text-[10px] font-bold text-muted-foreground mb-0.5">{label}</p>
                         {type === "text" ? (
                           <textarea
+                            aria-label={label}
                             className="w-full bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 resize-none outline-none"
                             rows={1}
                             placeholder={placeholder}
@@ -162,6 +165,7 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
                         ) : (
                           <div className="flex items-center gap-1.5">
                             <input
+                              aria-label={label}
                               className="flex-1 bg-transparent text-xs font-bold text-foreground placeholder:text-muted-foreground/50 outline-none"
                               type="number"
                               placeholder={placeholder}

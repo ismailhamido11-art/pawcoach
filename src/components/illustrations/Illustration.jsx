@@ -15,16 +15,19 @@ const ILLUSTRATIONS = {
   walkingAround: "walking-around.svg",
 };
 
-export default function Illustration({ name, className = "", alt = "" }) {
+export default function Illustration({ name, className = "", alt }) {
   const file = ILLUSTRATIONS[name];
   if (!file) return null;
+  // A11Y: meaningful default alt based on illustration name, or decorative if explicitly ""
+  const computedAlt = alt !== undefined ? alt : name.replace(/([A-Z])/g, " $1").trim();
   return (
     <img
       src={BASE_URL + file}
-      alt={alt}
+      alt={computedAlt}
       className={className}
       loading="lazy"
       draggable={false}
+      {...(computedAlt === "" ? { "aria-hidden": "true" } : {})}
     />
   );
 }

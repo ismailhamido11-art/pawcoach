@@ -331,7 +331,8 @@ export function computeHealthScore(records, dog, extraWeightSources = []) {
     .filter(s => s.body_condition_score && s.date && isValidDate(s.date))
     .sort((a, b) => new Date(b.date) - new Date(a.date));
   if (bcsEntries.length > 0) {
-    const latestBcs = bcsEntries[0].body_condition_score;
+    const rawBcs = bcsEntries[0].body_condition_score;
+    const latestBcs = Math.max(1, Math.min(9, Math.round(Number(rawBcs) || 5))); // Clamp to valid WSAVA 1-9 range
     const bcsDays = daysBetween(parseDate(bcsEntries[0].date), t);
     if (bcsDays <= 90) { // Only factor in recent BCS (last 3 months)
       if (latestBcs >= 4 && latestBcs <= 5) weightScore = Math.min(20, weightScore + 4); // Ideal BCS

@@ -38,7 +38,7 @@ export default function InlineEditCard({
           {sub && !editing && <p className={`text-[10px] ${subColor || "text-muted-foreground"}`}>{sub}</p>}
         </div>
         {!editing && (
-          <button onClick={() => { setDraft(currentValue ?? ""); setEditing(true); }} className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+          <button aria-label={`Modifier ${label}`} onClick={() => { setDraft(currentValue ?? ""); setEditing(true); }} className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
             <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         )}
@@ -51,6 +51,7 @@ export default function InlineEditCard({
           ) : (
             <>
               <input
+                aria-label={editLabel || label}
                 type={editType || "text"}
                 value={draft}
                 onChange={e => { setDraft(e.target.value); setError(""); }}

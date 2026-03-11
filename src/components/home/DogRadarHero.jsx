@@ -3,6 +3,7 @@
  * Photo centrale + 4 arcs de données animés (style Apple Watch)
  * Chaque arc = une section de l'app, nourri par les vraies données
  */
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -115,7 +116,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Bonjour" : hour < 18 ? "Bon après-midi" : "Bonsoir";
   const { mood } = useDogAvatarState({ checkins, streak, records: records || [], scans: scans || [] });
-  const arcs = computeArcs({ checkins, streak, records: records || [], exercises: exercises || [], scans: scans || [] });
+  const arcs = useMemo(() => computeArcs({ checkins, streak, records: records || [], exercises: exercises || [], scans: scans || [] }), [checkins, streak, records, exercises, scans]);
 
   const SIZE = 160;
 
