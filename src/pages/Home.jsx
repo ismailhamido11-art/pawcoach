@@ -18,7 +18,7 @@ import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
 import SmartAlerts from "../components/dashboard/SmartAlerts";
 import CombinedFAB from "../components/CombinedFAB";
 import { checkStreakBadges } from "@/components/achievements/badgeUtils";
-import { buildRecommendations } from "@/utils/recommendations";
+import { buildRecommendations, getTodayString } from "@/utils/recommendations";
 
 import { Flame } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
@@ -37,11 +37,6 @@ const MILESTONES = [
   { days: 60,  message: "2 mois !",               sub: "Engagement exceptionnel" },
   { days: 100, message: "100 jours !",             sub: "Légende absolue" },
 ];
-
-function getTodayString() {
-  const d = new Date();
-  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-}
 
 export default function Home() {
   const navigate = useNavigate();

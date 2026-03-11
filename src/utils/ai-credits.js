@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
+import { getTodayString } from "@/utils/recommendations";
 
 export const MSG_DAILY_LIMIT = 10;
 export const ACTION_DAILY_LIMIT = 3;
-
-function getTodayString() {
-  return new Date().toISOString().split("T")[0];
-}
 
 /**
  * Initialize / daily-reset credits for a free user.

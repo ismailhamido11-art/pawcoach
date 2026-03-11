@@ -1,8 +1,5 @@
 import { base44 } from "@/api/base44Client";
-
-function getTodayString() {
-  return new Date().toISOString().split("T")[0];
-}
+import { getTodayString } from "@/utils/recommendations";
 
 export async function updateStreakSilently(dogId, ownerEmail) {
   try {

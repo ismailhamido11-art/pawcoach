@@ -14,6 +14,7 @@ import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
 import { createPageUrl, getActiveDog } from "@/utils";
+import { getTodayString } from "@/utils/recommendations";
 import { motion, AnimatePresence } from "framer-motion";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
@@ -24,10 +25,6 @@ function getAge(birthDate) {
   if (!birthDate) return null;
   const months = Math.floor((Date.now() - new Date(birthDate)) / (1000 * 60 * 60 * 24 * 30));
   return months < 12 ? `${months} mois` : `${Math.floor(months / 12)} ans`;
-}
-
-function getTodayString() {
-  return new Date().toISOString().split("T")[0];
 }
 
 function getDateLabel(timestamp) {

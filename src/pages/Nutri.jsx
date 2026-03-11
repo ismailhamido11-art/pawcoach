@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog, createPageUrl } from "@/utils";
+import { getTodayString } from "@/utils/recommendations";
 import BottomNav from "../components/BottomNav";
 import ChatFAB from "../components/ChatFAB";
 import WellnessBanner from "../components/WellnessBanner";
@@ -224,8 +225,6 @@ export default function Nutri() {
     ta.style.height = "auto";
     ta.style.height = Math.min(ta.scrollHeight, 120) + "px";
   }, [input]);
-
-  const getTodayString = () => new Date().toISOString().split("T")[0];
 
   const init = async () => {
     try {

@@ -6,11 +6,7 @@ import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
-
-function getTodayString() {
-  const d = new Date();
-  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-}
+import { getTodayString } from "@/utils/recommendations";
 
 const FIELDS = [
   { key: "weight_kg", icon: Scale, label: "Poids", unit: "kg", type: "number", placeholder: "Ex: 12.5", color: "#3b82f6", bg: "bg-blue-50", min: 0.1, max: 200 },
