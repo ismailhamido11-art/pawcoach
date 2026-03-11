@@ -41,8 +41,8 @@ Requirements pour le milestone Data Flow Integrity. Chaque requirement corrige u
 
 ### Sante
 
-- [ ] **SANTE-01**: Le PDF sante inclut vet_name et vet_city du profil chien
-- [ ] **SANTE-02**: next_vet_appointment contribue au score sante et apparait dans les rappels
+- [x] **SANTE-01**: Le PDF sante inclut vet_name et vet_city du profil chien
+- [x] **SANTE-02**: next_vet_appointment contribue au score sante et apparait dans les rappels
 
 ## v2 Requirements
 
@@ -82,8 +82,8 @@ Deferred au prochain milestone.
 | NUTRI-01 | Phase 4 | Complete |
 | ACT-01 | Phase 4 | Complete |
 | ACT-02 | Phase 4 | Complete |
-| SANTE-01 | Phase 4 | Pending |
-| SANTE-02 | Phase 4 | Pending |
+| SANTE-01 | Phase 4 | Complete (2026-03-11) |
+| SANTE-02 | Phase 4 | Complete (2026-03-11) |
 
 **Coverage:**
 - v1.0 requirements: 16 total
