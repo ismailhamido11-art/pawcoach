@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Lightbulb, ChevronRight, Sparkles } from "lucide-react";
-import { buildRecommendations } from "@/utils/recommendations";
 
 // 25 tips rotating daily — {name} and {breed} are replaced dynamically
 const TIPS = [
@@ -44,27 +43,15 @@ function getDayOfYear() {
   return Math.floor((now - start) / (1000 * 60 * 60 * 24));
 }
 
-export default function DailyCoaching({ dog, records = [], exercises = [], scans = [], dailyLogs = [], checkins = [], todayCheckin, streak, diagnosisReports = [], nutritionPlans = [] }) {
+export default function DailyCoaching({ dog, recommendations = [] }) {
   const dayIndex = getDayOfYear();
   const tip = TIPS[dayIndex % TIPS.length]
     .replace(/\{name\}/g, dog?.name || "ton chien")
     .replace(/\{breed\}/g, dog?.breed || "chiens");
 
-  const recs = buildRecommendations({
-    records: records || [],
-    exercises: exercises || [],
-    scans: scans || [],
-    checkins: checkins || [],
-    dailyLogs: dailyLogs || [],
-    todayCheckin,
-    streak,
-    diagnosisReports: diagnosisReports || [],
-    nutritionPlans: nutritionPlans || [],
-  });
-
-  // Filter out "Home" recs (we're already on Home, they go nowhere)
-  const actionableRecs = recs.filter(r => r.page !== "Home");
-  const topRecs = actionableRecs.slice(0, 3);
+  // Filter out "Home" recs, skip #1 (shown in TodayCard), show #2 and #3 (DASH-05)
+  const actionableRecs = recommendations.filter(r => r.page !== "Home");
+  const topRecs = actionableRecs.slice(1, 3);
 
   return (
     <motion.div

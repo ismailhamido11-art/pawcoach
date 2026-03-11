@@ -2,32 +2,14 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Sparkles, AlertTriangle, ChevronRight, CheckCircle2 } from "lucide-react";
-import { buildRecommendations } from "@/utils/recommendations";
-import { isUserOnTrial, getTrialDaysLeft } from "@/utils/premium";
 import InlineCheckin from "./InlineCheckin";
 
-export default function TodayCard({ dog, user, todayCheckin, streak, records = [], exercises = [], scans = [], checkins = [], dailyLogs = [], onCheckin, submitting, diagnosisReports = [], nutritionPlans = [] }) {
+export default function TodayCard({ dog, user, todayCheckin, streak, recommendations = [], onCheckin, submitting }) {
   const hour = new Date().getHours();
   const timeLabel = hour < 12 ? "Ce matin" : hour < 18 ? "Cet apres-midi" : "Ce soir";
 
-  // Trial expiry alert
-  const trialDays = getTrialDaysLeft(user);
-  const showTrialAlert = isUserOnTrial(user) && trialDays <= 3;
-
-  // Get top recommendation
-  const recs = buildRecommendations({
-    records: records || [],
-    exercises: exercises || [],
-    scans: scans || [],
-    checkins: checkins,
-    dailyLogs: dailyLogs || [],
-    todayCheckin,
-    streak,
-    diagnosisReports: diagnosisReports || [],
-    nutritionPlans: nutritionPlans || [],
-  });
   // Skip "Home" recs — we're already on Home, they go nowhere
-  const topRec = recs.find(r => r.page !== "Home");
+  const topRec = recommendations.find(r => r.page !== "Home");
   const isAlert = topRec && topRec.priority === 1;
 
   // STATE 1: Critical alert (overdue vaccine)
@@ -144,14 +126,6 @@ export default function TodayCard({ dog, user, todayCheckin, streak, records = [
             <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40" />
           </div>
         </Link>
-      )}
-
-      {showTrialAlert && (
-        <div className="mt-3 p-2.5 bg-amber-50 rounded-xl border border-amber-100">
-          <p className="text-xs text-amber-800 font-medium">
-            Essai gratuit : {trialDays} jour{trialDays > 1 ? "s" : ""} restant{trialDays > 1 ? "s" : ""}
-          </p>
-        </div>
       )}
     </motion.div>
   );

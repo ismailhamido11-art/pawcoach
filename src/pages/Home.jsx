@@ -12,13 +12,15 @@ import BentoGrid from "../components/home/BentoGrid";
 import StreakBar from "../components/home/StreakBar";
 import DailyCoaching from "../components/home/DailyCoaching";
 import QuickActions from "../components/home/QuickActions";
-import BadgeTeaser from "../components/home/BadgeTeaser";
+// BadgeTeaser merged into StreakBar (DASH-10)
 import ActiveProgramCards from "../components/home/ActiveProgramCards";
 import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
+import SmartAlerts from "../components/dashboard/SmartAlerts";
 import CombinedFAB from "../components/CombinedFAB";
 import { checkStreakBadges } from "@/components/achievements/badgeUtils";
+import { buildRecommendations } from "@/utils/recommendations";
 
-import { Flame, Footprints } from "lucide-react";
+import { Flame } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
@@ -272,6 +274,22 @@ export default function Home() {
     return current;
   }, [dailyLogs]);
 
+  // Centralized recommendations — computed once, shared by TodayCard + DailyCoaching (DASH-05)
+  const recommendations = useMemo(() => {
+    if (!dog) return [];
+    return buildRecommendations({
+      records: records || [],
+      exercises: exercises || [],
+      scans: scans || [],
+      checkins: recentCheckins,
+      dailyLogs: dailyLogs || [],
+      todayCheckin,
+      streak,
+      diagnosisReports: diagnosisReports || [],
+      nutritionPlans: nutritionPlans || [],
+    });
+  }, [dog, records, exercises, scans, recentCheckins, dailyLogs, todayCheckin, streak, diagnosisReports, nutritionPlans]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background pb-24">
@@ -301,8 +319,9 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-40 relative flex flex-col pt-20">
-      <WellnessBanner />
+    <div className={`min-h-screen bg-background pb-40 relative flex flex-col ${recentCheckins.length < 3 ? "pt-20" : ""}`}>
+      {/* DASH-09: Hide WellnessBanner after 3+ check-ins */}
+      {recentCheckins.length < 3 && <WellnessBanner />}
 
       <PullToRefresh onRefresh={handleRefresh}>
         {/* Block 1: Compact Radar Hero */}
@@ -317,22 +336,61 @@ export default function Home() {
           dailyLogs={dailyLogs}
         />
 
-        {/* Trial expiry banner — segmente par age du chien */}
-        <div className="mt-3">
-          <TrialExpiryBanner user={user} dog={dog} />
-        </div>
-
         {/* Block 2: Today Card (AI coaching + inline checkin) */}
         <div className="mt-3">
           <TodayCard
             dog={dog} user={user} todayCheckin={todayCheckin} streak={streak}
-            records={records} exercises={exercises} scans={scans} checkins={recentCheckins} dailyLogs={dailyLogs}
+            recommendations={recommendations}
             onCheckin={handleCheckin} submitting={submitting}
-            diagnosisReports={diagnosisReports} nutritionPlans={nutritionPlans}
           />
         </div>
 
-        {/* Block 2b: Weekly Insight (premium) */}
+        {/* Block 3: Active Program Cards — most actionable content (DASH-01: moved up) */}
+        <div className="mt-3">
+          <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} behaviorBookmarks={behaviorBookmarks} />
+        </div>
+
+        {/* Block 4: Smart Alerts — trend-based alerts (DASH-02: activated on dashboard) */}
+        <div className="mt-3 mx-4">
+          <SmartAlerts
+            dog={dog}
+            checkins={recentCheckins}
+            records={records}
+            streak={streak}
+            dailyLogs={dailyLogs}
+            scans={scans}
+          />
+        </div>
+
+        {/* Block 5: Quick Actions */}
+        <div className="mt-3">
+          <QuickActions />
+        </div>
+
+        {/* Block 6: Daily Coaching (tip + recommendations) */}
+        <div className="mt-3">
+          <DailyCoaching
+            dog={dog}
+            recommendations={recommendations}
+          />
+        </div>
+
+        {/* Block 7: Bento Feature Grid */}
+        <div className="mt-3">
+          <BentoGrid />
+        </div>
+
+        {/* Block 8: Streak Bar */}
+        <div className="mt-3">
+          <StreakBar streak={streak} walkStreak={walkStreak} exercises={exercises} dailyLogs={dailyLogs} />
+        </div>
+
+        {/* Block 9: Trial expiry banner — moved below action cards (DASH-04) */}
+        <div className="mt-3">
+          <TrialExpiryBanner user={user} dog={dog} />
+        </div>
+
+        {/* Block 10: Weekly Insight — moved below action cards (DASH-03) */}
         {(weeklyInsight || pastInsights.length > 0) && (
           <div className="mt-3">
             <WeeklyInsightCard
@@ -348,52 +406,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Block 2c: Active Program Cards (activite + comportement + nutrition) */}
-        <div className="mt-3">
-          <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} behaviorBookmarks={behaviorBookmarks} />
-        </div>
-
-        {/* Block 3: Quick Actions */}
-        <div className="mt-3">
-          <QuickActions />
-        </div>
-
-        {/* Block 4: Daily Coaching (tip + recommendations) */}
-        <div className="mt-3">
-          <DailyCoaching
-            dog={dog} records={records} exercises={exercises} scans={scans}
-            dailyLogs={dailyLogs} checkins={recentCheckins} todayCheckin={todayCheckin} streak={streak}
-            diagnosisReports={diagnosisReports} nutritionPlans={nutritionPlans}
-          />
-        </div>
-
-        {/* Block 5: Bento Feature Grid */}
-        <div className="mt-3">
-          <BentoGrid records={records} exercises={exercises} scans={scans} user={user} checkins={recentCheckins} dailyLogs={dailyLogs} />
-        </div>
-
-        {/* Block 6: Streak Bar */}
-        <div className="mt-3">
-          <StreakBar streak={streak} />
-          {/* Walk streak badge — visible only if >= 2 consecutive walk days */}
-          {walkStreak >= 2 && (
-            <motion.div
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="mx-4 mt-2 flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-xl px-3.5 py-2"
-            >
-              <Footprints className="w-4 h-4 text-blue-500 flex-shrink-0" />
-              <span className="text-xs font-bold text-blue-700">{walkStreak}j de balade d'affilee</span>
-              {walkStreak >= 7 && <span className="text-xs font-bold text-blue-500 ml-auto">Record !</span>}
-            </motion.div>
-          )}
-        </div>
-
-        {/* Block 7: Badge Teaser */}
-        <div className="mt-3">
-          <BadgeTeaser streak={streak} exercises={exercises} dailyLogs={dailyLogs} />
-        </div>
+        {/* BadgeTeaser merged into StreakBar as compact chip (DASH-10) */}
 
         {/* Milestone celebration */}
         <AnimatePresence>

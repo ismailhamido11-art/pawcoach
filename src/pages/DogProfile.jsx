@@ -156,7 +156,7 @@ export default function DogProfile() {
     <div className="min-h-screen bg-background pb-28">
       {/* Back button */}
       <div className="fixed top-0 left-0 right-0 z-30">
-        <div className="px-4 pb-2 flex items-center justify-between bg-gradient-to-b from-[#0f4c3a]/80 to-transparent absolute top-0 left-0 right-0 pointer-events-none"
+        <div className="px-4 pb-2 flex items-center justify-between bg-gradient-to-b from-emerald-900/80 to-transparent absolute top-0 left-0 right-0 pointer-events-none"
           style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3rem)" }} />
         <button
           aria-label="Retour"

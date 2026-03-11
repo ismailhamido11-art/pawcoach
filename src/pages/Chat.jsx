@@ -333,7 +333,7 @@ export default function Chat() {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <div className="h-7 bg-accent/10" />
-        <div className="gradient-primary safe-pt-10 pb-4 px-5 mt-7">
+        <div className="gradient-primary safe-pt-14 pb-4 px-5 mt-7">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-white/20 animate-pulse" />
             <div className="space-y-2"><div className="h-4 w-24 bg-white/20 rounded animate-pulse" /><div className="h-3 w-32 bg-white/10 rounded animate-pulse" /></div>
@@ -427,7 +427,7 @@ export default function Chat() {
       </div>
 
       {/* Messages */}
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3 pb-44">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3" style={{ paddingBottom: "calc(11rem + env(safe-area-inset-bottom, 0px))" }}>
         {messages.map((msg, i) => (
           <div key={i}>
             {shouldShowDateSeparator(messages, i) && (
@@ -586,7 +586,7 @@ export default function Chat() {
                   J'adorerais continuer a t'aider avec <strong>{dog?.name || "ton chien"}</strong> ! Tes messages gratuits sont epuises pour aujourd'hui. Reviens demain ou passe en Premium !
                 </p>
                 <div className="flex gap-2 mt-3">
-                  <Button onClick={() => navigate(createPageUrl("Premium") + "?from=chat")} size="sm" className="gradient-primary border-0 text-white text-xs h-8">
+                  <Button onClick={() => navigate(createPageUrl("Premium") + "?from=chat")} size="sm" className="gradient-warm border-0 text-white text-xs h-8">
                     Passer Premium
                   </Button>
                   <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground" onClick={() => navigate(createPageUrl("Home"))}>

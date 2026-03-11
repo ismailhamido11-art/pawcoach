@@ -571,7 +571,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
 
                 {preview && (
                   <Button onClick={analyzeFood} disabled={scanning}
-                    className="w-full h-14 rounded-xl gradient-primary border-0 text-white font-bold text-base shadow-lg shadow-primary/30">
+                    className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold text-base shadow-lg shadow-primary/30">
                     {scanning ? (
                       <span className="flex items-center gap-2">
                         <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -650,11 +650,11 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                   </div>
                 )}
                 <div className="grid grid-cols-3 gap-2">
-                  <Button variant="outline" onClick={reset} className="h-12 rounded-xl font-semibold text-sm">Nouveau</Button>
-                  <Button onClick={() => setShowShare(true)} variant="outline" className="h-12 rounded-xl font-semibold text-sm gap-1">
+                  <Button variant="outline" onClick={reset} className="h-14 rounded-2xl font-semibold text-sm">Nouveau</Button>
+                  <Button onClick={() => setShowShare(true)} variant="outline" className="h-14 rounded-2xl font-semibold text-sm gap-1">
                     <Share2 className="w-3.5 h-3.5" /> Partager
                   </Button>
-                  <Button onClick={saveResult} disabled={saved} className="h-12 rounded-xl gradient-primary border-0 text-white font-semibold text-sm">
+                  <Button onClick={saveResult} disabled={saved} className="h-14 rounded-2xl gradient-primary border-0 text-white font-semibold text-sm">
                     {saved ? "✅ Ok" : "Sauvegarder"}
                   </Button>
                 </div>
@@ -876,11 +876,11 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                   <Button
                     onClick={saveLabelResult}
                     disabled={labelSaved}
-                    className={`flex-1 h-11 rounded-xl font-semibold ${labelSaved ? "bg-green-50 text-green-700 border border-green-200" : "gradient-primary border-0 text-white"}`}
+                    className={`flex-1 h-14 rounded-2xl font-semibold ${labelSaved ? "bg-green-50 text-green-700 border border-green-200" : "gradient-primary border-0 text-white"}`}
                   >
                     {labelSaved ? "Sauvegardee" : "Sauvegarder"}
                   </Button>
-                  <Button variant="outline" onClick={resetLabel} className="flex-1 h-11 rounded-xl font-semibold">
+                  <Button variant="outline" onClick={resetLabel} className="flex-1 h-14 rounded-2xl font-semibold">
                     Nouvelle analyse
                   </Button>
                 </div>

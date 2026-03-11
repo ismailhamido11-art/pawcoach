@@ -498,7 +498,7 @@ export default function Training() {
             ) : activeProgram && todayDay ? (
               <div className="space-y-3 mt-2">
                 {/* Program header */}
-                <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-5 text-white">
+                <div className="gradient-primary rounded-2xl p-5 text-white">
                   <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider mb-1">Programme comportement</p>
                   <h3 className="font-black text-lg leading-tight">{activeProgram.program_title}</h3>
                   <p className="text-white/80 text-xs mt-1.5 leading-relaxed">{activeProgram.summary}</p>

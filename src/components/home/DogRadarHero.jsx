@@ -39,7 +39,7 @@ function computeArcs({ checkins = [], streak, records = [], exercises = [], scan
     ? Math.min(100, Math.round((streakDays / 14) * 100))
     : 0;
   const activityData = streakDays > 0;
-  const activityHint = activityData ? `Streak ${streakDays}j` : "Pas de streak";
+  const activityHint = activityData ? `${streakDays}j actif${streakDays > 1 ? "s" : ""}` : "Pas de données";
 
   // 3. Dressage (exercices complétés sur 8 exercices au total)
   const TOTAL_EXERCISES = 8;

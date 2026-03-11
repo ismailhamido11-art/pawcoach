@@ -123,7 +123,7 @@ export default function Premium() {
   if (pageLoading) {
     return (
       <div className="min-h-screen bg-background pb-10">
-        <div className="gradient-primary safe-pt-12 pb-8 px-5">
+        <div className="gradient-primary safe-pt-14 pb-8 px-5">
           <div className="text-center">
             <div className="w-16 h-16 bg-white/20 rounded-3xl mx-auto mb-3 animate-pulse" />
             <div className="h-7 w-48 bg-white/20 rounded mx-auto animate-pulse" />
@@ -254,14 +254,14 @@ export default function Premium() {
               <Button
                 onClick={handleSubscribe}
                 disabled={loading}
-                className="w-full h-14 rounded-xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
+                className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
               >
                 {loading ? "Chargement..." : `S'abonner — ${plan === "annual" ? "59,99 €/an" : "7,99 €/mois"}`}
               </Button>
             ) : (
               <Button
                 onClick={() => navigate(createPageUrl("Home"))}
-                className="w-full h-14 rounded-xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
+                className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
               >
                 Commencer <ChevronRight className="w-5 h-5" />
               </Button>
@@ -301,7 +301,7 @@ export default function Premium() {
   return (
     <div className="min-h-screen bg-background pb-10">
       {/* Header */}
-      <div className="gradient-primary safe-pt-12 pb-8 px-5 relative overflow-hidden">
+      <div className="gradient-primary safe-pt-14 pb-8 px-5 relative overflow-hidden">
         <button
           aria-label="Retour"
           onClick={() => navigate(-1)}
@@ -424,7 +424,7 @@ export default function Premium() {
         <Button
           onClick={handleSubscribe}
           disabled={loading}
-          className="w-full h-14 rounded-xl gradient-warm border-0 text-white font-bold text-base shadow-lg"
+          className="w-full h-14 rounded-2xl gradient-warm border-0 text-white font-bold text-base shadow-lg"
         >
           {loading ? (
             <span className="flex items-center gap-2">

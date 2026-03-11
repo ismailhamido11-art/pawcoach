@@ -36,8 +36,7 @@ const INTERVIEW_STEPS = [
 // Welcome splash shown before the form
 function OnboardingWelcome({ onStart }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden"
-      style={{ background: "linear-gradient(160deg, #0a2a1e, #0f4c3a, #1a6b52)" }}>
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden gradient-primary">
       {/* Decorative orbs */}
       <motion.div
         animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
@@ -66,9 +65,9 @@ function OnboardingWelcome({ onStart }) {
         </motion.div>
 
         <p className="text-white/60 text-xs font-bold tracking-widest uppercase mb-3">PawCoach</p>
-        <h1 className="text-4xl font-black text-white leading-tight mb-4">
+        <h1 className="text-2xl font-black text-white leading-tight mb-4">
           Bienvenue dans<br />
-          <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(90deg, #2D9F82, #34d399)" }}>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-emerald-400">
             l'aventure
           </span>
         </h1>
@@ -88,8 +87,7 @@ function OnboardingWelcome({ onStart }) {
         <motion.button
           whileTap={{ scale: 0.96 }}
           onClick={onStart}
-          className="w-full max-w-xs h-14 rounded-2xl font-black text-white flex items-center justify-center gap-2 shadow-2xl text-base"
-          style={{ background: "linear-gradient(135deg, #1A4D3E, #2D9F82)" }}
+          className="w-full max-w-xs h-14 rounded-2xl font-black text-white flex items-center justify-center gap-2 shadow-2xl text-base gradient-primary"
         >
           Créer le profil de mon chien
           <ArrowRight className="w-5 h-5" />
@@ -264,9 +262,9 @@ Extrais ces informations et renvoie un objet JSON.
   const canNext = currentStepData.type === "choice" ? currentAnswer.length > 0 : (currentStepData.type === "photo" && !uploading) || currentAnswer.trim().length > 0;
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg, #0a2a1e 0%, #f0fdf4 30%)" }}>
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-emerald-950 via-green-50/80 to-green-50">
       {/* Progress header */}
-      <div className="safe-pt-12 px-6 pb-6 flex items-center gap-4">
+      <div className="safe-pt-14 px-6 pb-6 flex items-center gap-4">
         {step > 0 ? (
           <motion.button whileTap={{ scale: 0.96 }} transition={spring} onClick={() => setStep(s => s - 1)}
             className="w-10 h-10 flex items-center justify-center bg-white/20 backdrop-blur rounded-full border border-white/30">
@@ -304,7 +302,7 @@ Extrais ces informations et renvoie un objet JSON.
               <currentStepData.icon style={{ color: currentStepData.iconColor, width: 28, height: 28 }} />
             </div>
 
-            <h1 className="text-3xl font-black text-center text-foreground mb-10 leading-tight">
+            <h1 className="text-2xl font-black text-center text-foreground mb-10 leading-tight">
               {currentStepData.question}
             </h1>
 
@@ -398,8 +396,7 @@ Extrais ces informations et renvoie un objet JSON.
               <Button
                 onClick={handleNext}
                 disabled={!canNext || saving}
-                className="w-full max-w-sm h-14 rounded-2xl font-black text-base gap-2"
-                style={{ background: "linear-gradient(135deg, #1A4D3E, #2D9F82)" }}
+                className="w-full max-w-sm h-14 rounded-2xl font-black text-base gap-2 gradient-primary"
               >
                 {saving ? (
                   <><Loader2 className="w-5 h-5 animate-spin" /> Création en cours...</>
