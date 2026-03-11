@@ -9,7 +9,7 @@ import { createPageUrl } from "@/utils";
 import {
   AlertTriangle, TrendingDown, Syringe, Scale,
   Zap, CheckCircle, ChevronRight, Brain, Flame,
-  Footprints, Activity
+  Footprints, Activity, UtensilsCrossed
 } from "lucide-react";
 import { computeVaccineMap, getVaccineDisplayName } from "@/utils/healthStatus";
 
@@ -85,6 +85,51 @@ export function computeAlerts({ dog, checkins = [], records = [], streak, dailyL
       cta: "Premier check-in",
       to: createPageUrl("Home"),
     });
+  }
+
+  // ── 1b. TENDANCE APPÉTIT (7 derniers vs 7 précédents) ──
+  if (last7.length >= 3 && prev7.length >= 3) {
+    const appetiteScore = { normal: 2, increased: 3, decreased: 1, none: 0 };
+    const avgAppetiteLast = last7.reduce((s, c) => s + (appetiteScore[c.appetite] ?? 2), 0) / last7.length;
+    const avgAppetitePrev = prev7.reduce((s, c) => s + (appetiteScore[c.appetite] ?? 2), 0) / prev7.length;
+    const appetiteDrop = avgAppetitePrev - avgAppetiteLast;
+
+    const hasCriticalVitality = alerts.some(a => a.id === "vitality_drop_critical");
+
+    if (appetiteDrop >= 1.0) {
+      alerts.push({
+        id: "appetite_drop_critical",
+        severity: "critical",
+        icon: UtensilsCrossed,
+        iconColor: "#ef4444",
+        title: "Appétit en forte baisse",
+        desc: `L'appétit a chuté de ${Math.round(appetiteDrop * 10) / 10} pts vs la semaine passée. Consulte un vétérinaire si ça persiste.`,
+        cta: "Faire un check-in",
+        to: createPageUrl("Home"),
+      });
+    } else if (appetiteDrop >= 0.5) {
+      alerts.push({
+        id: "appetite_drop_warning",
+        severity: "warning",
+        icon: UtensilsCrossed,
+        iconColor: "#d97706",
+        title: "Baisse d'appétit détectée",
+        desc: `${dog?.name || "Ton chien"} mange moins bien cette semaine. À surveiller de près.`,
+        cta: "Check-in",
+        to: createPageUrl("Home"),
+      });
+    } else if (avgAppetiteLast >= 2.5 && !hasCriticalVitality) {
+      alerts.push({
+        id: "appetite_good",
+        severity: "ok",
+        icon: UtensilsCrossed,
+        iconColor: "#10b981",
+        title: "Bon appétit",
+        desc: `${dog?.name || "Ton chien"} mange bien et régulièrement. Continue !`,
+        cta: null,
+        to: null,
+      });
+    }
   }
 
   // ── 2. PRÉDICTION VACCINS (smart: unique vaccines, not raw records) ──
