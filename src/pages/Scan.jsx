@@ -515,7 +515,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
               </div>
               <p className="font-bold text-foreground">Tu as utilisé tes {FREE_SCAN_LIMIT} scans gratuits cette semaine ({scansUsed}/{FREE_SCAN_LIMIT}).</p>
               <p className="text-sm text-muted-foreground">Passe en Premium pour scanner sans limite.</p>
-              <Button onClick={() => navigate(createPageUrl("Premium") + "?from=scan")} className="w-full h-12 rounded-xl gradient-warm border-0 text-white font-bold">
+              <Button onClick={() => navigate(createPageUrl("Premium") + "?from=scan")} className="w-full h-14 rounded-2xl gradient-warm border-0 text-white font-bold">
                 Passer Premium · dès 5 €/mois
               </Button>
               <button onClick={() => setScanLimitReached(false)} className="text-xs text-muted-foreground underline">

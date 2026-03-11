@@ -365,7 +365,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
         <Button
           onClick={compare}
           disabled={comparing || anyAnalyzing}
-          className="w-full h-12 gradient-primary border-0 text-white font-bold rounded-xl shadow-lg shadow-primary/25"
+          className="w-full h-14 gradient-primary border-0 text-white font-bold rounded-2xl shadow-lg shadow-primary/25"
         >
           {comparing ? (
             <span className="flex items-center gap-2">

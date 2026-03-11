@@ -293,7 +293,7 @@ export default function HealthImportContent({ dog, onImported }) {
             )}
             {records.length > 0 && selected.size > 0 && (
               <div className="fixed bottom-20 left-5 right-5 z-50">
-                <Button onClick={handleImport} className="w-full gradient-primary text-white h-12 rounded-2xl font-bold shadow-xl">
+                <Button onClick={handleImport} className="w-full gradient-primary text-white h-14 rounded-2xl font-bold shadow-xl">
                   <CheckCircle className="w-5 h-5 mr-2" />
                   Importer {selected.size} enregistrement{selected.size > 1 ? "s" : ""}
                 </Button>

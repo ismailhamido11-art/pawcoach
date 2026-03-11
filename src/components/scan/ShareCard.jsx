@@ -147,10 +147,10 @@ export default function ShareCard({ result, dogName, onClose }) {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" onClick={downloadCard} className="h-12 rounded-2xl gap-2 bg-white">
+          <Button variant="outline" onClick={downloadCard} className="h-14 rounded-2xl gap-2 bg-white">
             <Download className="w-4 h-4" /> Enregistrer
           </Button>
-          <Button onClick={shareCard} className="h-12 rounded-2xl gap-2 gradient-primary border-0 text-white">
+          <Button onClick={shareCard} className="h-14 rounded-2xl gap-2 gradient-primary border-0 text-white">
             <Share2 className="w-4 h-4" /> Partager
           </Button>
         </div>

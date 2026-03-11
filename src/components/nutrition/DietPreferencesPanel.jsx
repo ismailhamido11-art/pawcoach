@@ -318,7 +318,7 @@ export default function DietPreferencesPanel({ dog, user }) {
       </div>
 
       <Button onClick={handleSave} disabled={saving || saved}
-        className={`w-full h-12 rounded-2xl text-white font-bold shadow-lg gap-2 transition-all duration-300 ${saved ? "bg-green-500 shadow-green-200" : "bg-safe hover:bg-safe/90 shadow-safe/20"}`}>
+        className={`w-full h-14 rounded-2xl text-white font-bold shadow-lg gap-2 transition-all duration-300 ${saved ? "bg-green-500 shadow-green-200" : "bg-safe hover:bg-safe/90 shadow-safe/20"}`}>
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
         {saving ? "Sauvegarde..." : saved ? "Sauvegardé !" : "Sauvegarder mes préférences"}
       </Button>

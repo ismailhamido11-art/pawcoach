@@ -443,7 +443,7 @@ export default function Nutri() {
               d'une &eacute;tiquette nutritionnelle pour {dog?.name || "ton chien"}.
             </p>
           </div>
-          <Button asChild className="gradient-primary border-0 text-white w-full max-w-xs h-13 rounded-xl font-bold shadow-lg shadow-primary/25">
+          <Button asChild className="gradient-primary border-0 text-white w-full max-w-xs h-14 rounded-2xl font-bold shadow-lg shadow-primary/25">
             <Link to={createPageUrl("Scan")}>
               <ScanLine className="w-5 h-5 mr-2" />
               Ouvrir le Scanner

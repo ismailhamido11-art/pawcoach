@@ -113,7 +113,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border px-5 py-4 space-y-2" style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom, 0px))" }}>
           <Button
             onClick={onComplete}
-            className="w-full h-12 rounded-2xl bg-safe hover:bg-safe/90 text-white font-bold text-base gap-2 shadow-lg shadow-safe/30"
+            className="w-full h-14 rounded-2xl bg-safe hover:bg-safe/90 text-white font-bold text-base gap-2 shadow-lg shadow-safe/30"
           >
             <CheckCircle className="w-5 h-5" />
             {isCompleted ? "Marquer comme non fait" : "J'ai réussi ! 🎉"}
@@ -121,7 +121,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
           <Button
             onClick={onHelp}
             variant="outline"
-            className="w-full h-12 rounded-2xl border-primary text-primary font-semibold text-base gap-2"
+            className="w-full h-14 rounded-2xl border-primary text-primary font-semibold text-base gap-2"
           >
             <HelpCircle className="w-5 h-5" />
             J'ai besoin d'aide

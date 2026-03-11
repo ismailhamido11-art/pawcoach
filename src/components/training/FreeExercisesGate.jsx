@@ -73,7 +73,7 @@ export default function FreeExercisesGate({ dogName, onDismiss }) {
         <Button
           onClick={onDismiss}
           variant="outline"
-          className="w-full h-12 rounded-2xl font-semibold"
+          className="w-full h-14 rounded-2xl font-semibold"
         >
           Réviser mes acquis
         </Button>

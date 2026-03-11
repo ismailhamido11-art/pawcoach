@@ -62,7 +62,7 @@ export default function DiagnosisContent({ dog }) {
       {/* CTA button */}
       <Button
         onClick={() => { setPreSelectedSymptom(null); setShowModal(true); }}
-        className="w-full h-12 gradient-primary border-0 text-white font-bold rounded-xl shadow-lg shadow-primary/25"
+        className="w-full h-14 gradient-primary border-0 text-white font-bold rounded-2xl shadow-lg shadow-primary/25"
       >
         <Stethoscope className="w-4 h-4 mr-2" />
         Préparer mon bilan

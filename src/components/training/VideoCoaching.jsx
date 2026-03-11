@@ -105,7 +105,7 @@ export default function VideoCoaching({ exerciseName, dogName, dogId }) {
           {!file ? (
             <Button
               onClick={() => fileInputRef.current?.click()}
-              className="w-full h-12 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold gap-2"
+              className="w-full h-14 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-semibold gap-2"
             >
               <Video className="w-5 h-5" />
               Enregistrer une vidéo

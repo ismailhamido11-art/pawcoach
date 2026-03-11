@@ -59,7 +59,7 @@ export default function CelebrationScreen({ dogName, exerciseName, onContinue })
 
         <button
           onClick={onContinue}
-          className="w-full h-13 py-3.5 rounded-2xl bg-muted text-muted-foreground font-semibold text-base"
+          className="w-full h-14 py-3.5 rounded-2xl bg-muted text-muted-foreground font-semibold text-base"
         >
           Continuer
         </button>

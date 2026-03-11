@@ -72,12 +72,12 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
 
       <div className="flex gap-3 w-full max-w-sm">
         <motion.div whileTap={{ scale: 0.96 }} transition={{ type: "spring", stiffness: 400, damping: 30 }} className="flex-1">
-          <Button variant="outline" onClick={handleShare} className="w-full h-12 rounded-2xl gap-2 border-primary text-primary font-semibold">
+          <Button variant="outline" onClick={handleShare} className="w-full h-14 rounded-2xl gap-2 border-primary text-primary font-semibold">
             <Share2 className="w-4 h-4" /> Partager
           </Button>
         </motion.div>
         <motion.div whileTap={{ scale: 0.96 }} transition={{ type: "spring", stiffness: 400, damping: 30 }} className="flex-1">
-          <Button onClick={onContinue} className="w-full h-12 rounded-2xl gradient-primary border-0 text-white font-bold gap-2">
+          <Button onClick={onContinue} className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold gap-2">
             Continuer 🚀
           </Button>
         </motion.div>

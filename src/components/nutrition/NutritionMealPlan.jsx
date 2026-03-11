@@ -626,7 +626,7 @@ RÈGLES :
                     {MONTHLY_FREE_LIMIT - monthlyPlanCount} génération{MONTHLY_FREE_LIMIT - monthlyPlanCount !== 1 ? "s" : ""} restante{MONTHLY_FREE_LIMIT - monthlyPlanCount !== 1 ? "s" : ""} ce mois
                   </p>
                 )}
-                <Button onClick={generate} className="w-full bg-safe hover:bg-safe/90 text-white font-bold h-12 rounded-2xl shadow-lg shadow-safe/30">
+                <Button onClick={generate} className="w-full bg-safe hover:bg-safe/90 text-white font-bold h-14 rounded-2xl shadow-lg shadow-safe/30">
                   {activePlan ? "Régénérer un nouveau plan" : "Générer mon plan de repas"}
                 </Button>
               </>
@@ -755,7 +755,7 @@ RÈGLES :
                 <Button
                   onClick={savePlan}
                   disabled={saving || saved}
-                  className={`w-full h-11 rounded-2xl font-semibold gap-2 transition-all duration-300 ${
+                  className={`w-full h-14 rounded-2xl font-semibold gap-2 transition-all duration-300 ${
                     saved ? "bg-safe text-white" : "bg-primary text-white"
                   }`}
                 >
