@@ -243,7 +243,36 @@ export function buildRecommendations({ records = [], exercises = [], scans = [],
     }
   }
 
-  // 11. Recurring symptom alert — same symptom in 3+ of last 7 calendar check-ins
+  // 11. Walk behavior tags — problematic tags in recent walks suggest Training
+  const BEHAVIOR_TAGS = ["Tirait en laisse", "Distrait"];
+  const recentWalkLogs = dailyLogs.filter(l => l.walk_tags && l.date >= new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10));
+  const behaviorTagCounts = {};
+  recentWalkLogs.forEach(l => {
+    try {
+      const tags = typeof l.walk_tags === "string" ? JSON.parse(l.walk_tags) : (l.walk_tags || []);
+      tags.forEach(t => {
+        if (BEHAVIOR_TAGS.includes(t)) behaviorTagCounts[t] = (behaviorTagCounts[t] || 0) + 1;
+      });
+    } catch {}
+  });
+  const topBehaviorTag = Object.entries(behaviorTagCounts).sort((a, b) => b[1] - a[1])[0];
+  if (topBehaviorTag && topBehaviorTag[1] >= 2) {
+    recs.push({
+      id: "walk_behavior",
+      priority: 3,
+      icon: Dumbbell,
+      iconBg: "bg-amber-50",
+      iconColor: "#f59e0b",
+      label: `Comportement en balade : ${topBehaviorTag[0]}`,
+      sub: `Signale ${topBehaviorTag[1]} fois cette semaine — un exercice peut aider`,
+      page: "Activite",
+      tab: "dressage",
+      cta: "Voir les exercices",
+      accent: "border-l-amber-400",
+    });
+  }
+
+  // 12. Recurring symptom alert — same symptom in 3+ of last 7 calendar check-ins
   const last7Checkins = checkins.slice(0, 7);
   if (last7Checkins.length >= 3) {
     const symptomCounts = {};
