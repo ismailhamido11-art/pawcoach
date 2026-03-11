@@ -280,8 +280,10 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
         return;
       }
 
-      const { dog, records: rawRecords, checkins } = res.data;
+      const { dog, records: rawRecords, checkins, growthEntries: rawGrowthEntries, dailyLogs: rawDailyLogs } = res.data;
       const records = rawRecords || [];
+      const growthEntries = rawGrowthEntries || [];
+      const dailyLogs = rawDailyLogs || [];
       const doc = new jsPDF();
       const pageW = doc.internal.pageSize.getWidth();
       let y = 20;
@@ -349,7 +351,12 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
       // ================================================================
       // HEALTH SCORE SUMMARY
       // ================================================================
-      const score = computeHealthScore(records, dog);
+      // Normaliser GrowthEntry + DailyLog pour computeHealthScore
+      const extraWeightSources = [
+        ...growthEntries.filter((g) => g.weight_kg && g.date),
+        ...dailyLogs.filter((l) => l.weight_kg && l.date),
+      ];
+      const score = computeHealthScore(records, dog, extraWeightSources);
       const level = getScoreLevel(score);
       const pills = computeStatusPills(records, dog);
       y = drawScoreBadge(doc, y, score, level.label, pills);
@@ -427,12 +434,35 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
       // ================================================================
       // WEIGHT TABLE
       // ================================================================
-      const weights = records.filter((r) => r.type === "weight" && r.value);
+      // Poids depuis HealthRecord (source officielle, prioritaire)
+      const hrWeights = records.filter((r) => r.type === "weight" && r.value);
+      const hrDates = new Set(hrWeights.map((r) => r.date));
+
+      // Poids depuis GrowthEntry (deduplication par date — HealthRecord prioritaire)
+      const growthWeights = growthEntries
+        .filter((g) => g.weight_kg && g.date && !hrDates.has(g.date))
+        .map((g) => ({ date: g.date, value: g.weight_kg, _source: "Suivi croissance" }));
+
+      // Dates deja couvertes (HealthRecord + GrowthEntry)
+      const coveredDates = new Set([...hrDates, ...growthWeights.map((g) => g.date)]);
+
+      // Poids depuis DailyLog (deduplication par date)
+      const dailyLogWeights = dailyLogs
+        .filter((l) => l.weight_kg && l.date && !coveredDates.has(l.date))
+        .map((l) => ({ date: l.date, value: l.weight_kg, _source: "Bilan quotidien" }));
+
+      const weights = [...hrWeights, ...growthWeights, ...dailyLogWeights];
+
       if (weights.length > 0) {
         y = drawSectionHeader(doc, y, "Suivi du poids");
 
-        // Weight trend summary
-        const trend = computeWeightTrend(records);
+        // Weight trend summary — enrichir records avec les sources supplementaires pour computeWeightTrend
+        const enrichedForTrend = [
+          ...records,
+          ...growthWeights.map((g) => ({ type: "weight", date: g.date, value: g.value })),
+          ...dailyLogWeights.map((l) => ({ type: "weight", date: l.date, value: l.value })),
+        ];
+        const trend = computeWeightTrend(enrichedForTrend);
         if (trend.current !== null) {
           checkPage(12);
           doc.setFontSize(9);
