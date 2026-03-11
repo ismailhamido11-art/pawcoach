@@ -1,0 +1,73 @@
+# Roadmap: PawCoach — v1.0 Data Flow Integrity
+
+## Overview
+
+Ce milestone corrige tous les flux de donnees casses ou orphelins identifies par l'audit du 11 mars 2026. Les 16 requirements se regroupent naturellement en 4 phases deployables independamment : corrections frontend pures (donnees), enrichissement backend IA, extension des notifications CRON, puis fixes independants mixtes (dashboard, nutrition, activite, sante). Chaque phase peut etre testee et pushee sans bloquer les suivantes.
+
+## Phases
+
+- [ ] **Phase 1: Data Coherence** - Brancher les sources de donnees orphelines dans le frontend (allergies, poids, score sante, code mort)
+- [ ] **Phase 2: AI Enrichment** - Enrichir les 3 fonctions IA backend avec les donnees qu'elles ignorent actuellement
+- [ ] **Phase 3: Notifications** - Etendre les rappels email aux medicaments, visites vet, et free users
+- [ ] **Phase 4: Independent Fixes** - Corriger les logiques bancales independantes (dashboard, nutrition, streak, comportement, PDF vet)
+
+## Phase Details
+
+### Phase 1: Data Coherence
+**Goal**: Les donnees collectees dans le profil chien (allergies, poids, score sante) sont effectivement utilisees partout ou elles ont du sens — plus de champs fantomes ni de sources contradictoires
+**Depends on**: Nothing (first phase)
+**Requirements**: DATA-01, DATA-02, DATA-03, DATA-04
+**Success Criteria** (what must be TRUE):
+  1. Le scanner aliments et le comparateur affichent un avertissement si un ingredient correspond a DietPreferences.disliked_foods, en plus des allergies medicales du chien
+  2. Le score sante frontend prend en compte les pesees de GrowthEntry et DailyLog, pas uniquement HealthRecord.type=weight
+  3. Le PDF sante genere liste les poids issus de GrowthEntry et DailyLog (toutes les sources, pas seulement HealthRecord)
+  4. Le fichier healthScoreCalculate.ts n'existe plus dans le repo (code mort supprime, aucune regression)
+**Plans**: TBD
+
+### Phase 2: AI Enrichment
+**Goal**: Les 3 fonctions IA (check-in quotidien, weekly insight, monthly summary) produisent des analyses basees sur toutes les donnees disponibles, pas un sous-ensemble
+**Depends on**: Phase 1
+**Requirements**: AI-01, AI-02, AI-03
+**Success Criteria** (what must be TRUE):
+  1. La reponse post check-in mentionne une tendance detectee sur les 7 derniers check-ins (ex: "tu signales de la fatigue depuis 3 jours") quand elle existe
+  2. Le weekly insight inclut une reference aux evenements HealthRecord de la semaine (vaccin en retard, visite passee, medicament en cours) quand ils existent
+  3. Le monthly summary affiche le mood moyen, l'energy moyen, les symptoms recurrents et le streak du mois — pas seulement l'activite physique
+**Plans**: TBD
+
+### Phase 3: Notifications
+**Goal**: Les rappels email couvrent tous les evenements de sante du chien (vaccins, medicaments, visites vet) pour tous les utilisateurs (free et premium)
+**Depends on**: Phase 2
+**Requirements**: NOTIF-01, NOTIF-02, NOTIF-03
+**Success Criteria** (what must be TRUE):
+  1. Un medicament avec next_date J+3 declenche un email de rappel au proprietaire (meme logique que les vaccins)
+  2. Une visite vet avec next_date J+3 declenche un email de rappel au proprietaire
+  3. Un utilisateur free recoit les rappels vaccins (le filtre premium est retire de la fonction vaccineReminders)
+**Plans**: TBD
+
+### Phase 4: Independent Fixes
+**Goal**: Les comportements bancaux independants sont corriges — dashboard, nutrition, streak, suivi comportement, et infos vet dans le PDF
+**Depends on**: Phase 3
+**Requirements**: DASH-01, NUTRI-01, ACT-01, ACT-02, SANTE-01, SANTE-02
+**Success Criteria** (what must be TRUE):
+  1. SmartAlerts affiche une alerte de tendance appetite quand l'appetit baisse sur plusieurs jours (comme il le fait pour mood et energy)
+  2. La generation de plan nutrition 3 repas/jour produit des repas matin, midi et soir — la carte "midi" n'est plus absente de l'UI
+  3. Une balade enregistree (DailyLog) maintient le streak actif — l'utilisateur ne perd pas son streak s'il a fait une balade mais pas de check-in
+  4. Le suivi jour par jour des programmes comportement est visible (comme pour les programmes forme) — l'utilisateur voit quels jours sont completes
+  5. Le PDF sante inclut le nom et la ville du veterinaire, et next_vet_appointment contribue au score sante
+**Plans**: TBD
+
+## Progress
+
+**Execution Order:**
+Phases executees en ordre numerique : 1 → 2 → 3 → 4
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 1. Data Coherence | 0/TBD | Not started | - |
+| 2. AI Enrichment | 0/TBD | Not started | - |
+| 3. Notifications | 0/TBD | Not started | - |
+| 4. Independent Fixes | 0/TBD | Not started | - |
+
+---
+*Roadmap created: 2026-03-11 — Milestone v1.0 Data Flow Integrity*
+*16/16 requirements mapped — 100% coverage*

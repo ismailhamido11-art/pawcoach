@@ -68,28 +68,28 @@ Deferred au prochain milestone.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | Pending | Pending |
-| DATA-02 | Pending | Pending |
-| DATA-03 | Pending | Pending |
-| DATA-04 | Pending | Pending |
-| AI-01 | Pending | Pending |
-| AI-02 | Pending | Pending |
-| AI-03 | Pending | Pending |
-| NOTIF-01 | Pending | Pending |
-| NOTIF-02 | Pending | Pending |
-| NOTIF-03 | Pending | Pending |
-| DASH-01 | Pending | Pending |
-| NUTRI-01 | Pending | Pending |
-| ACT-01 | Pending | Pending |
-| ACT-02 | Pending | Pending |
-| SANTE-01 | Pending | Pending |
-| SANTE-02 | Pending | Pending |
+| DATA-01 | Phase 1 | Pending |
+| DATA-02 | Phase 1 | Pending |
+| DATA-03 | Phase 1 | Pending |
+| DATA-04 | Phase 1 | Pending |
+| AI-01 | Phase 2 | Pending |
+| AI-02 | Phase 2 | Pending |
+| AI-03 | Phase 2 | Pending |
+| NOTIF-01 | Phase 3 | Pending |
+| NOTIF-02 | Phase 3 | Pending |
+| NOTIF-03 | Phase 3 | Pending |
+| DASH-01 | Phase 4 | Pending |
+| NUTRI-01 | Phase 4 | Pending |
+| ACT-01 | Phase 4 | Pending |
+| ACT-02 | Phase 4 | Pending |
+| SANTE-01 | Phase 4 | Pending |
+| SANTE-02 | Phase 4 | Pending |
 
 **Coverage:**
 - v1.0 requirements: 16 total
-- Mapped to phases: 0
-- Unmapped: 16 (pending roadmap creation)
+- Mapped to phases: 16
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-11*
-*Last updated: 2026-03-11 after Data Flow Integrity audit*
+*Last updated: 2026-03-11 — Traceability completed after roadmap creation*
