@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: "Completed 02-02-PLAN.md (AI-02: weeklyInsightGenerate enriched with HealthRecord and check-in notes)"
-last_updated: "2026-03-11T06:04:53.592Z"
+stopped_at: "Checkpoint 03-01 Task 3: CRON registration Base44 UI (human-action required)"
+last_updated: "2026-03-11T06:17:21.250Z"
 last_activity: "2026-03-11 — Plan 01-03 complete (DATA-03: PDF sante merge GrowthEntry + DailyLog dans section Suivi du poids)"
 progress:
   total_phases: 4
-  completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
+  completed_phases: 3
+  total_plans: 8
+  completed_plans: 8
   percent: 24
 ---
 
@@ -52,6 +52,8 @@ Progress: [███░░░░░░░] 24%
 *Updated after each plan completion*
 | Phase 02-ai-enrichment P03 | 1min | 1 tasks | 1 files |
 | Phase 02-ai-enrichment P02 | 5 | 1 tasks | 1 files |
+| Phase 03-notifications P02 | 5 | 1 tasks | 1 files |
+| Phase 03-notifications P01 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -72,6 +74,10 @@ Recent decisions affecting current work:
 - [Phase 02-ai-enrichment]: Recurring symptoms threshold >= 2 occurrences, max 5 displayed sorted by frequency
 - [Phase 02-ai-enrichment]: todayStr (string YYYY-MM-DD) derived from outer today (Date object) to avoid variable conflict in weeklyInsightGenerate.ts
 - [Phase 02-ai-enrichment]: overdueVaccines and activeMeds queried from all dogHealthRecords (not just week) — overdue is overdue regardless of when recorded
+- [Phase 03-notifications]: NOTIF-03: isPremium check retire de vaccineReminders — rappels vaccins sont feature core, pas premium
+- [Phase 03-notifications]: vetVisitReminders: pas de filtre isPremium — rappels vet pour tous les utilisateurs
+- [Phase 03-notifications]: vetVisitReminders: record.title||'Consultation' fallback + getTime() pour compat TypeScript
+- [Phase 03-notifications]: NOTIF-01: medicationReminders suit exactement le pattern vaccineReminders — titres medicaments utilises tels quels (pas de resolveVaccineName)
 
 ### Pending Todos
 
@@ -84,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T06:01:49.365Z
-Stopped at: Completed 02-02-PLAN.md (AI-02: weeklyInsightGenerate enriched with HealthRecord and check-in notes)
+Last session: 2026-03-11T06:17:21.246Z
+Stopped at: Checkpoint 03-01 Task 3: CRON registration Base44 UI (human-action required)
 Resume file: None

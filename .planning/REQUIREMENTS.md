@@ -22,9 +22,9 @@ Requirements pour le milestone Data Flow Integrity. Chaque requirement corrige u
 
 ### Notifications
 
-- [ ] **NOTIF-01**: Les rappels email couvrent les medicaments avec next_date (meme logique que vaccins)
-- [ ] **NOTIF-02**: Les rappels email couvrent les visites vet avec next_date
-- [ ] **NOTIF-03**: Les rappels vaccin sont envoyes aux free users (pas seulement premium/trial)
+- [x] **NOTIF-01**: Les rappels email couvrent les medicaments avec next_date (meme logique que vaccins)
+- [x] **NOTIF-02**: Les rappels email couvrent les visites vet avec next_date
+- [x] **NOTIF-03**: Les rappels vaccin sont envoyes aux free users (pas seulement premium/trial)
 
 ### Dashboard
 
@@ -75,9 +75,9 @@ Deferred au prochain milestone.
 | AI-01 | Phase 2 | Complete (2026-03-11) |
 | AI-02 | Phase 2 | Complete |
 | AI-03 | Phase 2 | Complete |
-| NOTIF-01 | Phase 3 | Pending |
-| NOTIF-02 | Phase 3 | Pending |
-| NOTIF-03 | Phase 3 | Pending |
+| NOTIF-01 | Phase 3 | Complete |
+| NOTIF-02 | Phase 3 | Complete |
+| NOTIF-03 | Phase 3 | Complete |
 | DASH-01 | Phase 4 | Pending |
 | NUTRI-01 | Phase 4 | Pending |
 | ACT-01 | Phase 4 | Pending |

@@ -8,7 +8,7 @@ Ce milestone corrige tous les flux de donnees casses ou orphelins identifies par
 
 - [x] **Phase 1: Data Coherence** - Brancher les sources de donnees orphelines dans le frontend (allergies, poids, score sante, code mort)
 - [x] **Phase 2: AI Enrichment** - Enrichir les 3 fonctions IA backend avec les donnees qu'elles ignorent actuellement (completed 2026-03-11)
-- [ ] **Phase 3: Notifications** - Etendre les rappels email aux medicaments, visites vet, et free users
+- [x] **Phase 3: Notifications** - Etendre les rappels email aux medicaments, visites vet, et free users (completed 2026-03-11)
 - [ ] **Phase 4: Independent Fixes** - Corriger les logiques bancales independantes (dashboard, nutrition, streak, comportement, PDF vet)
 
 ## Phase Details
@@ -79,7 +79,7 @@ Phases executees en ordre numerique : 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Data Coherence | 3/3 | Complete | 2026-03-11 |
 | 2. AI Enrichment | 3/3 | Complete   | 2026-03-11 |
-| 3. Notifications | 0/2 | Not started | - |
+| 3. Notifications | 2/2 | Complete   | 2026-03-11 |
 | 4. Independent Fixes | 0/TBD | Not started | - |
 
 ---
