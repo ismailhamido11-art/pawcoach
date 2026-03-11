@@ -11,7 +11,7 @@ Requirements pour le milestone Data Flow Integrity. Chaque requirement corrige u
 
 - [x] **DATA-01**: Le scanner aliments ET le comparateur prennent en compte DietPreferences.disliked_foods en plus de dog.allergies
 - [x] **DATA-02**: Le score sante frontend (healthStatus.js) integre les poids GrowthEntry et DailyLog en plus de HealthRecord
-- [ ] **DATA-03**: Le PDF sante inclut les poids GrowthEntry et DailyLog (pas seulement HealthRecord.type=weight)
+- [x] **DATA-03**: Le PDF sante inclut les poids GrowthEntry et DailyLog (pas seulement HealthRecord.type=weight)
 - [x] **DATA-04**: Le code mort healthScoreCalculate.ts est supprime (le score frontend healthStatus.js est la seule source de verite)
 
 ### Flux IA
@@ -70,7 +70,7 @@ Deferred au prochain milestone.
 |-------------|-------|--------|
 | DATA-01 | Phase 1 | Complete (2026-03-11) |
 | DATA-02 | Phase 1 | Complete (2026-03-11) |
-| DATA-03 | Phase 1 | Pending |
+| DATA-03 | Phase 1 | Done — 01-03 |
 | DATA-04 | Phase 1 | Complete (2026-03-11) |
 | AI-01 | Phase 2 | Pending |
 | AI-02 | Phase 2 | Pending |

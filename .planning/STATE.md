@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 ## Current Position
 
 Phase: 1 of 4 (Data Coherence)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-03-11 — Plan 01-02 complete (DATA-02 + DATA-04: HealthScore calcul local + healthScoreCalculate.ts supprime)
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-03-11 — Plan 01-03 complete (DATA-03: PDF sante merge GrowthEntry + DailyLog dans section Suivi du poids)
 
-Progress: [██░░░░░░░░] 16%
+Progress: [███░░░░░░░] 24%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 2min
-- Total execution time: 4min
+- Total plans completed: 3
+- Average duration: 3min
+- Total execution time: 9min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-data-coherence | 2 | 4min | 2min |
+| 01-data-coherence | 3 | 9min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 2min, 2min
+- Last 5 plans: 2min, 2min, 5min
 - Trend: Stable, rapide
 
 *Updated after each plan completion*
@@ -46,6 +46,8 @@ Recent decisions affecting current work:
 - Score sante: healthScoreCalculate.ts supprime (DATA-02/04 done) — computeHealthScore est la seule source de verite, enrichi GrowthEntry + DailyLog via extraWeightSources optionnel
 - extraWeightSources: 3e param optionnel sur computeHealthScore (pas computeWeightTrend) — 11 consumers existants inchanges
 - Deduplication poids: HealthRecord prioritaire sur GrowthEntry/DailyLog par date
+- PDF poids merge: computeWeightTrend recoit enrichedForTrend (synthetic HealthRecord objects) — signature inchangee
+- PDF poids: priorite PDF inverse de NotebookContent (HealthRecord > GrowthEntry car source officielle)
 - Streak: check-in ET balade comptent tous les deux comme activite quotidienne
 - 3 repas: ajouter noon au JSON (morning/noon/evening) — plus simple que limiter a 2
 
@@ -61,5 +63,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-11
-Stopped at: Completed 01-02-PLAN.md (DATA-02 + DATA-04: HealthScore calcul local, healthScoreCalculate.ts supprime)
+Stopped at: Completed 01-03-PLAN.md (DATA-03: PDF sante merge GrowthEntry + DailyLog, Phase 1 complete)
 Resume file: None

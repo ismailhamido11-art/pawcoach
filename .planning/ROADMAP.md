@@ -6,7 +6,7 @@ Ce milestone corrige tous les flux de donnees casses ou orphelins identifies par
 
 ## Phases
 
-- [ ] **Phase 1: Data Coherence** - Brancher les sources de donnees orphelines dans le frontend (allergies, poids, score sante, code mort)
+- [x] **Phase 1: Data Coherence** - Brancher les sources de donnees orphelines dans le frontend (allergies, poids, score sante, code mort)
 - [ ] **Phase 2: AI Enrichment** - Enrichir les 3 fonctions IA backend avec les donnees qu'elles ignorent actuellement
 - [ ] **Phase 3: Notifications** - Etendre les rappels email aux medicaments, visites vet, et free users
 - [ ] **Phase 4: Independent Fixes** - Corriger les logiques bancales independantes (dashboard, nutrition, streak, comportement, PDF vet)
@@ -27,7 +27,7 @@ Ce milestone corrige tous les flux de donnees casses ou orphelins identifies par
 Plans:
 - [x] 01-01-PLAN.md — Scanner + Comparateur : injecter DietPreferences.disliked_foods dans les prompts IA
 - [x] 01-02-PLAN.md — HealthScore : migrer vers calcul local (computeHealthScore + GrowthEntry + DailyLog) et supprimer healthScoreCalculate.ts
-- [ ] 01-03-PLAN.md — PDF sante : merger les 3 sources de poids (HealthRecord + GrowthEntry + DailyLog)
+- [x] 01-03-PLAN.md — PDF sante : merger les 3 sources de poids (HealthRecord + GrowthEntry + DailyLog)
 
 ### Phase 2: AI Enrichment
 **Goal**: Les 3 fonctions IA (check-in quotidien, weekly insight, monthly summary) produisent des analyses basees sur toutes les donnees disponibles, pas un sous-ensemble
