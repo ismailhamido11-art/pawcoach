@@ -143,7 +143,10 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
   }
 
   async function saveManual() {
-    if (!manualForm.weight_kg && !manualForm.height_cm) return;
+    if (!manualForm.weight_kg) {
+      toast.error("Le poids est obligatoire");
+      return;
+    }
     setSavingManual(true);
     try {
       const entry = await base44.entities.GrowthEntry.create({

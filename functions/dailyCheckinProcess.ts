@@ -204,6 +204,7 @@ Deno.serve(async (req) => {
         aiResponse = llmData.choices?.[0]?.message?.content || "";
       } else {
         console.error("OpenRouter LLM call failed:", llmResponse.status, await llmResponse.text().catch(() => ""));
+        aiResponse = "L'analyse IA est temporairement indisponible. Votre check-in a bien ete enregistre.";
       }
     }
 
