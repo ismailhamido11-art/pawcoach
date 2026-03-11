@@ -326,6 +326,20 @@ export function computeHealthScore(records, dog, extraWeightSources = []) {
     else weightScore = 5;
   }
 
+  // BCS bonus/malus from GrowthEntry.body_condition_score (WSAVA 1-9 scale)
+  const bcsEntries = (extraWeightSources || [])
+    .filter(s => s.body_condition_score && s.date && isValidDate(s.date))
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (bcsEntries.length > 0) {
+    const latestBcs = bcsEntries[0].body_condition_score;
+    const bcsDays = daysBetween(parseDate(bcsEntries[0].date), t);
+    if (bcsDays <= 90) { // Only factor in recent BCS (last 3 months)
+      if (latestBcs >= 4 && latestBcs <= 5) weightScore = Math.min(20, weightScore + 4); // Ideal BCS
+      else if (latestBcs === 3 || latestBcs === 6) weightScore = Math.min(20, weightScore + 1); // Slightly off
+      else weightScore = Math.max(0, weightScore - 3); // Under/overweight concern
+    }
+  }
+
   // --- Vet visit score (0-25) ---
   const vetVisits = recs.filter(r => r.type === "vet_visit" && isValidDate(r.date));
   let vetScore = 0;
