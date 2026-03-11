@@ -387,7 +387,7 @@ export function computeHealthScore(records, dog, extraWeightSources = []) {
 export function getScoreLevel(score) {
   if (score >= 80) return { label: "Excellent", color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200", barColor: "#2D9F82" };
   if (score >= 60) return { label: "Bon", color: "text-primary", bg: "bg-primary/5", border: "border-primary/20", barColor: "#1A4D3E" };
-  if (score >= 40) return { label: "A ameliorer", color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200", barColor: "#d97706" };
+  if (score >= 40) return { label: "À améliorer", color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200", barColor: "#d97706" };
   return { label: "Attention requise", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", barColor: "#dc2626" };
 }
 

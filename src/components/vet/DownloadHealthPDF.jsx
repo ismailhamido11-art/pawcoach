@@ -305,7 +305,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(18);
       doc.setFont("helvetica", "bold");
-      doc.text(sanitize(`Carnet de sante — ${dog.name}`), 14, 16);
+      doc.text(sanitize(`Carnet de santé — ${dog.name}`), 14, 16);
 
       doc.setFontSize(11);
       doc.setFont("helvetica", "normal");
@@ -338,7 +338,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
       if (dog.allergies || dog.health_issues) {
         const lines = [];
         if (dog.allergies) lines.push(`Allergies : ${dog.allergies}`);
-        if (dog.health_issues) lines.push(`Problemes connus : ${dog.health_issues}`);
+        if (dog.health_issues) lines.push(`Problèmes connus : ${dog.health_issues}`);
         const boxH = 10 + lines.length * 6;
         checkPage(boxH + 4);
         doc.setFillColor(255, 243, 243);
@@ -482,7 +482,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
           const dirLabel = trend.direction === "stable" ? "Stable"
             : trend.direction === "up" ? `En hausse (+${trend.changeKg} kg / ${trend.changePct}%)`
             : trend.direction === "down" ? `En baisse (${trend.changeKg} kg / ${trend.changePct}%)`
-            : "Donnees insuffisantes";
+            : "Données insuffisantes";
           doc.setFont("helvetica", "bold");
           doc.text(sanitize(`Tendance : ${dirLabel} — Poids actuel : ${trend.current} kg`), 14, y);
           doc.setFont("helvetica", "normal");
@@ -536,7 +536,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
           y += 6;
         }
       } else if (dog.next_vet_appointment) {
-        y = drawSectionHeader(doc, y, "Veterinaire");
+        y = drawSectionHeader(doc, y, "Vétérinaire");
         checkPage(10);
         doc.setFontSize(8);
         doc.setTextColor(...COLORS.emerald);
@@ -708,7 +708,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
         doc.setTextColor(170, 170, 170);
         doc.setFont("helvetica", "normal");
         doc.text(
-          sanitize(`PawCoach · Carnet de sante de ${dog.name} · Page ${i}/${pageCount}`),
+          sanitize(`PawCoach · Carnet de santé de ${dog.name} · Page ${i}/${pageCount}`),
           pageW / 2,
           290,
           { align: "center" }

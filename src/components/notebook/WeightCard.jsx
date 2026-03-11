@@ -121,15 +121,15 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
 
   const interpretation = useMemo(() => {
     if (weightTrend.current === null) return "Aucune pesée enregistrée. Pèse ton chien pour commencer le suivi.";
-    if (weightTrend.direction === "unknown") return "Une seule pesee. Ajoute-en une autre pour voir la tendance.";
-    if (weightTrend.direction === "stable") return `${dogName || "Ton chien"} maintient un poids stable. C'est ideal.`;
+    if (weightTrend.direction === "unknown") return "Une seule pesée. Ajoute-en une autre pour voir la tendance.";
+    if (weightTrend.direction === "stable") return `${dogName || "Ton chien"} maintient un poids stable. C'est idéal.`;
     if (weightTrend.direction === "up") {
-      if (isAlert) return `Attention : +${weightTrend.changeKg} kg (+${weightTrend.changePct}%) en ${weightTrend.period} jours. Consulte ton veterinaire si la tendance continue.`;
-      return `Legere hausse de +${weightTrend.changeKg} kg. A surveiller lors des prochaines pesees.`;
+      if (isAlert) return `Attention : +${weightTrend.changeKg} kg (+${weightTrend.changePct}%) en ${weightTrend.period} jours. Consulte ton vétérinaire si la tendance continue.`;
+      return `Légère hausse de +${weightTrend.changeKg} kg. À surveiller lors des prochaines pesées.`;
     }
     if (weightTrend.direction === "down") {
-      if (isAlert) return `Attention : ${weightTrend.changeKg} kg (${weightTrend.changePct}%) en ${weightTrend.period} jours. Une perte rapide peut indiquer un probleme.`;
-      return `Legere baisse de ${weightTrend.changeKg} kg. A surveiller.`;
+      if (isAlert) return `Attention : ${weightTrend.changeKg} kg (${weightTrend.changePct}%) en ${weightTrend.period} jours. Une perte rapide peut indiquer un problème.`;
+      return `Légère baisse de ${weightTrend.changeKg} kg. À surveiller.`;
     }
     return "";
   }, [weightTrend, dogName, isAlert]);

@@ -5,7 +5,7 @@ import { spring } from "@/lib/animations";
 const SCORE_ICONS = {
   Excellent: ShieldCheck,
   Bon: ShieldCheck,
-  "A ameliorer": AlertTriangle,
+  "À améliorer": AlertTriangle,
   "Attention requise": AlertTriangle,
 };
 
@@ -26,7 +26,7 @@ export default function HealthScoreCard({ score, scoreLevel, dogName }) {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs text-muted-foreground font-medium">
-              Bilan sante{dogName ? ` de ${dogName}` : ""}
+              Bilan santé{dogName ? ` de ${dogName}` : ""}
             </p>
             <div className="flex items-baseline gap-2 mt-0.5">
               <span className={`text-2xl font-black ${scoreLevel.color}`}>{score}</span>

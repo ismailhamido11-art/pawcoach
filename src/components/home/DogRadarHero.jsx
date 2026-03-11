@@ -31,7 +31,7 @@ function computeArcs({ checkins = [], streak, records = [], exercises = [], scan
   } else if (hasVaccine) {
     healthData = true;
     health = 60;
-    healthHint = "Vaccins a jour";
+    healthHint = "Vaccins à jour";
   }
 
   // 2. Activité (streak)
@@ -216,8 +216,8 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
               const avg = Math.round(withData.reduce((s, a) => s + a.score, 0) / withData.length);
               let text, color;
               if (avg >= 75) { text = `${name} est en pleine forme`; color = "#10b981"; }
-              else if (avg >= 50) { text = "Quelques points a surveiller"; color = "#d97706"; }
-              else { text = "A besoin d'attention"; color = "#ef4444"; }
+              else if (avg >= 50) { text = "Quelques points à surveiller"; color = "#d97706"; }
+              else { text = "À besoin d'attention"; color = "#ef4444"; }
               return (
                 <p className="text-xs font-medium mt-1.5" style={{ color: `${color}99` }}>{text}</p>
               );
