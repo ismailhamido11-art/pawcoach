@@ -19,15 +19,9 @@ import { getDogAgeLabel } from "@/utils/healthStatus";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
 import { motion, AnimatePresence } from "framer-motion";
 import { spring, springGentle } from "@/lib/animations";
+import { mdComponents } from "@/lib/markdown";
 
 const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: springGentle };
-
-const mdComponents = {
-  p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
-  ul: ({ children }) => <ul className="my-1 ml-4 list-disc">{children}</ul>,
-  li: ({ children }) => <li className="my-0.5">{children}</li>,
-  strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-};
 
 export default function Chat() {
   const navigate = useNavigate();
