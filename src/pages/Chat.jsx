@@ -90,7 +90,10 @@ export default function Chat() {
       setShowScrollBtn(dist > 200);
     };
     container.addEventListener("scroll", handleScroll, { passive: true });
-    return () => container.removeEventListener("scroll", handleScroll);
+    return () => {
+      if (!container) return;
+      container.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   useEffect(() => {
