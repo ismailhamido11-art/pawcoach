@@ -1,16 +1,9 @@
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { getTrialDaysLeft, isUserOnTrial } from "@/utils/premium";
+import { getDogAgeSegment } from "@/utils/healthStatus";
 import { Clock, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
-
-function getDogAgeSegment(dog) {
-  if (!dog?.birth_date) return "adult";
-  const monthsOld = (Date.now() - new Date(dog.birth_date)) / (1000 * 60 * 60 * 24 * 30.44);
-  if (monthsOld < 12) return "puppy";
-  if (monthsOld > 84) return "senior";
-  return "adult";
-}
 
 const SEGMENT_MESSAGES = {
   puppy: {

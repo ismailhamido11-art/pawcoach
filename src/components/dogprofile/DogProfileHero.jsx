@@ -3,19 +3,13 @@ import { motion } from "framer-motion";
 import { Camera, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import Illustration from "../illustrations/Illustration";
+import { getDogAgeLabel } from "@/utils/healthStatus";
 
 const STATUS_OPTIONS = [
   { value: "healthy", label: "En pleine forme", emoji: "💪", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
   { value: "recovering", label: "En convalescence", emoji: "🩹", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
   { value: "traveling", label: "En voyage", emoji: "✈️", color: "bg-blue-100 text-blue-700 border-blue-200" },
 ];
-
-function getDogAge(birth_date) {
-  if (!birth_date) return null;
-  const months = Math.floor((Date.now() - new Date(birth_date)) / (30.44 * 864e5));
-  if (months < 12) return `${months} mois`;
-  return `${Math.floor(months / 12)} ans`;
-}
 
 export default function DogProfileHero({ dog, dailyLogs, onSave }) {
   const [showStatusPicker, setShowStatusPicker] = useState(false);
@@ -86,7 +80,7 @@ export default function DogProfileHero({ dog, dailyLogs, onSave }) {
         <div>
           <h1 className="text-white font-black text-2xl">{dog.name}</h1>
           <p className="text-white/70 text-sm mt-0.5">
-            {dog.breed}{dog.birth_date ? ` · ${getDogAge(dog.birth_date)}` : ""}
+            {dog.breed}{getDogAgeLabel(dog) ? ` · ${getDogAgeLabel(dog)}` : ""}
             {displayWeight ? ` · ${displayWeight} kg` : ""}
           </p>
         </div>

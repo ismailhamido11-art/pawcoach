@@ -13,6 +13,7 @@ import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
 import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
+import { dogAgeMonths } from "@/utils/healthStatus";
 import { updateStreakSilently } from "../components/streakHelper";
 import { unlockBadge, checkStreakBadges } from "@/components/achievements/badgeUtils";
 import { motion } from "framer-motion";
@@ -194,10 +195,8 @@ export default function Training() {
   const isPremium = isUserPremium(user);
 
   // Puppy detection
-  const dogAgeMonths = dog?.birth_date
-    ? Math.floor((Date.now() - new Date(dog.birth_date).getTime()) / (30.44 * 24 * 60 * 60 * 1000))
-    : null;
-  const isPuppy = dogAgeMonths !== null && dogAgeMonths < 12;
+  const ageMonths = dogAgeMonths(dog);
+  const isPuppy = ageMonths !== null && ageMonths < 12;
 
   const getJourneyExercises = (journey) =>
     journey.exerciseOrders.map(o => EXERCISES.find(e => e.order_number === o)).filter(Boolean);
@@ -698,17 +697,17 @@ export default function Training() {
           <div className="flex items-start gap-3">
             <span className="text-2xl flex-shrink-0">🐾</span>
             <div>
-              <p className="font-bold text-sm text-emerald-900">Programme chiot — {dog.name} ({dogAgeMonths} mois)</p>
+              <p className="font-bold text-sm text-emerald-900">Programme chiot — {dog.name} ({ageMonths} mois)</p>
               <p className="text-xs text-emerald-700 mt-1 leading-relaxed">
-                {dogAgeMonths < 4
-                  ? `À ${dogAgeMonths} mois, concentre-toi sur la socialisation et les ordres de base (Assis, Couché). Sessions de 2-3 min max !`
-                  : dogAgeMonths < 8
-                  ? `À ${dogAgeMonths} mois, ${dog.name} est prêt pour les ordres de base + sécurité. Sessions de 5 min, toujours en positif.`
-                  : `À ${dogAgeMonths} mois, ${dog.name} peut aborder les exercices intermédiaires. Augmente la durée à 10 min progressivement.`
+                {ageMonths < 4
+                  ? `À ${ageMonths} mois, concentre-toi sur la socialisation et les ordres de base (Assis, Couché). Sessions de 2-3 min max !`
+                  : ageMonths < 8
+                  ? `À ${ageMonths} mois, ${dog.name} est prêt pour les ordres de base + sécurité. Sessions de 5 min, toujours en positif.`
+                  : `À ${ageMonths} mois, ${dog.name} peut aborder les exercices intermédiaires. Augmente la durée à 10 min progressivement.`
                 }
               </p>
               <p className="text-[10px] text-emerald-600 mt-2 font-medium">
-                Recommandé : {dogAgeMonths < 4 ? "2x 2 min" : dogAgeMonths < 8 ? "2x 5 min" : "2x 10 min"} par jour
+                Recommandé : {ageMonths < 4 ? "2x 2 min" : ageMonths < 8 ? "2x 5 min" : "2x 10 min"} par jour
               </p>
             </div>
           </div>

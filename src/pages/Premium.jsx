@@ -6,6 +6,7 @@ import { ArrowLeft, Check, Crown, Zap, Lock, ChevronRight, MessageCircle, ScanLi
 import IconBadge from "@/components/ui/IconBadge";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
+import { getDogAgeSegment } from "@/utils/healthStatus";
 import BottomNav from "../components/BottomNav";
 import confetti from "canvas-confetti";
 import { motion } from "framer-motion";
@@ -33,14 +34,6 @@ const PREMIUM_FEATURES = [
   { text: "Résumés mensuels", icon: BarChart3, color: "#10b981" },
   { text: "Jusqu'à 3 chiens", icon: DogIcon, color: "#ec4899" },
 ];
-
-function getDogAgeSegment(dog) {
-  if (!dog?.birth_date) return "adult";
-  const monthsOld = (Date.now() - new Date(dog.birth_date)) / (1000 * 60 * 60 * 24 * 30.44);
-  if (monthsOld < 12) return "puppy";
-  if (monthsOld > 84) return "senior";
-  return "adult";
-}
 
 const SEGMENT_HERO = {
   puppy: {

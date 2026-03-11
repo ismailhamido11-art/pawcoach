@@ -118,7 +118,7 @@ function daysBetween(dateA, dateB) {
   return Math.round((dateB - dateA) / MS_PER_DAY);
 }
 
-function isValidDate(d) {
+export function isValidDate(d) {
   if (!d || d === "") return false;
   const parsed = new Date(d);
   return !isNaN(parsed.getTime());
@@ -142,7 +142,7 @@ function fmtDateFR(d) {
 }
 
 /** Guess dog age in months from birth_date */
-function dogAgeMonths(dog) {
+export function dogAgeMonths(dog) {
   if (!dog?.birth_date || !isValidDate(dog.birth_date)) return null;
   return monthsAgo(parseDate(dog.birth_date));
 }
@@ -620,6 +620,18 @@ export function getDogAgeLabel(dog) {
   const rem = months % 12;
   if (rem === 0) return years === 1 ? "1 an" : `${years} ans`;
   return years === 1 ? `1 an et ${rem} mois` : `${years} ans et ${rem} mois`;
+}
+
+/**
+ * Get dog life-stage segment: "puppy" (<12m), "senior" (>84m), or "adult".
+ */
+export function getDogAgeSegment(dog) {
+  if (!dog?.birth_date) return "adult";
+  const months = dogAgeMonths(dog);
+  if (months === null) return "adult";
+  if (months < 12) return "puppy";
+  if (months > 84) return "senior";
+  return "adult";
 }
 
 /**

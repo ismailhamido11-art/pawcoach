@@ -15,18 +15,13 @@ import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { getTodayString } from "@/utils/recommendations";
+import { getDogAgeLabel } from "@/utils/healthStatus";
 import { motion, AnimatePresence } from "framer-motion";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { type: "spring", stiffness: 120, damping: 20 } };
 
 // --- Helpers ---
-function getAge(birthDate) {
-  if (!birthDate) return null;
-  const months = Math.floor((Date.now() - new Date(birthDate)) / (1000 * 60 * 60 * 24 * 30));
-  return months < 12 ? `${months} mois` : `${Math.floor(months / 12)} ans`;
-}
-
 function getDateLabel(timestamp) {
   if (!timestamp) return "";
   const d = new Date(timestamp);
@@ -364,7 +359,7 @@ export default function Chat() {
 
   const suggestions = dog ? [
     `Comment va ${dog.name} en ce moment ?`,
-    dog.birth_date && getAge(dog.birth_date)?.includes("mois")
+    getDogAgeLabel(dog)?.includes("mois")
       ? `Alimentation chiot ${dog.breed || ""}`
       : `Plan nutritionnel pour ${dog.name}`,
     `${dog.name} peut manger du chocolat ?`,
