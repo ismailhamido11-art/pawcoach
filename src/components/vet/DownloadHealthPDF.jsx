@@ -322,7 +322,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
         const vetLine = [dog.vet_name, dog.vet_city].filter(Boolean).join(" — ");
         doc.setFontSize(9);
         doc.setTextColor(200, 220, 210);
-        doc.text(sanitize(`Veterinaire : ${vetLine}`), 14, dog.chip_number ? 38 : 33);
+        doc.text(sanitize(`Vétérinaire : ${vetLine}`), 14, dog.chip_number ? 38 : 33);
       }
 
       doc.setFontSize(8);
@@ -516,7 +516,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
       // ================================================================
       const vetVisits = records.filter((r) => r.type === "vet_visit");
       if (vetVisits.length > 0) {
-        y = drawSectionHeader(doc, y, "Visites veterinaire");
+        y = drawSectionHeader(doc, y, "Visites vétérinaire");
         const sorted = [...vetVisits].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 15);
         const rows = sorted.map((v) => [
           fmtShortDate(v.date),
@@ -691,9 +691,9 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
       doc.setTextColor(150, 150, 150);
       doc.setFont("helvetica", "italic");
       const disc = sanitize(
-        "Ce document est genere par PawCoach a titre informatif. " +
-        "Il ne remplace pas un diagnostic veterinaire. " +
-        "Presentez-le a votre veterinaire pour faciliter la consultation."
+        "Ce document est généré par PawCoach à titre informatif. " +
+        "Il ne remplace pas un diagnostic vétérinaire. " +
+        "Présentez-le à votre vétérinaire pour faciliter la consultation."
       );
       const discLines = doc.splitTextToSize(disc, pageW - 28);
       discLines.forEach((line) => { doc.text(line, 14, y); y += 3.5; });
@@ -736,7 +736,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
       ) : (
         <FileDown className="w-3.5 h-3.5" />
       )}
-      {loading ? "Generation..." : "Rapport PDF veterinaire"}
+      {loading ? "Génération..." : "Rapport PDF vétérinaire"}
     </Button>
   );
 }

@@ -28,16 +28,16 @@ import { spring } from "@/lib/animations";
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
   { id: "vaccine",    label: "Vaccins",  shortLabel: "Vaccins" },
-  { id: "vet_visit",  label: "Visites",  shortLabel: "Veterinaire" },
+  { id: "vet_visit",  label: "Visites",  shortLabel: "Vétérinaire" },
   { id: "weight",     label: "Poids",    shortLabel: "Poids" },
-  { id: "medication", label: "Medoc.",   shortLabel: "Medicaments" },
+  { id: "medication", label: "Médoc.",   shortLabel: "Médicaments" },
   { id: "note",       label: "Notes",    shortLabel: "Notes" },
 ];
 
 const PREMIUM_CONFIGS = {
   vet_visit: {
-    label: "Visites veterinaire", emptyText: "Aucune visite vétérinaire enregistrée",
-    placeholder: "Ex: Visite de controle annuelle", addLabel: "Ajouter une visite",
+    label: "Visites vétérinaire", emptyText: "Aucune visite vétérinaire enregistrée",
+    placeholder: "Ex: Visite de contrôle annuelle", addLabel: "Ajouter une visite",
     showNextDate: true, Icon: Stethoscope, bgClass: "bg-primary/5", borderClass: "border-primary/20",
     textClass: "text-primary", btnClass: "bg-primary hover:bg-primary/90",
   },
@@ -400,7 +400,7 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
                 <Stethoscope className="w-4 h-4 text-primary" />
               </div>
               <h3 className="text-sm font-semibold text-foreground">
-                Notes de ton veterinaire ({vetNotes.length})
+                Notes de ton vétérinaire ({vetNotes.length})
               </h3>
             </div>
             <VetNotesList notes={vetNotes} />

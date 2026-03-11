@@ -15,8 +15,8 @@ import { spring } from "@/lib/animations";
 const GATE_CONTENT = {
   vet_visit: {
     Icon: Stethoscope,
-    title: "Suivi veterinaire complet",
-    description: "Note chaque visite, garde l'historique et partage-le avec ton veto en un tap. Plus jamais de 'c'etait quand deja ?'",
+    title: "Suivi vétérinaire complet",
+    description: "Note chaque visite, garde l'historique et partage-le avec ton véto en un tap. Plus jamais de 'c'était quand déjà ?'",
     color: "bg-blue-50 border-blue-200",
     iconBg: "bg-blue-100",
     iconColor: "text-blue-600",

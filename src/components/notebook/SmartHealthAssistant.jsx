@@ -494,7 +494,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                 const VET_CARD_STYLES = {
                   routine: { bg: "bg-blue-50", border: "border-blue-100", iconBg: "bg-blue-100", iconColor: "text-blue-600", titleColor: "text-blue-900", subColor: "text-blue-700", title: "Check-up conseillé", sub: "Prends rendez-vous quand tu peux" },
                   important: { bg: "bg-amber-50", border: "border-amber-100", iconBg: "bg-amber-100", iconColor: "text-amber-600", titleColor: "text-amber-900", subColor: "text-amber-700", title: "Consultation recommandée", sub: "Dans les prochains jours" },
-                  urgent: { bg: "bg-red-50", border: "border-red-100", iconBg: "bg-red-100", iconColor: "text-red-600", titleColor: "text-red-900", subColor: "text-red-700", title: "Urgence veterinaire", sub: "Contacte rapidement un professionnel" },
+                  urgent: { bg: "bg-red-50", border: "border-red-100", iconBg: "bg-red-100", iconColor: "text-red-600", titleColor: "text-red-900", subColor: "text-red-700", title: "Urgence vétérinaire", sub: "Contacte rapidement un professionnel" },
                 };
                 const style = VET_CARD_STYLES[level] || VET_CARD_STYLES.important;
                 return (
