@@ -44,8 +44,15 @@ Deno.serve(async (req) => {
           dogDetails += months < 12 ? `, ${months} mois` : `, ${Math.floor(months / 12)} an(s)`;
         }
         if (dog.sex) dogDetails += `, ${dog.sex === "male" ? "male" : "femelle"}`;
-        if (dog.allergies) dogDetails += `, allergies: ${dog.allergies}`;
-        if (dog.health_issues) dogDetails += `, problemes: ${dog.health_issues}`;
+        if (dog.neutered) dogDetails += `, sterilise: ${dog.neutered === true || dog.neutered === "yes" ? "oui" : "non"}`;
+        if (dog.allergies) dogDetails += `, allergies: ${String(dog.allergies).substring(0, 200)}`;
+        if (dog.health_issues) dogDetails += `, problemes: ${String(dog.health_issues).substring(0, 200)}`;
+        if (dog.owner_goal) dogDetails += `, objectif proprietaire: ${String(dog.owner_goal).substring(0, 150)}`;
+        if (dog.diet_type) dogDetails += `, alimentation: ${dog.diet_type}`;
+        if (dog.diet_restrictions) dogDetails += `, restrictions alimentaires: ${String(dog.diet_restrictions).substring(0, 200)}`;
+        if (dog.diet_brand) dogDetails += `, marque actuelle: ${String(dog.diet_brand).substring(0, 100)}`;
+        if (dog.activity_level) dogDetails += `, niveau activite: ${dog.activity_level}`;
+        if (dog.environment) dogDetails += `, environnement: ${dog.environment}`;
 
         // Fetch all relevant data in parallel
         const [records, checkins, foodScans, dailyLogs, streaks] = await Promise.all([
@@ -95,7 +102,7 @@ Deno.serve(async (req) => {
           historyContext += `\n- Energie : ${recentCheckins.map(c => energyMap[c.energy] || c.energy).filter(Boolean).join(", ")}`;
           historyContext += `\n- Appetit : ${recentCheckins.map(c => appetiteMap[c.appetite] || c.appetite).filter(Boolean).join(", ")}`;
           const latestNote = recentCheckins.find(c => c.notes)?.notes;
-          if (latestNote) historyContext += `\n- Note : "${latestNote}"`;
+          if (latestNote) historyContext += `\n- Note : "${String(latestNote).substring(0, 200)}"`;
         }
 
         // Food scan context
@@ -143,6 +150,8 @@ INTELLIGENCE HOLISTIQUE :
 - Tu as acces au bien-etre recent (humeur, energie, appetit), a l'activite physique, et aux aliments scannes.
 - UTILISE CES DONNEES pour enrichir ton analyse. Ex: "Je vois que l'energie de ${dogName} est basse depuis 3 jours, combine avec cette perte d'appetit, ca merite attention."
 - Fais des connexions entre les symptomes rapportes et les donnees objectives.
+- ATTENTION : donnees absentes = fonctionnalite non utilisee, PAS un signal negatif. "Pas de check-in" ne signifie PAS que le chien va mal. Ne tire jamais de conclusion d'une absence de donnees.
+- Si le chien a des restrictions alimentaires ou des allergies, prends-les en compte dans tes analyses (interactions medicamenteuses, regimes speciaux).
 
 REGLES D'INTELLIGENCE EMOTIONNELLE :
 - Sois chaleureux mais precis. Utilise des emojis rassurants.

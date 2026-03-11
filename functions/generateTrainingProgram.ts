@@ -9,9 +9,27 @@ Deno.serve(async (req) => {
     const { dogId, dogName: rawDogName, dogBreed: rawDogBreed, dogBirthDate, activityLevel, healthIssues, goals, weeklyWalkMinutes, walkDaysLast7, avgWalkMinutes, weeklyWalkDistanceKm, walkMoodSummary: rawWalkMood, mode, problemId, problemLabel, problemDescription, previousPrograms: rawPreviousPrograms, previousBilan: rawPreviousBilan } = await req.json();
     if (!dogId) return Response.json({ error: 'Missing dogId' }, { status: 400 });
 
+    // ═══════════════════════════════════════════════════════════
+    // FETCH SERVER-SIDE — Dog + previous programs (Bookmark)
+    // ═══════════════════════════════════════════════════════════
+    const dogs = await base44.asServiceRole.entities.Dog.filter({ id: dogId });
+    const dog = dogs?.[0];
+
+    const previousBookmarks = await base44.asServiceRole.entities.Bookmark.filter({ dog_id: dogId }).catch(() => []);
+    const pastProgramTitles = (Array.isArray(previousBookmarks) ? previousBookmarks : [])
+      .filter((b: any) => b.source === "fitness_program" || b.source === "behavior_program")
+      .sort((a: any, b: any) => new Date(b.created_date || 0).getTime() - new Date(a.created_date || 0).getTime())
+      .map((b: any) => { try { return JSON.parse(b.content)?.title; } catch { return null; } })
+      .filter(Boolean)
+      .slice(0, 15);
+
+    // Sanitize goals from frontend
+    const safeGoals = goals ? String(goals).substring(0, 200).replace(/[<>]/g, '') : null;
+
     // Sanitize user-controlled strings before prompt injection
-    const dogName = String(rawDogName || "").substring(0, 50);
-    const dogBreed = String(rawDogBreed || "").substring(0, 50);
+    // Prefer server-side dog data, fallback to frontend for non-critical fields
+    const dogName = String(dog?.name || rawDogName || "").substring(0, 50);
+    const dogBreed = String(dog?.breed || rawDogBreed || "").substring(0, 50);
     const walkMoodSummary = rawWalkMood ? String(rawWalkMood).substring(0, 100) : null;
     const safeWalkDistanceKm = typeof weeklyWalkDistanceKm === 'number' && isFinite(weeklyWalkDistanceKm) ? weeklyWalkDistanceKm : null;
     const previousPrograms = Array.isArray(rawPreviousPrograms) ? rawPreviousPrograms.slice(0, 10).map((p: any) => String(p).substring(0, 100)) : [];
@@ -22,11 +40,12 @@ Deno.serve(async (req) => {
       nextFocus: Array.isArray(rawPreviousBilan.nextFocus) ? rawPreviousBilan.nextFocus.slice(0, 5).map((f: any) => String(f).substring(0, 50)) : [],
     } : null;
 
-    // Calculate age
+    // Calculate age — prefer server-side birth_date
     let ageMonths = null;
     let ageLabel = "inconnu";
-    if (dogBirthDate) {
-      const birth = new Date(dogBirthDate);
+    const birthDateSource = dog?.birth_date || dogBirthDate;
+    if (birthDateSource) {
+      const birth = new Date(birthDateSource);
       const now = new Date();
       ageMonths = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
       if (ageMonths < 12) ageLabel = `${ageMonths} mois (chiot)`;
@@ -36,6 +55,38 @@ Deno.serve(async (req) => {
     }
 
     const activityLabels = { faible: "faible", modere: "modéré", eleve: "élevé", tres_eleve: "très élevé" };
+
+    // Server-side activity level (prefer DB over frontend)
+    const safeActivityLevel = dog?.activity_level || activityLevel || "modere";
+    const safeHealthIssues = dog?.health_issues || healthIssues || "aucun";
+
+    // ═══════════════════════════════════════════════════════════
+    // ENRICHISSEMENT SERVER-SIDE — données profondes du Dog
+    // ═══════════════════════════════════════════════════════════
+    let personalityLine = "";
+    if (dog?.personality_tags) {
+      try {
+        const tags = JSON.parse(dog.personality_tags);
+        if (Array.isArray(tags) && tags.length > 0) {
+          personalityLine = `- Personnalité du chien : ${tags.join(", ")}`;
+        }
+      } catch { /* ignore parse error */ }
+    }
+    const behaviorLine = dog?.behavior_summary ? `- Profil comportemental : ${String(dog.behavior_summary).substring(0, 300)}` : "";
+    const ownerGoalLine = dog?.owner_goal ? `- Objectif du propriétaire : ${String(dog.owner_goal).substring(0, 200)}` : "";
+    const statusLine = dog?.status === "recovering" ? "- ATTENTION : chien en convalescence. Programme doux uniquement, intensité réduite." : "";
+    const dietLine = dog?.diet_type ? `- Alimentation : ${String(dog.diet_type).substring(0, 50)}` : "";
+    const sexLine = dog?.sex ? `- Sexe : ${dog.sex}${dog.neutered ? " (stérilisé)" : ""}` : "";
+    const allergiesLine = dog?.allergies ? `- Allergies connues : ${String(dog.allergies).substring(0, 200)}` : "";
+    const environmentLine = dog?.environment ? `- Environnement : ${String(dog.environment).substring(0, 100)}` : "";
+
+    // Combine server-side enrichment block (only non-empty lines)
+    const enrichmentBlock = [personalityLine, behaviorLine, ownerGoalLine, statusLine, dietLine, sexLine, allergiesLine, environmentLine]
+      .filter(Boolean)
+      .join("\n");
+
+    // Combine past program titles (from Bookmarks DB + frontend fallback)
+    const allPastTitles = [...new Set([...pastProgramTitles, ...previousPrograms.map((p: string) => p)])].slice(0, 20);
 
     // ═══════════════════════════════════════════════════════════
     // MODE BEHAVIOR — Programme anti-problème 7 jours
@@ -47,6 +98,8 @@ Deno.serve(async (req) => {
 
       const safeProblemLabel = String(problemLabel || "").substring(0, 100);
       const safeProblemDescription = String(problemDescription || "").substring(0, 200);
+      const escapedProblemId = String(problemId || "").substring(0, 50).replace(/"/g, '\\"');
+      const escapedDogName = String(dogName || "chien").replace(/"/g, '\\"');
 
       const behaviorPrompt = `Tu es un éducateur canin certifié et comportementaliste expert. Génère un programme personnalisé de 7 jours pour résoudre un problème de comportement.
 
@@ -54,11 +107,12 @@ CHIEN :
 - Nom : ${dogName || "chien"}
 - Race : ${dogBreed || "inconnue"}
 - Âge : ${ageLabel}
-- Niveau d'activité : ${activityLabels[activityLevel] || activityLevel || "modéré"}
-- Problèmes de santé : ${healthIssues || "aucun"}
-
+- Niveau d'activité : ${activityLabels[safeActivityLevel] || safeActivityLevel || "modéré"}
+- Problèmes de santé : ${safeHealthIssues}
+${enrichmentBlock ? enrichmentBlock + "\n" : ""}
 PROBLÈME À RÉSOUDRE : ${safeProblemLabel}
 Description : ${safeProblemDescription}
+${allPastTitles.length > 0 ? '\nPROGRAMMES DÉJÀ RÉALISÉS (varier les approches) :\n' + allPastTitles.map((t: string) => '- ' + t).join('\n') : ''}
 
 RÈGLES ABSOLUES :
 - Uniquement du renforcement positif — JAMAIS de punition, collier étrangleur ou méthode coercitive
@@ -72,7 +126,7 @@ RÈGLES ABSOLUES :
 Réponds en JSON avec ce format exact :
 {
   "program_title": "<titre motivant avec le nom du chien>",
-  "problem_id": "${String(problemId || "").substring(0, 50)}",
+  "problem_id": "${escapedProblemId}",
   "problem_label": "${safeProblemLabel}",
   "duration_days": 7,
   "summary": "<résumé motivant en 2-3 phrases>",
@@ -97,7 +151,7 @@ Réponds en JSON avec ce format exact :
   "emergency_protocol": "<quoi faire si la situation dégénère pendant le programme>",
   "when_to_see_pro": "<signes clairs qu'il faut consulter un comportementaliste>",
   "progress_indicators": ["<signe d'amélioration observable 1>", "<signe 2>", "<signe 3>"],
-  "dog_name": "${dogName || "chien"}"
+  "dog_name": "${escapedDogName}"
 }`;
 
       const behaviorResult = await base44.asServiceRole.integrations.Core.InvokeLLM({
@@ -164,9 +218,10 @@ PROFIL DU CHIEN :
 - Nom : ${dogName || "chien"}
 - Race : ${breedName}
 - Âge : ${ageLabel}
-- Niveau d'activité : ${activityLabels[activityLevel] || activityLevel || "modéré"}
-- Santé : ${healthIssues || "aucun problème"}
-- Objectifs : ${goals || "bien-être général et lien avec son chien"}
+- Niveau d'activité : ${activityLabels[safeActivityLevel] || safeActivityLevel || "modéré"}
+- Santé : ${safeHealthIssues}
+- Objectifs : ${safeGoals || dog?.owner_goal || "bien-être général et lien avec son chien"}
+${enrichmentBlock ? enrichmentBlock + "\n" : ""}
 - Balades actuelles : ${weeklyWalkMinutes ? weeklyWalkMinutes + " min/semaine" : "non renseigné"}${walkDaysLast7 != null ? `, ${walkDaysLast7} jours de balade sur 7` : ""}${avgWalkMinutes ? `, moyenne ${avgWalkMinutes} min/sortie` : ""}${safeWalkDistanceKm ? `, ${safeWalkDistanceKm} km parcourus cette semaine` : ""}
 ${walkMoodSummary ? `- Ressenti post-balade : ${walkMoodSummary}` : ""}
 ${previousBilan ? `
@@ -208,7 +263,7 @@ MATÉRIEL : uniquement ce qu'on trouve à la maison (gobelets, serviettes, carto
 ADAPTATION : tout est adapté à ${breedName} (instincts naturels de la race) et à l'âge (${ageLabel})
 ${walkDaysLast7 != null && walkDaysLast7 <= 2 ? `ALERTE BALADE : Ce chien ne sort que ${walkDaysLast7} jours sur 7. Inclure des motivations spécifiques pour augmenter les sorties. Proposer des activités d'intérieur en complément.` : ""}
 ${avgWalkMinutes && avgWalkMinutes < 15 ? `BALADES COURTES : Moyenne ${avgWalkMinutes} min/sortie. Adapter les activités "balade" à des formats courts (10-15 min) et proposer des missions pendant ces balades.` : ""}
-${previousPrograms?.length > 0 ? '\nPROGRAMMES DÉJÀ FAITS (varier les thèmes, NE PAS répéter ces programmes) :\n' + previousPrograms.map((p: string) => '- ' + p).join('\n') : ''}
+${allPastTitles.length > 0 ? '\nPROGRAMMES DÉJÀ FAITS (varier les thèmes, NE PAS répéter ces programmes) :\n' + allPastTitles.map((t: string) => '- ' + t).join('\n') : ''}
 Langue : français, tutoiement, ton coach bienveillant.`;
 
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({

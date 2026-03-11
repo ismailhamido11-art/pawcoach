@@ -6,12 +6,15 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { symptoms, duration, additional_info, image_url, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies, personality_tags, dog_status } = await req.json();
+    const { symptoms, duration, additional_info, image_url, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies, personality_tags, dog_status, owner_goal, neutered, activity_level, environment, vet_name, vet_city, diet_type, diet_restrictions, behavior_summary } = await req.json();
 
     if (!symptoms) return Response.json({ error: 'Symptoms required' }, { status: 400 });
 
     // Sanitize user inputs to prevent prompt injection and limit length
     const sanitize = (s, max = 2000) => String(s || '').substring(0, max).replace(/[<>]/g, '');
+
+    // Validate dog_weight as a number
+    const safeWeight = typeof dog_weight === 'number' ? dog_weight : (typeof dog_weight === 'string' && !isNaN(parseFloat(dog_weight)) ? parseFloat(dog_weight) : null);
 
     const prompt = `Tu es un assistant IA qui aide les proprietaires de chiens a preparer leur visite veterinaire. Tu NE poses PAS de diagnostic — tu structures les observations du proprietaire pour que le veterinaire ait toutes les informations utiles des le debut de la consultation.
 
@@ -22,12 +25,20 @@ PHASE 1: Tu recois les premieres observations du proprietaire. Tu dois:
 INFORMATIONS SUR LE CHIEN:
 - Nom: ${sanitize(dog_name, 100) || 'Non renseigné'}
 - Race: ${sanitize(dog_breed, 100) || 'Non renseignée'}
-- Poids: ${dog_weight ? dog_weight + ' kg' : 'Non renseigné'}
+- Poids: ${safeWeight ? safeWeight + ' kg' : 'Non renseigné'}
 - Âge approximatif: ${sanitize(dog_age, 100) || 'Non renseigné'}
 - Problèmes de santé connus: ${sanitize(health_issues, 500) || 'Aucun'}
 - Allergies connues: ${sanitize(allergies, 500) || 'Aucune'}
 ${(() => { try { const tags = JSON.parse(personality_tags || "[]"); return tags.length > 0 ? `- Personnalité : ${tags.join(", ")}` : ""; } catch { return ""; } })()}
 ${dog_status && dog_status !== "healthy" ? `- Statut actuel : ${dog_status === "recovering" ? "En convalescence (tenir compte pour les recommandations)" : dog_status === "traveling" ? "En voyage/déplacement" : dog_status}` : ""}
+${owner_goal ? `- Objectif du propriétaire : ${sanitize(owner_goal, 200)}` : ""}
+${neutered !== undefined && neutered !== null ? `- Stérilisé : ${neutered ? "Oui" : "Non"}` : ""}
+${activity_level ? `- Niveau d'activité : ${sanitize(activity_level, 100)}` : ""}
+${environment ? `- Environnement : ${sanitize(environment, 200)}` : ""}
+${vet_name || vet_city ? `- Vétérinaire traitant : ${vet_name ? "Dr " + sanitize(vet_name, 100) : "Non renseigné"}${vet_city ? " (" + sanitize(vet_city, 100) + ")" : ""}` : ""}
+${diet_type ? `- Alimentation : ${sanitize(diet_type, 200)}` : ""}
+${diet_restrictions ? `- Restrictions alimentaires : ${sanitize(diet_restrictions, 500)}` : ""}
+${behavior_summary ? `- Contexte comportemental : ${sanitize(behavior_summary, 500)} (peut influencer les symptômes)` : ""}
 
 SYMPTÔMES DÉCRITS:
 ${sanitize(symptoms)}

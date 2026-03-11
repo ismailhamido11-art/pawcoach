@@ -74,6 +74,9 @@ Deno.serve(async (req) => {
       userProgress,
       dietPrefs,
       nutritionPlans,
+      diagnosisReports,
+      growthEntries,
+      bookmarks,
     ] = await Promise.all([
       base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dogId }).catch(() => []),
       base44.asServiceRole.entities.HealthRecord.filter({ dog_id: dogId }).catch(() => []),
@@ -84,6 +87,9 @@ Deno.serve(async (req) => {
       base44.asServiceRole.entities.UserProgress.filter({ user_email: user.email }).catch(() => []),
       base44.asServiceRole.entities.DietPreferences.filter({ dog_id: dogId }).catch(() => []),
       base44.asServiceRole.entities.NutritionPlan.filter({ dog_id: dogId }).catch(() => []),
+      base44.asServiceRole.entities.DiagnosisReport.filter({ dog_id: dogId }).catch(() => []),
+      base44.asServiceRole.entities.GrowthEntry.filter({ dog_id: dogId }).catch(() => []),
+      base44.asServiceRole.entities.Bookmark.filter({ dog_id: dogId }).catch(() => []),
     ]);
 
     // ═══════════════════════════════════════════════════════════
@@ -151,15 +157,24 @@ Deno.serve(async (req) => {
         healthMemory += `\n- Visites veto : ${recentVetVisits.map(v => `${v.title || "visite"} ${formatDateFr(v.date)}${v.details ? ` — ${v.details.substring(0, 80)}` : ""}`).join("; ")}`;
       }
       if (weightRecords.length >= 2) {
-        const latest = weightRecords[0];
-        const previous = weightRecords[1];
-        const diff = (parseFloat(latest.value) - parseFloat(previous.value)).toFixed(1);
-        healthMemory += `\n- Poids : ${latest.value} kg (${Number(diff) > 0 ? "+" : ""}${diff} kg depuis ${formatDateFr(previous.date)})`;
+        const latestVal = parseFloat(weightRecords[0].value);
+        const previousVal = parseFloat(weightRecords[1].value);
+        if (!isNaN(latestVal) && !isNaN(previousVal)) {
+          const diff = (latestVal - previousVal).toFixed(1);
+          healthMemory += `\n- Poids : ${latestVal} kg (${Number(diff) > 0 ? "+" : ""}${diff} kg depuis ${formatDateFr(weightRecords[1].date)})`;
+        } else if (!isNaN(latestVal)) {
+          healthMemory += `\n- Dernier poids enregistre : ${latestVal} kg (${formatDateFr(weightRecords[0].date)})`;
+        }
       } else if (weightRecords.length === 1) {
-        healthMemory += `\n- Dernier poids enregistre : ${weightRecords[0].value} kg (${formatDateFr(weightRecords[0].date)})`;
+        const val = parseFloat(weightRecords[0].value);
+        if (!isNaN(val)) healthMemory += `\n- Dernier poids enregistre : ${val} kg (${formatDateFr(weightRecords[0].date)})`;
       }
       if (upcomingRecords.length > 0) {
         healthMemory += `\n- A VENIR : ${upcomingRecords.map(r => `${r.title} le ${new Date(r.next_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}`).join(", ")}`;
+      }
+      const activeMeds = sortedRecords.filter(r => r.type === "medication" && daysAgo(r.date || r.created_date) <= 90).slice(0, 5);
+      if (activeMeds.length > 0) {
+        healthMemory += `\n- Medicaments : ${activeMeds.map(m => `${m.title}${m.details ? ` (${String(m.details).substring(0, 60)})` : ""} ${formatDateFr(m.date)}`).join(", ")}`;
       }
     }
 
@@ -171,7 +186,9 @@ Deno.serve(async (req) => {
     if (recentScans.length > 0) {
       const verdictFr = (v: string) => v === "safe" ? "sur" : v === "caution" ? "a surveiller" : "TOXIQUE";
       nutritionMemory = `\nNUTRITION :`;
-      nutritionMemory += `\n- Aliments scannes recemment : ${recentScans.map(s => `${s.food_name} (${verdictFr(s.verdict)}, ${s.score}/10)`).join(", ")}`;
+      const latestScanDays = daysAgo(recentScans[0].timestamp || recentScans[0].created_date);
+      const scanLabel = latestScanDays <= 7 ? "cette semaine" : latestScanDays <= 30 ? "ce mois" : `il y a ${Math.floor(latestScanDays / 30)} mois`;
+      nutritionMemory += `\n- Aliments scannes (${scanLabel}) : ${recentScans.map(s => `${s.food_name} (${verdictFr(s.verdict)}, ${s.score}/10)`).join(", ")}`;
     }
     // Diet preferences (DietPreferences entity)
     const dietPref = (dietPrefs || [])[0];
@@ -193,6 +210,7 @@ Deno.serve(async (req) => {
         if (times.evening) timeParts.push(`soir ${times.evening}`);
         if (timeParts.length > 0) prefParts.push(`horaires: ${timeParts.join(", ")}`);
       } catch {}
+      if (dietPref.portions_per_day) prefParts.push(`${dietPref.portions_per_day} repas/jour`);
       if (dietPref.notes) prefParts.push(`notes proprio: ${String(dietPref.notes).substring(0, 100)}`);
       if (prefParts.length > 0) {
         nutritionMemory += `\n- Preferences alimentaires : ${prefParts.join(", ")}`;
@@ -232,14 +250,20 @@ Deno.serve(async (req) => {
       if (recentNotes.length > 0) {
         activityMemory += `\n- Notes de balade : ${recentNotes.join(" | ").substring(0, 300)}`;
       }
+      const waterLogs = recentLogs.filter(l => l.water_bowls && l.water_bowls > 0);
+      if (waterLogs.length > 0) {
+        const avgWater = (waterLogs.reduce((sum, l) => sum + l.water_bowls, 0) / waterLogs.length).toFixed(1);
+        activityMemory += `\n- Hydratation : ${avgWater} bol(s)/jour en moyenne (${waterLogs.length} jour(s) renseignes)`;
+      }
     }
 
     // --- Streak ---
     let streakMemory = "";
-    const streak = (streaks || [])[0];
-    if (streak) {
+    const streak = (streaks || [])
+      .sort((a, b) => new Date(b.last_activity_date || b.created_date || 0).getTime() - new Date(a.last_activity_date || a.created_date || 0).getTime())[0];
+    if (streak && (streak.current_streak || 0) > 0) {
       streakMemory = `\nENGAGEMENT :`;
-      streakMemory += `\n- Streak actuel : ${streak.current_streak || 0} jour(s) consecutif(s)`;
+      streakMemory += `\n- Streak actuel : ${streak.current_streak} jour(s) consecutif(s)`;
       if (streak.longest_streak) streakMemory += ` (record : ${streak.longest_streak})`;
     }
 
@@ -249,17 +273,63 @@ Deno.serve(async (req) => {
     if (completedExercises.length > 0) {
       trainingMemory = `\nDRESSAGE :`;
       trainingMemory += `\n- ${completedExercises.length} exercice(s) termine(s)`;
-      const exerciseNames = completedExercises.map(p => p.exercise_id).filter(Boolean);
-      if (exerciseNames.length > 0) trainingMemory += ` : ${exerciseNames.join(", ")}`;
+      const exerciseNames = completedExercises.slice(0, 10).map(p => p.exercise_id).filter(Boolean);
+      if (exerciseNames.length > 0) trainingMemory += ` : ${exerciseNames.join(", ")}${completedExercises.length > 10 ? ` (+${completedExercises.length - 10} autres)` : ""}`;
     }
 
     // --- Latest weekly insight ---
     let insightMemory = "";
     const latestInsight = (weeklyInsights || [])
-      .sort((a, b) => new Date(b.week_start || b.created_date).getTime() - new Date(a.week_start || a.created_date).getTime())[0];
+      .sort((a, b) => new Date(b.week_start || b.created_date).getTime() - new Date(a.week_start || a.created_date).getTime())
+      .find(i => daysAgo(i.week_start || i.created_date) <= 60);
     if (latestInsight?.summary) {
       const summary = latestInsight.summary.substring(0, 200);
       insightMemory = `\nDERNIER BILAN HEBDO : ${summary}${latestInsight.summary.length > 200 ? "..." : ""}`;
+    }
+
+    // --- Recent pre-consultations ---
+    let diagnosticMemory = "";
+    const recentDiagnoses = (diagnosisReports || [])
+      .sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime())
+      .filter(d => daysAgo(d.created_date) <= 180)
+      .slice(0, 3);
+    if (recentDiagnoses.length > 0) {
+      diagnosticMemory = `\nPRE-CONSULTATIONS RECENTES :`;
+      recentDiagnoses.forEach(d => {
+        const urgencyFr = { low: "faible", medium: "modere", high: "eleve", emergency: "URGENCE" };
+        diagnosticMemory += `\n- ${formatDateFr(d.created_date)} : symptomes "${String(d.symptoms || "").substring(0, 100)}"`;
+        if (d.urgency_level) diagnosticMemory += ` (urgence : ${urgencyFr[d.urgency_level] || d.urgency_level})`;
+      });
+    }
+
+    // --- Growth data (BCS, height) ---
+    let growthMemory = "";
+    const latestGrowth = (growthEntries || [])
+      .sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime())[0];
+    if (latestGrowth) {
+      growthMemory = `\nCROISSANCE :`;
+      if (latestGrowth.height_cm) growthMemory += `\n- Taille : ${latestGrowth.height_cm} cm (${formatDateFr(latestGrowth.created_date)})`;
+      if (latestGrowth.body_condition_score) growthMemory += `\n- Score corporel (BCS) : ${latestGrowth.body_condition_score}/9`;
+      if (latestGrowth.weight_kg) growthMemory += `\n- Dernier poids mesure : ${latestGrowth.weight_kg} kg`;
+    }
+
+    // --- Active programs (fitness/behavior) ---
+    let programMemory = "";
+    const activePrograms = (bookmarks || []).filter((b: any) =>
+      (b.source === "fitness_program" || b.source === "behavior_program") && b.content &&
+      daysAgo(b.updated_date || b.created_date) <= 30
+    );
+    if (activePrograms.length > 0) {
+      programMemory = `\nPROGRAMMES ACTIFS :`;
+      activePrograms.slice(0, 2).forEach((b: any) => {
+        try {
+          const content = typeof b.content === "string" ? JSON.parse(b.content) : b.content;
+          const type = b.source === "fitness_program" ? "Forme" : "Comportement";
+          const completed = content.completed_days ? Object.values(content.completed_days).filter(Boolean).length : 0;
+          programMemory += `\n- Programme ${type} : ${content.title || "Sans titre"} (${completed}/7 jours completes)`;
+          if (content.bilan) programMemory += ` — bilan feeling: ${content.bilan.feeling}/5`;
+        } catch {}
+      });
     }
 
     // --- Active nutrition plan ---
@@ -303,7 +373,7 @@ Deno.serve(async (req) => {
     }
 
     // Assemble the full DOG MEMORY
-    const dogMemory = [wellbeingMemory, healthMemory, nutritionMemory, nutritionPlanMemory, activityMemory, streakMemory, trainingMemory, insightMemory, behaviorMemory]
+    const dogMemory = [wellbeingMemory, healthMemory, nutritionMemory, nutritionPlanMemory, activityMemory, streakMemory, trainingMemory, insightMemory, diagnosticMemory, growthMemory, programMemory, behaviorMemory]
       .filter(s => s.length > 0)
       .join("\n");
 
@@ -372,6 +442,10 @@ Deno.serve(async (req) => {
       dog.vet_name ? `- Veterinaire : ${dog.vet_name}${dog.vet_city ? ` (${dog.vet_city})` : ""}` : null,
       personalityContext ? `- ${personalityContext}` : null,
       statusContext ? `- ${statusContext}` : null,
+      dog.owner_goal ? `- Objectif du proprietaire : ${String(dog.owner_goal).substring(0, 150)}` : null,
+      dog.diet_type ? `- Alimentation : ${dog.diet_type}${dog.diet_brand ? ` (${dog.diet_brand})` : ""}` : null,
+      dog.diet_restrictions ? `- Restrictions alimentaires : ${dog.diet_restrictions}` : null,
+      dog.next_vet_appointment ? `- Prochain RDV veterinaire : ${formatDateFr(dog.next_vet_appointment)}` : null,
     ].filter(Boolean).join("\n");
 
     const todayFr = today.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
@@ -387,6 +461,17 @@ DATE : ${todayFr}
 PROFIL DU CHIEN :
 ${dogProfile}
 ${dogMemory ? `\n═══ MEMOIRE DE ${safeDogName.toUpperCase()} ═══${dogMemory}` : ""}
+
+INTERPRETATION DES DONNEES — REGLE CRITIQUE :
+- Si une section de memoire est ABSENTE, le proprietaire n'a pas encore utilise cette fonctionnalite. Ne fais AUCUNE supposition negative.
+- "Pas de check-in" ≠ "le chien va mal". Le proprio n'a simplement pas rempli.
+- "Pas de donnees hydratation" ≠ "le chien ne boit pas". Le suivi eau est rarement rempli.
+- "Pas de balade enregistree" ≠ "le chien ne sort pas". Le proprio n'a pas utilise le GPS.
+- "Pas de scan alimentaire" ≠ "mauvaise alimentation". Le proprio n'a pas encore scanne.
+- Quand tu as des donnees, base tes reponses dessus. Quand il n'y en a pas, NE COMBLE PAS le vide par des suppositions — propose plutot de commencer a tracker ("Tu veux qu'on suive X ensemble ?").
+- FRAICHEUR : les donnees des 7 derniers jours sont les plus fiables. Au-dela, contextualise avec la date.
+- TENDANCES : ne signale une tendance que si tu as au moins 3 points de donnees. Un seul point n'est pas une tendance.
+${dog.owner_goal ? `\nOBJECTIF PRINCIPAL : "${dog.owner_goal}" — Oriente naturellement tes conseils vers cet objectif. Par exemple si l'objectif est "perte de poids", privilegie les conseils nutrition/exercice. Si c'est "socialisation", oriente vers les balades et le comportement. Ne repete pas l'objectif mot pour mot a chaque message, mais garde-le en tete.` : ""}
 
 COMMENT TE COMPORTER :
 - Tu CONNAIS ${safeDogName} personnellement. Refere-toi a son historique naturellement dans tes reponses.

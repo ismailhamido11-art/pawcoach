@@ -136,7 +136,50 @@ Deno.serve(async (req) => {
         const safeBreed = String(dog.breed || "").substring(0, 50);
 
         const prevBehavior = dog.behavior_summary ? `\nProfil comportemental precedent: "${String(dog.behavior_summary).substring(0, 300)}"` : "";
-        const systemPrompt = `Tu es PawCoach. Genere un bilan hebdomadaire pour ${safeName} (${safeBreed}).${personalityNote}${statusNote}${prevBehavior} ${toneInstruction} Tutoie. 3-5 phrases max. Reponds en JSON avec: summary (bilan general), highlights (2-3 points cles), recommendations (2-3 conseils pour la semaine prochaine), behavior_summary (profil comportemental synthetique de ${safeName} en 2-3 phrases — patterns d'humeur, energie, alertes, evolution par rapport au profil precedent si disponible).`;
+
+        // ── Enriched dog profile (aligned with pawcoachChat) ──
+        const getAge = (birthDate: string) => {
+          if (!birthDate) return null;
+          const months = Math.floor((Date.now() - new Date(birthDate).getTime()) / (1000 * 60 * 60 * 24 * 30));
+          if (months < 1) return "moins d'un mois";
+          if (months < 12) return `${months} mois`;
+          const years = Math.floor(months / 12);
+          const rem = months % 12;
+          return rem > 0 ? `${years} an${years > 1 ? 's' : ''} et ${rem} mois` : `${years} an${years > 1 ? 's' : ''}`;
+        };
+        const ageStr = getAge(dog.birth_date);
+
+        const dogProfile = [
+          `- Nom : ${safeName}`,
+          `- Race : ${safeBreed || "Non renseignee"}`,
+          ageStr ? `- Age : ${ageStr}` : null,
+          dog.weight ? `- Poids : ${dog.weight} kg` : null,
+          dog.sex ? `- Sexe : ${dog.sex === "male" ? "Male" : "Femelle"}` : null,
+          dog.neutered !== undefined ? `- Sterilise : ${dog.neutered ? "Oui" : "Non"}` : null,
+          dog.activity_level ? `- Niveau d'activite : ${dog.activity_level}` : null,
+          dog.environment ? `- Environnement : ${dog.environment}` : null,
+          dog.allergies ? `- Allergies : ${String(dog.allergies).substring(0, 100)}` : null,
+          dog.health_issues ? `- Problemes de sante : ${String(dog.health_issues).substring(0, 100)}` : null,
+          dog.vet_name ? `- Veterinaire : ${String(dog.vet_name).substring(0, 50)}${dog.vet_city ? ` (${String(dog.vet_city).substring(0, 50)})` : ""}` : null,
+          dog.diet_type ? `- Alimentation : ${String(dog.diet_type).substring(0, 50)}${dog.diet_brand ? ` (${String(dog.diet_brand).substring(0, 50)})` : ""}` : null,
+          dog.diet_restrictions ? `- Restrictions alimentaires : ${String(dog.diet_restrictions).substring(0, 100)}` : null,
+          personalityNote ? `- Personnalite :${personalityNote}` : null,
+          statusNote ? `- Statut :${statusNote}` : null,
+        ].filter(Boolean).join("\n");
+
+        const ownerGoalLine = dog.owner_goal ? `\nOBJECTIF DU PROPRIETAIRE : ${String(dog.owner_goal).substring(0, 200)}. Oriente le bilan et les recommandations en fonction de cet objectif.` : "";
+
+        // Coach topics from owner preferences
+        const topicLabels: Record<string, string> = { health: "sante", nutrition: "nutrition", training: "dressage", behavior: "comportement" };
+        let topicsLine = "";
+        try {
+          const topics = JSON.parse(owner.coach_topics || "[]");
+          if (Array.isArray(topics) && topics.length > 0) {
+            topicsLine = `\nSujets prioritaires du proprietaire : ${topics.map((t: string) => topicLabels[t] || t).join(", ")}.`;
+          }
+        } catch {}
+
+        const systemPrompt = `Tu es PawCoach. Genere un bilan hebdomadaire personnalise.\n\nPROFIL DU CHIEN :\n${dogProfile}${prevBehavior}${ownerGoalLine}${topicsLine}\n\nINTERPRETATION DES DONNEES :\n- 0 check-ins = le proprio n'a pas rempli, PAS que le chien va mal.\n- "aucune balade" = pas de GPS utilise, PAS que le chien ne sort pas.\n- 0 scans = fonctionnalite pas utilisee, PAS mauvaise alimentation.\n- Ne signale une tendance que sur 3+ points de donnees.\n- Adapte tes recommandations a l'objectif du proprietaire si present.\n\n${toneInstruction} Tutoie. 3-5 phrases max. Reponds en JSON avec: summary (bilan general), highlights (2-3 points cles), recommendations (2-3 conseils pour la semaine prochaine), behavior_summary (profil comportemental synthetique de ${safeName} en 2-3 phrases — patterns d'humeur, energie, alertes, evolution par rapport au profil precedent si disponible).`;
         const walkText = walkDays > 0 ? `, ${walkDays} jours de balade (${totalWalkMinutes} min total, moyenne ${avgWalkMinutes} min/sortie${totalWalkKm > 0 ? `, ${totalWalkKm.toFixed(1)} km parcourus` : ""}${moodText}${tagText})` : ", aucune balade enregistrée cette semaine";
         const userMessage = `Bilan de la semaine du ${weekStart} au ${weekEnd} pour ${safeName}: ${checkinCount} check-ins, humeur moyenne ${avgMood}/4, energie moyenne ${avgEnergy}/3, appetit moyen ${avgAppetite}/3, ${exercisesCompleted} exercices completes, ${scansDone} scans alimentaires${walkText}${symptomText}.`;
 

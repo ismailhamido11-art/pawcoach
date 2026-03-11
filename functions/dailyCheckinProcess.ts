@@ -1,10 +1,12 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const sanitize = (s: any, max = 500) => String(s || '').substring(0, max).replace(/[<>]/g, '');
 
     const { dogId, mood, energy, appetite, notes, symptoms, behavior_notes } = await req.json();
 
@@ -116,10 +118,30 @@ Deno.serve(async (req) => {
     let aiResponse = "";
 
     if (apiKey) {
-      const systemPrompt = `Tu es PawCoach, le compagnon quotidien de ${dog.name} (${dog.breed}). Tu commentes le check-in du jour de maniere chaleureuse et personnalisee. Tutoiement, 2-3 phrases max, emojis doux. Adapte ton message selon l'humeur (${mood}/4), l'energie (${energy}/3) et l'appetit (${appetite}/3). Si energie haute, suggere un exercice de dressage. Si appetit faible, suggere de surveiller ou scanner les croquettes. Si le streak depasse 3 jours, felicite fierement. ${segmentContext} Ne diagnostique jamais, ne prescris jamais.`;
-      const symptomText = symptoms?.length ? ` Symptomes signales: ${symptoms.join(', ')}.` : '';
-      const behaviorText = behavior_notes ? ` Observations: ${behavior_notes}.` : '';
-      const userMessage = `Check-in de ${dog.name}: humeur ${mood}/4, energie ${energy}/3, appetit ${appetite}/3. Streak actuel: ${streak.current_streak} jours.${notes ? ' Notes: ' + notes : ''}${symptomText}${behaviorText}`;
+      // Build enriched dog profile for AI context
+      const dogProfileParts = [`${dog.name || "chien"}${dog.breed ? ` (${dog.breed})` : ""}`];
+      if (dog.weight) dogProfileParts.push(`${dog.weight}kg`);
+      if (dog.owner_goal) dogProfileParts.push(`objectif: ${dog.owner_goal}`);
+      if (dog.activity_level) dogProfileParts.push(`activite: ${dog.activity_level}`);
+      if (dog.diet_type) dogProfileParts.push(`alimentation: ${dog.diet_type}`);
+      if (dog.allergies) dogProfileParts.push(`allergies: ${dog.allergies}`);
+      if (dog.health_issues) dogProfileParts.push(`problemes sante: ${dog.health_issues}`);
+      if (dog.status && dog.status !== "healthy") dogProfileParts.push(`statut: ${dog.status}`);
+      if (dog.personality_tags) {
+        try {
+          const tags = typeof dog.personality_tags === "string" ? JSON.parse(dog.personality_tags) : dog.personality_tags;
+          if (Array.isArray(tags) && tags.length > 0) dogProfileParts.push(`personnalite: ${tags.join(", ")}`);
+        } catch (_) { /* ignore parse errors */ }
+      }
+      const dogProfile = dogProfileParts.join(", ");
+
+      const systemPrompt = `Tu es PawCoach, le compagnon quotidien de ${dogProfile}. Tu commentes le check-in du jour de maniere chaleureuse et personnalisee. Tutoiement, 2-3 phrases max, emojis doux. Adapte ton message selon l'humeur (${mood}/4), l'energie (${energy}/3) et l'appetit (${appetite}/3). Si energie haute, suggere un exercice de dressage. Si appetit faible 1 jour, rassure (c'est normal). Si appetit faible 2+ jours, suggere de surveiller. Si le streak depasse 3 jours, felicite fierement. Un appetit ou une energie basse UN SEUL JOUR n'est PAS un signal d'alarme — c'est normal, ne dramatise pas. ${segmentContext} Ne diagnostique jamais, ne prescris jamais.`;
+      const safeSymptoms = Array.isArray(symptoms) ? symptoms.slice(0, 10).map(s => sanitize(s, 50)) : [];
+      const safeBehaviorNotes = sanitize(behavior_notes, 500);
+      const safeNotes = sanitize(notes, 500);
+      const symptomText = safeSymptoms.length ? ` Symptomes signales: ${safeSymptoms.join(', ')}.` : '';
+      const behaviorText = safeBehaviorNotes ? ` Observations: ${safeBehaviorNotes}.` : '';
+      const userMessage = `Check-in de ${dog.name}: humeur ${mood}/4, energie ${energy}/3, appetit ${appetite}/3. Streak actuel: ${streak.current_streak} jours.${safeNotes ? ' Notes: ' + safeNotes : ''}${symptomText}${behaviorText}`;
 
       const llmResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",

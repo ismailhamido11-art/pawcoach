@@ -97,6 +97,17 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
         dog_age: dogAge,
         health_issues: dog?.health_issues,
         allergies: dog?.allergies,
+        personality_tags: dog?.personality_tags,
+        dog_status: dog?.status,
+        owner_goal: dog?.owner_goal,
+        neutered: dog?.neutered,
+        activity_level: dog?.activity_level,
+        environment: dog?.environment,
+        vet_name: dog?.vet_name,
+        vet_city: dog?.vet_city,
+        diet_type: dog?.diet_type,
+        diet_restrictions: dog?.diet_restrictions,
+        behavior_summary: dog?.behavior_summary,
       });
 
       setPhase1(result.data);
@@ -131,6 +142,17 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
         dog_age: dogAge,
         health_issues: dog?.health_issues,
         allergies: dog?.allergies,
+        personality_tags: dog?.personality_tags,
+        dog_status: dog?.status,
+        owner_goal: dog?.owner_goal,
+        neutered: dog?.neutered,
+        activity_level: dog?.activity_level,
+        environment: dog?.environment,
+        vet_name: dog?.vet_name,
+        vet_city: dog?.vet_city,
+        diet_type: dog?.diet_type,
+        diet_restrictions: dog?.diet_restrictions,
+        behavior_summary: dog?.behavior_summary,
       });
 
       const diagnosisData = result.data;
