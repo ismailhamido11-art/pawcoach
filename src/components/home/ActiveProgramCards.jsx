@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target, Brain, CheckCircle2 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 
 const SESSION_ICONS = {
   balade: "🐾", jeu: "🎾", "exercice mental": "🧠", repos: "💤", "entraînement": "🎯",
@@ -363,6 +364,8 @@ function NutritionPlanCard({ plan }) {
 
 function BehaviorProgramCard({ program }) {
   const [open, setOpen] = useState(false);
+  const [marking, setMarking] = useState(false);
+  const [localCompleted, setLocalCompleted] = useState(null); // null = pas encore modifie localement
   const elapsed = getElapsedDays(program.start_date);
 
   if (elapsed < 0 || elapsed >= 7) return null;
@@ -371,7 +374,25 @@ function BehaviorProgramCard({ program }) {
   const day = program.days?.[dayIndex];
   if (!day) return null;
 
-  const progress = Math.round(((elapsed + 1) / 7) * 100);
+  // Optimistic: utiliser localCompleted si disponible, sinon la valeur du serveur
+  const completedDays = localCompleted ?? (program._completedDays || []);
+  const completedCount = completedDays.length;
+  const progress = Math.round((completedCount / 7) * 100);
+  const todayDone = completedDays.includes(`d${elapsed}`);
+
+  const handleMarkDone = async () => {
+    if (todayDone || !program._bookmarkId) return;
+    setMarking(true);
+    const newCompleted = [...completedDays, `d${elapsed}`];
+    setLocalCompleted(newCompleted); // Optimistic update immediat
+    try {
+      await base44.entities.Bookmark.update(program._bookmarkId, { completed_days: newCompleted });
+    } catch (e) {
+      setLocalCompleted(null); // Rollback si erreur
+      console.warn("Mark done failed:", e?.message);
+    }
+    setMarking(false);
+  };
 
   return (
     <motion.div
@@ -427,7 +448,7 @@ function BehaviorProgramCard({ program }) {
                   transition={{ duration: 0.8, ease: "easeOut" }}
                 />
               </div>
-              <span className="text-[10px] font-bold text-blue-600">{progress}%</span>
+              <span className="text-[10px] font-bold text-blue-600">{completedCount}/7</span>
             </div>
           )}
         </button>
@@ -486,11 +507,25 @@ function BehaviorProgramCard({ program }) {
                   </div>
                 )}
 
+                {!todayDone ? (
+                  <button
+                    onClick={handleMarkDone}
+                    disabled={marking}
+                    className="w-full mt-2 py-2 rounded-xl bg-blue-500 text-white text-xs font-bold hover:bg-blue-600 disabled:opacity-50 transition-colors"
+                  >
+                    {marking ? "Enregistrement..." : `Marquer Jour ${elapsed + 1} comme fait`}
+                  </button>
+                ) : (
+                  <p className="text-[10px] text-blue-600 font-bold mt-1 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> Jour {elapsed + 1} completé !
+                  </p>
+                )}
+
                 <div className="flex items-center gap-2 px-1">
                   <div className="flex-1 h-1.5 bg-blue-100 rounded-full overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" style={{ width: `${progress}%` }} />
                   </div>
-                  <span className="text-[10px] font-bold text-blue-600">J{elapsed + 1}/7</span>
+                  <span className="text-[10px] font-bold text-blue-600">{completedCount}/7</span>
                 </div>
 
                 {program.problem_id && (
@@ -542,7 +577,7 @@ export default function ActiveProgramCards({ trainingBookmarks = [], nutritionPl
         const data = JSON.parse(bk.content);
         if (data.start_date && data.days) {
           const elapsed = getElapsedDays(data.start_date);
-          if (elapsed >= 0 && elapsed < 7) return data;
+          if (elapsed >= 0 && elapsed < 7) return { ...data, _bookmarkId: bk.id, _completedDays: bk.completed_days || [] };
         }
       } catch {}
     }
