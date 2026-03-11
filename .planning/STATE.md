@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-11T06:46:55.354Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-03-11T06:47:06.973Z"
 last_activity: "2026-03-11 — Plan 04-04 complete (SANTE-01/02: vetScore bonus next_vet_appointment + vet_name/vet_city/next_vet_appointment dans PDF)"
 progress:
   total_phases: 4
@@ -83,6 +83,7 @@ Recent decisions affecting current work:
 - [Phase 04-independent-fixes]: Appetite scoring none=0/decreased=1/normal=2/increased=3 — symmetric around 2, same drop-threshold logic as mood/energy
 - [Phase 04-independent-fixes]: ok appetite alert suppressed if critical vitality alert already present to avoid contradictory signals
 - [Phase 04-independent-fixes]: updateStreakSilently called fire-and-forget from WalkMode handleStop — dedup guard in streakHelper prevents double-counting
+- [Phase 04-independent-fixes]: noon est champ JSON optionnel dans plan nutritionnel — LLM ne le genere que si portions >= 3, UI affiche conditionnellement, zero regression plans 2 repas existants
 
 ### Pending Todos
 
@@ -95,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T06:35:00.000Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-03-11T06:47:06.969Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None

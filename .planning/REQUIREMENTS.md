@@ -32,7 +32,7 @@ Requirements pour le milestone Data Flow Integrity. Chaque requirement corrige u
 
 ### Nutrition
 
-- [ ] **NUTRI-01**: La generation de plan 3 repas/jour produit un JSON avec morning/noon/evening (pas seulement morning/evening)
+- [x] **NUTRI-01**: La generation de plan 3 repas/jour produit un JSON avec morning/noon/evening (pas seulement morning/evening)
 
 ### Activite
 
@@ -79,7 +79,7 @@ Deferred au prochain milestone.
 | NOTIF-02 | Phase 3 | Complete |
 | NOTIF-03 | Phase 3 | Complete |
 | DASH-01 | Phase 4 | Complete |
-| NUTRI-01 | Phase 4 | Pending |
+| NUTRI-01 | Phase 4 | Complete |
 | ACT-01 | Phase 4 | Complete |
 | ACT-02 | Phase 4 | Pending |
 | SANTE-01 | Phase 4 | Pending |
