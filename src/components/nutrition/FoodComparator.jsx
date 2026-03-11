@@ -165,6 +165,7 @@ export default function FoodComparator({ dog, dietPreferences }) {
       const prompt = `Tu es PawCoach, expert en nutrition canine. Analyse cette étiquette ou photo d'aliment pour chien.
 Chien : ${dog?.name || "chien"}, race : ${dog?.breed || "inconnue"}, âge : ${ageText}, poids : ${dog?.weight ? dog.weight + "kg" : "inconnu"}, allergies : ${dog?.allergies || "aucune"}, aliments indésirables : ${dislikedFoods}, régime : ${dog?.diet_type || "inconnu"}.
 Si un ingrédient correspond aux aliments indésirables, le signaler dans l'analyse.
+Si l'image ne montre pas clairement un produit ou une étiquette lisible, utilise food_name = 'Produit non identifié', score = 0, summary = 'Image non lisible — essayez avec une photo plus nette de l\'étiquette'.
 Fournis une analyse nutritionnelle détaillée en JSON. Réponds UNIQUEMENT en français. Sois précis sur la composition.`;
 
       const aiResult = await base44.integrations.Core.InvokeLLM({
@@ -218,18 +219,21 @@ Fournis une analyse nutritionnelle détaillée en JSON. Réponds UNIQUEMENT en f
     setComparing(true);
     setComparison(null);
     try {
+      const nameA = a.result.food_name || "Produit A";
+      const nameB = b.result.food_name || "Produit B";
       const prompt = `Tu es PawCoach, expert nutrition canine. Compare ces deux produits pour le chien ${dog?.name || "ce chien"} (${dog?.breed || ""}, ${dog?.weight ? dog.weight + "kg" : ""}, allergies : ${dog?.allergies || "aucune"}, aliments indésirables : ${dislikedFoods}).
 
-Produit A : ${a.result.food_name} (score ${a.result.score}/10)
+Produit A — ${nameA} (score ${a.result.score}/10)
 - Points forts : ${(a.result.pros || []).join(", ")}
 - Points faibles : ${(a.result.cons || []).join(", ")}
 - Composition : ${a.result.details}
 
-Produit B : ${b.result.food_name} (score ${b.result.score}/10)
+Produit B — ${nameB} (score ${b.result.score}/10)
 - Points forts : ${(b.result.pros || []).join(", ")}
 - Points faibles : ${(b.result.cons || []).join(", ")}
 - Composition : ${b.result.details}
 
+Le champ winner doit valoir EXACTEMENT 'A' ou 'B', rien d'autre.
 Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, en français, en tutoyant l'utilisateur.`;
 
       const res = await base44.integrations.Core.InvokeLLM({
@@ -420,8 +424,8 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
                 {/* Per-product analysis */}
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { label: `Produit 1`, text: comparison.product_a_analysis, winner: comparison.winner === "A" },
-                    { label: `Produit 2`, text: comparison.product_b_analysis, winner: comparison.winner === "B" },
+                    { label: products[0]?.result?.food_name || "Produit A", text: comparison.product_a_analysis, winner: comparison.winner === "A" },
+                    { label: products[1]?.result?.food_name || "Produit B", text: comparison.product_b_analysis, winner: comparison.winner === "B" },
                   ].map((item, i) => (
                     <div key={i} className={`rounded-xl p-3 border-2 ${item.winner ? "border-primary/40 bg-primary/5" : "border-border bg-white/60"}`}>
                       <div className="flex items-center gap-1.5 mb-1">
