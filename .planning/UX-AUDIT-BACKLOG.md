@@ -98,23 +98,23 @@
 ## Phase 4: Data Intelligence & Smart Flows
 
 ### Post-action CTAs (fermer les boucles)
-- [ ] **INTEL-01**: Post check-in → bouton contextuel selon score (energie faible → plan repas, symptomes → bilan sante)
-- [ ] **INTEL-02**: Post scan toxic/caution → CTA "Demander alternatives a NutriCoach" + "Ajouter aux indesirables"
-- [ ] **INTEL-03**: Post exercice complete → CTA "Exercice suivant" + "Parler a PawCoach"
-- [ ] **INTEL-04**: Post balade → card resume avec stats + CTA contextuel si walk_tags problematiques
+- [~] **INTEL-01**: SKIP — choix produit requis (design CTA, placement, logique routage)
+- [~] **INTEL-02**: SKIP — choix produit requis (design CTA, placement, logique routage)
+- [~] **INTEL-03**: SKIP — choix produit requis (design CTA, placement, logique routage)
+- [~] **INTEL-04**: SKIP — choix produit requis (design CTA, placement, logique routage)
 
 ### Donnees sous-exploitees
-- [ ] **INTEL-05**: walk_tags (tire laisse, peur bruits) → recommendations.js rec vers Training behavior
-- [ ] **INTEL-06**: WeeklyInsight.recommendations (premium IA) → injecter dans buildRecommendations() sur Home
-- [ ] **INTEL-07**: Dog.weight auto-update depuis HealthRecord type=weight (profil garde poids onboarding)
-- [ ] **INTEL-08**: Medicaments actifs → rec dans buildRecommendations ("Medicament en cours")
-- [ ] **INTEL-09**: Plan nutrition avoid[] → croiser avec FoodScan futurs (signaler conflit)
-- [ ] **INTEL-10**: GrowthEntry.body_condition_score → integrer dans computeHealthScore
+- [x] **INTEL-05**: walk_tags (tire laisse, distrait) → recommendations.js rec vers Training behavior ~~(FIXED 3fda962)~~
+- [~] **INTEL-06**: SKIP — necessite comprendre format donnees IA et priorite vs recommendations manuelles
+- [x] **INTEL-07**: Dog.weight auto-update depuis HealthRecord type=weight ~~(FIXED 0d43057)~~
+- [x] **INTEL-08**: Medicaments actifs → rec dans buildRecommendations ("Medicament en cours") ~~(FIXED c9de846)~~
+- [~] **INTEL-09**: SKIP — necessite decision sur comment afficher le conflit avoid[] vs FoodScan
+- [x] **INTEL-10**: GrowthEntry.body_condition_score → integrer dans computeHealthScore ~~(FIXED da731fc)~~
 
 ### Navigation intelligente
-- [ ] **INTEL-11**: Premium page → lire ?from= et retourner a la page d'origine apres souscription
-- [ ] **INTEL-12**: Onboarding max dogs → toast au lieu d'alert(), retour Profile au lieu de Home
-- [ ] **INTEL-13**: navigate(-1) fallbacks sur DogTwin, Library, Premium, Scan → fallback vers page parent
+- [x] **INTEL-11**: Premium page → lire ?from= et retourner a la page d'origine apres souscription ~~(FIXED 8bbbbab)~~
+- [x] **INTEL-12**: Onboarding max dogs → toast au lieu d'alert(), retour Profile au lieu de Home ~~(FIXED cf458d5)~~
+- [x] **INTEL-13**: navigate(-1) fallbacks sur DogTwin, Library, Premium, Scan → fallback vers page parent ~~(FIXED b471689)~~
 
 ---
 
