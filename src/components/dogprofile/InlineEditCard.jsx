@@ -33,7 +33,7 @@ export default function InlineEditCard({
           <Icon className="w-4 h-4" style={{ color: iconColor }} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] text-muted-foreground">{label}</p>
+          <p className="text-xs text-muted-foreground">{label}</p>
           {!editing && <p className="text-sm font-bold text-foreground truncate">{value}</p>}
           {sub && !editing && <p className={`text-[10px] ${subColor || "text-muted-foreground"}`}>{sub}</p>}
         </div>
@@ -61,7 +61,7 @@ export default function InlineEditCard({
                 {...(editType === "number" && min !== undefined ? { min } : {})}
                 {...(editType === "number" && max !== undefined ? { max } : {})}
               />
-              {error && <p className="text-[11px] text-red-500 font-medium">{error}</p>}
+              {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
             </>
           )}
           <div className="flex gap-2">

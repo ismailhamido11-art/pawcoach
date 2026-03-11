@@ -46,7 +46,7 @@ export default function DogIdentityCards({ dog, dailyLogs, onSave }) {
           {dog.sex === "male" ? "♂" : dog.sex === "female" ? "♀" : "?"}
         </div>
         <div className="min-w-0">
-          <p className="text-[11px] text-muted-foreground">Sexe</p>
+          <p className="text-xs text-muted-foreground">Sexe</p>
           <p className="text-sm font-bold text-foreground truncate">
             {dog.sex === "male" ? "Mâle" : dog.sex === "female" ? "Femelle" : "—"}
           </p>

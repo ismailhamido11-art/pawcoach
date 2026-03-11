@@ -12,7 +12,7 @@ export default function JourneyCard({ journey, completedCount, isPremium, isNext
     <motion.button
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      className={`w-full rounded-3xl border text-left transition-all shadow-sm overflow-hidden ${
+      className={`w-full rounded-2xl border text-left transition-all shadow-sm overflow-hidden ${
         isComplete
           ? "bg-gradient-to-br from-safe/10 to-safe/5 border-safe/30"
           : isNext && !locked

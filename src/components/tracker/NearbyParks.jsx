@@ -386,14 +386,14 @@ export default function NearbyParks({ dog, user, onNearPark }) {
 
                         {/* Description from OSM */}
                         {park.tags.description && (
-                          <p className="text-[11px] text-muted-foreground leading-relaxed">{park.tags.description}</p>
+                          <p className="text-xs text-muted-foreground leading-relaxed">{park.tags.description}</p>
                         )}
 
                         {/* Personalized advice */}
                         {advice && (
                           <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-2.5 flex items-start gap-2">
                             <Dog className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                            <p className="text-[11px] text-emerald-800 font-medium leading-relaxed">{advice}</p>
+                            <p className="text-xs text-emerald-800 font-medium leading-relaxed">{advice}</p>
                           </div>
                         )}
 

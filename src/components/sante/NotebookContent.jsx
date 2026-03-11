@@ -337,7 +337,7 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
                   >
                     {tab.label}
                     {countForTab(tab.id) > 0 && (
-                      <span className={`text-[9px] font-bold mt-0.5 ${activeTab === tab.id ? "text-primary" : "text-muted-foreground"}`}>
+                      <span className={`text-[10px] font-bold mt-0.5 ${activeTab === tab.id ? "text-primary" : "text-muted-foreground"}`}>
                         {countForTab(tab.id)}
                       </span>
                     )}

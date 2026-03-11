@@ -47,12 +47,12 @@ function ReviewCard({ review }) {
         <span className="text-[10px]">{"🐾".repeat(review.rating)}</span>
       </div>
       {review.comment && (
-        <p className="text-[11px] text-foreground/80 leading-relaxed">{review.comment}</p>
+        <p className="text-xs text-foreground/80 leading-relaxed">{review.comment}</p>
       )}
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {tags.map(t => (
-            <span key={t} className="text-[9px] bg-primary/10 text-primary font-semibold rounded-md px-1.5 py-0.5">{t}</span>
+            <span key={t} className="text-[10px] bg-primary/10 text-primary font-semibold rounded-md px-1.5 py-0.5">{t}</span>
           ))}
         </div>
       )}
@@ -162,7 +162,7 @@ export default function ParkReviews({ park, dog, user }) {
           {topTags.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {topTags.map(([tag, count]) => (
-                <span key={tag} className="text-[9px] bg-primary/10 text-primary font-semibold rounded-md px-1.5 py-0.5">
+                <span key={tag} className="text-[10px] bg-primary/10 text-primary font-semibold rounded-md px-1.5 py-0.5">
                   {tag} ({count})
                 </span>
               ))}

@@ -26,7 +26,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
           onClick={onBack}
           whileTap={{ scale: 0.96 }}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/20 flex items-center justify-center z-20"
+          className="absolute top-4 left-4 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center z-20"
         >
           <ArrowLeft className="w-5 h-5 text-white" />
         </motion.button>

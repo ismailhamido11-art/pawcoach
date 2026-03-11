@@ -44,7 +44,7 @@ export default function DogSwitcher({ dogs, activeDogId, onSwitch, onAdd, isPrem
                 </div>
               )}
 
-              <p className={`text-[11px] font-semibold truncate max-w-[60px] text-center ${isActive ? "text-primary" : "text-foreground"}`}>
+              <p className={`text-xs font-semibold truncate max-w-[60px] text-center ${isActive ? "text-primary" : "text-foreground"}`}>
                 {dog.name}
               </p>
               <p className="text-[10px] text-muted-foreground truncate max-w-[60px] text-center -mt-1">{dog.breed}</p>
@@ -70,7 +70,7 @@ export default function DogSwitcher({ dogs, activeDogId, onSwitch, onAdd, isPrem
             <div className="w-16 h-16 rounded-2xl border-2 border-dashed border-primary/30 flex items-center justify-center bg-primary/5">
               <Plus className="w-6 h-6 text-primary/60" />
             </div>
-            <p className="text-[11px] font-semibold text-primary/70">Ajouter</p>
+            <p className="text-xs font-semibold text-primary/70">Ajouter</p>
           </motion.button>
         )}
 
@@ -83,7 +83,7 @@ export default function DogSwitcher({ dogs, activeDogId, onSwitch, onAdd, isPrem
             <div className="w-16 h-16 rounded-2xl border-2 border-dashed border-accent/40 flex items-center justify-center bg-accent/5">
               <Plus className="w-6 h-6 text-accent/60" />
             </div>
-            <p className="text-[11px] font-semibold text-accent/70">Premium</p>
+            <p className="text-xs font-semibold text-accent/70">Premium</p>
           </motion.button>
         )}
       </div>

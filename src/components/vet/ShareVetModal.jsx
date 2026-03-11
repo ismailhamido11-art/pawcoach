@@ -127,7 +127,7 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
               <div key={a.id} className="flex items-center justify-between p-3 rounded-xl bg-muted/50 border border-border">
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{a.vet_name || a.vet_email}</p>
-                  <p className="text-[11px] text-muted-foreground truncate">{a.vet_email}</p>
+                  <p className="text-xs text-muted-foreground truncate">{a.vet_email}</p>
                   <div className="flex items-center gap-2 mt-1">
                     {statusBadge(a.status)}
                     {a.status === "pending" && a.invite_code && (

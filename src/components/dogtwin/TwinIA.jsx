@@ -75,7 +75,7 @@ export default function TwinIA() {
                   {/* Confidence bar */}
                   <div className="flex-1">
                     <div className="flex justify-between mb-1">
-                      <span className="text-[9px] text-white/30 uppercase tracking-wider">Confiance IA</span>
+                      <span className="text-[10px] text-white/30 uppercase tracking-wider">Confiance IA</span>
                       <span className="text-[10px] font-bold" style={{ color: p.color }}>{p.confidence}%</span>
                     </div>
                     <div className="h-1 bg-white/10 rounded-full overflow-hidden">
@@ -125,8 +125,8 @@ export default function TwinIA() {
                 />
               </div>
               <div className="flex justify-between mt-0.5">
-                <span className="text-[9px] text-emerald-400 font-bold">Max : {b.score}</span>
-                <span className="text-[9px] text-white/30">Moyenne : {b.max}</span>
+                <span className="text-[10px] text-emerald-400 font-bold">Max : {b.score}</span>
+                <span className="text-[10px] text-white/30">Moyenne : {b.max}</span>
               </div>
             </div>
           ))}

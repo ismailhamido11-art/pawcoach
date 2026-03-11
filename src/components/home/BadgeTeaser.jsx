@@ -44,8 +44,8 @@ function BadgeRow({ badge }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-0.5">
-          <p className="text-[11px] font-bold text-foreground truncate">{badge.name}</p>
-          <span className="text-[9px] text-muted-foreground ml-2 flex-shrink-0">
+          <p className="text-xs font-bold text-foreground truncate">{badge.name}</p>
+          <span className="text-[10px] text-muted-foreground ml-2 flex-shrink-0">
             {badge.current}/{badge.target}
           </span>
         </div>
@@ -57,7 +57,7 @@ function BadgeRow({ badge }) {
             transition={{ duration: 0.6, ease: "easeOut" }}
           />
         </div>
-        <p className="text-[9px] text-muted-foreground mt-0.5">
+        <p className="text-[10px] text-muted-foreground mt-0.5">
           encore {remaining} {badge.unit}
         </p>
       </div>
@@ -94,7 +94,7 @@ export default function BadgeTeaser({ streak, exercises, dailyLogs }) {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-1">
-              <p className="text-[11px] font-bold text-foreground truncate">
+              <p className="text-xs font-bold text-foreground truncate">
                 Prochain badge : {first.name}
               </p>
               <span className="text-[10px] text-muted-foreground ml-2 flex-shrink-0">
@@ -132,7 +132,7 @@ export default function BadgeTeaser({ streak, exercises, dailyLogs }) {
               className="overflow-hidden"
             >
               <div className="px-4 pb-3 border-t border-border/20 pt-2 space-y-0.5">
-                <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Autres badges à débloquer</p>
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Autres badges à débloquer</p>
                 {rest.map((badge) => (
                   <BadgeRow key={badge.name} badge={badge} />
                 ))}

@@ -177,7 +177,7 @@ export default function DietPreferencesPanel({ dog, user }) {
             <div className="flex flex-wrap gap-1.5">
               {suggestedBrands.map(b => (
                 <button key={b} onClick={() => addBrand(b)}
-                  className="text-[11px] text-muted-foreground bg-muted/50 hover:bg-primary/10 hover:text-primary px-2.5 py-1 rounded-full border border-border/50 transition-colors">
+                  className="text-xs text-muted-foreground bg-muted/50 hover:bg-primary/10 hover:text-primary px-2.5 py-1 rounded-full border border-border/50 transition-colors">
                   + {b}
                 </button>
               ))}
@@ -207,7 +207,7 @@ export default function DietPreferencesPanel({ dog, user }) {
           <div className="flex flex-wrap gap-1.5">
             {COMMON_DISLIKES.map(food => (
               <button key={food} onClick={() => toggleDislike(food)}
-                className={`text-[11px] px-2.5 py-1 rounded-full border transition-colors ${
+                className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
                   isDisliked(food)
                     ? "bg-red-50 text-red-700 border-red-200 font-semibold"
                     : "text-muted-foreground bg-muted/50 border-border/50 hover:bg-red-50 hover:text-red-600"

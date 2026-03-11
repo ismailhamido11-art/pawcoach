@@ -18,7 +18,7 @@ function EditableField({ label, value, fieldKey, onSave, type = "text", multilin
     <div className="py-3 border-b border-border last:border-0">
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1">
-          <p className="text-[11px] text-muted-foreground uppercase tracking-wide mb-1">{label}</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{label}</p>
           {!editing && (
             <p className="text-sm text-foreground">{value || <span className="text-muted-foreground italic">Non renseigné</span>}</p>
           )}

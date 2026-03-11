@@ -293,7 +293,7 @@ export default function Nutri() {
 
   if (initializing) {
     return (
-      <div className="min-h-screen bg-background flex flex-col pb-24">
+      <div className="min-h-screen bg-background flex flex-col pb-28">
         <div className="gradient-primary safe-pt-14 pb-4 px-5">
           <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-2" />
           <div className="h-7 w-36 bg-white/20 rounded animate-pulse" />
@@ -489,7 +489,7 @@ export default function Nutri() {
                       )}
                     </div>
                     <div className="flex items-center gap-2.5 px-1 mt-0.5">
-                      <span className="text-[9px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
+                      <span className="text-[10px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
                       {msg.role === "assistant" && !msg.isError && (
                         <>
                           <button
@@ -602,7 +602,7 @@ export default function Nutri() {
                 {!isUserPremium(user) && messagesRemaining !== null && (
                   <div className="flex items-center gap-1.5 px-5 pt-2 pb-0">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                    <span className="text-[11px] text-muted-foreground font-medium">{messagesRemaining} credit{messagesRemaining !== 1 ? "s" : ""} restant{messagesRemaining !== 1 ? "s" : ""}</span>
+                    <span className="text-xs text-muted-foreground font-medium">{messagesRemaining} credit{messagesRemaining !== 1 ? "s" : ""} restant{messagesRemaining !== 1 ? "s" : ""}</span>
                   </div>
                 )}
                 <div className="flex gap-2 px-5 py-3 items-end">

@@ -20,13 +20,13 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
   const locked = journey.isPremium && !isPremium;
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-28">
       {/* Header */}
       <div className="gradient-primary safe-pt-14 pb-6 px-5 relative overflow-hidden">
         <button
           aria-label="Retour"
           onClick={onBack}
-          className="absolute top-14 left-4 w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-white"
+          className="absolute top-14 left-4 w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center text-white"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>

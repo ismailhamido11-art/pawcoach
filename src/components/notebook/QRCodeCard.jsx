@@ -55,7 +55,7 @@ export default function QRCodeCard({ dog }) {
         </div>
         <div className="flex-1">
           <p className="text-white font-bold text-sm">QR Code d'urgence</p>
-          <p className="text-white/60 text-[11px]">Dossier médical accessible en 3 secondes</p>
+          <p className="text-white/60 text-xs">Dossier médical accessible en 3 secondes</p>
         </div>
         <div className="flex gap-1">
           <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
@@ -104,8 +104,8 @@ export default function QRCodeCard({ dog }) {
                 ].map(({ icon: Icon, label, sub, color }) => (
                   <div key={label} className="flex flex-col items-center text-center bg-slate-50 rounded-xl py-3 px-2">
                     <Icon style={{ color, width: 18, height: 18 }} className="mb-1" />
-                    <p className="text-[11px] font-bold text-slate-700">{label}</p>
-                    <p className="text-[9px] text-slate-400">{sub}</p>
+                    <p className="text-xs font-bold text-slate-700">{label}</p>
+                    <p className="text-[10px] text-slate-400">{sub}</p>
                   </div>
                 ))}
               </div>

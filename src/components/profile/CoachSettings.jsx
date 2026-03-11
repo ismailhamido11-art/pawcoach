@@ -61,7 +61,7 @@ export default function CoachSettings({ user, onSave }) {
                 }`}
               >
                 <span className="text-base">{t.emoji}</span>
-                <span className="text-[11px]">{t.label}</span>
+                <span className="text-xs">{t.label}</span>
               </button>
             ))}
           </div>

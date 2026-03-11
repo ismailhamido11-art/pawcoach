@@ -124,7 +124,7 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded
           <p className="text-sm font-semibold text-foreground">{data.ref.name}</p>
           <div className="flex items-center gap-1.5 mt-0.5">
             <Icon className={`w-3 h-3 ${cfg.color}`} />
-            <span className={`text-[11px] font-medium ${cfg.color}`}>{cfg.label}</span>
+            <span className={`text-xs font-medium ${cfg.color}`}>{cfg.label}</span>
             {data.lastRecord && (
               <span className="text-[10px] text-muted-foreground ml-1">
                 · {fmtDate(data.lastRecord.date)}
@@ -151,12 +151,12 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded
               {/* Description + urgency */}
               <div className="bg-white/80 rounded-lg p-3">
                 <p className="text-xs text-foreground leading-relaxed">{data.ref.description}</p>
-                <p className="text-[11px] text-muted-foreground mt-1.5 font-medium">{data.ref.urgency}</p>
+                <p className="text-xs text-muted-foreground mt-1.5 font-medium">{data.ref.urgency}</p>
               </div>
 
               {/* Guidance text — tells user what to do */}
               <div className={`rounded-lg p-2.5 ${data.status === "overdue" ? "bg-red-50 border border-red-100" : data.status === "due_soon" ? "bg-amber-50 border border-amber-100" : "bg-primary/5 border border-primary/10"}`}>
-                <p className={`text-[11px] leading-relaxed font-medium ${data.status === "overdue" ? "text-red-700" : data.status === "due_soon" ? "text-amber-700" : "text-foreground/70"}`}>
+                <p className={`text-xs leading-relaxed font-medium ${data.status === "overdue" ? "text-red-700" : data.status === "due_soon" ? "text-amber-700" : "text-foreground/70"}`}>
                   {cta.guidance}
                 </p>
               </div>
@@ -166,7 +166,7 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded
                 {data.lastRecord && (
                   <div className="flex items-center gap-1.5 bg-white/80 rounded-lg px-2.5 py-1.5">
                     <Calendar className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-[11px] text-foreground font-medium">
+                    <span className="text-xs text-foreground font-medium">
                       Dernier : {fmtDate(data.lastRecord.date)}
                     </span>
                   </div>
@@ -174,7 +174,7 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded
                 {data.nextDue && (
                   <div className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 ${data.status === "overdue" ? "bg-red-100" : "bg-white/80"}`}>
                     <Clock className={`w-3 h-3 ${data.status === "overdue" ? "text-red-500" : "text-muted-foreground"}`} />
-                    <span className={`text-[11px] font-medium ${data.status === "overdue" ? "text-red-600" : "text-foreground"}`}>
+                    <span className={`text-xs font-medium ${data.status === "overdue" ? "text-red-600" : "text-foreground"}`}>
                       {data.status === "overdue" ? "Etait prevu" : "Prochain"} : {fmtDate(data.nextDue)}
                     </span>
                   </div>

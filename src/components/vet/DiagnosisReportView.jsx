@@ -42,7 +42,7 @@ export default function DiagnosisReportView({ report, dogName, reportDate }) {
           <ol className="space-y-1">
             {report.possible_causes.map((cause, i) => (
               <li key={i} className="text-xs text-muted-foreground flex gap-2">
-                <Badge variant="outline" className="text-[9px] px-1.5 flex-shrink-0">{i + 1}</Badge>
+                <Badge variant="outline" className="text-[10px] px-1.5 flex-shrink-0">{i + 1}</Badge>
                 {cause}
               </li>
             ))}

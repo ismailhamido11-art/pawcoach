@@ -108,8 +108,8 @@ export default function TwinMemoire() {
                       </span>
                     )}
                   </div>
-                  <p className="text-white/50 text-[11px] leading-relaxed">{item.desc}</p>
-                  <p className="text-white/25 text-[9px] mt-1.5">{item.date}</p>
+                  <p className="text-white/50 text-xs leading-relaxed">{item.desc}</p>
+                  <p className="text-white/25 text-[10px] mt-1.5">{item.date}</p>
                 </div>
               </motion.div>
             );

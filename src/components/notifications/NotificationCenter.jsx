@@ -288,7 +288,7 @@ function NotifRow({ n, isRead, onNavigate }) {
       <motion.span
         animate={isUrgent && !isRead ? { scale: [1, 1.05, 1] } : {}}
         transition={{ duration: 1, repeat: Infinity }}
-        className={`text-[11px] font-black px-2.5 py-1 rounded-full flex-shrink-0 ${badge.cls}`}
+        className={`text-xs font-black px-2.5 py-1 rounded-full flex-shrink-0 ${badge.cls}`}
       >
         {badge.label}
       </motion.span>

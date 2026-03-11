@@ -476,7 +476,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
 
               {/* Actions: time + copy */}
               <div className={`flex items-center gap-2.5 px-1 mt-1 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                <span className="text-[9px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
+                <span className="text-[10px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
                 {msg.role === "assistant" && (
                   <button
                     onClick={() => handleCopy(msg.content)}

@@ -74,7 +74,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
               )}
             >
               <span className="text-lg">{m.emoji}</span>
-              <p className="text-[11px] font-semibold text-foreground mt-0.5">{m.label}</p>
+              <p className="text-xs font-semibold text-foreground mt-0.5">{m.label}</p>
             </button>
           ))}
         </div>
@@ -106,7 +106,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                     )}
                   >
                     <span className="text-base">{e.emoji}</span>
-                    <p className="text-[11px] font-semibold mt-0.5">{e.label}</p>
+                    <p className="text-xs font-semibold mt-0.5">{e.label}</p>
                   </button>
                 ))}
               </div>
@@ -128,7 +128,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                     )}
                   >
                     <span className="text-base">{a.emoji}</span>
-                    <p className="text-[11px] font-semibold mt-0.5">{a.label}</p>
+                    <p className="text-xs font-semibold mt-0.5">{a.label}</p>
                   </button>
                 ))}
               </div>

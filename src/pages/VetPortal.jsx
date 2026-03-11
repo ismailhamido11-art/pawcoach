@@ -94,7 +94,7 @@ export default function VetPortal() {
       <div className="gradient-primary safe-pt-14 pb-8 px-5 relative overflow-hidden">
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-1">
-            <Link to={createPageUrl("Home")} aria-label="Retour" className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">
+            <Link to={createPageUrl("Home")} aria-label="Retour" className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">
               <ArrowLeft className="w-4 h-4 text-white" />
             </Link>
             <Stethoscope className="w-6 h-6 text-white" />

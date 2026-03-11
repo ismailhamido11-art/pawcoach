@@ -399,7 +399,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pb-24">
+      <div className="min-h-screen bg-background pb-32">
         <div className="gradient-primary pb-0 px-5 safe-pt-14 overflow-hidden relative">
           <div className="flex items-start justify-between">
             <div className="pb-6">
@@ -426,7 +426,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
   const labelCfg = labelResult ? LABEL_VERDICT_CONFIG[labelResult.compatibility_verdict] || LABEL_VERDICT_CONFIG.caution : null;
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-32">
       {/* Emergency banner */}
       {result?.verdict === "toxic" && dogAteIt && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-red-600 px-4 py-3 text-white text-center shadow-lg">
@@ -829,13 +829,13 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                       {labelResult.pros?.length > 0 && (
                         <div className="bg-white rounded-xl p-3">
                           <p className="text-[10px] font-bold text-green-700 mb-1">✅ Points positifs</p>
-                          <ul className="space-y-1">{labelResult.pros.map((p, i) => <li key={i} className="text-[11px] text-foreground/80">{p}</li>)}</ul>
+                          <ul className="space-y-1">{labelResult.pros.map((p, i) => <li key={i} className="text-xs text-foreground/80">{p}</li>)}</ul>
                         </div>
                       )}
                       {labelResult.cons?.length > 0 && (
                         <div className="bg-white rounded-xl p-3">
                           <p className="text-[10px] font-bold text-red-600 mb-1">⚠️ Points négatifs</p>
-                          <ul className="space-y-1">{labelResult.cons.map((c, i) => <li key={i} className="text-[11px] text-foreground/80">{c}</li>)}</ul>
+                          <ul className="space-y-1">{labelResult.cons.map((c, i) => <li key={i} className="text-xs text-foreground/80">{c}</li>)}</ul>
                         </div>
                       )}
                     </div>
@@ -858,7 +858,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                         <div className="bg-white rounded-xl p-3 mt-2">
                           <div className="flex flex-wrap gap-1.5">
                             {labelResult.ingredients_list.map((ing, i) => (
-                              <span key={i} className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
+                              <span key={i} className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                                 labelResult.allergen_alerts?.some(a => ing.toLowerCase().includes(a.toLowerCase()))
                                   ? "bg-red-100 text-red-700 border border-red-200"
                                   : "bg-muted text-muted-foreground"

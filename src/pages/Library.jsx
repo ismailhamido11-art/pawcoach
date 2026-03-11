@@ -135,7 +135,7 @@ export default function Library() {
   });
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-28">
       {/* Header */}
       <div className="gradient-primary safe-pt-14 pb-6 px-5 relative overflow-hidden">
         <button aria-label="Retour" onClick={() => window.history.length > 1 ? navigate(-1) : navigate(createPageUrl("Training"))} className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-3">
@@ -341,7 +341,7 @@ export default function Library() {
                                     </p>
                                     <div className="space-y-1">
                                       {week.daily_sessions?.slice(0, 3).map((s, si) => (
-                                        <div key={si} className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                                        <div key={si} className="flex items-center gap-2 text-xs text-muted-foreground">
                                           <span>{s.day}</span>
                                           <span className="text-foreground/70">{s.activity?.slice(0, 50)}</span>
                                           <span className="ml-auto text-[10px] font-medium flex items-center gap-0.5"><Clock className="w-2.5 h-2.5" />{s.duration_min}m</span>

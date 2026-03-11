@@ -47,21 +47,21 @@
 ## Phase 2: Dashboard Restructure
 
 ### Reorganisation hierarchy
-- [ ] **DASH-01**: Remonter ActiveProgramCards en position 3 (apres TodayCard) — contenu le plus actionnable
-- [ ] **DASH-02**: Activer SmartAlerts sur le dashboard (existe dans le code, pas importe dans Home.jsx)
-- [ ] **DASH-03**: Descendre WeeklyInsightCard (ne montrer que le bilan non lu, deplacer historique vers Analytics)
-- [ ] **DASH-04**: Descendre TrialExpiryBanner apres les actions (pas entre hero et check-in)
+- [x] **DASH-01**: ActiveProgramCards en position 3 (Bloc 3 apres TodayCard) ~~(VERIFIED — Home.jsx L350)~~
+- [x] **DASH-02**: SmartAlerts importe et actif sur dashboard ~~(VERIFIED — Home.jsx L18, L354-362)~~
+- [x] **DASH-03**: WeeklyInsightCard positionne Bloc 10, conditionnel ~~(VERIFIED — Home.jsx L393-407)~~
+- [x] **DASH-04**: TrialExpiryBanner Bloc 9 apres les actions ~~(VERIFIED — Home.jsx L388-391)~~
 
 ### Suppression redondances dashboard
-- [ ] **DASH-05**: buildRecommendations() appele 2 fois (TodayCard + DailyCoaching) — ne garder topRec que dans TodayCard, recs #2/#3 dans DailyCoaching
-- [ ] **DASH-06**: Streak affiche 3 fois (DogRadarHero + StreakBar + walkStreak badge) — fusionner en 1 dans TodayCard
-- [ ] **DASH-07**: Scores affiches 2 fois (DogRadarHero arcs + BentoGrid tiles) — supprimer BentoGrid ou le transformer en nav pure
-- [ ] **DASH-08**: Trial banner 2 fois (TrialExpiryBanner + TodayCard showTrialAlert) — supprimer showTrialAlert de TodayCard
-- [ ] **DASH-09**: WellnessBanner permanent → conditionnel (masquer apres 3 visites, ou deplacer en tooltip)
-- [ ] **DASH-10**: BadgeTeaser trop bas → fusionner en chip compact dans TodayCard ou StreakBar
+- [x] **DASH-05**: buildRecommendations() appele 1 seule fois via useMemo, partage TodayCard+DailyCoaching ~~(VERIFIED — Home.jsx L278)~~
+- [~] **DASH-06**: SKIP — Streak x3 volontaire (DogRadarHero arc activite + StreakBar check-in + walk streak = 2 metriques differentes)
+- [x] **DASH-07**: BentoGrid = pure navigation (no scores), DogRadarHero = 4 arcs. Pas de duplication ~~(VERIFIED — BentoGrid L7 comment)~~
+- [x] **DASH-08**: TrialExpiryBanner seul, TodayCard n'affiche pas de banner ~~(VERIFIED)~~
+- [x] **DASH-09**: WellnessBanner conditionnel : affiche si <3 checkins ~~(VERIFIED — Home.jsx L324)~~
+- [x] **DASH-10**: BadgeTeaser merge dans StreakBar.jsx (L120-144), chip compact ~~(VERIFIED)~~
 
 ### Dead code dashboard
-- [ ] **DASH-11**: Supprimer DailySnapshot.jsx, HealthScore.jsx, PremiumValueBanner.jsx du dossier home/ (non utilises)
+- [x] **DASH-11**: DailySnapshot.jsx, HealthScore.jsx, PremiumValueBanner.jsx n'existent plus ~~(VERIFIED — supprimes)~~
 
 ---
 
@@ -74,24 +74,24 @@
 
 ### Boutons CTA (high)
 - [x] **DESIGN-04**: Standardiser tous les CTA primaires → h-14 rounded-2xl ~~(FIXED c3387db)~~
-- [ ] **DESIGN-05**: Regle gradient: gradient-primary = feature CTA, gradient-warm = monetisation uniquement
+- [x] **DESIGN-05**: VERIFIED — gradient-primary = feature CTA, gradient-warm = monetisation uniquement (tous usages conformes)
 - [x] **DESIGN-06**: Supprimer tous les inline style gradient buttons → utiliser gradient-primary class ~~(FIXED c3387db)~~
 
 ### Patterns visuels (medium)
-- [ ] **DESIGN-07**: Back button → w-9 h-9 rounded-xl bg-white/20 + ArrowLeft partout
-- [ ] **DESIGN-08**: JourneyCard rounded-3xl → rounded-2xl (seul outlier)
-- [ ] **DESIGN-09**: Icon containers → 2 tailles canoniques: w-9 h-9 (compact) et w-11 h-11 (stat cards)
-- [ ] **DESIGN-10**: Tracker tab style → migrer vers pill-card gradient header (comme Sante/Nutri/Activite)
-- [ ] **DESIGN-11**: Couleur warning: supprimer token caution, utiliser amber partout pour warnings
+- [x] **DESIGN-07**: Back button → w-9 h-9 rounded-xl bg-white/20 + ArrowLeft partout ~~(FIXED)~~ — 6 boutons standardises (VetPortal, Premium, DogProfile, DogTwin, ExerciseDetail, JourneyView)
+- [x] **DESIGN-08**: JourneyCard rounded-3xl → rounded-2xl ~~(FIXED)~~
+- [~] **DESIGN-09**: SKIP — 71 fichiers impactes, tailles servent des contextes varies (avatars, badges, boutons, decorations)
+- [x] **DESIGN-10**: N/A — Tracker.jsx supprime en Phase 1, pas de composant avec tab style "Tracker" restant
+- [x] **DESIGN-11**: VERIFIED — --caution (38 92% 55%) est deja amber. Pas de yellow/orange inapproprie pour warnings
 
 ### Typography (low)
-- [ ] **DESIGN-12**: Supprimer text-[9px] → text-[10px]. Supprimer text-[11px] → text-xs
-- [ ] **DESIGN-13**: Section labels → text-xs font-bold text-muted-foreground uppercase tracking-widest
-- [ ] **DESIGN-14**: Bottom padding → pb-28 partout (sauf pages avec FAB → pb-32)
+- [x] **DESIGN-12**: text-[9px] → text-[10px], text-[11px] → text-xs ~~(FIXED)~~ — 38 fichiers modifies (hors ui/)
+- [~] **DESIGN-13**: SKIP — trop subjectif, pas de definition claire de "section label" vs label ordinaire
+- [x] **DESIGN-14**: Bottom padding standardise ~~(FIXED)~~ — pb-28 par defaut, pb-32 pour FAB pages (Home, Scan)
 
 ### Loading & empty states (low)
-- [ ] **DESIGN-15**: Premium.jsx et Profile.jsx loading skeletons → haute fidelite (comme Home/Training)
-- [ ] **DESIGN-16**: Pattern EmptyState unifie: illustration + title + subtitle + CTA
+- [~] **DESIGN-15**: SKIP — skeletons basiques deja presents, haute fidelite complexe et risque desynchronisation
+- [~] **DESIGN-16**: SKIP — trop de variantes (texte, illustration, CTA, contextes sombres/clairs), composant unifie trop generique
 
 ---
 

@@ -171,10 +171,10 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
                               min={min}
                               max={max}
                             />
-                            {unit && <span className="text-[9px] text-muted-foreground">{unit}</span>}
+                            {unit && <span className="text-[10px] text-muted-foreground">{unit}</span>}
                           </div>
                         )}
-                        {errors[key] && <p className="text-[9px] text-red-500 font-semibold mt-0.5">{errors[key]}</p>}
+                        {errors[key] && <p className="text-[10px] text-red-500 font-semibold mt-0.5">{errors[key]}</p>}
                       </div>
                     </div>
                   ))}

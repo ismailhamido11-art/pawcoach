@@ -29,10 +29,10 @@ export default function VetDogCard({ dog, access }) {
           </p>
           <div className="flex flex-wrap gap-1 mt-1.5">
             {sharedSections.slice(0, 4).map(s => (
-              <Badge key={s} variant="outline" className="text-[9px] px-1.5 py-0">{s}</Badge>
+              <Badge key={s} variant="outline" className="text-[10px] px-1.5 py-0">{s}</Badge>
             ))}
             {sharedSections.length > 4 && (
-              <Badge variant="outline" className="text-[9px] px-1.5 py-0">+{sharedSections.length - 4}</Badge>
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0">+{sharedSections.length - 4}</Badge>
             )}
           </div>
         </div>

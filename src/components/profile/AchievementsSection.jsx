@@ -175,19 +175,19 @@ export default function AchievementsSection({ dog }) {
                 {badge.name}
               </p>
               {badge.points > 0 && (
-                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
                   unlocked ? "bg-amber-100 text-amber-700" : "bg-muted text-muted-foreground"
                 }`}>
                   +{badge.points} pts
                 </span>
               )}
               {unlocked && achv?.unlocked_at && (
-                <p className="text-[9px] text-muted-foreground">
+                <p className="text-[10px] text-muted-foreground">
                   {new Date(achv.unlocked_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                 </p>
               )}
               {!unlocked && (
-                <p className={`text-[9px] text-muted-foreground leading-tight relative z-0`}>
+                <p className={`text-[10px] text-muted-foreground leading-tight relative z-0`}>
                   {badge.desc}
                 </p>
               )}

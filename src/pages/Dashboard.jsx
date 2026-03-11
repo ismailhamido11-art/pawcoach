@@ -235,7 +235,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pb-24">
+      <div className="min-h-screen bg-background pb-28">
         {/* Header skeleton */}
         <div className="gradient-primary safe-pt-16 pb-8 px-5">
           <div className="space-y-2 mb-4">
@@ -266,7 +266,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-28">
       <WellnessBanner />
 
       {/* Header */}

@@ -282,7 +282,7 @@ export default function Training() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pb-24">
+      <div className="min-h-screen bg-background pb-28">
         <div className="gradient-primary safe-pt-16 pb-0 px-5 overflow-hidden relative">
           <div className="flex items-start justify-between">
             <div className="pb-6 flex-1">
@@ -657,7 +657,7 @@ export default function Training() {
 
   // Main journey list
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-28">
       <WellnessBanner />
 
       {/* Hero header */}

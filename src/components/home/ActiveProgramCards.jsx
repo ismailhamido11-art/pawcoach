@@ -97,7 +97,7 @@ function TrainingCard({ program }) {
                   </span>
                 </div>
                 {today.activity?.description && (
-                  <p className="text-[11px] text-foreground/70 leading-relaxed line-clamp-2">{today.activity.description}</p>
+                  <p className="text-xs text-foreground/70 leading-relaxed line-clamp-2">{today.activity.description}</p>
                 )}
                 {todayDone && (
                   <p className="text-[10px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
@@ -349,7 +349,7 @@ function NutritionPlanCard({ plan }) {
 
                 <Link
                   to={createPageUrl("Nutri") + "?tab=mealplan"}
-                  className="block text-center text-[11px] font-semibold text-emerald-600 py-1"
+                  className="block text-center text-xs font-semibold text-emerald-600 py-1"
                 >
                   Voir le plan complet
                 </Link>
@@ -494,13 +494,13 @@ function BehaviorProgramCard({ program }) {
                   <div className="grid grid-cols-2 gap-1.5">
                     {day.do?.length > 0 && (
                       <div className="bg-emerald-50 rounded-lg px-2.5 py-2 border border-emerald-100">
-                        <p className="text-[9px] font-bold text-emerald-700 uppercase mb-0.5">À faire</p>
+                        <p className="text-[10px] font-bold text-emerald-700 uppercase mb-0.5">À faire</p>
                         {day.do.slice(0, 2).map((d, i) => <p key={i} className="text-[10px] text-emerald-800 truncate">✓ {d}</p>)}
                       </div>
                     )}
                     {day.dont?.length > 0 && (
                       <div className="bg-red-50 rounded-lg px-2.5 py-2 border border-red-100">
-                        <p className="text-[9px] font-bold text-red-700 uppercase mb-0.5">À éviter</p>
+                        <p className="text-[10px] font-bold text-red-700 uppercase mb-0.5">À éviter</p>
                         {day.dont.slice(0, 2).map((d, i) => <p key={i} className="text-[10px] text-red-800 truncate">✕ {d}</p>)}
                       </div>
                     )}
@@ -531,7 +531,7 @@ function BehaviorProgramCard({ program }) {
                 {program.problem_id && (
                   <Link
                     to={createPageUrl("Training") + `?behavior=${program.problem_id}`}
-                    className="block text-center text-[11px] font-semibold text-blue-600 py-1"
+                    className="block text-center text-xs font-semibold text-blue-600 py-1"
                   >
                     Voir le programme détaillé
                   </Link>

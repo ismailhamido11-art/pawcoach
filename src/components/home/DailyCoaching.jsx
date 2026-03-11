@@ -118,7 +118,7 @@ export default function DailyCoaching({ dog, recommendations = [] }) {
                       <div className={`w-8 h-8 rounded-lg ${rec.iconBg} flex items-center justify-center shrink-0`}>
                         <rec.icon className="w-4 h-4" style={{ color: rec.iconColor }} strokeWidth={2} />
                       </div>
-                      <p className="text-[11px] font-semibold text-foreground leading-tight line-clamp-2">{rec.label}</p>
+                      <p className="text-xs font-semibold text-foreground leading-tight line-clamp-2">{rec.label}</p>
                     </motion.div>
                   </Link>
                 ))}

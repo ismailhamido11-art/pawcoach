@@ -103,7 +103,7 @@ export default function VetDogView() {
                   <div className="p-2 rounded-lg bg-muted">{getIconForType(r.type)}</div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{r.title}</p>
-                    <p className="text-[11px] text-muted-foreground">{format(new Date(r.date), "d MMM yyyy", { locale: fr })}</p>
+                    <p className="text-xs text-muted-foreground">{format(new Date(r.date), "d MMM yyyy", { locale: fr })}</p>
                     {r.details && <p className="text-xs text-muted-foreground mt-1">{r.details}</p>}
                     {r.value && <Badge variant="outline" className="text-[10px] mt-1">{r.value} kg</Badge>}
                   </div>

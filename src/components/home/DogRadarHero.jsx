@@ -187,7 +187,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
                   transition={{ delay: 1, type: "spring" }}
                   className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white rounded-full px-2 py-0.5 shadow-lg whitespace-nowrap"
                 >
-                  <span className="text-[11px] font-bold text-foreground">{moodEmoji[mood]} {moodText[mood]}</span>
+                  <span className="text-xs font-bold text-foreground">{moodEmoji[mood]} {moodText[mood]}</span>
                 </motion.div>
               </div>
             </div>
@@ -209,7 +209,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
               const name = dog?.name || "Ton chien";
               if (withData.length === 0) {
                 return (
-                  <p className="text-[11px] font-medium mt-1.5 text-white/40">Fais un check-in pour activer le suivi</p>
+                  <p className="text-xs font-medium mt-1.5 text-white/40">Fais un check-in pour activer le suivi</p>
                 );
               }
               const avg = Math.round(withData.reduce((s, a) => s + a.score, 0) / withData.length);
@@ -218,7 +218,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
               else if (avg >= 50) { text = "Quelques points a surveiller"; color = "#d97706"; }
               else { text = "A besoin d'attention"; color = "#ef4444"; }
               return (
-                <p className="text-[11px] font-medium mt-1.5" style={{ color: `${color}99` }}>{text}</p>
+                <p className="text-xs font-medium mt-1.5" style={{ color: `${color}99` }}>{text}</p>
               );
             })()}
           </motion.div>
@@ -240,11 +240,11 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: arc.color + "25", border: `1.5px solid ${arc.color}55` }}>
                     <Icon className="w-3.5 h-3.5" style={{ color: arc.color }} />
                   </div>
-                  <span className="text-white/70 text-[9px] font-semibold">{arc.label}</span>
+                  <span className="text-white/70 text-[10px] font-semibold">{arc.label}</span>
                   {arc.hasData ? (
-                    <span className="font-black text-[11px]" style={{ color: arc.color }}>{arc.score}%</span>
+                    <span className="font-black text-xs" style={{ color: arc.color }}>{arc.score}%</span>
                   ) : (
-                    <span className="font-bold text-[11px] text-white/40">—</span>
+                    <span className="font-bold text-xs text-white/40">—</span>
                   )}
                   <span className="text-white/60 text-[8px] leading-tight">{arc.hint}</span>
                 </motion.button>

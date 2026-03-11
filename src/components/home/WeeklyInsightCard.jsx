@@ -9,7 +9,7 @@ function TrendBadge({ current, previous, label }) {
   if (Math.abs(diff) < 0.1) return <Minus className="w-3 h-3 text-muted-foreground" />;
   const isUp = diff > 0;
   return (
-    <span className={`inline-flex items-center gap-0.5 text-[9px] font-bold ${isUp ? "text-emerald-600" : "text-amber-600"}`}>
+    <span className={`inline-flex items-center gap-0.5 text-[10px] font-bold ${isUp ? "text-emerald-600" : "text-amber-600"}`}>
       {isUp ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
       {isUp ? "+" : ""}{diff.toFixed(1)}
     </span>

@@ -68,7 +68,7 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pb-24">
+      <div className="min-h-screen bg-background pb-28">
         <div className="gradient-primary safe-pt-16 pb-8 px-5">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-white/20 animate-pulse" />
@@ -110,7 +110,7 @@ export default function Profile() {
                 <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center text-lg">🏆</div>
                 <div className="text-left">
                   <p className="font-bold text-sm text-foreground">Succès & Badges</p>
-                  <p className="text-[11px] text-muted-foreground">Points, niveaux et récompenses</p>
+                  <p className="text-xs text-muted-foreground">Points, niveaux et récompenses</p>
                 </div>
               </div>
               <motion.div animate={{ rotate: showAchievements ? 180 : 0 }} transition={{ duration: 0.2 }}>

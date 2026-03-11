@@ -247,7 +247,7 @@ function AlertRow({ alert, index }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
-          <span className={`text-[9px] font-black uppercase tracking-wider ${cfg.text}`}>{cfg.label}</span>
+          <span className={`text-[10px] font-black uppercase tracking-wider ${cfg.text}`}>{cfg.label}</span>
         </div>
         <p className="text-sm font-semibold text-foreground leading-snug">{alert.title}</p>
         <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{alert.desc}</p>
@@ -280,10 +280,10 @@ export default function SmartAlerts({ dog, checkins = [], records = [], streak, 
           <Brain className="w-4 h-4 text-primary" />
           <span className="font-bold text-foreground text-sm">Alertes intelligentes</span>
           {criticalCount > 0 && (
-            <span className="bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">{criticalCount}</span>
+            <span className="bg-red-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full">{criticalCount}</span>
           )}
           {criticalCount === 0 && warningCount > 0 && (
-            <span className="bg-amber-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">{warningCount}</span>
+            <span className="bg-amber-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full">{warningCount}</span>
           )}
         </div>
         <span className="text-[10px] text-muted-foreground">Basé sur l'historique</span>

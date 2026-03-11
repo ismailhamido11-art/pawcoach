@@ -318,7 +318,7 @@ export default function DogAvatar({
 
       {/* Score label (petit) */}
       <motion.div
-        className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-black z-20"
+        className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[10px] font-black z-20"
         style={{ background: aura.primary, color: "#fff", boxShadow: `0 2px 8px ${aura.glow}` }}
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}

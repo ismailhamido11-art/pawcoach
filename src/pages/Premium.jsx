@@ -140,7 +140,7 @@ export default function Premium() {
 
   if (isUserPremium(user)) {
     return (
-      <div className="min-h-screen bg-background pb-24">
+      <div className="min-h-screen bg-background pb-28">
         <div className="gradient-primary safe-pt-14 pb-10 px-5 text-center">
           {/* Avatar */}
           <motion.div
@@ -311,7 +311,7 @@ export default function Premium() {
         <button
           aria-label="Retour"
           onClick={() => window.history.length > 1 ? navigate(-1) : navigate(createPageUrl("Home"))}
-          className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/20 flex items-center justify-center z-20"
+          className="absolute top-4 left-4 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center z-20"
         >
           <ArrowLeft className="w-5 h-5 text-white" />
         </button>
@@ -390,7 +390,7 @@ export default function Premium() {
                 {f.free === false ? (
                   <Lock className="w-3.5 h-3.5 text-muted-foreground" />
                 ) : (
-                  <span className="text-muted-foreground text-[11px]">{f.free}</span>
+                  <span className="text-muted-foreground text-xs">{f.free}</span>
                 )}
               </div>
               <div className="flex justify-center">
@@ -399,7 +399,7 @@ export default function Premium() {
                     <Check className="w-3 h-3 text-primary" />
                   </div>
                 ) : (
-                  <span className="text-primary text-[11px]">{f.premium}</span>
+                  <span className="text-primary text-xs">{f.premium}</span>
                 )}
               </div>
             </div>

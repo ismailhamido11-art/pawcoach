@@ -103,7 +103,7 @@ export default function DogEditModal({ dog, onClose, onSave }) {
                 {...(type === "date" ? { max: new Date().toISOString().split("T")[0] } : {})}
               />
               {field === "birth_date" && form.birth_date && new Date(form.birth_date) > new Date() && (
-                <p className="text-[11px] text-red-500 font-semibold mt-1">La date de naissance ne peut pas être dans le futur</p>
+                <p className="text-xs text-red-500 font-semibold mt-1">La date de naissance ne peut pas être dans le futur</p>
               )}
             </div>
           ))}

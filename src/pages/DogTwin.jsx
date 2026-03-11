@@ -512,7 +512,7 @@ export default function DogTwin() {
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-5 safe-pt-14 pb-4 bg-gradient-to-b from-black/60 to-transparent pointer-events-none">
         <button
           aria-label="Retour"
-          className="pointer-events-auto w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center"
+          className="pointer-events-auto w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center"
           onClick={() => window.history.length > 1 ? navigate(-1) : navigate(createPageUrl("Home"))}
         >
           <ArrowLeft className="w-4 h-4 text-white" />
@@ -601,7 +601,7 @@ export default function DogTwin() {
             className="bg-white/20 backdrop-blur-md rounded-full px-5 py-1.5 flex items-center gap-2 border border-white/10"
           >
             <ChevronUp className="w-4 h-4 text-white/60" />
-            <span className="text-white/60 text-[11px] font-semibold">Jumeau Digital</span>
+            <span className="text-white/60 text-xs font-semibold">Jumeau Digital</span>
           </motion.div>
         </div>
 
@@ -631,7 +631,7 @@ export default function DogTwin() {
                   }}
                 >
                   <span className="text-base">{tab.icon}</span>
-                  <span className="text-[9px] font-bold" style={{ color: activeLayer === tab.id ? "#2d9f82" : "rgba(255,255,255,0.4)" }}>
+                  <span className="text-[10px] font-bold" style={{ color: activeLayer === tab.id ? "#2d9f82" : "rgba(255,255,255,0.4)" }}>
                     {tab.label}
                   </span>
                 </motion.button>
@@ -669,7 +669,7 @@ export default function DogTwin() {
                               }}
                             >
                               <span className="text-lg">{z.emoji}</span>
-                              <span className="text-[9px] text-white/50 font-semibold">{z.label}</span>
+                              <span className="text-[10px] text-white/50 font-semibold">{z.label}</span>
                               <span className="text-xs font-black" style={{ color: c }}>{z.score}</span>
                             </motion.button>
                           );

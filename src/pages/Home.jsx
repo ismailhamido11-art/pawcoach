@@ -287,7 +287,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pb-24">
+      <div className="min-h-screen bg-background pb-32">
         {/* Hero skeleton */}
         <div className="h-56 bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] relative overflow-hidden">
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
@@ -314,7 +314,7 @@ export default function Home() {
   }
 
   return (
-    <div className={`min-h-screen bg-background pb-40 relative flex flex-col ${recentCheckins.length < 3 ? "pt-20" : ""}`}>
+    <div className={`min-h-screen bg-background pb-32 relative flex flex-col ${recentCheckins.length < 3 ? "pt-20" : ""}`}>
       {/* DASH-09: Hide WellnessBanner after 3+ check-ins */}
       {recentCheckins.length < 3 && <WellnessBanner />}
 
