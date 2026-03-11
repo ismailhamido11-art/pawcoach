@@ -141,6 +141,10 @@ export default function HealthImportContent({ dog, onImported }) {
           ...(record.details && { details: record.details }),
           ...(record.value && { value: record.value }),
         });
+        // Auto-update Dog.weight when importing weight records
+        if (record.type === "weight" && record.value) {
+          try { await base44.entities.Dog.update(dog.id, { weight: record.value }); } catch {}
+        }
         created.push(r);
       } catch {
         failedCount++;

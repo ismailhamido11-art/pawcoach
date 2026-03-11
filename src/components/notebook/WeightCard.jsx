@@ -31,6 +31,8 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
         date,
         value: w,
       });
+      // Auto-update Dog.weight with latest value
+      try { await base44.entities.Dog.update(dogId, { weight: w }); } catch {}
       if (onRecordAdded) onRecordAdded(record);
       toast.success("Poids enregistre !");
       onClose();

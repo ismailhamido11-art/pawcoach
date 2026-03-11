@@ -198,7 +198,7 @@ export default function HealthImport() {
   const handleImport = async () => {
     const toImport = records.filter((_, i) => selected.has(i));
     for (const record of toImport) {
-      await base44.entities.HealthRecord.create({
+      const created = await base44.entities.HealthRecord.create({
         dog_id: dog.id,
         type: record.type || "note",
         title: record.title,
@@ -207,6 +207,10 @@ export default function HealthImport() {
         ...(record.details && { details: record.details }),
         ...(record.value && { value: record.value }),
       });
+      // Auto-update Dog.weight when importing weight records
+      if (record.type === "weight" && record.value) {
+        try { await base44.entities.Dog.update(dog.id, { weight: record.value }); } catch {}
+      }
     }
     setImportedCount(toImport.length);
     setStep(STEPS.SUCCESS);

@@ -28,6 +28,8 @@ export default function SectionPoids({ records = [], dogId, onDelete, onRecordAd
         date: form.date,
         value: w,
       });
+      // Auto-update Dog.weight with latest value
+      try { await base44.entities.Dog.update(dogId, { weight: w }); } catch {}
       if (onRecordAdded) onRecordAdded(record);
       toast.success("Poids enregistre !");
       setShowAddForm(false);

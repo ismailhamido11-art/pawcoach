@@ -314,6 +314,10 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
           }
         }
         const created = await base44.entities.HealthRecord.create({ dog_id: dogId, ...rec });
+        // Auto-update Dog.weight when a weight record is saved
+        if (rec.type === "weight" && rec.value) {
+          try { await base44.entities.Dog.update(dogId, { weight: rec.value }); } catch {}
+        }
         onRecordAdded(created);
         savedCount++;
       }
