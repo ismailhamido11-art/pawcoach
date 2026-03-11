@@ -494,7 +494,7 @@ export default function HealthImport() {
 
         {/* Sticky import button */}
         {step === STEPS.REVIEW && records.length > 0 && selected.size > 0 && (
-          <div className="fixed bottom-6 left-5 right-5 z-50">
+          <div className="fixed left-5 right-5 z-50" style={{ bottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))" }}>
             <motion.div
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}

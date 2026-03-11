@@ -3,22 +3,24 @@ import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Heart, Utensils, Brain, Activity, Sparkles, ChevronUp, Zap, Clock, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { base44 } from "@/api/base44Client";
+import { getActiveDog } from "@/utils";
 import TwinIA from "../components/dogtwin/TwinIA";
 import TwinMemoire from "../components/dogtwin/TwinMemoire";
 import TwinVoix from "../components/dogtwin/TwinVoix";
 
-const ZONES = [
-  { id: "heart",    label: "Vitalité",    icon: Heart,    color: "#ff6b8a", score: 87, detail: "Rythme cardiaque stable · Énergie excellente", emoji: "❤️" },
-  { id: "food",     label: "Nutrition",   icon: Utensils, color: "#f59e0b", score: 74, detail: "Appétit légèrement réduit depuis 2 jours", emoji: "🍗" },
-  { id: "brain",    label: "Mental",      icon: Brain,    color: "#a78bfa", score: 92, detail: "Très stimulé · Comportement équilibré", emoji: "🧠" },
-  { id: "activity", label: "Activité",    icon: Activity, color: "#34d399", score: 81, detail: "3 balades cette semaine · Objectif presque atteint", emoji: "🏃" },
+const DEFAULT_ZONES = [
+  { id: "heart",    label: "Vitalité",    icon: Heart,    color: "#ff6b8a", score: 50, detail: "Aucune donnée disponible", emoji: "❤️" },
+  { id: "food",     label: "Nutrition",   icon: Utensils, color: "#f59e0b", score: 50, detail: "Aucune donnée disponible", emoji: "🍗" },
+  { id: "brain",    label: "Mental",      icon: Brain,    color: "#a78bfa", score: 50, detail: "Aucune donnée disponible", emoji: "🧠" },
+  { id: "activity", label: "Activité",    icon: Activity, color: "#34d399", score: 50, detail: "Aucune donnée disponible", emoji: "🏃" },
 ];
 
-const VITALITY = Math.round(ZONES.reduce((s, z) => s + z.score, 0) / ZONES.length);
-
-const STATUS = VITALITY >= 85 ? { label: "En pleine forme", color: "#34d399", glow: "#34d39944" }
-             : VITALITY >= 65 ? { label: "Bien mais surveiller", color: "#f59e0b", glow: "#f59e0b44" }
-             : { label: "Attention requise", color: "#ff6b8a", glow: "#ff6b8a44" };
+function getStatus(vitality) {
+  if (vitality >= 85) return { label: "En pleine forme", color: "#34d399", glow: "#34d39944" };
+  if (vitality >= 65) return { label: "Bien mais surveiller", color: "#f59e0b", glow: "#f59e0b44" };
+  return { label: "Attention requise", color: "#ff6b8a", glow: "#ff6b8a44" };
+}
 
 export default function DogTwin() {
   const navigate = useNavigate();
@@ -36,6 +38,79 @@ export default function DogTwin() {
   const [sheetOpen, setSheetOpen] = useState(false);
   // 0 = Corps, 1 = Cerveau IA, 2 = Mémoire, 3 = Voix
   const [activeLayer, setActiveLayer] = useState(0);
+  const [dogName, setDogName] = useState("...");
+  const [zones, setZones] = useState(DEFAULT_ZONES);
+
+  const VITALITY = Math.round(zones.reduce((s, z) => s + z.score, 0) / zones.length);
+  const STATUS = getStatus(VITALITY);
+
+  // Load real dog data and compute scores
+  useEffect(() => {
+    (async () => {
+      try {
+        const u = await base44.auth.me();
+        const dogs = await base44.entities.Dog.filter({ owner: u.email });
+        if (!dogs?.length) return;
+        const activeDog = getActiveDog(dogs);
+        setDogName(activeDog.name || "Mon chien");
+
+        const [healthRecords, dailyLogs] = await Promise.all([
+          base44.entities.HealthRecord.filter({ dog_id: activeDog.id }).catch(() => []),
+          base44.entities.DailyLog.filter({ dog_id: activeDog.id }).catch(() => []),
+        ]);
+
+        const recs = healthRecords || [];
+        const logs = dailyLogs || [];
+        const now = new Date();
+        const daysSince = (dateStr) => {
+          if (!dateStr) return 9999;
+          return Math.floor((now - new Date(dateStr)) / (1000 * 60 * 60 * 24));
+        };
+
+        // Vaccine zone — based on recent vaccines
+        const vaccines = recs.filter(r => r.type === "vaccine");
+        const recentVaccines = vaccines.filter(v => v.date && daysSince(v.date) < 365);
+        const vaccineScore = vaccines.length === 0 ? 40 : Math.min(100, Math.round((recentVaccines.length / Math.max(vaccines.length, 3)) * 100));
+        const vaccineDetail = recentVaccines.length > 0
+          ? `${recentVaccines.length} vaccin${recentVaccines.length > 1 ? "s" : ""} a jour`
+          : vaccines.length > 0 ? "Rappels a verifier" : "Aucun vaccin enregistre";
+
+        // Weight zone — based on recent weight records
+        const weights = recs.filter(r => r.type === "weight" && r.date);
+        const lastWeight = weights.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+        const weightDays = lastWeight ? daysSince(lastWeight.date) : 9999;
+        const weightScore = weightDays <= 30 ? 90 : weightDays <= 90 ? 70 : weightDays <= 180 ? 50 : 30;
+        const weightDetail = lastWeight
+          ? `Derniere pesee il y a ${weightDays <= 1 ? "aujourd'hui" : weightDays + " jours"}${lastWeight.value ? " : " + lastWeight.value + " kg" : ""}`
+          : "Aucune pesee enregistree";
+
+        // Vet visit zone — based on recent vet visits
+        const vetVisits = recs.filter(r => r.type === "vet_visit" && r.date);
+        const lastVet = vetVisits.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+        const vetDays = lastVet ? daysSince(lastVet.date) : 9999;
+        const vetScore = vetDays <= 180 ? 95 : vetDays <= 365 ? 75 : vetDays <= 540 ? 50 : 30;
+        const vetDetail = lastVet
+          ? `Derniere visite il y a ${vetDays <= 1 ? "aujourd'hui" : vetDays + " jours"}`
+          : "Aucune visite enregistree";
+
+        // Activity zone — based on recent daily logs (walks)
+        const recentLogs = logs.filter(l => l.date && daysSince(l.date) <= 7);
+        const activityScore = recentLogs.length >= 5 ? 95 : recentLogs.length >= 3 ? 80 : recentLogs.length >= 1 ? 60 : 35;
+        const activityDetail = recentLogs.length > 0
+          ? `${recentLogs.length} activite${recentLogs.length > 1 ? "s" : ""} cette semaine`
+          : "Aucune activite recente";
+
+        setZones([
+          { id: "heart", label: "Vitalite", icon: Heart, color: "#ff6b8a", score: vaccineScore, detail: vaccineDetail, emoji: "❤️" },
+          { id: "food", label: "Nutrition", icon: Utensils, color: "#f59e0b", score: weightScore, detail: weightDetail, emoji: "🍗" },
+          { id: "brain", label: "Mental", icon: Brain, color: "#a78bfa", score: vetScore, detail: vetDetail, emoji: "🧠" },
+          { id: "activity", label: "Activite", icon: Activity, color: "#34d399", score: activityScore, detail: activityDetail, emoji: "🏃" },
+        ]);
+      } catch (err) {
+        console.error("DogTwin data load error:", err);
+      }
+    })();
+  }, []);
 
   const buildDog = useCallback((scene) => {
     const g = new THREE.Group();
@@ -448,7 +523,7 @@ export default function DogTwin() {
             <Sparkles className="w-3 h-3 text-emerald-400" />
             <span className="text-white/50 text-[10px] uppercase tracking-widest font-bold">Jumeau Digital</span>
           </div>
-          <p className="text-white font-black text-lg tracking-tight">Max</p>
+          <p className="text-white font-black text-lg tracking-tight">{dogName}</p>
         </div>
 
         {/* Vitality ring */}
@@ -508,7 +583,7 @@ export default function DogTwin() {
             className="absolute bottom-52 left-0 right-0 flex justify-center pointer-events-none z-10"
           >
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
-              <span className="text-white/35 text-[10px] tracking-wider">Fais pivoter Max</span>
+              <span className="text-white/35 text-[10px] tracking-wider">Fais pivoter {dogName}</span>
             </div>
           </motion.div>
         )}
@@ -578,7 +653,7 @@ export default function DogTwin() {
                     <div className="px-4 pt-3 pb-8 space-y-3">
                       {/* Zone pills */}
                       <div className="grid grid-cols-4 gap-2">
-                        {ZONES.map((z) => {
+                        {zones.map((z) => {
                           const c = scoreColor(z.score);
                           const active = selectedZone?.id === z.id;
                           return (

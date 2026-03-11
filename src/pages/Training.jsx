@@ -422,7 +422,7 @@ export default function Training() {
     }
 
     return (
-      <div className="min-h-screen bg-background pb-24">
+      <div className="min-h-screen bg-background" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom, 0px))" }}>
         <WellnessBanner />
         <div className="gradient-primary safe-pt-14 pb-6 px-5">
           <button onClick={() => navigate(createPageUrl("Training"))} className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-2 hover:bg-white/30 transition-colors">

@@ -110,6 +110,12 @@ export default function DogPublicProfile() {
           <PawPrint className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h1 className="text-lg font-bold text-slate-700">Dossier introuvable</h1>
           <p className="text-sm text-slate-400 mt-2">Ce lien est invalide ou a expiré.</p>
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-emerald-600 text-white font-bold text-sm rounded-xl hover:bg-emerald-700 transition-colors"
+          >
+            Retour à l'accueil
+          </a>
         </div>
       </div>
     );

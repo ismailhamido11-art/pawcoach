@@ -402,7 +402,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
               Telecharger le bilan PDF
             </Button>
 
-            <Link to={createPageUrl("FindVet")} className="block">
+            <Link to={createPageUrl("Sante") + "?tab=findvet"} className="block">
               <Button className="w-full gradient-primary text-white">
                 <MapPin className="w-4 h-4 mr-2" />
                 Trouver un vétérinaire proche

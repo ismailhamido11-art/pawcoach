@@ -48,7 +48,6 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import DogProfile from './pages/DogProfile';
-import FindVet from './pages/FindVet';
 import Home from './pages/Home';
 import Onboarding from './pages/Onboarding';
 import Activite from './pages/Activite';
@@ -63,7 +62,6 @@ import Nutri from './pages/Nutri';
 import Premium from './pages/Premium';
 import Profile from './pages/Profile';
 import Scan from './pages/Scan';
-import Tracker from './pages/Tracker';
 import Training from './pages/Training';
 import VetDogView from './pages/VetDogView';
 import VetPortal from './pages/VetPortal';
@@ -72,7 +70,6 @@ import __Layout from './Layout.jsx';
 
 export const PAGES = {
     "DogProfile": DogProfile,
-    "FindVet": FindVet,
     "Home": Home,
     "Onboarding": Onboarding,
     "Activite": Activite,
@@ -87,7 +84,6 @@ export const PAGES = {
     "Premium": Premium,
     "Profile": Profile,
     "Scan": Scan,
-    "Tracker": Tracker,
     "Training": Training,
     "VetDogView": VetDogView,
     "VetPortal": VetPortal,
