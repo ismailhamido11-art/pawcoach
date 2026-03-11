@@ -1,0 +1,69 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+
+Deno.serve(async (req) => {
+  try {
+    const base44 = createClientFromRequest(req);
+
+    // This is a scheduled function — use service role
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Fetch all data upfront to avoid N+1 queries
+    const records = await base44.asServiceRole.entities.HealthRecord.filter({ type: "vet_visit" });
+    const allDogs = await base44.asServiceRole.entities.Dog.list();
+    const allUsers = await base44.asServiceRole.entities.User.list();
+
+    const dogMap = new Map((allDogs || []).map(d => [d.id, d]));
+    const userMap = new Map((allUsers || []).map(u => [u.email, u]));
+
+    // Only send reminders at specific intervals: 14, 7, 3, 1, 0 days before
+    const REMINDER_DAYS = [14, 7, 3, 1, 0];
+    const todayStr = today.toISOString().slice(0, 10);
+
+    const upcoming = (records || []).filter(r => {
+      if (!r.next_date) return false;
+      const due = new Date(r.next_date);
+      due.setHours(0, 0, 0, 0);
+      const diffDays = Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      return diffDays >= 0 && REMINDER_DAYS.includes(diffDays);
+    });
+
+    let sent = 0;
+    for (const record of upcoming) {
+      // Skip if already reminded today (dedup)
+      if (record.reminder_sent_date === todayStr) continue;
+
+      // Get the dog
+      const dog = dogMap.get(record.dog_id);
+      if (!dog) continue;
+
+      // Get the owner's user record
+      const user = userMap.get(dog.owner);
+      if (!user) continue;
+
+      const dueDate = new Date(record.next_date);
+      const diffDays = Math.round((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      const formattedDate = dueDate.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+
+      await base44.asServiceRole.integrations.Core.SendEmail({
+        to: user.email,
+        from_name: "PawCoach",
+        subject: `Rappel visite vétérinaire pour ${dog.name}`,
+        body: `Bonjour !\n\nRappel visite chez le vétérinaire pour ${dog.name} : "${record.title || "Consultation"}" est prévue le ${formattedDate} (dans ${diffDays} jour${diffDays > 1 ? "s" : ""}).\n\nPense à confirmer ton rendez-vous. 🏥\n\n— PawCoach`,
+      });
+
+      // Mark as reminded today (prevents duplicate sends)
+      try {
+        await base44.asServiceRole.entities.HealthRecord.update(record.id, { reminder_sent_date: todayStr });
+      } catch (updateErr) {
+        console.warn(`vetVisitReminders: failed to update reminder_sent_date for record ${record.id}:`, updateErr?.message || String(updateErr));
+      }
+      sent++;
+    }
+
+    return Response.json({ ok: true, checked: upcoming.length, sent });
+  } catch (error) {
+    console.error("vetVisitReminders error:", error);
+    return Response.json({ error: error?.message || String(error) }, { status: 500 });
+  }
+});
