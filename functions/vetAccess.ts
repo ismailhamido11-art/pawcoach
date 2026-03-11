@@ -245,9 +245,23 @@ Deno.serve(async (req) => {
       const dogs = await base44.entities.Dog.filter({ id: dogId, owner: user.email });
       if (!dogs || dogs.length === 0) return Response.json({ error: 'Dog not found' }, { status: 403 });
       const dog = dogs[0];
-      const records = await base44.asServiceRole.entities.HealthRecord.filter({ dog_id: dogId });
-      const checkins = await base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dogId });
-      return Response.json({ success: true, dog, records, checkins });
+
+      // Fetch en parallele pour performance
+      const [records, checkins, growthEntries, dailyLogs] = await Promise.all([
+        base44.asServiceRole.entities.HealthRecord.filter({ dog_id: dogId }),
+        base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dogId }),
+        base44.asServiceRole.entities.GrowthEntry.filter({ dog_id: dogId }).catch(() => []),
+        base44.asServiceRole.entities.DailyLog.filter({ dog_id: dogId }).catch(() => []),
+      ]);
+
+      return Response.json({
+        success: true,
+        dog,
+        records,
+        checkins,
+        growthEntries: growthEntries || [],
+        dailyLogs: dailyLogs || [],
+      });
     }
 
     return Response.json({ error: 'Unknown action' }, { status: 400 });
