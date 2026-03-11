@@ -1,6 +1,6 @@
 import {
   Syringe, Dumbbell, ScanLine, MessageCircle,
-  Footprints, Scale, Stethoscope, Utensils, AlertTriangle as AlertTriangleIcon
+  Footprints, Scale, Stethoscope, Utensils, AlertTriangle as AlertTriangleIcon, Pill
 } from "lucide-react";
 import { matchVaccineKey, getVaccineDisplayName } from "@/utils/healthStatus";
 
@@ -223,7 +223,26 @@ export function buildRecommendations({ records = [], exercises = [], scans = [],
     }
   }
 
-  // 10. Caution/toxic food scan alert
+  // 10. Active medication reminder
+  const activeMeds = records.filter(r => r.type === "medication" && r.next_date && r.next_date >= today);
+  if (activeMeds.length > 0) {
+    const med = activeMeds[0];
+    recs.push({
+      id: "active_medication",
+      priority: 2,
+      icon: Pill,
+      iconBg: "bg-emerald-50",
+      iconColor: "#10b981",
+      label: `Medicament en cours : ${med.title || "Traitement"}`,
+      sub: `Prochain rappel le ${med.next_date}`,
+      page: "Sante",
+      tab: "medication",
+      cta: "Voir le traitement",
+      accent: "border-l-emerald-400",
+    });
+  }
+
+  // 11. Caution/toxic food scan alert
   const recentCaution = scans.find(s => (s.verdict === "caution" || s.verdict === "toxic") && s.timestamp);
   if (recentCaution) {
     const daysSince = Math.floor((Date.now() - new Date(recentCaution.timestamp).getTime()) / 86400000);
