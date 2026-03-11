@@ -442,7 +442,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
       <div className={`gradient-primary pb-4 px-5 ${result?.verdict === "toxic" && dogAteIt ? "safe-pt-24" : "safe-pt-14"} overflow-hidden relative`}>
         <button
           aria-label="Retour"
-          onClick={() => navigate(-1)}
+          onClick={() => window.history.length > 1 ? navigate(-1) : navigate(createPageUrl("Nutri"))}
           className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-3 hover:bg-white/30 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 text-white" />

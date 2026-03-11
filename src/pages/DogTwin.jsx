@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Heart, Utensils, Brain, Activity, Sparkles, ChevronUp, Zap, Clock, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { getActiveDog } from "@/utils";
+import { getActiveDog, createPageUrl } from "@/utils";
 import TwinIA from "../components/dogtwin/TwinIA";
 import TwinMemoire from "../components/dogtwin/TwinMemoire";
 import TwinVoix from "../components/dogtwin/TwinVoix";
@@ -513,7 +513,7 @@ export default function DogTwin() {
         <button
           aria-label="Retour"
           className="pointer-events-auto w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center"
-          onClick={() => navigate(-1)}
+          onClick={() => window.history.length > 1 ? navigate(-1) : navigate(createPageUrl("Home"))}
         >
           <ArrowLeft className="w-4 h-4 text-white" />
         </button>
