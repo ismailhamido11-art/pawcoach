@@ -40,9 +40,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — dailyCheckinProcess : charger les 7 derniers check-ins et injecter les tendances dans le prompt IA
-- [ ] 02-02-PLAN.md — weeklyInsightGenerate : ajouter fetch HealthRecord et notes check-ins dans le contexte prompt
-- [ ] 02-03-PLAN.md — monthlySummary : charger DailyCheckins du mois et enrichir l'email avec mood/energy/symptoms
+- [x] 02-01-PLAN.md — dailyCheckinProcess : charger les 7 derniers check-ins et injecter les tendances dans le prompt IA
+- [x] 02-02-PLAN.md — weeklyInsightGenerate : ajouter fetch HealthRecord et notes check-ins dans le contexte prompt
+- [x] 02-03-PLAN.md — monthlySummary : charger DailyCheckins du mois et enrichir l'email avec mood/energy/symptoms
 
 ### Phase 3: Notifications
 **Goal**: Les rappels email couvrent tous les evenements de sante du chien (vaccins, medicaments, visites vet) pour tous les utilisateurs (free et premium)
@@ -52,7 +52,11 @@ Plans:
   1. Un medicament avec next_date J+3 declenche un email de rappel au proprietaire (meme logique que les vaccins)
   2. Une visite vet avec next_date J+3 declenche un email de rappel au proprietaire
   3. Un utilisateur free recoit les rappels vaccins (le filtre premium est retire de la fonction vaccineReminders)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — vaccineReminders (retirer filtre premium) + medicationReminders (nouvelle fonction CRON)
+- [ ] 03-02-PLAN.md — vetVisitReminders (nouvelle fonction CRON)
 
 ### Phase 4: Independent Fixes
 **Goal**: Les comportements bancaux independants sont corriges — dashboard, nutrition, streak, suivi comportement, et infos vet dans le PDF
@@ -75,7 +79,7 @@ Phases executees en ordre numerique : 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Data Coherence | 3/3 | Complete | 2026-03-11 |
 | 2. AI Enrichment | 3/3 | Complete   | 2026-03-11 |
-| 3. Notifications | 0/TBD | Not started | - |
+| 3. Notifications | 0/2 | Not started | - |
 | 4. Independent Fixes | 0/TBD | Not started | - |
 
 ---
@@ -83,3 +87,4 @@ Phases executees en ordre numerique : 1 → 2 → 3 → 4
 *16/16 requirements mapped — 100% coverage*
 *Phase 1 planned: 2026-03-11 — 3 plans, wave 1 (01-01 + 01-02 parallel) + wave 2 (01-03)*
 *Phase 2 planned: 2026-03-11 — 3 plans, wave 1 (02-01 + 02-02 + 02-03 parallel)*
+*Phase 3 planned: 2026-03-11 — 2 plans, wave 1 (03-01 + 03-02 parallel)*
