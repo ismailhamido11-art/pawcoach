@@ -10,9 +10,9 @@ Requirements pour le milestone Data Flow Integrity. Chaque requirement corrige u
 ### Coherence donnees
 
 - [x] **DATA-01**: Le scanner aliments ET le comparateur prennent en compte DietPreferences.disliked_foods en plus de dog.allergies
-- [ ] **DATA-02**: Le score sante frontend (healthStatus.js) integre les poids GrowthEntry et DailyLog en plus de HealthRecord
+- [x] **DATA-02**: Le score sante frontend (healthStatus.js) integre les poids GrowthEntry et DailyLog en plus de HealthRecord
 - [ ] **DATA-03**: Le PDF sante inclut les poids GrowthEntry et DailyLog (pas seulement HealthRecord.type=weight)
-- [ ] **DATA-04**: Le code mort healthScoreCalculate.ts est supprime (le score frontend healthStatus.js est la seule source de verite)
+- [x] **DATA-04**: Le code mort healthScoreCalculate.ts est supprime (le score frontend healthStatus.js est la seule source de verite)
 
 ### Flux IA
 
@@ -69,9 +69,9 @@ Deferred au prochain milestone.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | DATA-01 | Phase 1 | Complete (2026-03-11) |
-| DATA-02 | Phase 1 | Pending |
+| DATA-02 | Phase 1 | Complete (2026-03-11) |
 | DATA-03 | Phase 1 | Pending |
-| DATA-04 | Phase 1 | Pending |
+| DATA-04 | Phase 1 | Complete (2026-03-11) |
 | AI-01 | Phase 2 | Pending |
 | AI-02 | Phase 2 | Pending |
 | AI-03 | Phase 2 | Pending |
@@ -92,4 +92,4 @@ Deferred au prochain milestone.
 
 ---
 *Requirements defined: 2026-03-11*
-*Last updated: 2026-03-11 — Traceability completed after roadmap creation*
+*Last updated: 2026-03-11 — DATA-02 + DATA-04 complete (01-02-PLAN execution)*
