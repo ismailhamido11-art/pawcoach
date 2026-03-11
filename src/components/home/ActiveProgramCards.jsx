@@ -309,6 +309,15 @@ function NutritionPlanCard({ plan }) {
                         </div>
                       </div>
                     )}
+                    {todayData.noon && (
+                      <div className="flex items-start gap-2 ml-7">
+                        <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">Midi</span>
+                        <div>
+                          <p className="text-[12px] text-foreground/80">{todayData.noon.food}</p>
+                          <p className="text-[10px] text-muted-foreground">{todayData.noon.quantity}</p>
+                        </div>
+                      </div>
+                    )}
                     {todayData.evening && (
                       <div className="flex items-start gap-2 ml-7">
                         <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">Soir</span>
