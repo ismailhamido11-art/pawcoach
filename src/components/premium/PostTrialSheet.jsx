@@ -7,9 +7,9 @@ import Illustration from "../illustrations/Illustration";
 
 const LOST_FEATURES = [
   { icon: MessageCircle, label: "Chat IA illimite (retour a 10/jour)", color: "#3b82f6" },
-  { icon: ScanLine, label: "Scans illimites (retour a 3/semaine)", color: "#2d9f82" },
-  { icon: Dumbbell, label: "Exercices avances de dressage", color: "#6366f1" },
-  { icon: Bell, label: "Rappels sante automatiques", color: "#ef4444" },
+  { icon: ScanLine, label: "Scans illimités (retour à 3/semaine)", color: "#2d9f82" },
+  { icon: Dumbbell, label: "Exercices avancés de dressage", color: "#6366f1" },
+  { icon: Bell, label: "Rappels santé automatiques", color: "#ef4444" },
 ];
 
 export default function PostTrialSheet({ visible, onClose, dogName }) {

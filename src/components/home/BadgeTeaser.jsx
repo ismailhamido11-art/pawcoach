@@ -30,11 +30,11 @@ function getAllNextBadges({ streak, exercises, dailyLogs }) {
     candidates.push({ emoji: "📅", name: "Régulier", current: walkDays, target: 7, unit: "jours de balade", category: "Activité" });
 
   // Sort by closest to completion
-  return candidates.sort((a, b) => (b.current / b.target) - (a.current / a.target));
+  return candidates.sort((a, b) => (b.current / (b.target || 1)) - (a.current / (a.target || 1)));
 }
 
 function BadgeRow({ badge }) {
-  const progress = Math.round((badge.current / badge.target) * 100);
+  const progress = badge.target > 0 ? Math.round((badge.current / badge.target) * 100) : 0;
   const remaining = badge.target - badge.current;
 
   return (

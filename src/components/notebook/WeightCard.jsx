@@ -9,7 +9,7 @@ const DIRECTION_CONFIG = {
   stable: { Icon: Minus, color: "text-emerald-600", bg: "bg-emerald-50", label: "Poids stable" },
   up: { Icon: TrendingUp, color: "text-amber-600", bg: "bg-amber-50", label: "En hausse" },
   down: { Icon: TrendingDown, color: "text-amber-600", bg: "bg-amber-50", label: "En baisse" },
-  unknown: { Icon: Weight, color: "text-muted-foreground", bg: "bg-secondary", label: "Donnees insuffisantes" },
+  unknown: { Icon: Weight, color: "text-muted-foreground", bg: "bg-secondary", label: "Données insuffisantes" },
 };
 
 function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
@@ -52,7 +52,7 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
     >
       <div className="mx-4 mb-3.5 bg-white rounded-xl border border-primary/20 p-3 space-y-2.5">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-bold text-foreground">Nouvelle pesee</p>
+          <p className="text-xs font-bold text-foreground">Nouvelle pesée</p>
           <button onClick={onClose} className="p-1 hover:bg-muted rounded-lg transition-colors">
             <X className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
@@ -199,7 +199,7 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
                   className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary/10 text-primary text-[10px] font-bold"
                 >
                   <Plus className="w-3 h-3" />
-                  Nouvelle pesee
+                  Nouvelle pesée
                 </motion.button>
               )}
             </div>
@@ -207,7 +207,7 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
         ) : (
           <div className="text-center py-4">
             <Weight className="w-8 h-8 text-muted-foreground/40 mx-auto mb-2" />
-            <p className="text-sm font-semibold text-foreground">Aucune pesee</p>
+            <p className="text-sm font-semibold text-foreground">Aucune pesée</p>
             <p className="text-xs text-muted-foreground mt-1">
               Ajoute le poids de {dogName || "ton chien"} pour suivre sa courbe.
             </p>

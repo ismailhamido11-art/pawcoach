@@ -10,7 +10,7 @@ const NAV_TILES = [
   { icon: Heart,         iconColor: "#2d9f82", label: "Sante",     sub: "Carnet, vaccins, poids",  page: "Sante" },
   { icon: Utensils,      iconColor: "#059669", label: "Nutrition",  sub: "Scans, plans repas",      page: "Nutri" },
   { icon: Dumbbell,      iconColor: "#6366f1", label: "Dressage",   sub: "Exercices, programmes",   page: "Activite", tab: "dressage" },
-  { icon: MessageCircle, iconColor: "#8b5cf6", label: "Chat IA",    sub: "Questions sante",         page: "Chat" },
+  { icon: MessageCircle, iconColor: "#8b5cf6", label: "Chat IA",    sub: "Questions santé",         page: "Chat" },
 ];
 
 const stagger = {
