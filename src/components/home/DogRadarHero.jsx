@@ -41,8 +41,8 @@ function computeArcs({ checkins = [], streak, records = [], exercises = [], scan
   const activityData = streakDays > 0;
   const activityHint = activityData ? `${streakDays}j actif${streakDays > 1 ? "s" : ""}` : "Pas de données";
 
-  // 3. Dressage (exercices complétés sur 8 exercices au total)
-  const TOTAL_EXERCISES = 8;
+  // 3. Dressage (exercices complétés sur 10 exercices au total — synced with Training.jsx EXERCISES[])
+  const TOTAL_EXERCISES = 10;
   const completedEx = exercises.filter(e => e.completed).length;
   const training = completedEx > 0
     ? Math.min(100, Math.round((completedEx / TOTAL_EXERCISES) * 100))

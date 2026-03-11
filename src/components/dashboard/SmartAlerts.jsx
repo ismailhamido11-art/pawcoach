@@ -13,6 +13,19 @@ import {
 } from "lucide-react";
 import { computeVaccineMap, getVaccineDisplayName } from "@/utils/healthStatus";
 
+// ── Seuils d'alerte vitalité (mood/energy sur échelle 1-4 et 1-3) ──
+const MOOD_DROP_CRITICAL = 1.2;     // Baisse de 1.2+ points d'humeur sur 7j = alerte critique
+const ENERGY_DROP_CRITICAL = 0.8;   // Baisse de 0.8+ points d'énergie sur 7j = alerte critique
+const MOOD_DROP_WARNING = 0.6;      // Baisse de 0.6+ points d'humeur sur 7j = alerte warning
+const ENERGY_DROP_WARNING = 0.5;    // Baisse de 0.5+ points d'énergie sur 7j = alerte warning
+const MOOD_GREAT_THRESHOLD = 3.2;   // Humeur moyenne >= 3.2/4 = "en pleine forme"
+const ENERGY_GREAT_THRESHOLD = 2.5; // Énergie moyenne >= 2.5/3 = "en pleine forme"
+
+// ── Seuils d'alerte appétit (échelle 0-3) ──
+const APPETITE_DROP_CRITICAL = 1.0; // Baisse de 1.0+ point d'appétit sur 7j = alerte critique
+const APPETITE_DROP_WARNING = 0.5;  // Baisse de 0.5+ point d'appétit sur 7j = alerte warning
+const APPETITE_GOOD_THRESHOLD = 2.5; // Appétit moyen >= 2.5/3 = "bon appétit"
+
 const SEVERITY = {
   critical: { bg: "bg-red-50", border: "border-red-200", dot: "bg-red-500", text: "text-red-700", label: "Urgent" },
   warning:  { bg: "bg-amber-50", border: "border-amber-200", dot: "bg-amber-500", text: "text-amber-700", label: "Attention" },
@@ -40,7 +53,7 @@ export function computeAlerts({ dog, checkins = [], records = [], streak, dailyL
     const moodDrop   = avgMoodPrev - avgMoodLast;
     const energyDrop = avgEnergyPrev - avgEnergyLast;
 
-    if (moodDrop >= 1.2 || energyDrop >= 0.8) {
+    if (moodDrop >= MOOD_DROP_CRITICAL || energyDrop >= ENERGY_DROP_CRITICAL) {
       alerts.push({
         id: "vitality_drop_critical",
         severity: "critical",
@@ -51,7 +64,7 @@ export function computeAlerts({ dog, checkins = [], records = [], streak, dailyL
         cta: "Faire un check-in",
         to: createPageUrl("Home"),
       });
-    } else if (moodDrop >= 0.6 || energyDrop >= 0.5) {
+    } else if (moodDrop >= MOOD_DROP_WARNING || energyDrop >= ENERGY_DROP_WARNING) {
       alerts.push({
         id: "vitality_drop_warning",
         severity: "warning",
@@ -62,7 +75,7 @@ export function computeAlerts({ dog, checkins = [], records = [], streak, dailyL
         cta: "Check-in",
         to: createPageUrl("Home"),
       });
-    } else if (avgMoodLast >= 3.2 && avgEnergyLast >= 2.5) {
+    } else if (avgMoodLast >= MOOD_GREAT_THRESHOLD && avgEnergyLast >= ENERGY_GREAT_THRESHOLD) {
       alerts.push({
         id: "vitality_great",
         severity: "ok",
@@ -90,13 +103,14 @@ export function computeAlerts({ dog, checkins = [], records = [], streak, dailyL
   // ── 1b. TENDANCE APPÉTIT (7 derniers vs 7 précédents) ──
   if (last7.length >= 3 && prev7.length >= 3) {
     const appetiteScore = { normal: 2, increased: 3, decreased: 1, none: 0 };
-    const avgAppetiteLast = last7.reduce((s, c) => s + (appetiteScore[c.appetite] ?? 2), 0) / last7.length;
-    const avgAppetitePrev = prev7.reduce((s, c) => s + (appetiteScore[c.appetite] ?? 2), 0) / prev7.length;
+    // undefined/missing appetite defaults to "normal" (score 2) — most check-ins skip appetite field
+    const avgAppetiteLast = last7.reduce((s, c) => s + (appetiteScore[c.appetite || "normal"]), 0) / last7.length;
+    const avgAppetitePrev = prev7.reduce((s, c) => s + (appetiteScore[c.appetite || "normal"]), 0) / prev7.length;
     const appetiteDrop = avgAppetitePrev - avgAppetiteLast;
 
     const hasCriticalVitality = alerts.some(a => a.id === "vitality_drop_critical");
 
-    if (appetiteDrop >= 1.0) {
+    if (appetiteDrop >= APPETITE_DROP_CRITICAL) {
       alerts.push({
         id: "appetite_drop_critical",
         severity: "critical",
@@ -107,7 +121,7 @@ export function computeAlerts({ dog, checkins = [], records = [], streak, dailyL
         cta: "Faire un check-in",
         to: createPageUrl("Home"),
       });
-    } else if (appetiteDrop >= 0.5) {
+    } else if (appetiteDrop >= APPETITE_DROP_WARNING) {
       alerts.push({
         id: "appetite_drop_warning",
         severity: "warning",
@@ -118,7 +132,7 @@ export function computeAlerts({ dog, checkins = [], records = [], streak, dailyL
         cta: "Check-in",
         to: createPageUrl("Home"),
       });
-    } else if (avgAppetiteLast >= 2.5 && !hasCriticalVitality) {
+    } else if (avgAppetiteLast >= APPETITE_GOOD_THRESHOLD && !hasCriticalVitality) {
       alerts.push({
         id: "appetite_good",
         severity: "ok",
