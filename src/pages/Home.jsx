@@ -69,11 +69,14 @@ export default function Home() {
   const [showPostTrial, setShowPostTrial] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
     async function loadData() {
       try {
         const u = await base44.auth.me();
+        if (!mounted) return;
         setUser(u);
         const dogs = await base44.entities.Dog.filter({ owner: u.email });
+        if (!mounted) return;
         if (dogs && dogs.length > 0) {
           const d = getActiveDog(dogs);
           setDog(d);
@@ -91,6 +94,7 @@ export default function Home() {
             base44.entities.Bookmark.filter({ dog_id: d.id, source: "training" }, "-created_at", 10).catch(() => []),
             base44.entities.Bookmark.filter({ dog_id: d.id, source: "behavior_program" }, "-created_at", 10).catch(() => []),
           ]);
+          if (!mounted) return;
           setRecords(recs || []);
           setExercises(exs || []);
           setScans(scs || []);
@@ -107,6 +111,7 @@ export default function Home() {
           if (isUserPremium(u)) {
             try {
               const allInsights = await base44.entities.WeeklyInsight.filter({ dog_id: d.id }, "-week_start", 10);
+              if (!mounted) return;
               if (allInsights?.length > 0) {
                 const unread = allInsights.find(i => !i.is_read);
                 const read = allInsights.filter(i => i.is_read);
@@ -116,6 +121,7 @@ export default function Home() {
               }
             } catch (e) { console.warn("Weekly insights load failed:", e); }
           }
+          if (!mounted) return;
           // Premium nudge — declenche a J2+ (pas J0)
           const signupDaysAgo = u.signup_date
             ? Math.floor((Date.now() - new Date(u.signup_date)) / (1000 * 60 * 60 * 24))
@@ -142,10 +148,11 @@ export default function Home() {
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     }
     loadData();
+    return () => { mounted = false; };
   }, [navigate]);
 
   const handleCheckin = async ({ mood, energy, appetite, notes, symptoms, behaviorNotes }) => {
