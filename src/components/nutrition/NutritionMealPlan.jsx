@@ -278,7 +278,10 @@ RÉPONDS UNIQUEMENT avec un objet JSON valide, sans texte avant ni après, sans 
 
 RÈGLES :
 - Le tableau "days" doit contenir exactement 7 jours : Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, Dimanche
-- Si le chien mange 3 fois par jour (portions_per_day >= 3 ou précisé dans les préférences), inclure un champ "noon" pour le repas de midi. Sinon, omets le champ "noon".
+- Nombre de repas par jour : ${dietPrefs?.portions_per_day || 2}. Respecte EXACTEMENT ce nombre :
+  * 1 repas/jour → inclure UNIQUEMENT "morning" (pas de noon ni evening)
+  * 2 repas/jour → inclure UNIQUEMENT "morning" et "evening" (pas de noon)
+  * 3 repas/jour → inclure "morning", "noon" ET "evening"
 - Varie les protéines et compléments au fil de la semaine
 - Adapte les quantités au poids, âge, activité, stérilisation ET aux données réelles ci-dessus
 - Si l'appétit est en baisse, propose des repas plus appétissants et fractionnés
@@ -297,9 +300,13 @@ RÈGLES :
         const parsed = JSON.parse(cleaned);
         if (parsed.days && Array.isArray(parsed.days)) {
           const portions = dietPrefs?.portions_per_day || 2;
-          if (portions < 3) {
-            parsed.days.forEach(d => { delete d.noon; });
-          }
+          parsed.days.forEach(d => {
+            if (portions < 3) delete d.noon;
+            if (portions < 2) delete d.evening;
+            if (portions >= 3 && !d.noon && d.morning) {
+              d.noon = { food: d.morning.food, quantity: d.morning.quantity };
+            }
+          });
           setPlan(parsed);
         } else {
           throw new Error("Invalid structure");
