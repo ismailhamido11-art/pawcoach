@@ -18,6 +18,11 @@ function TrendBadge({ current, previous, label }) {
 
 export default function WeeklyInsightCard({ insight, previousInsight, pastInsights = [], dog, expanded, onToggle, onMarkRead, markingRead }) {
   const [showHistory, setShowHistory] = useState(false);
+  const [expandedInsights, setExpandedInsights] = useState({});
+
+  const toggleInsightExpand = (id) => {
+    setExpandedInsights(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const parseSafe = (val) => {
     if (Array.isArray(val)) return val;
@@ -178,8 +183,10 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                 <div className="px-4 pb-3 space-y-2 border-t border-border">
                   {pastInsights.map((pi, i) => {
                     const piHighlights = parseSafe(pi.highlights);
+                    const itemKey = pi.id || i;
+                    const isItemExpanded = expandedInsights[itemKey];
                     return (
-                      <div key={pi.id || i} className="py-3 border-b border-border/50 last:border-0">
+                      <div key={itemKey} className="py-3 border-b border-border/50 last:border-0">
                         <div className="flex items-center justify-between mb-1.5">
                           <p className="text-xs font-semibold text-foreground">
                             Semaine du {formatWeekDate(pi.week_start)}
@@ -190,7 +197,15 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                           </div>
                         </div>
                         {pi.summary && (
-                          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">{pi.summary}</p>
+                          <div>
+                            <p className={`text-xs text-muted-foreground leading-relaxed ${isItemExpanded ? "" : "line-clamp-2"}`}>{pi.summary}</p>
+                            <button
+                              onClick={() => toggleInsightExpand(itemKey)}
+                              className="text-[10px] text-primary font-medium mt-0.5 hover:underline"
+                            >
+                              {isItemExpanded ? "Reduire" : "Lire la suite"}
+                            </button>
+                          </div>
                         )}
                         {piHighlights.length > 0 && (
                           <div className="flex flex-wrap gap-1.5 mt-1.5">
