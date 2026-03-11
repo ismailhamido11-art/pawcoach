@@ -91,14 +91,14 @@ export default function VetPortal() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="gradient-primary safe-pt-10 pb-8 px-5 relative overflow-hidden">
+      <div className="gradient-primary safe-pt-14 pb-8 px-5 relative overflow-hidden">
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-1">
             <Link to={createPageUrl("Home")} aria-label="Retour" className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">
               <ArrowLeft className="w-4 h-4 text-white" />
             </Link>
             <Stethoscope className="w-6 h-6 text-white" />
-            <h1 className="text-white font-bold text-xl">Portail Vétérinaire</h1>
+            <h1 className="text-white font-black text-2xl">Portail Vétérinaire</h1>
           </div>
           <p className="text-white/80 text-xs ml-11">
             {user?.full_name || user?.email} · Vos patients PawCoach

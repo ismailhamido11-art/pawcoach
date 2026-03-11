@@ -231,7 +231,7 @@ export default function HealthImport() {
         </Link>
         <div className="relative z-10 flex items-end gap-3">
           <div className="flex-1 pb-1">
-            <h1 className="text-white font-bold text-xl">Import IA</h1>
+            <h1 className="text-white font-black text-2xl">Import IA</h1>
             <p className="text-white/70 text-sm">
               {dog ? `Données de santé pour ${dog.name}` : "Importe des données de santé"}
             </p>

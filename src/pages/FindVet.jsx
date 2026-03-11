@@ -85,7 +85,7 @@ Pour chaque clinique, fournis: name, address, phone (format français), google_m
         </Link>
         <div className="relative z-10 flex items-end gap-3">
           <div className="flex-1 pb-1">
-            <h1 className="text-white font-bold text-xl">Trouver un vétérinaire</h1>
+            <h1 className="text-white font-black text-2xl">Trouver un vétérinaire</h1>
             <p className="text-white/70 text-xs mt-0.5">
               Recherche une clinique près de chez toi
             </p>

@@ -134,7 +134,7 @@ export default function DogPublicProfile() {
       </div>
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] px-5 safe-pt-8 pb-10 relative overflow-hidden">
+      <div className="gradient-primary px-5 safe-pt-14 pb-10 relative overflow-hidden">
         <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-white/10 rounded-full blur-3xl" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -151,7 +151,7 @@ export default function DogPublicProfile() {
             </div>
           )}
           <div>
-            <h1 className="text-white text-3xl font-black">{dog.name}</h1>
+            <h1 className="text-white font-black text-2xl">{dog.name}</h1>
             <p className="text-white/80 text-sm font-medium mt-0.5">
               {dog.breed}{dog.birth_date ? ` · ${getAge(dog.birth_date)}` : ""}
               {dog.sex ? ` · ${dog.sex === "male" ? "Mâle" : "Femelle"}` : ""}

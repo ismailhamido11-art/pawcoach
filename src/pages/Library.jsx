@@ -143,7 +143,7 @@ export default function Library() {
         </button>
         <div className="relative z-10 flex items-end gap-3 mb-4">
           <div className="flex-1 pb-1">
-            <h1 className="text-white font-black text-xl leading-tight">Ma Bibliothèque</h1>
+            <h1 className="text-white font-black text-2xl leading-tight">Ma Bibliothèque</h1>
             <p className="text-white/70 text-xs mt-0.5">{totalCount} élément{totalCount !== 1 ? "s" : ""} sauvegardé{totalCount !== 1 ? "s" : ""}</p>
           </div>
           <motion.div

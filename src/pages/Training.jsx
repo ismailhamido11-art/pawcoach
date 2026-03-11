@@ -284,7 +284,7 @@ export default function Training() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background pb-24">
-        <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] safe-pt-16 pb-0 px-5 overflow-hidden relative">
+        <div className="gradient-primary safe-pt-16 pb-0 px-5 overflow-hidden relative">
           <div className="flex items-start justify-between">
             <div className="pb-6 flex-1">
               <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-2" />
@@ -424,13 +424,13 @@ export default function Training() {
     return (
       <div className="min-h-screen bg-background pb-24">
         <WellnessBanner />
-        <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] safe-pt-14 pb-6 px-5">
+        <div className="gradient-primary safe-pt-14 pb-6 px-5">
           <button onClick={() => navigate(createPageUrl("Training"))} className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-2 hover:bg-white/30 transition-colors">
             <ChevronRight className="w-5 h-5 text-white rotate-180" />
           </button>
           <div className="text-center">
             <span className="text-4xl mb-2 block">{guide.emoji}</span>
-            <h1 className="text-white font-black text-xl">{guide.name}</h1>
+            <h1 className="text-white font-black text-2xl">{guide.name}</h1>
             <p className="text-white/70 text-sm mt-1">{guide.duration} de travail</p>
           </div>
         </div>
@@ -628,8 +628,7 @@ export default function Training() {
                     setGeneratingProgram(false);
                   }
                 }}
-                className="w-full py-4 rounded-2xl font-bold text-sm text-white flex items-center justify-center gap-2 shadow-lg"
-                style={{ background: "linear-gradient(135deg, #1A4D3E, #2D9F82)" }}
+                className="w-full py-4 rounded-2xl font-bold text-sm text-white flex items-center justify-center gap-2 shadow-lg gradient-primary"
               >
                 {isPremium ? (
                   <><Sparkles className="w-4 h-4" /> Lancer le programme comportement</>
@@ -663,7 +662,7 @@ export default function Training() {
       <WellnessBanner />
 
       {/* Hero header */}
-      <div className="bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] safe-pt-16 pb-0 px-5 overflow-hidden relative">
+      <div className="gradient-primary safe-pt-16 pb-0 px-5 overflow-hidden relative">
         <div className="relative z-10 flex items-start justify-between">
           <div className="pb-6 flex-1">
             <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-2">PawCoach</p>

@@ -62,7 +62,7 @@ export default function VetDogView() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="gradient-primary safe-pt-10 pb-6 px-5 relative overflow-hidden">
+      <div className="gradient-primary safe-pt-14 pb-6 px-5 relative overflow-hidden">
         <Link to={createPageUrl("VetPortal")} className="flex items-center gap-1 text-white/80 text-xs mb-3 hover:text-white">
           <ArrowLeft className="w-4 h-4" /> Retour
         </Link>
@@ -73,7 +73,7 @@ export default function VetDogView() {
             <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center text-3xl">🐾</div>
           )}
           <div>
-            <h1 className="text-white font-bold text-xl">{dog.name}</h1>
+            <h1 className="text-white font-black text-2xl">{dog.name}</h1>
             <p className="text-white/80 text-xs">{[dog.breed, dog.weight ? `${dog.weight}kg` : null, dog.sex === "male" ? "♂" : dog.sex === "female" ? "♀" : null].filter(Boolean).join(" · ")}</p>
             {dog.health_issues && <p className="text-white/70 text-[10px] mt-0.5">⚠️ {dog.health_issues}</p>}
           </div>
