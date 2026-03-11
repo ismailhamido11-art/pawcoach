@@ -68,7 +68,13 @@ Plans:
   3. Une balade enregistree (DailyLog) maintient le streak actif — l'utilisateur ne perd pas son streak s'il a fait une balade mais pas de check-in
   4. Le suivi jour par jour des programmes comportement est visible (comme pour les programmes forme) — l'utilisateur voit quels jours sont completes
   5. Le PDF sante inclut le nom et la ville du veterinaire, et next_vet_appointment contribue au score sante
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — SmartAlerts : detection tendance appetit + WalkMode : streak apres balade
+- [ ] 04-02-PLAN.md — NutritionMealPlan : noon dans le prompt JSON + affichage UI repas midi
+- [ ] 04-03-PLAN.md — BehaviorProgramCard : tracking completion jour par jour (completed_days)
+- [ ] 04-04-PLAN.md — DownloadHealthPDF : vet_name + vet_city + next_vet_appointment dans PDF et score sante
 
 ## Progress
 
@@ -80,7 +86,7 @@ Phases executees en ordre numerique : 1 → 2 → 3 → 4
 | 1. Data Coherence | 3/3 | Complete | 2026-03-11 |
 | 2. AI Enrichment | 3/3 | Complete   | 2026-03-11 |
 | 3. Notifications | 2/2 | Complete   | 2026-03-11 |
-| 4. Independent Fixes | 0/TBD | Not started | - |
+| 4. Independent Fixes | 0/4 | Not started | - |
 
 ---
 *Roadmap created: 2026-03-11 — Milestone v1.0 Data Flow Integrity*
@@ -88,3 +94,4 @@ Phases executees en ordre numerique : 1 → 2 → 3 → 4
 *Phase 1 planned: 2026-03-11 — 3 plans, wave 1 (01-01 + 01-02 parallel) + wave 2 (01-03)*
 *Phase 2 planned: 2026-03-11 — 3 plans, wave 1 (02-01 + 02-02 + 02-03 parallel)*
 *Phase 3 planned: 2026-03-11 — 2 plans, wave 1 (03-01 + 03-02 parallel)*
+*Phase 4 planned: 2026-03-11 — 4 plans, wave 1 (04-01 + 04-02 + 04-03 + 04-04 parallel)*
