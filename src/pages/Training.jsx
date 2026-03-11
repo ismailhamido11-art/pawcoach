@@ -543,13 +543,13 @@ export default function Training() {
                     {todayDay.do?.length > 0 && (
                       <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-200">
                         <p className="text-[10px] font-bold text-emerald-700 uppercase mb-1.5">A faire</p>
-                        {todayDay.do.map((d, i) => <p key={i} className="text-[10px] text-emerald-800 leading-relaxed">✓ {d}</p>)}
+                        {todayDay.do.map((d, i) => <p key={i} className="text-xs text-emerald-800 leading-relaxed">✓ {d}</p>)}
                       </div>
                     )}
                     {todayDay.dont?.length > 0 && (
                       <div className="bg-red-50 rounded-xl p-3 border border-red-200">
                         <p className="text-[10px] font-bold text-red-700 uppercase mb-1.5">A eviter</p>
-                        {todayDay.dont.map((d, i) => <p key={i} className="text-[10px] text-red-800 leading-relaxed">✕ {d}</p>)}
+                        {todayDay.dont.map((d, i) => <p key={i} className="text-xs text-red-800 leading-relaxed">✕ {d}</p>)}
                       </div>
                     )}
                   </div>

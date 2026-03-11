@@ -20,8 +20,8 @@ function EditableSelect({ label, value, fieldKey, options, onSave }) {
           {!editing && <p className="text-sm text-foreground">{displayVal || <span className="text-muted-foreground italic">Non renseigné</span>}</p>}
         </div>
         {!editing && (
-          <button onClick={() => { setDraft(value || ""); setEditing(true); }} className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center flex-shrink-0 mt-4">
-            <Pencil className="w-3 h-3 text-muted-foreground" />
+          <button onClick={() => { setDraft(value || ""); setEditing(true); }} className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0 mt-4">
+            <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         )}
       </div>
@@ -33,10 +33,10 @@ function EditableSelect({ label, value, fieldKey, options, onSave }) {
             <input type="text" value={draft} onChange={e => setDraft(e.target.value)} className="w-full border border-border rounded-xl px-3 py-2 bg-background outline-none focus:ring-1 focus:ring-primary" style={{ fontSize: "16px" }} autoFocus />
           )}
           <div className="flex gap-2">
-            <button onClick={handleSave} disabled={saving} className="flex-1 py-1.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1">
+            <button onClick={handleSave} disabled={saving} className="flex-1 py-2.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1">
               {saving ? <div className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" /> : <Check className="w-3 h-3" />} OK
             </button>
-            <button onClick={() => setEditing(false)} className="flex-1 py-1.5 rounded-xl bg-muted text-muted-foreground text-xs font-bold flex items-center justify-center gap-1">
+            <button onClick={() => setEditing(false)} className="flex-1 py-2.5 rounded-xl bg-muted text-muted-foreground text-xs font-bold flex items-center justify-center gap-1">
               <X className="w-3 h-3" /> Annuler
             </button>
           </div>

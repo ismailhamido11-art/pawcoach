@@ -33,7 +33,7 @@ export default function QuickActions() {
             >
               <Link
                 to={createPageUrl(action.page) + (action.tab ? `?tab=${action.tab}` : "")}
-                className="flex flex-col items-center gap-1.5 w-[56px]"
+                className="flex flex-col items-center gap-1.5 w-[56px] py-1"
               >
                 <div
                   className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm border transition-transform"

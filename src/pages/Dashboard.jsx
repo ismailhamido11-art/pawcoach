@@ -383,8 +383,8 @@ export default function Dashboard() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="date" tick={{ fontSize: 9 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 9 }} tickLine={false} axisLine={false} domain={['auto', 'auto']} />
+                <XAxis dataKey="date" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} domain={['auto', 'auto']} />
                 <Tooltip content={<CustomTooltip />} />
                 <Area type="monotone" dataKey="poids" name="Poids" stroke="#2d9f82" strokeWidth={2.5} fill="url(#weightGrad)" unit=" kg" dot={{ r: 3, fill: "#2d9f82" }} />
               </AreaChart>
@@ -405,8 +405,8 @@ export default function Dashboard() {
             <ResponsiveContainer width="100%" height={130}>
               <BarChart data={walkData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                <XAxis dataKey="date" tick={{ fontSize: 9 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 9 }} tickLine={false} axisLine={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="min" name="Minutes" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={20} unit=" min" />
               </BarChart>
@@ -422,7 +422,7 @@ export default function Dashboard() {
                 <p className="font-bold text-foreground text-sm">Humeur & Énergie</p>
                 <p className="text-xs text-muted-foreground">14 derniers jours</p>
               </div>
-              <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-primary inline-block" />Humeur</span>
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />Énergie</span>
               </div>
@@ -430,8 +430,8 @@ export default function Dashboard() {
             <ResponsiveContainer width="100%" height={140}>
               <BarChart data={checkinChart} margin={{ top: 5, right: 5, bottom: 0, left: -20 }} barGap={2}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                <XAxis dataKey="date" tick={{ fontSize: 8 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 9 }} tickLine={false} axisLine={false} domain={[0, 4]} />
+                <XAxis dataKey="date" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} domain={[0, 4]} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="humeur" name="Humeur" fill="#2d9f82" radius={[4, 4, 0, 0]} maxBarSize={16} />
                 <Bar dataKey="energie" name="Énergie" fill="#2D9F82" radius={[4, 4, 0, 0]} maxBarSize={16} />
@@ -493,7 +493,7 @@ export default function Dashboard() {
                 { label: "Stérilisé", value: dog.neutered ? "Oui" : "Non" },
               ].map((item, i) => (
                 <div key={i} className="bg-muted/30 rounded-xl px-3 py-2">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{item.label}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">{item.label}</p>
                   <p className="text-sm font-semibold text-foreground truncate">{item.value}</p>
                 </div>
               ))}

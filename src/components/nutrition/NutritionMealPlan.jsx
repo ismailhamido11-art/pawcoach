@@ -820,7 +820,7 @@ RÈGLES :
                         <button onClick={() => setExpandedHistoryId(isExpanded ? null : p.id)} className="w-7 h-7 rounded-lg bg-muted/50 flex items-center justify-center">
                           {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                         </button>
-                        <button onClick={() => handleDeletePlan(p.id)} className="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center text-red-400">
+                        <button onClick={() => handleDeletePlan(p.id)} className="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center text-red-400">
                           <Trash2 className="w-3 h-3" />
                         </button>
                       </div>

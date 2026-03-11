@@ -376,7 +376,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
             </Button>
           )}
           {messages.length > 2 && !isProcessing && !isStreaming && !isFinished && (
-            <button onClick={startNewConversation} className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-slate-100">
+            <button onClick={startNewConversation} className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-2 rounded-lg hover:bg-slate-100">
               Nouveau
             </button>
           )}

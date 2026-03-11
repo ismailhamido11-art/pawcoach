@@ -76,7 +76,7 @@ export default function BottomNav({ currentPage }) {
               >
                 <Icon className={`w-5 h-5 ${active ? "stroke-[2.5]" : "stroke-[1.75]"}`} />
               </motion.div>
-              <span className={`text-[10px] font-semibold transition-all duration-200 ${active ? "text-primary" : "text-muted-foreground"}`}>
+              <span className={`text-xs font-semibold transition-all duration-200 ${active ? "text-primary" : "text-muted-foreground"}`}>
                 {label}
               </span>
               {active && (

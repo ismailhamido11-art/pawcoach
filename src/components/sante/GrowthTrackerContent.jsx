@@ -297,8 +297,8 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="label" tick={{ fontSize: 9 }} />
-              <YAxis tick={{ fontSize: 9 }} />
+              <XAxis dataKey="label" tick={{ fontSize: 11 }} />
+              <YAxis tick={{ fontSize: 11 }} />
               <Tooltip content={<CustomTooltip />} />
               {activeChart === "weight" && (
                 <>
@@ -424,13 +424,13 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
               </div>
               <div>
                 <label className="text-[10px] text-muted-foreground font-bold">Poids (kg)</label>
-                <input type="number" step="0.1" placeholder="ex: 12.5" value={manualForm.weight_kg}
+                <input type="number" step="0.1" inputMode="decimal" placeholder="ex: 12.5" value={manualForm.weight_kg}
                   onChange={e => setManualForm(p => ({ ...p, weight_kg: e.target.value }))}
                   className="w-full mt-1 text-xs border border-border rounded-lg px-2 py-2 bg-background" />
               </div>
               <div>
                 <label className="text-[10px] text-muted-foreground font-bold">Taille (cm)</label>
-                <input type="number" step="0.5" placeholder="ex: 45" value={manualForm.height_cm}
+                <input type="number" step="0.5" inputMode="decimal" placeholder="ex: 45" value={manualForm.height_cm}
                   onChange={e => setManualForm(p => ({ ...p, height_cm: e.target.value }))}
                   className="w-full mt-1 text-xs border border-border rounded-lg px-2 py-2 bg-background" />
               </div>

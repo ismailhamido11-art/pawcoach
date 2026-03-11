@@ -322,8 +322,9 @@ export default function NotebookContent({ dog, user, records = [], setRecords, d
         {showRecords && (
           <div className="space-y-3">
             {/* Tab bar */}
-            <div className="bg-white/80 backdrop-blur-md border border-border rounded-2xl overflow-hidden">
-              <div className="flex overflow-x-auto">
+            <div className="bg-white/80 backdrop-blur-md border border-border rounded-2xl overflow-hidden relative">
+              <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white/90 to-transparent pointer-events-none z-10 rounded-r-2xl" />
+              <div className="flex overflow-x-auto" style={{ touchAction: "pan-x" }}>
                 {TABS.map(tab => (
                   <motion.button
                     key={tab.id}

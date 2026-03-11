@@ -312,7 +312,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
                 }`}
               >
                 <span className="text-xl">{opt.emoji}</span>
-                <span className="text-[8px] text-muted-foreground leading-tight">{opt.label}</span>
+                <span className="text-xs text-muted-foreground leading-tight">{opt.label}</span>
               </button>
             ))}
           </div>

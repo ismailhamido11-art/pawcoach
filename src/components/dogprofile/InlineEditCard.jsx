@@ -38,8 +38,8 @@ export default function InlineEditCard({
           {sub && !editing && <p className={`text-[10px] ${subColor || "text-muted-foreground"}`}>{sub}</p>}
         </div>
         {!editing && (
-          <button onClick={() => { setDraft(currentValue ?? ""); setEditing(true); }} className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center">
-            <Pencil className="w-3 h-3 text-muted-foreground" />
+          <button onClick={() => { setDraft(currentValue ?? ""); setEditing(true); }} className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+            <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         )}
       </div>
@@ -68,12 +68,12 @@ export default function InlineEditCard({
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 py-1.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1"
+              className="flex-1 py-2.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1"
             >
               {saving ? <div className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" /> : <Check className="w-3 h-3" />}
               OK
             </button>
-            <button onClick={() => setEditing(false)} className="flex-1 py-1.5 rounded-xl bg-muted text-muted-foreground text-xs font-bold flex items-center justify-center gap-1">
+            <button onClick={() => setEditing(false)} className="flex-1 py-2.5 rounded-xl bg-muted text-muted-foreground text-xs font-bold flex items-center justify-center gap-1">
               <X className="w-3 h-3" /> Annuler
             </button>
           </div>

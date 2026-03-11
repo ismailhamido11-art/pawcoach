@@ -193,7 +193,7 @@ export default function NotificationCenter() {
                 </div>
                 <div className="flex items-center gap-2">
                   {unreadCount > 0 && (
-                    <button onClick={handleMarkAllRead} className="text-[10px] text-primary font-bold px-2 py-1 rounded-lg hover:bg-primary/10 transition-colors">
+                    <button onClick={handleMarkAllRead} className="text-[10px] text-primary font-bold px-2 py-2 rounded-lg hover:bg-primary/10 transition-colors">
                       Tout lu
                     </button>
                   )}

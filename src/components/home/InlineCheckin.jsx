@@ -74,7 +74,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
               )}
             >
               <span className="text-lg">{m.emoji}</span>
-              <p className="text-[9px] font-semibold text-foreground mt-0.5">{m.label}</p>
+              <p className="text-[11px] font-semibold text-foreground mt-0.5">{m.label}</p>
             </button>
           ))}
         </div>
@@ -106,7 +106,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                     )}
                   >
                     <span className="text-base">{e.emoji}</span>
-                    <p className="text-[9px] font-semibold mt-0.5">{e.label}</p>
+                    <p className="text-[11px] font-semibold mt-0.5">{e.label}</p>
                   </button>
                 ))}
               </div>
@@ -128,7 +128,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                     )}
                   >
                     <span className="text-base">{a.emoji}</span>
-                    <p className="text-[9px] font-semibold mt-0.5">{a.label}</p>
+                    <p className="text-[11px] font-semibold mt-0.5">{a.label}</p>
                   </button>
                 ))}
               </div>
@@ -153,7 +153,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                         key={s.id}
                         onClick={() => toggleSymptom(s.id)}
                         className={cn(
-                          "px-2.5 py-1.5 rounded-lg border text-[10px] font-medium transition-all",
+                          "px-2.5 py-2.5 rounded-lg border text-[10px] font-medium transition-all",
                           symptoms.includes(s.id)
                             ? "border-red-300 bg-red-50 text-red-700"
                             : "border-border/40 bg-white/60 text-muted-foreground"
