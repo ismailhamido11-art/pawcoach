@@ -147,28 +147,28 @@
 ## Phase 6: Mobile Ergonomics Polish
 
 ### Touch targets
-- [ ] **MOBILE-01**: InlineCheckin symptom chips py-1.5 → py-2.5 (28px → 36px)
-- [ ] **MOBILE-02**: DogProfile edit buttons py-1.5 → py-2.5, edit icon w-7 → w-10
-- [ ] **MOBILE-03**: NutritionMealPlan history delete button w-7 → w-9
-- [ ] **MOBILE-04**: NotificationCenter "Tout lire" py-1 → py-2
-- [ ] **MOBILE-05**: Back buttons Tracker/VetPortal w-8 → w-9 h-9
-- [ ] **MOBILE-06**: SmartHealthAssistant "Nouvelle conversation" py-1 → py-2
-- [ ] **MOBILE-07**: QuickActions links → ajouter py-1 pour zone tap etendue
+- [x] **MOBILE-01**: InlineCheckin symptom chips py-1.5 → py-2.5 (28px → 36px) ~~(FIXED 8fa7aad)~~
+- [x] **MOBILE-02**: DogProfile edit buttons py-1.5 → py-2.5, edit icon w-7 → w-10 ~~(FIXED 8fa7aad)~~
+- [x] **MOBILE-03**: NutritionMealPlan history delete button w-7 → w-9 ~~(FIXED 8fa7aad)~~
+- [x] **MOBILE-04**: NotificationCenter "Tout lire" py-1 → py-2 ~~(FIXED 8fa7aad)~~
+- [x] **MOBILE-05**: Back buttons VetPortal w-8 → w-9 h-9 (Tracker supprime Phase 1) ~~(FIXED 8fa7aad)~~
+- [x] **MOBILE-06**: SmartHealthAssistant "Nouvelle conversation" py-1 → py-2 ~~(FIXED 8fa7aad)~~
+- [x] **MOBILE-07**: QuickActions links → ajouter py-1 pour zone tap etendue ~~(FIXED 8fa7aad)~~
 
 ### Readabilite texte
-- [ ] **MOBILE-08**: InlineCheckin mood/energy/appetite labels text-[9px] → text-[11px]
-- [ ] **MOBILE-09**: BottomNav labels text-[10px] → text-xs
-- [ ] **MOBILE-10**: AITrainingProgram option labels text-[8px](!!) → text-xs
-- [ ] **MOBILE-11**: Training behavior do/don't list text-[10px] → text-xs
-- [ ] **MOBILE-12**: Dashboard chart ticks fontSize 8-9 → fontSize 11
-- [ ] **MOBILE-13**: Dashboard info labels text-[10px] → text-xs
+- [x] **MOBILE-08**: InlineCheckin mood/energy/appetite labels text-[9px] → text-[11px] ~~(FIXED 8fa7aad)~~
+- [x] **MOBILE-09**: BottomNav labels text-[10px] → text-xs ~~(FIXED 8fa7aad)~~
+- [x] **MOBILE-10**: AITrainingProgram option labels text-[8px] → text-xs ~~(FIXED 8fa7aad)~~
+- [x] **MOBILE-11**: Training behavior do/don't list text-[10px] → text-xs ~~(FIXED 8fa7aad)~~
+- [x] **MOBILE-12**: Dashboard chart ticks fontSize 8-9 → fontSize 11 ~~(FIXED 8fa7aad)~~
+- [x] **MOBILE-13**: Dashboard info labels text-[10px] → text-xs ~~(FIXED 8fa7aad)~~
 
 ### Inputs
-- [ ] **MOBILE-14**: GrowthTracker weight/height inputs → ajouter inputMode="decimal"
+- [x] **MOBILE-14**: GrowthTracker weight/height inputs → ajouter inputMode="decimal" ~~(FIXED 8fa7aad)~~
 
 ### Gestes
-- [ ] **MOBILE-15**: NotebookContent sub-tabs scroll horizontal → touch-action: pan-x pour eviter conflit avec transition page
-- [ ] **MOBILE-16**: Sub-tabs scrollables → indicateur de scroll (fade gradient)
+- [x] **MOBILE-15**: NotebookContent sub-tabs scroll horizontal → touch-action: pan-x ~~(FIXED 8fa7aad)~~
+- [x] **MOBILE-16**: Sub-tabs scrollables → indicateur de scroll (fade gradient) ~~(FIXED 8fa7aad)~~
 
 ---
 
