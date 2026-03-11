@@ -77,6 +77,9 @@ export default function Sante() {
    const vaccineKeyParam = searchParams.get("vaccineKey") || null;
    const [showShareModal, setShowShareModal] = useState(urlTab === "vet");
 
+   // Keep showShareModal in sync when urlTab changes (e.g. navigating to/from ?tab=vet)
+   useEffect(() => { setShowShareModal(urlTab === "vet"); }, [urlTab]);
+
    const loadData = async () => {
      try {
        const u = await base44.auth.me();
