@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera as CameraIcon, PawPrint, Dog as DogIcon, Cake, Users, Scale, PersonStanding, Home as HomeIcon, Hospital, HeartPulse, GraduationCap, Salad, Smile, Handshake, Loader2, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -180,7 +181,7 @@ export default function Onboarding() {
       if ((existingDogs || []).length >= maxDogs) {
         setSaving(false); savingRef.current = false;
         if (!isUserPremium(user)) navigate(createPageUrl("Premium") + "?from=profile");
-        else { alert("Maximum 3 chiens atteint"); navigate(createPageUrl("Home")); }
+        else { toast.error("Maximum 3 chiens atteint"); navigate(createPageUrl("Profile")); }
         return;
       }
       const ownerGoal = answers[0];
