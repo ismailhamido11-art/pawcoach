@@ -40,8 +40,11 @@ Deno.serve(async (req) => {
         if (dog.breed) dogDetails += dog.breed;
         if (dog.weight) dogDetails += ` (${dog.weight}kg)`;
         if (dog.birth_date) {
-          const months = Math.floor((Date.now() - new Date(dog.birth_date).getTime()) / (1000 * 60 * 60 * 24 * 30));
-          dogDetails += months < 12 ? `, ${months} mois` : `, ${Math.floor(months / 12)} an(s)`;
+          const birthDate = new Date(dog.birth_date);
+          if (!isNaN(birthDate.getTime()) && birthDate.getTime() < Date.now()) {
+            const months = Math.floor((Date.now() - birthDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
+            dogDetails += months < 12 ? `, ${months} mois` : `, ${Math.floor(months / 12)} an(s)`;
+          }
         }
         if (dog.sex) dogDetails += `, ${dog.sex === "male" ? "male" : "femelle"}`;
         if (dog.neutered) dogDetails += `, sterilise: ${dog.neutered === true || dog.neutered === "yes" ? "oui" : "non"}`;

@@ -158,8 +158,12 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
 
             {/* Photo du chien au centre */}
             <div
+              role="button"
+              tabIndex={0}
+              aria-label={`Voir le profil de ${dog?.name || "mon chien"}`}
               className="absolute inset-0 flex items-center justify-center cursor-pointer"
               onClick={() => navigate(createPageUrl("DogProfile"))}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") navigate(createPageUrl("DogProfile")); }}
             >
               <div className="relative">
                 {dog?.photo ? (

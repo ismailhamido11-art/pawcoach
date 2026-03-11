@@ -147,14 +147,24 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
       toast.error("Le poids est obligatoire");
       return;
     }
+    const parsedWeight = parseFloat(manualForm.weight_kg);
+    const parsedHeight = manualForm.height_cm ? parseFloat(manualForm.height_cm) : undefined;
+    if (isNaN(parsedWeight) || parsedWeight <= 0 || parsedWeight > 200) {
+      toast.error("Poids invalide (entre 0.1 et 200 kg)");
+      return;
+    }
+    if (parsedHeight !== undefined && (isNaN(parsedHeight) || parsedHeight <= 0 || parsedHeight > 150)) {
+      toast.error("Taille invalide (entre 1 et 150 cm)");
+      return;
+    }
     setSavingManual(true);
     try {
       const entry = await base44.entities.GrowthEntry.create({
         dog_id: dog.id,
         owner_email: user.email,
         date: manualForm.date,
-        weight_kg: manualForm.weight_kg ? parseFloat(manualForm.weight_kg) : undefined,
-        height_cm: manualForm.height_cm ? parseFloat(manualForm.height_cm) : undefined,
+        weight_kg: parsedWeight,
+        height_cm: parsedHeight,
         source: "manual",
       });
       if (onGrowthAdded) onGrowthAdded(entry);

@@ -67,7 +67,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
               key={m.value}
               onClick={() => handleMoodTap(m.value)}
               className={cn(
-                "flex-1 py-2.5 rounded-xl border-2 transition-all text-center",
+                "flex-1 py-2.5 rounded-xl border-2 transition-all text-center focus:ring-2 focus:ring-primary focus:outline-none",
                 mood === m.value
                   ? "border-primary bg-primary/10 shadow-sm"
                   : "border-border/40 bg-white/60"
@@ -99,7 +99,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                     key={e.value}
                     onClick={() => { setEnergy(e.value); if (navigator.vibrate) navigator.vibrate(10); }}
                     className={cn(
-                      "flex-1 py-2 rounded-xl border-2 transition-all text-center",
+                      "flex-1 py-2 rounded-xl border-2 transition-all text-center focus:ring-2 focus:ring-accent focus:outline-none",
                       energy === e.value
                         ? "border-accent bg-accent/10 shadow-sm"
                         : "border-border/40 bg-white/60"
@@ -121,7 +121,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                     key={a.value}
                     onClick={() => { setAppetite(a.value); if (navigator.vibrate) navigator.vibrate(10); }}
                     className={cn(
-                      "flex-1 py-2 rounded-xl border-2 transition-all text-center",
+                      "flex-1 py-2 rounded-xl border-2 transition-all text-center focus:ring-2 focus:ring-primary focus:outline-none",
                       appetite === a.value
                         ? "border-primary bg-primary/10 shadow-sm"
                         : "border-border/40 bg-white/60"
@@ -153,7 +153,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                         key={s.id}
                         onClick={() => toggleSymptom(s.id)}
                         className={cn(
-                          "px-2.5 py-2.5 rounded-lg border text-[10px] font-medium transition-all",
+                          "px-2.5 py-2.5 rounded-lg border text-[10px] font-medium transition-all focus:ring-2 focus:ring-red-400 focus:outline-none",
                           symptoms.includes(s.id)
                             ? "border-red-300 bg-red-50 text-red-700"
                             : "border-border/40 bg-white/60 text-muted-foreground"
