@@ -45,7 +45,7 @@ const SEGMENT_HERO = {
     urgency: (name, days) => `Garde l'historique sante de ${name} — essai expire dans ${days} jour${days > 1 ? "s" : ""}`,
   },
   senior: {
-    subtitle: (name) => `${name} merite un suivi attentif a son age`,
+    subtitle: (name) => `${name} mérite un suivi attentif à son âge`,
     urgency: (name, days) => `Les rappels sante de ${name} expirent dans ${days} jour${days > 1 ? "s" : ""}`,
   },
 };

@@ -180,13 +180,13 @@ export default function Home() {
           setTimeout(() => setMilestone(null), 5000);
         }
       }
-      toast.success("Check-in enregistre !");
+      toast.success("Check-in enregistré !");
       checkStreakBadges(dog.id, user.email).catch(() => {});
     } catch (err) {
       console.error("Check-in error:", err);
       setTodayCheckin(null);
       setRecentCheckins(prev => prev.filter(c => !c._syncing));
-      toast.error("Erreur lors du check-in. Reessaie dans quelques instants.");
+      toast.error("Erreur lors du check-in. Réessaie dans quelques instants.");
     } finally {
       setSubmitting(false);
     }

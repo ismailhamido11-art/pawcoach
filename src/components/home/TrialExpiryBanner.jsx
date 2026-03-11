@@ -10,19 +10,19 @@ const SEGMENT_MESSAGES = {
     title: (name, days) => days === 1
       ? `Dernier jour pour accompagner ${name} dans ses semaines critiques !`
       : `${name} grandit vite — encore ${days} jours de suivi complet`,
-    sub: "Les premiers mois sont decisifs pour son education et sa sante",
+    sub: "Les premiers mois sont décisifs pour son éducation et sa santé",
   },
   adult: {
     title: (name, days) => days === 1
       ? `Dernier jour pour garder l'historique sante de ${name} !`
-      : `${name} a deja son suivi en place — encore ${days} jours d'essai`,
-    sub: "Un suivi regulier previent les problemes courants",
+      : `${name} a déjà son suivi en place — encore ${days} jours d'essai`,
+    sub: "Un suivi régulier prévient les problèmes courants",
   },
   senior: {
     title: (name, days) => days === 1
       ? `Dernier jour pour proteger la sante de ${name} !`
       : `${name} merite un suivi attentif — encore ${days} jours d'essai`,
-    sub: "Les rappels vaccins et le carnet sante sont essentiels a son age",
+    sub: "Les rappels vaccins et le carnet santé sont essentiels à son âge",
   },
 };
 

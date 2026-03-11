@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import { spring } from "@/lib/animations";
 
 const STATUS_CONFIG = {
-  up_to_date: { label: "A jour", Icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200" },
-  due_soon: { label: "Bientot", Icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
+  up_to_date: { label: "À jour", Icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200" },
+  due_soon: { label: "Bientôt", Icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
   overdue: { label: "En retard", Icon: AlertTriangle, color: "text-red-600", bg: "bg-red-50", border: "border-red-200" },
   never: { label: "Non fait", Icon: HelpCircle, color: "text-muted-foreground", bg: "bg-secondary", border: "border-border" },
 };
@@ -16,10 +16,10 @@ const CATEGORY_ORDER = ["core", "recommended", "optional"];
 
 // Status-specific CTA text and guidance
 const STATUS_CTA = {
-  overdue: { btn: "C'est fait, mettre a jour", guidance: "Ce vaccin est en retard. Si tu y es deja alle, indique la date ci-dessous." },
-  due_soon: { btn: "C'est fait, mettre a jour", guidance: "Ce vaccin arrive bientot. Pense a prendre rendez-vous chez ton veto." },
-  never: { btn: "Mon chien l'a deja recu", guidance: "Aucun enregistrement pour ce vaccin. Si ton chien l'a deja recu, note-le ici." },
-  up_to_date: { btn: "Corriger la date", guidance: "Tout est a jour. Tu peux modifier la date si besoin." },
+  overdue: { btn: "C'est fait, mettre à jour", guidance: "Ce vaccin est en retard. Si tu y es déjà allé, indique la date ci-dessous." },
+  due_soon: { btn: "C'est fait, mettre à jour", guidance: "Ce vaccin arrive bientôt. Pense à prendre rendez-vous chez ton véto." },
+  never: { btn: "Mon chien l'a déjà reçu", guidance: "Aucun enregistrement pour ce vaccin. Si ton chien l'a déjà reçu, note-le ici." },
+  up_to_date: { btn: "Corriger la date", guidance: "Tout est à jour. Tu peux modifier la date si besoin." },
 };
 
 function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
@@ -42,7 +42,7 @@ function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
         next_date: nextDate.toISOString().split("T")[0],
       });
       if (onRecordAdded) onRecordAdded(record);
-      toast.success(`${ref.shortName} mis a jour !`);
+      toast.success(`${ref.shortName} mis à jour !`);
       onClose();
     } catch (e) {
       console.error("InlineVaccineForm save error:", e);
@@ -52,7 +52,7 @@ function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
   };
 
   const isFirstTime = data.status === "never";
-  const formTitle = isFirstTime ? `Enregistrer : ${data.ref.shortName}` : `Mettre a jour : ${data.ref.shortName}`;
+  const formTitle = isFirstTime ? `Enregistrer : ${data.ref.shortName}` : `Mettre à jour : ${data.ref.shortName}`;
 
   return (
     <motion.div
@@ -93,7 +93,7 @@ function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
           {saving ? (
             <><span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Enregistrement...</>
           ) : (
-            <><Check className="w-3.5 h-3.5" /> Mettre a jour</>
+            <><Check className="w-3.5 h-3.5" /> Mettre à jour</>
           )}
         </motion.button>
       </div>
@@ -175,7 +175,7 @@ function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded
                   <div className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 ${data.status === "overdue" ? "bg-red-100" : "bg-white/80"}`}>
                     <Clock className={`w-3 h-3 ${data.status === "overdue" ? "text-red-500" : "text-muted-foreground"}`} />
                     <span className={`text-xs font-medium ${data.status === "overdue" ? "text-red-600" : "text-foreground"}`}>
-                      {data.status === "overdue" ? "Etait prevu" : "Prochain"} : {fmtDate(data.nextDue)}
+                      {data.status === "overdue" ? "Était prévu" : "Prochain"} : {fmtDate(data.nextDue)}
                     </span>
                   </div>
                 )}
@@ -274,7 +274,7 @@ export default function VaccineCard({ vaccineMap, dogId, onRecordAdded, onFindVe
             </div>
             <div>
               <p className="text-sm font-bold text-foreground">Calendrier vaccinal</p>
-              <p className="text-[10px] text-muted-foreground">Appuie sur un vaccin pour le mettre a jour</p>
+              <p className="text-[10px] text-muted-foreground">Appuie sur un vaccin pour le mettre à jour</p>
             </div>
           </div>
           {overdueCount > 0 && (
@@ -284,12 +284,12 @@ export default function VaccineCard({ vaccineMap, dogId, onRecordAdded, onFindVe
           )}
           {overdueCount === 0 && dueSoonCount > 0 && (
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-600">
-              {dueSoonCount} bientot
+              {dueSoonCount} bientôt
             </span>
           )}
           {overdueCount === 0 && dueSoonCount === 0 && (
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-600">
-              A jour
+              À jour
             </span>
           )}
         </div>

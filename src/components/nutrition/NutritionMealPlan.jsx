@@ -271,7 +271,7 @@ RÉPONDS UNIQUEMENT avec un objet JSON valide, sans texte avant ni après, sans 
   "avoid": ["Raisins", "Chocolat", "Oignons"],
   "tip": "Un conseil personnalise pour ce chien.",
   "rationale": [
-    "Proteines variees pour couvrir tous les acides amines essentiels",
+    "Protéines variées pour couvrir tous les acides aminés essentiels",
     "Calories adaptees au poids et au niveau d'activite",
     "Huile de saumon pour le pelage et les articulations"
   ]

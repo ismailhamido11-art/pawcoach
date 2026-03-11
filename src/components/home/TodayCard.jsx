@@ -6,7 +6,7 @@ import InlineCheckin from "./InlineCheckin";
 
 export default function TodayCard({ dog, user, todayCheckin, streak, recommendations = [], onCheckin, submitting }) {
   const hour = new Date().getHours();
-  const timeLabel = hour < 12 ? "Ce matin" : hour < 18 ? "Cet apres-midi" : "Ce soir";
+  const timeLabel = hour < 12 ? "Ce matin" : hour < 18 ? "Cet après-midi" : "Ce soir";
 
   // Skip "Home" recs — we're already on Home, they go nowhere
   const topRec = recommendations.find(r => r.page !== "Home");

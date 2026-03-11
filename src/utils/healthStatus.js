@@ -29,7 +29,7 @@ export const VACCINE_REFERENCE = {
     frequencyMonths: 36, // every 3 years after primo-vaccination
     primoWeeks: [8, 12, 16], // primo-vaccination schedule
     boosterMonths: 12, // first booster at 12 months
-    description: "Protege contre 3 maladies graves : la maladie de Carre, l'hepatite de Rubarth et la parvovirose. Aussi appele CHPPi ou DHPP sur le carnet de votre veto.",
+    description: "Protege contre 3 maladies graves : la maladie de Carre, l'hépatite de Rubarth et la parvovirose. Aussi appele CHPPi ou DHPP sur le carnet de votre veto.",
     urgency: "Obligatoire pour tous les chiens.",
   },
   // Essential in France (promoted from optional by WSAVA for endemic zones)
@@ -40,7 +40,7 @@ export const VACCINE_REFERENCE = {
     category: "core",
     label: "Essentiel (France)",
     frequencyMonths: 12,
-    description: "Maladie bacterienne transmise par l'eau contaminee (urine de rats). Tres repandue en France.",
+    description: "Maladie bactérienne transmise par l'eau contaminée (urine de rats). Très répandue en France.",
     urgency: "Rappel annuel indispensable.",
   },
   rage: {
@@ -352,7 +352,7 @@ export function computeHealthScore(records, dog, extraWeightSources = []) {
     else vetScore = 5;
   }
 
-  // Bonus next_vet_appointment : un RDV programme dans les 30 jours montre une demarche proactive
+  // Bonus next_vet_appointment : un RDV programme dans les 30 jours montre une démarche proactive
   if (dog?.next_vet_appointment && isValidDate(dog.next_vet_appointment)) {
     const apptDate = parseDate(dog.next_vet_appointment);
     if (apptDate) {
@@ -486,9 +486,9 @@ export function computeNextAction(records, dog) {
     return {
       type: "vaccine_overdue",
       title: `Vaccin en retard : ${v.ref.name}`,
-      description: `Le rappel etait prevu il y a ${daysLate} jours. Mets a jour si c'est fait, ou prends rendez-vous.`,
+      description: `Le rappel était prévu il y a ${daysLate} jours. Mets à jour si c'est fait, ou prends rendez-vous.`,
       urgency: "critical",
-      ctaLabel: "Mettre a jour",
+      ctaLabel: "Mettre à jour",
       targetTab: "vaccine",
       targetKey: key,
     };
@@ -503,12 +503,12 @@ export function computeNextAction(records, dog) {
     const isPuppy = ageMonths !== null && ageMonths < 6;
     return {
       type: "vaccine_missing",
-      title: isPuppy ? "Primo-vaccination a planifier" : `Vaccin non enregistre : ${v.ref.name}`,
+      title: isPuppy ? "Primo-vaccination à planifier" : `Vaccin non enregistre : ${v.ref.name}`,
       description: isPuppy
         ? "Les chiots doivent recevoir leurs premiers vaccins entre 8 et 16 semaines."
-        : `Si ${dog?.name || "ton chien"} a deja recu ce vaccin, enregistre-le ici.`,
+        : `Si ${dog?.name || "ton chien"} a déjà reçu ce vaccin, enregistre-le ici.`,
       urgency: "important",
-      ctaLabel: "Mettre a jour",
+      ctaLabel: "Mettre à jour",
       targetTab: "vaccine",
       targetKey: key,
     };
@@ -523,7 +523,7 @@ export function computeNextAction(records, dog) {
     if (months > 12) {
       return {
         type: "vet_visit_overdue",
-        title: "Visite annuelle a prevoir",
+        title: "Visite annuelle à prévoir",
         description: `La derniere visite date de ${months} mois. Un bilan annuel est recommande.`,
         urgency: "important",
         ctaLabel: "Trouver un veto",
@@ -534,7 +534,7 @@ export function computeNextAction(records, dog) {
     // Has records but no vet visit ever
     return {
       type: "vet_visit_missing",
-      title: "Aucune visite veterinaire enregistree",
+      title: "Aucune visite vétérinaire enregistrée",
       description: "Ajoute ta derniere visite pour un suivi complet.",
       urgency: "suggested",
       ctaLabel: "Ajouter une visite",
@@ -550,8 +550,8 @@ export function computeNextAction(records, dog) {
     const [key, v] = dueSoon[0];
     return {
       type: "vaccine_due_soon",
-      title: `Vaccin a prevoir : ${v.ref.name}`,
-      description: `Rappel dans ${v.daysUntilDue} jours. Pense a prendre rendez-vous chez ton veto.`,
+      title: `Vaccin à prévoir : ${v.ref.name}`,
+      description: `Rappel dans ${v.daysUntilDue} jours. Pense à prendre rendez-vous chez ton véto.`,
       urgency: "suggested",
       ctaLabel: "Voir le vaccin",
       targetTab: "vaccine",
@@ -566,7 +566,7 @@ export function computeNextAction(records, dog) {
     if (daysSince > 60) {
       return {
         type: "weight_stale",
-        title: "Poids a mettre a jour",
+        title: "Poids à mettre à jour",
         description: `La derniere pesee date de ${Math.round(daysSince / 30)} mois. Pese ${dog?.name || "ton chien"} pour suivre sa courbe.`,
         urgency: "suggested",
         ctaLabel: "Enregistrer un poids",

@@ -72,7 +72,7 @@ export default function Library() {
       data.start_date = new Date().toISOString().split("T")[0];
       await base44.entities.Bookmark.update(bk.id, { content: JSON.stringify(data) });
       setBookmarks(prev => prev.map(b => b.id === bk.id ? { ...b, content: JSON.stringify(data) } : b));
-      toast.success("Programme active ! Retrouve-le sur ton accueil.");
+      toast.success("Programme activé ! Retrouve-le sur ton accueil.");
     } catch {
       toast.error("Erreur lors de l'activation");
     }
@@ -83,7 +83,7 @@ export default function Library() {
       await base44.entities.NutritionPlan.delete(id);
       setNutritionPlans(prev => prev.filter(p => p.id !== id));
       if (expanded === `nutri-${id}`) setExpanded(null);
-      toast.success("Plan nutrition supprime");
+      toast.success("Plan nutrition supprimé");
     } catch {
       toast.error("Erreur lors de la suppression");
     }
@@ -96,7 +96,7 @@ export default function Library() {
       ));
       await base44.entities.NutritionPlan.update(planId, { is_active: true });
       setNutritionPlans(prev => prev.map(p => ({ ...p, is_active: p.id === planId })));
-      toast.success("Plan nutrition active ! Retrouve-le sur ton accueil.");
+      toast.success("Plan nutrition activé ! Retrouve-le sur ton accueil.");
     } catch {
       toast.error("Erreur lors de l'activation");
     }

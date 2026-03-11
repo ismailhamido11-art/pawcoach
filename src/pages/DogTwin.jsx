@@ -72,8 +72,8 @@ export default function DogTwin() {
         const recentVaccines = vaccines.filter(v => v.date && daysSince(v.date) < 365);
         const vaccineScore = vaccines.length === 0 ? 40 : Math.min(100, Math.round((recentVaccines.length / Math.max(vaccines.length, 3)) * 100));
         const vaccineDetail = recentVaccines.length > 0
-          ? `${recentVaccines.length} vaccin${recentVaccines.length > 1 ? "s" : ""} a jour`
-          : vaccines.length > 0 ? "Rappels a verifier" : "Aucun vaccin enregistre";
+          ? `${recentVaccines.length} vaccin${recentVaccines.length > 1 ? "s" : ""} à jour`
+          : vaccines.length > 0 ? "Rappels à vérifier" : "Aucun vaccin enregistré";
 
         // Weight zone — based on recent weight records
         const weights = recs.filter(r => r.type === "weight" && r.date);
@@ -82,7 +82,7 @@ export default function DogTwin() {
         const weightScore = weightDays <= 30 ? 90 : weightDays <= 90 ? 70 : weightDays <= 180 ? 50 : 30;
         const weightDetail = lastWeight
           ? `Derniere pesee il y a ${weightDays <= 1 ? "aujourd'hui" : weightDays + " jours"}${lastWeight.value ? " : " + lastWeight.value + " kg" : ""}`
-          : "Aucune pesee enregistree";
+          : "Aucune pesée enregistrée";
 
         // Vet visit zone — based on recent vet visits
         const vetVisits = recs.filter(r => r.type === "vet_visit" && r.date);
@@ -91,7 +91,7 @@ export default function DogTwin() {
         const vetScore = vetDays <= 180 ? 95 : vetDays <= 365 ? 75 : vetDays <= 540 ? 50 : 30;
         const vetDetail = lastVet
           ? `Derniere visite il y a ${vetDays <= 1 ? "aujourd'hui" : vetDays + " jours"}`
-          : "Aucune visite enregistree";
+          : "Aucune visite enregistrée";
 
         // Activity zone — based on recent daily logs (walks)
         const recentLogs = logs.filter(l => l.date && daysSince(l.date) <= 7);

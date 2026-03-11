@@ -36,7 +36,7 @@ const TABS = [
 
 const PREMIUM_CONFIGS = {
   vet_visit: {
-    label: "Visites veterinaire", emptyText: "Aucune visite veterinaire enregistree",
+    label: "Visites veterinaire", emptyText: "Aucune visite vétérinaire enregistrée",
     placeholder: "Ex: Visite de controle annuelle", addLabel: "Ajouter une visite",
     showNextDate: true, Icon: Stethoscope, bgClass: "bg-primary/5", borderClass: "border-primary/20",
     textClass: "text-primary", btnClass: "bg-primary hover:bg-primary/90",
@@ -48,7 +48,7 @@ const PREMIUM_CONFIGS = {
     textClass: "text-emerald-600", btnClass: "bg-emerald-600 hover:bg-emerald-700",
   },
   note: {
-    label: "Notes", emptyText: "Aucune note enregistree",
+    label: "Notes", emptyText: "Aucune note enregistrée",
     placeholder: "Titre de la note", addLabel: "Ajouter une note",
     showNextDate: false, Icon: FileText, bgClass: "bg-secondary", borderClass: "border-border",
     textClass: "text-muted-foreground", btnClass: "bg-muted-foreground hover:bg-muted-foreground/90",

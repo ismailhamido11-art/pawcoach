@@ -120,7 +120,7 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
     : null;
 
   const interpretation = useMemo(() => {
-    if (weightTrend.current === null) return "Aucune pesee enregistree. Pese ton chien pour commencer le suivi.";
+    if (weightTrend.current === null) return "Aucune pesée enregistrée. Pèse ton chien pour commencer le suivi.";
     if (weightTrend.direction === "unknown") return "Une seule pesee. Ajoute-en une autre pour voir la tendance.";
     if (weightTrend.direction === "stable") return `${dogName || "Ton chien"} maintient un poids stable. C'est ideal.`;
     if (weightTrend.direction === "up") {

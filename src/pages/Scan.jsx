@@ -175,7 +175,7 @@ export default function Scan() {
         timestamp: new Date().toISOString(),
       });
       setLabelSaved(true);
-      toast.success("Analyse sauvegardee !");
+      toast.success("Analyse sauvegardée !");
     } catch (e) {
       console.error(e);
       toast.error("Erreur lors de la sauvegarde");

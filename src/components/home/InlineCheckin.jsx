@@ -12,7 +12,7 @@ const MOODS = [
 const ENERGIES = [
   { value: 1, emoji: "\u{1F4A4}", label: "Faible" },
   { value: 2, emoji: "\u26A1", label: "Moyen" },
-  { value: 3, emoji: "\u{1F525}", label: "Eleve" },
+  { value: 3, emoji: "\u{1F525}", label: "Élevé" },
 ];
 const APPETITES = [
   { value: 1, emoji: "\u{1F6AB}", label: "Rien" },
@@ -22,7 +22,7 @@ const APPETITES = [
 
 const SYMPTOMS = [
   { id: "vomiting", label: "Vomissements" },
-  { id: "diarrhea", label: "Diarrhee" },
+  { id: "diarrhea", label: "Diarrhée" },
   { id: "scratching", label: "Grattage" },
   { id: "limping", label: "Boiterie" },
   { id: "coughing", label: "Toux" },
@@ -114,7 +114,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
 
             {/* Appetite */}
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-2">Appetit</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Appétit</p>
               <div className="flex gap-2">
                 {APPETITES.map(a => (
                   <button
@@ -145,7 +145,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                   className="overflow-hidden"
                 >
                   <p className="text-xs font-semibold text-muted-foreground mb-2">
-                    Symptomes observes ? <span className="font-normal text-[10px]">(optionnel)</span>
+                    Symptômes observés ? <span className="font-normal text-[10px]">(optionnel)</span>
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {SYMPTOMS.map(s => (
@@ -167,7 +167,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                     <input
                       value={behaviorNotes}
                       onChange={e => setBehaviorNotes(e.target.value)}
-                      placeholder="Details optionnels..."
+                      placeholder="Détails optionnels..."
                       className="w-full mt-2 px-3 py-2 text-xs rounded-lg border border-border/40 bg-white/60 focus:outline-none focus:ring-1 focus:ring-primary/30"
                     />
                   )}
