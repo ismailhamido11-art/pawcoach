@@ -22,7 +22,12 @@ Ce milestone corrige tous les flux de donnees casses ou orphelins identifies par
   2. Le score sante frontend prend en compte les pesees de GrowthEntry et DailyLog, pas uniquement HealthRecord.type=weight
   3. Le PDF sante genere liste les poids issus de GrowthEntry et DailyLog (toutes les sources, pas seulement HealthRecord)
   4. Le fichier healthScoreCalculate.ts n'existe plus dans le repo (code mort supprime, aucune regression)
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [x] 01-01-PLAN.md — Scanner + Comparateur : injecter DietPreferences.disliked_foods dans les prompts IA
+- [x] 01-02-PLAN.md — HealthScore : migrer vers calcul local (computeHealthScore + GrowthEntry + DailyLog) et supprimer healthScoreCalculate.ts
+- [ ] 01-03-PLAN.md — PDF sante : merger les 3 sources de poids (HealthRecord + GrowthEntry + DailyLog)
 
 ### Phase 2: AI Enrichment
 **Goal**: Les 3 fonctions IA (check-in quotidien, weekly insight, monthly summary) produisent des analyses basees sur toutes les donnees disponibles, pas un sous-ensemble
@@ -63,7 +68,7 @@ Phases executees en ordre numerique : 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Coherence | 0/TBD | Not started | - |
+| 1. Data Coherence | 2/3 | In progress | - |
 | 2. AI Enrichment | 0/TBD | Not started | - |
 | 3. Notifications | 0/TBD | Not started | - |
 | 4. Independent Fixes | 0/TBD | Not started | - |
@@ -71,3 +76,4 @@ Phases executees en ordre numerique : 1 → 2 → 3 → 4
 ---
 *Roadmap created: 2026-03-11 — Milestone v1.0 Data Flow Integrity*
 *16/16 requirements mapped — 100% coverage*
+*Phase 1 planned: 2026-03-11 — 3 plans, wave 1 (01-01 + 01-02 parallel) + wave 2 (01-03)*

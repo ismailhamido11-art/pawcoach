@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 ## Current Position
 
 Phase: 1 of 4 (Data Coherence)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-11 — Roadmap v1.0 cree (16 requirements, 4 phases)
+Plan: 2 of 3 in current phase
+Status: In progress
+Last activity: 2026-03-11 — Plan 01-02 complete (DATA-02 + DATA-04: HealthScore calcul local + healthScoreCalculate.ts supprime)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 16%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: --
-- Total execution time: --
+- Total plans completed: 2
+- Average duration: 2min
+- Total execution time: 4min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-data-coherence | 2 | 4min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: --
-- Trend: --
+- Last 5 plans: 2min, 2min
+- Trend: Stable, rapide
 
 *Updated after each plan completion*
 
@@ -43,7 +43,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
 - Allergies: Unifier dog.allergies + DietPreferences.disliked_foods dans les prompts (pas merger les entites)
-- Score sante: healthScoreCalculate.ts est code mort — supprimer, le score frontend est la seule source de verite
+- Score sante: healthScoreCalculate.ts supprime (DATA-02/04 done) — computeHealthScore est la seule source de verite, enrichi GrowthEntry + DailyLog via extraWeightSources optionnel
+- extraWeightSources: 3e param optionnel sur computeHealthScore (pas computeWeightTrend) — 11 consumers existants inchanges
+- Deduplication poids: HealthRecord prioritaire sur GrowthEntry/DailyLog par date
 - Streak: check-in ET balade comptent tous les deux comme activite quotidienne
 - 3 repas: ajouter noon au JSON (morning/noon/evening) — plus simple que limiter a 2
 
@@ -59,5 +61,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-11
-Stopped at: Roadmap cree, requirements mappes, pret a planifier Phase 1
+Stopped at: Completed 01-02-PLAN.md (DATA-02 + DATA-04: HealthScore calcul local, healthScoreCalculate.ts supprime)
 Resume file: None
