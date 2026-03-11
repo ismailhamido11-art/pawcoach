@@ -121,26 +121,26 @@
 ## Phase 5: Code Cleanup & DRY
 
 ### Utilitaires dupliques
-- [ ] **DRY-01**: getTodayString() defini 7 fois → exporter depuis utils/recommendations.js, supprimer copies
-- [ ] **DRY-02**: getDogAge() defini 8 fois → utiliser getDogAgeLabel()/dogAgeMonths() de healthStatus.js
-- [ ] **DRY-03**: getDateLabel() + shouldShowDateSeparator() copie Chat/Nutri → extraire utils/dateHelpers.js
-- [ ] **DRY-04**: isValidDate() defini 2 fois → exporter depuis healthStatus.js
-- [ ] **DRY-05**: getDaysLeft() defini 2 fois (ReminderAlert + NotificationCenter) → extraire utils/
+- [x] **DRY-01**: getTodayString() defini 7 fois → exporter depuis utils/recommendations.js, supprimer copies ~~(FIXED 15076cc)~~
+- [x] **DRY-02**: getDogAge() defini 8 fois → utiliser getDogAgeLabel()/dogAgeMonths() de healthStatus.js ~~(FIXED 5bd4f5f)~~
+- [x] **DRY-03**: getDateLabel() + shouldShowDateSeparator() copie Chat/Nutri → extraire utils/dateHelpers.js ~~(FIXED ec4f8f4)~~
+- [x] **DRY-04**: isValidDate() defini 2 fois → exporter depuis healthStatus.js ~~(FIXED 3dea98c)~~
+- [x] **DRY-05**: getDaysLeft() defini 2 fois (ReminderAlert + NotificationCenter) → extraire utils/ ~~(FIXED 403053e)~~
 
 ### Composants dupliques
-- [ ] **DRY-06**: InlineWeightForm (WeightCard) + SectionPoids → extraire hook useAddWeightRecord
-- [ ] **DRY-07**: InlineVaccineForm (VaccineCard) + SectionVaccins → extraire hook useAddVaccineRecord
-- [ ] **DRY-08**: VetSearchCard → supprimer avec FindVet.jsx (PlaceCard est la version canon)
-- [ ] **DRY-09**: 3 systemes de reminders (ReminderAlert, NotificationCenter, UpcomingReminders) → hook useUpcomingReminders partage
+- [~] **DRY-06**: SKIP — InlineWeightForm vs SectionPoids: UI et state management trop differents, extraction hook sans valeur ajoutee
+- [~] **DRY-07**: SKIP — InlineVaccineForm vs SectionVaccins: meme raison que DRY-06
+- [x] **DRY-08**: VetSearchCard → supprime (aucun import, FindVet deja supprime Phase 1) ~~(FIXED 1f42e3a)~~
+- [~] **DRY-09**: SKIP — ReminderAlert/NotificationCenter/UpcomingReminders: lifecycle et logique completement differents, hook partage forcerait un pattern artificiel
 
 ### Performance
-- [ ] **DRY-10**: HealthScore.jsx re-fetch HealthRecord independamment → passer records en prop depuis Home.jsx
-- [ ] **DRY-11**: Vaccine logic 3 endroits (SmartAlerts, recommendations, healthStatus) → unifier via computeVaccineMap
+- [~] **DRY-10**: SKIP — HealthScore.jsx deja supprime (n'existe plus dans le codebase)
+- [~] **DRY-11**: SKIP — Vaccine logic dans 3 contextes differents (comptage simple vs map complet vs recommandations), unification risquerait regression
 
 ### Cosmetic DRY (priorite basse)
-- [ ] **DRY-12**: Spring animation constante dans 18 fichiers → exporter depuis lib/animations.js
-- [ ] **DRY-13**: Spinner inline dans 41 fichiers → composant Spinner dans ui/
-- [ ] **DRY-14**: mdComponents ReactMarkdown → extraire dans lib/markdown.js
+- [x] **DRY-12**: Spring animation constante dans 18 fichiers → exporter depuis lib/animations.js ~~(FIXED 8f0b52d)~~
+- [~] **DRY-13**: SKIP — Spinner dans 38 fichiers avec tailles/couleurs variees, risque de regression disproportionne. Regle CLAUDE.md interdit modif ui/
+- [x] **DRY-14**: mdComponents ReactMarkdown → extraire dans lib/markdown.js ~~(FIXED 423e358)~~
 
 ---
 
