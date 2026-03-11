@@ -21,6 +21,7 @@ import { InlineIcon } from "@/components/ui/IconBadge";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 const tabVariants = {
@@ -40,29 +41,6 @@ const mdComponents = {
   li: ({ children }) => <li className="my-0.5">{children}</li>,
   strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
 };
-
-// --- Helpers ---
-function getDateLabel(timestamp) {
-  if (!timestamp) return "";
-  const d = new Date(timestamp);
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  if (d.toDateString() === today.toDateString()) return "Aujourd'hui";
-  if (d.toDateString() === yesterday.toDateString()) return "Hier";
-  return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
-}
-
-function shouldShowDateSeparator(messages, index) {
-  if (index === 0) return true;
-  const prev = new Date(messages[index - 1].timestamp);
-  const curr = new Date(messages[index].timestamp);
-  return prev.toDateString() !== curr.toDateString();
-}
-
-function getTimeStr(timestamp) {
-  if (!timestamp) return "";
-  return new Date(timestamp).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 }
 
 const TABS = [

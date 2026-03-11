@@ -16,34 +16,11 @@ import { updateStreakSilently } from "../components/streakHelper";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { getTodayString } from "@/utils/recommendations";
 import { getDogAgeLabel } from "@/utils/healthStatus";
+import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
 import { motion, AnimatePresence } from "framer-motion";
 
 const spring = { type: "spring", stiffness: 400, damping: 30 };
 const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { type: "spring", stiffness: 120, damping: 20 } };
-
-// --- Helpers ---
-function getDateLabel(timestamp) {
-  if (!timestamp) return "";
-  const d = new Date(timestamp);
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  if (d.toDateString() === today.toDateString()) return "Aujourd'hui";
-  if (d.toDateString() === yesterday.toDateString()) return "Hier";
-  return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
-}
-
-function shouldShowDateSeparator(messages, index) {
-  if (index === 0) return true;
-  const prev = new Date(messages[index - 1].timestamp);
-  const curr = new Date(messages[index].timestamp);
-  return prev.toDateString() !== curr.toDateString();
-}
-
-function getTimeStr(timestamp) {
-  if (!timestamp) return "";
-  return new Date(timestamp).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
-}
 
 const mdComponents = {
   p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
