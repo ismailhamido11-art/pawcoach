@@ -60,6 +60,43 @@ Deno.serve(async (req) => {
     if (behavior_notes) checkinData.behavior_notes = behavior_notes;
     const checkin = await base44.asServiceRole.entities.DailyCheckin.create(checkinData);
 
+    // Fetch last 7 check-ins for trend analysis (excluding today)
+    const allRecentCheckins = await base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dogId }).catch(() => []);
+    const recentCheckins = (allRecentCheckins || [])
+      .filter(c => c.date < today)
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .slice(0, 7);
+
+    let trendContext = "";
+    if (recentCheckins.length >= 3) {
+      const trends: string[] = [];
+
+      // Mood trend (low = 1-2)
+      const recentMoodLow = recentCheckins.slice(0, 3).filter(c => c.mood <= 2).length;
+      if (recentMoodLow >= 3) trends.push(`humeur basse signalée ${recentMoodLow} jours de suite`);
+
+      // Energy trend (low = 1)
+      const recentEnergyLow = recentCheckins.slice(0, 3).filter(c => c.energy === 1).length;
+      if (recentEnergyLow >= 3) trends.push(`fatigue signalée ${recentEnergyLow} jours de suite`);
+
+      // Appetite trend (low = 1)
+      const recentAppetiteLow = recentCheckins.slice(0, 3).filter(c => c.appetite === 1).length;
+      if (recentAppetiteLow >= 3) trends.push(`appetit reduit ${recentAppetiteLow} jours de suite`);
+
+      // Recurring symptoms
+      const symptomCounts: Record<string, number> = {};
+      recentCheckins.forEach(c => {
+        if (c.symptoms?.length) c.symptoms.forEach((s: string) => { symptomCounts[s] = (symptomCounts[s] || 0) + 1; });
+      });
+      Object.entries(symptomCounts).forEach(([s, n]) => {
+        if (n >= 2) trends.push(`"${s}" signale ${n} fois sur les 7 derniers jours`);
+      });
+
+      if (trends.length > 0) {
+        trendContext = `\n\nTENDANCES DETECTEES SUR LES 7 DERNIERS JOURS (utilise-les dans ta reponse si pertinent) : ${trends.join(". ")}.`;
+      }
+    }
+
     // Update Streak
     const streaks = await base44.asServiceRole.entities.Streak.filter({ dog_id: dogId });
     let streak;
@@ -135,7 +172,7 @@ Deno.serve(async (req) => {
       }
       const dogProfile = dogProfileParts.join(", ");
 
-      const systemPrompt = `Tu es PawCoach, le compagnon quotidien de ${dogProfile}. Tu commentes le check-in du jour de maniere chaleureuse et personnalisee. Tutoiement, 2-3 phrases max, emojis doux. Adapte ton message selon l'humeur (${mood}/4), l'energie (${energy}/3) et l'appetit (${appetite}/3). Si energie haute, suggere un exercice de dressage. Si appetit faible 1 jour, rassure (c'est normal). Si appetit faible 2+ jours, suggere de surveiller. Si le streak depasse 3 jours, felicite fierement. Un appetit ou une energie basse UN SEUL JOUR n'est PAS un signal d'alarme — c'est normal, ne dramatise pas. ${segmentContext} Ne diagnostique jamais, ne prescris jamais.`;
+      const systemPrompt = `Tu es PawCoach, le compagnon quotidien de ${dogProfile}. Tu commentes le check-in du jour de maniere chaleureuse et personnalisee. Tutoiement, 2-3 phrases max, emojis doux. Adapte ton message selon l'humeur (${mood}/4), l'energie (${energy}/3) et l'appetit (${appetite}/3). Si energie haute, suggere un exercice de dressage. Si appetit faible 1 jour, rassure (c'est normal). Si appetit faible 2+ jours, suggere de surveiller. Si le streak depasse 3 jours, felicite fierement. Un appetit ou une energie basse UN SEUL JOUR n'est PAS un signal d'alarme — c'est normal, ne dramatise pas. ${segmentContext} Ne diagnostique jamais, ne prescris jamais.${trendContext}`;
       const safeSymptoms = Array.isArray(symptoms) ? symptoms.slice(0, 10).map(s => sanitize(s, 50)) : [];
       const safeBehaviorNotes = sanitize(behavior_notes, 500);
       const safeNotes = sanitize(notes, 500);
