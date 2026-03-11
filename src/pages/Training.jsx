@@ -327,7 +327,13 @@ export default function Training() {
    // Exercise detail view (from query param)
    if (exerciseId) {
      const exercise = EXERCISES.find(e => String(e.order_number) === exerciseId);
-     if (!exercise) return null;
+     if (!exercise) return (
+       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-5 gap-4">
+         <p className="text-lg font-bold text-foreground">Exercice introuvable</p>
+         <p className="text-sm text-muted-foreground text-center">Cet exercice n'existe pas ou a ete supprime.</p>
+         <Link to={createPageUrl("Training")} className="bg-primary text-white font-bold text-sm px-6 py-3 rounded-xl">Retour au dressage</Link>
+       </div>
+     );
      const locked = exercise.is_premium && !isPremium;
      const backUrl = journeyId ? createPageUrl("Training") + `?journey=${journeyId}` : createPageUrl("Training");
      return (
@@ -356,7 +362,13 @@ export default function Training() {
    // Journey detail view (from query param)
    if (journeyId) {
      const journey = JOURNEYS.find(j => j.id === journeyId);
-     if (!journey) return null;
+     if (!journey) return (
+       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-5 gap-4">
+         <p className="text-lg font-bold text-foreground">Parcours introuvable</p>
+         <p className="text-sm text-muted-foreground text-center">Ce parcours n'existe pas ou a ete supprime.</p>
+         <Link to={createPageUrl("Training")} className="bg-primary text-white font-bold text-sm px-6 py-3 rounded-xl">Retour au dressage</Link>
+       </div>
+     );
      const journeyExercises = getJourneyExercises(journey);
      return (
        <>

@@ -206,7 +206,7 @@ function NutritionPlanCard({ plan }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.05 }}
       >
-        <Link to={createPageUrl("Nutri") + "?tab=plan"}>
+        <Link to={createPageUrl("Nutri") + "?tab=mealplan"}>
           <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

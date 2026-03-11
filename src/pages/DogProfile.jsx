@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import useBackClose from "@/components/hooks/useBackClose";
+import useBackClose from "@/hooks/useBackClose";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Pencil, ChevronDown, ChevronUp,

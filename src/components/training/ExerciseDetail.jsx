@@ -110,7 +110,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
 
       {/* Bottom actions */}
       {!isPremiumLocked && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border px-5 py-4 space-y-2">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border px-5 py-4 space-y-2" style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom, 0px))" }}>
           <Button
             onClick={onComplete}
             className="w-full h-12 rounded-2xl bg-safe hover:bg-safe/90 text-white font-bold text-base gap-2 shadow-lg shadow-safe/30"

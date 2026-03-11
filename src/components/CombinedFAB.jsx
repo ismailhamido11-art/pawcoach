@@ -138,7 +138,7 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
               >
                 Chat
               </button>
-              <button aria-label="Fermer" onClick={() => setOpen(false)} className="ml-auto w-7 h-7 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+              <button aria-label="Fermer" onClick={() => setOpen(false)} className="ml-auto w-10 h-10 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
                 <X className="w-3.5 h-3.5 text-muted-foreground" />
               </button>
             </div>

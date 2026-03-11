@@ -377,7 +377,7 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Disclaimer */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-accent/10 backdrop-blur-sm border-b border-accent/20 px-5 py-1.5 text-center">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-accent/10 backdrop-blur-sm border-b border-accent/20 px-5 py-1.5 text-center" style={{ paddingTop: "max(6px, env(safe-area-inset-top, 0px))" }}>
         <p className="text-xs text-accent-foreground font-medium">PawCoach est un coach bien-être, pas un vétérinaire.</p>
       </div>
 
@@ -474,7 +474,7 @@ export default function Chat() {
                       <button
                         aria-label="Copier"
                         onClick={() => handleCopy(msg.content)}
-                        className="text-muted-foreground/40 hover:text-primary transition-colors"
+                        className="p-2 text-muted-foreground/40 hover:text-primary transition-colors"
                         title="Copier"
                       >
                         <Copy className="w-3 h-3" />
@@ -482,7 +482,7 @@ export default function Chat() {
                       <button
                         aria-label="Sauvegarder"
                         onClick={() => handleBookmark(msg)}
-                        className="text-muted-foreground/40 hover:text-primary transition-colors"
+                        className="p-2 text-muted-foreground/40 hover:text-primary transition-colors"
                         title="Sauvegarder"
                       >
                         {bookmarked[msg.timestamp]
@@ -589,7 +589,7 @@ export default function Chat() {
                   <Button onClick={() => navigate(createPageUrl("Premium") + "?from=chat")} size="sm" className="gradient-primary border-0 text-white text-xs h-8">
                     Passer Premium
                   </Button>
-                  <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground">
+                  <Button variant="ghost" size="sm" className="text-xs h-8 text-muted-foreground" onClick={() => navigate(createPageUrl("Home"))}>
                     A demain !
                   </Button>
                 </div>

@@ -12,7 +12,7 @@ import {
   TrendingUp, TrendingDown, Minus, Heart,
   Sparkles, Activity, Calendar, Star, Footprints
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
@@ -86,6 +86,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [dog, setDog] = useState(null);
   const [user, setUser] = useState(null);
   const [records, setRecords] = useState([]);
@@ -102,7 +103,10 @@ export default function Dashboard() {
         const u = await base44.auth.me();
         setUser(u);
         const dogs = await base44.entities.Dog.filter({ owner: u.email });
-        if (!dogs?.length) return;
+        if (!dogs?.length) {
+          navigate(createPageUrl("Onboarding"));
+          return;
+        }
         const d = getActiveDog(dogs);
         setDog(d);
 

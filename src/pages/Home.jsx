@@ -326,7 +326,7 @@ export default function Home() {
         <div className="mt-3">
           <TodayCard
             dog={dog} user={user} todayCheckin={todayCheckin} streak={streak}
-            records={records} exercises={exercises} scans={scans} dailyLogs={dailyLogs}
+            records={records} exercises={exercises} scans={scans} checkins={recentCheckins} dailyLogs={dailyLogs}
             onCheckin={handleCheckin} submitting={submitting}
             diagnosisReports={diagnosisReports} nutritionPlans={nutritionPlans}
           />

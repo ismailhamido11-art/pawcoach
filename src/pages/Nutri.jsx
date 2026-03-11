@@ -383,7 +383,7 @@ export default function Nutri() {
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
 
         {/* Tabs — pill cards */}
-        <div className="grid grid-cols-3 gap-2 mt-1">
+        <div className="grid grid-cols-5 gap-2 mt-1">
           {TABS.map(({ id, label, emoji, bg }) => {
             const active = activeTab === id;
             return (
@@ -524,7 +524,7 @@ export default function Nutri() {
                           <button
                             aria-label="Copier"
                             onClick={() => handleCopy(msg.content)}
-                            className="text-muted-foreground/40 hover:text-primary transition-colors"
+                            className="p-2 text-muted-foreground/40 hover:text-primary transition-colors"
                             title="Copier"
                           >
                             <Copy className="w-3 h-3" />
@@ -532,7 +532,7 @@ export default function Nutri() {
                           <button
                             aria-label="Sauvegarder"
                             onClick={() => handleBookmark(msg)}
-                            className="text-muted-foreground/40 hover:text-primary transition-colors"
+                            className="p-2 text-muted-foreground/40 hover:text-primary transition-colors"
                             title="Sauvegarder"
                           >
                             {bookmarked[msg.timestamp]
