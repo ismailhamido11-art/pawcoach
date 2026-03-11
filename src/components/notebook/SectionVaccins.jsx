@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Syringe, Plus, X, Calendar, ChevronDown, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { VACCINE_REFERENCE, getVaccineDisplayName } from "@/utils/healthStatus";
+import { VACCINE_REFERENCE, getVaccineDisplayName, isValidDate } from "@/utils/healthStatus";
 
 const VACCINE_OPTIONS = Object.entries(VACCINE_REFERENCE).map(([key, ref]) => ({
   key,
@@ -217,12 +217,6 @@ export default function SectionVaccins({ records = [], dogId, onDelete, onRecord
 
     </div>
   );
-}
-
-export function isValidDate(d) {
-  if (!d || d === "") return false;
-  const parsed = new Date(d);
-  return !isNaN(parsed.getTime());
 }
 
 function fmtDate(d) {

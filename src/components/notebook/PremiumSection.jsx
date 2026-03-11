@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Stethoscope, Pill, FileText, Plus, ChevronDown, ChevronUp } from "lucide-react";
-import { RecordRow, isValidDate } from "./SectionVaccins";
+import { RecordRow } from "./SectionVaccins";
+import { isValidDate } from "@/utils/healthStatus";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
