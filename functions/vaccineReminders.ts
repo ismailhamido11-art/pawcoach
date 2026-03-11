@@ -68,10 +68,6 @@ Deno.serve(async (req) => {
       const user = userMap.get(dog.owner);
       if (!user) continue;
 
-      // Only send for premium or trial users
-      const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
-      if (!isPremium) continue;
-
       const dueDate = new Date(vaccine.next_date);
       const diffDays = Math.round((dueDate - today) / (1000 * 60 * 60 * 24));
       const formattedDate = dueDate.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
