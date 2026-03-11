@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: "Completed 01-03-PLAN.md (DATA-03: PDF sante merge GrowthEntry + DailyLog, Phase 1 complete)"
-last_updated: "2026-03-11T05:47:16.449Z"
+stopped_at: "Completed 02-02-PLAN.md (AI-02: weeklyInsightGenerate enriched with HealthRecord and check-in notes)"
+last_updated: "2026-03-11T06:01:49.370Z"
 last_activity: "2026-03-11 — Plan 01-03 complete (DATA-03: PDF sante merge GrowthEntry + DailyLog dans section Suivi du poids)"
 progress:
   total_phases: 4
-  completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  completed_phases: 2
+  total_plans: 6
+  completed_plans: 6
   percent: 24
 ---
 
@@ -50,6 +50,8 @@ Progress: [███░░░░░░░] 24%
 - Trend: Stable, rapide
 
 *Updated after each plan completion*
+| Phase 02-ai-enrichment P03 | 1min | 1 tasks | 1 files |
+| Phase 02-ai-enrichment P02 | 5 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -66,6 +68,10 @@ Recent decisions affecting current work:
 - PDF poids: priorite PDF inverse de NotebookContent (HealthRecord > GrowthEntry car source officielle)
 - Streak: check-in ET balade comptent tous les deux comme activite quotidienne
 - 3 repas: ajouter noon au JSON (morning/noon/evening) — plus simple que limiter a 2
+- [Phase 02-ai-enrichment]: DailyCheckin fetched per dog inside loop (not global) to avoid memory overload
+- [Phase 02-ai-enrichment]: Recurring symptoms threshold >= 2 occurrences, max 5 displayed sorted by frequency
+- [Phase 02-ai-enrichment]: todayStr (string YYYY-MM-DD) derived from outer today (Date object) to avoid variable conflict in weeklyInsightGenerate.ts
+- [Phase 02-ai-enrichment]: overdueVaccines and activeMeds queried from all dogHealthRecords (not just week) — overdue is overdue regardless of when recorded
 
 ### Pending Todos
 
@@ -78,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11
-Stopped at: Completed 01-03-PLAN.md (DATA-03: PDF sante merge GrowthEntry + DailyLog, Phase 1 complete)
+Last session: 2026-03-11T06:01:49.365Z
+Stopped at: Completed 02-02-PLAN.md (AI-02: weeklyInsightGenerate enriched with HealthRecord and check-in notes)
 Resume file: None
