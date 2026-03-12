@@ -1,95 +1,86 @@
-# Requirements: PawCoach
+# Requirements: PawCoach — v1.1 Quality Audit
 
-**Defined:** 2026-03-11
-**Core Value:** Les donnees collectees doivent etre utilisees partout ou elles ont du sens — pas de champs fantomes, pas de flux casses.
+**Defined:** 2026-03-12
+**Core Value:** Le code doit etre propre, securise, accessible et coherent — qualite production.
 
-## v1.0 Requirements
+## v1.1 Requirements
 
-Requirements pour le milestone Data Flow Integrity. Chaque requirement corrige un flux de donnees casse ou orphelin identifie par l'audit du 11 mars 2026.
+### Validated (axes 1-4 — DONE)
 
-### Coherence donnees
+- [x] **COPY-01**: Tous les textes user-facing affichent les accents francais corrects
+- [x] **A11Y-01**: Tous les elements interactifs ont des aria-labels appropries
+- [x] **PERF-01**: Les computations couteuses sont memoizees (useMemo)
+- [x] **EDGE-01**: Les divisions, parseFloat, et acces array sont gardes contre null/NaN/zero
 
-- [x] **DATA-01**: Le scanner aliments ET le comparateur prennent en compte DietPreferences.disliked_foods en plus de dog.allergies
-- [x] **DATA-02**: Le score sante frontend (healthStatus.js) integre les poids GrowthEntry et DailyLog en plus de HealthRecord
-- [x] **DATA-03**: Le PDF sante inclut les poids GrowthEntry et DailyLog (pas seulement HealthRecord.type=weight)
-- [x] **DATA-04**: Le code mort healthScoreCalculate.ts est supprime (le score frontend healthStatus.js est la seule source de verite)
+### Dead Code
 
-### Flux IA
+- [ ] **DEAD-01**: Aucun import inutilise dans les fichiers JSX/JS
+- [ ] **DEAD-02**: Aucune variable/fonction declaree mais jamais utilisee
+- [ ] **DEAD-03**: Aucun composant orphelin (non importe nulle part)
+- [ ] **DEAD-04**: Aucun fichier backend .ts mort (non reference dans les configs)
 
-- [x] **AI-01**: La reponse IA post check-in utilise les 7 derniers check-ins pour detecter les tendances (mood, energy, appetite, symptoms)
-- [x] **AI-02**: Le weekly insight integre les donnees HealthRecord (vaccins en retard, visites, medicaments) ET les behavior_notes/notes des check-ins
-- [x] **AI-03**: Le monthly summary integre les check-ins (mood moyen, energy moyen, symptoms signales, streak)
+### Error UX
 
-### Notifications
+- [ ] **ERR-01**: Chaque appel API a un try/catch avec message d'erreur user-friendly
+- [ ] **ERR-02**: Chaque liste vide affiche un etat vide explicite (pas un ecran blanc)
+- [ ] **ERR-03**: Chaque formulaire affiche des messages de validation clairs
+- [ ] **ERR-04**: Les etats de chargement sont visibles (loading spinners, skeletons)
 
-- [x] **NOTIF-01**: Les rappels email couvrent les medicaments avec next_date (meme logique que vaccins)
-- [x] **NOTIF-02**: Les rappels email couvrent les visites vet avec next_date
-- [x] **NOTIF-03**: Les rappels vaccin sont envoyes aux free users (pas seulement premium/trial)
+### Security
 
-### Dashboard
+- [ ] **SEC-01**: Aucun secret/token/cle API en clair dans le code source
+- [ ] **SEC-02**: Les inputs utilisateur sont sanitizes avant injection dans du HTML/prompts
+- [ ] **SEC-03**: Les URLs et donnees externes sont validees avant utilisation
+- [ ] **SEC-04**: Pas de rendu HTML brut non-sanitize ni d'execution de code dynamique
 
-- [x] **DASH-01**: SmartAlerts detecte les tendances d'appetite en plus de mood et energy
+### Consistency
 
-### Nutrition
-
-- [x] **NUTRI-01**: La generation de plan 3 repas/jour produit un JSON avec morning/noon/evening (pas seulement morning/evening)
-
-### Activite
-
-- [x] **ACT-01**: Une balade enregistree (DailyLog) contribue au streak quotidien
-- [x] **ACT-02**: Les programmes comportement 7j ont un tracking de completion jour par jour (comme les programmes forme)
-
-### Sante
-
-- [x] **SANTE-01**: Le PDF sante inclut vet_name et vet_city du profil chien
-- [x] **SANTE-02**: next_vet_appointment contribue au score sante et apparait dans les rappels
-
-## v2 Requirements
-
-Deferred au prochain milestone.
-
-- **PARK-01**: Park reviews integrees dans le contexte AI du chat
-- **WALK-01**: GPS path persiste en base pour historique visuel
-- **NUTRI-02**: meal_times declenchent des notifications de rappel repas
-- **NUTRI-03**: water_bowls a une UI de saisie dans le check-in ou la page activite
-- **WALK-02**: Calories de balade persistees en base
+- [ ] **CONS-01**: Les boutons primaires utilisent le meme pattern partout (gradient-primary)
+- [ ] **CONS-02**: Les cards suivent un pattern uniforme (rounded-2xl, border, padding)
+- [ ] **CONS-03**: Les espacements sont coherents (mx-4/mx-5, gap-3, py-3)
+- [ ] **CONS-04**: Les couleurs d'etat sont uniformes (success=emerald, warning=amber, error=red)
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Nouvelles features (Sprint 2-3 strategy) | On corrige d'abord, on ajoute ensuite |
-| Schema changes (Build prompts) | Tout corrigeable via Git push, 0 credit |
-| Refactoring architecture global | On corrige les flux, pas la structure |
-| Merge des 4 sources de poids en 1 | Trop risque, on corrige les consommateurs a la place |
-| Merge dog.allergies + DietPreferences en 1 champ | Concepts differents (allergies medicales vs preferences), on les combine dans les prompts |
+| Refactoring architectural | Audit qualite, pas restructuration — trop risque pour le moment |
+| Tests unitaires | Pas de framework de test configure sur Base44 |
+| Bundle size optimization | Vite gere le tree-shaking, pas de gain significatif attendu |
+| i18n complet | L'app est FR-only, pas besoin de systeme de traduction |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | Phase 1 | Complete (2026-03-11) |
-| DATA-02 | Phase 1 | Complete (2026-03-11) |
-| DATA-03 | Phase 1 | Done — 01-03 |
-| DATA-04 | Phase 1 | Complete (2026-03-11) |
-| AI-01 | Phase 2 | Complete (2026-03-11) |
-| AI-02 | Phase 2 | Complete |
-| AI-03 | Phase 2 | Complete |
-| NOTIF-01 | Phase 3 | Complete |
-| NOTIF-02 | Phase 3 | Complete |
-| NOTIF-03 | Phase 3 | Complete |
-| DASH-01 | Phase 4 | Complete |
-| NUTRI-01 | Phase 4 | Complete |
-| ACT-01 | Phase 4 | Complete |
-| ACT-02 | Phase 4 | Complete |
-| SANTE-01 | Phase 4 | Complete (2026-03-11) |
-| SANTE-02 | Phase 4 | Complete (2026-03-11) |
+| COPY-01 | Pre-milestone | Complete |
+| A11Y-01 | Pre-milestone | Complete |
+| PERF-01 | Pre-milestone | Complete |
+| EDGE-01 | Pre-milestone | Complete |
+| DEAD-01 | Phase 5 | Pending |
+| DEAD-02 | Phase 5 | Pending |
+| DEAD-03 | Phase 5 | Pending |
+| DEAD-04 | Phase 5 | Pending |
+| ERR-01 | Phase 6 | Pending |
+| ERR-02 | Phase 6 | Pending |
+| ERR-03 | Phase 6 | Pending |
+| ERR-04 | Phase 6 | Pending |
+| SEC-01 | Phase 7 | Pending |
+| SEC-02 | Phase 7 | Pending |
+| SEC-03 | Phase 7 | Pending |
+| SEC-04 | Phase 7 | Pending |
+| CONS-01 | Phase 8 | Pending |
+| CONS-02 | Phase 8 | Pending |
+| CONS-03 | Phase 8 | Pending |
+| CONS-04 | Phase 8 | Pending |
 
 **Coverage:**
-- v1.0 requirements: 16 total
+- v1.1 requirements: 20 total
+- Validated (pre-milestone): 4
+- Active: 16
 - Mapped to phases: 16
 - Unmapped: 0
 
 ---
-*Requirements defined: 2026-03-11*
-*Last updated: 2026-03-11 — DATA-02 + DATA-04 complete (01-02-PLAN execution)*
+*Requirements defined: 2026-03-12*
+*Last updated: 2026-03-12 after initial definition*
