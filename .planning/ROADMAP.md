@@ -115,8 +115,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Catch silencieux (ERR-01) + skeletons Sante/Activite (ERR-04) : toast.error sur 5 pages + DogEditModal
-- [ ] 06-02-PLAN.md — Etats vides illustres Dashboard/PremiumSection (ERR-02) + validation DogEditModal (ERR-03)
+- [x] 06-01-PLAN.md — Catch silencieux (ERR-01) + skeletons Sante/Activite (ERR-04) : toast.error sur 5 pages + DogEditModal
+- [x] 06-02-PLAN.md — Etats vides illustres Dashboard/PremiumSection (ERR-02) + validation DogEditModal (ERR-03)
 
 ### Phase 7: Security
 **Goal**: Le code ne contient aucun secret en clair, aucun input utilisateur directement injecte dans du HTML ou des prompts IA, et aucune donnee externe utilisee sans validation.
@@ -127,11 +127,11 @@ Plans:
   2. Tout input utilisateur injecte dans un prompt IA ou affiche en HTML passe par une fonction de sanitization
   3. Toute URL externe et toute donnee issue d'une API tierce est validee (format, domaine) avant utilisation
   4. Aucun rendu HTML brut depuis du contenu utilisateur sans sanitization prealable dans le repo
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 07-01: Audit secrets en clair + sanitization des inputs dans les prompts IA
-- [ ] 07-02: Audit validation URLs/donnees externes + audit rendus HTML bruts non proteges
+- [ ] 07-01-PLAN.md — Audit secrets en clair (SEC-01) + sanitize manquants dans pawcoachChat/weeklyInsight/generateTraining/analyzeGrowth (SEC-02)
+- [ ] 07-02-PLAN.md — Validation URL allowlist dans finalDiagnosis/preDiagnosis/processHealthInput/analyzeGrowth (SEC-03) + audit rendu HTML brut (SEC-04)
 
 ### Phase 8: Consistency
 **Goal**: L'interface visuelle est coherente sur toutes les pages — meme pattern de boutons primaires, meme style de cards, meme espacement, meme code couleur pour les etats.
@@ -158,8 +158,8 @@ Plans:
 | 3. Notifications | v1.0 | 2/2 | Complete | 2026-03-11 |
 | 4. Independent Fixes | v1.0 | 4/4 | Complete | 2026-03-11 |
 | 5. Dead Code | v1.1 | 2/2 | Complete | 2026-03-12 |
-| 6. Error UX | 2/2 | Complete   | 2026-03-12 | - |
-| 7. Security | v1.1 | 0/2 | Not started | - |
+| 6. Error UX | v1.1 | 2/2 | Complete | 2026-03-12 |
+| 7. Security | 1/2 | In Progress|  | - |
 | 8. Consistency | v1.1 | 0/3 | Not started | - |
 
 ---
@@ -167,3 +167,4 @@ Plans:
 *Roadmap v1.1 created: 2026-03-12 — 16/16 requirements mapped (phases 5-8)*
 *Phase 5 planned: 2026-03-12 — 2 plans (05-01, 05-02)*
 *Phase 6 planned: 2026-03-12 — 2 plans (06-01, 06-02)*
+*Phase 7 planned: 2026-03-12 — 2 plans (07-01, 07-02)*

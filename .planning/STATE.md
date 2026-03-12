@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Quality Audit
 status: completed
-stopped_at: Completed 06-02-PLAN.md — empty states illustrés Dashboard + PremiumSection + DogEditModal validation
-last_updated: "2026-03-12T02:24:31.785Z"
+stopped_at: Completed 07-01-PLAN.md — SEC-01 audit clean, SEC-02 sanitize fixes applied to 4 AI backend functions
+last_updated: "2026-03-12T03:16:09.533Z"
 last_activity: 2026-03-12 — Phase 06-02 complete (empty states illustrés Dashboard + PremiumSection + DogEditModal validation)
 progress:
   total_phases: 8
   completed_phases: 6
-  total_plans: 16
-  completed_plans: 16
+  total_plans: 18
+  completed_plans: 17
   percent: 94
 ---
 
@@ -49,6 +49,8 @@ Progress: [█████████░] 94% (v1.1) — [███████
 - [Phase 06-error-ux]: Phase 06-01: Sante + Activite loading skeletons added with animate-pulse — if(loading) pattern before main return()
 - [Phase 06-error-ux]: Ternaire weight/walkData < 2 pour afficher état vide au lieu du silence total
 - [Phase 06-error-ux]: Validation name + sex dans DogEditModal avec messages inline avant validation date existante
+- [Phase 07-security]: Sanitize helper inline per Deno function (no shared module — functions deployed independently)
+- [Phase 07-security]: Field-specific max lengths preserved from pre-existing substring() — only added replace(/[<>]/g,'') to close injection gap without changing behavior
 
 ### Pending Todos
 
@@ -61,6 +63,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T02:20:44.458Z
-Stopped at: Completed 06-02-PLAN.md — empty states illustrés Dashboard + PremiumSection + DogEditModal validation
+Last session: 2026-03-12T03:16:09.528Z
+Stopped at: Completed 07-01-PLAN.md — SEC-01 audit clean, SEC-02 sanitize fixes applied to 4 AI backend functions
 Resume file: None
