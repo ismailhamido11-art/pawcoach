@@ -13,6 +13,20 @@ Deno.serve(async (req) => {
     // Sanitize user inputs to prevent prompt injection and limit length
     const sanitize = (s, max = 2000) => String(s || '').substring(0, max).replace(/[<>]/g, '');
 
+    // Validate image URL against allowlist to prevent SSRF
+    const validateImageUrl = (url) => {
+      if (!url) return null;
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = ['base44.app', 'amazonaws.com', 's3.amazonaws.com'];
+        if (!allowedHosts.some(h => parsed.hostname.endsWith(h))) return null;
+        return url;
+      } catch {
+        return null;
+      }
+    };
+    const safeImageUrl = validateImageUrl(imageUrl);
+
     // Fetch dog info and health records for context
     let dogName = "ton chien";
     let ownerName = "toi";
@@ -228,10 +242,11 @@ Retourne TOUJOURS du JSON valide :
     if (messages && Array.isArray(messages)) {
       conversationHistory = messages.slice(-10).map(m => `[${m.role === 'user' ? 'UTILISATEUR' : 'ASSISTANT'}] ${sanitize(m.content)}`).join("\n");
       const lastMsg = messages[messages.length - 1];
-      if (lastMsg?.image_url) fileUrls.push(lastMsg.image_url);
+      const safeLastImageUrl = validateImageUrl(lastMsg?.image_url);
+      if (safeLastImageUrl) fileUrls.push(safeLastImageUrl);
     } else if (text || imageUrl) {
       conversationHistory = `[UTILISATEUR] ${sanitize(text) || "Document à analyser"}`;
-      if (imageUrl) fileUrls.push(imageUrl);
+      if (safeImageUrl) fileUrls.push(safeImageUrl);
     }
 
     // Call Base44 native LLM

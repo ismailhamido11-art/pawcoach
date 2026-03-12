@@ -13,6 +13,21 @@ Deno.serve(async (req) => {
     // Sanitize user inputs to prevent prompt injection and limit length
     const sanitize = (s, max = 2000) => String(s || '').substring(0, max).replace(/[<>]/g, '');
 
+    // Validate image URL against allowlist to prevent SSRF
+    const validateImageUrl = (url) => {
+      if (!url) return null;
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = ['base44.app', 'amazonaws.com', 's3.amazonaws.com'];
+        if (!allowedHosts.some(h => parsed.hostname.endsWith(h))) return null;
+        return url;
+      } catch {
+        return null;
+      }
+    };
+    const safeImageUrl = validateImageUrl(image_url);
+    if (image_url && !safeImageUrl) return Response.json({ error: 'Invalid image URL' }, { status: 400 });
+
     // Validate dog_weight as a number
     const safeWeight = typeof dog_weight === 'number' ? dog_weight : (typeof dog_weight === 'string' && !isNaN(parseFloat(dog_weight)) ? parseFloat(dog_weight) : null);
 
@@ -57,7 +72,7 @@ DURÉE: ${sanitize(duration, 500) || 'Non précisée'}
 
 INFOS SUPPLÉMENTAIRES: ${sanitize(additional_info) || 'Aucune'}
 
-${image_url ? "NOTE: Le propriétaire a fourni une photo des symptômes. Intègre tes observations visuelles dans le rapport." : ""}
+${safeImageUrl ? "NOTE: Le propriétaire a fourni une photo des symptômes. Intègre tes observations visuelles dans le rapport." : ""}
 
 PREMIÈRE ANALYSE:
 ${sanitize(preliminary_observations || 'Non disponible', 800)}
@@ -75,7 +90,7 @@ Genere un bilan COMPLET et DETAILLE au format JSON:
 - immediate_advice: array de strings (3 a 5 mesures de confort en attendant la visite)
 - important_note: string (rappel que ce bilan est un outil de preparation, pas un diagnostic — seul le veterinaire peut poser un diagnostic)`;
 
-    const fileUrls = image_url ? [image_url] : undefined;
+    const fileUrls = safeImageUrl ? [safeImageUrl] : undefined;
 
     const result = await base44.integrations.Core.InvokeLLM({
       prompt,

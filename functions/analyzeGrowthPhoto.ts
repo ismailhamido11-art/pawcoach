@@ -11,6 +11,21 @@ Deno.serve(async (req) => {
 
     // Sanitize user-controlled strings before prompt injection
     const sanitize = (s: any, max = 500) => String(s || '').substring(0, max).replace(/[<>]/g, '');
+
+    // Validate photo URL against allowlist to prevent SSRF
+    const validateImageUrl = (url: string | undefined | null): string | null => {
+      if (!url) return null;
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = ['base44.app', 'amazonaws.com', 's3.amazonaws.com'];
+        if (!allowedHosts.some(h => parsed.hostname.endsWith(h))) return null;
+        return url;
+      } catch {
+        return null;
+      }
+    };
+    const safePhotoUrl = validateImageUrl(photoUrl);
+    if (!safePhotoUrl) return Response.json({ error: 'Invalid photo URL' }, { status: 400 });
     const dogBreed = sanitize(rawDogBreed, 50);
     const safeWeight = typeof rawCurrentWeight === 'number' ? rawCurrentWeight : null;
 
@@ -43,7 +58,7 @@ Réponds UNIQUEMENT en JSON avec ce format exact:
 
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt,
-      file_urls: [photoUrl],
+      file_urls: [safePhotoUrl],
       response_json_schema: {
         type: "object",
         properties: {

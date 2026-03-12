@@ -13,6 +13,21 @@ Deno.serve(async (req) => {
     // Sanitize user inputs to prevent prompt injection and limit length
     const sanitize = (s, max = 2000) => String(s || '').substring(0, max).replace(/[<>]/g, '');
 
+    // Validate image URL against allowlist to prevent SSRF
+    const validateImageUrl = (url) => {
+      if (!url) return null;
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = ['base44.app', 'amazonaws.com', 's3.amazonaws.com'];
+        if (!allowedHosts.some(h => parsed.hostname.endsWith(h))) return null;
+        return url;
+      } catch {
+        return null;
+      }
+    };
+    const safeImageUrl = validateImageUrl(image_url);
+    if (image_url && !safeImageUrl) return Response.json({ error: 'Invalid image URL' }, { status: 400 });
+
     // Validate dog_weight as a number
     const safeWeight = typeof dog_weight === 'number' ? dog_weight : (typeof dog_weight === 'string' && !isNaN(parseFloat(dog_weight)) ? parseFloat(dog_weight) : null);
 
@@ -47,7 +62,7 @@ DURÉE: ${sanitize(duration, 500) || 'Non précisée'}
 
 INFOS SUPPLÉMENTAIRES: ${sanitize(additional_info) || 'Aucune'}
 
-${image_url ? "NOTE: Le propriétaire a aussi envoyé une photo des symptômes. Analyse-la attentivement pour affiner tes questions." : ""}
+${safeImageUrl ? "NOTE: Le propriétaire a aussi envoyé une photo des symptômes. Analyse-la attentivement pour affiner tes questions." : ""}
 
 REGLE ABSOLUE: Ne mentionne JAMAIS de sources, d'URLs, de liens web, de references a des sites internet, ni de citations de recherche dans ta reponse. Ecris comme un professionnel de sante animale qui prepare un dossier pour le veterinaire. Ne pose JAMAIS de diagnostic — tu structures les observations.
 
@@ -56,7 +71,7 @@ Genere un JSON avec:
 - preliminary_urgency: "low" | "medium" | "high" | "emergency" (estimation pour aider le proprietaire a decider quand consulter)
 - followup_questions: array d'objets avec { id: string (q1, q2...), question: string, type: "text" | "yes_no" | "choice", options?: array de strings (seulement si type=choice) }. Genere 4 a 6 questions que le veterinaire poserait typiquement. Par exemple si le chien se gratte l'oreille, demande s'il y a une odeur, un ecoulement, etc.`;
 
-    const fileUrls = image_url ? [image_url] : undefined;
+    const fileUrls = safeImageUrl ? [safeImageUrl] : undefined;
 
     const result = await base44.integrations.Core.InvokeLLM({
       prompt,
