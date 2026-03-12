@@ -61,6 +61,7 @@ export default function ReferralSection({ user, onSave }) {
               <p className="text-lg font-black text-foreground tracking-wider">{code}</p>
             </div>
             <button
+              aria-label="Copier le code"
               onClick={handleCopy}
               className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0 hover:bg-accent/20 transition-colors"
             >

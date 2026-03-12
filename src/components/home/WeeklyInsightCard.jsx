@@ -117,7 +117,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
 
                   {highlights.length > 0 && (
                     <div>
-                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Points cles</p>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Points clés</p>
                       <div className="space-y-1.5">
                         {highlights.map((h, i) => (
                           <div key={i} className="flex items-start gap-2 text-sm text-foreground">

@@ -205,7 +205,7 @@ export default function Library() {
               {search ? "Aucun résultat" : "Aucun bookmark"}
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              {search ? "Essaie un autre mot-cle" : "Sauvegarde des conseils depuis le Chat, NutriCoach, dressage ou comparaisons"}
+              {search ? "Essaie un autre mot-clé" : "Sauvegarde des conseils depuis le Chat, NutriCoach, dressage ou comparaisons"}
             </p>
           </div>
         ) : (

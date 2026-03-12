@@ -517,7 +517,7 @@ function BehaviorProgramCard({ program }) {
                   </button>
                 ) : (
                   <p className="text-[10px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" /> Jour {elapsed + 1} completé !
+                    <CheckCircle2 className="w-3 h-3" /> Jour {elapsed + 1} complété !
                   </p>
                 )}
 

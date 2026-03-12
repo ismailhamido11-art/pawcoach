@@ -90,7 +90,7 @@ export default function QRCodeCard({ dog }) {
                   <h2 className="text-xl font-black text-slate-900">QR Code d'urgence</h2>
                   <p className="text-sm text-slate-500 mt-0.5">{dog.name} · Dossier médical complet</p>
                 </div>
-                <button onClick={() => setOpen(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+                <button aria-label="Fermer" onClick={() => setOpen(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
                   <X className="w-4 h-4 text-slate-600" />
                 </button>
               </div>
