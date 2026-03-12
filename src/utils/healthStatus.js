@@ -536,7 +536,7 @@ export function computeNextAction(records, dog) {
     return {
       type: "vet_visit_missing",
       title: "Aucune visite vétérinaire enregistrée",
-      description: "Ajoute ta derniere visite pour un suivi complet.",
+      description: "Ajoute ta dernière visite pour un suivi complet.",
       urgency: "suggested",
       ctaLabel: "Ajouter une visite",
       targetTab: "vet_visit",

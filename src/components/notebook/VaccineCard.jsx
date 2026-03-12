@@ -70,7 +70,7 @@ function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
           </button>
         </div>
         <p className="text-[10px] text-muted-foreground leading-relaxed">
-          Indique la date de la derniere injection. Le prochain rappel sera calcule automatiquement.
+          Indique la date de la dernière injection. Le prochain rappel sera calculé automatiquement.
         </p>
         <div>
           <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Date du vaccin</label>
