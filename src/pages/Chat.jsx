@@ -373,7 +373,7 @@ export default function Chat() {
               )}
               {isUserPremium(user) && (
                 <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
                   <span className="text-white text-xs font-medium">Premium</span>
                 </div>
               )}

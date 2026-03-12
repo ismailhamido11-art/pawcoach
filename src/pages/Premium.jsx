@@ -228,8 +228,8 @@ export default function Premium() {
                 >
                   <IconBadge icon={f.icon} color={f.color} size="xs" />
                   <span className="text-sm font-medium text-foreground flex-1">{f.text}</span>
-                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
-                    <Check className="w-3.5 h-3.5 text-green-600" />
+                  <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
                   </div>
                 </motion.div>
               ))}

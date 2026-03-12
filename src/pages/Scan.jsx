@@ -25,12 +25,12 @@ const listItem = {
 const VERDICT_CONFIG = {
   safe: {
     label: "✅ Sans danger",
-    badgeBg: "bg-green-100 text-green-700",
-    cardBg: "bg-green-50",
-    border: "border-green-200",
-    ring: "#22c55e",
+    badgeBg: "bg-emerald-100 text-emerald-700",
+    cardBg: "bg-emerald-50",
+    border: "border-emerald-200",
+    ring: "#10b981",
     icon: CheckCircle,
-    iconColor: "text-green-500",
+    iconColor: "text-emerald-500",
   },
   caution: {
     label: "⚠️ Avec précaution",
@@ -53,7 +53,7 @@ const VERDICT_CONFIG = {
 };
 
 const LABEL_VERDICT_CONFIG = {
-  excellent: { label: "Excellent choix", color: "text-green-700", bg: "bg-green-50", border: "border-green-200", icon: CheckCircle, iconColor: "text-green-500" },
+  excellent: { label: "Excellent choix", color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200", icon: CheckCircle, iconColor: "text-emerald-500" },
   good:      { label: "Bon choix",       color: "text-blue-700",  bg: "bg-blue-50",  border: "border-blue-200",  icon: CheckCircle, iconColor: "text-blue-500" },
   caution:   { label: "Avec précaution", color: "text-amber-700", bg: "bg-amber-50", border: "border-amber-200", icon: AlertTriangle, iconColor: "text-amber-500" },
   avoid:     { label: "À éviter",        color: "text-red-700",   bg: "bg-red-50",   border: "border-red-200",   icon: AlertCircle, iconColor: "text-red-500" },
@@ -618,7 +618,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                             Oui 😱
                           </button>
                           <button onClick={() => setDogAteIt(false)}
-                            className={`flex-1 py-2 rounded-xl text-sm font-bold border-2 transition-all ${!dogAteIt ? "bg-white text-green-600 border-green-300" : "bg-white text-gray-400 border-gray-200"}`}>
+                            className={`flex-1 py-2 rounded-xl text-sm font-bold border-2 transition-all ${!dogAteIt ? "bg-white text-emerald-600 border-emerald-300" : "bg-white text-gray-400 border-gray-200"}`}>
                             Non
                           </button>
                         </div>
@@ -828,7 +828,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                     <div className="grid grid-cols-2 gap-2 mb-3">
                       {labelResult.pros?.length > 0 && (
                         <div className="bg-white rounded-xl p-3">
-                          <p className="text-[10px] font-bold text-green-700 mb-1">✅ Points positifs</p>
+                          <p className="text-[10px] font-bold text-emerald-700 mb-1">✅ Points positifs</p>
                           <ul className="space-y-1">{labelResult.pros.map((p, i) => <li key={i} className="text-xs text-foreground/80">{p}</li>)}</ul>
                         </div>
                       )}
@@ -875,7 +875,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                   <Button
                     onClick={saveLabelResult}
                     disabled={labelSaved}
-                    className={`flex-1 h-14 rounded-2xl font-semibold ${labelSaved ? "bg-green-50 text-green-700 border border-green-200" : "gradient-primary border-0 text-white"}`}
+                    className={`flex-1 h-14 rounded-2xl font-semibold ${labelSaved ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "gradient-primary border-0 text-white"}`}
                   >
                     {labelSaved ? "Sauvegardee" : "Sauvegarder"}
                   </Button>
