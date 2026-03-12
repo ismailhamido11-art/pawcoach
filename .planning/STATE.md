@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Quality Audit
-status: in_progress
-stopped_at: Completed 06-01-PLAN.md — toast.error on 5 pages + skeletons for Sante/Activite + DogEditModal photo toast
-last_updated: "2026-03-12T12:37:00.000Z"
-last_activity: 2026-03-12 — Phase 06-01 complete (ERR-01 + ERR-04 satisfied, toast.error + skeletons on 7 files)
+status: completed
+stopped_at: Completed 06-02-PLAN.md — empty states illustrés Dashboard + PremiumSection + DogEditModal validation
+last_updated: "2026-03-12T02:20:44.464Z"
+last_activity: 2026-03-12 — Phase 06-02 complete (empty states illustrés Dashboard + PremiumSection + DogEditModal validation, ERR-02 + ERR-03 done)
 progress:
   total_phases: 8
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 16
-  completed_plans: 15
-  percent: 20
+  completed_plans: 16
+  percent: 94
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-12)
 
 **Core value:** Code propre, securise, coherent — qualite production sur les 4 axes restants de l'audit.
-**Current focus:** Milestone v1.1 Quality Audit — Phase 6 (Error UX) IN PROGRESS, 06-01 done (ERR-01+ERR-04), 06-02 next
+**Current focus:** Milestone v1.1 Quality Audit — Phase 6 (Error UX) COMPLETE (ERR-01+ERR-02+ERR-03+ERR-04), Phase 7 (Security) next
 
 ## Current Position
 
-Phase: 6 of 8 (Error UX) — IN PROGRESS
-Plan: 1 of 2 in current phase — COMPLETE, 1 remaining
-Status: Phase 06-01 done (ERR-01, ERR-04 satisfied), ready for 06-02
-Last activity: 2026-03-12 — Phase 06-01 complete (toast.error + skeletons on 7 files, ERR-01 + ERR-04 done)
+Phase: 6 of 8 (Error UX) — COMPLETE
+Plan: 2 of 2 in current phase — COMPLETE
+Status: Phase 06 done (ERR-01, ERR-02, ERR-03, ERR-04 satisfied), ready for Phase 07 (Security)
+Last activity: 2026-03-12 — Phase 06-02 complete (empty states illustrés Dashboard + PremiumSection + DogEditModal validation)
 
 Progress: [█████████░] 94% (v1.1) — [██████████] 100% (v1.0 complete)
 
@@ -47,6 +47,8 @@ Progress: [█████████░] 94% (v1.1) — [███████
 - [Phase 05-dead-code]: Phase 05-01: 87 unused imports removed (ESLint --fix), 65 unused vars prefixed _, React hooks violation in WeightCard fixed, Vite build passes
 - [Phase 06-error-ux]: Phase 06-01: toast.error pattern established across 5 main pages — import from sonner + message in French after console.error in load catch
 - [Phase 06-error-ux]: Phase 06-01: Sante + Activite loading skeletons added with animate-pulse — if(loading) pattern before main return()
+- [Phase 06-error-ux]: Ternaire weight/walkData < 2 pour afficher état vide au lieu du silence total
+- [Phase 06-error-ux]: Validation name + sex dans DogEditModal avec messages inline avant validation date existante
 
 ### Pending Todos
 
@@ -59,6 +61,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T02:13:42.486Z
-Stopped at: Completed 06-01-PLAN.md — toast.error on 5 pages + skeletons for Sante/Activite + DogEditModal photo toast
+Last session: 2026-03-12T02:20:44.458Z
+Stopped at: Completed 06-02-PLAN.md — empty states illustrés Dashboard + PremiumSection + DogEditModal validation
 Resume file: None

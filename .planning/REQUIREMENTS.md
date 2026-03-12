@@ -22,8 +22,8 @@
 ### Error UX
 
 - [x] **ERR-01**: Chaque appel API a un try/catch avec message d'erreur user-friendly
-- [ ] **ERR-02**: Chaque liste vide affiche un etat vide explicite (pas un ecran blanc)
-- [ ] **ERR-03**: Chaque formulaire affiche des messages de validation clairs
+- [x] **ERR-02**: Chaque liste vide affiche un etat vide explicite (pas un ecran blanc)
+- [x] **ERR-03**: Chaque formulaire affiche des messages de validation clairs
 - [x] **ERR-04**: Les etats de chargement sont visibles (loading spinners, skeletons)
 
 ### Security
@@ -62,8 +62,8 @@
 | DEAD-03 | Phase 5 | Complete |
 | DEAD-04 | Phase 5 | Complete |
 | ERR-01 | Phase 6 | Complete |
-| ERR-02 | Phase 6 | Pending |
-| ERR-03 | Phase 6 | Pending |
+| ERR-02 | Phase 6 | Complete |
+| ERR-03 | Phase 6 | Complete |
 | ERR-04 | Phase 6 | Complete |
 | SEC-01 | Phase 7 | Pending |
 | SEC-02 | Phase 7 | Pending |
