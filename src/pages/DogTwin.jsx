@@ -97,11 +97,11 @@ export default function DogTwin() {
         const recentLogs = logs.filter(l => l.date && daysSince(l.date) <= 7);
         const activityScore = recentLogs.length >= 5 ? 95 : recentLogs.length >= 3 ? 80 : recentLogs.length >= 1 ? 60 : 35;
         const activityDetail = recentLogs.length > 0
-          ? `${recentLogs.length} activite${recentLogs.length > 1 ? "s" : ""} cette semaine`
-          : "Aucune activite recente";
+          ? `${recentLogs.length} activité${recentLogs.length > 1 ? "s" : ""} cette semaine`
+          : "Aucune activité récente";
 
         setZones([
-          { id: "heart", label: "Vitalite", icon: Heart, color: "#ff6b8a", score: vaccineScore, detail: vaccineDetail, emoji: "❤️" },
+          { id: "heart", label: "Vitalité", icon: Heart, color: "#ff6b8a", score: vaccineScore, detail: vaccineDetail, emoji: "❤️" },
           { id: "food", label: "Nutrition", icon: Utensils, color: "#f59e0b", score: weightScore, detail: weightDetail, emoji: "🍗" },
           { id: "brain", label: "Mental", icon: Brain, color: "#a78bfa", score: vetScore, detail: vetDetail, emoji: "🧠" },
           { id: "activity", label: "Activite", icon: Activity, color: "#34d399", score: activityScore, detail: activityDetail, emoji: "🏃" },

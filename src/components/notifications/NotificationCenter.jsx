@@ -9,7 +9,7 @@ import { getDaysLeft } from "@/utils/dateHelpers";
 
 const TYPE_CONFIG = {
   vaccine:    { icon: Syringe,     color: "text-safe",        bg: "bg-safe/10",    label: "Vaccin",      gradient: "from-safe to-green-500" },
-  vet_visit:  { icon: Stethoscope, color: "text-accent",      bg: "bg-accent/10",  label: "Veto",        gradient: "from-accent to-emerald-400" },
+  vet_visit:  { icon: Stethoscope, color: "text-accent",      bg: "bg-accent/10",  label: "Véto",        gradient: "from-accent to-emerald-400" },
   medication: { icon: Pill,        color: "text-caution",     bg: "bg-caution/10", label: "Traitement",  gradient: "from-caution to-amber-400" },
 };
 

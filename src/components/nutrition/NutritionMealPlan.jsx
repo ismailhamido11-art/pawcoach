@@ -212,8 +212,10 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       if (weightRecords.length >= 2) {
         const latest = parseFloat(weightRecords[0].value);
         const previous = parseFloat(weightRecords[1].value);
-        const diff = (latest - previous).toFixed(1);
-        healthContext += `\n- Tendance poids : ${latest} kg (${Number(diff) > 0 ? "+" : ""}${diff} kg récemment)${Number(diff) > 1 ? " → réduire les calories" : Number(diff) < -1 ? " → augmenter les calories" : ""}`;
+        if (!isNaN(latest) && !isNaN(previous)) {
+          const diff = (latest - previous).toFixed(1);
+          healthContext += `\n- Tendance poids : ${latest} kg (${Number(diff) > 0 ? "+" : ""}${diff} kg récemment)${Number(diff) > 1 ? " → réduire les calories" : Number(diff) < -1 ? " → augmenter les calories" : ""}`;
+        }
       }
       if (recentVetVisits.length > 0) {
         healthContext += `\n- Dernière visite véto : ${recentVetVisits[0].title || "visite"}${recentVetVisits[0].details ? ` — ${recentVetVisits[0].details.substring(0, 80)}` : ""}`;
@@ -269,10 +271,10 @@ RÉPONDS UNIQUEMENT avec un objet JSON valide, sans texte avant ni après, sans 
   ],
   "supplements": ["Carotte crue (2x/sem)", "Pomme sans pepins (1x/sem)"],
   "avoid": ["Raisins", "Chocolat", "Oignons"],
-  "tip": "Un conseil personnalise pour ce chien.",
+  "tip": "Un conseil personnalisé pour ce chien.",
   "rationale": [
     "Protéines variées pour couvrir tous les acides aminés essentiels",
-    "Calories adaptees au poids et au niveau d'activite",
+    "Calories adaptées au poids et au niveau d'activité",
     "Huile de saumon pour le pelage et les articulations"
   ]
 }
@@ -288,8 +290,8 @@ RÈGLES :
 - Si l'appétit est en baisse, propose des repas plus appétissants et fractionnés
 - Si le poids augmente, réduis les calories ; s'il diminue, augmente-les
 - Sois concis dans les descriptions (pas de phrases longues)
-- N'utilise PAS de caracteres speciaux, d'emojis ou de sequences Unicode dans le JSON
-- Le champ "rationale" doit contenir 3 a 5 raisons courtes expliquant POURQUOI ce plan est adapte a ce chien specifiquement (basees sur ses donnees reelles : poids, age, activite, appetit, sante, preferences)
+- N'utilise PAS de caractères spéciaux, d'emojis ou de séquences Unicode dans le JSON
+- Le champ "rationale" doit contenir 3 à 5 raisons courtes expliquant POURQUOI ce plan est adapté à ce chien spécifiquement (basées sur ses données réelles : poids, âge, activité, appétit, santé, préférences)
 - Retourne UNIQUEMENT le JSON, rien d'autre`;
 
     try {

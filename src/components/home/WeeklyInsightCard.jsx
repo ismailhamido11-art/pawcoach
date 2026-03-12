@@ -86,7 +86,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                   <p className="text-xl font-black text-accent">{insight.avg_energy.toFixed(1)}</p>
                   <TrendBadge current={insight.avg_energy} previous={previousInsight?.avg_energy} />
                 </div>
-                <p className="text-[10px] text-muted-foreground font-medium">energie moy.</p>
+                <p className="text-[10px] text-muted-foreground font-medium">énergie moy.</p>
               </div>
             )}
             {insight.checkin_count > 0 && (
