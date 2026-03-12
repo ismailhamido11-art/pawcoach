@@ -78,14 +78,16 @@ Le check-in quotidien IA doit produire des conseils pertinents bases sur TOUTES 
 | Streak = check-in + balade | Les deux comptent comme activite quotidienne. La balade seule maintient le streak. | -- Pending |
 | 3 repas: ajouter noon au JSON schema | Plus simple que de forcer 2 repas max dans l'UI | -- Pending |
 
-## Current Milestone: v1.0 Data Flow Integrity
+## Current Milestone: v1.1 Quality Audit
 
-**Goal:** Corriger tous les flux de donnees casses ou orphelins identifies par l'audit de coherence metier du 11 mars 2026, avant de passer a Phase 6 (conversion).
+**Goal:** Audit qualite approfondi sur 8 axes — eliminer le code mort, renforcer l'UX d'erreur, securiser les donnees, et harmoniser les patterns UI.
 
 **Target features:**
-- Vague 1: Corriger les "mensonges" (allergies, poids, score sante)
-- Vague 2: Rebrancher les flux troues (weekly insight, emails, check-in memoire, SmartAlerts)
-- Vague 3: Corriger la logique bancale (streak, 3 repas, completion comportement, infos vet)
+- Axe 1-4 (DONE): COPY_FR, A11Y, PERF, EDGE_CASES — 120+ corrections appliquees
+- Axe 5: DEAD_CODE — imports inutilises, composants orphelins, variables mortes
+- Axe 6: ERROR_UX — messages d'erreur vagues, etats vides, fallbacks manquants
+- Axe 7: SECURITY — XSS, donnees exposees, sanitization, secrets
+- Axe 8: CONSISTENCY — patterns UI incoherents (boutons, cards, spacing, couleurs)
 
 ---
-*Last updated: 2026-03-11 after Data Flow Integrity audit (4 agents paralleles)*
+*Last updated: 2026-03-12 after milestone v1.1 Quality Audit started*

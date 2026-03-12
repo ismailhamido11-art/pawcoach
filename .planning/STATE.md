@@ -1,94 +1,42 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: complete
-stopped_at: UAT complete — 15/15 tests pass (3 bugs fixed)
-last_updated: "2026-03-11T21:00:00Z"
-last_activity: "2026-03-11 — Global UAT complete: 12 pass + 3 fixed (scanner, comparateur, weekly insight)"
+milestone: v1.1
+milestone_name: Quality Audit
+status: defining_requirements
+stopped_at: Defining requirements for 4 new audit axes
+last_updated: "2026-03-12T12:00:00Z"
+last_activity: "2026-03-12 — Milestone v1.1 Quality Audit started (4/8 axes already done)"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 12
-  completed_plans: 12
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-11)
+See: .planning/PROJECT.md (updated 2026-03-12)
 
 **Core value:** Les donnees collectees doivent etre utilisees partout ou elles ont du sens — pas de champs fantomes, pas de flux casses.
-**Current focus:** Milestone v1.0 COMPLETE — UAT validated
+**Current focus:** Milestone v1.1 Quality Audit — defining requirements
 
 ## Current Position
 
-Phase: 4 of 4 (Independent Fixes) — COMPLETE
-Plan: All 12 plans executed and verified
-Status: Complete
-Last activity: 2026-03-11 — Global UAT complete: 15/15 tests pass (3 bugs fixed during UAT)
-
-Progress: [██████████] 100%
-
-## Performance Metrics
-
-**Velocity:**
-- Total plans completed: 3
-- Average duration: 3min
-- Total execution time: 9min
-
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 01-data-coherence | 3 | 9min | 3min |
-
-**Recent Trend:**
-- Last 5 plans: 2min, 2min, 5min
-- Trend: Stable, rapide
-
-*Updated after each plan completion*
-| Phase 02-ai-enrichment P03 | 1min | 1 tasks | 1 files |
-| Phase 02-ai-enrichment P02 | 5 | 1 tasks | 1 files |
-| Phase 03-notifications P02 | 5 | 1 tasks | 1 files |
-| Phase 03-notifications P01 | 5 | 2 tasks | 2 files |
-| Phase 04-independent-fixes P01 | 5 | 2 tasks | 2 files |
-| Phase 04-independent-fixes P02 | 5 | 2 tasks | 2 files |
-| Phase 04-independent-fixes P04 | 4min | 2 tasks | 2 files |
-| Phase 04-independent-fixes P03 | 5 | 1 tasks | 1 files |
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-12 — Milestone v1.1 Quality Audit started
 
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- Allergies: Unifier dog.allergies + DietPreferences.disliked_foods dans les prompts (pas merger les entites)
-- Score sante: healthScoreCalculate.ts supprime (DATA-02/04 done) — computeHealthScore est la seule source de verite, enrichi GrowthEntry + DailyLog via extraWeightSources optionnel
-- extraWeightSources: 3e param optionnel sur computeHealthScore (pas computeWeightTrend) — 11 consumers existants inchanges
-- Deduplication poids: HealthRecord prioritaire sur GrowthEntry/DailyLog par date
-- PDF poids merge: computeWeightTrend recoit enrichedForTrend (synthetic HealthRecord objects) — signature inchangee
-- PDF poids: priorite PDF inverse de NotebookContent (HealthRecord > GrowthEntry car source officielle)
-- Streak: check-in ET balade comptent tous les deux comme activite quotidienne
-- 3 repas: ajouter noon au JSON (morning/noon/evening) — plus simple que limiter a 2
-- [Phase 02-ai-enrichment]: DailyCheckin fetched per dog inside loop (not global) to avoid memory overload
-- [Phase 02-ai-enrichment]: Recurring symptoms threshold >= 2 occurrences, max 5 displayed sorted by frequency
-- [Phase 02-ai-enrichment]: todayStr (string YYYY-MM-DD) derived from outer today (Date object) to avoid variable conflict in weeklyInsightGenerate.ts
-- [Phase 02-ai-enrichment]: overdueVaccines and activeMeds queried from all dogHealthRecords (not just week) — overdue is overdue regardless of when recorded
-- [Phase 03-notifications]: NOTIF-03: isPremium check retire de vaccineReminders — rappels vaccins sont feature core, pas premium
-- [Phase 03-notifications]: vetVisitReminders: pas de filtre isPremium — rappels vet pour tous les utilisateurs
-- [Phase 03-notifications]: vetVisitReminders: record.title||'Consultation' fallback + getTime() pour compat TypeScript
-- [Phase 03-notifications]: NOTIF-01: medicationReminders suit exactement le pattern vaccineReminders — titres medicaments utilises tels quels (pas de resolveVaccineName)
-- [Phase 04-independent-fixes]: Appetite scoring none=0/decreased=1/normal=2/increased=3 — symmetric around 2, same drop-threshold logic as mood/energy
-- [Phase 04-independent-fixes]: ok appetite alert suppressed if critical vitality alert already present to avoid contradictory signals
-- [Phase 04-independent-fixes]: updateStreakSilently called fire-and-forget from WalkMode handleStop — dedup guard in streakHelper prevents double-counting
-- [Phase 04-independent-fixes]: noon est champ JSON optionnel dans plan nutritionnel — LLM ne le genere que si portions >= 3, UI affiche conditionnellement, zero regression plans 2 repas existants
-- [Phase 04-independent-fixes]: next_vet_appointment bonus +15 vetScore plafonne a 25 — pas de double boost si visite recente + RDV programme
-- [Phase 04-independent-fixes]: vet_name/vet_city dans header PDF Y=38 (chip present) ou Y=33 (sans chip) — else if pour section minimale veterinaire si aucune visite passee
-- [Phase 04-independent-fixes]: BehaviorProgramCard completed_days: reads from bk.completed_days (Bookmark entity), localCompleted null sentinel for optimistic update with rollback on error
+- v1.0 Data Flow Integrity: 16/16 requirements complete, 4 phases, UAT validated
+- Axes 1-4 (COPY_FR, A11Y, PERF, EDGE_CASES): 120+ corrections across 30+ files (10 commits)
+- Display strings only in healthStatus.js/recommendations.js — consumers not affected
 
 ### Pending Todos
 
@@ -96,11 +44,12 @@ None yet.
 
 ### Blockers/Concerns
 
-- Regression risk eleve : 20 pages interconnectees. Toujours verifier "qui utilise ce fichier" avant de modifier un utilitaire partage (healthStatus.js, streakHelper.jsx sont des fichiers partages critiques)
-- 0 Build prompt pour ce milestone — tout via Git push. Aucun schema change possible.
+- Regression risk: 20 pages interconnectees. Toujours verifier "qui utilise ce fichier" avant de modifier un utilitaire partage
+- 0 Build prompt — tout via Git push
+- DEAD_CODE: ne pas supprimer du code qui semble inutilise mais est appele dynamiquement (ex: route configs, lazy imports)
 
 ## Session Continuity
 
-Last session: 2026-03-11T06:51:38.899Z
-Stopped at: Completed 04-03-PLAN.md
+Last session: 2026-03-12
+Stopped at: Defining requirements
 Resume file: None
