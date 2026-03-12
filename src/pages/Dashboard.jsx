@@ -362,7 +362,16 @@ export default function Dashboard() {
         </div>
 
         {/* Weight chart */}
-        {weightData.length >= 2 && (
+        {weightData.length < 2 ? (
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-border/40 flex flex-col items-center text-center gap-2">
+            <Illustration name="dogPaw" className="w-16 h-16 opacity-60" alt="" />
+            <p className="font-semibold text-sm text-foreground">Suis l'évolution du poids</p>
+            <p className="text-xs text-muted-foreground">Enregistre au moins 2 pesées pour voir le graphique</p>
+            <Link to={createPageUrl("Sante") + "?tab=carnet"} className="mt-1 text-xs font-bold text-primary hover:underline">
+              Ajouter une pesée →
+            </Link>
+          </div>
+        ) : (
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-border/40">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -395,7 +404,16 @@ export default function Dashboard() {
         )}
 
         {/* Walk chart */}
-        {walkData.length >= 2 && (
+        {walkData.length < 2 ? (
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-border/40 flex flex-col items-center text-center gap-2">
+            <Illustration name="dogWalking" className="w-16 h-16 opacity-60" alt="" />
+            <p className="font-semibold text-sm text-foreground">Suis les balades quotidiennes</p>
+            <p className="text-xs text-muted-foreground">Enregistre au moins 2 balades pour voir le graphique</p>
+            <Link to={createPageUrl("Activite") + "?tab=balade"} className="mt-1 text-xs font-bold text-primary hover:underline">
+              Lancer une balade →
+            </Link>
+          </div>
+        ) : (
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-border/40">
             <div className="flex items-center gap-2 mb-4">
               <Footprints className="w-4 h-4 text-emerald-500" />
