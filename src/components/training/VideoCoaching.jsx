@@ -105,7 +105,7 @@ export default function VideoCoaching({ exerciseName, dogName, dogId }) {
           {!file ? (
             <Button
               onClick={() => fileInputRef.current?.click()}
-              className="w-full h-14 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-semibold gap-2"
+              className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-semibold gap-2"
             >
               <Video className="w-5 h-5" />
               Enregistrer une vidéo
@@ -126,7 +126,7 @@ export default function VideoCoaching({ exerciseName, dogName, dogId }) {
                 </Button>
                 <Button
                   onClick={handleAnalyze}
-                  className="flex-1 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold"
+                  className="flex-1 rounded-xl gradient-primary border-0 text-white font-semibold"
                 >
                   Analyser
                 </Button>
@@ -164,7 +164,7 @@ export default function VideoCoaching({ exerciseName, dogName, dogId }) {
             <Button
               onClick={saveFeedback}
               disabled={saved}
-              className={`flex-1 h-10 rounded-xl font-semibold ${saved ? "bg-green-50 text-green-700 border border-green-200" : "bg-purple-600 hover:bg-purple-700 text-white"}`}
+              className={`flex-1 h-10 rounded-xl font-semibold ${saved ? "bg-green-50 text-green-700 border border-green-200" : "gradient-primary border-0 text-white"}`}
             >
               {saved ? <BookmarkCheck className="w-4 h-4 mr-1.5" /> : <BookmarkPlus className="w-4 h-4 mr-1.5" />}
               {saved ? "Sauvegarde" : "Sauvegarder"}
