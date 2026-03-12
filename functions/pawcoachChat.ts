@@ -10,6 +10,9 @@ Deno.serve(async (req) => {
 
     if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
 
+    // Sanitize helper — used throughout to prevent prompt injection
+    const sanitize = (s: any, max = 500) => String(s || '').substring(0, max).replace(/[<>]/g, '');
+
     // Validate imageUrl to prevent SSRF
     if (imageUrl) {
       try {
@@ -128,9 +131,9 @@ Deno.serve(async (req) => {
       wellbeingMemory += `\n- Humeurs : ${moods.join(", ")}`;
       wellbeingMemory += `\n- Energie : ${energies.join(", ")}`;
       wellbeingMemory += `\n- Appetit : ${appetites.join(", ")}`;
-      if (latestNote) wellbeingMemory += `\n- Derniere note : "${String(latestNote).substring(0, 200)}"`;
+      if (latestNote) wellbeingMemory += `\n- Derniere note : "${sanitize(latestNote, 200)}"`;
       const latestBehaviorNote = recentCheckins.find(c => c.behavior_notes)?.behavior_notes;
-      if (latestBehaviorNote) wellbeingMemory += `\n- Observation comportement : "${String(latestBehaviorNote).substring(0, 200)}"`;
+      if (latestBehaviorNote) wellbeingMemory += `\n- Observation comportement : "${sanitize(latestBehaviorNote, 200)}"`;
       // Symptoms from F11
       const symptomCheckins = recentCheckins.filter(c => c.symptoms?.length > 0);
       if (symptomCheckins.length > 0) {
@@ -211,7 +214,7 @@ Deno.serve(async (req) => {
         if (timeParts.length > 0) prefParts.push(`horaires: ${timeParts.join(", ")}`);
       } catch {}
       if (dietPref.portions_per_day) prefParts.push(`${dietPref.portions_per_day} repas/jour`);
-      if (dietPref.notes) prefParts.push(`notes proprio: ${String(dietPref.notes).substring(0, 100)}`);
+      if (dietPref.notes) prefParts.push(`notes proprio: ${sanitize(dietPref.notes, 100)}`);
       if (prefParts.length > 0) {
         nutritionMemory += `\n- Preferences alimentaires : ${prefParts.join(", ")}`;
       }
@@ -425,8 +428,8 @@ Deno.serve(async (req) => {
     // Build SYSTEM PROMPT — "Intelligent Brain"
     // ═══════════════════════════════════════════════════════════
     // Sanitize user-controlled strings before prompt injection
-    const safeDogName = String(dog.name || "").substring(0, 50);
-    const safeDogBreed = String(dog.breed || "").substring(0, 50);
+    const safeDogName = sanitize(dog.name, 50);
+    const safeDogBreed = sanitize(dog.breed, 50);
 
     const dogProfile = [
       `- Nom : ${safeDogName}`,
@@ -437,12 +440,12 @@ Deno.serve(async (req) => {
       dog.neutered !== undefined ? `- Sterilise : ${dog.neutered ? "Oui" : "Non"}` : null,
       dog.activity_level ? `- Niveau d'activite : ${dog.activity_level}` : null,
       dog.environment ? `- Environnement : ${dog.environment}` : null,
-      dog.allergies ? `- Allergies : ${dog.allergies}` : null,
+      dog.allergies ? `- Allergies : ${sanitize(dog.allergies, 200)}` : null,
       dog.health_issues ? `- Problemes de sante : ${dog.health_issues}` : null,
       dog.vet_name ? `- Veterinaire : ${dog.vet_name}${dog.vet_city ? ` (${dog.vet_city})` : ""}` : null,
       personalityContext ? `- ${personalityContext}` : null,
       statusContext ? `- ${statusContext}` : null,
-      dog.owner_goal ? `- Objectif du proprietaire : ${String(dog.owner_goal).substring(0, 150)}` : null,
+      dog.owner_goal ? `- Objectif du proprietaire : ${sanitize(dog.owner_goal, 150)}` : null,
       dog.diet_type ? `- Alimentation : ${dog.diet_type}${dog.diet_brand ? ` (${dog.diet_brand})` : ""}` : null,
       dog.diet_restrictions ? `- Restrictions alimentaires : ${dog.diet_restrictions}` : null,
       dog.next_vet_appointment ? `- Prochain RDV veterinaire : ${formatDateFr(dog.next_vet_appointment)}` : null,
@@ -471,7 +474,7 @@ INTERPRETATION DES DONNEES — REGLE CRITIQUE :
 - Quand tu as des donnees, base tes reponses dessus. Quand il n'y en a pas, NE COMBLE PAS le vide par des suppositions — propose plutot de commencer a tracker ("Tu veux qu'on suive X ensemble ?").
 - FRAICHEUR : les donnees des 7 derniers jours sont les plus fiables. Au-dela, contextualise avec la date.
 - TENDANCES : ne signale une tendance que si tu as au moins 3 points de donnees. Un seul point n'est pas une tendance.
-${dog.owner_goal ? `\nOBJECTIF PRINCIPAL : "${dog.owner_goal}" — Oriente naturellement tes conseils vers cet objectif. Par exemple si l'objectif est "perte de poids", privilegie les conseils nutrition/exercice. Si c'est "socialisation", oriente vers les balades et le comportement. Ne repete pas l'objectif mot pour mot a chaque message, mais garde-le en tete.` : ""}
+${dog.owner_goal ? `\nOBJECTIF PRINCIPAL : "${sanitize(dog.owner_goal, 150)}" — Oriente naturellement tes conseils vers cet objectif. Par exemple si l'objectif est "perte de poids", privilegie les conseils nutrition/exercice. Si c'est "socialisation", oriente vers les balades et le comportement. Ne repete pas l'objectif mot pour mot a chaque message, mais garde-le en tete.` : ""}
 
 COMMENT TE COMPORTER :
 - Tu CONNAIS ${safeDogName} personnellement. Refere-toi a son historique naturellement dans tes reponses.

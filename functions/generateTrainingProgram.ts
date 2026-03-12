@@ -23,8 +23,11 @@ Deno.serve(async (req) => {
       .filter(Boolean)
       .slice(0, 15);
 
+    // Sanitize helper — used throughout to prevent prompt injection
+    const sanitize = (s: any, max = 500) => String(s || '').substring(0, max).replace(/[<>]/g, '');
+
     // Sanitize goals from frontend
-    const safeGoals = goals ? String(goals).substring(0, 200).replace(/[<>]/g, '') : null;
+    const safeGoals = goals ? sanitize(goals, 200) : null;
 
     // Sanitize user-controlled strings before prompt injection
     // Prefer server-side dog data, fallback to frontend for non-critical fields
@@ -72,12 +75,12 @@ Deno.serve(async (req) => {
         }
       } catch { /* ignore parse error */ }
     }
-    const behaviorLine = dog?.behavior_summary ? `- Profil comportemental : ${String(dog.behavior_summary).substring(0, 300)}` : "";
-    const ownerGoalLine = dog?.owner_goal ? `- Objectif du propriétaire : ${String(dog.owner_goal).substring(0, 200)}` : "";
+    const behaviorLine = dog?.behavior_summary ? `- Profil comportemental : ${sanitize(dog.behavior_summary, 300)}` : "";
+    const ownerGoalLine = dog?.owner_goal ? `- Objectif du propriétaire : ${sanitize(dog.owner_goal, 200)}` : "";
     const statusLine = dog?.status === "recovering" ? "- ATTENTION : chien en convalescence. Programme doux uniquement, intensité réduite." : "";
     const dietLine = dog?.diet_type ? `- Alimentation : ${String(dog.diet_type).substring(0, 50)}` : "";
     const sexLine = dog?.sex ? `- Sexe : ${dog.sex}${dog.neutered ? " (stérilisé)" : ""}` : "";
-    const allergiesLine = dog?.allergies ? `- Allergies connues : ${String(dog.allergies).substring(0, 200)}` : "";
+    const allergiesLine = dog?.allergies ? `- Allergies connues : ${sanitize(dog.allergies, 200)}` : "";
     const environmentLine = dog?.environment ? `- Environnement : ${String(dog.environment).substring(0, 100)}` : "";
 
     // Combine server-side enrichment block (only non-empty lines)

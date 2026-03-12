@@ -143,10 +143,11 @@ Deno.serve(async (req) => {
         : "";
 
       // Notes and behavior_notes from check-ins
+      const sanitize = (s: any, max = 500) => String(s || '').substring(0, max).replace(/[<>]/g, '');
       const weekNotes: string[] = [];
       weekCheckins.forEach(c => {
-        if (c.notes && String(c.notes).trim()) weekNotes.push(String(c.notes).substring(0, 100));
-        if (c.behavior_notes && String(c.behavior_notes).trim()) weekNotes.push(String(c.behavior_notes).substring(0, 100));
+        if (c.notes && String(c.notes).trim()) weekNotes.push(sanitize(c.notes, 100));
+        if (c.behavior_notes && String(c.behavior_notes).trim()) weekNotes.push(sanitize(c.behavior_notes, 100));
       });
       const notesContext = weekNotes.length > 0
         ? `\n\nNOTES DU PROPRIETAIRE CETTE SEMAINE : ${weekNotes.slice(0, 5).join(" | ")}.`
@@ -179,7 +180,7 @@ Deno.serve(async (req) => {
         const safeName = String(dog.name || "").substring(0, 50);
         const safeBreed = String(dog.breed || "").substring(0, 50);
 
-        const prevBehavior = dog.behavior_summary ? `\nProfil comportemental precedent: "${String(dog.behavior_summary).substring(0, 300)}"` : "";
+        const prevBehavior = dog.behavior_summary ? `\nProfil comportemental precedent: "${sanitize(dog.behavior_summary, 300)}"` : "";
 
         // ── Enriched dog profile (aligned with pawcoachChat) ──
         const getAge = (birthDate: string) => {
@@ -202,7 +203,7 @@ Deno.serve(async (req) => {
           dog.neutered !== undefined ? `- Sterilise : ${dog.neutered ? "Oui" : "Non"}` : null,
           dog.activity_level ? `- Niveau d'activite : ${dog.activity_level}` : null,
           dog.environment ? `- Environnement : ${dog.environment}` : null,
-          dog.allergies ? `- Allergies : ${String(dog.allergies).substring(0, 100)}` : null,
+          dog.allergies ? `- Allergies : ${sanitize(dog.allergies, 100)}` : null,
           dog.health_issues ? `- Problemes de sante : ${String(dog.health_issues).substring(0, 100)}` : null,
           dog.vet_name ? `- Veterinaire : ${String(dog.vet_name).substring(0, 50)}${dog.vet_city ? ` (${String(dog.vet_city).substring(0, 50)})` : ""}` : null,
           dog.diet_type ? `- Alimentation : ${String(dog.diet_type).substring(0, 50)}${dog.diet_brand ? ` (${String(dog.diet_brand).substring(0, 50)})` : ""}` : null,

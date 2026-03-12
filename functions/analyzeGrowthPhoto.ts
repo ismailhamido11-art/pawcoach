@@ -6,8 +6,13 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { dogId, photoUrl, dogBreed, dogBirthDate, currentWeight } = await req.json();
+    const { dogId, photoUrl, dogBreed: rawDogBreed, dogBirthDate, currentWeight: rawCurrentWeight } = await req.json();
     if (!dogId || !photoUrl) return Response.json({ error: 'Missing dogId or photoUrl' }, { status: 400 });
+
+    // Sanitize user-controlled strings before prompt injection
+    const sanitize = (s: any, max = 500) => String(s || '').substring(0, max).replace(/[<>]/g, '');
+    const dogBreed = sanitize(rawDogBreed, 50);
+    const safeWeight = typeof rawCurrentWeight === 'number' ? rawCurrentWeight : null;
 
     // Calculate age in months
     let ageMonths = null;
@@ -17,7 +22,7 @@ Deno.serve(async (req) => {
       ageMonths = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
     }
 
-    const prompt = `Tu es un expert en morphologie canine. Analyse cette photo d'un chien (race: ${dogBreed || 'inconnue'}, âge: ${ageMonths ? ageMonths + ' mois' : 'inconnu'}, poids connu: ${currentWeight ? currentWeight + ' kg' : 'inconnu'}).
+    const prompt = `Tu es un expert en morphologie canine. Analyse cette photo d'un chien (race: ${dogBreed || 'inconnue'}, âge: ${ageMonths ? ageMonths + ' mois' : 'inconnu'}, poids connu: ${safeWeight ? safeWeight + ' kg' : 'inconnu'}).
 
 Évalue avec précision:
 1. Le score de condition corporelle (BCS) sur 9 (1=très maigre, 5=idéal, 9=obèse)
