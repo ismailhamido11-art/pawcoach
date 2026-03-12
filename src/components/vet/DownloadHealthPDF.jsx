@@ -552,7 +552,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
       // ================================================================
       const meds = records.filter((r) => r.type === "medication");
       if (meds.length > 0) {
-        y = drawSectionHeader(doc, y, "Medicaments");
+        y = drawSectionHeader(doc, y, "Médicaments");
         const sorted = [...meds].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 15);
         const rows = sorted.map((m) => [
           fmtShortDate(m.date),
@@ -560,7 +560,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
           m.next_date ? fmtShortDate(m.next_date) : "\u2014",
           (m.details || "").substring(0, 50) || "\u2014",
         ]);
-        y = drawTable(doc, y, ["Date", "Medicament", "Prochain", "Notes"], rows, [0.18, 0.30, 0.18, 0.34]);
+        y = drawTable(doc, y, ["Date", "Médicament", "Prochain", "Notes"], rows, [0.18, 0.30, 0.18, 0.34]);
         y += 6;
       }
 
