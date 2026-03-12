@@ -292,15 +292,15 @@ export default function DietPreferencesPanel({ dog, user }) {
       <div className="bg-white rounded-2xl border border-border p-4">
         <button onClick={() => setOrganic(o => !o)} className="flex items-center justify-between w-full">
           <div className="flex items-center gap-3">
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${organic ? "bg-green-100" : "bg-muted/50"}`}>
-              <Leaf className={`w-4 h-4 ${organic ? "text-green-600" : "text-muted-foreground"}`} />
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${organic ? "bg-emerald-100" : "bg-muted/50"}`}>
+              <Leaf className={`w-4 h-4 ${organic ? "text-emerald-600" : "text-muted-foreground"}`} />
             </div>
             <div className="text-left">
               <p className="text-sm font-semibold text-foreground">Préférence bio / naturel</p>
               <p className="text-xs text-muted-foreground">Privilégier les ingrédients naturels</p>
             </div>
           </div>
-          <div className={`w-11 h-6 rounded-full transition-all relative ${organic ? "bg-green-500" : "bg-muted"}`}>
+          <div className={`w-11 h-6 rounded-full transition-all relative ${organic ? "bg-emerald-500" : "bg-muted"}`}>
             <div className={`w-5 h-5 rounded-full bg-white shadow-sm absolute top-0.5 transition-all ${organic ? "left-5" : "left-0.5"}`} />
           </div>
         </button>
@@ -318,7 +318,7 @@ export default function DietPreferencesPanel({ dog, user }) {
       </div>
 
       <Button onClick={handleSave} disabled={saving || saved}
-        className={`w-full h-14 rounded-2xl text-white font-bold shadow-lg gap-2 transition-all duration-300 ${saved ? "bg-green-500 shadow-green-200" : "bg-safe hover:bg-safe/90 shadow-safe/20"}`}>
+        className={`w-full h-14 rounded-2xl text-white font-bold shadow-lg gap-2 transition-all duration-300 ${saved ? "bg-emerald-500 shadow-emerald-200" : "bg-safe hover:bg-safe/90 shadow-safe/20"}`}>
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
         {saving ? "Sauvegarde..." : saved ? "Sauvegardé !" : "Sauvegarder mes préférences"}
       </Button>

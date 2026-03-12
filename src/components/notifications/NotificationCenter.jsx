@@ -18,7 +18,7 @@ function urgencyBadge(days) {
   if (days === 0) return { label: "Auj. !", cls: "bg-red-100 text-red-600" };
   if (days <= 3)  return { label: `${days}j`, cls: "bg-amber-100 text-amber-600" };
   if (days <= 7)  return { label: `${days}j`, cls: "bg-amber-100 text-amber-600" };
-  return { label: `${days}j`, cls: "bg-green-100 text-green-600" };
+  return { label: `${days}j`, cls: "bg-emerald-100 text-emerald-600" };
 }
 
 // Read state — localStorage
@@ -208,8 +208,8 @@ export default function NotificationCenter() {
               <div className="flex-1 overflow-y-auto">
                 {notifications.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-                    <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
-                      <CheckCheck className="w-8 h-8 text-green-500" />
+                    <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mb-4">
+                      <CheckCheck className="w-8 h-8 text-emerald-500" />
                     </div>
                     <p className="font-bold text-foreground">Tout est a jour !</p>
                     <p className="text-sm text-muted-foreground mt-1">Aucun rappel dans les 30 prochains jours</p>

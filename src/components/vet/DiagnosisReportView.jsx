@@ -2,7 +2,7 @@ import { AlertTriangle, CheckCircle, AlertCircle, Siren } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const URGENCY_CONFIG = {
-  low: { label: "Faible", color: "bg-green-100 text-green-800", icon: CheckCircle },
+  low: { label: "Faible", color: "bg-emerald-100 text-emerald-800", icon: CheckCircle },
   medium: { label: "Modéré", color: "bg-emerald-100 text-emerald-800", icon: AlertTriangle },
   high: { label: "Élevé", color: "bg-amber-100 text-amber-800", icon: AlertCircle },
   emergency: { label: "Urgence", color: "bg-red-100 text-red-800", icon: Siren },

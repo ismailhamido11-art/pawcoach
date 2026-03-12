@@ -5,7 +5,7 @@ import { fr } from "date-fns/locale";
 
 const CATEGORY_CONFIG = {
   observation: { label: "Observation", icon: Eye, color: "bg-blue-50 text-blue-700" },
-  recommendation: { label: "Recommandation", icon: Lightbulb, color: "bg-green-50 text-green-700" },
+  recommendation: { label: "Recommandation", icon: Lightbulb, color: "bg-emerald-50 text-emerald-700" },
   prescription: { label: "Prescription", icon: Pill, color: "bg-purple-50 text-purple-700" },
   follow_up: { label: "Suivi", icon: CalendarCheck, color: "bg-emerald-50 text-emerald-700" },
 };

@@ -60,8 +60,8 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
         <motion.div className="space-y-2" variants={listContainer} initial="hidden" animate="show">
           {completedExercises.map((e, _i) => (
             <motion.div key={e.order_number} variants={listItem} className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                <CheckCircle className="w-4 h-4 text-green-500" />
+              <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                <CheckCircle className="w-4 h-4 text-emerald-500" />
               </div>
               <span className="text-sm font-medium text-foreground">{e.name}</span>
             </motion.div>

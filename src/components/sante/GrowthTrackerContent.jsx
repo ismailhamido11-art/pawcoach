@@ -405,7 +405,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
                   <p className="text-xs text-muted-foreground bg-secondary rounded-xl p-3 leading-relaxed">{analysisResult.ai_notes}</p>
                 )}
                 <div className="flex gap-2">
-                  <Button size="sm" className={`flex-1 transition-all duration-300 ${savedAnalysis ? "bg-green-500 hover:bg-green-500" : ""}`} onClick={saveAnalysis} disabled={savedAnalysis}>
+                  <Button size="sm" className={`flex-1 transition-all duration-300 ${savedAnalysis ? "bg-emerald-500 hover:bg-emerald-500" : ""}`} onClick={saveAnalysis} disabled={savedAnalysis}>
                     <Check className="w-4 h-4 mr-1" /> {savedAnalysis ? "Enregistré !" : "Enregistrer"}
                   </Button>
                   <Button size="sm" variant="outline" onClick={() => { setAnalysisResult(null); setPreviewUrl(null); }}>

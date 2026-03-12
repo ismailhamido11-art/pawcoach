@@ -58,8 +58,8 @@ export default function QRCodeCard({ dog }) {
           <p className="text-white/60 text-xs">Dossier médical accessible en 3 secondes</p>
         </div>
         <div className="flex gap-1">
-          <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-          <span className="text-green-400 text-[10px] font-bold">Actif</span>
+          <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+          <span className="text-emerald-400 text-[10px] font-bold">Actif</span>
         </div>
       </motion.button>
 

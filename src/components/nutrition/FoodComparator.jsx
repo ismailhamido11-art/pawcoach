@@ -11,7 +11,7 @@ import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 import { spring } from "@/lib/animations";
 
 const SCORE_COLOR = (s) => {
-  if (s >= 7.5) return { ring: "#22c55e", bg: "bg-green-50", text: "text-green-700", border: "border-green-200" };
+  if (s >= 7.5) return { ring: "#10b981", bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" };
   if (s >= 5)   return { ring: "#f59e0b", bg: "bg-amber-50",  text: "text-amber-700",  border: "border-amber-200" };
   return              { ring: "#ef4444", bg: "bg-red-50",    text: "text-red-700",    border: "border-red-200"   };
 };
@@ -311,10 +311,10 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
                   {/* Pros */}
                   {p.result.pros?.length > 0 && (
                     <div className="space-y-1">
-                      <p className="text-[10px] font-bold text-green-700 uppercase tracking-wide">✅ Avantages</p>
+                      <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-wide">✅ Avantages</p>
                       {p.result.pros.map((pro, j) => (
                         <div key={j} className="flex gap-2 items-start">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-green-500 flex-shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
                           <p className="text-xs text-foreground/80">{pro}</p>
                         </div>
                       ))}
@@ -447,7 +447,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
                     onClick={saveComparison}
                     disabled={compSaved}
                     size="sm"
-                    className={`flex-1 rounded-xl ${compSaved ? "bg-green-50 text-green-700 border border-green-200" : "gradient-primary border-0 text-white"}`}
+                    className={`flex-1 rounded-xl ${compSaved ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "gradient-primary border-0 text-white"}`}
                   >
                     {compSaved ? <BookmarkCheck className="w-3.5 h-3.5 mr-1.5" /> : <BookmarkPlus className="w-3.5 h-3.5 mr-1.5" />}
                     {compSaved ? "Sauvegardee" : "Sauvegarder"}

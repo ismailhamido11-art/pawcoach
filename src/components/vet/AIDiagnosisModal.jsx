@@ -371,15 +371,15 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
             {/* Step indicator */}
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5">
-                <div className="w-6 h-6 rounded-full bg-green-600 text-white text-xs font-bold flex items-center justify-center">✓</div>
-                <span className="text-xs text-green-700">Symptômes</span>
+                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center">✓</div>
+                <span className="text-xs text-emerald-700">Symptômes</span>
               </div>
-              <div className="flex-1 h-px bg-green-300" />
+              <div className="flex-1 h-px bg-emerald-300" />
               <div className="flex items-center gap-1.5">
-                <div className="w-6 h-6 rounded-full bg-green-600 text-white text-xs font-bold flex items-center justify-center">✓</div>
-                <span className="text-xs text-green-700">Questions</span>
+                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center">✓</div>
+                <span className="text-xs text-emerald-700">Questions</span>
               </div>
-              <div className="flex-1 h-px bg-green-300" />
+              <div className="flex-1 h-px bg-emerald-300" />
               <div className="flex items-center gap-1.5">
                 <div className="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">3</div>
                 <span className="text-xs font-medium text-primary">Rapport</span>

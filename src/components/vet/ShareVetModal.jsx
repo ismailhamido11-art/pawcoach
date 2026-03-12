@@ -104,7 +104,7 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
   };
 
   const statusBadge = (status) => {
-    if (status === "active") return <Badge className="bg-green-100 text-green-700 text-[10px]"><UserCheck className="w-3 h-3 mr-1" />Actif</Badge>;
+    if (status === "active") return <Badge className="bg-emerald-100 text-emerald-700 text-[10px]"><UserCheck className="w-3 h-3 mr-1" />Actif</Badge>;
     if (status === "pending") return <Badge className="bg-emerald-100 text-emerald-700 text-[10px]"><Clock className="w-3 h-3 mr-1" />En attente</Badge>;
     return <Badge className="bg-red-100 text-red-700 text-[10px]"><XCircle className="w-3 h-3 mr-1" />Révoqué</Badge>;
   };
