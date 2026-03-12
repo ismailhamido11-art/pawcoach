@@ -97,11 +97,11 @@ Plans:
   2. Aucune variable ou fonction n'est declaree sans etre appelee (zero unused declarations)
   3. Aucun composant React n'existe dans le repo sans etre importe quelque part (orphelin verifiable par grep)
   4. Aucun fichier .ts dans functions/ n'est absent des configs de routing backend
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: Audit et suppression imports/variables/fonctions morts (JSX/JS frontend)
-- [ ] 05-02: Audit et suppression composants orphelins + fichiers backend morts
+- [ ] 05-01-PLAN.md — Imports/variables/fonctions morts dans les fichiers JSX/JS frontend (DEAD-01, DEAD-02)
+- [ ] 05-02-PLAN.md — Composants orphelins (AnimatedLogo, ReminderAlert) + audit fichiers backend .ts (DEAD-03, DEAD-04)
 
 ### Phase 6: Error UX
 **Goal**: Chaque situation d'erreur, liste vide, validation formulaire et etat de chargement produit un feedback clair et actionnable pour l'utilisateur — plus d'ecrans blancs ni de silence silencieux.
@@ -158,7 +158,7 @@ Plans:
 | 2. AI Enrichment | v1.0 | 3/3 | Complete | 2026-03-11 |
 | 3. Notifications | v1.0 | 2/2 | Complete | 2026-03-11 |
 | 4. Independent Fixes | v1.0 | 4/4 | Complete | 2026-03-11 |
-| 5. Dead Code | v1.1 | 0/2 | Not started | - |
+| 5. Dead Code | v1.1 | 0/2 | Planning | - |
 | 6. Error UX | v1.1 | 0/3 | Not started | - |
 | 7. Security | v1.1 | 0/2 | Not started | - |
 | 8. Consistency | v1.1 | 0/3 | Not started | - |
@@ -166,3 +166,4 @@ Plans:
 ---
 *Roadmap v1.0 created: 2026-03-11 — 16/16 requirements mapped*
 *Roadmap v1.1 created: 2026-03-12 — 16/16 requirements mapped (phases 5-8)*
+*Phase 5 planned: 2026-03-12 — 2 plans (05-01, 05-02)*
