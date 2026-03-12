@@ -511,7 +511,7 @@ function BehaviorProgramCard({ program }) {
                   <button
                     onClick={handleMarkDone}
                     disabled={marking}
-                    className="w-full mt-2 py-2 rounded-xl bg-blue-500 text-white text-xs font-bold hover:bg-blue-600 disabled:opacity-50 transition-colors"
+                    className="w-full mt-2 py-2 rounded-xl gradient-primary border-0 text-white text-xs font-bold disabled:opacity-50 transition-colors"
                   >
                     {marking ? "Enregistrement..." : `Marquer Jour ${elapsed + 1} comme fait`}
                   </button>
