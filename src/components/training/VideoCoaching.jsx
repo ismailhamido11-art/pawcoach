@@ -164,7 +164,7 @@ export default function VideoCoaching({ exerciseName, dogName, dogId }) {
             <Button
               onClick={saveFeedback}
               disabled={saved}
-              className={`flex-1 h-10 rounded-xl font-semibold ${saved ? "bg-green-50 text-green-700 border border-green-200" : "gradient-primary border-0 text-white"}`}
+              className={`flex-1 h-10 rounded-xl font-semibold ${saved ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "gradient-primary border-0 text-white"}`}
             >
               {saved ? <BookmarkCheck className="w-4 h-4 mr-1.5" /> : <BookmarkPlus className="w-4 h-4 mr-1.5" />}
               {saved ? "Sauvegarde" : "Sauvegarder"}
