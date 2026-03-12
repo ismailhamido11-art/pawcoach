@@ -118,6 +118,34 @@ export default function Sante() {
   const vetCount = records.filter(r => r.type === "vet_visit").length;
   const weightRecords = records.filter(r => r.type === "weight");
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <WellnessBanner />
+        <div className="gradient-primary px-5 safe-pt-14 pb-3 relative overflow-hidden mt-8">
+          <div className="flex items-end gap-3 mb-3">
+            <div className="flex-1 pb-1">
+              <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-2" />
+              <div className="h-7 w-28 bg-white/20 rounded animate-pulse" />
+            </div>
+            <div className="w-20 h-20 rounded-full bg-white/10 animate-pulse flex-shrink-0" />
+          </div>
+          <div className="grid grid-cols-5 gap-1.5 mt-1">
+            {[0,1,2,3,4].map(i => (
+              <div key={i} className="h-16 rounded-2xl bg-white/10 animate-pulse" />
+            ))}
+          </div>
+        </div>
+        <div className="flex-1 px-4 pt-4 space-y-3">
+          {[0,1,2].map(i => (
+            <div key={i} className="bg-white rounded-2xl border border-border/40 h-32 animate-pulse" />
+          ))}
+        </div>
+        <BottomNav currentPage="Sante" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <WellnessBanner />

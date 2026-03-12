@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { X, Check, Camera } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { toast } from "sonner";
 
 export default function DogEditModal({ dog, onClose, onSave }) {
   const [form, setForm] = useState({
@@ -40,6 +41,7 @@ export default function DogEditModal({ dog, onClose, onSave }) {
       await onSave({ photo: file_url });
     } catch (err) {
       console.error(err);
+      toast.error("Impossible d'uploader la photo. Réessaie.");
     } finally {
       setUploadingPhoto(false);
     }
