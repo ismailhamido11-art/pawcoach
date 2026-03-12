@@ -99,7 +99,7 @@ export default function VetDogView() {
               <p className="text-center text-sm text-muted-foreground py-8">Aucun enregistrement partagé</p>
             ) : (
               [...records].sort((a, b) => new Date(b.date) - new Date(a.date)).map(r => (
-                <div key={r.id} className="flex items-start gap-3 p-3 rounded-xl bg-white border border-border">
+                <div key={r.id} className="flex items-start gap-3 p-3 rounded-2xl bg-white border border-border">
                   <div className="p-2 rounded-lg bg-muted">{getIconForType(r.type)}</div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{r.title}</p>
@@ -120,7 +120,7 @@ export default function VetDogView() {
               <p className="text-center text-sm text-muted-foreground py-8">Aucun check-in</p>
             ) : (
               [...checkins].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 30).map(c => (
-                <div key={c.id} className="p-3 rounded-xl bg-white border border-border">
+                <div key={c.id} className="p-3 rounded-2xl bg-white border border-border">
                   <div className="flex items-center justify-between">
                     <p className="text-xs font-medium">{format(new Date(c.date), "EEEE d MMM", { locale: fr })}</p>
                     <div className="flex gap-2">
@@ -149,7 +149,7 @@ export default function VetDogView() {
               <p className="text-center text-sm text-muted-foreground py-8">Aucun scan alimentaire</p>
             ) : (
               [...scans].sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).slice(0, 20).map(s => (
-                <div key={s.id} className="flex items-start gap-3 p-3 rounded-xl bg-white border border-border">
+                <div key={s.id} className="flex items-start gap-3 p-3 rounded-2xl bg-white border border-border">
                   {s.photo_url && <img src={s.photo_url} alt="" className="w-12 h-12 rounded-lg object-cover" />}
                   <div className="flex-1">
                     <p className="text-sm font-medium">{s.food_name || "Aliment scanné"}</p>

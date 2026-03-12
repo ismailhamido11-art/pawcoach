@@ -419,7 +419,7 @@ export default function Premium() {
 
         {/* Trial urgency */}
         {isOnTrial && trialDays <= 3 && (
-          <div className="bg-amber-50 border border-amber-300 rounded-xl px-4 py-2.5 text-center">
+          <div className="bg-amber-50 border border-amber-300 rounded-2xl px-4 py-2.5 text-center">
             <p className="text-amber-700 font-bold text-sm">
               {SEGMENT_HERO[segment].urgency(dogName, trialDays)}
             </p>
