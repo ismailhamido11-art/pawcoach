@@ -5,6 +5,7 @@ import BottomNav from "../components/BottomNav";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import ProfileHeader from "../components/profile/ProfileHeader.jsx";
 import DogSwitcher from "../components/profile/DogSwitcher.jsx";
 import CoachSettings from "../components/profile/CoachSettings.jsx";
@@ -38,6 +39,7 @@ export default function Profile() {
         }
       } catch (err) {
         console.error("Profile load error:", err);
+        toast.error("Impossible de charger le profil. Vérifie ta connexion.");
       } finally {
         setLoading(false);
       }

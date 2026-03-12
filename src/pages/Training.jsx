@@ -185,6 +185,7 @@ export default function Training() {
       }
     } catch (err) {
       console.error("Training load error:", err);
+      toast.error("Impossible de charger les exercices. Vérifie ta connexion.");
     } finally {
       setLoading(false);
     }

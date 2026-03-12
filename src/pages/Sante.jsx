@@ -10,6 +10,7 @@ import { updateStreakSilently } from "@/components/streakHelper";
 import Illustration from "../components/illustrations/Illustration";
 import { motion, AnimatePresence } from "framer-motion";
 import { isUserPremium } from "@/utils/premium";
+import { toast } from "sonner";
 
 // Sub-pages content (imported inline)
 import NotebookContent from "@/components/sante/NotebookContent";
@@ -99,6 +100,7 @@ export default function Sante() {
        }
      } catch (e) {
        console.error(e);
+       toast.error("Impossible de charger les données de santé. Vérifie ta connexion.");
      } finally {
        setLoading(false);
      }

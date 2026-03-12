@@ -147,6 +147,7 @@ export default function Home() {
         }
       } catch (err) {
         console.error(err);
+        toast.error("Impossible de charger les données. Vérifie ta connexion.");
       } finally {
         if (mounted) setLoading(false);
       }

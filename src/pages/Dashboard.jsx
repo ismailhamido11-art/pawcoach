@@ -11,6 +11,7 @@ import { Weight, Stethoscope, Dumbbell, Salad,
   Sparkles, Activity, Star, Footprints
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { createPageUrl, getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
@@ -121,6 +122,7 @@ export default function Dashboard() {
         setScans(foodScans || []);
       } catch (err) {
         console.error("Dashboard load error:", err);
+        toast.error("Impossible de charger le tableau de bord. Vérifie ta connexion.");
       } finally {
         setLoading(false);
       }
