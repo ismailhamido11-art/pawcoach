@@ -35,14 +35,23 @@ export default function QuickActions() {
                 to={createPageUrl(action.page) + (action.tab ? `?tab=${action.tab}` : "")}
                 className="flex flex-col items-center gap-1.5 w-[56px] py-1"
               >
-                <div
-                  className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm border transition-transform"
-                  style={{
-                    background: `linear-gradient(135deg, ${action.color}15, ${action.color}08)`,
-                    borderColor: `${action.color}20`,
-                  }}
-                >
-                  <Icon className="w-5 h-5" style={{ color: action.color }} />
+                <div className="relative">
+                  {/* Subtle pulse ring on idle */}
+                  <motion.div
+                    className="absolute inset-[-3px] rounded-2xl opacity-0"
+                    animate={{ opacity: [0, 0.3, 0], scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.4 }}
+                    style={{ background: `radial-gradient(circle, ${action.color}20 0%, transparent 70%)` }}
+                  />
+                  <div
+                    className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm border relative"
+                    style={{
+                      background: `linear-gradient(135deg, ${action.color}18, ${action.color}08)`,
+                      borderColor: `${action.color}25`,
+                    }}
+                  >
+                    <Icon className="w-5 h-5" style={{ color: action.color }} />
+                  </div>
                 </div>
                 <span className="text-[10px] font-semibold text-muted-foreground">{action.label}</span>
               </Link>

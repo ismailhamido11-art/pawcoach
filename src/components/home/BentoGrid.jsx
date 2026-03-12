@@ -2,15 +2,16 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Heart, Utensils, Dumbbell, MessageCircle, ChevronRight } from "lucide-react";
+import Illustration from "../illustrations/Illustration";
 
 /**
- * BentoGrid — Pure navigation grid (DASH-07: no scores, no duplication with DogRadarHero arcs)
+ * BentoGrid — Navigation grid with emotional illustrations (DASH-07)
  */
 const NAV_TILES = [
-  { icon: Heart,         iconColor: "#2d9f82", label: "Santé",     sub: "Carnet, vaccins, poids",  page: "Sante" },
-  { icon: Utensils,      iconColor: "#059669", label: "Nutrition",  sub: "Scans, plans repas",      page: "Nutri" },
-  { icon: Dumbbell,      iconColor: "#6366f1", label: "Dressage",   sub: "Exercices, programmes",   page: "Activite", tab: "dressage" },
-  { icon: MessageCircle, iconColor: "#8b5cf6", label: "Chat IA",    sub: "Questions santé",         page: "Chat" },
+  { icon: Heart,         iconColor: "#2d9f82", label: "Santé",     sub: "Carnet, vaccins, poids",  page: "Sante",    illustration: "petCare" },
+  { icon: Utensils,      iconColor: "#059669", label: "Nutrition",  sub: "Scans, plans repas",      page: "Nutri",    illustration: "petFood" },
+  { icon: Dumbbell,      iconColor: "#6366f1", label: "Dressage",   sub: "Exercices, programmes",   page: "Activite", tab: "dressage", illustration: "goodDoggy" },
+  { icon: MessageCircle, iconColor: "#8b5cf6", label: "Chat IA",    sub: "Questions santé",         page: "Chat",     illustration: "adoptAPet" },
 ];
 
 const stagger = {
@@ -38,20 +39,24 @@ export default function BentoGrid() {
             <motion.div key={tile.label} variants={item} whileTap={{ scale: 0.96 }}>
               <Link to={createPageUrl(tile.page) + (tile.tab ? `?tab=${tile.tab}` : "")}>
                 <div
-                  className="relative overflow-hidden rounded-2xl p-3.5 min-h-[80px] flex flex-col justify-between shadow-sm border transition-transform"
+                  className="relative overflow-hidden rounded-2xl p-3.5 min-h-[100px] flex flex-col justify-between shadow-sm border transition-transform"
                   style={{
                     background: `linear-gradient(135deg, hsl(var(--card)) 0%, ${tile.iconColor}08 100%)`,
                     borderColor: `${tile.iconColor}20`,
                   }}
                 >
-                  <div className="absolute -top-6 -right-6 w-16 h-16 rounded-full opacity-[0.07]" style={{ background: tile.iconColor }} />
+                  {/* Decorative illustration — emotional warmth */}
+                  <div className="absolute -bottom-3 -right-3 w-16 h-16 opacity-[0.12] pointer-events-none">
+                    <Illustration name={tile.illustration} className="w-full h-full" alt="" />
+                  </div>
+                  <div className="absolute -top-6 -right-6 w-16 h-16 rounded-full opacity-[0.05]" style={{ background: tile.iconColor }} />
                   <div className="relative flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div
-                        className="w-8 h-8 rounded-xl flex items-center justify-center"
+                        className="w-8 h-8 rounded-xl flex items-center justify-center shadow-sm"
                         style={{
-                          background: `linear-gradient(135deg, ${tile.iconColor}20, ${tile.iconColor}10)`,
-                          border: `1px solid ${tile.iconColor}25`,
+                          background: `linear-gradient(135deg, ${tile.iconColor}25, ${tile.iconColor}12)`,
+                          border: `1px solid ${tile.iconColor}30`,
                         }}
                       >
                         <Icon className="w-4 h-4" style={{ color: tile.iconColor }} />

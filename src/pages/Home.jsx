@@ -23,11 +23,35 @@ import { buildRecommendations, getTodayString } from "@/utils/recommendations";
 import { Flame } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { toast } from "sonner";
 import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
 import PostTrialSheet from "../components/premium/PostTrialSheet";
 import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
+
+// Emotional moment messages — contextual, warm, make the user smile
+function getEmotionalMoment(dog, streak, todayCheckin) {
+  const hour = new Date().getHours();
+  const name = dog?.name || "ton compagnon";
+  const streakDays = streak?.current_streak || 0;
+
+  // Already checked in — warm reinforcement
+  if (todayCheckin) {
+    if (todayCheckin.mood >= 3) return { text: `${name} rayonne aujourd'hui. Tu fais du bon travail.`, emoji: "✨" };
+    if (todayCheckin.mood <= 1) return { text: `Garde un oeil sur ${name}. Tu es son meilleur allié.`, emoji: "💛" };
+    return { text: `Chaque jour avec ${name} compte. Merci de prendre soin de lui.`, emoji: "🐾" };
+  }
+
+  // Streak-based motivation
+  if (streakDays >= 7) return { text: `${streakDays} jours de suite ! ${name} a de la chance de t'avoir.`, emoji: "🔥" };
+  if (streakDays >= 3) return { text: `Belle régularité ! ${name} sent la différence.`, emoji: "⚡" };
+
+  // Time-of-day greetings
+  if (hour < 9) return { text: `Un petit check-in matinal pour bien commencer la journée de ${name} ?`, emoji: "🌅" };
+  if (hour < 14) return { text: `Comment se passe la journée de ${name} ?`, emoji: "☀️" };
+  if (hour < 19) return { text: `C'est l'heure idéale pour un point sur ${name}.`, emoji: "🌤️" };
+  return { text: `Une dernière pensée pour ${name} avant la fin de journée ?`, emoji: "🌙" };
+}
 
 const MILESTONES = [
   { days: 3,   message: "3 jours de suite !",    sub: "Le début d'une belle habitude" },
@@ -296,25 +320,33 @@ export default function Home() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background pb-32">
-        {/* Hero skeleton */}
+        {/* Hero skeleton — avec shimmer */}
         <div className="h-56 bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] relative overflow-hidden">
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+            animate={{ x: ["-100%", "100%"] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          />
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
-            <div className="w-20 h-20 rounded-full bg-white/20 animate-pulse" />
+            <motion.div
+              className="w-20 h-20 rounded-full bg-white/20"
+              animate={{ opacity: [0.2, 0.4, 0.2] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
           </div>
         </div>
-        {/* TodayCard skeleton */}
-        <div className="px-4 mt-3">
-          <div className="h-24 rounded-2xl bg-white/80 border border-border/20 animate-pulse" />
-        </div>
-        {/* Bento skeleton */}
-        <div className="px-4 mt-3 grid grid-cols-2 gap-3">
-          {[0, 1, 2, 3].map(i => (
-            <div key={i} className="h-[120px] rounded-2xl bg-white/80 border border-border/20 animate-pulse" />
+        {/* Card skeletons */}
+        <div className="px-4 mt-3 space-y-3">
+          {[80, 120, 120, 56].map((h, i) => (
+            <motion.div
+              key={i}
+              className="rounded-2xl bg-white/80 border border-border/20"
+              style={{ height: h }}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: [0.4, 0.7, 0.4], y: 0 }}
+              transition={{ opacity: { duration: 1.5, repeat: Infinity }, y: { delay: i * 0.08 } }}
+            />
           ))}
-        </div>
-        {/* Streak skeleton */}
-        <div className="px-4 mt-3">
-          <div className="h-14 rounded-2xl bg-white/80 border border-border/20 animate-pulse" />
         </div>
         <BottomNav currentPage="Home" />
       </div>
@@ -338,6 +370,28 @@ export default function Home() {
           scans={scans}
           dailyLogs={dailyLogs}
         />
+
+        {/* Emotional moment — contextual warm message */}
+        {(() => {
+          const moment = getEmotionalMoment(dog, streak, todayCheckin);
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, type: "spring", stiffness: 400, damping: 30 }}
+              className="mx-4 mt-3 flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10"
+            >
+              <motion.span
+                className="text-xl flex-shrink-0"
+                animate={{ scale: [1, 1.15, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                {moment.emoji}
+              </motion.span>
+              <p className="text-[12px] text-foreground/70 leading-relaxed font-medium">{moment.text}</p>
+            </motion.div>
+          );
+        })()}
 
         {/* Block 2: Today Card (AI coaching + inline checkin) */}
         <div className="mt-3">

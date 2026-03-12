@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Flame, Trophy, Footprints } from "lucide-react";
+import { Flame, Trophy, Footprints, Sparkles } from "lucide-react";
 
 const LEVELS = [
   { min: 1,  max: 2,  label: "Débutant",   color: "#94a3b8" },
@@ -69,7 +69,12 @@ export default function StreakBar({ streak, walkStreak = 0, exercises, dailyLogs
                   border: `1px solid ${level.color}25`,
                 }}
               >
-                <Flame className="w-4 h-4" style={{ color: level.color }} />
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1], rotate: [-5, 5, -5] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Flame className="w-4 h-4" style={{ color: level.color }} />
+                </motion.div>
               </div>
               <span className="text-lg font-black" style={{ color: level.color }}>{current}</span>
               <span className="text-[10px] text-muted-foreground font-medium">jours</span>
