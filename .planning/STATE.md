@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Quality Audit
-status: completed
-stopped_at: Completed 05-01-PLAN.md — dead imports and unused vars removed from 55 frontend files
-last_updated: "2026-03-12T01:49:10.802Z"
-last_activity: 2026-03-12 — Phase 05 complete (05-01 + 05-02 executed, DEAD-01 through DEAD-04 satisfied)
+status: in_progress
+stopped_at: Completed 06-01-PLAN.md — toast.error on 5 pages + skeletons for Sante/Activite + DogEditModal photo toast
+last_updated: "2026-03-12T12:37:00.000Z"
+last_activity: 2026-03-12 — Phase 06-01 complete (ERR-01 + ERR-04 satisfied, toast.error + skeletons on 7 files)
 progress:
   total_phases: 8
   completed_phases: 5
-  total_plans: 14
-  completed_plans: 14
+  total_plans: 16
+  completed_plans: 15
   percent: 20
 ---
 
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-12)
 
 **Core value:** Code propre, securise, coherent — qualite production sur les 4 axes restants de l'audit.
-**Current focus:** Milestone v1.1 Quality Audit — Phase 5 (Dead Code) COMPLETE, Phase 6 (Error UX) next
+**Current focus:** Milestone v1.1 Quality Audit — Phase 6 (Error UX) IN PROGRESS, 06-01 done (ERR-01+ERR-04), 06-02 next
 
 ## Current Position
 
-Phase: 5 of 8 (Dead Code) — COMPLETE
-Plan: 2 of 2 in current phase — COMPLETE
-Status: Phase 5 done, ready for Phase 6
-Last activity: 2026-03-12 — Phase 05 complete (05-01 + 05-02 executed, DEAD-01 through DEAD-04 satisfied)
+Phase: 6 of 8 (Error UX) — IN PROGRESS
+Plan: 1 of 2 in current phase — COMPLETE, 1 remaining
+Status: Phase 06-01 done (ERR-01, ERR-04 satisfied), ready for 06-02
+Last activity: 2026-03-12 — Phase 06-01 complete (toast.error + skeletons on 7 files, ERR-01 + ERR-04 done)
 
-Progress: [██░░░░░░░░] 20% (v1.1) — [██████████] 100% (v1.0 complete)
+Progress: [█████████░] 94% (v1.1) — [██████████] 100% (v1.0 complete)
 
 ## Accumulated Context
 
@@ -45,6 +45,8 @@ Progress: [██░░░░░░░░] 20% (v1.1) — [███████
 - Phase 05-02: 8 orphan components deleted (not 2 — batch audit revealed more), all 22 backend .ts files confirmed active (12 FRONTEND + 10 CRON), DEAD-03 + DEAD-04 satisfied
 - BadgeTeaser merged into StreakBar (DASH-10) — comment references in StreakBar/Home are documentation only, not imports
 - [Phase 05-dead-code]: Phase 05-01: 87 unused imports removed (ESLint --fix), 65 unused vars prefixed _, React hooks violation in WeightCard fixed, Vite build passes
+- [Phase 06-error-ux]: Phase 06-01: toast.error pattern established across 5 main pages — import from sonner + message in French after console.error in load catch
+- [Phase 06-error-ux]: Phase 06-01: Sante + Activite loading skeletons added with animate-pulse — if(loading) pattern before main return()
 
 ### Pending Todos
 
@@ -57,6 +59,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T01:38:37.619Z
-Stopped at: Completed 05-01-PLAN.md — dead imports and unused vars removed from 55 frontend files
+Last session: 2026-03-12T02:13:42.486Z
+Stopped at: Completed 06-01-PLAN.md — toast.error on 5 pages + skeletons for Sante/Activite + DogEditModal photo toast
 Resume file: None

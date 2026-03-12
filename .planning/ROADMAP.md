@@ -158,7 +158,7 @@ Plans:
 | 3. Notifications | v1.0 | 2/2 | Complete | 2026-03-11 |
 | 4. Independent Fixes | v1.0 | 4/4 | Complete | 2026-03-11 |
 | 5. Dead Code | v1.1 | 2/2 | Complete | 2026-03-12 |
-| 6. Error UX | v1.1 | 0/2 | Planned | - |
+| 6. Error UX | 1/2 | In Progress|  | - |
 | 7. Security | v1.1 | 0/2 | Not started | - |
 | 8. Consistency | v1.1 | 0/3 | Not started | - |
 
