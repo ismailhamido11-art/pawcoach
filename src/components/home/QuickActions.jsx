@@ -35,25 +35,12 @@ export default function QuickActions() {
                 to={createPageUrl(action.page) + (action.tab ? `?tab=${action.tab}` : "")}
                 className="flex flex-col items-center gap-1.5 w-[60px] py-1"
               >
-                <div className="relative">
-                  {/* Pulse ring */}
-                  <motion.div
-                    className="absolute inset-[-4px] rounded-2xl"
-                    animate={{ opacity: [0, 0.5, 0], scale: [1, 1.15, 1] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.4 }}
-                    style={{ background: `${action.color}30` }}
-                  />
-                  <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-md relative"
-                    style={{
-                      background: `linear-gradient(135deg, ${action.color}cc, ${action.color}99)`,
-                      border: `1.5px solid ${action.color}`,
-                    }}
-                  >
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-[0_2px_6px_rgba(0,0,0,0.06)] bg-white border border-border/20 relative"
+                >
+                  <Icon className="w-6 h-6" style={{ color: action.color }} />
                 </div>
-                <span className="text-[11px] font-bold text-foreground">{action.label}</span>
+                <span className="text-[11px] font-semibold text-foreground/70">{action.label}</span>
               </Link>
             </motion.div>
           );

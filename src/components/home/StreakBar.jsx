@@ -49,10 +49,11 @@ export default function StreakBar({ streak, walkStreak = 0, exercises, dailyLogs
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="rounded-2xl border px-4 py-3 shadow-sm relative overflow-hidden"
+          whileTap={{ scale: 0.98 }}
+          className="rounded-2xl border border-border/20 px-4 py-3 relative overflow-hidden"
           style={{
-            background: `linear-gradient(135deg, hsl(var(--card)) 0%, ${level.color}06 100%)`,
-            borderColor: `${level.color}20`,
+            background: "white",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
           }}
         >
           <div
