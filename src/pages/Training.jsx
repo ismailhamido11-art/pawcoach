@@ -577,7 +577,7 @@ export default function Training() {
                 {/* Link to Home */}
                 <Link
                   to={createPageUrl("Home")}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-blue-600 text-white font-bold text-sm"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl gradient-primary border-0 text-white font-bold text-sm"
                 >
                   Suivre le programme sur l'accueil
                 </Link>
