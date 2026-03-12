@@ -160,7 +160,7 @@ Plans:
 | 5. Dead Code | v1.1 | 2/2 | Complete | 2026-03-12 |
 | 6. Error UX | v1.1 | 2/2 | Complete | 2026-03-12 |
 | 7. Security | v1.1 | 2/2 | Complete | 2026-03-12 |
-| 8. Consistency | v1.1 | 0/3 | Not started | - |
+| 8. Consistency | 1/3 | In Progress|  | - |
 
 ---
 *Roadmap v1.0 created: 2026-03-11 — 16/16 requirements mapped*
