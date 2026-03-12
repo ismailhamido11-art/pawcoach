@@ -2,16 +2,14 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Heart, Utensils, Dumbbell, MessageCircle, ChevronRight } from "lucide-react";
-import Illustration from "../illustrations/Illustration";
-
 /**
- * BentoGrid — Navigation grid with emotional illustrations (DASH-07)
+ * BentoGrid — Navigation grid with PawMascot illustrations (DASH-07)
  */
 const NAV_TILES = [
-  { icon: Heart,         iconColor: "#2d9f82", label: "Santé",     sub: "Carnet, vaccins, poids",  page: "Sante",    illustration: "petCare" },
-  { icon: Utensils,      iconColor: "#059669", label: "Nutrition",  sub: "Scans, plans repas",      page: "Nutri",    illustration: "petFood" },
-  { icon: Dumbbell,      iconColor: "#6366f1", label: "Dressage",   sub: "Exercices, programmes",   page: "Activite", tab: "dressage", illustration: "goodDoggy" },
-  { icon: MessageCircle, iconColor: "#8b5cf6", label: "Chat IA",    sub: "Questions santé",         page: "Chat",     illustration: "adoptAPet" },
+  { icon: Heart,         iconColor: "#2d9f82", label: "Santé",     sub: "Carnet, vaccins, poids",  page: "Sante",    mascot: "/mascot/paw-health.jpg" },
+  { icon: Utensils,      iconColor: "#059669", label: "Nutrition",  sub: "Scans, plans repas",      page: "Nutri",    mascot: "/mascot/paw-eating.jpg" },
+  { icon: Dumbbell,      iconColor: "#6366f1", label: "Dressage",   sub: "Exercices, programmes",   page: "Activite", tab: "dressage", mascot: "/mascot/paw-training.jpg" },
+  { icon: MessageCircle, iconColor: "#8b5cf6", label: "Chat IA",    sub: "Questions santé",         page: "Chat",     mascot: "/mascot/paw-curious.jpg" },
 ];
 
 const stagger = {
@@ -45,9 +43,9 @@ export default function BentoGrid() {
                     borderColor: `${tile.iconColor}20`,
                   }}
                 >
-                  {/* Decorative illustration — emotional warmth */}
-                  <div className="absolute -bottom-3 -right-3 w-16 h-16 opacity-[0.12] pointer-events-none">
-                    <Illustration name={tile.illustration} className="w-full h-full" alt="" />
+                  {/* Decorative mascot — emotional warmth */}
+                  <div className="absolute -bottom-2 -right-2 w-14 h-14 opacity-[0.15] pointer-events-none rounded-full overflow-hidden">
+                    <img src={tile.mascot} alt="" className="w-full h-full object-cover" draggable={false} />
                   </div>
                   <div className="absolute -top-6 -right-6 w-16 h-16 rounded-full opacity-[0.05]" style={{ background: tile.iconColor }} />
                   <div className="relative flex items-center justify-between">

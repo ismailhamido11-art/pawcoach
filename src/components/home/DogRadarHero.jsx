@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Flame, UserCircle, Dumbbell, ScanLine, Heart } from "lucide-react";
 import { useDogAvatarState } from "../dogtwin/useDogAvatarState";
-import Illustration from "../illustrations/Illustration";
+import { PawMascotInline } from "../PawMascot";
 
 // Calcule les 4 scores à partir des données réelles
 // Chaque arc retourne hasData + hint pour transparence
@@ -159,13 +159,13 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
         />
       ))}
 
-      {/* Illustration décorative flottante — ambiance nature */}
+      {/* Mascotte décorative flottante — ambiance chaleureuse */}
       <motion.div
-        className="absolute bottom-0 right-0 w-32 h-32 opacity-[0.08] pointer-events-none"
+        className="absolute bottom-2 right-4 w-20 h-20 opacity-[0.12] pointer-events-none rounded-full overflow-hidden"
         animate={{ y: [-3, 3, -3], rotate: [-2, 2, -2] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       >
-        <Illustration name="qualityTime" className="w-full h-full" alt="" />
+        <img src="/mascot/paw-happy.jpg" alt="" className="w-full h-full object-cover" draggable={false} />
       </motion.div>
 
       <div className="relative z-10 px-5 pt-10 pb-4">
@@ -258,7 +258,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
                     transition={{ scale: { duration: 4, repeat: Infinity, ease: "easeInOut" } }}
                     className="w-20 h-20 rounded-full bg-white/10 border-4 border-white/20 flex items-center justify-center shadow-[0_0_30px_rgba(45,159,130,0.2)] relative z-10"
                   >
-                    <Illustration name="cautiousDog" className="w-14 h-14 drop-shadow-lg" alt="Mon chien" />
+                    <PawMascotInline mood="curious" size="lg" />
                   </motion.div>
                 )}
                 {/* Badge humeur */}

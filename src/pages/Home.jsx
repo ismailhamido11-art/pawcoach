@@ -25,6 +25,7 @@ import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { toast } from "sonner";
+import { PawMascotInline } from "../components/PawMascot";
 import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
 import PostTrialSheet from "../components/premium/PostTrialSheet";
 import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
@@ -381,13 +382,10 @@ export default function Home() {
               transition={{ delay: 0.8, type: "spring", stiffness: 400, damping: 30 }}
               className="mx-4 mt-3 flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10"
             >
-              <motion.span
-                className="text-xl flex-shrink-0"
-                animate={{ scale: [1, 1.15, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              >
-                {moment.emoji}
-              </motion.span>
+              <PawMascotInline
+                mood={todayCheckin ? (todayCheckin.mood >= 3 ? "happy" : todayCheckin.mood <= 1 ? "sleepy" : "encouraging") : streak?.current_streak >= 3 ? "proud" : "curious"}
+                size="md"
+              />
               <p className="text-[12px] text-foreground/70 leading-relaxed font-medium">{moment.text}</p>
             </motion.div>
           );
