@@ -23,7 +23,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
 import { spring, springGentle } from "@/lib/animations";
-import { mdComponents } from "@/lib/markdown";
+import { mdComponents } from "@/components/lib/markdown";
 
 const tabVariants = {
   enter: (d) => ({ opacity: 0, x: d * 60 }),

@@ -19,7 +19,7 @@ import { getDogAgeLabel } from "@/utils/healthStatus";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
 import { motion, AnimatePresence } from "framer-motion";
 import { spring, springGentle } from "@/lib/animations";
-import { mdComponents } from "@/lib/markdown";
+import { mdComponents } from "@/components/lib/markdown";
 
 const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: springGentle };
 
