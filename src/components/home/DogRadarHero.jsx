@@ -80,8 +80,8 @@ function computeArcs({ checkins = [], streak, records = [], exercises = [], scan
 function Arc({ index, total: _total, score, color, size }) {
   const cx = size / 2;
   const cy = size / 2;
-  const gap = 7;
-  const ringWidth = 5;
+  const gap = 10;
+  const ringWidth = 8;
   // Du plus grand (extérieur) au plus petit (intérieur)
   const r = cx - 10 - index * (ringWidth + gap);
   const circumference = 2 * Math.PI * r;
@@ -90,7 +90,7 @@ function Arc({ index, total: _total, score, color, size }) {
   return (
     <g>
       {/* Piste de fond */}
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={ringWidth} strokeOpacity={0.12} />
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={ringWidth} strokeOpacity={0.2} />
       {/* Arc animé */}
       <motion.circle
         cx={cx} cy={cy} r={r}
@@ -102,7 +102,7 @@ function Arc({ index, total: _total, score, color, size }) {
         initial={{ strokeDashoffset: circumference }}
         animate={{ strokeDashoffset: circumference - dash }}
         transition={{ duration: 1.2, delay: 0.2 + index * 0.15, ease: "easeOut" }}
-        style={{ filter: `drop-shadow(0 0 6px ${color}aa) drop-shadow(0 0 12px ${color}44)` }}
+        style={{ filter: `drop-shadow(0 0 10px ${color}cc) drop-shadow(0 0 20px ${color}66)` }}
       />
     </g>
   );
@@ -119,12 +119,16 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
   const { mood } = useDogAvatarState({ checkins, streak, records: records || [], scans: scans || [] });
   const arcs = useMemo(() => computeArcs({ checkins, streak, records: records || [], exercises: exercises || [], scans: scans || [] }), [checkins, streak, records, exercises, scans]);
 
-  const SIZE = 160;
+  const SIZE = 200;
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-[#0f4c3a] via-[#1a6b52] to-background">
-      {/* Fond décoratif */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.1),transparent_60%)]" />
+    <div className="relative overflow-hidden bg-gradient-to-b from-[#0d3d2e] via-[#1a5c47] to-[#0f4c3a]">
+      {/* Fond décoratif — couche texture radiale */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(45,159,130,0.4),transparent)]" />
+      {/* Décor bottom-left */}
+      <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+      {/* Décor top-right */}
+      <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-teal-400/15 blur-2xl pointer-events-none" />
 
       {/* Floating luminous orbs — rendent le hero vivant */}
       {[
@@ -159,27 +163,37 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
         />
       ))}
 
-      {/* Mascotte décorative flottante — ambiance chaleureuse */}
+      {/* Mascotte companion — visible en bas-gauche */}
       <motion.div
-        className="absolute bottom-2 right-4 w-20 h-20 opacity-[0.12] pointer-events-none rounded-full overflow-hidden"
-        animate={{ y: [-3, 3, -3], rotate: [-2, 2, -2] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-4 left-4 pointer-events-none"
+        animate={{ y: [-4, 4, -4], rotate: [-3, 3, -3] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <img src="/mascot/paw-happy.jpg" alt="" className="w-full h-full object-cover" draggable={false} />
+        <div className="relative">
+          {/* Halo lumineux derrière la mascotte */}
+          <div className="absolute inset-[-12px] rounded-full bg-emerald-400/20 blur-xl" />
+          <img
+            src={`/mascot/paw-${mood === 'excited' ? 'excited' : mood === 'tired' ? 'sleepy' : 'happy'}.jpg`}
+            alt="Paw"
+            className="w-20 h-20 rounded-full object-cover border-2 border-white/30 shadow-lg relative z-10"
+            draggable={false}
+            style={{ opacity: 0.85 }}
+          />
+        </div>
       </motion.div>
 
       <div className="relative z-10 px-5 pt-10 pb-4">
         {/* Top bar — emotional greeting */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.15em]">PawCoach</p>
-            <p className="text-white text-lg font-bold mt-0.5 tracking-tight">{greeting}, {firstName}</p>
+            <p className="text-emerald-300/70 text-[10px] font-bold uppercase tracking-[0.15em]">PawCoach</p>
+            <p className="text-white text-xl font-bold mt-0.5 tracking-tight">{greeting}, {firstName}</p>
             {dog?.name && (
               <motion.p
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="text-white/50 text-[11px] mt-0.5"
+                className="text-white/70 text-[12px] mt-0.5"
               >
                 {hour < 12
                   ? `Prêt pour une belle journée avec ${dog.name} ?`
@@ -226,7 +240,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
               <div className="relative">
                 {/* Warm glow ring — breathing halo behind photo */}
                 <motion.div
-                  className="absolute inset-[-10px] rounded-full"
+                  className="absolute inset-[-18px] rounded-full"
                   animate={{
                     scale: [1, 1.15, 1],
                     opacity: [0.3, 0.6, 0.3],
@@ -249,14 +263,14 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
                       opacity: { duration: 0.5 },
                       scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
                     }}
-                    className="w-20 h-20 rounded-full object-cover border-4 border-white/40 shadow-[0_0_30px_rgba(45,159,130,0.25)] relative z-10"
+                    className="w-28 h-28 rounded-full object-cover border-4 border-white/60 shadow-[0_0_50px_rgba(45,159,130,0.5),0_0_100px_rgba(45,159,130,0.2)] relative z-10"
                   />
                 ) : (
                   <motion.div
                     initial={{ scale: 0.8 }}
                     animate={{ scale: [1, 1.03, 1] }}
                     transition={{ scale: { duration: 4, repeat: Infinity, ease: "easeInOut" } }}
-                    className="w-20 h-20 rounded-full bg-white/10 border-4 border-white/20 flex items-center justify-center shadow-[0_0_30px_rgba(45,159,130,0.2)] relative z-10"
+                    className="w-28 h-28 rounded-full bg-white/10 border-4 border-white/20 flex items-center justify-center shadow-[0_0_50px_rgba(45,159,130,0.5)] relative z-10"
                   >
                     <PawMascotInline mood="curious" size="lg" />
                   </motion.div>
