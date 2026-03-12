@@ -112,12 +112,11 @@ Plans:
   2. Une liste sans donnees affiche un etat vide illustre avec un texte explicatif et une action suggeree (pas un conteneur vide)
   3. Un formulaire soumis avec des donnees invalides affiche le champ en erreur et un message specifique sous le champ
   4. Une page ou un bloc de donnees en cours de chargement affiche un spinner ou un skeleton — l'utilisateur sait que quelque chose se charge
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 06-01: Audit et ajout try/catch avec messages user-friendly sur tous les appels API
-- [ ] 06-02: Ajout etats vides explicites sur toutes les listes + skeletons/spinners sur les chargements
-- [ ] 06-03: Ajout messages de validation clairs sur tous les formulaires
+- [ ] 06-01-PLAN.md — Catch silencieux (ERR-01) + skeletons Sante/Activite (ERR-04) : toast.error sur 5 pages + DogEditModal
+- [ ] 06-02-PLAN.md — Etats vides illustres Dashboard/PremiumSection (ERR-02) + validation DogEditModal (ERR-03)
 
 ### Phase 7: Security
 **Goal**: Le code ne contient aucun secret en clair, aucun input utilisateur directement injecte dans du HTML ou des prompts IA, et aucune donnee externe utilisee sans validation.
@@ -158,8 +157,8 @@ Plans:
 | 2. AI Enrichment | v1.0 | 3/3 | Complete | 2026-03-11 |
 | 3. Notifications | v1.0 | 2/2 | Complete | 2026-03-11 |
 | 4. Independent Fixes | v1.0 | 4/4 | Complete | 2026-03-11 |
-| 5. Dead Code | 2/2 | Complete   | 2026-03-12 | 2026-03-12 |
-| 6. Error UX | v1.1 | 0/3 | Not started | - |
+| 5. Dead Code | v1.1 | 2/2 | Complete | 2026-03-12 |
+| 6. Error UX | v1.1 | 0/2 | Planned | - |
 | 7. Security | v1.1 | 0/2 | Not started | - |
 | 8. Consistency | v1.1 | 0/3 | Not started | - |
 
@@ -167,3 +166,4 @@ Plans:
 *Roadmap v1.0 created: 2026-03-11 — 16/16 requirements mapped*
 *Roadmap v1.1 created: 2026-03-12 — 16/16 requirements mapped (phases 5-8)*
 *Phase 5 planned: 2026-03-12 — 2 plans (05-01, 05-02)*
+*Phase 6 planned: 2026-03-12 — 2 plans (06-01, 06-02)*
