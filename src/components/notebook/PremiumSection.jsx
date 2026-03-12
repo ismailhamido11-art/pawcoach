@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Illustration from "../illustrations/Illustration";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
@@ -168,9 +169,10 @@ export default function PremiumSection({ type, records = [], dogId, isPremium, o
 
       {/* Empty state */}
       {filtered.length === 0 && !showForm && (
-        <div className="text-center py-8">
-          <ConfigIcon className={`w-8 h-8 mx-auto mb-2 ${config.textClass} opacity-40`} />
-          <p className="text-muted-foreground text-sm">{config.emptyText}</p>
+        <div className="flex flex-col items-center text-center py-8 gap-2">
+          <Illustration name="veterinary" className="w-20 h-20 opacity-70" alt="" />
+          <p className="font-semibold text-sm text-foreground">{config.emptyText}</p>
+          <p className="text-xs text-muted-foreground">Utilise le bouton ci-dessus pour en ajouter un</p>
         </div>
       )}
 

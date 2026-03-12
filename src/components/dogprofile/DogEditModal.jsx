@@ -18,8 +18,23 @@ export default function DogEditModal({ dog, onClose, onSave }) {
   const sanitizeName = (name) => name.replace(/<[^>]*>/g, "").replace(/[^\p{L}\p{N}\s\-'.]/gu, "").trim().slice(0, 50);
 
   const [dateError, setDateError] = useState(false);
+  const [nameError, setNameError] = useState(false);
+  const [sexError, setSexError] = useState(false);
 
   const handleSave = async () => {
+    // Valider name (requis, non vide)
+    if (!form.name.trim()) {
+      setNameError(true);
+      return;
+    }
+    setNameError(false);
+    // Valider sex (requis)
+    if (!form.sex) {
+      setSexError(true);
+      return;
+    }
+    setSexError(false);
+    // Validation date existante
     if (form.birth_date && new Date(form.birth_date) > new Date()) {
       setDateError(true);
       return;
@@ -100,12 +115,15 @@ export default function DogEditModal({ dog, onClose, onSave }) {
               <input
                 type={type}
                 value={form[field]}
-                onChange={e => { setForm(f => ({ ...f, [field]: e.target.value })); if (field === "birth_date") setDateError(false); }}
+                onChange={e => { setForm(f => ({ ...f, [field]: e.target.value })); if (field === "birth_date") setDateError(false); if (field === "name") setNameError(false); }}
                 className="w-full border border-border rounded-xl px-4 py-3 text-sm bg-background outline-none focus:ring-1 focus:ring-primary"
                 {...(type === "date" ? { max: new Date().toISOString().split("T")[0] } : {})}
               />
               {field === "birth_date" && form.birth_date && new Date(form.birth_date) > new Date() && (
                 <p className="text-xs text-red-500 font-semibold mt-1">La date de naissance ne peut pas être dans le futur</p>
+              )}
+              {field === "name" && nameError && (
+                <p className="text-xs text-red-500 font-semibold mt-1">Le nom est requis</p>
               )}
             </div>
           ))}
@@ -116,13 +134,16 @@ export default function DogEditModal({ dog, onClose, onSave }) {
               {[{ value: "male", label: "Mâle" }, { value: "female", label: "Femelle" }].map(o => (
                 <button
                   key={o.value}
-                  onClick={() => setForm(f => ({ ...f, sex: o.value }))}
+                  onClick={() => { setForm(f => ({ ...f, sex: o.value })); setSexError(false); }}
                   className={`flex-1 py-3 rounded-xl text-sm font-semibold border transition-all ${form.sex === o.value ? "bg-primary text-white border-primary" : "border-border text-muted-foreground"}`}
                 >
                   {o.label}
                 </button>
               ))}
             </div>
+            {sexError && (
+              <p className="text-xs text-red-500 font-semibold mt-1">Sélectionne le sexe</p>
+            )}
           </div>
 
           <div className="flex items-center justify-between py-2">
