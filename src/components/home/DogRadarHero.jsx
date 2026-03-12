@@ -1,14 +1,13 @@
 /**
- * DogRadarHero — Carte d'identité vivante du chien
- * Photo centrale + 4 arcs de données animés (style Apple Watch)
- * Chaque arc = une section de l'app, nourri par les vraies données
+ * DogRadarHero — CompactHeader premium mobile-first
+ * Greeting + dog card compact + 4 stats en row horizontale
+ * Remplace l'ancien hero plein écran (gradient sombre + arcs Apple Watch)
  */
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Flame, UserCircle, Dumbbell, ScanLine, Heart } from "lucide-react";
-import { useDogAvatarState } from "../dogtwin/useDogAvatarState";
+import { Flame, UserCircle, Dumbbell, ScanLine, Heart, Bell } from "lucide-react";
 import { PawMascotInline } from "../PawMascot";
 
 // Calcule les 4 scores à partir des données réelles
@@ -76,277 +75,145 @@ function computeArcs({ checkins = [], streak, records = [], exercises = [], scan
   ];
 }
 
-// SVG arc unique
-function Arc({ index, total: _total, score, color, size }) {
-  const cx = size / 2;
-  const cy = size / 2;
-  const gap = 10;
-  const ringWidth = 8;
-  // Du plus grand (extérieur) au plus petit (intérieur)
-  const r = cx - 10 - index * (ringWidth + gap);
-  const circumference = 2 * Math.PI * r;
-  const dash = (score / 100) * circumference;
-
-  return (
-    <g>
-      {/* Piste de fond */}
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={ringWidth} strokeOpacity={0.2} />
-      {/* Arc animé */}
-      <motion.circle
-        cx={cx} cy={cy} r={r}
-        fill="none"
-        stroke={color}
-        strokeWidth={ringWidth}
-        strokeLinecap="round"
-        strokeDasharray={circumference}
-        initial={{ strokeDashoffset: circumference }}
-        animate={{ strokeDashoffset: circumference - dash }}
-        transition={{ duration: 1.2, delay: 0.2 + index * 0.15, ease: "easeOut" }}
-        style={{ filter: `drop-shadow(0 0 10px ${color}cc) drop-shadow(0 0 20px ${color}66)` }}
-      />
-    </g>
-  );
-}
-
-const moodEmoji = { excited: "🤩", happy: "😊", neutral: "😌", tired: "😴" };
-const moodText  = { excited: "Très heureux !", happy: "En forme", neutral: "Calme", tired: "Fatigué" };
-
 export default function DogRadarHero({ user, dog, streak, checkins = [], records = [], exercises = [], scans = [], dailyLogs: _dailyLogs = [] }) {
   const navigate = useNavigate();
   const firstName = user?.full_name?.split(" ")[0] || "toi";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Bonjour" : hour < 18 ? "Bon après-midi" : "Bonsoir";
-  const { mood } = useDogAvatarState({ checkins, streak, records: records || [], scans: scans || [] });
+
   const arcs = useMemo(() => computeArcs({ checkins, streak, records: records || [], exercises: exercises || [], scans: scans || [] }), [checkins, streak, records, exercises, scans]);
 
-  const SIZE = 200;
+  const avgScore = useMemo(() => {
+    const withData = arcs.filter(a => a.hasData);
+    if (withData.length === 0) return 0;
+    return Math.round(withData.reduce((s, a) => s + a.score, 0) / withData.length);
+  }, [arcs]);
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-[#0d3d2e] via-[#1a5c47] to-[#0f4c3a]">
-      {/* Fond décoratif — couche texture radiale */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(45,159,130,0.4),transparent)]" />
-      {/* Décor bottom-left */}
-      <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-      {/* Décor top-right */}
-      <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-teal-400/15 blur-2xl pointer-events-none" />
+    <div className="px-4 pt-3 pb-3 bg-background border-b border-border/10">
+      {/* Ligne 1: Greeting + icones droite */}
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <p className="text-xs text-muted-foreground font-medium">{greeting}</p>
+          <p className="text-lg font-bold text-foreground">{firstName}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {/* Icone cloche avec badge — statique */}
+          <div className="relative w-9 h-9 rounded-full bg-muted/40 flex items-center justify-center">
+            <Bell className="w-4 h-4 text-foreground/70" />
+            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+              <span className="text-[9px] font-black text-white">1</span>
+            </span>
+          </div>
+          {/* Avatar profil */}
+          <Link to={createPageUrl("Profile")} className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden">
+            <UserCircle className="w-5 h-5 text-primary" />
+          </Link>
+        </div>
+      </div>
 
-      {/* Floating luminous orbs — rendent le hero vivant */}
-      {[
-        { size: 10, left: "12%", bottom: "20%", delay: 0, duration: 3.5 },
-        { size: 14, left: "75%", bottom: "35%", delay: 0.8, duration: 4 },
-        { size: 8,  left: "45%", bottom: "60%", delay: 1.6, duration: 3 },
-        { size: 18, left: "88%", bottom: "15%", delay: 2.2, duration: 4.5 },
-        { size: 6,  left: "30%", bottom: "80%", delay: 0.4, duration: 3.2 },
-        { size: 12, left: "60%", bottom: "50%", delay: 1.2, duration: 3.8 },
-      ].map((orb, i) => (
-        <motion.div
-          key={`orb-${i}`}
-          className="absolute rounded-full"
-          style={{
-            width: orb.size,
-            height: orb.size,
-            left: orb.left,
-            bottom: orb.bottom,
-            background: "radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(45,159,130,0.15) 60%, transparent 100%)",
-          }}
-          animate={{
-            y: [-5, -25, -5],
-            opacity: [0.2, 0.6, 0.2],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: orb.duration,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: orb.delay,
-          }}
-        />
-      ))}
-
-      {/* Mascotte companion — visible en bas-gauche */}
+      {/* Ligne 2: Dog card compacte */}
       <motion.div
-        className="absolute bottom-4 left-4 pointer-events-none"
-        animate={{ y: [-4, 4, -4], rotate: [-3, 3, -3] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="flex items-center gap-3 bg-white rounded-2xl p-3 shadow-[0_2px_8px_rgba(0,0,0,0.06)] mb-3"
       >
-        <div className="relative">
-          {/* Halo lumineux derrière la mascotte */}
-          <div className="absolute inset-[-12px] rounded-full bg-emerald-400/20 blur-xl" />
-          <img
-            src={`/mascot/paw-${mood === 'excited' ? 'excited' : mood === 'tired' ? 'sleepy' : 'happy'}.jpg`}
-            alt="Paw"
-            className="w-20 h-20 rounded-full object-cover border-2 border-white/30 shadow-lg relative z-10"
-            draggable={false}
-            style={{ opacity: 0.85 }}
-          />
+        {/* Photo ronde petite 48px — cliquable → DogProfile */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate(createPageUrl("DogProfile"))}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") navigate(createPageUrl("DogProfile")); }}
+          className="flex-shrink-0 cursor-pointer"
+        >
+          {dog?.photo ? (
+            <img
+              src={dog.photo}
+              alt={dog?.name}
+              className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
+            />
+          ) : (
+            <div className="w-12 h-12 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center">
+              <PawMascotInline mood="curious" size="sm" />
+            </div>
+          )}
+        </div>
+
+        {/* Infos chien */}
+        <div className="flex-1 min-w-0">
+          <p className="font-bold text-foreground text-sm leading-tight truncate">{dog?.name || "Mon chien"}</p>
+          {dog?.breed && (
+            <p className="text-[11px] text-muted-foreground truncate">
+              {dog.breed}{dog.weight ? ` · ${dog.weight} kg` : ""}
+            </p>
+          )}
+          {/* Status dynamique basé sur score moyen */}
+          <p
+            className="text-[11px] font-semibold mt-0.5"
+            style={{ color: avgScore >= 75 ? "#2d9f82" : avgScore >= 50 ? "#d97706" : avgScore > 0 ? "#ef4444" : "#94a3b8" }}
+          >
+            {avgScore >= 75
+              ? "En forme"
+              : avgScore >= 50
+                ? "À surveiller"
+                : avgScore > 0
+                  ? "Attention requise"
+                  : "Fais un check-in"}
+          </p>
+        </div>
+
+        {/* Mini cercle score global */}
+        <div className="flex-shrink-0 w-11 h-11 relative">
+          <svg width="44" height="44" viewBox="0 0 44 44" style={{ transform: "rotate(-90deg)" }}>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#e5e7eb" strokeWidth="4" />
+            <motion.circle
+              cx="22" cy="22" r="18" fill="none" stroke="#2d9f82" strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray={2 * Math.PI * 18}
+              initial={{ strokeDashoffset: 2 * Math.PI * 18 }}
+              animate={{ strokeDashoffset: 2 * Math.PI * 18 * (1 - avgScore / 100) }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            />
+          </svg>
+          <span className="absolute inset-0 flex items-center justify-center text-[11px] font-black text-foreground">
+            {avgScore > 0 ? `${avgScore}%` : "—"}
+          </span>
         </div>
       </motion.div>
 
-      <div className="relative z-10 px-5 pt-10 pb-4">
-        {/* Top bar — emotional greeting */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <p className="text-emerald-300/70 text-[10px] font-bold uppercase tracking-[0.15em]">PawCoach</p>
-            <p className="text-white text-xl font-bold mt-0.5 tracking-tight">{greeting}, {firstName}</p>
-            {dog?.name && (
-              <motion.p
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="text-white/70 text-[12px] mt-0.5"
-              >
-                {hour < 12
-                  ? `Prêt pour une belle journée avec ${dog.name} ?`
-                  : hour < 18
-                    ? `${dog.name} compte sur toi cet après-midi`
-                    : `Bonne soirée avec ${dog.name}`
-                }
-              </motion.p>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              to={createPageUrl("Profile")}
-              className="w-8 h-8 rounded-full bg-white/20 border border-white/30 flex items-center justify-center"
+      {/* Ligne 3: Stats row horizontale — 4 stats avec mini barres animées */}
+      <div className="flex gap-2">
+        {arcs.map((arc, i) => {
+          const Icon = arc.Icon;
+          return (
+            <motion.button
+              key={arc.key}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + i * 0.06 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => navigate(createPageUrl(arc.page) + (arc.tab ? `?tab=${arc.tab}` : ""))}
+              className="flex-1 flex flex-col items-center gap-1 bg-white rounded-xl p-2 shadow-[0_1px_4px_rgba(0,0,0,0.05)]"
             >
-              <UserCircle className="w-4 h-4 text-white" />
-            </Link>
-          </div>
-        </div>
-
-        {/* Centre : Radar + Photo */}
-        <div className="flex flex-col items-center">
-          <div className="relative" style={{ width: SIZE, height: SIZE }}>
-            {/* SVG des arcs */}
-            <svg
-              width={SIZE} height={SIZE}
-              viewBox={`0 0 ${SIZE} ${SIZE}`}
-              style={{ transform: "rotate(-90deg)", position: "absolute", inset: 0 }}
-            >
-              {arcs.map((arc, i) => (
-                <Arc key={arc.key} index={i} total={arcs.length} score={arc.score} color={arc.color} size={SIZE} />
-              ))}
-            </svg>
-
-            {/* Photo du chien au centre */}
-            <div
-              role="button"
-              tabIndex={0}
-              aria-label={`Voir le profil de ${dog?.name || "mon chien"}`}
-              className="absolute inset-0 flex items-center justify-center cursor-pointer"
-              onClick={() => navigate(createPageUrl("DogProfile"))}
-              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") navigate(createPageUrl("DogProfile")); }}
-            >
-              <div className="relative">
-                {/* Warm glow ring — breathing halo behind photo */}
+              <Icon className="w-3.5 h-3.5" style={{ color: arc.color }} />
+              <span className="text-[9px] font-semibold text-muted-foreground">{arc.label}</span>
+              <span className="text-[11px] font-black" style={{ color: arc.hasData ? arc.color : "#94a3b8" }}>
+                {arc.hasData ? `${arc.score}%` : "—"}
+              </span>
+              {/* Mini barre de progression */}
+              <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
                 <motion.div
-                  className="absolute inset-[-18px] rounded-full"
-                  animate={{
-                    scale: [1, 1.15, 1],
-                    opacity: [0.3, 0.6, 0.3],
-                  }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                  style={{
-                    background: "radial-gradient(circle, rgba(45,159,130,0.35) 0%, rgba(16,185,129,0.15) 40%, transparent 70%)",
-                  }}
+                  className="h-full rounded-full"
+                  style={{ background: arc.color }}
+                  initial={{ width: 0 }}
+                  animate={{ width: arc.hasData ? `${arc.score}%` : "0%" }}
+                  transition={{ duration: 0.8, delay: 0.3 + i * 0.1, ease: "easeOut" }}
                 />
-                {dog?.photo ? (
-                  <motion.img
-                    src={dog.photo}
-                    alt={dog?.name}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{
-                      opacity: 1,
-                      scale: [1, 1.03, 1],
-                    }}
-                    transition={{
-                      opacity: { duration: 0.5 },
-                      scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-                    }}
-                    className="w-28 h-28 rounded-full object-cover border-4 border-white/60 shadow-[0_0_50px_rgba(45,159,130,0.5),0_0_100px_rgba(45,159,130,0.2)] relative z-10"
-                  />
-                ) : (
-                  <motion.div
-                    initial={{ scale: 0.8 }}
-                    animate={{ scale: [1, 1.03, 1] }}
-                    transition={{ scale: { duration: 4, repeat: Infinity, ease: "easeInOut" } }}
-                    className="w-28 h-28 rounded-full bg-white/10 border-4 border-white/20 flex items-center justify-center shadow-[0_0_50px_rgba(45,159,130,0.5)] relative z-10"
-                  >
-                    <PawMascotInline mood="curious" size="lg" />
-                  </motion.div>
-                )}
-                {/* Badge humeur */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1, type: "spring" }}
-                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white rounded-full px-2 py-0.5 shadow-lg whitespace-nowrap"
-                >
-                  <span className="text-xs font-bold text-foreground">{moodEmoji[mood]} {moodText[mood]}</span>
-                </motion.div>
               </div>
-            </div>
-          </div>
-
-          {/* Nom + race + contextual summary */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-center mt-5"
-          >
-            <h1 className="text-2xl font-bold text-white">{dog?.name || "Mon chien"}</h1>
-            {dog?.breed && (
-              <p className="text-white/50 text-xs mt-0.5">{dog.breed}{dog.weight ? ` · ${dog.weight} kg` : ""}</p>
-            )}
-            {(() => {
-              const withData = arcs.filter(a => a.hasData);
-              const name = dog?.name || "Ton chien";
-              if (withData.length === 0) {
-                return (
-                  <p className="text-xs font-medium mt-1.5 text-white/40">Fais un check-in pour activer le suivi</p>
-                );
-              }
-              const avg = Math.round(withData.reduce((s, a) => s + a.score, 0) / withData.length);
-              let text, color;
-              if (avg >= 75) { text = `${name} est en pleine forme`; color = "#10b981"; }
-              else if (avg >= 50) { text = "Quelques points à surveiller"; color = "#d97706"; }
-              else { text = "À besoin d'attention"; color = "#ef4444"; }
-              return (
-                <p className="text-xs font-medium mt-1.5" style={{ color: `${color}99` }}>{text}</p>
-              );
-            })()}
-          </motion.div>
-
-          {/* Légende des arcs */}
-          <div className="grid grid-cols-4 gap-3 mt-5 w-full max-w-xs">
-            {arcs.map((arc, i) => {
-              const Icon = arc.Icon;
-              return (
-                <motion.button
-                  key={arc.key}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 + i * 0.08 }}
-                  whileTap={{ scale: 0.92 }}
-                  onClick={() => navigate(createPageUrl(arc.page) + (arc.tab ? `?tab=${arc.tab}` : ""))}
-                  className="flex flex-col items-center gap-1"
-                >
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: arc.color + "25", border: `1.5px solid ${arc.color}55` }}>
-                    <Icon className="w-3.5 h-3.5" style={{ color: arc.color }} />
-                  </div>
-                  <span className="text-white/70 text-[10px] font-semibold">{arc.label}</span>
-                  {arc.hasData ? (
-                    <span className="font-black text-xs" style={{ color: arc.color }}>{arc.score}%</span>
-                  ) : (
-                    <span className="font-bold text-xs text-white/40">—</span>
-                  )}
-                  <span className="text-white/60 text-[8px] leading-tight">{arc.hint}</span>
-                </motion.button>
-              );
-            })}
-          </div>
-        </div>
+            </motion.button>
+          );
+        })}
       </div>
     </div>
   );
