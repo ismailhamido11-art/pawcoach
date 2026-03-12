@@ -47,20 +47,20 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import DogProfile from './pages/DogProfile';
-import Home from './pages/Home';
-import Onboarding from './pages/Onboarding';
 import Activite from './pages/Activite';
-import Sante from './pages/Sante';
 import Chat from './pages/Chat';
 import Dashboard from './pages/Dashboard';
+import DogProfile from './pages/DogProfile';
 import DogPublicProfile from './pages/DogPublicProfile';
 import DogTwin from './pages/DogTwin';
 import HealthImport from './pages/HealthImport';
+import Home from './pages/Home';
 import Library from './pages/Library';
 import Nutri from './pages/Nutri';
+import Onboarding from './pages/Onboarding';
 import Premium from './pages/Premium';
 import Profile from './pages/Profile';
+import Sante from './pages/Sante';
 import Scan from './pages/Scan';
 import Training from './pages/Training';
 import VetDogView from './pages/VetDogView';
@@ -69,20 +69,20 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "DogProfile": DogProfile,
-    "Home": Home,
-    "Onboarding": Onboarding,
     "Activite": Activite,
-    "Sante": Sante,
     "Chat": Chat,
     "Dashboard": Dashboard,
+    "DogProfile": DogProfile,
     "DogPublicProfile": DogPublicProfile,
     "DogTwin": DogTwin,
     "HealthImport": HealthImport,
+    "Home": Home,
     "Library": Library,
     "Nutri": Nutri,
+    "Onboarding": Onboarding,
     "Premium": Premium,
     "Profile": Profile,
+    "Sante": Sante,
     "Scan": Scan,
     "Training": Training,
     "VetDogView": VetDogView,

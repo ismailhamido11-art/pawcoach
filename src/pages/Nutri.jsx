@@ -35,7 +35,6 @@ const msgAnim = {
   animate: { opacity: 1, y: 0 },
   transition: springGentle
 };
-}
 
 const TABS = [
   { id: "coach",    label: "NutriCoach", emoji: "\u{1F957}", bg: "from-emerald-500 to-emerald-700" },
