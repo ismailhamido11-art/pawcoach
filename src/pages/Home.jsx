@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
-import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
 import PullToRefresh from "../components/PullToRefresh";
 import DogRadarHero from "../components/home/DogRadarHero";
@@ -23,36 +22,12 @@ import { buildRecommendations, getTodayString } from "@/utils/recommendations";
 import { Flame } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { PawMascotInline } from "../components/PawMascot";
 import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
 import PostTrialSheet from "../components/premium/PostTrialSheet";
 import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
 
-// Emotional moment messages — contextual, warm, make the user smile
-function getEmotionalMoment(dog, streak, todayCheckin) {
-  const hour = new Date().getHours();
-  const name = dog?.name || "ton compagnon";
-  const streakDays = streak?.current_streak || 0;
-
-  // Already checked in — warm reinforcement
-  if (todayCheckin) {
-    if (todayCheckin.mood >= 3) return { text: `${name} rayonne aujourd'hui. Tu fais du bon travail.`, emoji: "✨" };
-    if (todayCheckin.mood <= 1) return { text: `Garde un oeil sur ${name}. Tu es son meilleur allié.`, emoji: "💛" };
-    return { text: `Chaque jour avec ${name} compte. Merci de prendre soin de lui.`, emoji: "🐾" };
-  }
-
-  // Streak-based motivation
-  if (streakDays >= 7) return { text: `${streakDays} jours de suite ! ${name} a de la chance de t'avoir.`, emoji: "🔥" };
-  if (streakDays >= 3) return { text: `Belle régularité ! ${name} sent la différence.`, emoji: "⚡" };
-
-  // Time-of-day greetings
-  if (hour < 9) return { text: `Un petit check-in matinal pour bien commencer la journée de ${name} ?`, emoji: "🌅" };
-  if (hour < 14) return { text: `Comment se passe la journée de ${name} ?`, emoji: "☀️" };
-  if (hour < 19) return { text: `C'est l'heure idéale pour un point sur ${name}.`, emoji: "🌤️" };
-  return { text: `Une dernière pensée pour ${name} avant la fin de journée ?`, emoji: "🌙" };
-}
 
 const MILESTONES = [
   { days: 3,   message: "3 jours de suite !",    sub: "Le début d'une belle habitude" },
@@ -321,31 +296,23 @@ export default function Home() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background pb-32">
-        {/* Hero skeleton — avec shimmer */}
-        <div className="h-56 bg-gradient-to-br from-[#0f4c3a] via-[#1a6b52] to-[#2d9f82] relative overflow-hidden">
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-            animate={{ x: ["-100%", "100%"] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
-            <motion.div
-              className="w-20 h-20 rounded-full bg-white/20"
-              animate={{ opacity: [0.2, 0.4, 0.2] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            />
+        {/* Hero skeleton compact */}
+        <div className="px-4 pt-3 pb-3 border-b border-border/10 space-y-3">
+          <div className="h-8 w-40 bg-muted/50 rounded-xl animate-pulse" />
+          <div className="h-16 bg-muted/40 rounded-2xl animate-pulse" />
+          <div className="flex gap-2">
+            {[0,1,2,3].map(i => (
+              <div key={i} className="flex-1 h-14 bg-muted/40 rounded-xl animate-pulse" />
+            ))}
           </div>
         </div>
         {/* Card skeletons */}
         <div className="px-4 mt-3 space-y-3">
           {[80, 120, 120, 56].map((h, i) => (
-            <motion.div
+            <div
               key={i}
-              className="rounded-2xl bg-white/80 border border-border/20"
+              className="rounded-2xl bg-white/80 border border-border/20 animate-pulse"
               style={{ height: h }}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: [0.4, 0.7, 0.4], y: 0 }}
-              transition={{ opacity: { duration: 1.5, repeat: Infinity }, y: { delay: i * 0.08 } }}
             />
           ))}
         </div>
@@ -355,12 +322,9 @@ export default function Home() {
   }
 
   return (
-    <div className={`min-h-screen bg-background pb-32 relative flex flex-col ${recentCheckins.length < 3 ? "pt-20" : ""}`}>
-      {/* DASH-09: Hide WellnessBanner after 3+ check-ins */}
-      {recentCheckins.length < 3 && <WellnessBanner />}
-
+    <div className="min-h-screen bg-background pb-32 relative flex flex-col">
       <PullToRefresh onRefresh={handleRefresh}>
-        {/* Block 1: Compact Radar Hero */}
+        {/* 1. CompactHeader */}
         <DogRadarHero
           user={user}
           dog={dog}
@@ -372,41 +336,8 @@ export default function Home() {
           dailyLogs={dailyLogs}
         />
 
-        {/* Emotional moment — contextual warm message */}
-        {(() => {
-          const moment = getEmotionalMoment(dog, streak, todayCheckin);
-          return (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, type: "spring", stiffness: 400, damping: 30 }}
-              className="mx-4 mt-3 flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10"
-            >
-              <PawMascotInline
-                mood={todayCheckin ? (todayCheckin.mood >= 3 ? "happy" : todayCheckin.mood <= 1 ? "sleepy" : "encouraging") : streak?.current_streak >= 3 ? "proud" : "curious"}
-                size="md"
-              />
-              <p className="text-[12px] text-foreground/70 leading-relaxed font-medium">{moment.text}</p>
-            </motion.div>
-          );
-        })()}
-
-        {/* Block 2: Today Card (AI coaching + inline checkin) */}
-        <div className="mt-3">
-          <TodayCard
-            dog={dog} user={user} todayCheckin={todayCheckin} streak={streak}
-            recommendations={recommendations}
-            onCheckin={handleCheckin} submitting={submitting}
-          />
-        </div>
-
-        {/* Block 3: Active Program Cards — most actionable content (DASH-01: moved up) */}
-        <div className="mt-3">
-          <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} behaviorBookmarks={behaviorBookmarks} />
-        </div>
-
-        {/* Block 4: Smart Alerts — trend-based alerts (DASH-02: activated on dashboard) */}
-        <div className="mt-3 mx-4">
+        {/* 2. Alertes urgentes — juste apres le header */}
+        <div className="mt-2 px-4">
           <SmartAlerts
             dog={dog}
             checkins={recentCheckins}
@@ -417,35 +348,46 @@ export default function Home() {
           />
         </div>
 
-        {/* Block 5: Quick Actions */}
+        {/* 3. Action du jour */}
+        <div className="mt-3">
+          <TodayCard
+            dog={dog} user={user} todayCheckin={todayCheckin} streak={streak}
+            recommendations={recommendations}
+            onCheckin={handleCheckin} submitting={submitting}
+          />
+        </div>
+
+        {/* 4. Programmes en cours */}
+        <div className="mt-3">
+          <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} behaviorBookmarks={behaviorBookmarks} />
+        </div>
+
+        {/* 5. Raccourcis rapides */}
         <div className="mt-3">
           <QuickActions />
         </div>
 
-        {/* Block 6: Daily Coaching (tip + recommendations) */}
-        <div className="mt-3">
-          <DailyCoaching
-            dog={dog}
-            recommendations={recommendations}
-          />
-        </div>
-
-        {/* Block 7: Bento Feature Grid */}
-        <div className="mt-3">
-          <BentoGrid />
-        </div>
-
-        {/* Block 8: Streak Bar */}
+        {/* 6. Streak + Habitude */}
         <div className="mt-3">
           <StreakBar streak={streak} walkStreak={walkStreak} exercises={exercises} dailyLogs={dailyLogs} />
         </div>
 
-        {/* Block 9: Trial expiry banner — moved below action cards (DASH-04) */}
+        {/* 7. Le savais-tu / coaching quotidien */}
+        <div className="mt-3">
+          <DailyCoaching dog={dog} recommendations={recommendations} />
+        </div>
+
+        {/* 8. Navigation secondaire BentoGrid — plus bas */}
+        <div className="mt-3">
+          <BentoGrid />
+        </div>
+
+        {/* 9. Trial expiry */}
         <div className="mt-3">
           <TrialExpiryBanner user={user} dog={dog} />
         </div>
 
-        {/* Block 10: Weekly Insight — moved below action cards (DASH-03) */}
+        {/* 10. Weekly Insight */}
         {(weeklyInsight || pastInsights.length > 0) && (
           <div className="mt-3">
             <WeeklyInsightCard
@@ -460,6 +402,11 @@ export default function Home() {
             />
           </div>
         )}
+
+        {/* 11. Disclaimer veterinaire — bas de page */}
+        <p className="text-center text-[10px] text-muted-foreground px-6 mt-6 mb-2">
+          PawCoach est un outil de suivi bien-etre. En cas de probleme de sante, consulte un veterinaire.
+        </p>
 
         {/* BadgeTeaser merged into StreakBar as compact chip (DASH-10) */}
 
