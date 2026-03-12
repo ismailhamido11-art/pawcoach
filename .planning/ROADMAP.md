@@ -1,17 +1,14 @@
-# Roadmap: PawCoach — v1.0 Data Flow Integrity
+# Roadmap: PawCoach
 
-## Overview
+## Milestones
 
-Ce milestone corrige tous les flux de donnees casses ou orphelins identifies par l'audit du 11 mars 2026. Les 16 requirements se regroupent naturellement en 4 phases deployables independamment : corrections frontend pures (donnees), enrichissement backend IA, extension des notifications CRON, puis fixes independants mixtes (dashboard, nutrition, activite, sante). Chaque phase peut etre testee et pushee sans bloquer les suivantes.
+- **v1.0 Data Flow Integrity** - Phases 1-4 (shipped 2026-03-11)
+- **v1.1 Quality Audit** - Phases 5-8 (in progress)
 
 ## Phases
 
-- [x] **Phase 1: Data Coherence** - Brancher les sources de donnees orphelines dans le frontend (allergies, poids, score sante, code mort)
-- [x] **Phase 2: AI Enrichment** - Enrichir les 3 fonctions IA backend avec les donnees qu'elles ignorent actuellement (completed 2026-03-11)
-- [x] **Phase 3: Notifications** - Etendre les rappels email aux medicaments, visites vet, et free users (completed 2026-03-11)
-- [x] **Phase 4: Independent Fixes** - Corriger les logiques bancales independantes (dashboard, nutrition, streak, comportement, PDF vet) (completed 2026-03-11)
-
-## Phase Details
+<details>
+<summary>v1.0 Data Flow Integrity (Phases 1-4) — SHIPPED 2026-03-11</summary>
 
 ### Phase 1: Data Coherence
 **Goal**: Les donnees collectees dans le profil chien (allergies, poids, score sante) sont effectivement utilisees partout ou elles ont du sens — plus de champs fantomes ni de sources contradictoires
@@ -55,8 +52,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — vaccineReminders (retirer filtre premium) + medicationReminders (nouvelle fonction CRON)
-- [ ] 03-02-PLAN.md — vetVisitReminders (nouvelle fonction CRON)
+- [x] 03-01-PLAN.md — vaccineReminders (retirer filtre premium) + medicationReminders (nouvelle fonction CRON)
+- [x] 03-02-PLAN.md — vetVisitReminders (nouvelle fonction CRON)
 
 ### Phase 4: Independent Fixes
 **Goal**: Les comportements bancaux independants sont corriges — dashboard, nutrition, streak, suivi comportement, et infos vet dans le PDF
@@ -72,26 +69,100 @@ Plans:
 
 Plans:
 - [x] 04-01-PLAN.md — SmartAlerts : detection tendance appetit + WalkMode : streak apres balade
-- [ ] 04-02-PLAN.md — NutritionMealPlan : noon dans le prompt JSON + affichage UI repas midi
-- [ ] 04-03-PLAN.md — BehaviorProgramCard : tracking completion jour par jour (completed_days)
+- [x] 04-02-PLAN.md — NutritionMealPlan : noon dans le prompt JSON + affichage UI repas midi
+- [x] 04-03-PLAN.md — BehaviorProgramCard : tracking completion jour par jour (completed_days)
 - [x] 04-04-PLAN.md — DownloadHealthPDF : vet_name + vet_city + next_vet_appointment dans PDF et score sante
+
+</details>
+
+---
+
+### v1.1 Quality Audit (In Progress)
+
+**Milestone Goal:** Audit qualite approfondi sur 4 axes — eliminer le code mort, renforcer l'UX d'erreur, securiser les donnees, et harmoniser les patterns UI. Qualite production.
+
+- [ ] **Phase 5: Dead Code** - Supprimer tous les imports, variables, composants et fichiers backend morts du repo
+- [ ] **Phase 6: Error UX** - Garantir que chaque erreur, liste vide, formulaire et chargement communique clairement a l'utilisateur
+- [ ] **Phase 7: Security** - Eliminer toute exposition de secrets, inputs non sanitizes, et rendus HTML bruts non proteges
+- [ ] **Phase 8: Consistency** - Harmoniser les patterns visuels (boutons, cards, espacements, couleurs d'etat) sur toutes les pages
+
+## Phase Details
+
+### Phase 5: Dead Code
+**Goal**: Le repo ne contient plus de code mort — aucun import inutilise, variable declaree sans usage, composant orphelin ou fichier backend non reference. Le codebase est propre et lisible.
+**Depends on**: Nothing (independent — suggested first to reduce noise for phases 6-8)
+**Requirements**: DEAD-01, DEAD-02, DEAD-03, DEAD-04
+**Success Criteria** (what must be TRUE):
+  1. Aucun fichier JSX/JS n'a d'import en ligne 1-N qui n'est pas utilise dans le corps du fichier
+  2. Aucune variable ou fonction n'est declaree sans etre appelee (zero unused declarations)
+  3. Aucun composant React n'existe dans le repo sans etre importe quelque part (orphelin verifiable par grep)
+  4. Aucun fichier .ts dans functions/ n'est absent des configs de routing backend
+**Plans**: TBD
+
+Plans:
+- [ ] 05-01: Audit et suppression imports/variables/fonctions morts (JSX/JS frontend)
+- [ ] 05-02: Audit et suppression composants orphelins + fichiers backend morts
+
+### Phase 6: Error UX
+**Goal**: Chaque situation d'erreur, liste vide, validation formulaire et etat de chargement produit un feedback clair et actionnable pour l'utilisateur — plus d'ecrans blancs ni de silence silencieux.
+**Depends on**: Nothing (independent — suggested after Phase 5)
+**Requirements**: ERR-01, ERR-02, ERR-03, ERR-04
+**Success Criteria** (what must be TRUE):
+  1. Un appel API qui echoue affiche un message en francais expliquant ce qui s'est passe (pas une console.error invisible, pas de crash)
+  2. Une liste sans donnees affiche un etat vide illustre avec un texte explicatif et une action suggeree (pas un conteneur vide)
+  3. Un formulaire soumis avec des donnees invalides affiche le champ en erreur et un message specifique sous le champ
+  4. Une page ou un bloc de donnees en cours de chargement affiche un spinner ou un skeleton — l'utilisateur sait que quelque chose se charge
+**Plans**: TBD
+
+Plans:
+- [ ] 06-01: Audit et ajout try/catch avec messages user-friendly sur tous les appels API
+- [ ] 06-02: Ajout etats vides explicites sur toutes les listes + skeletons/spinners sur les chargements
+- [ ] 06-03: Ajout messages de validation clairs sur tous les formulaires
+
+### Phase 7: Security
+**Goal**: Le code ne contient aucun secret en clair, aucun input utilisateur directement injecte dans du HTML ou des prompts IA, et aucune donnee externe utilisee sans validation.
+**Depends on**: Nothing (independent — suggested after Phase 6)
+**Requirements**: SEC-01, SEC-02, SEC-03, SEC-04
+**Success Criteria** (what must be TRUE):
+  1. Aucune cle API, token ou secret n'est present en clair dans un fichier source (frontend ou backend)
+  2. Tout input utilisateur injecte dans un prompt IA ou affiche en HTML passe par une fonction de sanitization
+  3. Toute URL externe et toute donnee issue d'une API tierce est validee (format, domaine) avant utilisation
+  4. Aucun rendu HTML brut depuis du contenu utilisateur sans sanitization prealable dans le repo
+**Plans**: TBD
+
+Plans:
+- [ ] 07-01: Audit secrets en clair + sanitization des inputs dans les prompts IA
+- [ ] 07-02: Audit validation URLs/donnees externes + audit rendus HTML bruts non proteges
+
+### Phase 8: Consistency
+**Goal**: L'interface visuelle est coherente sur toutes les pages — meme pattern de boutons primaires, meme style de cards, meme espacement, meme code couleur pour les etats.
+**Depends on**: Nothing (independent — suggested last as polish)
+**Requirements**: CONS-01, CONS-02, CONS-03, CONS-04
+**Success Criteria** (what must be TRUE):
+  1. Tous les boutons d'action principale utilisent le meme variant (gradient-primary ou btn-primary) — aucun bouton rouge/bleu/vert qui devrait etre le style standard
+  2. Toutes les cards de contenu ont le meme arrondi (rounded-2xl), meme bordure et meme padding interne
+  3. Les marges laterales de page sont uniformes (mx-4 ou mx-5 selon la page) et les gaps entre elements sont coherents (gap-3 ou gap-4)
+  4. Les etats succes affichent du vert emerald, les warnings de l'amber, et les erreurs du rouge — partout dans l'app sans exception
+**Plans**: TBD
+
+Plans:
+- [ ] 08-01: Harmonisation boutons primaires sur toutes les pages
+- [ ] 08-02: Harmonisation cards + espacements sur toutes les pages
+- [ ] 08-03: Harmonisation couleurs d'etat (success/warning/error) sur toutes les pages
 
 ## Progress
 
-**Execution Order:**
-Phases executees en ordre numerique : 1 → 2 → 3 → 4
-
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Data Coherence | 3/3 | Complete | 2026-03-11 |
-| 2. AI Enrichment | 3/3 | Complete   | 2026-03-11 |
-| 3. Notifications | 2/2 | Complete   | 2026-03-11 |
-| 4. Independent Fixes | 4/4 | Complete   | 2026-03-11 |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Data Coherence | v1.0 | 3/3 | Complete | 2026-03-11 |
+| 2. AI Enrichment | v1.0 | 3/3 | Complete | 2026-03-11 |
+| 3. Notifications | v1.0 | 2/2 | Complete | 2026-03-11 |
+| 4. Independent Fixes | v1.0 | 4/4 | Complete | 2026-03-11 |
+| 5. Dead Code | v1.1 | 0/2 | Not started | - |
+| 6. Error UX | v1.1 | 0/3 | Not started | - |
+| 7. Security | v1.1 | 0/2 | Not started | - |
+| 8. Consistency | v1.1 | 0/3 | Not started | - |
 
 ---
-*Roadmap created: 2026-03-11 — Milestone v1.0 Data Flow Integrity*
-*16/16 requirements mapped — 100% coverage*
-*Phase 1 planned: 2026-03-11 — 3 plans, wave 1 (01-01 + 01-02 parallel) + wave 2 (01-03)*
-*Phase 2 planned: 2026-03-11 — 3 plans, wave 1 (02-01 + 02-02 + 02-03 parallel)*
-*Phase 3 planned: 2026-03-11 — 2 plans, wave 1 (03-01 + 03-02 parallel)*
-*Phase 4 planned: 2026-03-11 — 4 plans, wave 1 (04-01 + 04-02 + 04-03 + 04-04 parallel)*
+*Roadmap v1.0 created: 2026-03-11 — 16/16 requirements mapped*
+*Roadmap v1.1 created: 2026-03-12 — 16/16 requirements mapped (phases 5-8)*
