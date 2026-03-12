@@ -17,6 +17,17 @@ export const AuthProvider = ({ children }) => {
     checkAppState();
   }, []);
 
+  // Handle auth_required errors by redirecting to login
+  useEffect(() => {
+    if (authError?.type === 'auth_required') {
+      // Use a small delay to ensure the state update is complete
+      const timer = setTimeout(() => {
+        navigateToLogin();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [authError]);
+
   const checkAppState = async () => {
     try {
       setIsLoadingPublicSettings(true);
