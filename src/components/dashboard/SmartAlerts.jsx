@@ -6,12 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import {
-  AlertTriangle, TrendingDown, Syringe, Scale,
-  Zap, CheckCircle, ChevronRight, Brain, Flame,
+import { TrendingDown, Syringe, Scale,
+  Zap, ChevronRight, Brain, Flame,
   Footprints, Activity, UtensilsCrossed
 } from "lucide-react";
-import { computeVaccineMap, getVaccineDisplayName } from "@/utils/healthStatus";
+import { computeVaccineMap } from "@/utils/healthStatus";
 
 // ── Seuils d'alerte vitalité (mood/energy sur échelle 1-4 et 1-3) ──
 const MOOD_DROP_CRITICAL = 1.2;     // Baisse de 1.2+ points d'humeur sur 7j = alerte critique
@@ -36,9 +35,9 @@ const SEVERITY = {
 /**
  * Génère toutes les alertes intelligentes à partir des données brutes
  */
-export function computeAlerts({ dog, checkins = [], records = [], streak, dailyLogs = [], scans = [] }) {
+export function computeAlerts({ dog, checkins = [], records = [], streak, dailyLogs = [], scans: _scans = [] }) {
   const alerts = [];
-  const today = new Date().toISOString().split("T")[0];
+  const _today = new Date().toISOString().split("T")[0];
 
   // ── 1. TENDANCE VITALITÉ (mood + énergie sur 7 vs 7j précédents) ──
   const sorted = [...checkins].sort((a, b) => a.date > b.date ? 1 : -1);

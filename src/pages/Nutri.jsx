@@ -2,9 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog, createPageUrl } from "@/utils";
-import { getTodayString } from "@/utils/recommendations";
 import BottomNav from "../components/BottomNav";
-import ChatFAB from "../components/ChatFAB";
 import WellnessBanner from "../components/WellnessBanner";
 import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
 import FoodComparator from "../components/nutrition/FoodComparator";
@@ -12,12 +10,11 @@ import DietPreferencesPanel from "../components/nutrition/DietPreferencesPanel";
 // SavedPlansPanel merged into NutritionMealPlan
 
 import { Button } from "@/components/ui/button";
-import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, Settings2, ChevronDown, Copy, RotateCcw } from "lucide-react";
+import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, ChevronDown, Copy, RotateCcw } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
 import { initCredits } from "@/utils/ai-credits";
 import IconBadge from "@/components/ui/IconBadge";
-import { InlineIcon } from "@/components/ui/IconBadge";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Heart, Utensils, Brain, Activity, Sparkles, ChevronUp, Zap, Clock, MessageCircle } from "lucide-react";
+import { ArrowLeft, Heart, Utensils, Brain, Activity, Sparkles, ChevronUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog, createPageUrl } from "@/utils";
@@ -292,7 +292,7 @@ export default function DogTwin() {
 
     // Adapt fog and background based on dark mode
     const fogColor = isDark ? 0x0a1a14 : 0x1a2f26;
-    const bgColor = isDark ? 0x081510 : 0x0f2820;
+    const _bgColor = isDark ? 0x081510 : 0x0f2820;
     scene.fog = new THREE.FogExp2(fogColor, 0.18);
 
     // Camera

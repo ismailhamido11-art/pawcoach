@@ -2,12 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 import { useActionCredits } from "@/utils/ai-credits";
-import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 import {
   FileText, Camera, ClipboardPaste, Sparkles,
   CheckCircle, ArrowLeft, Loader2, Syringe, Weight,
   Stethoscope, Pill, AlertCircle, StickyNote,
-  ChevronRight, Check, Upload, RefreshCw
+  ChevronRight, Check, RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -63,9 +62,9 @@ const ANALYZING_STEPS_LABELS = [
 ];
 
 export default function HealthImport() {
-  const { credits, hasCredits, isPremium, consume } = useActionCredits();
+  const { credits: _credits, hasCredits, isPremium, consume } = useActionCredits();
   const [step, setStep] = useState(STEPS.SELECT);
-  const [source, setSource] = useState(null);
+  const [_source, setSource] = useState(null);
   const [textInput, setTextInput] = useState("");
   const [records, setRecords] = useState([]);
   const [selected, setSelected] = useState(new Set());
@@ -158,7 +157,7 @@ export default function HealthImport() {
       });
       processResult(res.data);
       if (!isPremium) await consume();
-    } catch (err) {
+    } catch {
       toast.error("Erreur lors de l'analyse. Réessaie avec un autre document.");
       setStep(STEPS.SELECT);
     }
@@ -180,7 +179,7 @@ export default function HealthImport() {
       ]);
       processResult(res.data);
       if (!isPremium) await consume();
-    } catch (err) {
+    } catch {
       toast.error("Erreur lors de l'analyse. Réessaie.");
       setStep(STEPS.INPUT);
     }
@@ -198,7 +197,7 @@ export default function HealthImport() {
   const handleImport = async () => {
     const toImport = records.filter((_, i) => selected.has(i));
     for (const record of toImport) {
-      const created = await base44.entities.HealthRecord.create({
+      const _created = await base44.entities.HealthRecord.create({
         dog_id: dog.id,
         type: record.type || "note",
         title: record.title,

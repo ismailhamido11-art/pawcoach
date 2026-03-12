@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useBackClose from "@/hooks/useBackClose";
 import { QrCode, Download, Share2, X, Smartphone, Shield, Zap } from "lucide-react";

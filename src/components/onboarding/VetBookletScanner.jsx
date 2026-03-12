@@ -1,14 +1,14 @@
 import { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Camera, Loader2, CheckCircle, ChevronDown, ChevronUp, X, Plus } from "lucide-react";
+import { Camera, Loader2, CheckCircle, X, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function VetBookletScanner({ dogName, onDataExtracted }) {
+export default function VetBookletScanner({ dogName: _dogName, onDataExtracted }) {
   const [phase, setPhase] = useState("idle"); // idle | scanning | review
   const [preview, setPreview] = useState(null);
-  const [extracted, setExtracted] = useState(null);
+  const [_extracted, setExtracted] = useState(null);
   const [editedVaccines, setEditedVaccines] = useState([]);
   const [editedTreatments, setEditedTreatments] = useState([]);
   const [editedWeights, setEditedWeights] = useState([]);

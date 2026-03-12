@@ -4,11 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import useBackClose from "@/hooks/useBackClose";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  ArrowLeft, Pencil, ChevronDown, ChevronUp,
-  QrCode, Share2, Download, Syringe, Dumbbell, ScanLine,
-  Weight, Flame, Trophy, Utensils, Heart, MapPin, Check, X,
+  ArrowLeft, Pencil, ChevronDown,
+  QrCode, Share2, Download,
   Trash2, AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,7 +23,7 @@ import DogEditModal from "../components/dogprofile/DogEditModal.jsx";
 export default function DogProfile() {
   const navigate = useNavigate();
   const [dog, setDog] = useState(null);
-  const [user, setUser] = useState(null);
+  const [_user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dailyLogs, setDailyLogs] = useState([]);
   const [progress, setProgress] = useState([]);
@@ -79,7 +78,7 @@ export default function DogProfile() {
   }, [dogId]);
 
   const handleSaveDog = async (updates) => {
-    const updated = await base44.entities.Dog.update(dog.id, updates);
+    const _updated = await base44.entities.Dog.update(dog.id, updates);
     setDog(prev => ({ ...prev, ...updates }));
   };
 

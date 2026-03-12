@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Camera, Plus, TrendingUp, Weight, Ruler, Sparkles, ChevronRight, Trash2, Check, X } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, AreaChart } from "recharts";
+import { Camera, Plus, TrendingUp, Weight, Ruler, Sparkles, Trash2, Check, X } from "lucide-react";
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 import { format, differenceInMonths } from "date-fns";
 import { fr } from "date-fns/locale";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useActionCredits } from "@/utils/ai-credits";
-import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 import Illustration from "@/components/illustrations/Illustration";
 
 // Breed reference curves (weight in kg by age in months)
@@ -55,7 +54,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function GrowthTrackerContent({ dog, user, healthRecords = [], dailyLogs = [], onGrowthAdded }) {
-  const { credits, hasCredits, isPremium, consume } = useActionCredits();
+  const { credits: _credits, hasCredits, isPremium, consume } = useActionCredits();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
@@ -105,7 +104,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
       const analysis = resp.data?.analysis;
       setAnalysisResult({ ...analysis, photo_url: file_url });
       if (!isPremium) await consume();
-    } catch (err) {
+    } catch {
       toast.error("Erreur lors de l'analyse. Réessaie.");
       setPreviewUrl(null);
     } finally {

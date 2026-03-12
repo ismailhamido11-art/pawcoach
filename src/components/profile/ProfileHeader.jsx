@@ -1,5 +1,5 @@
 import { Crown, Star, Medal, Award, Trophy } from "lucide-react";
-import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
+import { getTrialDaysLeft } from "@/utils/premium";
 
 const BADGES = [
   { name: "Novice", threshold: 0, icon: Star, color: "bg-slate-100 text-slate-500" },

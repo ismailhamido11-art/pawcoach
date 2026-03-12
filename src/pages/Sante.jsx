@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { getActiveDog, createPageUrl } from "@/utils";
+import { getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
 import HealthAssistantBar from "@/components/sante/HealthAssistantBar";
@@ -37,7 +37,7 @@ const TABS = [
 ];
 
 export default function Sante() {
-   const navigate = useNavigate();
+   const _navigate = useNavigate();
    const [dog, setDog] = useState(null);
    const [user, setUser] = useState(null);
    const [records, setRecords] = useState([]);

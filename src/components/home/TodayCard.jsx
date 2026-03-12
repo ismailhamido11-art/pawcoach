@@ -4,7 +4,7 @@ import { createPageUrl } from "@/utils";
 import { Sparkles, AlertTriangle, ChevronRight, CheckCircle2 } from "lucide-react";
 import InlineCheckin from "./InlineCheckin";
 
-export default function TodayCard({ dog, user, todayCheckin, streak, recommendations = [], onCheckin, submitting }) {
+export default function TodayCard({ dog, user: _user, todayCheckin, streak: _streak, recommendations = [], onCheckin, submitting }) {
   const hour = new Date().getHours();
   const timeLabel = hour < 12 ? "Ce matin" : hour < 18 ? "Cet après-midi" : "Ce soir";
 

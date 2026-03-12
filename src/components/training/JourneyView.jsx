@@ -1,6 +1,5 @@
 import { ArrowLeft, CheckCircle, Lock, Timer } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import IconBadge from "@/components/ui/IconBadge";
+import { motion } from "framer-motion";
 
 const listContainer = { show: { transition: { staggerChildren: 0.07 } } };
 const listItem = {
@@ -67,7 +66,7 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
         {exercises.map((exercise, idx) => {
           const done = isCompleted(exercise.order_number);
           const exerciseLocked = locked || (exercise.is_premium && !isPremium);
-          const lvl = LEVEL_CONFIG[exercise.level];
+          const _lvl = LEVEL_CONFIG[exercise.level];
 
           return (
             <motion.button

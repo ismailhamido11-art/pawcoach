@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import DiagnosisReportView from "./DiagnosisReportView";
 import DiagnosisStep2Questions from "./DiagnosisStep2Questions";
-import { Loader2, Stethoscope, AlertTriangle, Download, MapPin, Camera, X, Image } from "lucide-react";
+import { Loader2, Stethoscope, AlertTriangle, Download, MapPin, Camera, X } from "lucide-react";
 import { toast } from "sonner";
 import { useActionCredits } from "@/utils/ai-credits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";

@@ -110,16 +110,15 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
     }
   }, [autoOpenForm]);
 
-  if (!weightTrend) return null;
-
-  const config = DIRECTION_CONFIG[weightTrend.direction] || DIRECTION_CONFIG.unknown;
-  const Icon = config.Icon;
-  const isAlert = Math.abs(weightTrend.changePct) > 5;
-  const lastDateFormatted = weightTrend.lastDate
+  const config = weightTrend ? (DIRECTION_CONFIG[weightTrend.direction] || DIRECTION_CONFIG.unknown) : null;
+  const Icon = config?.Icon;
+  const isAlert = weightTrend ? Math.abs(weightTrend.changePct) > 5 : false;
+  const lastDateFormatted = weightTrend?.lastDate
     ? new Date(weightTrend.lastDate).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
     : null;
 
   const interpretation = useMemo(() => {
+    if (!weightTrend) return "";
     if (weightTrend.current === null) return "Aucune pesée enregistrée. Pèse ton chien pour commencer le suivi.";
     if (weightTrend.direction === "unknown") return "Une seule pesée. Ajoute-en une autre pour voir la tendance.";
     if (weightTrend.direction === "stable") return `${dogName || "Ton chien"} maintient un poids stable. C'est idéal.`;
@@ -133,6 +132,8 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
     }
     return "";
   }, [weightTrend, dogName, isAlert]);
+
+  if (!weightTrend) return null;
 
   return (
     <motion.div

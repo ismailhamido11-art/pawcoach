@@ -2,8 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import ReactMarkdown from "react-markdown";
 import {
-  Mic, Camera, X, Check, Loader2, Sparkles,
-  Keyboard, ChevronRight, ExternalLink, MapPin, Phone, AlertCircle, Send, Copy
+  Mic, Camera, Check, Sparkles, ExternalLink, MapPin, Phone, AlertCircle, Send, Copy
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,7 +29,7 @@ const playPop = () => {
     gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.1);
-  } catch(e) {}
+  } catch {}
 };
 
 function getTimeStr(timestamp) {
@@ -127,7 +126,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   useEffect(() => {
     return () => {
       if (recognitionRef.current) {
-        try { recognitionRef.current.abort(); } catch(e) {}
+        try { recognitionRef.current.abort(); } catch {}
       }
     };
   }, []);
@@ -300,7 +299,6 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   const saveAllRecords = async () => {
     try {
       const existingRecords = await base44.entities.HealthRecord.filter({ dog_id: dogId });
-      let savedCount = 0;
       let skippedCount = 0;
 
       for (const rec of pendingRecords) {
@@ -319,7 +317,6 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
           try { await base44.entities.Dog.update(dogId, { weight: rec.value }); } catch {}
         }
         onRecordAdded(created);
-        savedCount++;
       }
 
       if (skippedCount > 0) {
@@ -434,7 +431,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                   <div className="text-sm leading-relaxed markdown-content break-words">
                     <ReactMarkdown
                       components={{
-                        a: ({node, ...props}) => (
+                        a: ({node: _node, ...props}) => (
                           <a
                             {...props}
                             target="_blank"
@@ -450,7 +447,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                             <span className="truncate">{props.children}</span>
                           </a>
                         ),
-                        p: ({node, ...props}) => <p {...props} className="mb-1.5 last:mb-0" />
+                        p: ({node: _node, ...props}) => <p {...props} className="mb-1.5 last:mb-0" />
                       }}
                     >
                       {msg.content}
@@ -555,7 +552,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                 <div className="text-sm leading-relaxed markdown-content break-words">
                   <ReactMarkdown
                     components={{
-                      p: ({node, ...props}) => <p {...props} className="mb-1.5 last:mb-0" />
+                      p: ({node: _node, ...props}) => <p {...props} className="mb-1.5 last:mb-0" />
                     }}
                   >
                     {streamingText}

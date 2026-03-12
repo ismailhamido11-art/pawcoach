@@ -77,7 +77,7 @@ export default function TrackerHistory({ logs, dog }) {
     })),
   [sorted]);
 
-  const { totalMinutes, walkDaysCount, avgMinutes, daysOver30, longestWalk, totalKm } = useMemo(() => {
+  const { totalMinutes, walkDaysCount: _walkDaysCount2, avgMinutes, daysOver30, longestWalk, totalKm } = useMemo(() => {
     const _totalMinutes = sorted.reduce((acc, l) => acc + (l.walk_minutes || 0), 0);
     const _walkDaysCount = sorted.filter(l => (l.walk_minutes || 0) > 0).length;
     return {

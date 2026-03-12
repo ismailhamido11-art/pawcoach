@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw, ShoppingCart, BookmarkPlus, Check, Home, AlertTriangle, ChevronDown, ChevronUp, Pencil, X, Trash2, Calendar } from "lucide-react";
+import { Loader2, RefreshCw, Check, Home, AlertTriangle, ChevronDown, ChevronUp, Pencil, X, Trash2, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useActionCredits } from "@/utils/ai-credits";
-import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
+import { UpgradePrompt } from "@/components/ui/AICreditsGate";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -44,7 +44,7 @@ function getPlanProgress(planData) {
   return { dayNumber, isExpired, elapsed, startDate: start, endDate };
 }
 
-const AFFILIATE_BRANDS = [
+const _AFFILIATE_BRANDS = [
   { name: "Royal Canin", url: "https://amzn.to/royalcanin", emoji: "\u{1F451}" },
   { name: "Hill's Science Plan", url: "https://amzn.to/hills", emoji: "\u{1F52C}" },
   { name: "Orijen", url: "https://www.zooplus.fr", emoji: "\u{1F98C}" },
@@ -53,7 +53,7 @@ const AFFILIATE_BRANDS = [
 ];
 
 export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPremiumProp, user, dietPrefs, checkins = [], healthRecords = [], dailyLogs = [], activePlan, monthlyPlanCount = 0, onPlanSaved, allPlans = [], onSwitchToCoach }) {
-  const { credits, hasCredits, isPremium, consume } = useActionCredits();
+  const { credits: _credits, hasCredits, isPremium, consume } = useActionCredits();
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);

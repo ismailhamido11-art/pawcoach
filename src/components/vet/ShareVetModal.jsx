@@ -27,7 +27,7 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
   const [selectedSections, setSelectedSections] = useState(["vaccine", "weight", "vet_visit", "medication", "note"]);
   const [loading, setLoading] = useState(false);
   const [accesses, setAccesses] = useState([]);
-  const [loadingAccesses, setLoadingAccesses] = useState(false);
+  const [_loadingAccesses, setLoadingAccesses] = useState(false);
   const [copiedCode, setCopiedCode] = useState(null);
 
   useEffect(() => {

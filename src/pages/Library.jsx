@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import BottomNav from "../components/BottomNav";
-import { ArrowLeft, Bookmark, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarChart2, Clock, Target, Home, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarChart2, Clock, Target, Home, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ReactMarkdown from "react-markdown";
@@ -61,7 +61,7 @@ export default function Library() {
       setBookmarks(prev => prev.filter(b => b.id !== id));
       if (expanded === id) setExpanded(null);
       toast.success("Conseil supprimé");
-    } catch (err) {
+    } catch {
       toast.error("Erreur lors de la suppression");
     }
   };

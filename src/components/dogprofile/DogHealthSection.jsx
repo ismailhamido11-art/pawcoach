@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Stethoscope, Pencil, Check, X, Calendar } from "lucide-react";
+import { ChevronDown, ChevronUp, Stethoscope, Pencil, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function EditableField({ label, value, fieldKey, onSave, type = "text", multiline = false }) {

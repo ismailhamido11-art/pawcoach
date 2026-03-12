@@ -14,7 +14,7 @@ function Trophy_({ emoji, label, earned }) {
 }
 
 export default function DogTrophiesRow({ streak, progress, scansCount, dailyLogs }) {
-  const current = streak?.current_streak || 0;
+  const _current = streak?.current_streak || 0;
   const longest = streak?.longest_streak || 0;
   const exerciseCount = (progress || []).filter(p => p.completed).length;
   const walkDays = (dailyLogs || []).filter(l => (l.walk_minutes || 0) > 0).length;

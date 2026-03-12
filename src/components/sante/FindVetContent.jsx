@@ -4,13 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, Loader2, Stethoscope, Scissors, ShoppingBag, Heart, Navigation } from "lucide-react";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Illustration from "../illustrations/Illustration";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import PlaceCard from "./PlaceCard";
 import { useActionCredits } from "@/utils/ai-credits";
-import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -48,7 +47,7 @@ function createColoredIcon(color) {
 }
 
 export default function FindVetContent({ dog, user }) {
-  const { credits, hasCredits, isPremium, consume } = useActionCredits();
+  const { credits: _credits, hasCredits, isPremium, consume } = useActionCredits();
   const [query, setQuery] = useState(dog?.vet_city || "");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -57,7 +56,7 @@ export default function FindVetContent({ dog, user }) {
   const [mapCenter, setMapCenter] = useState([46.603354, 1.888334]); // France center
   const [favorites, setFavorites] = useState([]);
   const [showFavorites, setShowFavorites] = useState(false);
-  const [loadingFavs, setLoadingFavs] = useState(true);
+  const [_loadingFavs, setLoadingFavs] = useState(true);
 
   useEffect(() => {
     async function loadFavorites() {

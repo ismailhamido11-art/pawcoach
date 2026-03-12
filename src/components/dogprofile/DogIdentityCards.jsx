@@ -1,4 +1,4 @@
-import { Weight, Activity, Home, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Weight, Activity, Home } from "lucide-react";
 import InlineEditCard from "./InlineEditCard.jsx";
 
 const ACTIVITY_LABELS = {
@@ -19,7 +19,7 @@ export default function DogIdentityCards({ dog, dailyLogs, onSave }) {
 
   const trendColor = trend > 0 ? "text-emerald-500" : trend < 0 ? "text-blue-500" : "text-muted-foreground";
 
-  const sexLabel = dog.sex === "male" ? "🐾 Mâle" : dog.sex === "female" ? "🐾 Femelle" : "—";
+  const _sexLabel = dog.sex === "male" ? "🐾 Mâle" : dog.sex === "female" ? "🐾 Femelle" : "—";
 
   return (
     <div className="grid grid-cols-2 gap-3">

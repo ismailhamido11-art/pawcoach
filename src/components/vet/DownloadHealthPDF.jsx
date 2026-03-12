@@ -263,7 +263,7 @@ function drawScoreBadge(doc, y, score, label, pills) {
 // Main component
 // ---------------------------------------------------------------------------
 
-export default function DownloadHealthPDF({ dogId, dogName }) {
+export default function DownloadHealthPDF({ dogId, dogName: _dogName }) {
   const [loading, setLoading] = useState(false);
 
   const handleDownload = async () => {
@@ -388,7 +388,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
         const tableRows = [];
 
         // First: referenced vaccines with status
-        Object.entries(vaccineMap).forEach(([key, v]) => {
+        Object.entries(vaccineMap).forEach(([_key, v]) => {
           if (v.lastRecord) {
             tableRows.push([
               v.ref.name,
@@ -603,7 +603,7 @@ export default function DownloadHealthPDF({ dogId, dogName }) {
       if (recentCheckins.length >= 3) {
         y = drawSectionHeader(doc, y, "Bien-etre (30 derniers jours)");
 
-        const avg = (field, max) => {
+        const avg = (field, _max) => {
           const val = recentCheckins.reduce((s, c) => s + (c[field] || 0), 0) / recentCheckins.length;
           return val;
         };

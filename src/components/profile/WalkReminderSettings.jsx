@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
-import { Bell, BellOff, Clock, Footprints } from "lucide-react";
+import { useState } from "react";
+import { Bell, Clock, Footprints } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
-const HOURS = Array.from({ length: 24 }, (_, i) => {
+const _HOURS = Array.from({ length: 24 }, (_, i) => {
   const h = i.toString().padStart(2, "0");
   return { value: `${h}:00`, label: `${h}h00` };
 });

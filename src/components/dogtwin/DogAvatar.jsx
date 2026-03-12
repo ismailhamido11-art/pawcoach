@@ -9,7 +9,7 @@
  *  - interactive: bool (pulsation au tap)
  *  - onClick: fn
  */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Couleur de l'aura selon score
@@ -20,7 +20,7 @@ const auraColor = (score) => {
 };
 
 // Hauteur des yeux selon humeur
-const eyeConfig = (mood) => ({
+const eyeConfig = (_mood) => ({
   happy:   { scaleY: 0.45, pupilY: 0, shine: true },
   excited: { scaleY: 1.2,  pupilY: -1, shine: true },
   neutral: { scaleY: 0.85, pupilY: 0, shine: true },

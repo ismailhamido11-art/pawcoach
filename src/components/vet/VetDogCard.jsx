@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Badge } from "@/components/ui/badge";
-import { ChevronRight, Heart } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 export default function VetDogCard({ dog, access }) {
   const sharedSections = (() => {

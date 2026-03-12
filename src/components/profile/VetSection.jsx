@@ -10,7 +10,7 @@ const STATUS_CONFIG = {
   revoked: { label: "Révoqué", icon: XCircle, color: "text-red-400" },
 };
 
-export default function VetSection({ dogs, activeDogId }) {
+export default function VetSection({ dogs: _dogs, activeDogId }) {
   const navigate = useNavigate();
   const [vetAccesses, setVetAccesses] = useState([]);
 

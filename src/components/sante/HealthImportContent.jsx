@@ -33,7 +33,7 @@ const ANALYZING_STEPS = ["Lecture du document", "Analyse IA vétérinaire", "Ext
 
 export default function HealthImportContent({ dog, onImported }) {
   const [step, setStep] = useState(STEPS.SELECT);
-  const [source, setSource] = useState(null);
+  const [_source, setSource] = useState(null);
   const [textInput, setTextInput] = useState("");
   const [records, setRecords] = useState([]);
   const [selected, setSelected] = useState(new Set());

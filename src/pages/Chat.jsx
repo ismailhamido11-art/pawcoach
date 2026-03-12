@@ -9,12 +9,11 @@ import { Send, Camera, Bookmark, BookmarkCheck, ChevronDown, Copy, RotateCcw, Pl
 import { DogChat } from "../components/ui/PawIllustrations";
 import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
-import { initCredits, MSG_DAILY_LIMIT } from "@/utils/ai-credits";
+import { initCredits } from "@/utils/ai-credits";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
 import { createPageUrl, getActiveDog } from "@/utils";
-import { getTodayString } from "@/utils/recommendations";
 import { getDogAgeLabel } from "@/utils/healthStatus";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
 import { motion, AnimatePresence } from "framer-motion";

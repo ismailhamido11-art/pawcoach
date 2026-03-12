@@ -20,7 +20,7 @@ const WALK_MOODS = [
 const WALK_TAGS = ["Tirait en laisse", "Bon rappel", "Sociable", "Distrait", "Très calme", "Énergique"];
 const MOOD_KEY = "pawcoach_walk_moods";
 
-function formatTime(seconds) {
+function _formatTime(seconds) {
   const m = Math.floor(seconds / 60).toString().padStart(2, "0");
   const s = (seconds % 60).toString().padStart(2, "0");
   return `${m}:${s}`;
@@ -346,7 +346,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
       checkWalkBadges(dog.id, user?.email, allLogs || []).catch(() => {});
       updateStreakSilently(dog.id, user?.email).catch(() => {});
       onLogged?.();
-    } catch (e) {
+    } catch {
       // Save to localStorage for later retry
       try {
         const pending = JSON.parse(localStorage.getItem("pawcoach_pending_walks") || "[]");

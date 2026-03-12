@@ -101,7 +101,7 @@ function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
   );
 }
 
-function VaccineRow({ vaccineKey, data, expanded, onToggle, dogId, onRecordAdded, onFindVet }) {
+function VaccineRow({ vaccineKey: _vaccineKey, data, expanded, onToggle, dogId, onRecordAdded, onFindVet }) {
   const [showForm, setShowForm] = useState(false);
   const cfg = STATUS_CONFIG[data.status];
   const cta = STATUS_CTA[data.status] || STATUS_CTA.up_to_date;

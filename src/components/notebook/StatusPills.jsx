@@ -25,7 +25,7 @@ export default function StatusPills({ pills, onPillClick }) {
       transition={{ ...spring, delay: 0.15 }}
       className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1"
     >
-      {pills.map((pill, i) => {
+      {pills.map((pill, _i) => {
         const style = STATUS_STYLES[pill.status] || STATUS_STYLES.empty;
         const Icon = PILL_ICONS[pill.id];
 

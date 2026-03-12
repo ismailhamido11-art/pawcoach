@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { motion, AnimatePresence } from "framer-motion";
-import { Trophy, Star, Zap, Lock } from "lucide-react";
+import { motion } from "framer-motion";
+import { Trophy, Star, Lock } from "lucide-react";
 
 // All possible badges definition
 const ALL_BADGES = [

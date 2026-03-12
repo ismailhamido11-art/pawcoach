@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AIDiagnosisModal from "../vet/AIDiagnosisModal";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Stethoscope, Phone, ExternalLink } from "lucide-react";
+import { Stethoscope, Phone, ExternalLink } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
 import { motion } from "framer-motion";
 

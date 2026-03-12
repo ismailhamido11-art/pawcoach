@@ -31,7 +31,7 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
     }
   };
 
-  const milestoneEmoji = count >= 10 ? "🏆" : count >= 5 ? "🥇" : "🎖️";
+  const _milestoneEmoji = count >= 10 ? "🏆" : count >= 5 ? "🥇" : "🎖️";
 
   return (
     <motion.div
@@ -58,7 +58,7 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
       <div className="w-full max-w-sm bg-white rounded-2xl border border-border shadow-lg p-4 mb-6 text-left">
         <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Exercices maîtrisés</p>
         <motion.div className="space-y-2" variants={listContainer} initial="hidden" animate="show">
-          {completedExercises.map((e, i) => (
+          {completedExercises.map((e, _i) => (
             <motion.div key={e.order_number} variants={listItem} className="flex items-center gap-3">
               <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
                 <CheckCircle className="w-4 h-4 text-green-500" />

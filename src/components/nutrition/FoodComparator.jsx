@@ -2,7 +2,7 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Camera, Plus, X, BarChart2, ChevronDown, ChevronUp, Trophy, AlertTriangle, CheckCircle2, Loader2, BookmarkPlus, BookmarkCheck } from "lucide-react";
+import { Plus, X, BarChart2, ChevronDown, ChevronUp, Trophy, AlertTriangle, CheckCircle2, Loader2, BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
@@ -38,7 +38,6 @@ function CircleScore({ score, size = 60 }) {
 }
 
 function ProductSlot({ index, product, onAdd, onRemove }) {
-  const fileRef = useState(null)[1];
   const [fileInput, setFileInput] = useState(null);
 
   if (!product) {

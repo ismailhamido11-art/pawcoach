@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ChevronDown, ChevronUp, Check, Loader2, TrendingUp, TrendingDown, Minus, Clock } from "lucide-react";
+import { ChevronDown, ChevronUp, Check, Loader2, TrendingUp, TrendingDown, Minus, Clock } from "lucide-react";
 import { DogCurious } from "../ui/PawIllustrations";
 
-function TrendBadge({ current, previous, label }) {
+function TrendBadge({ current, previous, label: _label }) {
   if (!previous || current == null || previous == null) return null;
   const diff = current - previous;
   if (Math.abs(diff) < 0.1) return <Minus className="w-3 h-3 text-muted-foreground" />;
@@ -16,7 +16,7 @@ function TrendBadge({ current, previous, label }) {
   );
 }
 
-export default function WeeklyInsightCard({ insight, previousInsight, pastInsights = [], dog, expanded, onToggle, onMarkRead, markingRead }) {
+export default function WeeklyInsightCard({ insight, previousInsight, pastInsights = [], dog: _dog, expanded, onToggle, onMarkRead, markingRead }) {
   const [showHistory, setShowHistory] = useState(false);
   const [expandedInsights, setExpandedInsights] = useState({});
 

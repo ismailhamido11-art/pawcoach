@@ -299,7 +299,7 @@ export function PostWalkReviewPrompt({ park, dog, user, onDone }) {
       setDone(true);
       toast.success("Merci pour ton avis !");
       onDone?.();
-    } catch (e) {
+    } catch {
       if (base44.entities.ParkReview) {
         toast.error("Impossible d'envoyer l'avis");
       }

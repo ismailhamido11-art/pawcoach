@@ -1,28 +1,24 @@
 import { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
-import { getVaccineDisplayName, computeVaccineMap } from "@/utils/healthStatus";
-import {
-  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+import { computeVaccineMap } from "@/utils/healthStatus";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Area, AreaChart
 } from "recharts";
-import {
-  Syringe, Weight, Stethoscope, Dumbbell, Salad,
+import { Weight, Stethoscope, Dumbbell, Salad,
   AlertTriangle, CheckCircle, ChevronRight, Flame,
   TrendingUp, TrendingDown, Minus, Heart,
-  Sparkles, Activity, Calendar, Star, Footprints
+  Sparkles, Activity, Star, Footprints
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
-import IconBadge from "@/components/ui/IconBadge";
 import Illustration from "../components/illustrations/Illustration";
 import SmartAlerts from "../components/dashboard/SmartAlerts";
-import { springSnappy as spring } from "@/lib/animations";
 
-const MOOD_LABELS = { 1: "😔", 2: "😐", 3: "😊", 4: "🤩" };
-const ENERGY_LABELS = { 1: "💤", 2: "⚡", 3: "🔥" };
+const _MOOD_LABELS = { 1: "😔", 2: "😐", 3: "😊", 4: "🤩" };
+const _ENERGY_LABELS = { 1: "💤", 2: "⚡", 3: "🔥" };
 
 function StatCard({ icon: Icon, color, label, value, sub, trend }) {
   return (
@@ -44,7 +40,7 @@ function StatCard({ icon: Icon, color, label, value, sub, trend }) {
   );
 }
 
-function AlertCard({ type, title, desc, cta, to }) {
+function _AlertCard({ type, title, desc, cta, to }) {
   const colors = {
     warning: { bg: "bg-caution/5", border: "border-caution/20", icon: AlertTriangle, color: "hsl(38,92%,55%)" },
     ok:      { bg: "bg-emerald-50", border: "border-emerald-200", icon: CheckCircle, color: "#10b981" },
@@ -87,7 +83,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function Dashboard() {
   const navigate = useNavigate();
   const [dog, setDog] = useState(null);
-  const [user, setUser] = useState(null);
+  const [_user, setUser] = useState(null);
   const [records, setRecords] = useState([]);
   const [checkins, setCheckins] = useState([]);
   const [streak, setStreak] = useState(null);
@@ -133,7 +129,7 @@ export default function Dashboard() {
 
   // --- Computed data (memoized) ---
 
-  const { weightData, weightTrend, walkData, checkinChart, avgMood, alerts, score, scoreColor, scoreLabel } = useMemo(() => {
+  const { weightData, weightTrend, walkData, checkinChart, avgMood, alerts, score, scoreColor: _scoreColor, scoreLabel } = useMemo(() => {
   // Weight chart (merged HealthRecord + DailyLog, last 10)
   const allWeightPoints = [
     ...records.filter(r => r.type === "weight" && r.value).map(r => ({ date: r.date, value: r.value })),

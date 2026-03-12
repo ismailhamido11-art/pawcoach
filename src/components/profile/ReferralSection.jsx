@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
 import { Gift, Copy, Check, Share2 } from "lucide-react";
 import { toast } from "sonner";
 

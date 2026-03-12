@@ -76,7 +76,7 @@ function computeArcs({ checkins = [], streak, records = [], exercises = [], scan
 }
 
 // SVG arc unique
-function Arc({ index, total, score, color, size }) {
+function Arc({ index, total: _total, score, color, size }) {
   const cx = size / 2;
   const cy = size / 2;
   const gap = 7;
@@ -110,7 +110,7 @@ function Arc({ index, total, score, color, size }) {
 const moodEmoji = { excited: "🤩", happy: "😊", neutral: "😌", tired: "😴" };
 const moodText  = { excited: "Très heureux !", happy: "En forme", neutral: "Calme", tired: "Fatigué" };
 
-export default function DogRadarHero({ user, dog, streak, checkins = [], records = [], exercises = [], scans = [], dailyLogs = [] }) {
+export default function DogRadarHero({ user, dog, streak, checkins = [], records = [], exercises = [], scans = [], dailyLogs: _dailyLogs = [] }) {
   const navigate = useNavigate();
   const firstName = user?.full_name?.split(" ")[0] || "toi";
   const hour = new Date().getHours();

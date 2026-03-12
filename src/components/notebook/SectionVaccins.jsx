@@ -2,7 +2,7 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Syringe, Plus, X, Calendar, ChevronDown, Check } from "lucide-react";
+import { Syringe, Plus, X, Calendar, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { VACCINE_REFERENCE, getVaccineDisplayName, isValidDate } from "@/utils/healthStatus";

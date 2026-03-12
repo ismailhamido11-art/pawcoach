@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import useBackClose from "@/hooks/useBackClose";
 import { createPageUrl } from "@/utils";
-import { Crown, MessageCircle, ScanLine, Dumbbell, Bell, X, ChevronRight, Star } from "lucide-react";
+import { MessageCircle, ScanLine, Dumbbell, Bell, X, ChevronRight, Star } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
 
 const FEATURES = [
@@ -35,7 +35,7 @@ const GOAL_NUDGE = {
   },
 };
 
-export default function PremiumNudgeSheet({ visible, onClose, dogName, ownerGoal, context = "default" }) {
+export default function PremiumNudgeSheet({ visible, onClose, dogName, ownerGoal, context: _context = "default" }) {
   const navigate = useNavigate();
   useBackClose(visible, onClose);
 
