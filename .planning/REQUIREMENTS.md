@@ -35,7 +35,7 @@
 
 ### Consistency
 
-- [ ] **CONS-01**: Les boutons primaires utilisent le meme pattern partout (gradient-primary)
+- [x] **CONS-01**: Les boutons primaires utilisent le meme pattern partout (gradient-primary)
 - [x] **CONS-02**: Les cards suivent un pattern uniforme (rounded-2xl, border, padding)
 - [x] **CONS-03**: Les espacements sont coherents (mx-4/mx-5, gap-3, py-3)
 - [ ] **CONS-04**: Les couleurs d'etat sont uniformes (success=emerald, warning=amber, error=red)
@@ -69,7 +69,7 @@
 | SEC-02 | Phase 7 | Complete |
 | SEC-03 | Phase 7 | Complete |
 | SEC-04 | Phase 7 | Complete |
-| CONS-01 | Phase 8 | Pending |
+| CONS-01 | Phase 8 | Complete |
 | CONS-02 | Phase 8 | Complete |
 | CONS-03 | Phase 8 | Complete |
 | CONS-04 | Phase 8 | Pending |

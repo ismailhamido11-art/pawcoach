@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Quality Audit
 status: completed
-stopped_at: "Completed 08-02-PLAN.md — CONS-02+CONS-03: rounded-2xl applied to Premium banner + VetDogView cards, spacing conformant across Sante/Scan/Training/Profile"
-last_updated: "2026-03-12T03:54:46.047Z"
+stopped_at: Completed 08-01-PLAN.md — CONS-01 satisfied, CTA buttons harmonized in VideoCoaching + AITrainingProgram + ActiveProgramCards
+last_updated: "2026-03-12T03:55:38.986Z"
 last_activity: 2026-03-12 — Phase 06-02 complete (empty states illustrés Dashboard + PremiumSection + DogEditModal validation)
 progress:
   total_phases: 8
   completed_phases: 7
   total_plans: 21
-  completed_plans: 19
+  completed_plans: 20
   percent: 94
 ---
 
@@ -55,6 +55,7 @@ Progress: [█████████░] 94% (v1.1) — [███████
 - [Phase 07-security]: SEC-03 processHealthInput: silent ignore on invalid URLs (not 400) — images are optional, no breaking change; SEC-04 confirmed clean (0 raw HTML from user content)
 - [Phase 08-consistency]: VetDogView cards classified as content cards (rounded-2xl): multi-line items with title + date + details match Dashboard pattern
 - [Phase 08-consistency]: Spacing audit: Sante/Scan/Training/Profile all conformant with space-y-3/4 — no corrections needed for CONS-03
+- [Phase 08-consistency]: gradient-primary border-0 text-white is canonical pattern for all primary CTA buttons; interactive selectors (checked/selected state) left intact as UX affordance
 
 ### Pending Todos
 
@@ -67,6 +68,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T03:54:46.042Z
-Stopped at: Completed 08-02-PLAN.md — CONS-02+CONS-03: rounded-2xl applied to Premium banner + VetDogView cards, spacing conformant across Sante/Scan/Training/Profile
+Last session: 2026-03-12T03:55:38.980Z
+Stopped at: Completed 08-01-PLAN.md — CONS-01 satisfied, CTA buttons harmonized in VideoCoaching + AITrainingProgram + ActiveProgramCards
 Resume file: None
