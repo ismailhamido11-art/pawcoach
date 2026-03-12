@@ -142,12 +142,12 @@ Plans:
   2. Toutes les cards de contenu ont le meme arrondi (rounded-2xl), meme bordure et meme padding interne
   3. Les marges laterales de page sont uniformes (mx-4 ou mx-5 selon la page) et les gaps entre elements sont coherents (gap-3 ou gap-4)
   4. Les etats succes affichent du vert emerald, les warnings de l'amber, et les erreurs du rouge — partout dans l'app sans exception
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 08-01: Harmonisation boutons primaires sur toutes les pages
-- [ ] 08-02: Harmonisation cards + espacements sur toutes les pages
-- [ ] 08-03: Harmonisation couleurs d'etat (success/warning/error) sur toutes les pages
+- [ ] 08-01-PLAN.md — Harmonisation boutons CTA primaires (VideoCoaching, AITrainingProgram, ActiveProgramCards) (CONS-01)
+- [ ] 08-02-PLAN.md — Audit + corrections cards rounded-2xl et espacements sur les pages (CONS-02, CONS-03)
+- [ ] 08-03-PLAN.md — Harmonisation couleurs d'etat success green -> emerald dans 15 fichiers (CONS-04)
 
 ## Progress
 
@@ -159,7 +159,7 @@ Plans:
 | 4. Independent Fixes | v1.0 | 4/4 | Complete | 2026-03-11 |
 | 5. Dead Code | v1.1 | 2/2 | Complete | 2026-03-12 |
 | 6. Error UX | v1.1 | 2/2 | Complete | 2026-03-12 |
-| 7. Security | 2/2 | Complete   | 2026-03-12 | - |
+| 7. Security | v1.1 | 2/2 | Complete | 2026-03-12 |
 | 8. Consistency | v1.1 | 0/3 | Not started | - |
 
 ---
@@ -168,3 +168,4 @@ Plans:
 *Phase 5 planned: 2026-03-12 — 2 plans (05-01, 05-02)*
 *Phase 6 planned: 2026-03-12 — 2 plans (06-01, 06-02)*
 *Phase 7 planned: 2026-03-12 — 2 plans (07-01, 07-02)*
+*Phase 8 planned: 2026-03-12 — 3 plans (08-01, 08-02, 08-03)*
