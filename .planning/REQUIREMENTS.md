@@ -30,8 +30,8 @@
 
 - [x] **SEC-01**: Aucun secret/token/cle API en clair dans le code source
 - [x] **SEC-02**: Les inputs utilisateur sont sanitizes avant injection dans du HTML/prompts
-- [ ] **SEC-03**: Les URLs et donnees externes sont validees avant utilisation
-- [ ] **SEC-04**: Pas de rendu HTML brut non-sanitize ni d'execution de code dynamique
+- [x] **SEC-03**: Les URLs et donnees externes sont validees avant utilisation
+- [x] **SEC-04**: Pas de rendu HTML brut non-sanitize ni d'execution de code dynamique
 
 ### Consistency
 
@@ -67,8 +67,8 @@
 | ERR-04 | Phase 6 | Complete |
 | SEC-01 | Phase 7 | Complete |
 | SEC-02 | Phase 7 | Complete |
-| SEC-03 | Phase 7 | Pending |
-| SEC-04 | Phase 7 | Pending |
+| SEC-03 | Phase 7 | Complete |
+| SEC-04 | Phase 7 | Complete |
 | CONS-01 | Phase 8 | Pending |
 | CONS-02 | Phase 8 | Pending |
 | CONS-03 | Phase 8 | Pending |

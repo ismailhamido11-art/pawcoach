@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Quality Audit
 status: completed
-stopped_at: Completed 07-01-PLAN.md — SEC-01 audit clean, SEC-02 sanitize fixes applied to 4 AI backend functions
-last_updated: "2026-03-12T03:16:09.533Z"
+stopped_at: Completed 07-02-PLAN.md — SEC-03 URL allowlist validation applied to 4 backend functions, SEC-04 confirmed clean
+last_updated: "2026-03-12T03:23:31.176Z"
 last_activity: 2026-03-12 — Phase 06-02 complete (empty states illustrés Dashboard + PremiumSection + DogEditModal validation)
 progress:
   total_phases: 8
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 18
-  completed_plans: 17
+  completed_plans: 18
   percent: 94
 ---
 
@@ -51,6 +51,8 @@ Progress: [█████████░] 94% (v1.1) — [███████
 - [Phase 06-error-ux]: Validation name + sex dans DogEditModal avec messages inline avant validation date existante
 - [Phase 07-security]: Sanitize helper inline per Deno function (no shared module — functions deployed independently)
 - [Phase 07-security]: Field-specific max lengths preserved from pre-existing substring() — only added replace(/[<>]/g,'') to close injection gap without changing behavior
+- [Phase 07-security]: validateImageUrl inline per function (not shared module) — consistent with sanitize pattern: Deno functions deploy independently
+- [Phase 07-security]: SEC-03 processHealthInput: silent ignore on invalid URLs (not 400) — images are optional, no breaking change; SEC-04 confirmed clean (0 raw HTML from user content)
 
 ### Pending Todos
 
@@ -63,6 +65,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T03:16:09.528Z
-Stopped at: Completed 07-01-PLAN.md — SEC-01 audit clean, SEC-02 sanitize fixes applied to 4 AI backend functions
+Last session: 2026-03-12T03:23:31.172Z
+Stopped at: Completed 07-02-PLAN.md — SEC-03 URL allowlist validation applied to 4 backend functions, SEC-04 confirmed clean
 Resume file: None
