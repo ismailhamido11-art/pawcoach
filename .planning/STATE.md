@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Quality Audit
-status: ready_to_plan
-stopped_at: Roadmap created — 4 phases defined (5-8), ready to plan Phase 5
-last_updated: "2026-03-12T12:30:00Z"
-last_activity: "2026-03-12 — Roadmap v1.1 created, 16/16 requirements mapped to phases 5-8"
+status: in_progress
+stopped_at: "Completed 05-02-PLAN.md — Phase 5 (Dead Code) complete, 2 plans done"
+last_updated: "2026-03-12T01:35:00Z"
+last_activity: "2026-03-12 — Phase 05 complete: 8 orphan components deleted, 22 backend files classified"
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 10
-  completed_plans: 0
-  percent: 0
+  completed_plans: 2
+  percent: 20
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-12)
 
 **Core value:** Code propre, securise, coherent — qualite production sur les 4 axes restants de l'audit.
-**Current focus:** Milestone v1.1 Quality Audit — Phase 5 (Dead Code), ready to plan
+**Current focus:** Milestone v1.1 Quality Audit — Phase 5 (Dead Code) COMPLETE, Phase 6 (Error UX) next
 
 ## Current Position
 
-Phase: 5 of 8 (Dead Code)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-12 — Roadmap v1.1 cree, 4 phases definies (5-8)
+Phase: 5 of 8 (Dead Code) — COMPLETE
+Plan: 2 of 2 in current phase — COMPLETE
+Status: Phase 5 done, ready for Phase 6
+Last activity: 2026-03-12 — Phase 05 complete (05-01 + 05-02 executed, DEAD-01 through DEAD-04 satisfied)
 
-Progress: [░░░░░░░░░░] 0% (v1.1) — [██████████] 100% (v1.0 complete)
+Progress: [██░░░░░░░░] 20% (v1.1) — [██████████] 100% (v1.0 complete)
 
 ## Accumulated Context
 
@@ -41,6 +41,9 @@ Progress: [░░░░░░░░░░] 0% (v1.1) — [███████�
 - Display strings only in healthStatus.js/recommendations.js — consumers not affected
 - v1.1 phase order: 5 (dead code) → 6 (error UX) → 7 (security) → 8 (consistency)
 - Phases 5-8 sont independantes — peuvent s'executer dans n'importe quel ordre
+- Phase 05-01: console.log removed across 15 files, JS files 05-01 satisfied DEAD-01 + DEAD-02
+- Phase 05-02: 8 orphan components deleted (not 2 — batch audit revealed more), all 22 backend .ts files confirmed active (12 FRONTEND + 10 CRON), DEAD-03 + DEAD-04 satisfied
+- BadgeTeaser merged into StreakBar (DASH-10) — comment references in StreakBar/Home are documentation only, not imports
 
 ### Pending Todos
 
@@ -48,12 +51,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- Regression risk: 20 pages interconnectees. Toujours verifier "qui utilise ce fichier" avant de supprimer du code mort
 - 0 Build prompt — tout via Git push (pas de schema changes dans ce milestone)
-- DEAD_CODE: ne pas supprimer du code qui semble inutilise mais est appele dynamiquement (ex: route configs, lazy imports)
+- Phase 06 (Error UX): will touch error handling across pages — regression check needed after each task
 
 ## Session Continuity
 
 Last session: 2026-03-12
-Stopped at: Roadmap v1.1 cree — prochaine etape: plan-phase 5 (Dead Code)
+Stopped at: Completed 05-02-PLAN.md — Phase 5 (Dead Code) complete, ready for Phase 6
 Resume file: None

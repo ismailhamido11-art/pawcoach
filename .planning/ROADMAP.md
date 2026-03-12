@@ -81,7 +81,7 @@ Plans:
 
 **Milestone Goal:** Audit qualite approfondi sur 4 axes — eliminer le code mort, renforcer l'UX d'erreur, securiser les donnees, et harmoniser les patterns UI. Qualite production.
 
-- [ ] **Phase 5: Dead Code** - Supprimer tous les imports, variables, composants et fichiers backend morts du repo
+- [x] **Phase 5: Dead Code** - Supprimer tous les imports, variables, composants et fichiers backend morts du repo
 - [ ] **Phase 6: Error UX** - Garantir que chaque erreur, liste vide, formulaire et chargement communique clairement a l'utilisateur
 - [ ] **Phase 7: Security** - Eliminer toute exposition de secrets, inputs non sanitizes, et rendus HTML bruts non proteges
 - [ ] **Phase 8: Consistency** - Harmoniser les patterns visuels (boutons, cards, espacements, couleurs d'etat) sur toutes les pages
@@ -100,8 +100,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Imports/variables/fonctions morts dans les fichiers JSX/JS frontend (DEAD-01, DEAD-02)
-- [ ] 05-02-PLAN.md — Composants orphelins (AnimatedLogo, ReminderAlert) + audit fichiers backend .ts (DEAD-03, DEAD-04)
+- [x] 05-01-PLAN.md — Imports/variables/fonctions morts dans les fichiers JSX/JS frontend (DEAD-01, DEAD-02)
+- [x] 05-02-PLAN.md — Composants orphelins (AnimatedLogo, ReminderAlert) + audit fichiers backend .ts (DEAD-03, DEAD-04)
 
 ### Phase 6: Error UX
 **Goal**: Chaque situation d'erreur, liste vide, validation formulaire et etat de chargement produit un feedback clair et actionnable pour l'utilisateur — plus d'ecrans blancs ni de silence silencieux.
@@ -158,7 +158,7 @@ Plans:
 | 2. AI Enrichment | v1.0 | 3/3 | Complete | 2026-03-11 |
 | 3. Notifications | v1.0 | 2/2 | Complete | 2026-03-11 |
 | 4. Independent Fixes | v1.0 | 4/4 | Complete | 2026-03-11 |
-| 5. Dead Code | v1.1 | 0/2 | Planning | - |
+| 5. Dead Code | v1.1 | 2/2 | Complete | 2026-03-12 |
 | 6. Error UX | v1.1 | 0/3 | Not started | - |
 | 7. Security | v1.1 | 0/2 | Not started | - |
 | 8. Consistency | v1.1 | 0/3 | Not started | - |

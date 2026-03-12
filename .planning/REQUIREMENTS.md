@@ -14,10 +14,10 @@
 
 ### Dead Code
 
-- [ ] **DEAD-01**: Aucun import inutilise dans les fichiers JSX/JS
-- [ ] **DEAD-02**: Aucune variable/fonction declaree mais jamais utilisee
-- [ ] **DEAD-03**: Aucun composant orphelin (non importe nulle part)
-- [ ] **DEAD-04**: Aucun fichier backend .ts mort (non reference dans les configs)
+- [x] **DEAD-01**: Aucun import inutilise dans les fichiers JSX/JS
+- [x] **DEAD-02**: Aucune variable/fonction declaree mais jamais utilisee
+- [x] **DEAD-03**: Aucun composant orphelin (non importe nulle part)
+- [x] **DEAD-04**: Aucun fichier backend .ts mort (non reference dans les configs)
 
 ### Error UX
 
@@ -57,10 +57,10 @@
 | A11Y-01 | Pre-milestone | Complete |
 | PERF-01 | Pre-milestone | Complete |
 | EDGE-01 | Pre-milestone | Complete |
-| DEAD-01 | Phase 5 | Pending |
-| DEAD-02 | Phase 5 | Pending |
-| DEAD-03 | Phase 5 | Pending |
-| DEAD-04 | Phase 5 | Pending |
+| DEAD-01 | Phase 5 | Complete |
+| DEAD-02 | Phase 5 | Complete |
+| DEAD-03 | Phase 5 | Complete |
+| DEAD-04 | Phase 5 | Complete |
 | ERR-01 | Phase 6 | Pending |
 | ERR-02 | Phase 6 | Pending |
 | ERR-03 | Phase 6 | Pending |
