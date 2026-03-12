@@ -84,7 +84,7 @@ Plans:
 - [x] **Phase 5: Dead Code** - Supprimer tous les imports, variables, composants et fichiers backend morts du repo
 - [x] **Phase 6: Error UX** - Garantir que chaque erreur, liste vide, formulaire et chargement communique clairement a l'utilisateur (completed 2026-03-12)
 - [x] **Phase 7: Security** - Eliminer toute exposition de secrets, inputs non sanitizes, et rendus HTML bruts non proteges (completed 2026-03-12)
-- [ ] **Phase 8: Consistency** - Harmoniser les patterns visuels (boutons, cards, espacements, couleurs d'etat) sur toutes les pages
+- [x] **Phase 8: Consistency** - Harmoniser les patterns visuels (boutons, cards, espacements, couleurs d'etat) sur toutes les pages (completed 2026-03-12)
 
 ## Phase Details
 
@@ -160,7 +160,7 @@ Plans:
 | 5. Dead Code | v1.1 | 2/2 | Complete | 2026-03-12 |
 | 6. Error UX | v1.1 | 2/2 | Complete | 2026-03-12 |
 | 7. Security | v1.1 | 2/2 | Complete | 2026-03-12 |
-| 8. Consistency | 2/3 | In Progress|  | - |
+| 8. Consistency | 3/3 | Complete   | 2026-03-12 | - |
 
 ---
 *Roadmap v1.0 created: 2026-03-11 — 16/16 requirements mapped*

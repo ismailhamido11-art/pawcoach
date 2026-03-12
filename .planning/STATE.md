@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Quality Audit
 status: completed
-stopped_at: Completed 08-01-PLAN.md — CONS-01 satisfied, CTA buttons harmonized in VideoCoaching + AITrainingProgram + ActiveProgramCards
-last_updated: "2026-03-12T03:55:38.986Z"
+stopped_at: Completed 08-03-PLAN.md — CONS-04 satisfied, 17 files harmonized to emerald
+last_updated: "2026-03-12T04:05:08.721Z"
 last_activity: 2026-03-12 — Phase 06-02 complete (empty states illustrés Dashboard + PremiumSection + DogEditModal validation)
 progress:
   total_phases: 8
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 21
-  completed_plans: 20
+  completed_plans: 21
   percent: 94
 ---
 
@@ -56,6 +56,7 @@ Progress: [█████████░] 94% (v1.1) — [███████
 - [Phase 08-consistency]: VetDogView cards classified as content cards (rounded-2xl): multi-line items with title + date + details match Dashboard pattern
 - [Phase 08-consistency]: Spacing audit: Sante/Scan/Training/Profile all conformant with space-y-3/4 — no corrections needed for CONS-03
 - [Phase 08-consistency]: gradient-primary border-0 text-white is canonical pattern for all primary CTA buttons; interactive selectors (checked/selected state) left intact as UX affordance
+- [Phase 08-consistency]: emerald for all success/positive states; bg-green-500 ScoreBar Fibres preserved as categorical nutrient color; 17 files harmonized including 2 found via global grep
 
 ### Pending Todos
 
@@ -68,6 +69,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T03:55:38.980Z
-Stopped at: Completed 08-01-PLAN.md — CONS-01 satisfied, CTA buttons harmonized in VideoCoaching + AITrainingProgram + ActiveProgramCards
+Last session: 2026-03-12T04:05:08.716Z
+Stopped at: Completed 08-03-PLAN.md — CONS-04 satisfied, 17 files harmonized to emerald
 Resume file: None

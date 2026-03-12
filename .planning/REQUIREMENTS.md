@@ -38,7 +38,7 @@
 - [x] **CONS-01**: Les boutons primaires utilisent le meme pattern partout (gradient-primary)
 - [x] **CONS-02**: Les cards suivent un pattern uniforme (rounded-2xl, border, padding)
 - [x] **CONS-03**: Les espacements sont coherents (mx-4/mx-5, gap-3, py-3)
-- [ ] **CONS-04**: Les couleurs d'etat sont uniformes (success=emerald, warning=amber, error=red)
+- [x] **CONS-04**: Les couleurs d'etat sont uniformes (success=emerald, warning=amber, error=red)
 
 ## Out of Scope
 
@@ -72,7 +72,7 @@
 | CONS-01 | Phase 8 | Complete |
 | CONS-02 | Phase 8 | Complete |
 | CONS-03 | Phase 8 | Complete |
-| CONS-04 | Phase 8 | Pending |
+| CONS-04 | Phase 8 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 20 total
