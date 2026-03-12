@@ -4,8 +4,8 @@ milestone: v1.1
 milestone_name: Quality Audit
 status: completed
 stopped_at: Completed 08-03-PLAN.md — CONS-04 satisfied, 17 files harmonized to emerald
-last_updated: "2026-03-12T04:21:08.897Z"
-last_activity: 2026-03-12 — Completed quick task 1: Refonte esthetique visible page accueil
+last_updated: "2026-03-12T08:00:00.000Z"
+last_activity: 2026-03-12 — Completed quick task 2: Refonte premium mobile-first page accueil
 progress:
   total_phases: 8
   completed_phases: 8
@@ -72,9 +72,10 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 1 | Refonte esthetique dramatique page accueil (hero + bento + quick actions) | 2026-03-12 | 3b925ca | [1-refonte-esthetique-visible-page-accueil-](./quick/1-refonte-esthetique-visible-page-accueil-/) |
+| 2 | Refonte premium mobile-first page accueil (CompactHeader + hierarchie sections + style light) | 2026-03-12 | bc53128 | [2-refonte-premium-mobile-first-page-accuei](./quick/2-refonte-premium-mobile-first-page-accuei/) |
 
 ## Session Continuity
 
 Last session: 2026-03-12
-Stopped at: Quick task 1 complete — refonte esthetique visible page accueil
+Stopped at: Quick task 2 complete — refonte premium mobile-first page accueil
 Resume file: None
