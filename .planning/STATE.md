@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Quality Audit
-status: in_progress
-stopped_at: "Completed 05-02-PLAN.md — Phase 5 (Dead Code) complete, 2 plans done"
-last_updated: "2026-03-12T01:35:00Z"
-last_activity: "2026-03-12 — Phase 05 complete: 8 orphan components deleted, 22 backend files classified"
+status: completed
+stopped_at: Completed 05-01-PLAN.md — dead imports and unused vars removed from 55 frontend files
+last_updated: "2026-03-12T01:38:41.103Z"
+last_activity: 2026-03-12 — Phase 05 complete (05-01 + 05-02 executed, DEAD-01 through DEAD-04 satisfied)
 progress:
-  total_phases: 4
-  completed_phases: 1
-  total_plans: 10
-  completed_plans: 2
+  total_phases: 8
+  completed_phases: 5
+  total_plans: 14
+  completed_plans: 14
   percent: 20
 ---
 
@@ -44,6 +44,7 @@ Progress: [██░░░░░░░░] 20% (v1.1) — [███████
 - Phase 05-01: console.log removed across 15 files, JS files 05-01 satisfied DEAD-01 + DEAD-02
 - Phase 05-02: 8 orphan components deleted (not 2 — batch audit revealed more), all 22 backend .ts files confirmed active (12 FRONTEND + 10 CRON), DEAD-03 + DEAD-04 satisfied
 - BadgeTeaser merged into StreakBar (DASH-10) — comment references in StreakBar/Home are documentation only, not imports
+- [Phase 05-dead-code]: Phase 05-01: 87 unused imports removed (ESLint --fix), 65 unused vars prefixed _, React hooks violation in WeightCard fixed, Vite build passes
 
 ### Pending Todos
 
@@ -56,6 +57,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12
-Stopped at: Completed 05-02-PLAN.md — Phase 5 (Dead Code) complete, ready for Phase 6
+Last session: 2026-03-12T01:38:37.619Z
+Stopped at: Completed 05-01-PLAN.md — dead imports and unused vars removed from 55 frontend files
 Resume file: None
