@@ -17,17 +17,6 @@ export const AuthProvider = ({ children }) => {
     checkAppState();
   }, []);
 
-  // Handle auth_required errors by redirecting to login
-  useEffect(() => {
-    if (authError?.type === 'auth_required') {
-      // Use a small delay to ensure the state update is complete
-      const timer = setTimeout(() => {
-        navigateToLogin();
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [authError]);
-
   const checkAppState = async () => {
     try {
       setIsLoadingPublicSettings(true);
@@ -127,9 +116,7 @@ export const AuthProvider = ({ children }) => {
     
     if (shouldRedirect) {
       // Use the SDK's logout method which handles token cleanup and redirect
-      // Pass the clean base URL (without query params) to avoid recursive encoding
-      const cleanUrl = `${window.location.origin}${window.location.pathname}`;
-      base44.auth.logout(cleanUrl);
+      base44.auth.logout(window.location.href);
     } else {
       // Just remove the token without redirect
       base44.auth.logout();
@@ -138,9 +125,7 @@ export const AuthProvider = ({ children }) => {
 
   const navigateToLogin = () => {
     // Use the SDK's redirectToLogin method
-    // Pass the clean base URL (without query params) to avoid recursive encoding
-    const cleanUrl = `${window.location.origin}${window.location.pathname}`;
-    base44.auth.redirectToLogin(cleanUrl);
+    base44.auth.redirectToLogin(window.location.href);
   };
 
   return (

@@ -8,7 +8,7 @@ export const base44 = createClient({
   appId,
   token,
   functionsVersion,
-  serverUrl: appBaseUrl || 'https://paw-coach-care.base44.app',
+  serverUrl: '',
   requiresAuth: true,
   appBaseUrl
 });

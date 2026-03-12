@@ -23,9 +23,7 @@ export default function VetPortal() {
     try {
       const isAuth = await base44.auth.isAuthenticated();
       if (!isAuth) {
-        // Pass clean URL without query params to avoid recursive encoding
-        const cleanUrl = `${window.location.origin}${window.location.pathname}`;
-        base44.auth.redirectToLogin(cleanUrl);
+        base44.auth.redirectToLogin(window.location.href);
         return;
       }
       const u = await base44.auth.me();

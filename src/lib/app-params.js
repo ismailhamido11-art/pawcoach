@@ -34,12 +34,6 @@ const getAppParamValue = (paramName, { defaultValue = undefined, removeFromUrl =
 	return null;
 }
 
-const getCleanBaseUrl = () => {
-	if (isNode) return '';
-	// Get the base URL without any query parameters to avoid recursive encoding
-	return `${window.location.origin}${window.location.pathname}`;
-}
-
 const getAppParams = () => {
 	if (getAppParamValue("clear_access_token") === 'true') {
 		storage.removeItem('base44_access_token');
@@ -48,7 +42,7 @@ const getAppParams = () => {
 	return {
 		appId: getAppParamValue("app_id", { defaultValue: import.meta.env.VITE_BASE44_APP_ID }),
 		token: getAppParamValue("access_token", { removeFromUrl: true }),
-		fromUrl: getAppParamValue("from_url", { defaultValue: getCleanBaseUrl() }),
+		fromUrl: getAppParamValue("from_url", { defaultValue: window.location.href }),
 		functionsVersion: getAppParamValue("functions_version", { defaultValue: import.meta.env.VITE_BASE44_FUNCTIONS_VERSION }),
 		appBaseUrl: getAppParamValue("app_base_url", { defaultValue: import.meta.env.VITE_BASE44_APP_BASE_URL }),
 	}

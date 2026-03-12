@@ -32,8 +32,8 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      // Don't render anything - the AuthContext will handle the redirect
-      // during the useEffect in the provider, not here during render
+      // Redirect to login automatically
+      navigateToLogin();
       return null;
     }
   }
