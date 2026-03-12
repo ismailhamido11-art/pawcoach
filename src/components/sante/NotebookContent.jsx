@@ -42,8 +42,8 @@ const PREMIUM_CONFIGS = {
     textClass: "text-primary", btnClass: "bg-primary hover:bg-primary/90",
   },
   medication: {
-    label: "Medicaments", emptyText: "Aucun medicament enregistre",
-    placeholder: "Ex: Antiparasitaire Frontline", addLabel: "Ajouter un medicament",
+    label: "Médicaments", emptyText: "Aucun médicament enregistré",
+    placeholder: "Ex: Antiparasitaire Frontline", addLabel: "Ajouter un médicament",
     showNextDate: true, Icon: Pill, bgClass: "bg-emerald-50", borderClass: "border-emerald-200",
     textClass: "text-emerald-600", btnClass: "bg-emerald-600 hover:bg-emerald-700",
   },

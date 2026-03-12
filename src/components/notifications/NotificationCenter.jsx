@@ -127,6 +127,7 @@ export default function NotificationCenter() {
     <>
       {/* Bell button */}
       <motion.button
+        aria-label="Ouvrir les notifications"
         onClick={() => setOpen(true)}
         whileHover={{ scale: 1.12 }}
         whileTap={{ scale: 0.92 }}
@@ -197,7 +198,7 @@ export default function NotificationCenter() {
                       Tout lu
                     </button>
                   )}
-                  <button onClick={() => setOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-secondary/50 transition-colors">
+                  <button aria-label="Fermer les notifications" onClick={() => setOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-secondary/50 transition-colors">
                     <X className="w-4 h-4 text-foreground" />
                   </button>
                 </div>

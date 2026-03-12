@@ -77,16 +77,22 @@ export default function TrackerHistory({ logs, dog }) {
     })),
   [sorted]);
 
-  const totalMinutes = sorted.reduce((acc, l) => acc + (l.walk_minutes || 0), 0);
-  const walkDaysCount = sorted.filter(l => (l.walk_minutes || 0) > 0).length;
-  const avgMinutes = walkDaysCount > 0 ? Math.round(totalMinutes / walkDaysCount) : 0;
-  const daysOver30 = sorted.filter(l => (l.walk_minutes || 0) >= 30).length;
-  const longestWalk = sorted.reduce((max, l) => Math.max(max, l.walk_minutes || 0), 0);
-  const totalKm = sorted.reduce((acc, l) => acc + (l.walk_distance_km || l.walk_minutes * 0.065 || 0), 0).toFixed(1);
+  const { totalMinutes, walkDaysCount, avgMinutes, daysOver30, longestWalk, totalKm } = useMemo(() => {
+    const _totalMinutes = sorted.reduce((acc, l) => acc + (l.walk_minutes || 0), 0);
+    const _walkDaysCount = sorted.filter(l => (l.walk_minutes || 0) > 0).length;
+    return {
+      totalMinutes: _totalMinutes,
+      walkDaysCount: _walkDaysCount,
+      avgMinutes: _walkDaysCount > 0 ? Math.round(_totalMinutes / _walkDaysCount) : 0,
+      daysOver30: sorted.filter(l => (l.walk_minutes || 0) >= 30).length,
+      longestWalk: sorted.reduce((max, l) => Math.max(max, l.walk_minutes || 0), 0),
+      totalKm: sorted.reduce((acc, l) => acc + (l.walk_distance_km || l.walk_minutes * 0.065 || 0), 0).toFixed(1),
+    };
+  }, [sorted]);
 
   const streaks = useMemo(() => calculateStreaks(sorted), [sorted]);
   const dayAvgs = useMemo(() => getDayAverages(sorted), [sorted]);
-  const maxDayAvg = Math.max(...dayAvgs.map(d => d.avg), 1);
+  const maxDayAvg = useMemo(() => Math.max(...dayAvgs.map(d => d.avg), 1), [dayAvgs]);
 
   const weeklyWalks = useMemo(() => {
     const now = new Date();

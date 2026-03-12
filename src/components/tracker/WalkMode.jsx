@@ -538,6 +538,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
             {/* Controls */}
             <div className="flex gap-6 items-center">
               <motion.button
+                aria-label={status === "running" ? "Mettre en pause" : "Reprendre"}
                 whileTap={{ scale: 0.93 }}
                 onClick={handlePause}
                 className="w-14 h-14 rounded-full bg-white border-2 border-border shadow flex items-center justify-center"

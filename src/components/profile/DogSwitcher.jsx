@@ -24,6 +24,7 @@ export default function DogSwitcher({ dogs, activeDogId, onSwitch, onAdd, isPrem
             <div key={dog.id} className="flex-shrink-0 flex flex-col items-center gap-2 relative">
               {/* Tap to switch */}
               <motion.button
+                aria-label={`Sélectionner ${dog.name}`}
                 whileTap={{ scale: 0.94 }}
                 onClick={() => onSwitch(dog.id)}
                 className={`w-16 h-16 rounded-2xl overflow-hidden border-2 transition-all ${
@@ -63,6 +64,7 @@ export default function DogSwitcher({ dogs, activeDogId, onSwitch, onAdd, isPrem
         {/* Add dog */}
         {dogs.length < maxDogs && (
           <motion.button
+            aria-label="Ajouter un chien"
             whileTap={{ scale: 0.94 }}
             onClick={onAdd}
             className="flex-shrink-0 flex flex-col items-center gap-2"

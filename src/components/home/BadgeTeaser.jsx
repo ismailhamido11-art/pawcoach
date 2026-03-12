@@ -86,6 +86,7 @@ export default function BadgeTeaser({ streak, exercises, dailyLogs }) {
       <div className="rounded-2xl border border-border/30 bg-white/80 backdrop-blur-sm shadow-sm overflow-hidden">
         {/* Main teaser — always visible */}
         <button
+          aria-expanded={expanded}
           onClick={() => setExpanded(!expanded)}
           className="w-full px-4 py-3 flex items-center gap-3 text-left"
         >

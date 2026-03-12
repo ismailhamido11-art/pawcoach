@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 import { getVaccineDisplayName, computeVaccineMap } from "@/utils/healthStatus";
@@ -131,8 +131,9 @@ export default function Dashboard() {
     })();
   }, []);
 
-  // --- Computed data ---
+  // --- Computed data (memoized) ---
 
+  const { weightData, weightTrend, walkData, checkinChart, avgMood, alerts, score, scoreColor, scoreLabel } = useMemo(() => {
   // Weight chart (merged HealthRecord + DailyLog, last 10)
   const allWeightPoints = [
     ...records.filter(r => r.type === "weight" && r.value).map(r => ({ date: r.date, value: r.value })),
@@ -219,6 +220,9 @@ export default function Dashboard() {
 
   const scoreColor = score >= 80 ? "#10b981" : score >= 60 ? "#d97706" : "#ef4444";
   const scoreLabel = score >= 80 ? "Excellent" : score >= 60 ? "Bon" : "À améliorer";
+
+  return { weightData, weightTrend, walkData, checkinChart, avgMood, alerts, score, scoreColor, scoreLabel };
+  }, [records, dailyLogs, checkins]);
 
   // Next steps
   const nextSteps = [];

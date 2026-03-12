@@ -24,7 +24,7 @@ const GATE_CONTENT = {
   medication: {
     Icon: Pill,
     title: "Gestion des traitements",
-    description: "Enregistre les medicaments, doses et frequences. Recois des rappels pour ne jamais oublier un traitement.",
+    description: "Enregistre les médicaments, doses et fréquences. Reçois des rappels pour ne jamais oublier un traitement.",
     color: "bg-purple-50 border-purple-200",
     iconBg: "bg-purple-100",
     iconColor: "text-purple-600",
@@ -82,7 +82,7 @@ export default function PremiumSection({ type, records = [], dogId, isPremium, o
 
       const record = await base44.entities.HealthRecord.create(payload);
       if (onRecordAdded) onRecordAdded(record);
-      toast.success("Enregistre !");
+      toast.success("Enregistré !");
       setForm({ title: "", date: new Date().toISOString().split("T")[0], nextDate: "", details: "" });
       setShowForm(false);
     } catch (e) {

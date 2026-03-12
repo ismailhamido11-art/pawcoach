@@ -77,7 +77,7 @@ export default function SectionVaccins({ records = [], dogId, onDelete, onRecord
       });
 
       if (onRecordAdded) onRecordAdded(record);
-      toast.success("Vaccin enregistre !");
+      toast.success("Vaccin enregistré !");
       setShowAddForm(false);
       setForm({ vaccineKey: "", customTitle: "", date: new Date().toISOString().split("T")[0], nextDate: "" });
     } catch (e) {
@@ -127,7 +127,7 @@ export default function SectionVaccins({ records = [], dogId, onDelete, onRecord
                       <option key={v.key} value={v.key}>{v.name}</option>
                     ))}
                   </optgroup>
-                  <optgroup label="Recommandes">
+                  <optgroup label="Recommandés">
                     {VACCINE_OPTIONS.filter(v => v.category === "recommended").map(v => (
                       <option key={v.key} value={v.key}>{v.name}</option>
                     ))}
@@ -171,11 +171,11 @@ export default function SectionVaccins({ records = [], dogId, onDelete, onRecord
                     type="date"
                     value={form.nextDate}
                     onChange={e => setForm(p => ({ ...p, nextDate: e.target.value }))}
-                    placeholder="Auto-calcule"
+                    placeholder="Auto-calculé"
                     className="w-full mt-1 text-sm border border-border rounded-xl px-3 py-2.5 bg-background"
                   />
                   {!form.nextDate && form.vaccineKey && form.vaccineKey !== "custom" && (
-                    <p className="text-[10px] text-muted-foreground mt-1">Auto-calcule selon la frequence WSAVA</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">Auto-calculé selon la fréquence WSAVA</p>
                   )}
                 </div>
               </div>
@@ -196,7 +196,7 @@ export default function SectionVaccins({ records = [], dogId, onDelete, onRecord
 
       {/* Existing records */}
       {vaccines.length === 0 && !showAddForm ? (
-        <EmptyState emoji="💉" text="Aucun vaccin enregistre" />
+        <EmptyState emoji="💉" text="Aucun vaccin enregistré" />
       ) : (
         vaccines.map(r => {
           const reminder = getReminderInfo(r);

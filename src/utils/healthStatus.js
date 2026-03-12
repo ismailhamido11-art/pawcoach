@@ -48,9 +48,9 @@ export const VACCINE_REFERENCE = {
     shortName: "Rage",
     abbrev: "Rage",
     category: "recommended",
-    label: "Recommande",
+    label: "Recommandé",
     frequencyMonths: 12, // AMM France: annual for most vaccines
-    description: "Obligatoire pour voyager en UE. Recommande meme sans voyage.",
+    description: "Obligatoire pour voyager en UE. Recommandé même sans voyage.",
     urgency: "Obligatoire si voyage ou pension.",
   },
   // Optional vaccines
@@ -61,7 +61,7 @@ export const VACCINE_REFERENCE = {
     category: "optional",
     label: "Optionnel",
     frequencyMonths: 12,
-    description: "Recommande si pension, garderie, ou contact frequent avec d'autres chiens.",
+    description: "Recommandé si pension, garderie, ou contact fréquent avec d'autres chiens.",
     urgency: "Selon mode de vie.",
   },
   piroplasmose: {
@@ -71,7 +71,7 @@ export const VACCINE_REFERENCE = {
     category: "optional",
     label: "Optionnel",
     frequencyMonths: 12,
-    description: "Maladie transmise par les tiques. Recommande en zone a risque (campagne, foret).",
+    description: "Maladie transmise par les tiques. Recommandé en zone à risque (campagne, forêt).",
     urgency: "Selon region et exposition aux tiques.",
   },
   leishmaniose: {
@@ -504,7 +504,7 @@ export function computeNextAction(records, dog) {
     const isPuppy = ageMonths !== null && ageMonths < 6;
     return {
       type: "vaccine_missing",
-      title: isPuppy ? "Primo-vaccination à planifier" : `Vaccin non enregistre : ${v.ref.name}`,
+      title: isPuppy ? "Primo-vaccination à planifier" : `Vaccin non enregistré : ${v.ref.name}`,
       description: isPuppy
         ? "Les chiots doivent recevoir leurs premiers vaccins entre 8 et 16 semaines."
         : `Si ${dog?.name || "ton chien"} a déjà reçu ce vaccin, enregistre-le ici.`,

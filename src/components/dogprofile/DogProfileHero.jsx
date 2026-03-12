@@ -66,7 +66,7 @@ export default function DogProfileHero({ dog, dailyLogs, onSave }) {
             )}
           </motion.div>
           </motion.div>
-          <label className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer">
+          <label aria-label="Changer la photo du chien" className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer">
             <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
             {uploadingPhoto ? (
               <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
@@ -88,6 +88,8 @@ export default function DogProfileHero({ dog, dailyLogs, onSave }) {
         {/* Status selector */}
         <div className="relative">
           <button
+            aria-expanded={showStatusPicker}
+            aria-haspopup="listbox"
             onClick={() => setShowStatusPicker(!showStatusPicker)}
             className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-semibold ${currentStatus.color} bg-white`}
           >

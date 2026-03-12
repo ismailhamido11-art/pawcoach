@@ -1,24 +1,26 @@
+import { useMemo } from "react";
 import { Bell, Lock, ChevronRight } from "lucide-react";
 import { getVaccineDisplayName } from "@/utils/healthStatus";
 
 export default function UpcomingReminders({ records = [], isPremium, onNavigate }) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const upcoming = records
-    .filter(r => {
-      if (!r.next_date || r.next_date === "") return false;
-      const d = new Date(r.next_date);
-      return !isNaN(d.getTime());
-    })
-    .map(r => {
-      const due = new Date(r.next_date);
-      due.setHours(0, 0, 0, 0);
-      const diff = Math.round((due - today) / (1000 * 60 * 60 * 24));
-      return { ...r, daysLeft: diff };
-    })
-    .filter(r => r.daysLeft >= 0 && r.daysLeft <= 60)
-    .sort((a, b) => a.daysLeft - b.daysLeft);
+  const upcoming = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return records
+      .filter(r => {
+        if (!r.next_date || r.next_date === "") return false;
+        const d = new Date(r.next_date);
+        return !isNaN(d.getTime());
+      })
+      .map(r => {
+        const due = new Date(r.next_date);
+        due.setHours(0, 0, 0, 0);
+        const diff = Math.round((due - today) / (1000 * 60 * 60 * 24));
+        return { ...r, daysLeft: diff };
+      })
+      .filter(r => r.daysLeft >= 0 && r.daysLeft <= 60)
+      .sort((a, b) => a.daysLeft - b.daysLeft);
+  }, [records]);
 
   if (upcoming.length === 0) return null;
 

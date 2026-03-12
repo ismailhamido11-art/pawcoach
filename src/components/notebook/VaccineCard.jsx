@@ -251,7 +251,7 @@ export default function VaccineCard({ vaccineMap, dogId, onRecordAdded, onFindVe
 
   const CATEGORY_LABELS = {
     core: "Vaccins essentiels",
-    recommended: "Recommandes",
+    recommended: "Recommandés",
     optional: "Optionnels (selon mode de vie)",
   };
 
