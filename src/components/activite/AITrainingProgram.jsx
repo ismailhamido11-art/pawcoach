@@ -357,7 +357,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
 
         {/* Save bilan */}
         {!bilanSaved ? (
-          <Button onClick={onSaveBilan} className="w-full bg-blue-600 hover:bg-blue-700 text-white" size="sm">
+          <Button onClick={onSaveBilan} className="w-full gradient-primary border-0 text-white" size="sm">
             <CheckCircle2 className="w-4 h-4 mr-2" />
             Enregistrer mon bilan
           </Button>
