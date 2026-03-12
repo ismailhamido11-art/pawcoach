@@ -638,12 +638,12 @@ export default function Training() {
             )}
 
             {/* CTA Chat */}
-            <Link to={createPageUrl("Chat") + `?help=${encodeURIComponent(`J'ai un probleme de ${guide.name.toLowerCase()} avec ${dog?.name || "mon chien"}. Peux-tu m'aider ?`)}`}>
+            <Link to={createPageUrl("Chat") + `?help=${encodeURIComponent(`J'ai un problème de ${guide.name.toLowerCase()} avec ${dog?.name || "mon chien"}. Peux-tu m'aider ?`)}`}>
               <div className="bg-primary/10 rounded-2xl p-4 border border-primary/20 flex items-center gap-3">
                 <Sparkles className="w-5 h-5 text-primary shrink-0" />
                 <div className="flex-1">
-                  <p className="text-sm font-bold text-foreground">Demander conseil a PawCoach</p>
-                  <p className="text-xs text-muted-foreground">L'IA peut t'aider avec ce probleme specifique</p>
+                  <p className="text-sm font-bold text-foreground">Demander conseil à PawCoach</p>
+                  <p className="text-xs text-muted-foreground">L'IA peut t'aider avec ce problème spécifique</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-primary" />
               </div>

@@ -20,7 +20,7 @@ export default function HealthAssistantBar({ onClick }) {
           boxShadow: "0 4px 20px rgba(45,159,130,0.40)",
         }}
       >
-        <span>Assistance Sante</span>
+        <span>Assistance Santé</span>
         <MessageCircle className="w-5 h-5 flex-shrink-0" />
       </motion.button>
     </div>

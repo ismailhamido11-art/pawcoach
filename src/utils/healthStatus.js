@@ -525,7 +525,7 @@ export function computeNextAction(records, dog) {
       return {
         type: "vet_visit_overdue",
         title: "Visite annuelle à prévoir",
-        description: `La derniere visite date de ${months} mois. Un bilan annuel est recommande.`,
+        description: `La dernière visite date de ${months} mois. Un bilan annuel est recommandé.`,
         urgency: "important",
         ctaLabel: "Trouver un veto",
         targetTab: "findvet",

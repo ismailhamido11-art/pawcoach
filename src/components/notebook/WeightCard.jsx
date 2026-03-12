@@ -148,7 +148,7 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
           </div>
           <div>
             <p className="text-sm font-bold text-foreground">Suivi du poids</p>
-            <p className="text-[10px] text-muted-foreground">Pese regulierement pour suivre la courbe</p>
+            <p className="text-[10px] text-muted-foreground">Pèse régulièrement pour suivre la courbe</p>
           </div>
         </div>
       </div>

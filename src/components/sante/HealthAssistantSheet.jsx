@@ -46,7 +46,7 @@ export default function HealthAssistantSheet({ visible, onClose, dogId, dog, onR
                 </div>
                 <div>
                   <p className="font-bold text-foreground text-sm leading-tight">
-                    Assistant Sante
+                    Assistant Santé
                   </p>
                   {dog?.name && (
                     <p className="text-[10px] text-muted-foreground">
