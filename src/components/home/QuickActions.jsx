@@ -33,27 +33,27 @@ export default function QuickActions() {
             >
               <Link
                 to={createPageUrl(action.page) + (action.tab ? `?tab=${action.tab}` : "")}
-                className="flex flex-col items-center gap-1.5 w-[56px] py-1"
+                className="flex flex-col items-center gap-1.5 w-[60px] py-1"
               >
                 <div className="relative">
-                  {/* Subtle pulse ring on idle */}
+                  {/* Pulse ring */}
                   <motion.div
-                    className="absolute inset-[-3px] rounded-2xl opacity-0"
-                    animate={{ opacity: [0, 0.3, 0], scale: [1, 1.1, 1] }}
+                    className="absolute inset-[-4px] rounded-2xl"
+                    animate={{ opacity: [0, 0.5, 0], scale: [1, 1.15, 1] }}
                     transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.4 }}
-                    style={{ background: `radial-gradient(circle, ${action.color}20 0%, transparent 70%)` }}
+                    style={{ background: `${action.color}30` }}
                   />
                   <div
-                    className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm border relative"
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-md relative"
                     style={{
-                      background: `linear-gradient(135deg, ${action.color}18, ${action.color}08)`,
-                      borderColor: `${action.color}25`,
+                      background: `linear-gradient(135deg, ${action.color}cc, ${action.color}99)`,
+                      border: `1.5px solid ${action.color}`,
                     }}
                   >
-                    <Icon className="w-5 h-5" style={{ color: action.color }} />
+                    <Icon className="w-6 h-6 text-white" />
                   </div>
                 </div>
-                <span className="text-[10px] font-semibold text-muted-foreground">{action.label}</span>
+                <span className="text-[11px] font-bold text-foreground">{action.label}</span>
               </Link>
             </motion.div>
           );
