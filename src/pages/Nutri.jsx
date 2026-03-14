@@ -360,6 +360,37 @@ export default function Nutri() {
                 </div>
               )}
             </div>
+            {/* Plan repas progress — visible si plan actif non expire */}
+            {(() => {
+              if (!activePlan) return null;
+              try {
+                const planData = JSON.parse(activePlan.plan_text);
+                if (!planData?.start_date) return null;
+                const start = new Date(planData.start_date + "T00:00:00");
+                const now = new Date(); now.setHours(0,0,0,0);
+                const elapsed = Math.floor((now - start) / 86400000);
+                if (elapsed >= 7) return null;
+                const dayNumber = Math.max(1, Math.min(elapsed + 1, 7));
+                const pct = Math.round((dayNumber / 7) * 100);
+                return (
+                  <div className="mt-3 bg-white/15 rounded-2xl px-3 py-2.5">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-white text-xs font-bold">Plan repas en cours</span>
+                      <span className="text-white font-black text-sm">{dayNumber}/7 jours</span>
+                    </div>
+                    <div className="bg-white/25 rounded-full h-2 overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${pct}%` }}
+                        transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.3 }}
+                        className="h-2 rounded-full"
+                        style={{ backgroundColor: "#2D9F82" }}
+                      />
+                    </div>
+                  </div>
+                );
+              } catch { return null; }
+            })()}
           </div>
           <motion.div
             animate={{ scale: [1, 1.03, 1] }}

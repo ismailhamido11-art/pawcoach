@@ -671,12 +671,27 @@ export default function Training() {
               {dog ? `Parcours de ${dog.name}` : "Chargement..."}
             </p>
             <div className="bg-white/15 rounded-2xl p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-white text-sm font-semibold">{completedCount} / {EXERCISES.length} exercices</span>
-                <span className="text-white/80 text-sm">{Math.round((completedCount / EXERCISES.length) * 100)}%</span>
+              <div className="flex items-center justify-between mb-1.5">
+                <div>
+                  <span className="text-white text-sm font-bold">
+                    {completedCount === 0
+                      ? "Commence ton parcours"
+                      : completedCount === EXERCISES.length
+                      ? "Tous les exercices maitrisés !"
+                      : `${completedCount} exercice${completedCount > 1 ? "s" : ""} maitrisé${completedCount > 1 ? "s" : ""}`}
+                  </span>
+                  <p className="text-white/60 text-[10px] mt-0.5">{EXERCISES.length - completedCount > 0 ? `${EXERCISES.length - completedCount} restant${EXERCISES.length - completedCount > 1 ? "s" : ""}` : "Parcours complet"}</p>
+                </div>
+                <span className="text-white font-black text-lg">{Math.round((completedCount / EXERCISES.length) * 100)}%</span>
               </div>
-              <div className="bg-white/25 rounded-full h-2.5">
-                <div className="bg-white rounded-full h-2.5 transition-all duration-700" style={{ width: `${(completedCount / EXERCISES.length) * 100}%` }} />
+              <div className="bg-white/25 rounded-full h-2.5 overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(completedCount / EXERCISES.length) * 100}%` }}
+                  transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.2 }}
+                  className="h-2.5 rounded-full"
+                  style={{ backgroundColor: "#2D9F82" }}
+                />
               </div>
             </div>
           </div>
