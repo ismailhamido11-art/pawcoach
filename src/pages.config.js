@@ -52,7 +52,8 @@ import Chat from './pages/Chat';
 import Dashboard from './pages/Dashboard';
 import DogProfile from './pages/DogProfile';
 import DogPublicProfile from './pages/DogPublicProfile';
-import DogTwin from './pages/DogTwin';
+// FROZEN — orphan page, Three.js too heavy (~600KB). Uncomment only if DogTwin is re-linked in the app.
+// import DogTwin from './pages/DogTwin';
 import HealthImport from './pages/HealthImport';
 import Home from './pages/Home';
 import Library from './pages/Library';
@@ -74,7 +75,7 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "DogProfile": DogProfile,
     "DogPublicProfile": DogPublicProfile,
-    "DogTwin": DogTwin,
+    // "DogTwin": DogTwin, // FROZEN — see import comment above
     "HealthImport": HealthImport,
     "Home": Home,
     "Library": Library,

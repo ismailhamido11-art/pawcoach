@@ -38,6 +38,24 @@ const MILESTONES = [
   { days: 100, message: "100 jours !",             sub: "Légende absolue" },
 ];
 
+async function fetchDogData(dogId) {
+  const today = getTodayString();
+  const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks] = await Promise.all([
+    base44.entities.DailyCheckin.filter({ dog_id: dogId, date: today }),
+    base44.entities.Streak.filter({ dog_id: dogId }),
+    base44.entities.DailyCheckin.filter({ dog_id: dogId }, "-date", 30),
+    base44.entities.HealthRecord.filter({ dog_id: dogId }),
+    base44.entities.UserProgress.filter({ dog_id: dogId }),
+    base44.entities.FoodScan.filter({ dog_id: dogId }),
+    base44.entities.DailyLog.filter({ dog_id: dogId }, "-date", 30),
+    base44.entities.DiagnosisReport.filter({ dog_id: dogId }, "-report_date", 5).catch(() => []),
+    base44.entities.NutritionPlan.filter({ dog_id: dogId }, "-generated_at", 3).catch(() => []),
+    base44.entities.Bookmark.filter({ dog_id: dogId, source: "training" }, "-created_at", 10).catch(() => []),
+    base44.entities.Bookmark.filter({ dog_id: dogId, source: "behavior_program" }, "-created_at", 10).catch(() => []),
+  ]);
+  return { checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks };
+}
+
 export default function Home() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -68,6 +86,34 @@ export default function Home() {
   const [showPremiumNudge, setShowPremiumNudge] = useState(false);
   const [showPostTrial, setShowPostTrial] = useState(false);
 
+  const applyDogData = ({ checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks }) => {
+    setRecords(recs || []);
+    setExercises(exs || []);
+    setScans(scs || []);
+    setDailyLogs(logs || []);
+    setDiagnosisReports(diags || []);
+    setNutritionPlans(plans || []);
+    setTrainingBookmarks(tBks || []);
+    setBehaviorBookmarks(bBks || []);
+    setTodayCheckin(checkins?.length > 0 ? checkins[0] : null);
+    if (streaks?.length > 0) setStreak(streaks[0]);
+    setRecentCheckins((recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7));
+  };
+
+  const loadInsights = async (u, dogId) => {
+    if (!isUserPremium(u)) return;
+    try {
+      const allInsights = await base44.entities.WeeklyInsight.filter({ dog_id: dogId }, "-week_start", 10);
+      if (allInsights?.length > 0) {
+        const unread = allInsights.find(i => !i.is_read);
+        const read = allInsights.filter(i => i.is_read);
+        setWeeklyInsight(unread || null);
+        setPreviousInsight(allInsights[1] || null);
+        setPastInsights(read.slice(0, 5));
+      }
+    } catch (e) { console.warn("Weekly insights load failed:", e); }
+  };
+
   useEffect(() => {
     let mounted = true;
     async function loadData() {
@@ -80,47 +126,10 @@ export default function Home() {
         if (dogs && dogs.length > 0) {
           const d = getActiveDog(dogs);
           setDog(d);
-          const today = getTodayString();
-          const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks] = await Promise.all([
-            base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
-            base44.entities.Streak.filter({ dog_id: d.id }),
-            base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 30),
-            base44.entities.HealthRecord.filter({ dog_id: d.id }),
-            base44.entities.UserProgress.filter({ dog_id: d.id }),
-            base44.entities.FoodScan.filter({ dog_id: d.id }),
-            base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30),
-            base44.entities.DiagnosisReport.filter({ dog_id: d.id }, "-report_date", 5).catch(() => []),
-            base44.entities.NutritionPlan.filter({ dog_id: d.id }, "-generated_at", 3).catch(() => []),
-            base44.entities.Bookmark.filter({ dog_id: d.id, source: "training" }, "-created_at", 10).catch(() => []),
-            base44.entities.Bookmark.filter({ dog_id: d.id, source: "behavior_program" }, "-created_at", 10).catch(() => []),
-          ]);
+          const data = await fetchDogData(d.id);
           if (!mounted) return;
-          setRecords(recs || []);
-          setExercises(exs || []);
-          setScans(scs || []);
-          setDailyLogs(logs || []);
-          setDiagnosisReports(diags || []);
-          setNutritionPlans(plans || []);
-          setTrainingBookmarks(tBks || []);
-          setBehaviorBookmarks(bBks || []);
-          if (checkins?.length > 0) setTodayCheckin(checkins[0]);
-          if (streaks?.length > 0) setStreak(streaks[0]);
-          const sorted = (recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7);
-          setRecentCheckins(sorted);
-          // Weekly insights (premium only)
-          if (isUserPremium(u)) {
-            try {
-              const allInsights = await base44.entities.WeeklyInsight.filter({ dog_id: d.id }, "-week_start", 10);
-              if (!mounted) return;
-              if (allInsights?.length > 0) {
-                const unread = allInsights.find(i => !i.is_read);
-                const read = allInsights.filter(i => i.is_read);
-                setWeeklyInsight(unread || null);
-                setPreviousInsight(allInsights[1] || null);
-                setPastInsights(read.slice(0, 5));
-              }
-            } catch (e) { console.warn("Weekly insights load failed:", e); }
-          }
+          applyDogData(data);
+          await loadInsights(u, d.id);
           if (!mounted) return;
           // Premium nudge — declenche a J2+ (pas J0)
           const signupDaysAgo = u.signup_date
@@ -405,7 +414,7 @@ export default function Home() {
 
         {/* 11. Disclaimer veterinaire — bas de page */}
         <p className="text-center text-[10px] text-muted-foreground px-6 mt-6 mb-2">
-          PawCoach est un outil de suivi bien-etre. En cas de probleme de sante, consulte un veterinaire.
+          PawCoach est un outil de suivi. Consultez votre veterinaire.
         </p>
 
         {/* BadgeTeaser merged into StreakBar as compact chip (DASH-10) */}
