@@ -47,25 +47,31 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import { lazy } from 'react';
+
+// BottomNav — toujours dans le bundle initial (chargement immédiat garanti)
 import Activite from './pages/Activite';
-import Chat from './pages/Chat';
-import Dashboard from './pages/Dashboard';
-import DogProfile from './pages/DogProfile';
-import DogPublicProfile from './pages/DogPublicProfile';
-// FROZEN — orphan page, Three.js too heavy (~600KB). Uncomment only if DogTwin is re-linked in the app.
-// import DogTwin from './pages/DogTwin';
-import HealthImport from './pages/HealthImport';
 import Home from './pages/Home';
-import Library from './pages/Library';
 import Nutri from './pages/Nutri';
-import Onboarding from './pages/Onboarding';
-import Premium from './pages/Premium';
 import Profile from './pages/Profile';
 import Sante from './pages/Sante';
-import Scan from './pages/Scan';
-import Training from './pages/Training';
-import VetDogView from './pages/VetDogView';
-import VetPortal from './pages/VetPortal';
+
+// Pages secondaires — lazy (chargées à la demande)
+// FROZEN — orphan page, Three.js too heavy (~600KB). Uncomment only if DogTwin is re-linked in the app.
+// const DogTwin = lazy(() => import('./pages/DogTwin'));
+const Chat = lazy(() => import('./pages/Chat'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const DogProfile = lazy(() => import('./pages/DogProfile'));
+const DogPublicProfile = lazy(() => import('./pages/DogPublicProfile'));
+const HealthImport = lazy(() => import('./pages/HealthImport'));
+const Library = lazy(() => import('./pages/Library'));
+const Onboarding = lazy(() => import('./pages/Onboarding'));
+const Premium = lazy(() => import('./pages/Premium'));
+const Scan = lazy(() => import('./pages/Scan'));
+const Training = lazy(() => import('./pages/Training'));
+const VetDogView = lazy(() => import('./pages/VetDogView'));
+const VetPortal = lazy(() => import('./pages/VetPortal'));
+
 import __Layout from './Layout.jsx';
 
 
