@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { trackEvent } from "@/utils/analytics";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
@@ -221,6 +222,7 @@ Extrais ces informations et renvoie un objet JSON.
       setDogData(dog);
       // Set new dog as active
       localStorage.setItem("activeDogId", dog.id);
+      trackEvent("onboarding_complete", { is_add_dog: isAddDog, owner_goal: answers[0] || null });
       if (!isAddDog) {
         try {
           await base44.integrations.Core.SendEmail({

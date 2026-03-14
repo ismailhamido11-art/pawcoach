@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { trackEvent } from "@/utils/analytics";
 import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Check, Zap, Lock, ChevronRight, MessageCircle, ScanLine, Dumbbell, BookHeart, Salad, Search, Target, ClipboardList, Bell, BarChart3, Dog as DogIcon, Star } from "lucide-react";
@@ -78,7 +79,10 @@ export default function Premium() {
         setPageLoading(false);
       }
     };
-    init();
+    init().then(() => {
+      const params = new URLSearchParams(window.location.search);
+      trackEvent("premium_page_viewed", { from: params.get("from") || "direct" });
+    });
   }, []);
 
   useEffect(() => {
@@ -99,6 +103,7 @@ export default function Premium() {
       alert("Le paiement fonctionne uniquement depuis l'application publiée.");
       return;
     }
+    trackEvent("premium_checkout_clicked", { plan });
     setLoading(true);
     try {
       const priceId = plan === "annual" ? ANNUAL_PRICE_ID : MONTHLY_PRICE_ID;
