@@ -6,6 +6,7 @@ import ParkReviews from "./ParkReviews";
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import EmptyState from "@/components/ui/EmptyState";
 
 // Fix default Leaflet marker icons (same pattern as FindVetContent)
 delete L.Icon.Default.prototype._getIconUrl;
@@ -211,32 +212,15 @@ export default function NearbyParks({ dog, user, onNearPark }) {
   }
   if (!loading && parks.length === 0 && error !== "api") {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, type: "spring", stiffness: 400, damping: 30 }}
-        className="w-full"
-      >
-        <div className="bg-white border border-border rounded-2xl p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0">
-              <TreePine className="w-5 h-5 text-slate-400" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-foreground">Aucun parc trouvé</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">Pas de parc canin dans un rayon de 3 km.</p>
-            </div>
-          </div>
-          <motion.button
-            whileTap={{ scale: 0.96 }}
-            onClick={retryGeolocation}
-            className="mt-3 w-full py-2.5 rounded-xl font-bold text-sm text-primary border-2 border-primary/20 bg-primary/5 flex items-center justify-center gap-2"
-          >
-            <Navigation className="w-4 h-4" />
-            Relancer la recherche
-          </motion.button>
-        </div>
-      </motion.div>
+      <div className="bg-white border border-border rounded-2xl overflow-hidden">
+        <EmptyState
+          mascot="wave"
+          title={`Pas de parc près de ${dog?.name || "toi"}`}
+          description="Aucun parc canin dans un rayon de 3 km. Essaie d'élargir la zone ou reviens plus tard."
+          actionLabel="Relancer la recherche"
+          onAction={retryGeolocation}
+        />
+      </div>
     );
   }
 

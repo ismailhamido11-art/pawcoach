@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { VACCINE_REFERENCE, getVaccineDisplayName, isValidDate } from "@/utils/healthStatus";
 import { spring } from "@/lib/animations";
+import EmptyState from "@/components/ui/EmptyState";
 
 const VACCINE_OPTIONS = Object.entries(VACCINE_REFERENCE).map(([key, ref]) => ({
   key,
@@ -16,7 +17,7 @@ const VACCINE_OPTIONS = Object.entries(VACCINE_REFERENCE).map(([key, ref]) => ({
   frequencyMonths: ref.frequencyMonths,
 }));
 
-export default function SectionVaccins({ records = [], dogId, onDelete, onRecordAdded }) {
+export default function SectionVaccins({ records = [], dogId, dogName, onDelete, onRecordAdded }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ vaccineKey: "", customTitle: "", date: new Date().toISOString().split("T")[0], nextDate: "" });
@@ -196,7 +197,13 @@ export default function SectionVaccins({ records = [], dogId, onDelete, onRecord
 
       {/* Existing records */}
       {vaccines.length === 0 && !showAddForm ? (
-        <EmptyState emoji="💉" text="Aucun vaccin enregistré" />
+        <EmptyState
+          mascot="doctor"
+          title={`Carnet de vaccination de ${dogName || "ton chien"}`}
+          description="Aucun vaccin enregistré. Ajoute le premier pour suivre les rappels et protéger ta famille."
+          actionLabel="Ajouter un vaccin"
+          onAction={() => setShowAddForm(true)}
+        />
       ) : (
         vaccines.map(r => {
           const reminder = getReminderInfo(r);
@@ -221,15 +228,6 @@ export default function SectionVaccins({ records = [], dogId, onDelete, onRecord
 function fmtDate(d) {
   if (!isValidDate(d)) return "";
   return new Date(d).toLocaleDateString("fr-FR");
-}
-
-function EmptyState({ emoji, text }) {
-  return (
-    <div className="text-center py-8">
-      <p className="text-3xl mb-2">{emoji}</p>
-      <p className="text-muted-foreground text-sm">{text}</p>
-    </div>
-  );
 }
 
 export function RecordRow({ record, onDelete, icon, accentClass, extra }) {

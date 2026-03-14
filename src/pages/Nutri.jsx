@@ -289,10 +289,33 @@ export default function Nutri() {
 
   if (initializing) {
     return (
-      <div className="min-h-screen bg-background flex flex-col pb-28">
-        <div className="gradient-primary safe-pt-14 pb-4 px-5">
-          <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-2" />
-          <div className="h-7 w-36 bg-white/20 rounded animate-pulse" />
+      <div className="min-h-screen bg-background flex flex-col">
+        <div className="gradient-primary safe-pt-14 pb-4 px-5 mt-8">
+          <div className="flex items-end gap-3 mb-3">
+            <div className="flex-1 pb-1">
+              <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-2" />
+              <div className="h-7 w-36 bg-white/20 rounded animate-pulse" />
+            </div>
+            <div className="w-20 h-20 rounded-full bg-white/10 animate-pulse flex-shrink-0" />
+          </div>
+          <div className="grid grid-cols-5 gap-1.5 mt-1">
+            {[0,1,2,3,4].map(i => (
+              <div key={i} className="h-14 rounded-2xl bg-white/10 animate-pulse" />
+            ))}
+          </div>
+        </div>
+        <div className="flex-1 px-4 pt-4 space-y-3">
+          <div className="flex gap-2">
+            <div className="w-8 h-8 rounded-xl bg-muted animate-pulse flex-shrink-0 mt-1" />
+            <div className="h-20 flex-1 bg-muted animate-pulse rounded-2xl" />
+          </div>
+          <div className="flex gap-2 justify-end">
+            <div className="h-10 w-1/2 bg-muted animate-pulse rounded-2xl" />
+          </div>
+          <div className="flex gap-2">
+            <div className="w-8 h-8 rounded-xl bg-muted animate-pulse flex-shrink-0 mt-1" />
+            <div className="h-24 flex-1 bg-muted animate-pulse rounded-2xl" />
+          </div>
         </div>
         <BottomNav currentPage="Nutri" />
       </div>

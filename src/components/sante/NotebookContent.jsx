@@ -372,7 +372,7 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
               </div>
             )}
             {activeTab === "vaccine" && (
-              <SectionVaccins records={records} dogId={dog?.id} onDelete={handleDelete} onRecordAdded={(rec) => setRecords(prev => [...prev, rec])} />
+              <SectionVaccins records={records} dogId={dog?.id} dogName={dog?.name} onDelete={handleDelete} onRecordAdded={(rec) => setRecords(prev => [...prev, rec])} />
             )}
             {activeTab === "weight" && (
               <SectionPoids records={allRecords} dogId={dog?.id} onDelete={handleDelete} onRecordAdded={(rec) => setRecords(prev => [...prev, rec])} />
