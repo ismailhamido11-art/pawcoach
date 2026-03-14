@@ -35,10 +35,13 @@ export default function FreeExercisesGate({ dogName, onDismiss }) {
         <Illustration name="walkingAround" alt="Bravo !" className="w-full h-full drop-shadow-lg" />
       </motion.div>
       <h1 className="text-2xl font-bold text-foreground">
-        Bravo ! Tu maîtrises les bases !
+        {dogName ? `${dogName} maîtrise les bases !` : "Bravo ! Tu maîtrises les bases !"}
       </h1>
       <p className="text-muted-foreground mt-2">
-        Toi et {dogName || "ton chien"} formez une super équipe
+        {dogName
+          ? `Toi et ${dogName} avez tout réussi ensemble — belle équipe.`
+          : "Toi et ton chien formez une super équipe."
+        }
       </p>
 
       {/* Teaser list */}

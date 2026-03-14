@@ -4,7 +4,6 @@ import { isUserPremium } from "@/utils/premium";
 import BottomNav from "../components/BottomNav";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { motion } from "framer-motion";
 import { toast } from "sonner";
 import ProfileHeader from "../components/profile/ProfileHeader.jsx";
 import DogSwitcher from "../components/profile/DogSwitcher.jsx";
@@ -15,6 +14,7 @@ import ReferralSection from "../components/profile/ReferralSection.jsx";
 import SettingsSection from "../components/profile/SettingsSection.jsx";
 import WalkReminderSettings from "../components/profile/WalkReminderSettings.jsx";
 import AchievementsSection from "../components/profile/AchievementsSection.jsx";
+import AchievementFeed from "../components/achievements/AchievementFeed.jsx";
 import ChatFAB from "../components/ChatFAB";
 
 export default function Profile() {
@@ -23,7 +23,9 @@ export default function Profile() {
   const [dogs, setDogs] = useState([]);
   const [activeDogId, setActiveDogId] = useState(() => localStorage.getItem("activeDogId") || null);
   const [loading, setLoading] = useState(true);
-  const [showAchievements, setShowAchievements] = useState(false);
+  const [achievementPoints, setAchievementPoints] = useState(null);
+
+  const activeDog = dogs.find(d => d.id === activeDogId) || dogs[0];
 
   useEffect(() => {
     const load = async () => {
@@ -33,9 +35,20 @@ export default function Profile() {
         const d = await base44.entities.Dog.filter({ owner: u.email });
         setDogs(d || []);
         // Set active dog if not already set
+        const firstDogId = activeDogId || d?.[0]?.id;
         if (!activeDogId && d?.length > 0) {
           setActiveDogId(d[0].id);
           localStorage.setItem("activeDogId", d[0].id);
+        }
+        // Load real achievement points from DogAchievement for the header
+        if (firstDogId) {
+          try {
+            const achvs = await base44.entities.DogAchievement.filter({ dog_id: firstDogId });
+            const pts = (achvs || []).reduce((s, a) => s + (a.points_awarded || 0), 0);
+            setAchievementPoints(pts);
+          } catch (_e) {
+            setAchievementPoints(0);
+          }
         }
       } catch (err) {
         console.error("Profile load error:", err);
@@ -46,6 +59,18 @@ export default function Profile() {
     };
     load();
   }, []);
+
+  // Reload points when active dog changes
+  useEffect(() => {
+    if (!activeDogId) return;
+    base44.entities.DogAchievement
+      .filter({ dog_id: activeDogId })
+      .then(achvs => {
+        const pts = (achvs || []).reduce((s, a) => s + (a.points_awarded || 0), 0);
+        setAchievementPoints(pts);
+      })
+      .catch(() => {});
+  }, [activeDogId]);
 
   const handleSwitchDog = (dogId) => {
     setActiveDogId(dogId);
@@ -89,7 +114,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-background pb-28">
-      <ProfileHeader user={user} />
+      <ProfileHeader user={user} achievementPoints={achievementPoints} />
 
       <div className="px-4 pt-4 space-y-4">
         <DogSwitcher
@@ -100,37 +125,21 @@ export default function Profile() {
           isPremium={isUserPremium(user)}
         />
 
-        {/* Achievements Section */}
+        {/* Achievement Feed — 5 derniers badges gagnés */}
         {dogs.length > 0 && (
-          <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
-            <button
-              onClick={() => setShowAchievements(p => !p)}
-              className="w-full flex items-center justify-between px-4 py-3.5"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center text-lg">🏆</div>
-                <div className="text-left">
-                  <p className="font-bold text-sm text-foreground">Succès & Badges</p>
-                  <p className="text-xs text-muted-foreground">Points, niveaux et récompenses</p>
-                </div>
-              </div>
-              <motion.div animate={{ rotate: showAchievements ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </motion.div>
-            </button>
-            {showAchievements && (
-              <div className="px-4 pb-4 border-t border-border pt-3">
-                <AchievementsSection dog={dogs.find(d => d.id === activeDogId) || dogs[0]} />
-              </div>
-            )}
+          <div className="bg-white rounded-2xl border border-border shadow-sm px-4 py-3">
+            <AchievementFeed dog={activeDog} />
           </div>
+        )}
+
+        {/* Achievements — always visible, no accordion */}
+        {dogs.length > 0 && (
+          <AchievementsSection dog={activeDog} />
         )}
 
         <CoachSettings user={user} onSave={handleSaveUser} />
 
-        <WalkReminderSettings user={user} onSave={handleSaveUser} dogName={(dogs.find(d => d.id === activeDogId) || dogs[0])?.name} />
+        <WalkReminderSettings user={user} onSave={handleSaveUser} dogName={activeDog?.name} />
 
         <VetSection dogs={dogs} activeDogId={activeDogId} />
 

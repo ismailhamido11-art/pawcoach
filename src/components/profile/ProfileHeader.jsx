@@ -12,8 +12,9 @@ function getBadge(points = 0) {
   return [...BADGES].reverse().find(b => points >= b.threshold) || BADGES[0];
 }
 
-export default function ProfileHeader({ user }) {
-  const points = user?.points || 0;
+export default function ProfileHeader({ user, achievementPoints }) {
+  // achievementPoints comes from DogAchievement (real data), fallback to user?.points
+  const points = achievementPoints ?? user?.points ?? 0;
   const badge = getBadge(points);
   const BadgeIcon = badge.icon;
   const initials = (user?.full_name || "?").split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
@@ -51,11 +52,13 @@ export default function ProfileHeader({ user }) {
           </div>
         </div>
 
-        {/* Gamification badge */}
+        {/* Gamification badge — now shows real achievement points */}
         <div className={`flex flex-col items-center gap-1 px-3 py-2 rounded-2xl ${badge.color} flex-shrink-0`}>
           <BadgeIcon className="w-5 h-5" />
           <span className="text-[10px] font-black">{badge.name}</span>
-          <span className="text-[10px] font-bold opacity-70">{points} pts</span>
+          <span className="text-[10px] font-bold opacity-70">
+            {achievementPoints === null ? "..." : `${points} pts`}
+          </span>
         </div>
       </div>
     </div>

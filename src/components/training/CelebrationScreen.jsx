@@ -1,10 +1,26 @@
 import { useEffect, useRef } from "react";
 import confetti from "canvas-confetti";
 import { motion } from "framer-motion";
-import { Zap } from "lucide-react";
+import { Zap, Repeat2 } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
 
-export default function CelebrationScreen({ dogName, exerciseName, onContinue }) {
+const PRAISE_MESSAGES = [
+  (dog) => `${dog} a tout compris. Continue comme ça !`,
+  (dog) => `Beau travail — ${dog} progresse vraiment.`,
+  (dog) => `${dog} a bien mérité sa récompense.`,
+  (dog) => `Régularité + patience = succès. ${dog} le prouve.`,
+  (dog) => `Un exercice de plus dans la boîte pour ${dog}.`,
+];
+
+function pickMessage(dogName, exerciseName) {
+  // Use a stable hash from the exercise name so the message doesn't flicker on re-render
+  const idx = exerciseName
+    ? exerciseName.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % PRAISE_MESSAGES.length
+    : 0;
+  return PRAISE_MESSAGES[idx](dogName || "ton chien");
+}
+
+export default function CelebrationScreen({ dogName, exerciseName, exerciseNumber, totalExercises, onContinue }) {
   const fired = useRef(false);
 
   useEffect(() => {
@@ -17,6 +33,9 @@ export default function CelebrationScreen({ dogName, exerciseName, onContinue })
       colors: ["#3db87a", "#10b981", "#6366f1", "#ec4899"],
     });
   }, []);
+
+  const praise = pickMessage(dogName, exerciseName);
+  const showProgress = exerciseNumber != null && totalExercises != null && totalExercises > 1;
 
   return (
     <motion.div
@@ -36,19 +55,38 @@ export default function CelebrationScreen({ dogName, exerciseName, onContinue })
         {/* Close pill */}
         <div className="w-10 h-1 bg-muted rounded-full mx-auto mb-6" />
 
-        <h2 className="text-2xl font-black text-foreground mb-1">Bravo !</h2>
-        <p className="text-muted-foreground text-sm mb-6">
+        {/* Progress indicator */}
+        {showProgress && (
+          <div className="flex items-center justify-center gap-1.5 mb-4">
+            {Array.from({ length: totalExercises }).map((_, i) => (
+              <div
+                key={i}
+                className={`h-1.5 rounded-full transition-all ${
+                  i < exerciseNumber
+                    ? "bg-emerald-400 w-5"
+                    : i === exerciseNumber - 1
+                    ? "bg-emerald-500 w-7"
+                    : "bg-muted w-3"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+
+        <h2 className="text-2xl font-black text-foreground mb-1">Exercice réussi !</h2>
+        <p className="text-sm text-muted-foreground mb-1">
           <span className="font-semibold text-foreground">{dogName}</span> a maîtrisé{" "}
           <span className="font-semibold text-primary">« {exerciseName} »</span>
         </p>
+        <p className="text-sm text-muted-foreground mb-6 italic">{praise}</p>
 
         {/* Celebration illustration */}
         <motion.div
           animate={{ scale: [1, 1.12, 1], rotate: [-4, 4, -4, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="w-28 h-28 my-4"
+          className="w-28 h-28 my-4 mx-auto"
         >
-          <Illustration name="dogHighFive" alt="Bravo !" className="w-full h-full drop-shadow-lg" />
+          <Illustration name="dogHighFive" alt="Exercice réussi !" className="w-full h-full drop-shadow-lg" />
         </motion.div>
 
         {/* Points badge */}
@@ -56,6 +94,13 @@ export default function CelebrationScreen({ dogName, exerciseName, onContinue })
           <Zap className="w-4 h-4" />
           +50 points gagnés !
         </div>
+
+        {showProgress && exerciseNumber < totalExercises && (
+          <p className="text-xs text-muted-foreground mb-3 flex items-center justify-center gap-1">
+            <Repeat2 className="w-3.5 h-3.5" />
+            {totalExercises - exerciseNumber} exercice{totalExercises - exerciseNumber > 1 ? "s" : ""} restant{totalExercises - exerciseNumber > 1 ? "s" : ""}
+          </p>
+        )}
 
         <button
           onClick={onContinue}

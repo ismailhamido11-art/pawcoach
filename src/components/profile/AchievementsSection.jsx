@@ -1,59 +1,146 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { motion } from "framer-motion";
-import { Trophy, Star, Lock } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Star, Lock, ChevronRight, Zap } from "lucide-react";
 
-// All possible badges definition
+// All possible badges — source of truth for display
 const ALL_BADGES = [
-  // Walk badges
-  { id: "first_walk", name: "Première balade", emoji: "🐾", points: 10, category: "walk", desc: "Enregistre ta première balade" },
-  { id: "walk_30min", name: "Marcheur", emoji: "👟", points: 20, category: "walk", desc: "30 min de balade en une journée" },
-  { id: "walk_7days", name: "Régulier", emoji: "📅", points: 50, category: "walk", desc: "Balades 7 jours consécutifs" },
-  { id: "walk_100km", name: "Explorateur", emoji: "🗺️", points: 100, category: "walk", desc: "100 km de balades cumulées" },
-  { id: "walk_marathon", name: "Ultra Marcheur", emoji: "🏅", points: 200, category: "walk", desc: "1000 min de balade au total" },
-  // Training badges
-  { id: "first_program", name: "Coach débutant", emoji: "✨", points: 15, category: "training", desc: "Génère ton premier programme IA" },
-  { id: "training_week1", name: "Semaine 1 ✅", emoji: "💪", points: 40, category: "training", desc: "Complète la semaine 1 du programme" },
-  { id: "training_complete", name: "Programme complet", emoji: "🏆", points: 150, category: "training", desc: "Finalise un programme 4 semaines" },
-  { id: "training_3programs", name: "Coach expert", emoji: "🎓", points: 300, category: "training", desc: "Génère 3 programmes différents" },
-  // Streak badges
-  { id: "streak_3", name: "En forme", emoji: "🔥", points: 30, category: "streak", desc: "3 jours d'activité consécutifs" },
-  { id: "streak_7", name: "Habitude", emoji: "⚡", points: 75, category: "streak", desc: "7 jours d'activité consécutifs" },
-  { id: "streak_30", name: "Légende", emoji: "👑", points: 250, category: "streak", desc: "30 jours d'activité consécutifs" },
-  // Milestone badges
-  { id: "points_100", name: "100 points", emoji: "⭐", points: 0, category: "milestone", desc: "Atteindre 100 points" },
-  { id: "points_500", name: "500 points", emoji: "🌟", points: 0, category: "milestone", desc: "Atteindre 500 points" },
-  { id: "points_1000", name: "Maître PawCoach", emoji: "💎", points: 0, category: "milestone", desc: "Atteindre 1000 points" },
+  // Walk
+  { id: "first_walk",       name: "Première balade",    emoji: "🐾", points: 10,  category: "walk",      hint: "Enregistre ta 1re balade avec {name}" },
+  { id: "walk_30min",       name: "Marcheur",            emoji: "👟", points: 20,  category: "walk",      hint: "30 min de balade en une journée" },
+  { id: "walk_7days",       name: "Régulier",            emoji: "📅", points: 50,  category: "walk",      hint: "Balade 7 jours de suite avec {name}" },
+  { id: "walk_marathon",    name: "Ultra Marcheur",      emoji: "🏅", points: 200, category: "walk",      hint: "1 000 min de balade cumulées" },
+  // Training
+  { id: "first_program",    name: "Coach débutant",      emoji: "✨", points: 15,  category: "training",  hint: "Lance ton 1er programme IA" },
+  { id: "training_3programs",name: "Coach expert",       emoji: "🎓", points: 300, category: "training",  hint: "Génère 3 programmes différents" },
+  // Streak
+  { id: "streak_3",         name: "En forme",            emoji: "🔥", points: 30,  category: "streak",    hint: "3 jours d'activité consécutifs" },
+  { id: "streak_7",         name: "Habitude",            emoji: "⚡", points: 75,  category: "streak",    hint: "7 jours consécutifs avec {name}" },
+  { id: "streak_30",        name: "Légende",             emoji: "👑", points: 250, category: "streak",    hint: "30 jours consécutifs — du sérieux !" },
+  // Milestones
+  { id: "points_100",       name: "100 points",          emoji: "⭐", points: 0,   category: "milestone", hint: "Cumule 100 points d'activité" },
+  { id: "points_500",       name: "500 points",          emoji: "🌟", points: 0,   category: "milestone", hint: "Cumule 500 points — top 10% des owners" },
+  { id: "points_1000",      name: "Maître PawCoach",     emoji: "💎", points: 0,   category: "milestone", hint: "1 000 points — le summum absolu" },
 ];
 
+const TOTAL_BADGES = ALL_BADGES.length;
+
 const CATEGORY_LABELS = {
-  walk: "🐾 Balades",
-  training: "💪 Entraînement",
-  streak: "🔥 Régularité",
-  milestone: "⭐ Jalons",
+  walk:      "Balades",
+  training:  "Entraînement",
+  streak:    "Régularité",
+  milestone: "Jalons",
+};
+
+const CATEGORY_COLORS = {
+  walk:      { bg: "bg-emerald-50",  border: "border-emerald-200", text: "text-emerald-700", dot: "bg-emerald-400" },
+  training:  { bg: "bg-blue-50",     border: "border-blue-200",    text: "text-blue-700",    dot: "bg-blue-400" },
+  streak:    { bg: "bg-orange-50",   border: "border-orange-200",  text: "text-orange-700",  dot: "bg-orange-400" },
+  milestone: { bg: "bg-purple-50",   border: "border-purple-200",  text: "text-purple-700",  dot: "bg-purple-400" },
 };
 
 const LEVEL_THRESHOLDS = [
-  { min: 0,    label: "Chiot",     color: "text-gray-500",    emoji: "🐶" },
-  { min: 100,  label: "Compagnon", color: "text-green-600",   emoji: "🐕" },
-  { min: 300,  label: "Sportif",   color: "text-blue-600",    emoji: "🦮" },
-  { min: 700,  label: "Champion",  color: "text-purple-600",  emoji: "🏅" },
-  { min: 1200, label: "Légende",   color: "text-amber-500",   emoji: "👑" },
+  { min: 0,    label: "Chiot",     emoji: "🐶", nextLabel: "Compagnon" },
+  { min: 100,  label: "Compagnon", emoji: "🐕", nextLabel: "Sportif" },
+  { min: 300,  label: "Sportif",   emoji: "🦮", nextLabel: "Champion" },
+  { min: 700,  label: "Champion",  emoji: "🏅", nextLabel: "Légende" },
+  { min: 1200, label: "Légende",   emoji: "👑", nextLabel: null },
 ];
 
-function getLevel(points) {
+function getLevel(pts) {
   let lvl = LEVEL_THRESHOLDS[0];
-  for (const t of LEVEL_THRESHOLDS) {
-    if (points >= t.min) lvl = t;
-  }
+  for (const t of LEVEL_THRESHOLDS) { if (pts >= t.min) lvl = t; }
   return lvl;
 }
+function getNextLevel(pts) {
+  return LEVEL_THRESHOLDS.find(t => pts < t.min) || null;
+}
 
-function getNextLevel(points) {
-  for (const t of LEVEL_THRESHOLDS) {
-    if (points < t.min) return t;
-  }
-  return null;
+// Animated counter hook
+function useCountUp(target, duration = 800) {
+  const [value, setValue] = useState(0);
+  const raf = useRef(null);
+  useEffect(() => {
+    const start = performance.now();
+    const from = 0;
+    const tick = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease out cubic
+      setValue(Math.round(from + eased * (target - from)));
+      if (progress < 1) raf.current = requestAnimationFrame(tick);
+    };
+    raf.current = requestAnimationFrame(tick);
+    return () => raf.current && cancelAnimationFrame(raf.current);
+  }, [target, duration]);
+  return value;
+}
+
+function BadgeCard({ badge, unlocked, achv, dogName, index }) {
+  const hint = badge.hint.replace("{name}", dogName || "ton chien");
+  const cat = CATEGORY_COLORS[badge.category] || CATEGORY_COLORS.milestone;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16, scale: 0.92 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 400, damping: 30, delay: index * 0.045 }}
+      className={`relative rounded-2xl p-3 flex flex-col items-center gap-1.5 text-center border transition-all overflow-hidden ${
+        unlocked
+          ? `bg-white border-2 shadow-sm ${cat.border}`
+          : "bg-muted/30 border-border/60"
+      }`}
+    >
+      {/* Glow for unlocked */}
+      {unlocked && (
+        <div className={`absolute inset-0 ${cat.bg} opacity-30 pointer-events-none`} />
+      )}
+
+      {/* Emoji */}
+      <span
+        className={`relative z-10 text-3xl leading-none transition-all ${
+          !unlocked ? "grayscale opacity-30" : "drop-shadow-sm"
+        }`}
+        style={unlocked ? { filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.15))" } : {}}
+      >
+        {badge.emoji}
+      </span>
+
+      {/* Name */}
+      <p className={`relative z-10 text-[10px] font-bold leading-tight ${
+        unlocked ? "text-foreground" : "text-muted-foreground/60"
+      }`}>
+        {badge.name}
+      </p>
+
+      {/* Points or unlock hint */}
+      {unlocked ? (
+        <>
+          {badge.points > 0 && (
+            <span className={`relative z-10 text-[10px] font-black px-1.5 py-0.5 rounded-full ${cat.bg} ${cat.text}`}>
+              +{badge.points} pts
+            </span>
+          )}
+          {achv?.unlocked_at && (
+            <p className="relative z-10 text-[9px] text-muted-foreground">
+              {new Date(achv.unlocked_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+            </p>
+          )}
+        </>
+      ) : (
+        <p className="relative z-10 text-[9px] text-muted-foreground/70 leading-tight px-0.5">
+          {hint}
+        </p>
+      )}
+
+      {/* Lock icon overlay for locked */}
+      {!unlocked && (
+        <div className="absolute top-1.5 right-1.5 z-10">
+          <Lock className="w-3 h-3 text-muted-foreground/30" />
+        </div>
+      )}
+    </motion.div>
+  );
 }
 
 export default function AchievementsSection({ dog }) {
@@ -63,138 +150,176 @@ export default function AchievementsSection({ dog }) {
 
   useEffect(() => {
     if (!dog?.id) return;
+    setLoading(true);
     base44.entities.DogAchievement
       .filter({ dog_id: dog.id }, "-unlocked_at", 100)
       .then(a => setAchievements(a || []))
       .finally(() => setLoading(false));
   }, [dog?.id]);
 
-  if (loading) return <div className="h-32 bg-muted animate-pulse rounded-2xl" />;
-
   const unlockedIds = new Set(achievements.map(a => a.badge_id));
   const totalPoints = achievements.reduce((s, a) => s + (a.points_awarded || 0), 0);
+  const unlockedCount = unlockedIds.size;
   const level = getLevel(totalPoints);
   const nextLevel = getNextLevel(totalPoints);
-  const progress = nextLevel
+  const progressPct = nextLevel
     ? Math.round(((totalPoints - level.min) / (nextLevel.min - level.min)) * 100)
     : 100;
 
+  const animatedPoints = useCountUp(loading ? 0 : totalPoints, 900);
+  const animatedUnlocked = useCountUp(loading ? 0 : unlockedCount, 700);
+
   const categories = ["all", ...Object.keys(CATEGORY_LABELS)];
-  const filteredBadges = ALL_BADGES.filter(b => selectedCategory === "all" || b.category === selectedCategory);
+  const filteredBadges = ALL_BADGES.filter(b =>
+    selectedCategory === "all" || b.category === selectedCategory
+  );
+
+  // Sort: unlocked first, then locked
+  const sortedBadges = [
+    ...filteredBadges.filter(b => unlockedIds.has(b.id)),
+    ...filteredBadges.filter(b => !unlockedIds.has(b.id)),
+  ];
+
+  if (loading) {
+    return (
+      <div className="space-y-3">
+        <div className="h-28 bg-muted animate-pulse rounded-2xl" />
+        <div className="grid grid-cols-3 gap-2">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-24 bg-muted animate-pulse rounded-2xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
-      {/* Header card */}
-      <div className="bg-gradient-to-br from-amber-50 to-amber-50/50 border border-amber-200 rounded-2xl p-4">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center flex-shrink-0 text-2xl">
-            {level.emoji}
-          </div>
-          <div className="flex-1">
+
+      {/* ── Hero card ─────────────────────────────────────── */}
+      <div
+        className="rounded-2xl p-4 relative overflow-hidden"
+        style={{ background: "linear-gradient(135deg, #1A4D3E 0%, #2D9F82 100%)" }}
+      >
+        {/* Decorative circles */}
+        <div className="absolute top-[-30%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-[-40%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
+
+        <div className="relative z-10">
+          {/* Top row: level + badge count */}
+          <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <p className="font-black text-sm text-foreground">{dog?.name}</p>
-              <span className={`text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 ${level.color}`}>{level.label}</span>
+              <span className="text-2xl">{level.emoji}</span>
+              <div>
+                <p className="text-white font-black text-sm leading-none">{dog?.name}</p>
+                <p className="text-white/70 text-xs mt-0.5">Niveau {level.label}</p>
+              </div>
             </div>
-            <div className="flex items-center gap-2 mt-1">
-              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-              <span className="font-black text-amber-700 text-sm">{totalPoints} pts</span>
-              {nextLevel && <span className="text-[10px] text-muted-foreground">→ {nextLevel.min} pour {nextLevel.label}</span>}
+            <div className="text-right">
+              <p className="text-white font-black text-xl leading-none">{animatedUnlocked} <span className="text-white/50 font-semibold text-sm">/ {TOTAL_BADGES}</span></p>
+              <p className="text-white/60 text-[10px]">badges débloqués</p>
             </div>
           </div>
-          <div className="text-right">
-            <p className="font-black text-lg text-amber-600">{unlockedIds.size}</p>
-            <p className="text-[10px] text-muted-foreground">badges</p>
+
+          {/* Points */}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-1.5 bg-white/15 rounded-full px-3 py-1.5">
+              <Star className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+              <span className="text-white font-black text-sm">{animatedPoints}</span>
+              <span className="text-white/60 text-xs">points</span>
+            </div>
+            {nextLevel && (
+              <div className="flex items-center gap-1 bg-white/10 rounded-full px-2.5 py-1.5">
+                <Zap className="w-3 h-3 text-white/60" />
+                <span className="text-white/70 text-[10px]">{nextLevel.min - totalPoints} pts → {nextLevel.label}</span>
+              </div>
+            )}
+            {!nextLevel && (
+              <div className="flex items-center gap-1 bg-amber-400/20 rounded-full px-2.5 py-1.5">
+                <span className="text-amber-300 text-[10px] font-bold">Niveau max atteint !</span>
+              </div>
+            )}
           </div>
+
+          {/* Progress bar */}
+          {nextLevel && (
+            <div>
+              <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{ background: "linear-gradient(90deg, #34d399, #a7f3d0)" }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPct}%` }}
+                  transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+                />
+              </div>
+              <div className="flex justify-between text-[9px] text-white/40 mt-1">
+                <span>{level.label} ({level.min} pts)</span>
+                <span>{nextLevel.label} ({nextLevel.min} pts)</span>
+              </div>
+            </div>
+          )}
         </div>
-
-        {/* Progress bar */}
-        {nextLevel && (
-          <div>
-            <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
-              <span>{level.label}</span>
-              <span>{totalPoints} / {nextLevel.min} pts</span>
-            </div>
-            <div className="h-2 bg-amber-100 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              />
-            </div>
-          </div>
-        )}
-        {!nextLevel && (
-          <div className="flex items-center gap-2 text-xs text-amber-700 font-bold">
-            <Trophy className="w-4 h-4" /> Niveau maximum atteint ! 👑
-          </div>
-        )}
       </div>
 
-      {/* Category filter */}
+      {/* ── Category filter ────────────────────────────────── */}
       <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
-        {categories.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`flex-shrink-0 text-[10px] font-bold px-3 py-1.5 rounded-full transition-all ${
-              selectedCategory === cat
-                ? "bg-primary text-white shadow-sm"
-                : "bg-white border border-border text-muted-foreground"
-            }`}
-          >
-            {cat === "all" ? "🏅 Tous" : CATEGORY_LABELS[cat]}
-          </button>
-        ))}
-      </div>
-
-      {/* Badges grid */}
-      <div className="grid grid-cols-3 gap-2">
-        {filteredBadges.map(badge => {
-          const unlocked = unlockedIds.has(badge.id);
-          const achv = achievements.find(a => a.badge_id === badge.id);
+        {categories.map(cat => {
+          const active = selectedCategory === cat;
+          const col = cat !== "all" ? CATEGORY_COLORS[cat] : null;
           return (
-            <motion.div
-              key={badge.id}
-              whileTap={{ scale: 0.95 }}
-              className={`relative rounded-2xl p-3 flex flex-col items-center gap-1.5 text-center border transition-all ${
-                unlocked
-                  ? "bg-white border-amber-200 shadow-sm"
-                  : "bg-muted/50 border-border"
+            <motion.button
+              key={cat}
+              whileTap={{ scale: 0.93 }}
+              onClick={() => setSelectedCategory(cat)}
+              className={`flex-shrink-0 text-[11px] font-bold px-3 py-1.5 rounded-full border transition-all ${
+                active
+                  ? col
+                    ? `${col.bg} ${col.border} ${col.text}`
+                    : "bg-[#1A4D3E] border-[#1A4D3E] text-white"
+                  : "bg-white border-border text-muted-foreground"
               }`}
             >
-              {!unlocked && (
-                <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-background/70 backdrop-blur-[2px] z-10">
-                  <Lock className="w-4 h-4 text-muted-foreground/50" />
-                </div>
-              )}
-              <span className={`text-2xl leading-none ${!unlocked ? "grayscale opacity-40" : ""}`}>
-                {badge.emoji}
-              </span>
-              <p className={`text-[10px] font-bold leading-tight ${unlocked ? "text-foreground" : "text-muted-foreground"}`}>
-                {badge.name}
-              </p>
-              {badge.points > 0 && (
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                  unlocked ? "bg-amber-100 text-amber-700" : "bg-muted text-muted-foreground"
-                }`}>
-                  +{badge.points} pts
-                </span>
-              )}
-              {unlocked && achv?.unlocked_at && (
-                <p className="text-[10px] text-muted-foreground">
-                  {new Date(achv.unlocked_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
-                </p>
-              )}
-              {!unlocked && (
-                <p className={`text-[10px] text-muted-foreground leading-tight relative z-0`}>
-                  {badge.desc}
-                </p>
-              )}
-            </motion.div>
+              {cat === "all" ? "Tous" : CATEGORY_LABELS[cat]}
+            </motion.button>
           );
         })}
       </div>
+
+      {/* ── Badges grid ───────────────────────────────────── */}
+      <div className="grid grid-cols-3 gap-2">
+        {sortedBadges.map((badge, i) => {
+          const unlocked = unlockedIds.has(badge.id);
+          const achv = achievements.find(a => a.badge_id === badge.id);
+          return (
+            <BadgeCard
+              key={badge.id}
+              badge={badge}
+              unlocked={unlocked}
+              achv={achv}
+              dogName={dog?.name}
+              index={i}
+            />
+          );
+        })}
+      </div>
+
+      {/* ── Motivational footer ───────────────────────────── */}
+      {unlockedCount < TOTAL_BADGES && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="flex items-center gap-2 px-4 py-3 bg-emerald-50 border border-emerald-100 rounded-xl"
+        >
+          <span className="text-base">{sortedBadges.find(b => !unlockedIds.has(b.id))?.emoji || "🎯"}</span>
+          <p className="text-xs text-emerald-700 font-medium flex-1">
+            Prochain badge : <span className="font-bold">{sortedBadges.find(b => !unlockedIds.has(b.id))?.name}</span>
+            {" — "}{sortedBadges.find(b => !unlockedIds.has(b.id))?.hint.replace("{name}", dog?.name || "ton chien")}
+          </p>
+          <ChevronRight className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+        </motion.div>
+      )}
     </div>
   );
 }
