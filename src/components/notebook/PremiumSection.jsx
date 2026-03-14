@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Illustration from "../illustrations/Illustration";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,7 @@ import { isValidDate } from "@/utils/healthStatus";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { spring } from "@/lib/animations";
+import EmptyState from "@/components/ui/EmptyState";
 
 const GATE_CONTENT = {
   vet_visit: {
@@ -69,7 +69,7 @@ export default function PremiumSection({ type, records = [], dogId, isPremium, o
   }
 
   const handleSave = async () => {
-    if (!form.title.trim()) { toast.error("Titre requis"); return; }
+    if (!form.title.trim()) { toast.error("Donne un titre à cet enregistrement."); return; }
     setSaving(true);
     try {
       const payload = {
@@ -88,7 +88,7 @@ export default function PremiumSection({ type, records = [], dogId, isPremium, o
       setShowForm(false);
     } catch (e) {
       console.error("PremiumSection save error:", e);
-      toast.error("Erreur lors de l'enregistrement");
+      toast.error("Impossible d'enregistrer. Réessaie.");
     }
     setSaving(false);
   };
@@ -169,11 +169,19 @@ export default function PremiumSection({ type, records = [], dogId, isPremium, o
 
       {/* Empty state */}
       {filtered.length === 0 && !showForm && (
-        <div className="flex flex-col items-center text-center py-8 gap-2">
-          <Illustration name="veterinary" className="w-20 h-20 opacity-70" alt="" />
-          <p className="font-semibold text-sm text-foreground">{config.emptyText}</p>
-          <p className="text-xs text-muted-foreground">Utilise le bouton ci-dessus pour en ajouter un</p>
-        </div>
+        <EmptyState
+          mascot={type === "vet_visit" ? "doctor" : type === "medication" ? "grad" : "chat"}
+          title={
+            type === "vet_visit" ? "Aucune visite vétérinaire" :
+            type === "medication" ? "Aucun traitement enregistré" :
+            "Pas encore de note"
+          }
+          description={
+            type === "vet_visit" ? "Note chaque consultation pour ne plus jamais oublier un suivi." :
+            type === "medication" ? "Enregistre les médicaments et rappels pour rester à jour." :
+            "Consigne observations, comportements inhabituels ou questions pour le véto."
+          }
+        />
       )}
 
       {/* Records list */}

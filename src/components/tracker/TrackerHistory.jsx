@@ -5,6 +5,7 @@ import { fr } from "date-fns/locale";
 import { Flame, Trophy, Zap, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import ActivityCalendar from "./ActivityCalendar";
+import EmptyState from "@/components/ui/EmptyState";
 
 const WEEKLY_GOAL = 5;
 const MIN_WALK_MINUTES = 20;
@@ -125,11 +126,11 @@ export default function TrackerHistory({ logs, dog }) {
 
   if (sorted.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center space-y-3">
-        <span className="text-5xl">🦮</span>
-        <p className="font-bold text-foreground">Aucune balade enregistrée</p>
-        <p className="text-xs text-muted-foreground">Lance une balade pour voir ton historique ici.</p>
-      </div>
+      <EmptyState
+        mascot="wave"
+        title={dog?.name ? `${dog.name} attend sa première aventure !` : "Première balade à venir !"}
+        description="Lance une balade pour commencer à suivre vos sorties et voir vos statistiques ici."
+      />
     );
   }
 

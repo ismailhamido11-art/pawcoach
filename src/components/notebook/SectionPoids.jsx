@@ -7,6 +7,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { spring } from "@/lib/animations";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function SectionPoids({ records = [], dogId, onDelete, onRecordAdded }) {
   const [period, setPeriod] = useState("All");
@@ -16,8 +17,8 @@ export default function SectionPoids({ records = [], dogId, onDelete, onRecordAd
 
   const handleSaveWeight = async () => {
     const w = parseFloat(form.weight);
-    if (!w || w <= 0 || w > 200) { toast.error("Poids invalide."); return; }
-    if (!form.date) { toast.error("Date requise."); return; }
+    if (!w || w <= 0 || w > 200) { toast.error("Ce poids ne semble pas valide — entre 0.1 et 200 kg."); return; }
+    if (!form.date) { toast.error("Indique la date de la pesée."); return; }
     setSaving(true);
     try {
       const record = await base44.entities.HealthRecord.create({
@@ -34,7 +35,7 @@ export default function SectionPoids({ records = [], dogId, onDelete, onRecordAd
       setShowAddForm(false);
       setForm({ weight: "", date: new Date().toISOString().split("T")[0] });
     } catch (e) {
-      toast.error("Erreur lors de l'enregistrement.");
+      toast.error("Impossible d'enregistrer la pesée. Réessaie.");
       console.error(e);
     } finally {
       setSaving(false);
@@ -158,10 +159,11 @@ export default function SectionPoids({ records = [], dogId, onDelete, onRecordAd
       )}
 
       {weights.length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-3xl mb-2">⚖️</p>
-          <p className="text-muted-foreground text-sm">Aucune pesée enregistrée</p>
-        </div>
+        <EmptyState
+          mascot="curious"
+          title="Première pesée à venir"
+          description="Enregistre le poids régulièrement pour suivre l'évolution et détecter les tendances."
+        />
       )}
 
       {weights.slice().reverse().map(r => (

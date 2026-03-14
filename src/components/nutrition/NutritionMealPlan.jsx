@@ -8,6 +8,7 @@ import { useActionCredits } from "@/utils/ai-credits";
 import { UpgradePrompt } from "@/components/ui/AICreditsGate";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import EmptyState from "@/components/ui/EmptyState";
 
 const MONTHLY_FREE_LIMIT = 2;
 const DAYS_FR = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -89,7 +90,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       toast.success("Note sauvegardée");
       onPlanSaved?.(); // refresh to get updated notes without mutating props
     } catch {
-      toast.error("Erreur");
+      toast.error("Impossible de sauvegarder la note. Réessaie.");
     }
   };
 
@@ -99,7 +100,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       onPlanSaved?.();
       toast.success("Plan supprimé");
     } catch {
-      toast.error("Erreur lors de la suppression");
+      toast.error("Impossible de supprimer le plan. Réessaie.");
     }
   };
 
@@ -112,7 +113,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       onPlanSaved?.();
       toast.success("Plan activé !");
     } catch {
-      toast.error("Erreur");
+      toast.error("Impossible d'activer ce plan. Réessaie.");
     }
   };
 
@@ -142,7 +143,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
       toast.success("Programme activé !");
       setTimeout(() => { setSaved(false); setPlan(null); setShowGenerator(false); setGenerationNotes(""); }, 2000);
     } catch {
-      toast.error("Erreur lors de la sauvegarde");
+      toast.error("Impossible d'activer le plan. Réessaie.");
     } finally {
       setSaving(false);
     }
@@ -321,7 +322,7 @@ RÈGLES :
     } catch (e) {
       console.error("Nutrition plan parse error:", e);
       setPlan(null);
-      toast.error("Erreur lors de la génération. Réessaie !");
+      toast.error("La génération a échoué. Réessaie — ça marche en général au 2e essai.");
     }
 
     setLoading(false);
@@ -581,13 +582,12 @@ RÈGLES :
         {!plan && !loading && (
           <div className={`bg-white rounded-2xl border border-border p-5 space-y-4 ${activeData ? "" : "text-center"}`}>
             {!activeData && (
-              <>
-                <div className="text-5xl mb-1">{"\u{1F37D}\uFE0F"}</div>
-                <h3 className="font-bold text-foreground">Plan de repas personnalisé IA</h3>
-                <p className="text-sm text-muted-foreground px-2">
-                  Génère un plan hebdomadaire adapté au profil de {dog.name}, avec quantités précises et aliments à éviter.
-                </p>
-              </>
+              <EmptyState
+                mascot="chef"
+                title={`Pas encore de plan pour ${dog.name}`}
+                description="Génère un plan repas personnalisé 7 jours avec quantités précises, adapté à son profil et son activité."
+                className="py-4"
+              />
             )}
 
             {/* Data richness badges */}

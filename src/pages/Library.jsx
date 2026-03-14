@@ -8,6 +8,7 @@ import { createPageUrl } from "@/utils";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import Illustration from "../components/illustrations/Illustration";
+import EmptyState from "@/components/ui/EmptyState";
 
 
 const SOURCE_LABELS = {
@@ -62,7 +63,7 @@ export default function Library() {
       if (expanded === id) setExpanded(null);
       toast.success("Conseil supprimé");
     } catch {
-      toast.error("Erreur lors de la suppression");
+      toast.error("Impossible de supprimer ce conseil. Réessaie.");
     }
   };
 
@@ -74,7 +75,7 @@ export default function Library() {
       setBookmarks(prev => prev.map(b => b.id === bk.id ? { ...b, content: JSON.stringify(data) } : b));
       toast.success("Programme activé ! Retrouve-le sur ton accueil.");
     } catch {
-      toast.error("Erreur lors de l'activation");
+      toast.error("Impossible d'activer ce programme. Réessaie.");
     }
   };
 
@@ -85,7 +86,7 @@ export default function Library() {
       if (expanded === `nutri-${id}`) setExpanded(null);
       toast.success("Plan nutrition supprimé");
     } catch {
-      toast.error("Erreur lors de la suppression");
+      toast.error("Impossible de supprimer ce plan. Réessaie.");
     }
   };
 
@@ -98,7 +99,7 @@ export default function Library() {
       setNutritionPlans(prev => prev.map(p => ({ ...p, is_active: p.id === planId })));
       toast.success("Plan nutrition activé ! Retrouve-le sur ton accueil.");
     } catch {
-      toast.error("Erreur lors de l'activation");
+      toast.error("Impossible d'activer ce plan. Réessaie.");
     }
   };
 
@@ -193,21 +194,15 @@ export default function Library() {
             <div key={i} className="h-24 bg-muted animate-pulse rounded-2xl" />
           ))
         ) : filtered.length === 0 ? (
-          <div className="text-center py-12">
-            <motion.div
-              animate={{ scale: [1, 1.03, 1] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="w-28 h-28 mx-auto mb-4"
-            >
-              <Illustration name="adoptAPet" alt="Aucun bookmark" className="w-full h-full drop-shadow-lg opacity-80" />
-            </motion.div>
-            <p className="font-bold text-foreground">
-              {search ? "Aucun résultat" : "Aucun bookmark"}
-            </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              {search ? "Essaie un autre mot-clé" : "Sauvegarde des conseils depuis le Chat, NutriCoach, dressage ou comparaisons"}
-            </p>
-          </div>
+          <EmptyState
+            mascot="chat"
+            title={search ? "Aucun résultat" : "Bibliothèque vide pour l'instant"}
+            description={
+              search
+                ? "Essaie un autre mot-clé ou change de filtre."
+                : "Sauvegarde des conseils depuis le Chat IA, NutriCoach ou les programmes de dressage. Ils apparaîtront ici."
+            }
+          />
         ) : (
           <AnimatePresence>
             {filtered.map((b) => {

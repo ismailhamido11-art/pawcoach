@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
-import Illustration from "../illustrations/Illustration";
 import SectionVaccins from "../notebook/SectionVaccins";
 import SectionPoids from "../notebook/SectionPoids";
 import PremiumSection from "../notebook/PremiumSection";
@@ -24,6 +23,7 @@ import {
   Share2, ChevronDown, ChevronUp, ClipboardList
 } from "lucide-react";
 import { spring } from "@/lib/animations";
+import EmptyState from "@/components/ui/EmptyState";
 
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
@@ -350,10 +350,12 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
             {activeTab === "all" && (
               <div className="space-y-2.5">
                 {sortedRecords.length === 0 ? (
-                  <div className="flex flex-col items-center py-10 text-center bg-white rounded-2xl border border-border">
-                    <Illustration name="goodDoggy" className="w-24 h-24 mb-3 opacity-80" alt="Chien content" />
-                    <p className="text-sm font-semibold text-foreground">Le carnet est pret</p>
-                    <p className="text-xs text-muted-foreground mt-1">Utilise l'assistant pour ajouter des entrees</p>
+                  <div className="bg-white rounded-2xl border border-border">
+                    <EmptyState
+                      mascot="doctor"
+                      title={dog?.name ? `Le carnet de ${dog.name} est prêt` : "Le carnet est prêt"}
+                      description="Utilise l'assistant en bas de page pour ajouter tes premières entrées de santé."
+                    />
                   </div>
                 ) : (
                   sortedRecords.map(r => (
