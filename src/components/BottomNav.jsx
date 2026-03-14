@@ -72,7 +72,7 @@ export default function BottomNav({ currentPage }) {
                   active ? "bg-gradient-to-br from-secondary to-secondary/70 shadow-md" : "hover:bg-secondary/40"
                 }`}
                 whileHover={{ scale: active ? 1 : 1.1 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.9 }}
               >
                 <Icon className={`w-5 h-5 ${active ? "stroke-[2.5]" : "stroke-[1.75]"}`} />
               </motion.div>

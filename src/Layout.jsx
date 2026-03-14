@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import NotificationCenter from "./components/notifications/NotificationCenter";
 
 export default function Layout({ children, currentPageName }) {
@@ -33,15 +33,18 @@ export default function Layout({ children, currentPageName }) {
           <NotificationCenter />
         </div>
       )}
-      <motion.div
-        key={currentPageName}
-        initial={{ opacity: 0, x: 16 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.18, ease: [0.25, 0.1, 0.25, 1] }}
-        style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom, 0px))" }}
-      >
-        {children}
-      </motion.div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentPageName}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18, ease: "easeInOut" }}
+          style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom, 0px))" }}
+        >
+          {children}
+        </motion.div>
+      </AnimatePresence>
     </>
   );
 }

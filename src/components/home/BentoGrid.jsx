@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Heart, Utensils, Dumbbell, MessageCircle, ChevronRight } from "lucide-react";
+import { tapScale, hoverGlow } from "@/lib/animations";
 /**
  * BentoGrid — Navigation grid premium light (fond blanc, ombres douces)
  */
@@ -35,7 +36,12 @@ export default function BentoGrid() {
         {NAV_TILES.map((tile) => {
           const Icon = tile.icon;
           return (
-            <motion.div key={tile.label} variants={item} whileTap={{ scale: 0.98 }} whileHover={{ scale: 1.03 }}>
+            <motion.div
+              key={tile.label}
+              variants={item}
+              whileTap={{ scale: 0.97 }}
+              whileHover={{ y: -2, boxShadow: "0 4px 12px rgba(26,77,62,0.15)" }}
+            >
               <Link to={createPageUrl(tile.page) + (tile.tab ? `?tab=${tile.tab}` : "")}>
                 <div
                   className="relative overflow-hidden rounded-2xl p-4 min-h-[110px] flex flex-col justify-between bg-white border border-border/20 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-transform"

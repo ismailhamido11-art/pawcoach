@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ScanLine, Scale, Dumbbell, MapPin, BookOpen } from "lucide-react";
+import { hoverGlow } from "@/lib/animations";
 
 const ACTIONS = [
   { icon: ScanLine, label: "Scanner", page: "Scan", color: "#059669" },
@@ -35,11 +36,12 @@ export default function QuickActions() {
                 to={createPageUrl(action.page) + (action.tab ? `?tab=${action.tab}` : "")}
                 className="flex flex-col items-center gap-1.5 w-[60px] py-1"
               >
-                <div
+                <motion.div
                   className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-[0_2px_6px_rgba(0,0,0,0.06)] bg-white border border-border/20 relative"
+                  {...hoverGlow}
                 >
                   <Icon className="w-6 h-6" style={{ color: action.color }} />
-                </div>
+                </motion.div>
                 <span className="text-[11px] font-semibold text-foreground/70">{action.label}</span>
               </Link>
             </motion.div>
