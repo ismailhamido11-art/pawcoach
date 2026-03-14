@@ -131,11 +131,11 @@ export default function SettingsSection() {
                       await new Promise(resolve => setTimeout(resolve, 1500));
                       base44.auth.logout();
                     } else {
-                      toast.error('Erreur', { description: response.data?.error || 'Impossible de supprimer le compte' });
+                      toast.error(response.data?.error || 'Impossible de supprimer le compte. Contacte le support si le problème persiste.');
                     }
                   } catch (err) {
                     console.error('Delete user error:', err);
-                    toast.error('Erreur', { description: 'Une erreur est survenue' });
+                    toast.error('Une erreur est survenue. Réessaie ou contacte le support.');
                   } finally {
                     setDeleting(false);
                   }

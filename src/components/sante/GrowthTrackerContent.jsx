@@ -85,7 +85,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
     const file = e.target.files?.[0];
     if (!file) return;
     if (!isPremium && !hasCredits) {
-      toast.error("Plus d'actions IA disponibles aujourd'hui");
+      toast.error("Tu as atteint la limite IA du jour. Réessaie demain ou passe en Premium.");
       return;
     }
     const localUrl = URL.createObjectURL(file);
@@ -105,7 +105,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
       setAnalysisResult({ ...analysis, photo_url: file_url });
       if (!isPremium) await consume();
     } catch {
-      toast.error("Erreur lors de l'analyse. Réessaie.");
+      toast.error("Impossible d'analyser la photo. Vérifie qu'elle est nette et réessaie.");
       setPreviewUrl(null);
     } finally {
       setAnalyzing(false);
@@ -137,23 +137,23 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
         loadEntries();
       }, 1200);
     } catch {
-      toast.error("Erreur de sauvegarde");
+      toast.error("Impossible de sauvegarder cette analyse. Réessaie.");
     }
   }
 
   async function saveManual() {
     if (!manualForm.weight_kg) {
-      toast.error("Le poids est obligatoire");
+      toast.error("Le poids est obligatoire pour enregistrer une mesure.");
       return;
     }
     const parsedWeight = parseFloat(manualForm.weight_kg);
     const parsedHeight = manualForm.height_cm ? parseFloat(manualForm.height_cm) : undefined;
     if (isNaN(parsedWeight) || parsedWeight <= 0 || parsedWeight > 200) {
-      toast.error("Poids invalide (entre 0.1 et 200 kg)");
+      toast.error("Ce poids ne semble pas valide — entre 0.1 et 200 kg.");
       return;
     }
     if (parsedHeight !== undefined && (isNaN(parsedHeight) || parsedHeight <= 0 || parsedHeight > 150)) {
-      toast.error("Taille invalide (entre 1 et 150 cm)");
+      toast.error("Cette taille ne semble pas valide — entre 1 et 150 cm.");
       return;
     }
     setSavingManual(true);
@@ -172,7 +172,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
       setManualForm({ date: format(new Date(), "yyyy-MM-dd"), weight_kg: "", height_cm: "" });
       loadEntries();
     } catch {
-      toast.error("Erreur de sauvegarde");
+      toast.error("Impossible d'enregistrer cette mesure. Réessaie.");
     } finally {
       setSavingManual(false);
     }

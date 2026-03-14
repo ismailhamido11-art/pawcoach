@@ -30,10 +30,10 @@ export default function VideoCoaching({ exerciseName, dogName, dogId }) {
         created_at: new Date().toISOString(),
       });
       setSaved(true);
-      toast.success("Feedback sauvegarde !");
+      toast.success("Feedback sauvegardé !");
     } catch (e) {
       console.error(e);
-      toast.error("Erreur lors de la sauvegarde");
+      toast.error("Impossible de sauvegarder ton retour. Réessaie.");
     }
   };
 

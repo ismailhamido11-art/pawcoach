@@ -54,7 +54,7 @@ export default function SectionVaccins({ records = [], dogId, onDelete, onRecord
     const selected = VACCINE_OPTIONS.find(v => v.key === form.vaccineKey);
     const title = selected ? selected.name : form.customTitle.trim();
     if (!title || !form.date) {
-      toast.error("Choisis un vaccin et une date.");
+      toast.error("Choisis un vaccin et indique la date d'injection.");
       return;
     }
 
@@ -81,7 +81,7 @@ export default function SectionVaccins({ records = [], dogId, onDelete, onRecord
       setShowAddForm(false);
       setForm({ vaccineKey: "", customTitle: "", date: new Date().toISOString().split("T")[0], nextDate: "" });
     } catch (e) {
-      toast.error("Erreur lors de l'enregistrement.");
+      toast.error("Impossible d'enregistrer ce vaccin. Réessaie.");
       console.error(e);
     } finally {
       setSaving(false);

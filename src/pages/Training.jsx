@@ -623,7 +623,7 @@ export default function Training() {
                     toast.success("Programme 7 jours activé !");
                   } catch (err) {
                     console.error("Behavior program generation error:", err);
-                    toast.error("Erreur lors de la génération. Réessaie.");
+                    toast.error("Impossible de générer le programme. Réessaie — ça marche en général au 2e essai.");
                   } finally {
                     setGeneratingProgram(false);
                   }

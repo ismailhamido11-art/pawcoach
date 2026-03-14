@@ -19,8 +19,8 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
 
   const handleSave = async () => {
     const w = parseFloat(weight);
-    if (!w || w <= 0 || w > 200) { toast.error("Poids invalide"); return; }
-    if (!date) { toast.error("Date requise"); return; }
+    if (!w || w <= 0 || w > 200) { toast.error("Ce poids ne semble pas valide — entre 0.1 et 200 kg."); return; }
+    if (!date) { toast.error("Indique la date de la pesée."); return; }
     setSaving(true);
     try {
       const record = await base44.entities.HealthRecord.create({
@@ -37,7 +37,7 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
       onClose();
     } catch (e) {
       console.error("InlineWeightForm save error:", e);
-      toast.error("Erreur lors de l'enregistrement");
+      toast.error("Impossible d'enregistrer la pesée. Réessaie.");
     }
     setSaving(false);
   };
@@ -58,7 +58,7 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
           </button>
         </div>
         <p className="text-[10px] text-muted-foreground leading-relaxed">
-          Pese ton chien et note le resultat. Le suivi de la courbe se met a jour automatiquement.
+          Pèse ton chien et note le résultat. La courbe de poids se met à jour automatiquement.
         </p>
         <div className="grid grid-cols-2 gap-2.5">
           <div>

@@ -275,7 +275,7 @@ export default function DownloadHealthPDF({ dogId, dogName: _dogName }) {
       });
 
       if (!res.data.success) {
-        toast.error("Erreur lors de la generation");
+        toast.error("Impossible de préparer le PDF. Réessaie dans un instant.");
         setLoading(false);
         return;
       }
@@ -716,10 +716,10 @@ export default function DownloadHealthPDF({ dogId, dogName: _dogName }) {
       }
 
       doc.save(`PawCoach_${(dog.name || "chien").replace(/\s+/g, "_")}_sante.pdf`);
-      toast.success("PDF telecharge !");
+      toast.success("PDF téléchargé !");
     } catch (e) {
       console.error("PDF generation error:", e);
-      toast.error("Erreur lors de la generation du PDF");
+      toast.error("Impossible de générer le PDF. Réessaie dans un instant.");
     }
     setLoading(false);
   };

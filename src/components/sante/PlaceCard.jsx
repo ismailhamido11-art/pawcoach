@@ -45,7 +45,7 @@ export default function PlaceCard({ place, isFavorite, favoriteId, favoriteNotes
         onFavoriteToggle(fav);
       }
     } catch {
-      toast.error("Erreur, réessaie.");
+      toast.error("Impossible de modifier les favoris. Réessaie.");
     } finally {
       setSaving(false);
     }
@@ -59,7 +59,7 @@ export default function PlaceCard({ place, isFavorite, favoriteId, favoriteNotes
       setEditingNote(false);
       toast.success("Note sauvegardée");
     } catch {
-      toast.error("Erreur lors de la sauvegarde");
+      toast.error("Impossible de sauvegarder la note. Réessaie.");
     }
   };
 

@@ -163,7 +163,7 @@ export default function Nutri() {
       setBookmarked(prev => ({ ...prev, [msg.timestamp]: true }));
       toast.success("Sauvegardé !", { description: "Conseil ajouté à ta bibliothèque" });
     } catch {
-      toast.error("Erreur", { description: "Impossible de sauvegarder" });
+      toast.error("Impossible de sauvegarder ce conseil. Réessaie.");
     }
   };
 

@@ -27,7 +27,7 @@ function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
-    if (!date) { toast.error("Date requise"); return; }
+    if (!date) { toast.error("Indique la date de vaccination."); return; }
     setSaving(true);
     try {
       const ref = data.ref;
@@ -46,7 +46,7 @@ function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
       onClose();
     } catch (e) {
       console.error("InlineVaccineForm save error:", e);
-      toast.error("Erreur lors de l'enregistrement");
+      toast.error("Impossible d'enregistrer le vaccin. Réessaie.");
     }
     setSaving(false);
   };

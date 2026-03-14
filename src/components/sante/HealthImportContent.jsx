@@ -99,7 +99,7 @@ export default function HealthImportContent({ dog, onImported }) {
       });
       processResult(res.data);
     } catch {
-      toast.error("Erreur lors de l'analyse. Réessaie.");
+      toast.error("Impossible d'analyser ce document. Essaie avec un fichier plus lisible ou colle le texte manuellement.");
       setStep(STEPS.SELECT);
     }
   };
@@ -115,7 +115,7 @@ export default function HealthImportContent({ dog, onImported }) {
       ]);
       processResult(res.data);
     } catch {
-      toast.error("Erreur lors de l'analyse. Réessaie.");
+      toast.error("L'analyse a échoué. Vérifie le texte saisi et réessaie.");
       setStep(STEPS.INPUT);
     }
   };
@@ -152,7 +152,7 @@ export default function HealthImportContent({ dog, onImported }) {
     }
     if (onImported) onImported(created);
     if (failedCount > 0) {
-      toast.warning(`${failedCount} enregistrement${failedCount > 1 ? "s" : ""} n'ont pas pu être importés`);
+      toast.warning(`${failedCount} enregistrement${failedCount > 1 ? "s" : ""} n'ont pas pu être importés. Les autres ont bien été sauvegardés.`);
     }
     setImportedCount(created.length);
     setStep(STEPS.SUCCESS);

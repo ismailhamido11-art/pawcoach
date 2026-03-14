@@ -54,7 +54,7 @@ export default function VetPortal() {
       setDogs(dogResults.filter(Boolean));
     } catch (e) {
       console.error("loadAccesses error:", e);
-      toast.error("Erreur de chargement des patients");
+      toast.error("Impossible de charger tes patients. Vérifie ta connexion.");
     }
   };
 
@@ -71,11 +71,11 @@ export default function VetPortal() {
         setInviteCode("");
         await loadAccesses();
       } else {
-        toast.error(res.data.error || "Code invalide");
+        toast.error(res.data.error || "Ce code d'invitation n'est pas valide. Vérifie avec ton patient.");
       }
     } catch (e) {
       console.error("handleAcceptInvite error:", e);
-      toast.error("Erreur lors de la validation du code");
+      toast.error("Impossible de valider le code. Réessaie dans un instant.");
     }
     setAccepting(false);
   };

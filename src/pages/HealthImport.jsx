@@ -123,7 +123,7 @@ export default function HealthImport() {
 
   const handleSourceSelect = (src) => {
     if (!isPremium && !hasCredits) {
-      toast.error("Plus d'actions IA disponibles aujourd'hui");
+      toast.error("Tu as atteint la limite IA du jour. Réessaie demain ou passe en Premium.");
       return;
     }
     setSource(src);
@@ -158,7 +158,7 @@ export default function HealthImport() {
       processResult(res.data);
       if (!isPremium) await consume();
     } catch {
-      toast.error("Erreur lors de l'analyse. Réessaie avec un autre document.");
+      toast.error("Impossible d'analyser ce document. Essaie avec un fichier plus lisible ou colle le texte manuellement.");
       setStep(STEPS.SELECT);
     }
   };
@@ -180,7 +180,7 @@ export default function HealthImport() {
       processResult(res.data);
       if (!isPremium) await consume();
     } catch {
-      toast.error("Erreur lors de l'analyse. Réessaie.");
+      toast.error("L'analyse a échoué. Vérifie le texte saisi et réessaie.");
       setStep(STEPS.INPUT);
     }
   };

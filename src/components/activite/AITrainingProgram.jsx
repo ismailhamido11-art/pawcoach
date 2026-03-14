@@ -572,7 +572,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       toast.success("Programme activé !");
     } catch (e) {
       console.error(e);
-      toast.error("Erreur lors de la sauvegarde");
+      toast.error("Impossible de sauvegarder le programme. Réessaie.");
     }
   };
 
@@ -694,7 +694,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       // Validate program structure
       if (!prog || !Array.isArray(prog.days) || prog.days.length === 0) {
         console.error("Invalid program response:", resp);
-        toast.error("Le programme généré est invalide. Réessaie.");
+        toast.error("Le programme reçu est incomplet. Réessaie — ça marche en général au 2e essai.");
         return;
       }
 
@@ -728,7 +728,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       }
     } catch (err) {
       console.error("Generate error:", err);
-      toast.error("Erreur lors de la génération.");
+      toast.error("Impossible de générer le programme. Vérifie ta connexion et réessaie.");
     } finally {
       setGenerating(false);
     }

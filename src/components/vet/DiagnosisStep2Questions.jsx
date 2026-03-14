@@ -58,7 +58,7 @@ export default function DiagnosisStep2Questions({ phase1, userAnswers, setUserAn
         <Badge variant="outline" className="text-[10px] ml-auto">{answeredCount}/{totalCount}</Badge>
       </div>
       <p className="text-xs text-muted-foreground -mt-2">
-        Reponds a ces questions pour obtenir un diagnostic plus precis pour {dogName || "ton chien"}.
+        Réponds à ces quelques questions — plus c'est précis, plus le rapport sera utile pour {dogName || "ton chien"}.
       </p>
 
       {/* Questions */}

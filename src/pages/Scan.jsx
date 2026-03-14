@@ -178,7 +178,7 @@ export default function Scan() {
       toast.success("Analyse sauvegardée !");
     } catch (e) {
       console.error(e);
-      toast.error("Erreur lors de la sauvegarde");
+      toast.error("Impossible de sauvegarder l'analyse. Réessaie.");
     }
   };
 

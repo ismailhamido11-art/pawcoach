@@ -222,7 +222,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
 
   const handleStart = async () => {
     if (!dog?.id) {
-      toast.error("Aucun chien sélectionné");
+      toast.error("Aucun chien sélectionné. Choisis un profil avant de lancer la balade.");
       return;
     }
     setStatus("running");
@@ -299,7 +299,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     releaseWakeLock();
 
     if (!dog?.id || !user?.email) {
-      toast.error("Profil non chargé. Réessaie.");
+      toast.error("Profil non chargé. Ferme l'app et réessaie.");
       setSaving(false);
       setStatus("done");
       stoppingRef.current = false;
@@ -361,7 +361,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
         localStorage.setItem("pawcoach_pending_walks", JSON.stringify(pending));
         toast.info("Balade sauvegardée hors ligne. Elle sera synchronisée au retour du réseau.");
       } catch {
-        toast.error("Erreur lors de la sauvegarde");
+        toast.error("Impossible de sauvegarder la balade. Elle sera réessayée automatiquement.");
       }
     } finally {
       setSaving(false);

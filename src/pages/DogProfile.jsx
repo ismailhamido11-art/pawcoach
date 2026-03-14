@@ -136,7 +136,7 @@ export default function DogProfile() {
       navigate(createPageUrl("Profile"));
     } catch (err) {
       console.error("Delete dog error:", err);
-      toast.error("Erreur lors de la suppression. Réessaie.");
+      toast.error("Impossible de supprimer ce profil. Réessaie.");
       setDeleting(false);
     }
   };

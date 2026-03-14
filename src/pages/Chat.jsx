@@ -120,9 +120,9 @@ export default function Chat() {
         created_at: new Date().toISOString(),
       });
       setBookmarked(prev => ({ ...prev, [msg.timestamp]: true }));
-      toast.success("Conseil sauvegarde !");
+      toast.success("Conseil sauvegardé !");
     } catch {
-      toast.error("Impossible de sauvegarder");
+      toast.error("Impossible de sauvegarder ce conseil. Réessaie.");
     }
   };
 

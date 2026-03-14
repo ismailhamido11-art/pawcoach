@@ -182,7 +182,7 @@ export default function Onboarding() {
       if ((existingDogs || []).length >= maxDogs) {
         setSaving(false); savingRef.current = false;
         if (!isUserPremium(user)) navigate(createPageUrl("Premium") + "?from=profile");
-        else { toast.error("Maximum 3 chiens atteint"); navigate(createPageUrl("Profile")); }
+        else { toast.error("Tu as atteint la limite de 3 chiens en Premium."); navigate(createPageUrl("Profile")); }
         return;
       }
       const ownerGoal = answers[0];

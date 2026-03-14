@@ -74,20 +74,20 @@ export default function FindVetContent({ dog, user }) {
   }, [user]);
 
   const handleGeolocate = () => {
-    if (!navigator.geolocation) { toast.error("Géolocalisation non supportée"); return; }
+    if (!navigator.geolocation) { toast.error("La géolocalisation n'est pas disponible sur ton appareil."); return; }
     navigator.geolocation.getCurrentPosition(
       pos => {
         setMapCenter([pos.coords.latitude, pos.coords.longitude]);
         toast.success("Position détectée !");
       },
-      () => toast.error("Impossible d'obtenir ta position")
+      () => toast.error("Impossible d'obtenir ta position. Vérifie que la localisation est autorisée.")
     );
   };
 
   const handleSearch = async () => {
     if (!query.trim()) return;
     if (!isPremium && !hasCredits) {
-      toast.error("Plus d'actions IA disponibles aujourd'hui");
+      toast.error("Tu as atteint la limite IA du jour. Réessaie demain ou passe en Premium.");
       return;
     }
     setLoading(true);
@@ -124,7 +124,7 @@ export default function FindVetContent({ dog, user }) {
       else if (places.length > 0 && places[0].lat && places[0].lng) setMapCenter([places[0].lat, places[0].lng]);
       if (!isPremium) await consume();
     } catch {
-      toast.error("Erreur lors de la recherche. Réessaie.");
+      toast.error("La recherche a échoué. Vérifie ta connexion et réessaie.");
     } finally {
       setLoading(false);
     }

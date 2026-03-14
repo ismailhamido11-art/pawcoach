@@ -128,10 +128,10 @@ export default function FoodComparator({ dog, dietPreferences }) {
         created_at: new Date().toISOString(),
       });
       setCompSaved(true);
-      toast.success("Comparaison sauvegardee !");
+      toast.success("Comparaison sauvegardée !");
     } catch (e) {
       console.error(e);
-      toast.error("Erreur lors de la sauvegarde");
+      toast.error("Impossible de sauvegarder la comparaison. Réessaie.");
     }
   };
 

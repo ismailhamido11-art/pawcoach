@@ -116,7 +116,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
       if (!isPremium) await consume();
     } catch (e) {
       console.error("handleStep1 error:", e);
-      toast.error("Erreur lors de l'analyse. Réessaie.");
+      toast.error("Impossible de lancer le diagnostic. Vérifie ta connexion et réessaie.");
       setStep("form");
     }
   };
@@ -177,7 +177,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
       setStep("report");
     } catch (e) {
       console.error("handleStep2 error:", e);
-      toast.error("Erreur lors du diagnostic final. Réessaie.");
+      toast.error("Impossible de générer le rapport final. Réessaie dans un instant.");
       setStep("questions");
     }
   };
@@ -207,7 +207,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
       a.remove();
     } catch (e) {
       console.error("PDF download error:", e);
-      toast.error("Erreur lors du téléchargement du PDF");
+      toast.error("Impossible de générer le PDF. Réessaie dans un instant.");
     }
     setDownloading(false);
   };

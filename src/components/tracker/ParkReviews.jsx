@@ -97,7 +97,7 @@ export default function ParkReviews({ park, dog, user }) {
   };
 
   const handleSubmit = async () => {
-    if (rating === 0) { toast.error("Choisis une note"); return; }
+    if (rating === 0) { toast.error("Choisis une note avant de publier ton avis."); return; }
     setSubmitting(true);
     try {
       await base44.entities.ParkReview.create({
@@ -119,7 +119,7 @@ export default function ParkReviews({ park, dog, user }) {
       setShowForm(false);
       await fetchReviews();
     } catch {
-      toast.error("Erreur lors de la publication");
+      toast.error("Impossible de publier l'avis. Vérifie ta connexion et réessaie.");
     } finally {
       setSubmitting(false);
     }
@@ -301,7 +301,7 @@ export function PostWalkReviewPrompt({ park, dog, user, onDone }) {
       onDone?.();
     } catch {
       if (base44.entities.ParkReview) {
-        toast.error("Impossible d'envoyer l'avis");
+        toast.error("Impossible d'envoyer l'avis. Réessaie dans un instant.");
       }
     } finally {
       setSubmitting(false);

@@ -16,22 +16,22 @@ const MONTHLY_PRICE_ID = "price_1T4tkFDuhaIxY4PGpnhDTx5L";
 const ANNUAL_PRICE_ID = "price_1T4tkFDuhaIxY4PGWLeWApDL";
 
 const FEATURES = [
-  { text: "Chat IA illimité avec PawCoach", premium: true, free: "10/jour" },
-  { text: "Scans alimentaires illimités", premium: true, free: "3/semaine" },
-  { text: "Tous les exercices de dressage (10)", premium: true, free: "3 exercices" },
+  { text: "Conseils IA sans limite avec PawCoach", premium: true, free: "10/jour" },
+  { text: "Scanner aliments sans limite", premium: true, free: "3/semaine" },
+  { text: "Programme dressage complet (10 exercices)", premium: true, free: "3 exercices" },
   { text: "Carnet santé complet (visites, médicaments)", premium: true, free: "Vaccins, poids, notes" },
-  { text: "Rappels de santé par email", premium: true, free: false },
-  { text: "Résumés mensuels bien-être", premium: true, free: false },
-  { text: "Jusqu'à 3 profils de chiens", premium: true, free: "1 chien" },
+  { text: "Rappels santé et vaccins par email", premium: true, free: false },
+  { text: "Bilan bien-être mensuel personnalisé", premium: true, free: false },
+  { text: "Jusqu'à 3 chiens dans l'application", premium: true, free: "1 chien" },
 ];
 
 const PREMIUM_FEATURES = [
-  { text: "Chat IA illimité", icon: MessageCircle, color: "#3b82f6" },
-  { text: "Scans illimités", icon: Search, color: "#2d9f82" },
-  { text: "10 exercices dressage", icon: Target, color: "#6366f1" },
-  { text: "Carnet santé complet", icon: ClipboardList, color: "#ef4444" },
-  { text: "Rappels santé email", icon: Bell, color: "#2D9F82" },
-  { text: "Résumés mensuels", icon: BarChart3, color: "#10b981" },
+  { text: "Conseils IA sans limite", icon: MessageCircle, color: "#3b82f6" },
+  { text: "Scanner aliments illimité", icon: Search, color: "#2d9f82" },
+  { text: "Programme dressage complet", icon: Target, color: "#6366f1" },
+  { text: "Carnet santé intégral", icon: ClipboardList, color: "#ef4444" },
+  { text: "Rappels santé par email", icon: Bell, color: "#2D9F82" },
+  { text: "Bilan mensuel personnalisé", icon: BarChart3, color: "#10b981" },
   { text: "Jusqu'à 3 chiens", icon: DogIcon, color: "#ec4899" },
 ];
 
@@ -293,11 +293,11 @@ export default function Premium() {
   }
 
   const CONTEXTUAL_MESSAGES = {
-    chat:     { title: "Tes messages gratuits sont épuisés", desc: "Passe en Premium pour discuter sans limite avec PawCoach", Icon: MessageCircle, color: "bg-primary/10 border-primary/20 text-primary" },
-    scan:     { title: "Tu as utilisé tes scans gratuits", desc: "Passe en Premium pour scanner sans limite", Icon: ScanLine, color: "bg-accent/10 border-accent/20 text-accent" },
-    training: { title: "Tu as découvert les bases !", desc: "Débloque les 7 exercices avancés avec Premium", Icon: Dumbbell, color: "bg-primary/10 border-primary/20 text-primary" },
-    notebook: { title: "Accède au carnet complet", desc: "Visites véto, médicaments et notes avec Premium", Icon: BookHeart, color: "bg-destructive/10 border-destructive/20 text-destructive" },
-    nutrition:{ title: "Tes messages NutriCoach sont épuisés", desc: "Passe en Premium pour un coaching nutrition illimité", Icon: Salad, color: "bg-safe/10 border-safe/20 text-safe" },
+    chat:     { title: "Tu as atteint la limite du jour", desc: "Passe en Premium pour des conseils illimités avec PawCoach", Icon: MessageCircle, color: "bg-primary/10 border-primary/20 text-primary" },
+    scan:     { title: "Tes scans de la semaine sont épuisés", desc: "Passe en Premium pour scanner autant que tu veux", Icon: ScanLine, color: "bg-accent/10 border-accent/20 text-accent" },
+    training: { title: "Tu as maîtrisé les bases !", desc: "Débloque les 7 exercices avancés pour aller plus loin", Icon: Dumbbell, color: "bg-primary/10 border-primary/20 text-primary" },
+    notebook: { title: "Carnet santé complet disponible en Premium", desc: "Visites véto, médicaments, ordonnances — tout au même endroit", Icon: BookHeart, color: "bg-destructive/10 border-destructive/20 text-destructive" },
+    nutrition:{ title: "Tu as atteint la limite NutriCoach", desc: "Passe en Premium pour un suivi nutrition illimité et personnalisé", Icon: Salad, color: "bg-safe/10 border-safe/20 text-safe" },
   };
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -372,7 +372,7 @@ export default function Premium() {
             </span>
             Annuel<br />
             <span className={`text-xs font-normal ${plan === "annual" ? "text-white/80" : "text-muted-foreground"}`}>59,99 €/an · 5 €/mois</span>
-            <span className={`block text-[10px] mt-0.5 font-medium ${plan === "annual" ? "text-white/60" : "text-muted-foreground/60"}`}>Tu economies 36 € par an</span>
+            <span className={`block text-[10px] mt-0.5 font-medium ${plan === "annual" ? "text-white/60" : "text-muted-foreground/60"}`}>Tu économises 36 € par an</span>
           </motion.button>
         </div>
 
@@ -440,7 +440,7 @@ export default function Premium() {
           ) : (
             <>
               <Zap className="w-5 h-5" />
-              {plan === "annual" ? "Commencer · 5 €/mois (59,99 €/an)" : "Commencer · 7,99 €/mois"}
+              {plan === "annual" ? "Débloquer tout PawCoach · 5 €/mois" : "Débloquer tout PawCoach · 7,99 €/mois"}
             </>
           )}
         </Button>

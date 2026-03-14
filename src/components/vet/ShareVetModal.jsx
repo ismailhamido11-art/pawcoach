@@ -41,7 +41,7 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
       setAccesses(res.data.accesses || []);
     } catch (e) {
       console.error("loadAccesses error:", e);
-      toast.error("Erreur de chargement des accès");
+      toast.error("Impossible de charger les accès vétérinaires. Réessaie.");
     }
     setLoadingAccesses(false);
   };
@@ -51,7 +51,7 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
   const handleInvite = async () => {
     if (!vetEmail.trim()) return;
     if (!isValidEmail(vetEmail.trim())) {
-      toast.error("Adresse email invalide");
+      toast.error("Cette adresse email ne semble pas valide. Vérifie le format.");
       return;
     }
     setLoading(true);
@@ -69,11 +69,11 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
         setVetName("");
         loadAccesses();
       } else {
-        toast.error(res.data.error || "Erreur lors de l'envoi");
+        toast.error(res.data.error || "L'invitation n'a pas pu être envoyée. Réessaie.");
       }
     } catch (e) {
       console.error("handleInvite error:", e);
-      toast.error("Erreur lors de l'envoi de l'invitation");
+      toast.error("Impossible d'envoyer l'invitation. Vérifie ta connexion.");
     }
     setLoading(false);
   };
@@ -87,7 +87,7 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
       }
     } catch (e) {
       console.error("handleRevoke error:", e);
-      toast.error("Erreur lors de la révocation");
+      toast.error("Impossible de révoquer cet accès. Réessaie.");
     }
   };
 

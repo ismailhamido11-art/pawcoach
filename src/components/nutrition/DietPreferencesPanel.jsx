@@ -109,7 +109,7 @@ export default function DietPreferencesPanel({ dog, user }) {
       toast.success("Préférences sauvegardées !");
       setTimeout(() => setSaved(false), 3000);
     } catch {
-      toast.error("Erreur lors de la sauvegarde");
+      toast.error("Impossible de sauvegarder tes préférences. Réessaie.");
     } finally {
       setSaving(false);
     }
