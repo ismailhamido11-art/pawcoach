@@ -21,7 +21,7 @@ export async function initCredits(user) {
     msgCredits = MSG_DAILY_LIMIT;
     updates.messages_remaining = MSG_DAILY_LIMIT;
     updates.messages_daily_reset = today;
-  } else if (msgCredits <= 0 && user.messages_daily_reset !== today) {
+  } else if (user.messages_daily_reset !== today) {
     msgCredits = MSG_DAILY_LIMIT;
     updates.messages_remaining = MSG_DAILY_LIMIT;
     updates.messages_daily_reset = today;
@@ -33,7 +33,7 @@ export async function initCredits(user) {
     actionCredits = ACTION_DAILY_LIMIT;
     updates.actions_remaining = ACTION_DAILY_LIMIT;
     updates.actions_daily_reset = today;
-  } else if (actionCredits <= 0 && user.actions_daily_reset !== today) {
+  } else if (user.actions_daily_reset !== today) {
     actionCredits = ACTION_DAILY_LIMIT;
     updates.actions_remaining = ACTION_DAILY_LIMIT;
     updates.actions_daily_reset = today;
