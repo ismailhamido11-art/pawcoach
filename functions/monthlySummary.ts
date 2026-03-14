@@ -57,11 +57,16 @@ Deno.serve(async (req) => {
       const checkinCount = monthCheckins.length;
 
       // Calculate averages (only if check-ins exist)
+      // Filter to entries where the field is a valid positive number to avoid
+      // pulling the average down when a field is undefined/null/0 on older checkins
       let checkinStatsLines = "• Check-ins : aucun ce mois-ci";
       if (checkinCount > 0) {
-        const avgMood = (monthCheckins.reduce((s, c) => s + (c.mood || 0), 0) / checkinCount).toFixed(1);
-        const avgEnergy = (monthCheckins.reduce((s, c) => s + (c.energy || 0), 0) / checkinCount).toFixed(1);
-        const avgAppetite = (monthCheckins.reduce((s, c) => s + (c.appetite || 0), 0) / checkinCount).toFixed(1);
+        const moodEntries = monthCheckins.filter(c => typeof c.mood === "number" && c.mood > 0);
+        const energyEntries = monthCheckins.filter(c => typeof c.energy === "number" && c.energy > 0);
+        const appetiteEntries = monthCheckins.filter(c => typeof c.appetite === "number" && c.appetite > 0);
+        const avgMood = moodEntries.length > 0 ? (moodEntries.reduce((s, c) => s + c.mood, 0) / moodEntries.length).toFixed(1) : "N/A";
+        const avgEnergy = energyEntries.length > 0 ? (energyEntries.reduce((s, c) => s + c.energy, 0) / energyEntries.length).toFixed(1) : "N/A";
+        const avgAppetite = appetiteEntries.length > 0 ? (appetiteEntries.reduce((s, c) => s + c.appetite, 0) / appetiteEntries.length).toFixed(1) : "N/A";
 
         // Recurring symptoms (>= 2 occurrences)
         const symptomCounts: Record<string, number> = {};

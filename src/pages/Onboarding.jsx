@@ -113,6 +113,7 @@ export default function Onboarding() {
   const [saving, setSaving] = useState(false);
   const [dogData, setDogData] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef(null);
@@ -174,6 +175,7 @@ export default function Onboarding() {
     setSaving(true);
     try {
       const user = await base44.auth.me();
+      setCurrentUser(user);
       const FREE_MAX = 1, PREMIUM_MAX = 3;
       const existingDogs = await base44.entities.Dog.filter({ owner: user.email });
       const maxDogs = isUserPremium(user) ? PREMIUM_MAX : FREE_MAX;
@@ -251,7 +253,7 @@ Extrais ces informations et renvoie un objet JSON.
   if (!started) return <OnboardingWelcome onStart={() => setStarted(true)} />;
   if (done && dogData) {
     const destination = isAddDog ? "Profile" : "Home";
-    return <WelcomeScreen dogName={dogData.name} dogPhoto={dogData.photo} isPremium={false} onDiscover={() => navigate(createPageUrl(destination))} />;
+    return <WelcomeScreen dogName={dogData.name} dogPhoto={dogData.photo} isPremium={isUserPremium(currentUser)} onDiscover={() => navigate(createPageUrl(destination))} />;
   }
 
   const handleGoalSelect = (label) => {

@@ -19,6 +19,7 @@ Deno.serve(async (req) => {
     for (const u of users || []) userMap[u.email] = u;
 
     let remindersSent = 0;
+    const notifiedEmails = new Set<string>(); // deduplicate: one email per user regardless of dog count
 
     for (const s of streaks || []) {
       if (s.current_streak < 3 || s.last_activity_date === today) continue;
@@ -28,6 +29,8 @@ Deno.serve(async (req) => {
 
       const user = userMap[dog.owner];
       if (!user || !user.email) continue;
+      if (notifiedEmails.has(user.email)) continue; // already sent for this user (multi-dog)
+      notifiedEmails.add(user.email);
 
       const graceNote = s.grace_days_remaining > 0
         ? `\n\nBonne nouvelle : tu as encore ${s.grace_days_remaining} jour${s.grace_days_remaining > 1 ? "s" : ""} de grâce si jamais tu ne peux pas aujourd'hui. Mais autant en profiter maintenant ! 💪`

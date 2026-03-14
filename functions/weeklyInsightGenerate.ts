@@ -58,10 +58,14 @@ Deno.serve(async (req) => {
       const checkinCount = weekCheckins.length;
       if (checkinCount === 0) continue; // No activity, skip
 
-      // Calculate averages
-      const avgMood = Math.round((weekCheckins.reduce((s, c) => s + (c.mood || 0), 0) / checkinCount) * 100) / 100;
-      const avgEnergy = Math.round((weekCheckins.reduce((s, c) => s + (c.energy || 0), 0) / checkinCount) * 100) / 100;
-      const avgAppetite = Math.round((weekCheckins.reduce((s, c) => s + (c.appetite || 0), 0) / checkinCount) * 100) / 100;
+      // Calculate averages — filter to entries where the field is a valid positive number
+      // to avoid pulling the average down when a field is undefined/null/0 on older checkins
+      const moodEntries = weekCheckins.filter(c => typeof c.mood === "number" && c.mood > 0);
+      const energyEntries = weekCheckins.filter(c => typeof c.energy === "number" && c.energy > 0);
+      const appetiteEntries = weekCheckins.filter(c => typeof c.appetite === "number" && c.appetite > 0);
+      const avgMood = moodEntries.length > 0 ? Math.round((moodEntries.reduce((s, c) => s + c.mood, 0) / moodEntries.length) * 100) / 100 : 0;
+      const avgEnergy = energyEntries.length > 0 ? Math.round((energyEntries.reduce((s, c) => s + c.energy, 0) / energyEntries.length) * 100) / 100 : 0;
+      const avgAppetite = appetiteEntries.length > 0 ? Math.round((appetiteEntries.reduce((s, c) => s + c.appetite, 0) / appetiteEntries.length) * 100) / 100 : 0;
 
       // Count exercises completed this week
       const exercisesCompleted = (dogProgress || []).filter(p =>
