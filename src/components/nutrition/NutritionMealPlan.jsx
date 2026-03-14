@@ -337,7 +337,7 @@ RÈGLES :
     return (
       <div className="space-y-4">
         {/* Progress header */}
-        <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-5 text-white">
+        <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-5 text-white">
           <div className="flex items-center justify-between mb-3">
             <div>
               <p className="text-white/60 text-[10px] font-bold uppercase tracking-wider">Plan actif</p>
@@ -654,7 +654,7 @@ RÈGLES :
         {plan && (
           <div className="space-y-4 animate-fade-in">
             {/* Summary */}
-            <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-5 text-white">
+            <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-5 text-white">
               <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider mb-1">Nouveau plan pour {dog.name}</p>
               <div className="flex gap-3 mt-2">
                 {plan.calories_per_day && (

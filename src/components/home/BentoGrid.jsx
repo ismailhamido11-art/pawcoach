@@ -63,7 +63,7 @@ export default function BentoGrid() {
                     </div>
                     <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40" />
                   </div>
-                  <p className="text-[11px] text-muted-foreground font-medium mt-2">{tile.sub}</p>
+                  <p className="text-xs text-muted-foreground font-medium mt-2">{tile.sub}</p>
                 </div>
               </Link>
             </motion.div>

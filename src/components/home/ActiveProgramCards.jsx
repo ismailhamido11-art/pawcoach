@@ -207,7 +207,7 @@ function NutritionPlanCard({ plan }) {
         transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.05 }}
       >
         <Link to={createPageUrl("Nutri") + "?tab=mealplan"}>
-          <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 relative overflow-hidden group">
+          <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-amber-50 p-4 relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center">
@@ -232,7 +232,7 @@ function NutritionPlanCard({ plan }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.05 }}
     >
-      <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative overflow-hidden">
+      <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-emerald-50 relative overflow-hidden">
         <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-emerald-400 opacity-[0.06]" />
 
         {/* Clickable header */}
@@ -272,7 +272,7 @@ function NutritionPlanCard({ plan }) {
             <div className="mt-2.5 flex items-center gap-2">
               <div className="flex-1 h-1.5 bg-emerald-100 rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"
+                  className="h-full bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
@@ -341,7 +341,7 @@ function NutritionPlanCard({ plan }) {
                 {progress !== null && (
                   <div className="flex items-center gap-2 px-1">
                     <div className="flex-1 h-1.5 bg-emerald-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full" style={{ width: `${progress}%` }} />
+                      <div className="h-full bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-full" style={{ width: `${progress}%` }} />
                     </div>
                     <span className="text-[10px] font-bold text-emerald-600">J{dayNumber}/7</span>
                   </div>

@@ -42,7 +42,7 @@ export default function QuickActions() {
                 >
                   <Icon className="w-6 h-6" style={{ color: action.color }} />
                 </motion.div>
-                <span className="text-[11px] font-semibold text-foreground/70">{action.label}</span>
+                <span className="text-xs font-semibold text-foreground/70">{action.label}</span>
               </Link>
             </motion.div>
           );

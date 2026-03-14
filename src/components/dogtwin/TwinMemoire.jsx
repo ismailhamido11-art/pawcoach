@@ -101,7 +101,7 @@ export default function TwinMemoire() {
                     <p className="text-white font-bold text-xs leading-snug flex-1">{item.title}</p>
                     {item.ai && (
                       <span
-                        className="flex-shrink-0 text-[8px] font-black px-1.5 py-0.5 rounded-full"
+                        className="flex-shrink-0 text-[10px] font-black px-1.5 py-0.5 rounded-full"
                         style={{ background: item.color + "30", color: item.color }}
                       >
                         IA

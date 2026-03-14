@@ -98,12 +98,12 @@ export default function ActivityCalendar({ logs }) {
       </div>
 
       <div className="flex gap-1.5 mt-3 justify-center items-center">
-        <span className="text-[8px] text-muted-foreground">Moins</span>
+        <span className="text-[10px] text-muted-foreground">Moins</span>
         <div className="w-3 h-3 rounded-sm bg-secondary/30" />
         <div className="w-3 h-3 rounded-sm bg-emerald-200" />
         <div className="w-3 h-3 rounded-sm bg-emerald-400" />
         <div className="w-3 h-3 rounded-sm bg-emerald-600" />
-        <span className="text-[8px] text-muted-foreground">Plus</span>
+        <span className="text-[10px] text-muted-foreground">Plus</span>
       </div>
     </div>
   );

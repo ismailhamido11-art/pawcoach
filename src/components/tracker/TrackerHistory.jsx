@@ -171,7 +171,7 @@ export default function TrackerHistory({ logs, dog }) {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="flex items-center justify-center gap-2 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl py-3"
+          className="flex items-center justify-center gap-2 bg-amber-50 border border-amber-200 rounded-2xl py-3"
         >
           <Flame className="w-5 h-5 text-amber-500" />
           <span className="text-sm font-black text-amber-700">{streaks.current} jour{streaks.current > 1 ? "s" : ""} de suite</span>
