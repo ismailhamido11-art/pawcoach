@@ -263,7 +263,11 @@ Extrais ces informations et renvoie un objet JSON.
     setTimeout(() => setStep(s => s + 1), 250);
   };
 
-  const canNext = currentStepData.type === "choice" ? currentAnswer.length > 0 : (currentStepData.type === "photo" && !uploading) || currentAnswer.trim().length > 0;
+  const canNext = currentStepData.type === "choice"
+    ? currentAnswer.length > 0
+    : currentStepData.type === "photo"
+      ? !uploading
+      : currentAnswer.trim().length > 0;
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-emerald-950 via-green-50/80 to-green-50">

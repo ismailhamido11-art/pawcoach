@@ -203,7 +203,15 @@ export default function Chat() {
 
     if (!isUserPremium(user)) {
       const remaining = messagesRemaining ?? 0;
-      if (remaining <= 0) return;
+      if (remaining <= 0) {
+        setMessages(prev => [...prev, {
+          role: "system",
+          content: `Tu as atteint ta limite quotidienne de messages. Réessaie demain ou passe en Premium pour des conversations illimitées avec PawCoach.`,
+          timestamp: new Date().toISOString(),
+          isQuotaMessage: true,
+        }]);
+        return;
+      }
     }
 
     if (navigator.vibrate) navigator.vibrate(10);
@@ -406,12 +414,22 @@ export default function Chat() {
             )}
 
             <motion.div {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-              {msg.role === "assistant" && (
+              {(msg.role === "assistant" || msg.role === "system") && (
                 <div className="w-8 h-8 flex-shrink-0 mt-1">
                   <DogChat color="#2d9f82" />
                 </div>
               )}
               <div className="flex flex-col gap-0.5 max-w-[82%]">
+                {msg.isQuotaMessage ? (
+                  <div className="chat-bubble-assistant px-4 py-3 rounded-2xl rounded-bl-sm text-sm leading-relaxed text-foreground">
+                    <p>{msg.content}</p>
+                    <div className="flex gap-2 mt-3">
+                      <Button onClick={() => navigate(createPageUrl("Premium") + "?from=chat")} size="sm" className="gradient-warm border-0 text-white text-xs h-8">
+                        Passer Premium
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
                 <div
                   data-selectable
                   className={`px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden break-words ${
@@ -431,6 +449,7 @@ export default function Chat() {
                     <p className="whitespace-pre-wrap">{msg.content}</p>
                   )}
                 </div>
+                )}
                 {/* Actions: time + copy + bookmark + retry */}
                 <div className="flex items-center gap-2.5 px-1 mt-0.5">
                   <span className="text-[10px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>

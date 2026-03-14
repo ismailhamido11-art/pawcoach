@@ -8,7 +8,7 @@ const ACTIONS = [
   { icon: ScanLine, label: "Scanner", page: "Scan", color: "#059669" },
   { icon: Scale, label: "Peser", page: "Sante", tab: "weight", color: "#2d9f82" },
   { icon: Dumbbell, label: "Exercice", page: "Activite", tab: "dressage", color: "#6366f1" },
-  { icon: MapPin, label: "Véto", page: "FindVet", color: "#3b82f6" },
+  { icon: MapPin, label: "Véto", page: "Sante", tab: "findvet", color: "#3b82f6" },
   { icon: BookOpen, label: "Guides", page: "Library", color: "#8b5cf6" },
 ];
 

@@ -125,7 +125,7 @@ export default function StreakBar({ streak, walkStreak = 0, exercises, dailyLogs
 
       {/* Next badge chip — compact teaser (DASH-10: merged from BadgeTeaser) */}
       {nextBadge && (
-        <Link to={createPageUrl("Achievements")}>
+        <Link to={createPageUrl("Profile")}>
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
