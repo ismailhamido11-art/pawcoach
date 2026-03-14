@@ -1,4 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+import Stripe from 'npm:stripe@17.3.1';
+
+const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY"));
 
 Deno.serve(async (req) => {
   try {
@@ -7,6 +10,18 @@ Deno.serve(async (req) => {
 
     if (!user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Step 0: Cancel Stripe subscription if any (best-effort — never blocks deletion)
+    try {
+      const users = await base44.asServiceRole.entities.User.filter({ email: user.email });
+      const subscriptionId = users[0]?.stripe_subscription_id;
+      if (subscriptionId) {
+        await stripe.subscriptions.cancel(subscriptionId);
+        console.log(`Stripe subscription cancelled: ${subscriptionId}`);
+      }
+    } catch (stripeErr) {
+      console.error('Stripe cancel failed (non-blocking):', stripeErr?.message || String(stripeErr));
     }
 
     // Step 1: Get all user's dogs to cascade delete child records
