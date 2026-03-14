@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
 Deno.serve(async (req) => {
     try {
@@ -13,6 +13,30 @@ Deno.serve(async (req) => {
 
         if (!file_url && !text_content) {
             return Response.json({ error: 'file_url or text_content is required' }, { status: 400 });
+        }
+
+        // Server-side quota check — prevents client-side bypass
+        const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
+        if (!isPremium) {
+          const ACTION_DAILY_LIMIT = 3;
+          const todayDate = new Date().toISOString().split("T")[0];
+          let remaining = user.actions_remaining ?? ACTION_DAILY_LIMIT;
+          const lastReset = user.actions_daily_reset;
+
+          // Daily reset: restore full quota if date has changed
+          if (lastReset !== todayDate) {
+            remaining = ACTION_DAILY_LIMIT;
+          }
+
+          if (remaining <= 0) {
+            return Response.json({ error: "daily_limit_reached", message: "Tu as atteint la limite du jour. Réessaie demain ou passe en Premium." }, { status: 429 });
+          }
+
+          // Decrement server-side
+          await base44.asServiceRole.entities.User.update(user.id, {
+            actions_remaining: remaining - 1,
+            actions_daily_reset: todayDate,
+          });
         }
 
         const dogContext = [

@@ -9,6 +9,30 @@ Deno.serve(async (req) => {
     const { dogId, photoUrl, dogBreed: rawDogBreed, dogBirthDate, currentWeight: rawCurrentWeight } = await req.json();
     if (!dogId || !photoUrl) return Response.json({ error: 'Missing dogId or photoUrl' }, { status: 400 });
 
+    // Server-side quota check — prevents client-side bypass
+    const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
+    if (!isPremium) {
+      const ACTION_DAILY_LIMIT = 3;
+      const today = new Date().toISOString().split("T")[0];
+      let remaining = user.actions_remaining ?? ACTION_DAILY_LIMIT;
+      const lastReset = user.actions_daily_reset;
+
+      // Daily reset: restore full quota if date has changed
+      if (lastReset !== today) {
+        remaining = ACTION_DAILY_LIMIT;
+      }
+
+      if (remaining <= 0) {
+        return Response.json({ error: "daily_limit_reached", message: "Tu as atteint la limite du jour. Réessaie demain ou passe en Premium." }, { status: 429 });
+      }
+
+      // Decrement server-side
+      await base44.asServiceRole.entities.User.update(user.id, {
+        actions_remaining: remaining - 1,
+        actions_daily_reset: today,
+      });
+    }
+
     // Sanitize user-controlled strings before prompt injection
     const sanitize = (s: any, max = 500) => String(s || '').substring(0, max).replace(/[<>]/g, '');
 
