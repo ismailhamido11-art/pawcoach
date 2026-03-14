@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
 import PostTrialSheet from "../components/premium/PostTrialSheet";
 import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
+import FirstDayGuide from "../components/home/FirstDayGuide";
 
 
 const MILESTONES = [
@@ -85,6 +86,8 @@ export default function Home() {
   const [milestone, setMilestone] = useState(null);
   const [showPremiumNudge, setShowPremiumNudge] = useState(false);
   const [showPostTrial, setShowPostTrial] = useState(false);
+
+  const todayCardRef = useRef(null);
 
   const applyDogData = ({ checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks }) => {
     setRecords(recs || []);
@@ -357,8 +360,17 @@ export default function Home() {
           />
         </div>
 
+        {/* 2b. Guide J0 — uniquement nouveaux users */}
+        <FirstDayGuide
+          dog={dog}
+          todayCheckin={todayCheckin}
+          scans={scans}
+          dailyLogs={dailyLogs}
+          onScrollToCheckin={() => todayCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+        />
+
         {/* 3. Action du jour */}
-        <div className="mt-3">
+        <div className="mt-3" ref={todayCardRef}>
           <TodayCard
             dog={dog} user={user} todayCheckin={todayCheckin} streak={streak}
             recommendations={recommendations}
