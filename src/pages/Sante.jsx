@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog } from "@/utils";
+import { useAuth } from "@/lib/AuthContext";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
 import HealthAssistantBar from "@/components/sante/HealthAssistantBar";
@@ -39,6 +40,7 @@ const TABS = [
 
 export default function Sante() {
    const _navigate = useNavigate();
+   const { user: authUser, isLoadingAuth } = useAuth();
    const [dog, setDog] = useState(null);
    const [user, setUser] = useState(null);
    const [records, setRecords] = useState([]);
@@ -81,9 +83,9 @@ export default function Sante() {
    // Keep showShareModal in sync when urlTab changes (e.g. navigating to/from ?tab=vet)
    useEffect(() => { setShowShareModal(urlTab === "vet"); }, [urlTab]);
 
-   const loadData = async () => {
+   const loadData = async (providedUser) => {
      try {
-       const u = await base44.auth.me();
+       const u = providedUser || await base44.auth.me();
        setUser(u);
        const dogs = await base44.entities.Dog.filter({ owner: u.email });
        if (dogs?.length > 0) {
@@ -106,7 +108,13 @@ export default function Sante() {
      }
    };
 
-   useEffect(() => { loadData(); }, []);
+   useEffect(() => {
+     // Wait for auth to finish loading before fetching data.
+     // If authUser is already in context, pass it directly to skip a second auth.me() call.
+     if (!isLoadingAuth) {
+       loadData(authUser || undefined);
+     }
+   }, [isLoadingAuth, authUser]);
 
    const handleAddFromSheet = async (record) => {
      setRecords(prev => [...prev, record]);

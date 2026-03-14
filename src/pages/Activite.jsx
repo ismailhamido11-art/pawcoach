@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog, createPageUrl } from "@/utils";
+import { useAuth } from "@/lib/AuthContext";
 import BottomNav from "@/components/BottomNav";
 import ChatFAB from "@/components/ChatFAB";
 import WellnessBanner from "@/components/WellnessBanner";
@@ -28,6 +29,7 @@ const TABS = [
 ];
 
 export default function Activite() {
+  const { user: authUser, isLoadingAuth } = useAuth();
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
   const [logs, setLogs] = useState([]);
@@ -52,10 +54,10 @@ export default function Activite() {
   const tabDir = tabIndex >= prevTabIdx.current ? 1 : -1;
   useEffect(() => { prevTabIdx.current = tabIndex; }, [tabIndex]);
 
-  const load = async () => {
+  const load = async (providedUser) => {
     setLoading(true);
     try {
-      const u = await base44.auth.me();
+      const u = providedUser || await base44.auth.me();
       setUser(u);
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
       if (dogs?.length > 0) {
@@ -73,8 +75,10 @@ export default function Activite() {
   };
 
   useEffect(() => {
-    load();
-  }, []);
+    if (!isLoadingAuth) {
+      load(authUser || undefined);
+    }
+  }, [isLoadingAuth, authUser]);
 
   const refreshLogs = async () => {
     if (!dog || !user) return;

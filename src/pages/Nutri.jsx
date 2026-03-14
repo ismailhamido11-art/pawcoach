@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog, createPageUrl } from "@/utils";
+import { useAuth } from "@/lib/AuthContext";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
 import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
@@ -43,6 +44,7 @@ const TABS = [
 
 export default function Nutri() {
    const navigate = useNavigate();
+   const { user: authUser, isLoadingAuth } = useAuth();
    const [dog, setDog] = useState(null);
    const [user, setUser] = useState(null);
    const [recentScans, setRecentScans] = useState([]);
@@ -186,7 +188,11 @@ export default function Nutri() {
     } catch { /* ignore */ }
   };
 
-  useEffect(() => { init(); }, []);
+  useEffect(() => {
+    if (!isLoadingAuth) {
+      init(authUser || undefined);
+    }
+  }, [isLoadingAuth, authUser]);
   useEffect(() => {
     const ta = textareaRef.current;
     if (!ta) return;
@@ -194,9 +200,9 @@ export default function Nutri() {
     ta.style.height = Math.min(ta.scrollHeight, 120) + "px";
   }, [input]);
 
-  const init = async () => {
+  const init = async (providedUser) => {
     try {
-      const u = await base44.auth.me();
+      const u = providedUser || await base44.auth.me();
       setUser(u);
 
       if (!isUserPremium(u)) {
