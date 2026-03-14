@@ -35,11 +35,11 @@ const msgAnim = {
 };
 
 const TABS = [
-  { id: "coach",    label: "NutriCoach", emoji: "\u{1F957}", bg: "from-emerald-500 to-emerald-700" },
-  { id: "mealplan", label: "Plan repas",  emoji: "\u{1F4C5}", bg: "from-amber-500 to-amber-600" },
-  { id: "prefs",    label: "Préférences", emoji: "\u2699\uFE0F", bg: "from-slate-500 to-slate-700" },
-  { id: "compare",  label: "Comparer",   emoji: "\u2696\uFE0F", bg: "from-blue-500 to-indigo-600" },
-  { id: "scan",     label: "Scanner",    emoji: "\u{1F4F7}", bg: "from-violet-500 to-purple-600" },
+  { id: "scan",     label: "Scanner",           emoji: "\u{1F4F7}", bg: "from-violet-500 to-purple-600" },
+  { id: "mealplan", label: "Plan repas",         emoji: "\u{1F4C5}", bg: "from-amber-500 to-amber-600" },
+  { id: "coach",    label: "Coach IA",           emoji: "\u{1F957}", bg: "from-emerald-500 to-emerald-700" },
+  { id: "compare",  label: "Comparer croquettes", emoji: "\u2696\uFE0F", bg: "from-blue-500 to-indigo-600" },
+  { id: "prefs",    label: "Préférences",        emoji: "\u2699\uFE0F", bg: "from-slate-500 to-slate-700" },
 ];
 
 export default function Nutri() {
@@ -246,7 +246,7 @@ export default function Nutri() {
         })() : "";
         setMessages([{
           role: "assistant",
-          content: `Bonjour ! \u{1F957} Je suis **NutriCoach**, ton expert nutrition pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies && d.allergies.toLowerCase() !== "non" ? ` avec des allergies à ${d.allergies}` : ""}, ses check-ins, son historique santé et ses préférences alimentaires.${planInfo}\n\nPose-moi une question, génère un **plan de repas personnalisé**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
+          content: `Bonjour ! \u{1F957} Je suis ton **Coach IA Nutrition** pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies && d.allergies.toLowerCase() !== "non" ? ` avec des allergies à ${d.allergies}` : ""}, ses check-ins, son historique santé et ses préférences alimentaires.${planInfo}\n\nPose-moi une question, génère un **plan de repas personnalisé**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
           timestamp: new Date().toISOString(),
         }]);
       }

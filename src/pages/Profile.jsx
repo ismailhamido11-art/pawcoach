@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
 import BottomNav from "../components/BottomNav";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { BarChart2 } from "lucide-react";
 import { toast } from "sonner";
 import ProfileHeader from "../components/profile/ProfileHeader.jsx";
 import DogSwitcher from "../components/profile/DogSwitcher.jsx";
@@ -125,6 +126,8 @@ export default function Profile() {
           isPremium={isUserPremium(user)}
         />
 
+        <SubscriptionSection user={user} />
+
         {/* Achievement Feed — 5 derniers badges gagnés */}
         {dogs.length > 0 && (
           <div className="bg-white rounded-2xl border border-border shadow-sm px-4 py-3">
@@ -137,13 +140,28 @@ export default function Profile() {
           <AchievementsSection dog={activeDog} />
         )}
 
+        {/* Lien vers le Dashboard statistiques */}
+        {activeDog && (
+          <Link
+            to={createPageUrl("Dashboard")}
+            className="flex items-center gap-3 w-full bg-white rounded-2xl border border-border shadow-sm px-4 py-3.5 hover:border-primary/40 transition-colors"
+          >
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+              <BarChart2 className="w-5 h-5 text-emerald-600" />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-sm text-foreground">Voir les statistiques de {activeDog.name}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Tableau de bord complet</p>
+            </div>
+            <span className="text-muted-foreground/50 text-lg leading-none">›</span>
+          </Link>
+        )}
+
         <CoachSettings user={user} onSave={handleSaveUser} />
 
         <WalkReminderSettings user={user} onSave={handleSaveUser} dogName={activeDog?.name} />
 
         <VetSection dogs={dogs} activeDogId={activeDogId} />
-
-        <SubscriptionSection user={user} />
 
         <ReferralSection user={user} onSave={handleSaveUser} />
 

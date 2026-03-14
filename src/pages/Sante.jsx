@@ -32,9 +32,9 @@ const tabVariants = {
 
 const TABS = [
   { id: "carnet",  label: "Carnet",       icon: BookHeart,    color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
-  { id: "malade",  label: "Pré-consult.", icon: AlertTriangle, color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
+  { id: "malade",  label: "Symptômes",    icon: AlertTriangle, color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
   { id: "growth",  label: "Croissance",   icon: TrendingUp,   color: "#f59e0b", bg: "from-amber-500 to-amber-600" },
-  { id: "import",  label: "Importer",     icon: Camera,       color: "#8b5cf6", bg: "from-violet-500 to-purple-600" },
+  { id: "import",  label: "Documents",    icon: Camera,       color: "#8b5cf6", bg: "from-violet-500 to-purple-600" },
   { id: "findvet", label: "Véto",         icon: MapPin,       color: "#3b82f6", bg: "from-blue-500 to-indigo-600" },
 ];
 

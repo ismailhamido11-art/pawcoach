@@ -24,7 +24,7 @@ const tabVariants = {
 const TABS = [
   { id: "balade",     label: "Balade",     emoji: "🐾", icon: Footprints, bg: "from-emerald-500 to-emerald-700" },
   { id: "historique", label: "Historique", emoji: "📊", icon: History,    bg: "from-blue-500 to-indigo-600" },
-  { id: "programme",  label: "Forme",      emoji: "✨", icon: Sparkles,   bg: "from-violet-500 to-purple-600" },
+  { id: "programme",  label: "Programme",  emoji: "✨", icon: Sparkles,   bg: "from-violet-500 to-purple-600" },
   { id: "dressage",   label: "Dressage",   emoji: "🎯", icon: Dumbbell,   bg: "from-amber-500 to-amber-600" },
 ];
 
