@@ -212,45 +212,9 @@ export default function Home() {
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
       if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
-        const today = getTodayString();
-        const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks] = await Promise.all([
-          base44.entities.DailyCheckin.filter({ dog_id: d.id, date: today }),
-          base44.entities.Streak.filter({ dog_id: d.id }),
-          base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 30),
-          base44.entities.HealthRecord.filter({ dog_id: d.id }),
-          base44.entities.UserProgress.filter({ dog_id: d.id }),
-          base44.entities.FoodScan.filter({ dog_id: d.id }),
-          base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30),
-          base44.entities.DiagnosisReport.filter({ dog_id: d.id }, "-report_date", 5).catch(() => []),
-          base44.entities.NutritionPlan.filter({ dog_id: d.id }, "-generated_at", 3).catch(() => []),
-          base44.entities.Bookmark.filter({ dog_id: d.id, source: "training" }, "-created_at", 10).catch(() => []),
-          base44.entities.Bookmark.filter({ dog_id: d.id, source: "behavior_program" }, "-created_at", 10).catch(() => []),
-        ]);
-        setRecords(recs || []);
-        setExercises(exs || []);
-        setScans(scs || []);
-        setDailyLogs(logs || []);
-        setDiagnosisReports(diags || []);
-        setNutritionPlans(plans || []);
-        setTrainingBookmarks(tBks || []);
-        setBehaviorBookmarks(bBks || []);
-        if (checkins?.length > 0) setTodayCheckin(checkins[0]);
-        else setTodayCheckin(null);
-        if (streaks?.length > 0) setStreak(streaks[0]);
-        setRecentCheckins((recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7));
-        // Refresh weekly insights
-        if (isUserPremium(u)) {
-          try {
-            const allInsights = await base44.entities.WeeklyInsight.filter({ dog_id: d.id }, "-week_start", 10);
-            if (allInsights?.length > 0) {
-              const unread = allInsights.find(i => !i.is_read);
-              const read = allInsights.filter(i => i.is_read);
-              setWeeklyInsight(unread || null);
-              setPreviousInsight(allInsights[1] || null);
-              setPastInsights(read.slice(0, 5));
-            }
-          } catch (e) { console.warn("Weekly insights refresh failed:", e); }
-        }
+        const data = await fetchDogData(d.id);
+        applyDogData(data);
+        await loadInsights(u, d.id);
       }
     } catch (e) { console.error(e); }
   };

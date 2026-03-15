@@ -35,7 +35,7 @@ const CATEGORY_LABELS = {
 const CATEGORY_COLORS = {
   walk:      { bg: "bg-emerald-50",  border: "border-emerald-200", text: "text-emerald-700", dot: "bg-emerald-400" },
   training:  { bg: "bg-blue-50",     border: "border-blue-200",    text: "text-blue-700",    dot: "bg-blue-400" },
-  streak:    { bg: "bg-orange-50",   border: "border-orange-200",  text: "text-orange-700",  dot: "bg-orange-400" },
+  streak:    { bg: "bg-amber-50",    border: "border-amber-200",   text: "text-amber-700",   dot: "bg-amber-400" },
   milestone: { bg: "bg-purple-50",   border: "border-purple-200",  text: "text-purple-700",  dot: "bg-purple-400" },
 };
 

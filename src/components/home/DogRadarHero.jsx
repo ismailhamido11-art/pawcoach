@@ -56,7 +56,7 @@ function computeArcs({ checkins = [], streak, records = [], exercises = [], scan
 
   return [
     { key: "health",    label: "Santé",     score: health,    hasData: healthData,    hint: healthHint,    color: "#2d9f82", Icon: Heart,     page: "Sante" },
-    { key: "activity",  label: "Activité",  score: activity,  hasData: activityData,  hint: activityHint,  color: "#d97706", Icon: Flame,     page: "Activite" },
+    { key: "activity",  label: "Activité",  score: activity,  hasData: activityData,  hint: activityHint,  color: "#3b82f6", Icon: Flame,     page: "Activite" },
     { key: "training",  label: "Dressage",  score: training,  hasData: trainingData,  hint: trainingHint,  color: "#6366f1", Icon: Dumbbell,  page: "Activite", tab: "dressage" },
     { key: "nutrition", label: "Nutrition", score: nutrition, hasData: nutritionData, hint: nutritionHint, color: "#059669", Icon: ScanLine,  page: "Nutri" },
   ];
