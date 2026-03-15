@@ -72,7 +72,7 @@ function TrainingCard({ program }) {
                 <Dumbbell className="w-3.5 h-3.5 text-violet-600" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-violet-600 uppercase tracking-wider">Programme 7 jours</p>
+                <p className="text-[10px] font-bold text-violet-600 tracking-wide">Programme 7 jours</p>
                 <p className="text-[10px] text-muted-foreground">
                   Jour {elapsed + 1}/{totalDays} — {formatDateFr(realDate)}
                 </p>
@@ -214,7 +214,7 @@ function NutritionPlanCard({ plan }) {
                   <Utensils className="w-3.5 h-3.5 text-amber-600" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Plan terminé</p>
+                  <p className="text-[10px] font-bold text-amber-600 tracking-wide">Plan terminé</p>
                   <p className="text-xs font-semibold text-foreground mt-0.5">Génère un nouveau plan repas</p>
                 </div>
               </div>
@@ -243,7 +243,7 @@ function NutritionPlanCard({ plan }) {
                 <Utensils className="w-3.5 h-3.5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Plan repas actif</p>
+                <p className="text-[10px] font-bold text-emerald-600 tracking-wide">Plan repas actif</p>
                 <p className="text-[10px] text-muted-foreground">
                   {dayNumber ? `Jour ${dayNumber} / 7` : "Plan en cours"}
                   {plan.dog_weight_at_generation ? ` — ${plan.dog_weight_at_generation} kg` : ""}
@@ -410,7 +410,7 @@ function BehaviorProgramCard({ program }) {
                 <Brain className="w-3.5 h-3.5 text-blue-600" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-blue-600 uppercase tracking-wider">Programme comportement</p>
+                <p className="text-[10px] font-bold text-blue-600 tracking-wide">Programme comportement</p>
                 <p className="text-[10px] text-muted-foreground">
                   Jour {elapsed + 1} / 7 — {program.problem_label}
                 </p>
