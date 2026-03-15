@@ -57,13 +57,10 @@ import Profile from './pages/Profile';
 import Sante from './pages/Sante';
 
 // Pages secondaires — lazy (chargées à la demande)
-// FROZEN — orphan page, Three.js too heavy (~600KB). Uncomment only if DogTwin is re-linked in the app.
-// const DogTwin = lazy(() => import('./pages/DogTwin'));
 const Chat = lazy(() => import('./pages/Chat'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const DogProfile = lazy(() => import('./pages/DogProfile'));
 const DogPublicProfile = lazy(() => import('./pages/DogPublicProfile'));
-const HealthImport = lazy(() => import('./pages/HealthImport'));
 const Library = lazy(() => import('./pages/Library'));
 const Onboarding = lazy(() => import('./pages/Onboarding'));
 const Premium = lazy(() => import('./pages/Premium'));
@@ -81,8 +78,6 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "DogProfile": DogProfile,
     "DogPublicProfile": DogPublicProfile,
-    // "DogTwin": DogTwin, // FROZEN — see import comment above
-    "HealthImport": HealthImport,
     "Home": Home,
     "Library": Library,
     "Nutri": Nutri,
