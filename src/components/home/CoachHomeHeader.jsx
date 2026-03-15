@@ -18,23 +18,28 @@ export default function CoachHomeHeader({ user, dog }) {
 
         <div className="flex items-center gap-3 flex-shrink-0">
           <button
-            onClick={() => navigate(createPageUrl("Notifications"))}
+            onClick={() => navigate(createPageUrl("Profile"))}
             className="w-9 h-9 rounded-full bg-white border border-[#E8E4DF] flex items-center justify-center active:scale-95 transition-transform"
           >
             <Bell className="w-[18px] h-[18px] text-gray-400" />
           </button>
 
-          {dog?.photo_url ? (
-            <img
-              src={dog.photo_url}
-              alt={dog.name}
-              className="w-[52px] h-[52px] rounded-full border-[2.5px] border-[#2D9F82] object-cover"
-            />
-          ) : (
-            <div className="w-[52px] h-[52px] rounded-full bg-[#E8F5F0] border-[2.5px] border-[#2D9F82] flex items-center justify-center">
-              <span className="text-xl">🐕</span>
-            </div>
-          )}
+          <button
+            onClick={() => navigate(createPageUrl("DogProfile"))}
+            className="active:scale-95 transition-transform"
+          >
+            {dog?.photo_url ? (
+              <img
+                src={dog.photo_url}
+                alt={dog.name}
+                className="w-[52px] h-[52px] rounded-full border-[2.5px] border-[#2D9F82] object-cover"
+              />
+            ) : (
+              <div className="w-[52px] h-[52px] rounded-full bg-[#E8F5F0] border-[2.5px] border-[#2D9F82] flex items-center justify-center">
+                <span className="text-xl">🐕</span>
+              </div>
+            )}
+          </button>
         </div>
       </div>
     </header>

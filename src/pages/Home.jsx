@@ -8,7 +8,6 @@ import PullToRefresh from "../components/PullToRefresh";
 import TodayCard from "../components/home/TodayCard";
 import ActiveProgramCards from "../components/home/ActiveProgramCards";
 import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
-import CombinedFAB from "../components/CombinedFAB";
 import ChatFAB from "../components/ChatFAB";
 import { checkStreakBadges } from "@/components/achievements/badgeUtils";
 import { buildRecommendations, getTodayString } from "@/utils/recommendations";
@@ -342,27 +341,16 @@ export default function Home() {
             dog={dog}
           />
 
-          {/* Insight Cards — Check-in + Coach tip */}
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => todayCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
-              className="flex flex-col justify-between bg-[#E8F5F0] rounded-2xl p-4 h-[150px] text-left active:scale-[0.97] transition-transform"
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-8 h-8 rounded-lg bg-[#2D9F82]/20 flex items-center justify-center">
-                  <PawPrint className="w-[18px] h-[18px] text-[#2D9F82]" />
-                </div>
-                <div className="w-7 h-7 rounded-full bg-[#2D9F82] flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">+</span>
-                </div>
-              </div>
-              <div>
-                <p className="text-[14px] font-semibold text-[#1A4D3E]">Check-in</p>
-                <p className="text-[12px] text-gray-500 mt-0.5">Comment va {dog?.name} ?</p>
-              </div>
-            </button>
+          {/* Check-in Card — TodayCard directly here, no scroll */}
+          <TodayCard
+            dog={dog} user={user} todayCheckin={todayCheckin} streak={streak}
+            recommendations={recommendations}
+            onCheckin={handleCheckin} submitting={submitting}
+          />
 
-            <div className="flex flex-col justify-between bg-gradient-to-b from-[#1A4D3E] to-[#2D9F82] rounded-2xl p-4 h-[150px]">
+          {/* Insight Cards — Coach tip + Chat */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-col justify-between bg-gradient-to-b from-[#1A4D3E] to-[#2D9F82] rounded-2xl p-4 h-[140px]">
               <Sparkles className="w-5 h-5 text-white/50" />
               <div>
                 <p className="text-[14px] font-semibold text-white">Conseil du jour</p>
@@ -371,32 +359,19 @@ export default function Home() {
                 </p>
               </div>
             </div>
-          </div>
 
-          {/* Coach Banner */}
-          <button
-            onClick={() => navigate(createPageUrl("Chat"))}
-            className="flex items-center gap-4 bg-white rounded-[20px] border border-[#E8E4DF] p-[18px] w-full text-left active:scale-[0.98] transition-transform"
-          >
-            <div className="w-12 h-12 rounded-full bg-[#E8F5F0] flex items-center justify-center flex-shrink-0">
-              <PawPrint className="w-6 h-6 text-[#2D9F82]" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-semibold text-[#1A4D3E]">Ton coach pour {dog?.name}</p>
-              <p className="text-[13px] text-gray-500 mt-0.5 leading-[1.5] line-clamp-2">
-                {todayCheckin?.ai_response || `Dis-moi comment va ${dog?.name} et je te donne des conseils personnalises.`}
-              </p>
-            </div>
-            <ChevronRight className="w-[18px] h-[18px] text-gray-400 flex-shrink-0" />
-          </button>
-
-          {/* TodayCard — check-in form (hidden ref target) */}
-          <div ref={todayCardRef}>
-            <TodayCard
-              dog={dog} user={user} todayCheckin={todayCheckin} streak={streak}
-              recommendations={recommendations}
-              onCheckin={handleCheckin} submitting={submitting}
-            />
+            <button
+              onClick={() => navigate(createPageUrl("Chat"))}
+              className="flex flex-col justify-between bg-white rounded-2xl p-4 h-[140px] border border-[#E8E4DF] text-left active:scale-[0.97] transition-transform"
+            >
+              <div className="w-10 h-10 rounded-full bg-[#E8F5F0] flex items-center justify-center">
+                <PawPrint className="w-5 h-5 text-[#2D9F82]" />
+              </div>
+              <div>
+                <p className="text-[14px] font-semibold text-[#1A4D3E]">Ton coach</p>
+                <p className="text-[12px] text-gray-500 mt-0.5">Parler a PawCoach</p>
+              </div>
+            </button>
           </div>
 
           {/* Quick Actions */}
@@ -465,7 +440,6 @@ export default function Home() {
             todayCheckin={todayCheckin}
             scans={scans}
             dailyLogs={dailyLogs}
-            onScrollToCheckin={() => todayCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
           />
 
           {/* Disclaimer */}
@@ -479,15 +453,6 @@ export default function Home() {
           {milestone && <MilestoneCelebration milestone={milestone} onClose={() => setMilestone(null)} />}
         </AnimatePresence>
 
-        <CombinedFAB
-          dog={dog}
-          user={user}
-          onLogSaved={async () => {
-            if (!dog) return;
-            const logs = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 30);
-            setDailyLogs(logs || []);
-          }}
-        />
         <ChatFAB offsetBottom={4.5} />
       </PullToRefresh>
       <BottomNav currentPage="Home" />
