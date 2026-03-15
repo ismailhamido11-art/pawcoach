@@ -3,16 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import NotificationCenter from "./components/notifications/NotificationCenter";
 
 export default function Layout({ children, currentPageName }) {
-  // Dark mode detection
+  // Force light mode — dark mode not QA'd, disabled to avoid broken rendering
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const apply = (e) => {
-      if (e.matches) document.documentElement.classList.add("dark");
-      else document.documentElement.classList.remove("dark");
-    };
-    apply(mq);
-    mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
+    document.documentElement.classList.remove("dark");
   }, []);
 
   return (

@@ -7,7 +7,7 @@ import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Flame, UserCircle, Dumbbell, ScanLine, Heart, Bell } from "lucide-react";
+import { Flame, UserCircle, Dumbbell, ScanLine, Heart } from "lucide-react";
 import { PawMascotInline } from "../PawMascot";
 import { computeHealthScore } from "@/utils/healthStatus";
 
@@ -85,13 +85,6 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
           <p className="text-lg font-bold text-foreground">{firstName}</p>
         </div>
         <div className="flex items-center gap-2">
-          {/* Icone cloche avec badge — statique */}
-          <div className="relative w-9 h-9 rounded-full bg-muted/40 flex items-center justify-center">
-            <Bell className="w-4 h-4 text-foreground/70" />
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-              <span className="text-[10px] font-black text-white">1</span>
-            </span>
-          </div>
           {/* Avatar profil */}
           <Link to={createPageUrl("Profile")} className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden">
             <UserCircle className="w-5 h-5 text-primary" />
