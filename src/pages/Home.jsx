@@ -5,22 +5,22 @@ import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
 import BottomNav from "../components/BottomNav";
 import PullToRefresh from "../components/PullToRefresh";
-import DogRadarHero from "../components/home/DogRadarHero";
 import TodayCard from "../components/home/TodayCard";
-import BentoGrid from "../components/home/BentoGrid";
-import StreakBar from "../components/home/StreakBar";
-import DailyCoaching from "../components/home/DailyCoaching";
-import QuickActions from "../components/home/QuickActions";
-// BadgeTeaser merged into StreakBar (DASH-10)
 import ActiveProgramCards from "../components/home/ActiveProgramCards";
 import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
-import SmartAlerts from "../components/dashboard/SmartAlerts";
 import CombinedFAB from "../components/CombinedFAB";
 import ChatFAB from "../components/ChatFAB";
 import { checkStreakBadges } from "@/components/achievements/badgeUtils";
 import { buildRecommendations, getTodayString } from "@/utils/recommendations";
 
-import { Flame } from "lucide-react";
+import CoachHomeHeader from "../components/home/CoachHomeHeader";
+import CalendarStrip from "../components/home/CalendarStrip";
+import WellnessScore from "../components/home/WellnessScore";
+import DailyProgress from "../components/home/DailyProgress";
+import EmotionalTip from "../components/home/EmotionalTip";
+import ContentArticles from "../components/home/ContentArticles";
+
+import { Flame, Sparkles, ChevronRight, ScanLine, Footprints, Stethoscope, BookOpen, PawPrint } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
@@ -270,27 +270,36 @@ export default function Home() {
     });
   }, [dog, records, exercises, scans, recentCheckins, dailyLogs, todayCheckin, streak, diagnosisReports, nutritionPlans]);
 
+  const quickActions = [
+    { icon: ScanLine, label: "Scanner", color: "#D97706", bg: "#FEF0E8", page: "Scan" },
+    { icon: Footprints, label: "Balade", color: "#2D9F82", bg: "#E8F5F0", page: "WalkMode" },
+    { icon: Stethoscope, label: "Sante", color: "#7C3AED", bg: "#EDE9FE", page: "Health" },
+    { icon: BookOpen, label: "Guides", color: "#D97706", bg: "#FEF3C7", page: "Training" },
+  ];
+
+  const streakDays = streak?.current_streak || 0;
+  const streakLabel = streakDays >= 30 ? "Champion" : streakDays >= 14 ? "Assidu" : streakDays >= 7 ? "Regulier" : streakDays >= 3 ? "Debutant" : "";
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pb-32">
-        {/* Hero skeleton compact */}
-        <div className="px-4 pt-3 pb-3 border-b border-border/10 space-y-3">
-          <div className="h-8 w-40 bg-muted/50 rounded-xl animate-pulse" />
-          <div className="h-16 bg-muted/40 rounded-2xl animate-pulse" />
+      <div className="min-h-screen bg-[#FAF6F1] pb-32">
+        <div className="bg-gradient-to-b from-[#FEF0E8] to-[#FAF6F1] px-5 pt-3 pb-5 space-y-4">
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <div className="h-4 w-24 bg-[#E8E4DF] rounded-lg animate-pulse" />
+              <div className="h-6 w-36 bg-[#E8E4DF] rounded-lg animate-pulse" />
+            </div>
+            <div className="w-[52px] h-[52px] rounded-full bg-[#E8E4DF] animate-pulse" />
+          </div>
           <div className="flex gap-2">
-            {[0,1,2,3].map(i => (
-              <div key={i} className="flex-1 h-14 bg-muted/40 rounded-xl animate-pulse" />
+            {[0,1,2,3,4,5,6].map(i => (
+              <div key={i} className="w-10 h-14 bg-[#E8E4DF] rounded-xl animate-pulse" />
             ))}
           </div>
         </div>
-        {/* Card skeletons */}
-        <div className="px-4 mt-3 space-y-3">
-          {[80, 120, 120, 56].map((h, i) => (
-            <div
-              key={i}
-              className="rounded-2xl bg-white/80 border border-border/20 animate-pulse"
-              style={{ height: h }}
-            />
+        <div className="px-4 mt-4 space-y-4">
+          {[90, 70, 140, 80].map((h, i) => (
+            <div key={i} className="rounded-[20px] bg-white border border-[#E8E4DF] animate-pulse" style={{ height: h }} />
           ))}
         </div>
         <BottomNav currentPage="Home" />
@@ -299,83 +308,145 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-32 relative flex flex-col">
+    <div className="min-h-screen bg-[#FAF6F1] pb-32 relative flex flex-col">
       <PullToRefresh onRefresh={handleRefresh}>
-        {/* 1. CompactHeader */}
-        <DogRadarHero
-          user={user}
-          dog={dog}
-          streak={streak}
-          checkins={recentCheckins}
-          records={records}
-          exercises={exercises}
-          scans={scans}
-          dailyLogs={dailyLogs}
-        />
 
-        {/* 2. Alertes urgentes — juste apres le header */}
-        <div className="mt-2 px-4">
-          <SmartAlerts
-            dog={dog}
-            checkins={recentCheckins}
-            records={records}
+        {/* 1. Warm Header */}
+        <CoachHomeHeader user={user} dog={dog} />
+
+        {/* 2. Calendar Strip */}
+        <div className="bg-gradient-to-b from-[#FEF0E8] to-[#FAF6F1] px-4 pb-4">
+          <CalendarStrip dailyLogs={dailyLogs} />
+        </div>
+
+        {/* 3. Content */}
+        <div className="px-4 space-y-6 mt-2">
+
+          {/* Section title */}
+          <h2 className="text-[18px] font-bold text-[#2D2D2D]">
+            Aujourd'hui pour {dog?.name || "ton chien"}
+          </h2>
+
+          {/* Wellness Score Ring */}
+          <WellnessScore
+            recentCheckins={recentCheckins}
             streak={streak}
             dailyLogs={dailyLogs}
-            scans={scans}
+            dog={dog}
           />
-        </div>
 
-        {/* 2b. Guide J0 — uniquement nouveaux users */}
-        <FirstDayGuide
-          dog={dog}
-          todayCheckin={todayCheckin}
-          scans={scans}
-          dailyLogs={dailyLogs}
-          onScrollToCheckin={() => todayCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
-        />
-
-        {/* 3. Action du jour */}
-        <div className="mt-3" ref={todayCardRef}>
-          <TodayCard
-            dog={dog} user={user} todayCheckin={todayCheckin} streak={streak}
-            recommendations={recommendations}
-            onCheckin={handleCheckin} submitting={submitting}
+          {/* Daily Progress — 3 mini cards */}
+          <DailyProgress
+            dailyLogs={dailyLogs}
+            todayCheckin={todayCheckin}
+            dog={dog}
           />
-        </div>
 
-        {/* 4. Programmes en cours */}
-        <div className="mt-3">
+          {/* Insight Cards — Check-in + Coach tip */}
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => todayCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+              className="flex flex-col justify-between bg-[#E8F5F0] rounded-2xl p-4 h-[150px] text-left active:scale-[0.97] transition-transform"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-8 h-8 rounded-lg bg-[#2D9F82]/20 flex items-center justify-center">
+                  <PawPrint className="w-[18px] h-[18px] text-[#2D9F82]" />
+                </div>
+                <div className="w-7 h-7 rounded-full bg-[#2D9F82] flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">+</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-[14px] font-semibold text-[#1A4D3E]">Check-in</p>
+                <p className="text-[12px] text-gray-500 mt-0.5">Comment va {dog?.name} ?</p>
+              </div>
+            </button>
+
+            <div className="flex flex-col justify-between bg-gradient-to-b from-[#1A4D3E] to-[#2D9F82] rounded-2xl p-4 h-[150px]">
+              <Sparkles className="w-5 h-5 text-white/50" />
+              <div>
+                <p className="text-[14px] font-semibold text-white">Conseil du jour</p>
+                <p className="text-[12px] text-white/75 mt-0.5 leading-[1.4]">
+                  {recommendations[0]?.text || "Les balades du soir renforcent le lien"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Coach Banner */}
+          <button
+            onClick={() => navigate(createPageUrl("Chat"))}
+            className="flex items-center gap-4 bg-white rounded-[20px] border border-[#E8E4DF] p-[18px] w-full text-left active:scale-[0.98] transition-transform"
+          >
+            <div className="w-12 h-12 rounded-full bg-[#E8F5F0] flex items-center justify-center flex-shrink-0">
+              <PawPrint className="w-6 h-6 text-[#2D9F82]" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-semibold text-[#1A4D3E]">Ton coach pour {dog?.name}</p>
+              <p className="text-[13px] text-gray-500 mt-0.5 leading-[1.5] line-clamp-2">
+                {todayCheckin?.ai_response || `Dis-moi comment va ${dog?.name} et je te donne des conseils personnalises.`}
+              </p>
+            </div>
+            <ChevronRight className="w-[18px] h-[18px] text-gray-400 flex-shrink-0" />
+          </button>
+
+          {/* TodayCard — check-in form (hidden ref target) */}
+          <div ref={todayCardRef}>
+            <TodayCard
+              dog={dog} user={user} todayCheckin={todayCheckin} streak={streak}
+              recommendations={recommendations}
+              onCheckin={handleCheckin} submitting={submitting}
+            />
+          </div>
+
+          {/* Quick Actions */}
+          <div className="flex justify-between px-2">
+            {quickActions.map((qa, i) => (
+              <button
+                key={i}
+                onClick={() => navigate(createPageUrl(qa.page))}
+                className="flex flex-col items-center gap-2 w-[72px] active:scale-95 transition-transform"
+              >
+                <div className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center" style={{ backgroundColor: qa.bg }}>
+                  <qa.icon className="w-[22px] h-[22px]" style={{ color: qa.color }} />
+                </div>
+                <span className="text-[11px] font-medium text-gray-500">{qa.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Active Programs */}
           <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} behaviorBookmarks={behaviorBookmarks} />
-        </div>
 
-        {/* 5. Raccourcis rapides */}
-        <div className="mt-3">
-          <QuickActions />
-        </div>
+          {/* Streak Card */}
+          {streakDays > 0 && (
+            <div className="flex items-center gap-4 bg-white rounded-[20px] border border-[#E8E4DF] p-[18px]">
+              <div className="w-11 h-11 rounded-full bg-[#FEF3C7] flex items-center justify-center flex-shrink-0">
+                <Flame className="w-[22px] h-[22px] text-[#F59E0B]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-semibold text-[#2D2D2D]">{streakDays} jours de suite</p>
+                <p className="text-[12px] text-gray-400 mt-0.5">La regularite paie — continue comme ca !</p>
+              </div>
+              {streakLabel && (
+                <span className="text-[11px] font-semibold text-[#2D9F82] bg-[#E8F5F0] px-3 py-1.5 rounded-full flex-shrink-0">
+                  {streakLabel}
+                </span>
+              )}
+            </div>
+          )}
 
-        {/* 6. Streak + Habitude */}
-        <div className="mt-3">
-          <StreakBar streak={streak} walkStreak={walkStreak} exercises={exercises} dailyLogs={dailyLogs} />
-        </div>
+          {/* Emotional Tip — "Le savais-tu ?" */}
+          <EmotionalTip dog={dog} />
 
-        {/* 7. Le savais-tu / coaching quotidien */}
-        <div className="mt-3">
-          <DailyCoaching dog={dog} recommendations={recommendations} />
-        </div>
+          {/* Content Articles — "Pour Rex" */}
+          <ContentArticles dog={dog} />
 
-        {/* 8. Navigation secondaire BentoGrid — plus bas */}
-        <div className="mt-3">
-          <BentoGrid />
-        </div>
-
-        {/* 9. Trial expiry */}
-        <div className="mt-3">
+          {/* Trial expiry */}
           <TrialExpiryBanner user={user} dog={dog} />
-        </div>
 
-        {/* 10. Weekly Insight */}
-        {(weeklyInsight || pastInsights.length > 0) && (
-          <div className="mt-3">
+          {/* Weekly Insight */}
+          {(weeklyInsight || pastInsights.length > 0) && (
             <WeeklyInsightCard
               insight={weeklyInsight}
               previousInsight={previousInsight}
@@ -386,15 +457,22 @@ export default function Home() {
               onMarkRead={handleMarkInsightRead}
               markingRead={markingRead}
             />
-          </div>
-        )}
+          )}
 
-        {/* 11. Disclaimer veterinaire — bas de page */}
-        <p className="text-center text-[10px] text-muted-foreground px-6 mt-6 mb-2">
-          PawCoach est un outil de suivi. Consultez votre veterinaire.
-        </p>
+          {/* Guide J0 */}
+          <FirstDayGuide
+            dog={dog}
+            todayCheckin={todayCheckin}
+            scans={scans}
+            dailyLogs={dailyLogs}
+            onScrollToCheckin={() => todayCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+          />
 
-        {/* BadgeTeaser merged into StreakBar as compact chip (DASH-10) */}
+          {/* Disclaimer */}
+          <p className="text-center text-[10px] text-gray-400 px-6 pb-2">
+            PawCoach est un outil de suivi. Consultez votre veterinaire.
+          </p>
+        </div>
 
         {/* Milestone celebration */}
         <AnimatePresence>
@@ -414,7 +492,6 @@ export default function Home() {
       </PullToRefresh>
       <BottomNav currentPage="Home" />
 
-      {/* Post-onboarding premium nudge */}
       <PremiumNudgeSheet
         visible={showPremiumNudge}
         onClose={() => setShowPremiumNudge(false)}
@@ -422,7 +499,6 @@ export default function Home() {
         ownerGoal={dog?.owner_goal}
       />
 
-      {/* Post-trial sheet — J7, une seule fois */}
       <PostTrialSheet
         visible={showPostTrial}
         onClose={() => setShowPostTrial(false)}
