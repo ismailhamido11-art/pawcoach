@@ -1,11 +1,10 @@
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
 import BottomNav from "../components/BottomNav";
 import PullToRefresh from "../components/PullToRefresh";
-import TodayCard from "../components/home/TodayCard";
 import ActiveProgramCards from "../components/home/ActiveProgramCards";
 import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
 import ChatFAB from "../components/ChatFAB";
@@ -14,12 +13,12 @@ import { buildRecommendations, getTodayString } from "@/utils/recommendations";
 
 import CoachHomeHeader from "../components/home/CoachHomeHeader";
 import CalendarStrip from "../components/home/CalendarStrip";
-import WellnessScore from "../components/home/WellnessScore";
+import DailyBriefing from "../components/home/DailyBriefing";
 import DailyProgress from "../components/home/DailyProgress";
 import EmotionalTip from "../components/home/EmotionalTip";
 import ContentArticles from "../components/home/ContentArticles";
 
-import { Flame, Sparkles, ChevronRight, ScanLine, Footprints, Stethoscope, BookOpen, PawPrint } from "lucide-react";
+import { Flame, ScanLine, Footprints, Stethoscope, BookOpen } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
@@ -86,8 +85,6 @@ export default function Home() {
   const [milestone, setMilestone] = useState(null);
   const [showPremiumNudge, setShowPremiumNudge] = useState(false);
   const [showPostTrial, setShowPostTrial] = useState(false);
-
-  const todayCardRef = useRef(null);
 
   const applyDogData = ({ checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks }) => {
     setRecords(recs || []);
@@ -279,6 +276,11 @@ export default function Home() {
   const streakDays = streak?.current_streak || 0;
   const streakLabel = streakDays >= 30 ? "Champion" : streakDays >= 14 ? "Assidu" : streakDays >= 7 ? "Regulier" : streakDays >= 3 ? "Debutant" : "";
 
+  const handleQuickCheckin = async ({ mood, energy, appetite }) => {
+    if (submitting) return;
+    handleCheckin({ mood, energy, appetite, notes: "", symptoms: [], behaviorNotes: "" });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FAF6F1] pb-32">
@@ -290,16 +292,11 @@ export default function Home() {
             </div>
             <div className="w-[52px] h-[52px] rounded-full bg-[#E8E4DF] animate-pulse" />
           </div>
-          <div className="flex gap-2">
-            {[0,1,2,3,4,5,6].map(i => (
-              <div key={i} className="w-10 h-14 bg-[#E8E4DF] rounded-xl animate-pulse" />
-            ))}
-          </div>
         </div>
-        <div className="px-4 mt-4 space-y-4">
-          {[90, 70, 140, 80].map((h, i) => (
-            <div key={i} className="rounded-[20px] bg-white border border-[#E8E4DF] animate-pulse" style={{ height: h }} />
-          ))}
+        <div className="px-5 mt-6 space-y-3">
+          <div className="h-5 w-48 bg-[#E8E4DF] rounded-lg animate-pulse" />
+          <div className="h-4 w-64 bg-[#E8E4DF] rounded-lg animate-pulse" />
+          <div className="h-16 w-full bg-[#E8E4DF] rounded-2xl animate-pulse mt-4" />
         </div>
         <BottomNav currentPage="Home" />
       </div>
@@ -310,29 +307,27 @@ export default function Home() {
     <div className="min-h-screen bg-[#FAF6F1] pb-32 relative flex flex-col">
       <PullToRefresh onRefresh={handleRefresh}>
 
-        {/* 1. Warm Header */}
+        {/* 1. Warm Header — greeting + photo */}
         <CoachHomeHeader user={user} dog={dog} />
 
-        {/* 2. Calendar Strip */}
-        <div className="bg-gradient-to-b from-[#FEF0E8] to-[#FAF6F1] px-4 pb-4">
+        {/* 2. THE BRIEFING — coach speaks first */}
+        <DailyBriefing
+          dog={dog}
+          user={user}
+          recentCheckins={recentCheckins}
+          dailyLogs={dailyLogs}
+          streak={streak}
+          todayCheckin={todayCheckin}
+          onQuickCheckin={handleQuickCheckin}
+          submitting={submitting}
+          recommendations={recommendations}
+        />
+
+        {/* === Below the fold — scroll to discover === */}
+        <div className="px-4 space-y-6">
+
+          {/* Calendar Strip */}
           <CalendarStrip dailyLogs={dailyLogs} />
-        </div>
-
-        {/* 3. Content */}
-        <div className="px-4 space-y-6 mt-2">
-
-          {/* Section title */}
-          <h2 className="text-[18px] font-bold text-[#2D2D2D]">
-            Aujourd'hui pour {dog?.name || "ton chien"}
-          </h2>
-
-          {/* Wellness Score Ring */}
-          <WellnessScore
-            recentCheckins={recentCheckins}
-            streak={streak}
-            dailyLogs={dailyLogs}
-            dog={dog}
-          />
 
           {/* Daily Progress — 3 mini cards */}
           <DailyProgress
@@ -340,39 +335,6 @@ export default function Home() {
             todayCheckin={todayCheckin}
             dog={dog}
           />
-
-          {/* Check-in Card — TodayCard directly here, no scroll */}
-          <TodayCard
-            dog={dog} user={user} todayCheckin={todayCheckin} streak={streak}
-            recommendations={recommendations}
-            onCheckin={handleCheckin} submitting={submitting}
-          />
-
-          {/* Insight Cards — Coach tip + Chat */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col justify-between bg-gradient-to-b from-[#1A4D3E] to-[#2D9F82] rounded-2xl p-4 h-[140px]">
-              <Sparkles className="w-5 h-5 text-white/50" />
-              <div>
-                <p className="text-[14px] font-semibold text-white">Conseil du jour</p>
-                <p className="text-[12px] text-white/75 mt-0.5 leading-[1.4]">
-                  {recommendations[0]?.text || "Les balades du soir renforcent le lien"}
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => navigate(createPageUrl("Chat"))}
-              className="flex flex-col justify-between bg-white rounded-2xl p-4 h-[140px] border border-[#E8E4DF] text-left active:scale-[0.97] transition-transform"
-            >
-              <div className="w-10 h-10 rounded-full bg-[#E8F5F0] flex items-center justify-center">
-                <PawPrint className="w-5 h-5 text-[#2D9F82]" />
-              </div>
-              <div>
-                <p className="text-[14px] font-semibold text-[#1A4D3E]">Ton coach</p>
-                <p className="text-[12px] text-gray-500 mt-0.5">Parler a PawCoach</p>
-              </div>
-            </button>
-          </div>
 
           {/* Quick Actions */}
           <div className="flex justify-between px-2">
