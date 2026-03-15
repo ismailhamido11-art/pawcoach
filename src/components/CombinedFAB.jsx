@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import useBackClose from "@/hooks/useBackClose";
 import { Plus, X, Scale, Droplets, Footprints, FileText, Check, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { createPageUrl } from "@/utils";
-import { useNavigate } from "react-router-dom";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { getTodayString } from "@/utils/recommendations";
 
@@ -18,12 +16,10 @@ const FIELDS = [
 export default function CombinedFAB({ dog, user, onLogSaved }) {
   const [open, setOpen] = useState(false);
   useBackClose(open, () => setOpen(false));
-  const [activeTab, setActiveTab] = useState("log"); // "log" ou "chat"
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
 
   const validateFields = () => {
     const newErrors = {};
@@ -118,97 +114,64 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
             {/* Handle */}
             <div className="w-10 h-1 bg-muted rounded-full mx-auto mt-2.5 mb-3" />
 
-            {/* Tabs */}
-            <div className="flex gap-2 px-5 mb-4 border-b border-border">
-              <button
-                onClick={() => setActiveTab("log")}
-                className={`pb-2.5 px-2 text-sm font-bold transition-colors ${
-                  activeTab === "log" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"
-                }`}
-              >
-                Log rapide
-              </button>
-              <button
-                onClick={() => setActiveTab("chat")}
-                className={`pb-2.5 px-2 text-sm font-bold transition-colors ${
-                  activeTab === "chat" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"
-                }`}
-              >
-                Chat
-              </button>
+            {/* Header */}
+            <div className="flex items-center px-5 mb-4">
+              <p className="text-sm font-bold text-foreground">Log rapide</p>
               <button aria-label="Fermer" onClick={() => setOpen(false)} className="ml-auto w-10 h-10 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
                 <X className="w-3.5 h-3.5 text-muted-foreground" />
               </button>
             </div>
 
-            {/* Content */}
-            {activeTab === "log" ? (
-              <>
-                <p className="text-xs text-muted-foreground px-5 mb-3">Remplis ce que tu veux, rien n'est obligatoire</p>
-                <div className="px-5 space-y-2.5">
-                  {FIELDS.map(({ key, icon: Icon, label, unit, type, placeholder, color, bg, min, max }) => (
-                    <div key={key} className={`flex items-center gap-2.5 ${bg} rounded-xl px-3.5 py-2.5 ${errors[key] ? "ring-2 ring-red-400" : ""}`}>
-                      <div className="w-7 h-7 rounded-lg bg-white/70 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-3.5 h-3.5" style={{ color }} />
+            <p className="text-xs text-muted-foreground px-5 mb-3">Remplis ce que tu veux, rien n'est obligatoire</p>
+            <div className="px-5 space-y-2.5">
+              {FIELDS.map(({ key, icon: Icon, label, unit, type, placeholder, color, bg, min, max }) => (
+                <div key={key} className={`flex items-center gap-2.5 ${bg} rounded-xl px-3.5 py-2.5 ${errors[key] ? "ring-2 ring-red-400" : ""}`}>
+                  <div className="w-7 h-7 rounded-lg bg-white/70 flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-3.5 h-3.5" style={{ color }} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[10px] font-bold text-muted-foreground mb-0.5">{label}</p>
+                    {type === "text" ? (
+                      <textarea
+                        aria-label={label}
+                        className="w-full bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 resize-none outline-none"
+                        rows={1}
+                        placeholder={placeholder}
+                        value={form[key] || ""}
+                        onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                      />
+                    ) : (
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          aria-label={label}
+                          className="flex-1 bg-transparent text-xs font-bold text-foreground placeholder:text-muted-foreground/50 outline-none"
+                          type="number"
+                          placeholder={placeholder}
+                          value={form[key] || ""}
+                          onChange={e => { setForm(f => ({ ...f, [key]: e.target.value })); setErrors(prev => { const n = {...prev}; delete n[key]; return n; }); }}
+                          inputMode="decimal"
+                          min={min}
+                          max={max}
+                        />
+                        {unit && <span className="text-[10px] text-muted-foreground">{unit}</span>}
                       </div>
-                      <div className="flex-1">
-                        <p className="text-[10px] font-bold text-muted-foreground mb-0.5">{label}</p>
-                        {type === "text" ? (
-                          <textarea
-                            aria-label={label}
-                            className="w-full bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 resize-none outline-none"
-                            rows={1}
-                            placeholder={placeholder}
-                            value={form[key] || ""}
-                            onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                          />
-                        ) : (
-                          <div className="flex items-center gap-1.5">
-                            <input
-                              aria-label={label}
-                              className="flex-1 bg-transparent text-xs font-bold text-foreground placeholder:text-muted-foreground/50 outline-none"
-                              type="number"
-                              placeholder={placeholder}
-                              value={form[key] || ""}
-                              onChange={e => { setForm(f => ({ ...f, [key]: e.target.value })); setErrors(prev => { const n = {...prev}; delete n[key]; return n; }); }}
-                              inputMode="decimal"
-                              min={min}
-                              max={max}
-                            />
-                            {unit && <span className="text-[10px] text-muted-foreground">{unit}</span>}
-                          </div>
-                        )}
-                        {errors[key] && <p className="text-[10px] text-red-500 font-semibold mt-0.5">{errors[key]}</p>}
-                      </div>
-                    </div>
-                  ))}
+                    )}
+                    {errors[key] && <p className="text-[10px] text-red-500 font-semibold mt-0.5">{errors[key]}</p>}
+                  </div>
                 </div>
-                <div className="px-5 mt-4">
-                  <button
-                    onClick={handleSave}
-                    disabled={saving || saved}
-                    className={`w-full py-3 rounded-2xl font-bold text-white text-sm flex items-center justify-center gap-2 transition-all ${saved ? "" : "gradient-primary"}`}
-                    style={saved ? { background: "#10b981" } : {}}
-                  >
-                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : null}
-                    {saved ? "Enregistré !" : saving ? "Enregistrement..." : "Enregistrer"}
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div className="px-5 py-6 text-center">
-                <p className="text-sm text-muted-foreground mb-4">Accède au chat avec ton coach IA PawCoach pour des conseils personnalisés.</p>
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    navigate(createPageUrl("Chat"));
-                  }}
-                  className="w-full py-3 rounded-2xl font-bold text-white text-sm bg-gradient-to-br from-primary to-accent"
-                >
-                  Ouvrir le chat
-                </button>
-              </div>
-            )}
+              ))}
+            </div>
+            <div className="px-5 mt-4">
+              <button
+                onClick={handleSave}
+                disabled={saving || saved}
+                className={`w-full py-3 rounded-2xl font-bold text-white text-sm flex items-center justify-center gap-2 transition-all ${saved ? "" : "gradient-primary"}`}
+                style={saved ? { background: "#10b981" } : {}}
+              >
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : null}
+                {saved ? "Enregistré !" : saving ? "Enregistrement..." : "Enregistrer"}
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
-import { computeVaccineMap } from "@/utils/healthStatus";
+import { computeVaccineMap, computeHealthScore } from "@/utils/healthStatus";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Area, AreaChart
 } from "recharts";
@@ -208,16 +208,10 @@ export default function Dashboard() {
     alerts.push({ type: "warning", title: "Visite vétérinaire à planifier", desc: `RDV prévu le ${lastVet.next_date}`, cta: "Agenda", to: createPageUrl("Sante") });
   }
 
-  // Health score — simple calculation for dashboard
-  const weightScore = weightData.length >= 2 
-    ? Math.max(0, 100 - Math.abs(weightTrend) * 5) 
-    : 50;
-  const checkinScore = checkins.filter(c => c.date >= new Date(Date.now() - 7 * 864e5).toISOString().split("T")[0]).length * 10;
-  const vaxScore = overdueVaccines.length === 0 ? 30 : 10;
-  const score = Math.min((weightScore + checkinScore + vaxScore) / 3, 100);
-
-  const scoreColor = score >= 80 ? "#10b981" : score >= 60 ? "#d97706" : "#ef4444";
-  const scoreLabel = score >= 80 ? "Excellent" : score >= 60 ? "Bon" : "À améliorer";
+  // Health score — unified via computeHealthScore (same as Santé page)
+  const score = computeHealthScore(records, dog, dailyLogs);
+  const scoreColor = score >= 75 ? "#10b981" : score >= 50 ? "#d97706" : "#ef4444";
+  const scoreLabel = score >= 75 ? "Bon état" : score >= 50 ? "À surveiller" : "À améliorer";
 
   return { weightData, weightTrend, walkData, checkinChart, avgMood, alerts, score, scoreColor, scoreLabel };
   }, [records, dailyLogs, checkins]);

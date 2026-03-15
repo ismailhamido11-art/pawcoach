@@ -16,6 +16,7 @@ import ActiveProgramCards from "../components/home/ActiveProgramCards";
 import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
 import SmartAlerts from "../components/dashboard/SmartAlerts";
 import CombinedFAB from "../components/CombinedFAB";
+import ChatFAB from "../components/ChatFAB";
 import { checkStreakBadges } from "@/components/achievements/badgeUtils";
 import { buildRecommendations, getTodayString } from "@/utils/recommendations";
 
@@ -445,6 +446,7 @@ export default function Home() {
             setDailyLogs(logs || []);
           }}
         />
+        <ChatFAB offsetBottom={4.5} />
       </PullToRefresh>
       <BottomNav currentPage="Home" />
 

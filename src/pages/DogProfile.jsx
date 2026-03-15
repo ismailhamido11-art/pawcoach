@@ -152,7 +152,7 @@ export default function DogProfile() {
   if (!dog) return null;
 
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen bg-background">
       {/* Back button */}
       <div className="fixed top-0 left-0 right-0 z-30">
         <div className="px-4 pb-2 flex items-center justify-between bg-gradient-to-b from-emerald-900/80 to-transparent absolute top-0 left-0 right-0 pointer-events-none"

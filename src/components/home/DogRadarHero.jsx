@@ -9,30 +9,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Flame, UserCircle, Dumbbell, ScanLine, Heart, Bell } from "lucide-react";
 import { PawMascotInline } from "../PawMascot";
+import { computeHealthScore } from "@/utils/healthStatus";
 
 // Calcule les 4 scores à partir des données réelles
 // Chaque arc retourne hasData + hint pour transparence
-function computeArcs({ checkins = [], streak, records = [], exercises = [], scans = [] }) {
+function computeArcs({ checkins = [], streak, records = [], exercises = [], scans = [], dog = null, dailyLogs = [] }) {
   const recent = checkins.slice(-7);
 
-  // 1. Santé (checkins humeur + énergie + vaccins)
-  let health = 0;
-  let healthData = false;
-  let healthHint = "Pas de données";
-  const hasVaccine = records.some(r => r.type === "vaccine" && r.date && (Date.now() - new Date(r.date).getTime()) / 86400000 < 365);
-
-  if (recent.length > 0) {
-    healthData = true;
-    const avgM = recent.reduce((s, c) => s + (c.mood || 2), 0) / recent.length;
-    const avgE = recent.reduce((s, c) => s + (c.energy || 2), 0) / recent.length;
-    health = Math.round(((avgM - 1) / 3) * 50 + ((avgE - 1) / 2) * 30 + 20);
-    if (hasVaccine) health = Math.min(100, health + 10);
-    healthHint = `${recent.length} check-in${recent.length > 1 ? "s" : ""}`;
-  } else if (hasVaccine) {
-    healthData = true;
-    health = 60;
-    healthHint = "Vaccins à jour";
-  }
+  // 1. Santé — unified via computeHealthScore (WSAVA-weighted: vaccines 40 + weight 20 + vet 25 + activity 15)
+  const health = computeHealthScore(records, dog, dailyLogs);
+  const healthData = (records || []).length > 0 || (dailyLogs || []).length > 0;
+  const healthHint = health >= 75 ? "Bon état" : health >= 50 ? "À surveiller" : health > 0 ? "À améliorer" : "Pas de données";
 
   // 2. Activité (streak)
   const streakDays = streak?.current_streak || 0;
@@ -75,13 +62,13 @@ function computeArcs({ checkins = [], streak, records = [], exercises = [], scan
   ];
 }
 
-export default function DogRadarHero({ user, dog, streak, checkins = [], records = [], exercises = [], scans = [], dailyLogs: _dailyLogs = [] }) {
+export default function DogRadarHero({ user, dog, streak, checkins = [], records = [], exercises = [], scans = [], dailyLogs = [] }) {
   const navigate = useNavigate();
   const firstName = user?.full_name?.split(" ")[0] || "toi";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Bonjour" : hour < 18 ? "Bon après-midi" : "Bonsoir";
 
-  const arcs = useMemo(() => computeArcs({ checkins, streak, records: records || [], exercises: exercises || [], scans: scans || [] }), [checkins, streak, records, exercises, scans]);
+  const arcs = useMemo(() => computeArcs({ checkins, streak, records: records || [], exercises: exercises || [], scans: scans || [], dog, dailyLogs: dailyLogs || [] }), [checkins, streak, records, exercises, scans, dog, dailyLogs]);
 
   const avgScore = useMemo(() => {
     const withData = arcs.filter(a => a.hasData);
@@ -163,8 +150,8 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
           </p>
         </div>
 
-        {/* Mini cercle score global */}
-        <div className="flex-shrink-0 w-11 h-11 relative">
+        {/* Mini cercle score global — cliquable → Dashboard */}
+        <Link to={createPageUrl("Dashboard")} className="flex-shrink-0 w-11 h-11 relative" aria-label="Voir le tableau de bord">
           <svg width="44" height="44" viewBox="0 0 44 44" style={{ transform: "rotate(-90deg)" }}>
             <circle cx="22" cy="22" r="18" fill="none" stroke="#e5e7eb" strokeWidth="4" />
             <motion.circle
@@ -179,7 +166,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
           <span className="absolute inset-0 flex items-center justify-center text-xs font-black text-foreground">
             {avgScore > 0 ? `${avgScore}%` : "—"}
           </span>
-        </div>
+        </Link>
       </motion.div>
 
       {/* Ligne 3: Stats row horizontale — 4 stats avec mini barres animées */}
