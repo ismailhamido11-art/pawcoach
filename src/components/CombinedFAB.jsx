@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import useBackClose from "@/hooks/useBackClose";
+import useBackClose from "@/components/hooks/useBackClose";
 import { Plus, X, Scale, Droplets, Footprints, FileText, Check, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
