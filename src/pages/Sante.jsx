@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog } from "@/utils";
 import { useAuth } from "@/lib/AuthContext";
@@ -39,7 +39,7 @@ const TABS = [
 ];
 
 export default function Sante() {
-   const _navigate = useNavigate();
+
    const { user: authUser, isLoadingAuth } = useAuth();
    const [dog, setDog] = useState(null);
    const [user, setUser] = useState(null);

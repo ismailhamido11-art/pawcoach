@@ -6,7 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Area, AreaChart
 } from "recharts";
 import { Weight, Stethoscope, Dumbbell, Salad,
-  AlertTriangle, CheckCircle, ChevronRight, Flame,
+  ChevronRight, Flame,
   TrendingUp, TrendingDown, Minus, Heart,
   Sparkles, Activity, Star, Footprints
 } from "lucide-react";
@@ -17,9 +17,6 @@ import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
 import Illustration from "../components/illustrations/Illustration";
 import SmartAlerts from "../components/dashboard/SmartAlerts";
-
-const _MOOD_LABELS = { 1: "😔", 2: "😐", 3: "😊", 4: "🤩" };
-const _ENERGY_LABELS = { 1: "💤", 2: "⚡", 3: "🔥" };
 
 function StatCard({ icon: Icon, color, label, value, sub, trend }) {
   return (
@@ -36,32 +33,6 @@ function StatCard({ icon: Icon, color, label, value, sub, trend }) {
         <div className={`flex items-center gap-0.5 text-xs font-semibold ${trend > 0 ? "text-emerald-500" : trend < 0 ? "text-red-400" : "text-muted-foreground"}`}>
           {trend > 0 ? <TrendingUp className="w-3.5 h-3.5" /> : trend < 0 ? <TrendingDown className="w-3.5 h-3.5" /> : <Minus className="w-3.5 h-3.5" />}
         </div>
-      )}
-    </div>
-  );
-}
-
-function _AlertCard({ type, title, desc, cta, to }) {
-  const colors = {
-    warning: { bg: "bg-caution/5", border: "border-caution/20", icon: AlertTriangle, color: "hsl(38,92%,55%)" },
-    ok:      { bg: "bg-emerald-50", border: "border-emerald-200", icon: CheckCircle, color: "#10b981" },
-    info:    { bg: "bg-blue-50", border: "border-blue-200", icon: Sparkles, color: "#3b82f6" },
-  };
-  const cfg = colors[type] || colors.info;
-  const Icon = cfg.icon;
-  return (
-    <div className={`${cfg.bg} ${cfg.border} border rounded-2xl p-4 flex items-center gap-3`}>
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${cfg.color}20` }}>
-        <Icon style={{ color: cfg.color, width: 18, height: 18 }} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-foreground">{title}</p>
-        <p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
-      </div>
-      {cta && to && (
-        <Link to={to} className="flex-shrink-0 text-xs font-bold text-primary hover:underline">
-          {cta}
-        </Link>
       )}
     </div>
   );
