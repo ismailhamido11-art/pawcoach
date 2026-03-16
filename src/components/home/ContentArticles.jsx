@@ -7,13 +7,13 @@ const ARTICLES = [
     title: "5 plantes toxiques",
     subtitle: "A eviter en balade",
     img: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300&q=80",
-    page: "Health",
+    page: "Sante",
   },
   {
     title: "Friandises maison",
     subtitle: "3 recettes faciles",
     img: "https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=300&q=80",
-    page: "Nutrition",
+    page: "Nutri",
   },
 ];
 
@@ -26,7 +26,10 @@ export default function ContentArticles({ dog }) {
         <h3 className="text-[17px] font-bold text-[#2D2D2D]">
           Pour {dog?.name || "ton chien"}
         </h3>
-        <button className="text-[12px] text-[#2D9F82] font-medium flex items-center gap-0.5">
+        <button
+          onClick={() => navigate(createPageUrl("Training"))}
+          className="text-[12px] text-[#2D9F82] font-medium flex items-center gap-0.5"
+        >
           Voir tout <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>

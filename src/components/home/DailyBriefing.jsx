@@ -83,9 +83,9 @@ function generateBriefing({ dog, recentCheckins, dailyLogs, streak, todayCheckin
 
 const MISSION_CONFIG = {
   checkin: { icon: PawPrint, color: "#2D9F82", bg: "#E8F5F0", page: null },
-  walk: { icon: Footprints, color: "#2D9F82", bg: "#E8F5F0", page: "WalkMode" },
+  walk: { icon: Footprints, color: "#2D9F82", bg: "#E8F5F0", page: "Activite" },
   chat: { icon: MessageCircle, color: "#1A4D3E", bg: "#E8F5F0", page: "Chat" },
-  health: { icon: PawPrint, color: "#7C3AED", bg: "#EDE9FE", page: "Health" },
+  health: { icon: PawPrint, color: "#7C3AED", bg: "#EDE9FE", page: "Sante" },
   scan: { icon: ScanLine, color: "#D97706", bg: "#FEF0E8", page: "Scan" },
   train: { icon: Dumbbell, color: "#2D9F82", bg: "#E8F5F0", page: "Training" },
 };

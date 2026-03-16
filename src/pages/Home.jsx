@@ -268,8 +268,8 @@ export default function Home() {
 
   const quickActions = [
     { icon: ScanLine, label: "Scanner", color: "#D97706", bg: "#FEF0E8", page: "Scan" },
-    { icon: Footprints, label: "Balade", color: "#2D9F82", bg: "#E8F5F0", page: "WalkMode" },
-    { icon: Stethoscope, label: "Sante", color: "#7C3AED", bg: "#EDE9FE", page: "Health" },
+    { icon: Footprints, label: "Balade", color: "#2D9F82", bg: "#E8F5F0", page: "Activite" },
+    { icon: Stethoscope, label: "Sante", color: "#7C3AED", bg: "#EDE9FE", page: "Sante" },
     { icon: BookOpen, label: "Guides", color: "#D97706", bg: "#FEF3C7", page: "Training" },
   ];
 
