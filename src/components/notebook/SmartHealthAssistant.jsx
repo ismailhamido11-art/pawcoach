@@ -424,7 +424,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                 >
                   {msg.image_url && (
                     <div className="mb-2 rounded-lg overflow-hidden border border-white/20">
-                      <img src={msg.image_url} alt="Document" className="w-full h-auto max-h-40 object-cover" />
+                      <img src={msg.image_url} alt="Document" loading="lazy" className="w-full h-auto max-h-40 object-cover" />
                     </div>
                   )}
 

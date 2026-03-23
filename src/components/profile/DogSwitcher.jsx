@@ -32,7 +32,7 @@ export default function DogSwitcher({ dogs, activeDogId, onSwitch, onAdd, isPrem
                 } bg-muted flex items-center justify-center`}
               >
                 {dog.photo ? (
-                  <img src={dog.photo} alt={dog.name} className="w-full h-full object-cover" />
+                  <img src={dog.photo} alt={dog.name} loading="lazy" className="w-full h-full object-cover" />
                 ) : (
                   <PawPrint className={`w-6 h-6 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
                 )}

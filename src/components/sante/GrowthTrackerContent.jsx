@@ -361,7 +361,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
             className="bg-white border border-border rounded-2xl overflow-hidden shadow-md"
           >
             {previewUrl && (
-              <img src={previewUrl} alt="Analyse" className="w-full h-40 object-cover" />
+              <img src={previewUrl} alt="Analyse" loading="lazy" className="w-full h-40 object-cover" />
             )}
             {analyzing && (
               <div className="flex items-center gap-3 p-4">
@@ -464,7 +464,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
           {historyEntries.map(entry => (
             <div key={entry.id} className="bg-white border border-border rounded-2xl p-3 flex items-center gap-3 shadow-sm">
               {entry.photo_url ? (
-                <img src={entry.photo_url} alt="" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
+                <img src={entry.photo_url} alt="" loading="lazy" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
               ) : (
                 <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0">
                   <TrendingUp className="w-4 h-4 text-muted-foreground" />

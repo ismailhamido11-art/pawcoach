@@ -355,7 +355,7 @@ Extrais ces informations et renvoie un objet JSON.
                   style={{ borderColor: currentAnswer ? "#10b981" : "#cbd5e1" }}
                 >
                   {currentAnswer ? (
-                    <img src={currentAnswer} alt="Chien" className="w-full h-full object-cover" />
+                    <img src={currentAnswer} alt="Chien" loading="lazy" className="w-full h-full object-cover" />
                   ) : uploading ? (
                     <Loader2 className="w-10 h-10 text-primary animate-spin" />
                   ) : (

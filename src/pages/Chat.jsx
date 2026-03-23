@@ -439,7 +439,7 @@ export default function Chat() {
                   }`}
                 >
                   {msg.has_image && msg.image_url && (
-                    <img src={msg.image_url} alt="photo" className="w-full rounded-xl mb-2 max-h-48 object-cover" />
+                    <img src={msg.image_url} alt="photo" loading="lazy" className="w-full rounded-xl mb-2 max-h-48 object-cover" />
                   )}
                   {msg.role === "assistant" ? (
                     <ReactMarkdown className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0" components={mdComponents}>
@@ -597,7 +597,7 @@ export default function Chat() {
             )}
             {pendingImage && (
               <div className="px-5 pt-2 flex items-center gap-2">
-                <img src={pendingImage.preview} alt="preview" className="w-12 h-12 rounded-lg object-cover border border-border" />
+                <img src={pendingImage.preview} alt="preview" loading="lazy" className="w-12 h-12 rounded-lg object-cover border border-border" />
                 <span className="text-xs text-muted-foreground">Photo prete a envoyer</span>
                 <button onClick={() => { if (pendingImage?.preview) URL.revokeObjectURL(pendingImage.preview); setPendingImage(null); }} className="ml-auto text-xs text-destructive">Retirer</button>
               </div>

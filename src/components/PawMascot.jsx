@@ -56,6 +56,7 @@ export default function PawMascot({
         <img
           src={src}
           alt={`Paw le mascot - ${mood}`}
+          loading="lazy"
           className="w-full h-full object-cover"
           draggable={false}
         />

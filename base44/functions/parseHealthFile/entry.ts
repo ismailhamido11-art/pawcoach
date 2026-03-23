@@ -10,6 +10,7 @@ Deno.serve(async (req) => {
         }
 
         const { file_url, text_content, dog_name, dog_breed } = await req.json();
+        const sanitize = (s: any, max = 500) => String(s || '').substring(0, max).replace(/[<>]/g, '');
 
         if (!file_url && !text_content) {
             return Response.json({ error: 'file_url or text_content is required' }, { status: 400 });
@@ -40,8 +41,8 @@ Deno.serve(async (req) => {
         }
 
         const dogContext = [
-            dog_name ? `nommé "${dog_name}"` : null,
-            dog_breed ? `de race ${dog_breed}` : null
+            dog_name ? `nommé "${sanitize(dog_name, 100)}"` : null,
+            dog_breed ? `de race ${sanitize(dog_breed, 100)}` : null
         ].filter(Boolean).join(", ");
 
         const today = new Date().toISOString().split('T')[0];
@@ -61,7 +62,7 @@ Pour chaque enregistrement de santé, fournis:
 Pour le résumé (summary), décris brièvement ce que tu as trouvé et les points importants à retenir pour le propriétaire.
 Pour document_type, indique le type de document (ex: "Carnet de vaccination", "Bilan sanguin", "Email vétérinaire", "Rapport de consultation").
 
-${text_content ? `Texte à analyser:\n\n${text_content}` : ''}`;
+${text_content ? `Texte à analyser:\n\n${sanitize(text_content, 5000)}` : ''}`;
 
         const params = {
             prompt,

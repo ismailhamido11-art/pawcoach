@@ -43,6 +43,7 @@ export default function ContentArticles({ dog }) {
             <img
               src={article.img}
               alt={article.title}
+              loading="lazy"
               className="w-full h-20 object-cover"
             />
             <div className="p-3">

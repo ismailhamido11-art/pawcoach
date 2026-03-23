@@ -33,7 +33,7 @@ export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium
       <div className="relative mb-8">
         <div className="w-36 h-36 rounded-full border-4 border-white shadow-2xl overflow-hidden bg-white/20">
           {dogPhoto ? (
-            <img src={dogPhoto} alt={dogName} className="w-full h-full object-cover" />
+            <img src={dogPhoto} alt={dogName} loading="lazy" className="w-full h-full object-cover" />
           ) : (
             <Illustration name="goodDoggy" alt={dogName} className="w-full h-full object-cover" />
           )}

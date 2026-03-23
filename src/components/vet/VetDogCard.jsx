@@ -15,7 +15,7 @@ export default function VetDogCard({ dog, access }) {
     >
       <div className="flex items-center gap-3">
         {dog.photo ? (
-          <img src={dog.photo} alt={dog.name} className="w-14 h-14 rounded-xl object-cover" />
+          <img src={dog.photo} alt={dog.name} loading="lazy" className="w-14 h-14 rounded-xl object-cover" />
         ) : (
           <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-2xl">🐾</div>
         )}

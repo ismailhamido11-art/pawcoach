@@ -68,7 +68,7 @@ export default function VetDogView() {
         </Link>
         <div className="relative z-10 flex items-center gap-4">
           {dog.photo ? (
-            <img src={dog.photo} alt={dog.name} className="w-16 h-16 rounded-2xl object-cover border-2 border-white/30" />
+            <img src={dog.photo} alt={dog.name} loading="lazy" className="w-16 h-16 rounded-2xl object-cover border-2 border-white/30" />
           ) : (
             <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center text-3xl">🐾</div>
           )}
@@ -150,7 +150,7 @@ export default function VetDogView() {
             ) : (
               [...scans].sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).slice(0, 20).map(s => (
                 <div key={s.id} className="flex items-start gap-3 p-3 rounded-2xl bg-white border border-border">
-                  {s.photo_url && <img src={s.photo_url} alt="" className="w-12 h-12 rounded-lg object-cover" />}
+                  {s.photo_url && <img src={s.photo_url} alt="" loading="lazy" className="w-12 h-12 rounded-lg object-cover" />}
                   <div className="flex-1">
                     <p className="text-sm font-medium">{s.food_name || "Aliment scanné"}</p>
                     <Badge className={`text-[11px] mt-1 ${s.verdict === "safe" ? "bg-emerald-100 text-emerald-700" : s.verdict === "caution" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>

@@ -148,7 +148,7 @@ export default function DogPublicProfile() {
           className="flex items-center gap-4 relative z-10"
         >
           {dog.photo ? (
-            <img src={dog.photo} alt={dog.name}
+            <img src={dog.photo} alt={dog.name} loading="lazy"
               className="w-20 h-20 rounded-2xl object-cover border-2 border-white/30 shadow-xl flex-shrink-0"
             />
           ) : (

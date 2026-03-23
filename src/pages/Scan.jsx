@@ -550,7 +550,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                 >
                   {preview ? (
                     <div className="relative w-full px-4">
-                      <img src={preview} alt="Aperçu" className="w-full max-h-56 object-contain rounded-2xl" />
+                      <img src={preview} alt="Aperçu" loading="lazy" className="w-full max-h-56 object-contain rounded-2xl" />
                       <button onClick={e => { e.stopPropagation(); reset(); }} className="absolute top-2 right-6 bg-white rounded-full p-1 shadow">
                         <X className="w-4 h-4 text-muted-foreground" />
                       </button>
@@ -704,7 +704,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                           const Icon = cfg.icon;
                           return (
                             <motion.div key={scan.id || i} variants={listItem} className={`flex items-center gap-3 p-3 rounded-2xl border ${cfg.border} ${cfg.cardBg}`}>
-                              {scan.photo_url && <img src={scan.photo_url} alt="" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />}
+                              {scan.photo_url && <img src={scan.photo_url} alt="" loading="lazy" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />}
                               {!scan.photo_url && <Icon className={`w-5 h-5 ${cfg.iconColor} flex-shrink-0`} />}
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold truncate">{scan.food_name}</p>
@@ -738,7 +738,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                 >
                   {labelPreview ? (
                     <div className="relative w-full px-4">
-                      <img src={labelPreview} alt="Aperçu" className="w-full max-h-56 object-contain rounded-2xl" />
+                      <img src={labelPreview} alt="Aperçu" loading="lazy" className="w-full max-h-56 object-contain rounded-2xl" />
                       <button onClick={e => { e.stopPropagation(); resetLabel(); }} className="absolute top-2 right-6 bg-white rounded-full p-1 shadow">
                         <X className="w-4 h-4 text-muted-foreground" />
                       </button>

@@ -159,6 +159,7 @@ export default function Premium() {
               <img
                 src={dog.photo}
                 alt={dog.name}
+                loading="lazy"
                 className="w-24 h-24 rounded-full object-cover border-4 border-white/40 shadow-md mx-auto"
               />
             ) : (

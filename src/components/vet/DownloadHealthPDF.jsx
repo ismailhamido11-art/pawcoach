@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { FileDown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { jsPDF } from "jspdf";
+
 import {
   computeVaccineMap,
   computeWeightTrend,
@@ -284,6 +284,7 @@ export default function DownloadHealthPDF({ dogId, dogName: _dogName }) {
       const records = rawRecords || [];
       const growthEntries = rawGrowthEntries || [];
       const dailyLogs = rawDailyLogs || [];
+      const { jsPDF } = await import("jspdf");
       const doc = new jsPDF();
       const pageW = doc.internal.pageSize.getWidth();
       let y = 20;

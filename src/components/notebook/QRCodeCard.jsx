@@ -116,13 +116,14 @@ export default function QRCodeCard({ dog }) {
                   <img
                     src={qrSrc}
                     alt="QR Code urgence"
+                    loading="lazy"
                     className="w-48 h-48 rounded-xl"
                     onError={e => { e.target.src = "data:image/svg+xml,..."; }}
                   />
                   {/* Dog photo overlay */}
                   {dog.photo && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <img src={dog.photo} alt={dog.name}
+                      <img src={dog.photo} alt={dog.name} loading="lazy"
                         className="w-12 h-12 rounded-xl object-cover border-2 border-white shadow-lg"
                       />
                     </div>
