@@ -76,7 +76,7 @@ function CircleScore({ score, color }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-xl font-extrabold text-foreground leading-none">{score ?? "?"}</span>
-        <span className="text-[10px] text-muted-foreground">/10</span>
+        <span className="text-[11px] text-muted-foreground">/10</span>
       </div>
     </div>
   );
@@ -306,7 +306,7 @@ export default function Scan() {
       await updateStreakSilently(dog.id, user.email);
     } catch (e) {
       console.error(e);
-      alert("Impossible de sauvegarder. Réessaie.");
+      toast.error("Impossible de sauvegarder. Réessaie.");
     }
   };
 
@@ -643,7 +643,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                   <div className="bg-white rounded-2xl border border-border p-4 flex items-center justify-between shadow-sm">
                     <div>
                       <p className="text-xs font-bold text-foreground">Disponible chez nos partenaires</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">Lien partenaire</p>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">Lien partenaire</p>
                     </div>
                     <Button onClick={() => window.open("https://zooplus.fr", "_blank")} size="sm" variant="outline" className="rounded-xl h-8 text-xs font-semibold">
                       Voir l'offre
@@ -788,7 +788,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                     </div>
                     <div className="text-center bg-white rounded-xl px-3 py-2 shadow-sm ml-3">
                       <p className="text-2xl font-black text-foreground leading-none">{labelResult.compatibility_score}</p>
-                      <p className="text-[10px] text-muted-foreground">/10</p>
+                      <p className="text-[11px] text-muted-foreground">/10</p>
                     </div>
                   </div>
 
@@ -808,11 +808,11 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                   <div className="grid grid-cols-2 gap-2 mb-3">
                     <div className="bg-white rounded-xl p-3 text-center">
                       <p className="text-xl font-black text-foreground">{labelResult.calories_per_100g ?? "?"}</p>
-                      <p className="text-[10px] text-muted-foreground">kcal / 100g</p>
+                      <p className="text-[11px] text-muted-foreground">kcal / 100g</p>
                     </div>
                     <div className="bg-white rounded-xl p-3 text-center">
                       <p className="text-xl font-black text-violet-600">{labelResult.daily_portion_g ?? "?"}<span className="text-sm font-bold">g</span></p>
-                      <p className="text-[10px] text-muted-foreground">Portion/jour {dog?.name}</p>
+                      <p className="text-[11px] text-muted-foreground">Portion/jour {dog?.name}</p>
                     </div>
                   </div>
 
@@ -830,13 +830,13 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                     <div className="grid grid-cols-2 gap-2 mb-3">
                       {labelResult.pros?.length > 0 && (
                         <div className="bg-white rounded-xl p-3">
-                          <p className="text-[10px] font-bold text-emerald-700 mb-1">✅ Points positifs</p>
+                          <p className="text-[11px] font-bold text-emerald-700 mb-1">✅ Points positifs</p>
                           <ul className="space-y-1">{labelResult.pros.map((p, i) => <li key={i} className="text-xs text-foreground/80">{p}</li>)}</ul>
                         </div>
                       )}
                       {labelResult.cons?.length > 0 && (
                         <div className="bg-white rounded-xl p-3">
-                          <p className="text-[10px] font-bold text-red-600 mb-1">⚠️ Points négatifs</p>
+                          <p className="text-[11px] font-bold text-red-600 mb-1">⚠️ Points négatifs</p>
                           <ul className="space-y-1">{labelResult.cons.map((c, i) => <li key={i} className="text-xs text-foreground/80">{c}</li>)}</ul>
                         </div>
                       )}

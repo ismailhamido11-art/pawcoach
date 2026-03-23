@@ -177,7 +177,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
               className="flex-1 flex flex-col items-center gap-1 bg-white rounded-xl p-2 shadow-[0_1px_4px_rgba(0,0,0,0.05)]"
             >
               <Icon className="w-3.5 h-3.5" style={{ color: arc.color }} />
-              <span className="text-[10px] font-semibold text-muted-foreground">{arc.label}</span>
+              <span className="text-[11px] font-semibold text-muted-foreground">{arc.label}</span>
               <span className="text-xs font-black" style={{ color: arc.hasData ? arc.color : "#94a3b8" }}>
                 {arc.hasData ? `${arc.score}%` : "—"}
               </span>

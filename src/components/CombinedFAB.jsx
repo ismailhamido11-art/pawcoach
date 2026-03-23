@@ -92,7 +92,7 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
+            className="fixed inset-0 z-[42] bg-black/30 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
         )}
@@ -130,7 +130,7 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
                     <Icon className="w-3.5 h-3.5" style={{ color }} />
                   </div>
                   <div className="flex-1">
-                    <p className="text-[10px] font-bold text-muted-foreground mb-0.5">{label}</p>
+                    <p className="text-[11px] font-bold text-muted-foreground mb-0.5">{label}</p>
                     {type === "text" ? (
                       <textarea
                         aria-label={label}
@@ -153,10 +153,10 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
                           min={min}
                           max={max}
                         />
-                        {unit && <span className="text-[10px] text-muted-foreground">{unit}</span>}
+                        {unit && <span className="text-[11px] text-muted-foreground">{unit}</span>}
                       </div>
                     )}
-                    {errors[key] && <p className="text-[10px] text-red-500 font-semibold mt-0.5">{errors[key]}</p>}
+                    {errors[key] && <p className="text-[11px] text-red-500 font-semibold mt-0.5">{errors[key]}</p>}
                   </div>
                 </div>
               ))}

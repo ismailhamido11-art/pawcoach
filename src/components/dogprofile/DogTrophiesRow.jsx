@@ -8,7 +8,7 @@ function Trophy_({ emoji, label, earned }) {
       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm border ${earned ? "bg-emerald-50 border-emerald-200" : "bg-muted border-border"}`}>
         {emoji}
       </div>
-      <p className="text-[10px] text-center text-muted-foreground font-medium leading-tight">{label}</p>
+      <p className="text-[11px] text-center text-muted-foreground font-medium leading-tight">{label}</p>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { toast } from "sonner";
 import { Mic, MicOff } from "lucide-react";
 
 export default function VoiceInput({ onTranscript, className = "" }) {
@@ -7,7 +8,7 @@ export default function VoiceInput({ onTranscript, className = "" }) {
 
   const toggle = () => {
     if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
-      alert("La dictée vocale n'est pas supportée sur ce navigateur. Utilise Chrome.");
+      toast.error("Dictée vocale non supportée. Utilise Chrome.");
       return;
     }
 

@@ -21,7 +21,7 @@ export default function FreeExercisesGate({ dogName, onDismiss }) {
       particleCount: 100,
       spread: 70,
       origin: { x: 0.5, y: 0.5 },
-      colors: ["#10b981", "#3db87a", "#8b5cf6", "#ffffff"],
+      colors: ["#1A4D3E", "#2D9F82", "#10b981", "#34d399"],
     });
   }, []);
 
@@ -58,7 +58,7 @@ export default function FreeExercisesGate({ dogName, onDismiss }) {
               {ex.emoji}
             </div>
             <span className="text-sm font-medium text-foreground flex-1 text-left">{ex.name}</span>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 flex items-center gap-1">
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 flex items-center gap-1">
               <Crown className="w-3 h-3" /> Premium
             </span>
           </div>

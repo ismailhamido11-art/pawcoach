@@ -72,8 +72,8 @@ function TrainingCard({ program }) {
                 <Dumbbell className="w-3.5 h-3.5 text-violet-600" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-violet-600 tracking-wide">Programme 7 jours</p>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[11px] font-bold text-violet-600 tracking-wide">Programme 7 jours</p>
+                <p className="text-[11px] text-muted-foreground">
                   Jour {elapsed + 1}/{totalDays} — {formatDateFr(realDate)}
                 </p>
               </div>
@@ -92,7 +92,7 @@ function TrainingCard({ program }) {
                   <span className={`text-xs font-bold ${todayDone ? "line-through text-muted-foreground" : "text-foreground"}`}>
                     {today.activity?.name || today.title}
                   </span>
-                  <span className="ml-auto text-[10px] font-bold text-violet-600 flex items-center gap-0.5">
+                  <span className="ml-auto text-[11px] font-bold text-violet-600 flex items-center gap-0.5">
                     <Clock className="w-3 h-3" />{today.activity?.duration_min || 20} min
                   </span>
                 </div>
@@ -100,7 +100,7 @@ function TrainingCard({ program }) {
                   <p className="text-xs text-foreground/70 leading-relaxed line-clamp-2">{today.activity.description}</p>
                 )}
                 {todayDone && (
-                  <p className="text-[10px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
+                  <p className="text-[11px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
                     <CheckCircle2 className="w-3 h-3" /> Fait !
                   </p>
                 )}
@@ -111,7 +111,7 @@ function TrainingCard({ program }) {
           {/* Fun fact hook */}
           {today.fun_fact && !todayDone && (
             <div className="mt-2 bg-amber-50/60 rounded-lg px-3 py-2 border border-amber-100/50">
-              <p className="text-[10px] text-amber-800/80 line-clamp-2 italic">
+              <p className="text-[11px] text-amber-800/80 line-clamp-2 italic">
                 📖 {today.fun_fact}
               </p>
             </div>
@@ -120,7 +120,7 @@ function TrainingCard({ program }) {
           {/* Coach tip when done */}
           {today.coach_tip && todayDone && (
             <div className="mt-2 bg-emerald-50/60 rounded-lg px-3 py-2 border border-emerald-100/50">
-              <p className="text-[10px] text-emerald-800/80 line-clamp-2 italic">
+              <p className="text-[11px] text-emerald-800/80 line-clamp-2 italic">
                 💡 {today.coach_tip}
               </p>
             </div>
@@ -136,7 +136,7 @@ function TrainingCard({ program }) {
                 transition={{ duration: 0.8, ease: "easeOut" }}
               />
             </div>
-            <span className="text-[10px] font-bold text-violet-600">
+            <span className="text-[11px] font-bold text-violet-600">
               {completedCount}/{totalDays}
             </span>
           </div>
@@ -145,7 +145,7 @@ function TrainingCard({ program }) {
           {today.theme && (
             <div className="mt-2 flex items-center gap-1.5">
               <Target className="w-3 h-3 text-violet-400" />
-              <p className="text-[10px] text-muted-foreground truncate">{today.theme}</p>
+              <p className="text-[11px] text-muted-foreground truncate">{today.theme}</p>
             </div>
           )}
         </div>
@@ -214,7 +214,7 @@ function NutritionPlanCard({ plan }) {
                   <Utensils className="w-3.5 h-3.5 text-amber-600" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-amber-600 tracking-wide">Plan terminé</p>
+                  <p className="text-[11px] font-bold text-amber-600 tracking-wide">Plan terminé</p>
                   <p className="text-xs font-semibold text-foreground mt-0.5">Génère un nouveau plan repas</p>
                 </div>
               </div>
@@ -243,8 +243,8 @@ function NutritionPlanCard({ plan }) {
                 <Utensils className="w-3.5 h-3.5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-emerald-600 tracking-wide">Plan repas actif</p>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[11px] font-bold text-emerald-600 tracking-wide">Plan repas actif</p>
+                <p className="text-[11px] text-muted-foreground">
                   {dayNumber ? `Jour ${dayNumber} / 7` : "Plan en cours"}
                   {plan.dog_weight_at_generation ? ` — ${plan.dog_weight_at_generation} kg` : ""}
                 </p>
@@ -262,7 +262,7 @@ function NutritionPlanCard({ plan }) {
               <span className="text-lg leading-none">🍽️</span>
               <div className="flex-1 min-w-0">
                 <span className="text-xs font-bold text-foreground">{todayName}</span>
-                <span className="text-[10px] text-muted-foreground truncate">{" · "}{summary.slice(0, 45)}{summary.length > 45 ? "..." : ""}</span>
+                <span className="text-[11px] text-muted-foreground truncate">{" · "}{summary.slice(0, 45)}{summary.length > 45 ? "..." : ""}</span>
               </div>
             </div>
           )}
@@ -278,7 +278,7 @@ function NutritionPlanCard({ plan }) {
                   transition={{ duration: 0.8, ease: "easeOut" }}
                 />
               </div>
-              <span className="text-[10px] font-bold text-emerald-600">{progress}%</span>
+              <span className="text-[11px] font-bold text-emerald-600">{progress}%</span>
             </div>
           )}
         </button>
@@ -299,32 +299,32 @@ function NutritionPlanCard({ plan }) {
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-lg leading-none">🍽️</span>
                       <span className="text-xs font-bold text-foreground">{todayData.day || todayName}</span>
-                      <span className="text-[10px] text-muted-foreground">Repas du jour</span>
+                      <span className="text-[11px] text-muted-foreground">Repas du jour</span>
                     </div>
                     {todayData.morning && (
                       <div className="flex items-start gap-2 ml-7">
-                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">Matin</span>
+                        <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">Matin</span>
                         <div>
                           <p className="text-[12px] text-foreground/80">{todayData.morning.food}</p>
-                          <p className="text-[10px] text-muted-foreground">{todayData.morning.quantity}</p>
+                          <p className="text-[11px] text-muted-foreground">{todayData.morning.quantity}</p>
                         </div>
                       </div>
                     )}
                     {todayData.noon && (
                       <div className="flex items-start gap-2 ml-7">
-                        <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">Midi</span>
+                        <span className="text-[11px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">Midi</span>
                         <div>
                           <p className="text-[12px] text-foreground/80">{todayData.noon.food}</p>
-                          <p className="text-[10px] text-muted-foreground">{todayData.noon.quantity}</p>
+                          <p className="text-[11px] text-muted-foreground">{todayData.noon.quantity}</p>
                         </div>
                       </div>
                     )}
                     {todayData.evening && (
                       <div className="flex items-start gap-2 ml-7">
-                        <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">Soir</span>
+                        <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">Soir</span>
                         <div>
                           <p className="text-[12px] text-foreground/80">{todayData.evening.food}</p>
-                          <p className="text-[10px] text-muted-foreground">{todayData.evening.quantity}</p>
+                          <p className="text-[11px] text-muted-foreground">{todayData.evening.quantity}</p>
                         </div>
                       </div>
                     )}
@@ -343,7 +343,7 @@ function NutritionPlanCard({ plan }) {
                     <div className="flex-1 h-1.5 bg-emerald-100 rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-full" style={{ width: `${progress}%` }} />
                     </div>
-                    <span className="text-[10px] font-bold text-emerald-600">J{dayNumber}/7</span>
+                    <span className="text-[11px] font-bold text-emerald-600">J{dayNumber}/7</span>
                   </div>
                 )}
 
@@ -410,8 +410,8 @@ function BehaviorProgramCard({ program }) {
                 <Brain className="w-3.5 h-3.5 text-blue-600" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-blue-600 tracking-wide">Programme comportement</p>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[11px] font-bold text-blue-600 tracking-wide">Programme comportement</p>
+                <p className="text-[11px] text-muted-foreground">
                   Jour {elapsed + 1} / 7 — {program.problem_label}
                 </p>
               </div>
@@ -427,10 +427,10 @@ function BehaviorProgramCard({ program }) {
               <div className="flex items-center gap-2">
                 <Brain className="w-4 h-4 text-blue-500 shrink-0" />
                 <span className="text-xs font-bold text-foreground">{day.day_name || `Jour ${elapsed + 1}`}</span>
-                <span className="text-[10px] text-muted-foreground truncate"> — {day.theme}</span>
+                <span className="text-[11px] text-muted-foreground truncate"> — {day.theme}</span>
               </div>
               {day.exercises?.[0] && (
-                <p className="text-[10px] text-foreground/60 ml-6 truncate">
+                <p className="text-[11px] text-foreground/60 ml-6 truncate">
                   Aujourd'hui : {day.exercises[0].name} ({day.exercises[0].duration_min} min)
                   {day.exercises.length > 1 ? ` + ${day.exercises.length - 1} autre${day.exercises.length > 2 ? "s" : ""}` : ""}
                 </p>
@@ -448,7 +448,7 @@ function BehaviorProgramCard({ program }) {
                   transition={{ duration: 0.8, ease: "easeOut" }}
                 />
               </div>
-              <span className="text-[10px] font-bold text-blue-600">{completedCount}/7</span>
+              <span className="text-[11px] font-bold text-blue-600">{completedCount}/7</span>
             </div>
           )}
         </button>
@@ -464,21 +464,21 @@ function BehaviorProgramCard({ program }) {
             >
               <div className="px-4 pb-4 space-y-2">
                 {program.summary && (
-                  <p className="text-[10px] text-foreground/60 italic px-1">{program.summary}</p>
+                  <p className="text-[11px] text-foreground/60 italic px-1">{program.summary}</p>
                 )}
                 <div className="bg-white/80 rounded-xl p-3 border border-blue-100/60">
                   <p className="text-xs font-bold text-foreground mb-2">{day.day_name} — {day.theme}</p>
                   {day.exercises?.map((ex, i) => (
                     <div key={i} className="flex items-start gap-2 mt-2">
                       <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-                        <span className="text-[10px] font-bold text-blue-600">{i + 1}</span>
+                        <span className="text-[11px] font-bold text-blue-600">{i + 1}</span>
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-[12px] font-semibold text-foreground">
-                          {ex.name} <span className="text-[10px] text-muted-foreground font-normal">({ex.duration_min} min)</span>
+                          {ex.name} <span className="text-[11px] text-muted-foreground font-normal">({ex.duration_min} min)</span>
                         </p>
-                        <p className="text-[10px] text-foreground/70 leading-relaxed">{ex.description}</p>
-                        {ex.tips && <p className="text-[10px] text-blue-600 italic mt-0.5">{ex.tips}</p>}
+                        <p className="text-[11px] text-foreground/70 leading-relaxed">{ex.description}</p>
+                        {ex.tips && <p className="text-[11px] text-blue-600 italic mt-0.5">{ex.tips}</p>}
                       </div>
                     </div>
                   ))}
@@ -486,7 +486,7 @@ function BehaviorProgramCard({ program }) {
 
                 {day.environment_tips && (
                   <div className="bg-blue-50/50 rounded-xl px-3 py-2 border border-blue-100/40">
-                    <p className="text-[10px] text-blue-700">{day.environment_tips}</p>
+                    <p className="text-[11px] text-blue-700">{day.environment_tips}</p>
                   </div>
                 )}
 
@@ -494,14 +494,14 @@ function BehaviorProgramCard({ program }) {
                   <div className="grid grid-cols-2 gap-1.5">
                     {day.do?.length > 0 && (
                       <div className="bg-emerald-50 rounded-lg px-2.5 py-2 border border-emerald-100">
-                        <p className="text-[10px] font-bold text-emerald-700 uppercase mb-0.5">À faire</p>
-                        {day.do.slice(0, 2).map((d, i) => <p key={i} className="text-[10px] text-emerald-800 truncate">✓ {d}</p>)}
+                        <p className="text-[11px] font-bold text-emerald-700 uppercase mb-0.5">À faire</p>
+                        {day.do.slice(0, 2).map((d, i) => <p key={i} className="text-[11px] text-emerald-800 truncate">✓ {d}</p>)}
                       </div>
                     )}
                     {day.dont?.length > 0 && (
                       <div className="bg-red-50 rounded-lg px-2.5 py-2 border border-red-100">
-                        <p className="text-[10px] font-bold text-red-700 uppercase mb-0.5">À éviter</p>
-                        {day.dont.slice(0, 2).map((d, i) => <p key={i} className="text-[10px] text-red-800 truncate">✕ {d}</p>)}
+                        <p className="text-[11px] font-bold text-red-700 uppercase mb-0.5">À éviter</p>
+                        {day.dont.slice(0, 2).map((d, i) => <p key={i} className="text-[11px] text-red-800 truncate">✕ {d}</p>)}
                       </div>
                     )}
                   </div>
@@ -516,7 +516,7 @@ function BehaviorProgramCard({ program }) {
                     {marking ? "Enregistrement..." : `Marquer Jour ${elapsed + 1} comme fait`}
                   </button>
                 ) : (
-                  <p className="text-[10px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
+                  <p className="text-[11px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
                     <CheckCircle2 className="w-3 h-3" /> Jour {elapsed + 1} complété !
                   </p>
                 )}
@@ -525,7 +525,7 @@ function BehaviorProgramCard({ program }) {
                   <div className="flex-1 h-1.5 bg-blue-100 rounded-full overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" style={{ width: `${progress}%` }} />
                   </div>
-                  <span className="text-[10px] font-bold text-blue-600">{completedCount}/7</span>
+                  <span className="text-[11px] font-bold text-blue-600">{completedCount}/7</span>
                 </div>
 
                 {program.problem_id && (
@@ -587,7 +587,7 @@ export default function ActiveProgramCards({ trainingBookmarks = [], nutritionPl
   if (!activeTraining && !activePlan && !activeBehavior) return null;
 
   return (
-    <div className="mx-4 space-y-3">
+    <div className="space-y-3">
       {activeTraining && <TrainingCard program={activeTraining} />}
       {activeBehavior && <BehaviorProgramCard program={activeBehavior} />}
       {activePlan && <NutritionPlanCard plan={activePlan} />}

@@ -468,7 +468,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-bold text-emerald-800 truncate">Tu es au {nearPark.name} !</p>
-                  <p className="text-[10px] text-emerald-600 mt-0.5">Appuie sur Démarrer pour tracker ta balade ici</p>
+                  <p className="text-[11px] text-emerald-600 mt-0.5">Appuie sur Démarrer pour tracker ta balade ici</p>
                 </div>
               </motion.div>
             )}
@@ -504,7 +504,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                 </div>
                 <div className="text-white/60 text-xs mt-1 font-medium">minutes : secondes</div>
                 {status === "paused" && (
-                  <div className="mt-1 bg-white/20 rounded-full px-3 py-0.5 text-white text-[10px] font-bold">
+                  <div className="mt-1 bg-white/20 rounded-full px-3 py-0.5 text-white text-[11px] font-bold">
                     ⏸ EN PAUSE
                   </div>
                 )}
@@ -520,18 +520,18 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                 <div className="flex-1 bg-white border border-border rounded-2xl p-3 text-center">
                   <MapPin className="w-4 h-4 text-accent mx-auto mb-1" />
                   <div className="text-lg font-black text-foreground">{km}</div>
-                  <div className="text-[10px] text-muted-foreground font-medium">km</div>
+                  <div className="text-[11px] text-muted-foreground font-medium">km</div>
                 </div>
               )}
               <div className="flex-1 bg-white border border-border rounded-2xl p-3 text-center">
                 <Timer className="w-4 h-4 text-primary mx-auto mb-1" />
                 <div className="text-lg font-black text-foreground">{minutes}</div>
-                <div className="text-[10px] text-muted-foreground font-medium">minutes</div>
+                <div className="text-[11px] text-muted-foreground font-medium">minutes</div>
               </div>
               <div className="flex-1 bg-white border border-border rounded-2xl p-3 text-center">
                 <Zap className="w-4 h-4 text-caution mx-auto mb-1" />
                 <div className="text-lg font-black text-foreground">{Math.round(elapsed / 60 * 5)}</div>
-                <div className="text-[10px] text-muted-foreground font-medium">cal. est.</div>
+                <div className="text-[11px] text-muted-foreground font-medium">cal. est.</div>
               </div>
             </div>
 
@@ -555,7 +555,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                 style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)" }}
               >
                 <StopCircle className="w-7 h-7 text-white" />
-                <span className="text-white text-[10px] font-bold">TERMINER</span>
+                <span className="text-white text-[11px] font-bold">TERMINER</span>
               </motion.button>
             </div>
           </motion.div>
@@ -630,7 +630,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                     )}
                     <p className="text-xs text-foreground/80 leading-relaxed">{walkInfo.insight}</p>
                     {walkInfo.streak && (
-                      <p className="text-[10px] font-bold text-primary">{walkInfo.streak}</p>
+                      <p className="text-[11px] font-bold text-primary">{walkInfo.streak}</p>
                     )}
                   </motion.div>
 
@@ -658,13 +658,13 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                             }`}
                           >
                             <span className="text-2xl">{m.emoji}</span>
-                            <span className="text-[10px] font-bold text-muted-foreground">{m.label}</span>
+                            <span className="text-[11px] font-bold text-muted-foreground">{m.label}</span>
                           </button>
                         ))}
                       </div>
                       {walkMood && (
                         <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="space-y-2 overflow-hidden">
-                          <p className="text-[10px] font-bold text-muted-foreground">Comportement (optionnel)</p>
+                          <p className="text-[11px] font-bold text-muted-foreground">Comportement (optionnel)</p>
                           <div className="flex flex-wrap gap-1.5">
                             {WALK_TAGS.map(tag => (
                               <button
@@ -672,7 +672,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                                 onClick={() => setSelectedMoodTags(prev =>
                                   prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
                                 )}
-                                className={`text-[10px] font-semibold px-2.5 py-2 rounded-full transition-all ${
+                                className={`text-[11px] font-semibold px-2.5 py-2 rounded-full transition-all ${
                                   selectedMoodTags.includes(tag)
                                     ? "bg-primary text-white"
                                     : "bg-secondary/50 text-muted-foreground"

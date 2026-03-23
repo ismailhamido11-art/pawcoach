@@ -48,12 +48,12 @@ export default function DogSwitcher({ dogs, activeDogId, onSwitch, onAdd, isPrem
               <p className={`text-xs font-semibold truncate max-w-[60px] text-center ${isActive ? "text-primary" : "text-foreground"}`}>
                 {dog.name}
               </p>
-              <p className="text-[10px] text-muted-foreground truncate max-w-[60px] text-center -mt-1">{dog.breed}</p>
+              <p className="text-[11px] text-muted-foreground truncate max-w-[60px] text-center -mt-1">{dog.breed}</p>
 
               {/* Arrow to DogProfile */}
               <button
                 onClick={() => navigate(createPageUrl("DogProfile") + `?dogId=${dog.id}`)}
-                className="flex items-center gap-0.5 text-[10px] text-primary font-semibold"
+                className="flex items-center gap-0.5 text-[11px] text-primary font-semibold"
               >
                 Profil <ChevronRight className="w-3 h-3" />
               </button>

@@ -39,8 +39,8 @@ export default function StatusPills({ pills, onPillClick }) {
           >
             {Icon && <Icon className={`w-3.5 h-3.5 ${style.text}`} />}
             <div className="text-left">
-              <p className={`text-[10px] font-bold ${style.text} leading-none`}>{pill.label}</p>
-              <p className={`text-[10px] font-medium ${style.text} opacity-70 mt-0.5 leading-none`}>{pill.value}</p>
+              <p className={`text-[11px] font-bold ${style.text} leading-none`}>{pill.label}</p>
+              <p className={`text-[11px] font-medium ${style.text} opacity-70 mt-0.5 leading-none`}>{pill.value}</p>
             </div>
             <div className={`w-1.5 h-1.5 rounded-full ${style.dot} ml-0.5`} />
           </motion.button>

@@ -50,7 +50,7 @@ export default function DogIdentityCards({ dog, dailyLogs, onSave }) {
           <p className="text-sm font-bold text-foreground truncate">
             {dog.sex === "male" ? "Mâle" : dog.sex === "female" ? "Femelle" : "—"}
           </p>
-          <p className="text-[10px] text-muted-foreground">{dog.neutered ? "Stérilisé" : "Non stérilisé"}</p>
+          <p className="text-[11px] text-muted-foreground">{dog.neutered ? "Stérilisé" : "Non stérilisé"}</p>
         </div>
       </div>
 

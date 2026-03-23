@@ -256,21 +256,21 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
             <div className="bg-white rounded-2xl p-3 text-center border border-border shadow-sm">
               <Weight className="w-4 h-4 text-primary mx-auto mb-1" />
               <p className="text-lg font-black text-foreground">{latest.weight_kg} kg</p>
-              <p className="text-[10px] text-muted-foreground">Poids actuel</p>
+              <p className="text-[11px] text-muted-foreground">Poids actuel</p>
             </div>
           )}
           {latest.height_cm && (
             <div className="bg-white rounded-2xl p-3 text-center border border-border shadow-sm">
               <Ruler className="w-4 h-4 text-accent mx-auto mb-1" />
               <p className="text-lg font-black text-foreground">{latest.height_cm} cm</p>
-              <p className="text-[10px] text-muted-foreground">Hauteur</p>
+              <p className="text-[11px] text-muted-foreground">Hauteur</p>
             </div>
           )}
           {bcsInfo && (
             <div className="bg-white rounded-2xl p-3 text-center border border-border shadow-sm">
               <TrendingUp className="w-4 h-4 text-amber-500 mx-auto mb-1" />
               <p className={`text-sm font-black ${bcsInfo.color}`}>{latest.body_condition_score}/9</p>
-              <p className="text-[10px] text-muted-foreground">{bcsInfo.label}</p>
+              <p className="text-[11px] text-muted-foreground">{bcsInfo.label}</p>
             </div>
           )}
         </div>
@@ -286,13 +286,13 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
                 whileTap={{ scale: 0.93 }}
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 onClick={() => setActiveChart("weight")}
-                className={`text-[10px] font-bold px-2 py-1 rounded-lg transition-all ${activeChart === "weight" ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}
+                className={`text-[11px] font-bold px-2 py-1 rounded-lg transition-all ${activeChart === "weight" ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}
               >Poids</motion.button>
               <motion.button
                 whileTap={{ scale: 0.93 }}
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 onClick={() => setActiveChart("height")}
-                className={`text-[10px] font-bold px-2 py-1 rounded-lg transition-all ${activeChart === "height" ? "bg-accent text-white" : "bg-muted text-muted-foreground"}`}
+                className={`text-[11px] font-bold px-2 py-1 rounded-lg transition-all ${activeChart === "height" ? "bg-accent text-white" : "bg-muted text-muted-foreground"}`}
               >Taille</motion.button>
             </div>
           </div>
@@ -326,7 +326,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
             </AreaChart>
           </ResponsiveContainer>
           {activeChart === "weight" && chartData.some(d => d.ref_weight) && (
-            <div className="flex gap-3 mt-2 text-[10px] text-muted-foreground">
+            <div className="flex gap-3 mt-2 text-[11px] text-muted-foreground">
               <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-primary inline-block rounded" /> {dog?.name}</span>
               <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-caution inline-block rounded border-dashed" /> Référence race</span>
             </div>
@@ -341,13 +341,13 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
           <div className="flex flex-col items-center gap-2 bg-gradient-to-br from-primary to-accent rounded-2xl p-4 text-white text-center shadow-md">
             <Camera className="w-6 h-6" />
             <span className="text-xs font-bold">Analyser une photo</span>
-            <span className="text-[10px] text-white/70">IA morphologique</span>
+            <span className="text-[11px] text-white/70">IA morphologique</span>
           </div>
         </label>
         <button onClick={() => setShowAddManual(true)} className="flex flex-col items-center gap-2 bg-white border border-border rounded-2xl p-4 text-foreground text-center shadow-sm">
           <Plus className="w-6 h-6 text-muted-foreground" />
           <span className="text-xs font-bold">Mesure manuelle</span>
-          <span className="text-[10px] text-muted-foreground">Poids / taille</span>
+          <span className="text-[11px] text-muted-foreground">Poids / taille</span>
         </button>
       </div>
 
@@ -377,7 +377,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-primary" />
                   <p className="font-bold text-sm">Résultat de l'analyse</p>
-                  <span className={`ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full ${analysisResult.confidence === "high" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                  <span className={`ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full ${analysisResult.confidence === "high" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
                     {analysisResult.confidence === "high" ? "Haute confiance" : "Confiance moyenne"}
                   </span>
                 </div>
@@ -385,19 +385,19 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
                   {analysisResult.weight_kg && (
                     <div className="bg-secondary rounded-xl p-2 text-center">
                       <p className="text-base font-black text-primary">{analysisResult.weight_kg} kg</p>
-                      <p className="text-[10px] text-muted-foreground">Poids estimé</p>
+                      <p className="text-[11px] text-muted-foreground">Poids estimé</p>
                     </div>
                   )}
                   {analysisResult.height_cm && (
                     <div className="bg-secondary rounded-xl p-2 text-center">
                       <p className="text-base font-black text-accent">{analysisResult.height_cm} cm</p>
-                      <p className="text-[10px] text-muted-foreground">Hauteur</p>
+                      <p className="text-[11px] text-muted-foreground">Hauteur</p>
                     </div>
                   )}
                   {analysisResult.body_condition_score && (
                     <div className="bg-secondary rounded-xl p-2 text-center">
                       <p className={`text-base font-black ${getBcsLabel(analysisResult.body_condition_score).color}`}>{analysisResult.body_condition_score}/9</p>
-                      <p className="text-[10px] text-muted-foreground">Score BCS</p>
+                      <p className="text-[11px] text-muted-foreground">Score BCS</p>
                     </div>
                   )}
                 </div>
@@ -430,18 +430,18 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
             <p className="font-bold text-sm">Ajouter une mesure</p>
             <div className="grid grid-cols-3 gap-2">
               <div>
-                <label className="text-[10px] text-muted-foreground font-bold">Date</label>
+                <label className="text-[11px] text-muted-foreground font-bold">Date</label>
                 <input type="date" value={manualForm.date} onChange={e => setManualForm(p => ({ ...p, date: e.target.value }))}
                   className="w-full mt-1 text-xs border border-border rounded-lg px-2 py-2 bg-background" />
               </div>
               <div>
-                <label className="text-[10px] text-muted-foreground font-bold">Poids (kg)</label>
+                <label className="text-[11px] text-muted-foreground font-bold">Poids (kg)</label>
                 <input type="number" step="0.1" inputMode="decimal" placeholder="ex: 12.5" value={manualForm.weight_kg}
                   onChange={e => setManualForm(p => ({ ...p, weight_kg: e.target.value }))}
                   className="w-full mt-1 text-xs border border-border rounded-lg px-2 py-2 bg-background" />
               </div>
               <div>
-                <label className="text-[10px] text-muted-foreground font-bold">Taille (cm)</label>
+                <label className="text-[11px] text-muted-foreground font-bold">Taille (cm)</label>
                 <input type="number" step="0.5" inputMode="decimal" placeholder="ex: 45" value={manualForm.height_cm}
                   onChange={e => setManualForm(p => ({ ...p, height_cm: e.target.value }))}
                   className="w-full mt-1 text-xs border border-border rounded-lg px-2 py-2 bg-background" />
@@ -473,11 +473,11 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold">{format(new Date(entry.date), "d MMMM yyyy", { locale: fr })}</p>
                 <div className="flex gap-2 mt-0.5">
-                  {entry.weight_kg && <span className="text-[10px] text-muted-foreground">{entry.weight_kg} kg</span>}
-                  {entry.height_cm && <span className="text-[10px] text-muted-foreground">{entry.height_cm} cm</span>}
-                  {entry.body_condition_score && <span className={`text-[10px] font-bold ${getBcsLabel(entry.body_condition_score).color}`}>BCS {entry.body_condition_score}/9</span>}
+                  {entry.weight_kg && <span className="text-[11px] text-muted-foreground">{entry.weight_kg} kg</span>}
+                  {entry.height_cm && <span className="text-[11px] text-muted-foreground">{entry.height_cm} cm</span>}
+                  {entry.body_condition_score && <span className={`text-[11px] font-bold ${getBcsLabel(entry.body_condition_score).color}`}>BCS {entry.body_condition_score}/9</span>}
                 </div>
-                {entry.ai_notes && <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{entry.ai_notes}</p>}
+                {entry.ai_notes && <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{entry.ai_notes}</p>}
               </div>
               <button onClick={() => deleteEntry(entry.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
                 <Trash2 className="w-3.5 h-3.5" />

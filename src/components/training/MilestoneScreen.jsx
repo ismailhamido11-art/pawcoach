@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { toast } from "sonner";
 import confetti from "canvas-confetti";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Share2 } from "lucide-react";
@@ -27,7 +28,7 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
       await navigator.share({ title: `${dogName} – PawCoach`, text });
     } else {
       await navigator.clipboard.writeText(text);
-      alert("Résumé copié dans le presse-papiers !");
+      toast.success("Résumé copié dans le presse-papiers !");
     }
   };
 

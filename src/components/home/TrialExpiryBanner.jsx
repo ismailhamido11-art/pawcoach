@@ -42,7 +42,7 @@ export default function TrialExpiryBanner({ user, dog }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="mx-5"
+      className=""
     >
       <Link to={createPageUrl("Premium")}>
         <div
@@ -55,13 +55,13 @@ export default function TrialExpiryBanner({ user, dog }) {
           <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
             isUrgent ? "bg-amber-200" : "bg-amber-100"
           }`}>
-            <Clock className={`w-4.5 h-4.5 ${isUrgent ? "text-amber-700" : "text-amber-600"}`} />
+            <Clock className={`w-4 h-4 ${isUrgent ? "text-amber-700" : "text-amber-600"}`} />
           </div>
           <div className="flex-1 min-w-0">
             <p className={`text-xs font-bold leading-snug ${isUrgent ? "text-amber-800" : "text-amber-700"}`}>
               {msg.title(dogName, daysLeft)}
             </p>
-            <p className="text-[10px] text-amber-600/80 mt-0.5">
+            <p className="text-[11px] text-amber-600/80 mt-0.5">
               {msg.sub}
             </p>
           </div>

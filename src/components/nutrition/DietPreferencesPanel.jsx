@@ -173,7 +173,7 @@ export default function DietPreferencesPanel({ dog, user }) {
         {/* Popular brand suggestions */}
         {suggestedBrands.length > 0 && (
           <div>
-            <p className="text-[10px] text-muted-foreground mb-1.5 font-medium">Marques populaires (appuie pour ajouter)</p>
+            <p className="text-[11px] text-muted-foreground mb-1.5 font-medium">Marques populaires (appuie pour ajouter)</p>
             <div className="flex flex-wrap gap-1.5">
               {suggestedBrands.map(b => (
                 <button key={b} onClick={() => addBrand(b)}
@@ -203,7 +203,7 @@ export default function DietPreferencesPanel({ dog, user }) {
 
         {/* Common dislikes quick-pick */}
         <div>
-          <p className="text-[10px] text-muted-foreground mb-1.5 font-medium">Allergènes et intolérances courants</p>
+          <p className="text-[11px] text-muted-foreground mb-1.5 font-medium">Allergènes et intolérances courants</p>
           <div className="flex flex-wrap gap-1.5">
             {COMMON_DISLIKES.map(food => (
               <button key={food} onClick={() => toggleDislike(food)}
@@ -282,7 +282,7 @@ export default function DietPreferencesPanel({ dog, user }) {
               }`}>
               <p className="text-lg">{emoji}</p>
               <p className={`text-xs font-bold mt-0.5 ${budget === id ? "text-primary" : "text-foreground"}`}>{label}</p>
-              <p className="text-[10px] text-muted-foreground">{desc}</p>
+              <p className="text-[11px] text-muted-foreground">{desc}</p>
             </button>
           ))}
         </div>

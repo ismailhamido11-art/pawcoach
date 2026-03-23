@@ -139,7 +139,7 @@ export default function Onboarding() {
       setCurrentAnswer(file_url);
     } catch (e) {
       console.error(e);
-      alert("Impossible d'envoyer la photo. Réessaie.");
+      toast.error("Impossible d'envoyer la photo. Réessaie.");
     } finally {
       setUploading(false);
     }
@@ -147,7 +147,7 @@ export default function Onboarding() {
 
   const toggleMic = () => {
     if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
-      alert("La dictée vocale n'est pas supportée sur ce navigateur. Utilise Chrome.");
+      toast.error("Dictée vocale non supportée. Utilise Chrome.");
       return;
     }
     if (listening) { recognitionRef.current?.stop(); setListening(false); return; }
@@ -246,7 +246,7 @@ Extrais ces informations et renvoie un objet JSON.
       setDone(true);
     } catch (e) {
       console.error(e);
-      alert("Une erreur est survenue lors de la création du profil. Réessaie.");
+      toast.error("Erreur lors de la création du profil. Réessaie.");
     } finally {
       setSaving(false); savingRef.current = false;
     }

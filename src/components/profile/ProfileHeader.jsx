@@ -55,8 +55,8 @@ export default function ProfileHeader({ user, achievementPoints }) {
         {/* Gamification badge — now shows real achievement points */}
         <div className={`flex flex-col items-center gap-1 px-3 py-2 rounded-2xl ${badge.color} flex-shrink-0`}>
           <BadgeIcon className="w-5 h-5" />
-          <span className="text-[10px] font-black">{badge.name}</span>
-          <span className="text-[10px] font-bold opacity-70">
+          <span className="text-[11px] font-black">{badge.name}</span>
+          <span className="text-[11px] font-bold opacity-70">
             {achievementPoints === null ? "..." : `${points} pts`}
           </span>
         </div>

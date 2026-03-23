@@ -27,7 +27,7 @@ function StatCard({ icon: Icon, color, label, value, sub, trend }) {
       <div className="flex-1 min-w-0">
         <p className="text-xs text-muted-foreground">{label}</p>
         <p className="font-bold text-foreground text-lg leading-tight">{value}</p>
-        {sub && <p className="text-[10px] text-muted-foreground">{sub}</p>}
+        {sub && <p className="text-[11px] text-muted-foreground">{sub}</p>}
       </div>
       {trend !== undefined && (
         <div className={`flex items-center gap-0.5 text-xs font-semibold ${trend > 0 ? "text-emerald-500" : trend < 0 ? "text-red-400" : "text-muted-foreground"}`}>

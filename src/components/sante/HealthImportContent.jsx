@@ -242,7 +242,7 @@ export default function HealthImportContent({ dog, onImported }) {
           <motion.div key="review" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 pb-24">
             {(summary || docType) && (
               <div className="bg-primary/5 border border-primary/15 rounded-2xl p-4">
-                {docType && <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-1">{docType}</p>}
+                {docType && <p className="text-[11px] font-bold uppercase tracking-widest text-primary mb-1">{docType}</p>}
                 {summary && <p className="text-sm text-foreground leading-relaxed">🤖 {summary}</p>}
               </div>
             )}
@@ -280,7 +280,7 @@ export default function HealthImportContent({ dog, onImported }) {
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-sm text-foreground truncate">{record.title}</p>
                         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${cfg.bgClass} ${cfg.colorClass}`}>{cfg.label}</span>
+                          <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-full ${cfg.bgClass} ${cfg.colorClass}`}>{cfg.label}</span>
                           {record.date && <span className="text-xs text-muted-foreground">{record.date}</span>}
                           {record.value != null && <span className="text-xs font-medium text-muted-foreground">{record.value} kg</span>}
                         </div>

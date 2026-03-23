@@ -193,7 +193,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground">Parcs canins proches</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
+              <p className="text-[11px] text-muted-foreground mt-0.5">
                 {error === "denied" ? "Localisation refusée. Vérifie les réglages de ton navigateur." : "Active la localisation pour voir les parcs autour de toi."}
               </p>
             </div>
@@ -243,7 +243,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
         {!loading && parks.length > 0 && (
           <button
             onClick={() => setShowMap(s => !s)}
-            className="flex items-center gap-1 text-[10px] font-semibold text-primary px-2.5 py-1 rounded-lg bg-primary/10"
+            className="flex items-center gap-1 text-[11px] font-semibold text-primary px-2.5 py-1 rounded-lg bg-primary/10"
           >
             <MapIcon className="w-3 h-3" />
             {showMap ? "Masquer" : "Carte"}
@@ -276,7 +276,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                         <a
                           href={`https://www.google.com/maps/dir/?api=1&destination=${park.lat},${park.lng}&travelmode=walking`}
                           target="_blank" rel="noopener noreferrer"
-                          className="text-[10px] font-bold text-white px-2 py-1 rounded-md no-underline"
+                          className="text-[11px] font-bold text-white px-2 py-1 rounded-md no-underline"
                           style={{ background: "#1A4D3E" }}
                         >
                           Itinéraire
@@ -284,7 +284,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                         <a
                           href={`https://www.google.com/maps/search/parc/@${park.lat},${park.lng},18z`}
                           target="_blank" rel="noopener noreferrer"
-                          className="text-[10px] font-bold text-blue-600 px-2 py-1 rounded-md bg-blue-50 no-underline"
+                          className="text-[11px] font-bold text-blue-600 px-2 py-1 rounded-md bg-blue-50 no-underline"
                         >
                           Maps
                         </a>
@@ -300,8 +300,8 @@ export default function NearbyParks({ dog, user, onNearPark }) {
 
       {error === "api" && (
         <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
-          <p className="text-[10px] text-amber-700 font-medium">Impossible de charger les parcs</p>
-          <button onClick={retryGeolocation} className="text-[10px] font-bold text-primary px-2.5 py-1 rounded-lg bg-primary/10">
+          <p className="text-[11px] text-amber-700 font-medium">Impossible de charger les parcs</p>
+          <button onClick={retryGeolocation} className="text-[11px] font-bold text-primary px-2.5 py-1 rounded-lg bg-primary/10">
             Réessayer
           </button>
         </div>
@@ -338,9 +338,9 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                       <PawRating paws={paws} />
                     </div>
                     <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                      <span className={`text-[10px] font-semibold ${typeInfo.color}`}>{typeInfo.label}</span>
+                      <span className={`text-[11px] font-semibold ${typeInfo.color}`}>{typeInfo.label}</span>
                       {badges.slice(0, 2).map((b, i) => (
-                        <span key={i} className="text-[10px] text-muted-foreground">• {b.label}</span>
+                        <span key={i} className="text-[11px] text-muted-foreground">• {b.label}</span>
                       ))}
                     </div>
                   </div>
@@ -362,7 +362,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                             {badges.map((b, i) => (
                               <div key={i} className="flex items-center gap-1 bg-secondary/60 rounded-lg px-2 py-1">
                                 <b.icon className={`w-3 h-3 ${b.color}`} />
-                                <span className="text-[10px] font-semibold text-foreground">{b.label}</span>
+                                <span className="text-[11px] font-semibold text-foreground">{b.label}</span>
                               </div>
                             ))}
                           </div>

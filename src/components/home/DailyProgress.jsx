@@ -46,7 +46,7 @@ export default function DailyProgress({ dailyLogs = [], todayCheckin, dog }) {
             <item.icon className="w-[18px] h-[18px]" style={{ color: item.color }} />
           </div>
           <span className="text-[14px] font-semibold text-[#2D2D2D]">{item.value}</span>
-          <span className="text-[10px] text-gray-400">{item.label}</span>
+          <span className="text-[11px] text-gray-400">{item.label}</span>
         </div>
       ))}
     </div>

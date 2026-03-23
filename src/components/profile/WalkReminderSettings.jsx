@@ -87,7 +87,7 @@ export default function WalkReminderSettings({ user, onSave, dogName }) {
                   </button>
                 ))}
               </div>
-              <p className="text-[10px] text-muted-foreground mt-2 flex items-center gap-1">
+              <p className="text-[11px] text-muted-foreground mt-2 flex items-center gap-1">
                 <Footprints className="w-3 h-3" />
                 Un email sera envoyé à {time} si {dogName || "ton chien"} n'a pas encore eu sa balade
               </p>

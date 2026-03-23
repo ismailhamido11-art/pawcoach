@@ -30,23 +30,23 @@ export default function VetNotesList({ notes }) {
           <div key={note.id} className={`p-4 rounded-xl border ${note.is_urgent ? "border-red-300 bg-red-50/50" : "border-border bg-white"}`}>
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Badge className={`${config.color} text-[10px]`}>
+                <Badge className={`${config.color} text-[11px]`}>
                   <Icon className="w-3 h-3 mr-1" />
                   {config.label}
                 </Badge>
                 {note.is_urgent && (
-                  <Badge className="bg-red-100 text-red-700 text-[10px]">
+                  <Badge className="bg-red-100 text-red-700 text-[11px]">
                     <AlertTriangle className="w-3 h-3 mr-1" />Urgent
                   </Badge>
                 )}
               </div>
-              <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+              <span className="text-[11px] text-muted-foreground whitespace-nowrap">
                 {note.created_date ? format(new Date(note.created_date), "d MMM yyyy", { locale: fr }) : ""}
               </span>
             </div>
             <h4 className="font-semibold text-sm mt-2">{note.title}</h4>
             <p className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap">{note.content}</p>
-            <p className="text-[10px] text-muted-foreground mt-2">— Dr. {note.vet_name || note.vet_email}</p>
+            <p className="text-[11px] text-muted-foreground mt-2">— Dr. {note.vet_name || note.vet_email}</p>
           </div>
         );
       })}

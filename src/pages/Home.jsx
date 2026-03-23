@@ -274,7 +274,7 @@ export default function Home() {
   ];
 
   const streakDays = streak?.current_streak || 0;
-  const streakLabel = streakDays >= 30 ? "Champion" : streakDays >= 14 ? "Assidu" : streakDays >= 7 ? "Regulier" : streakDays >= 3 ? "Debutant" : "";
+  const streakLabel = streakDays >= 30 ? "Champion" : streakDays >= 14 ? "Assidu" : streakDays >= 7 ? "Régulier" : streakDays >= 3 ? "Débutant" : "";
 
   const handleQuickCheckin = async ({ mood, energy, appetite }) => {
     if (submitting) return;
@@ -283,20 +283,22 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAF6F1] pb-32">
-        <div className="bg-gradient-to-b from-[#FEF0E8] to-[#FAF6F1] px-5 pt-3 pb-5 space-y-4">
+      <div className="min-h-screen bg-background pb-32">
+        <div className="bg-gradient-to-b from-secondary to-background px-5 pt-3 pb-5 space-y-4">
           <div className="flex justify-between items-center">
             <div className="space-y-2">
-              <div className="h-4 w-24 bg-[#E8E4DF] rounded-lg animate-pulse" />
-              <div className="h-6 w-36 bg-[#E8E4DF] rounded-lg animate-pulse" />
+              <div className="h-4 w-24 bg-border rounded-lg animate-pulse" />
+              <div className="h-6 w-36 bg-border rounded-lg animate-pulse" />
             </div>
-            <div className="w-[52px] h-[52px] rounded-full bg-[#E8E4DF] animate-pulse" />
+            <div className="w-[52px] h-[52px] rounded-full bg-border animate-pulse" />
           </div>
         </div>
         <div className="px-5 mt-6 space-y-3">
-          <div className="h-5 w-48 bg-[#E8E4DF] rounded-lg animate-pulse" />
-          <div className="h-4 w-64 bg-[#E8E4DF] rounded-lg animate-pulse" />
-          <div className="h-16 w-full bg-[#E8E4DF] rounded-2xl animate-pulse mt-4" />
+          <div className="h-5 w-48 bg-border rounded-lg animate-pulse" />
+          <div className="h-4 w-64 bg-border rounded-lg animate-pulse" />
+          <div className="h-16 w-full bg-border rounded-2xl animate-pulse mt-4" />
+          <div className="h-24 w-full bg-border rounded-2xl animate-pulse mt-2" />
+          <div className="h-32 w-full bg-border rounded-2xl animate-pulse mt-2" />
         </div>
         <BottomNav currentPage="Home" />
       </div>
@@ -304,7 +306,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF6F1] pb-32 relative flex flex-col">
+    <div className="min-h-screen bg-background pb-32 relative flex flex-col">
       <PullToRefresh onRefresh={handleRefresh}>
 
         {/* 1. Warm Header — greeting + photo */}
@@ -324,7 +326,18 @@ export default function Home() {
         />
 
         {/* === Below the fold — scroll to discover === */}
-        <div className="px-4 space-y-6">
+        <div className="px-5 space-y-6">
+
+          {/* Trial expiry — visible immediately */}
+          <TrialExpiryBanner user={user} dog={dog} />
+
+          {/* Guide J0 — early for new users */}
+          <FirstDayGuide
+            dog={dog}
+            todayCheckin={todayCheckin}
+            scans={scans}
+            dailyLogs={dailyLogs}
+          />
 
           {/* Calendar Strip */}
           <CalendarStrip dailyLogs={dailyLogs} />
@@ -347,7 +360,7 @@ export default function Home() {
                 <div className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center" style={{ backgroundColor: qa.bg }}>
                   <qa.icon className="w-[22px] h-[22px]" style={{ color: qa.color }} />
                 </div>
-                <span className="text-[11px] font-medium text-gray-500">{qa.label}</span>
+                <span className="text-[11px] font-medium text-muted-foreground">{qa.label}</span>
               </button>
             ))}
           </div>
@@ -357,16 +370,16 @@ export default function Home() {
 
           {/* Streak Card */}
           {streakDays > 0 && (
-            <div className="flex items-center gap-4 bg-white rounded-[20px] border border-[#E8E4DF] p-[18px]">
-              <div className="w-11 h-11 rounded-full bg-[#FEF3C7] flex items-center justify-center flex-shrink-0">
-                <Flame className="w-[22px] h-[22px] text-[#F59E0B]" />
+            <div className="flex items-center gap-4 bg-card rounded-2xl border border-border p-[18px]">
+              <div className="w-11 h-11 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
+                <Flame className="w-[22px] h-[22px] text-amber-500" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-semibold text-[#2D2D2D]">{streakDays} jours de suite</p>
-                <p className="text-[12px] text-gray-400 mt-0.5">La regularite paie — continue comme ca !</p>
+                <p className="text-[15px] font-semibold text-foreground">{streakDays} jours de suite</p>
+                <p className="text-xs text-muted-foreground mt-0.5">La régularité paie — continue comme ça !</p>
               </div>
               {streakLabel && (
-                <span className="text-[11px] font-semibold text-[#2D9F82] bg-[#E8F5F0] px-3 py-1.5 rounded-full flex-shrink-0">
+                <span className="text-[11px] font-semibold text-accent bg-secondary px-3 py-1.5 rounded-full flex-shrink-0">
                   {streakLabel}
                 </span>
               )}
@@ -378,9 +391,6 @@ export default function Home() {
 
           {/* Content Articles — "Pour Rex" */}
           <ContentArticles dog={dog} />
-
-          {/* Trial expiry */}
-          <TrialExpiryBanner user={user} dog={dog} />
 
           {/* Weekly Insight */}
           {(weeklyInsight || pastInsights.length > 0) && (
@@ -396,17 +406,9 @@ export default function Home() {
             />
           )}
 
-          {/* Guide J0 */}
-          <FirstDayGuide
-            dog={dog}
-            todayCheckin={todayCheckin}
-            scans={scans}
-            dailyLogs={dailyLogs}
-          />
-
           {/* Disclaimer */}
-          <p className="text-center text-[10px] text-gray-400 px-6 pb-2">
-            PawCoach est un outil de suivi. Consultez votre veterinaire.
+          <p className="text-center text-[11px] text-muted-foreground px-6 pb-2">
+            PawCoach est un outil de suivi. Consultez votre vétérinaire.
           </p>
         </div>
 
@@ -438,7 +440,7 @@ export default function Home() {
 function MilestoneCelebration({ milestone, onClose }) {
   useEffect(() => {
     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-    confetti({ particleCount: 100, spread: 80, origin: { x: 0.5, y: 0.55 }, colors: ["#2d9f82", "#10b981", "#6366f1", "#3b82f6"] });
+    confetti({ particleCount: 100, spread: 80, origin: { x: 0.5, y: 0.55 }, colors: ["#1A4D3E", "#2D9F82", "#10b981", "#34d399"] });
   }, []);
 
   return (

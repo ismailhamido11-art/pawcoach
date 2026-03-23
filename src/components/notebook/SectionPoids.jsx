@@ -88,7 +88,7 @@ export default function SectionPoids({ records = [], dogId, onDelete, onRecordAd
               <p className="text-sm font-bold text-foreground">Enregistrer un poids</p>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Poids (kg)</label>
+                  <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Poids (kg)</label>
                   <Input
                     type="number"
                     step="0.1"
@@ -99,7 +99,7 @@ export default function SectionPoids({ records = [], dogId, onDelete, onRecordAd
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Date</label>
+                  <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Date</label>
                   <input
                     type="date"
                     value={form.date}
@@ -130,7 +130,7 @@ export default function SectionPoids({ records = [], dogId, onDelete, onRecordAd
                 <button
                   key={p}
                   onClick={() => setPeriod(p)}
-                  className={`text-[10px] px-2 py-0.5 rounded-md font-medium transition-colors ${period === p ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                  className={`text-[11px] px-2 py-0.5 rounded-md font-medium transition-colors ${period === p ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                 >
                   {p}
                 </button>

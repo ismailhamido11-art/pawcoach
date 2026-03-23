@@ -35,7 +35,7 @@ export default function InlineEditCard({
         <div className="flex-1 min-w-0">
           <p className="text-xs text-muted-foreground">{label}</p>
           {!editing && <p className="text-sm font-bold text-foreground truncate">{value}</p>}
-          {sub && !editing && <p className={`text-[10px] ${subColor || "text-muted-foreground"}`}>{sub}</p>}
+          {sub && !editing && <p className={`text-[11px] ${subColor || "text-muted-foreground"}`}>{sub}</p>}
         </div>
         {!editing && (
           <button aria-label={`Modifier ${label}`} onClick={() => { setDraft(currentValue ?? ""); setEditing(true); }} className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">

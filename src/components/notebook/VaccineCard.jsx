@@ -69,11 +69,11 @@ function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
             <X className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         </div>
-        <p className="text-[10px] text-muted-foreground leading-relaxed">
+        <p className="text-[11px] text-muted-foreground leading-relaxed">
           Indique la date de la dernière injection. Le prochain rappel sera calculé automatiquement.
         </p>
         <div>
-          <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Date du vaccin</label>
+          <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Date du vaccin</label>
           <input
             type="date"
             value={date}
@@ -81,7 +81,7 @@ function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
             className="w-full mt-1 text-sm border border-border rounded-xl px-3 py-2 bg-background"
           />
         </div>
-        <p className="text-[10px] text-muted-foreground">
+        <p className="text-[11px] text-muted-foreground">
           Prochain rappel : tous les {data.ref.frequencyMonths >= 12 ? `${data.ref.frequencyMonths / 12} an${data.ref.frequencyMonths > 12 ? "s" : ""}` : `${data.ref.frequencyMonths} mois`}
         </p>
         <motion.button
@@ -126,7 +126,7 @@ function VaccineRow({ vaccineKey: _vaccineKey, data, expanded, onToggle, dogId, 
             <Icon className={`w-3 h-3 ${cfg.color}`} />
             <span className={`text-xs font-medium ${cfg.color}`}>{cfg.label}</span>
             {data.lastRecord && (
-              <span className="text-[10px] text-muted-foreground ml-1">
+              <span className="text-[11px] text-muted-foreground ml-1">
                 · {fmtDate(data.lastRecord.date)}
               </span>
             )}
@@ -274,21 +274,21 @@ export default function VaccineCard({ vaccineMap, dogId, onRecordAdded, onFindVe
             </div>
             <div>
               <p className="text-sm font-bold text-foreground">Calendrier vaccinal</p>
-              <p className="text-[10px] text-muted-foreground">Appuie sur un vaccin pour le mettre à jour</p>
+              <p className="text-[11px] text-muted-foreground">Appuie sur un vaccin pour le mettre à jour</p>
             </div>
           </div>
           {overdueCount > 0 && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600">
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600">
               {overdueCount} en retard
             </span>
           )}
           {overdueCount === 0 && dueSoonCount > 0 && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-600">
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-600">
               {dueSoonCount} bientôt
             </span>
           )}
           {overdueCount === 0 && dueSoonCount === 0 && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-600">
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-600">
               À jour
             </span>
           )}
@@ -298,7 +298,7 @@ export default function VaccineCard({ vaccineMap, dogId, onRecordAdded, onFindVe
       <div className="px-4 py-3 space-y-4">
         {Object.entries(grouped).map(([cat, items]) => (
           <div key={cat} className="space-y-2">
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {CATEGORY_LABELS[cat]}
             </p>
             {items.map(([key, data]) => (

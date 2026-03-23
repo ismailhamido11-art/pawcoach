@@ -123,11 +123,11 @@ export default function AchievementFeed({ dog }) {
                   </p>
                 </div>
                 <div className="flex-shrink-0 text-right">
-                  <p className="text-[10px] text-muted-foreground whitespace-nowrap">
+                  <p className="text-[11px] text-muted-foreground whitespace-nowrap">
                     {a.unlocked_at ? timeAgo(a.unlocked_at) : ""}
                   </p>
                   {a.points_awarded > 0 && (
-                    <p className="text-[10px] font-bold text-amber-600 mt-0.5">
+                    <p className="text-[11px] font-bold text-amber-600 mt-0.5">
                       +{a.points_awarded} pts
                     </p>
                   )}

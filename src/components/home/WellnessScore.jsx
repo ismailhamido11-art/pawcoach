@@ -59,7 +59,7 @@ export default function WellnessScore({ recentCheckins = [], streak, dailyLogs =
           <span className="text-[22px] font-bold text-[#1A4D3E]">
             {score != null ? score : "—"}
           </span>
-          {score != null && <span className="text-[10px] text-gray-400">%</span>}
+          {score != null && <span className="text-[11px] text-gray-400">%</span>}
         </div>
       </div>
 

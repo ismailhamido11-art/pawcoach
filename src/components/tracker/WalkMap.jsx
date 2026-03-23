@@ -74,7 +74,7 @@ export default function WalkMap({ path, currentPos }) {
       {/* Live badge overlay */}
       <div className="absolute top-2 left-2 z-[1000] flex items-center gap-1.5 bg-black/60 backdrop-blur-sm rounded-full px-2.5 py-1">
         <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-        <span className="text-white text-[10px] font-bold tracking-wider">LIVE</span>
+        <span className="text-white text-[11px] font-bold tracking-wider">LIVE</span>
       </div>
     </div>
   );

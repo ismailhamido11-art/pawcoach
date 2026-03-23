@@ -308,7 +308,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
                   </div>
                   <div>
                     <p className="text-xs font-medium">Ajouter une photo</p>
-                    <p className="text-[10px] text-muted-foreground">Si visible, prends une photo de la zone concernee</p>
+                    <p className="text-[11px] text-muted-foreground">Si visible, prends une photo de la zone concernee</p>
                   </div>
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                 </label>

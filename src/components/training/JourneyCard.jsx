@@ -42,17 +42,17 @@ export default function JourneyCard({ journey, completedCount, isPremium, isNext
               {journey.name}
             </p>
             {locked && (
-              <span className="text-[10px] bg-accent/15 text-emerald-600 font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-200">
+              <span className="text-[11px] bg-accent/15 text-emerald-600 font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-200">
                 <Lock className="w-2.5 h-2.5" /> Premium
               </span>
             )}
             {isComplete && (
-              <span className="text-[10px] bg-safe/15 text-safe font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+              <span className="text-[11px] bg-safe/15 text-safe font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                 <CheckCircle className="w-2.5 h-2.5" /> Terminé
               </span>
             )}
             {isNext && !locked && !isComplete && (
-              <span className="text-[10px] bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-full">
+              <span className="text-[11px] bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-full">
                 En cours
               </span>
             )}
@@ -65,7 +65,7 @@ export default function JourneyCard({ journey, completedCount, isPremium, isNext
 
       {/* Progress bar */}
       <div className={`mx-4 mb-4 ${locked ? "opacity-40" : ""}`}>
-        <div className="flex justify-between text-[10px] text-muted-foreground mb-1.5">
+        <div className="flex justify-between text-[11px] text-muted-foreground mb-1.5">
           <span>{done}/{total} exercices</span>
           <span>{Math.round(pct)}%</span>
         </div>

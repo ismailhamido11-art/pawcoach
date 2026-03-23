@@ -159,7 +159,7 @@ export default function FindVetContent({ dog, user }) {
             <button
               key={id}
               onClick={() => setActiveType(id)}
-              className={`flex-1 flex flex-col items-center gap-1 py-2.5 rounded-2xl border-2 text-[10px] font-bold transition-all ${
+              className={`flex-1 flex flex-col items-center gap-1 py-2.5 rounded-2xl border-2 text-[11px] font-bold transition-all ${
                 activeType === id ? "border-current shadow-sm" : "border-border bg-white text-muted-foreground"
               }`}
               style={activeType === id ? { color, borderColor: color, background: `${color}10` } : {}}

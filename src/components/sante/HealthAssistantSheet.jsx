@@ -24,8 +24,8 @@ export default function HealthAssistantSheet({ visible, onClose, dogId, dog, onR
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
-            transition={{ type: "spring", stiffness: 350, damping: 35 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl flex flex-col"
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl shadow-2xl flex flex-col"
             style={{
               maxHeight: "88vh",
               paddingBottom: "max(env(safe-area-inset-bottom, 0px), 1rem)",
@@ -49,7 +49,7 @@ export default function HealthAssistantSheet({ visible, onClose, dogId, dog, onR
                     Assistant Santé
                   </p>
                   {dog?.name && (
-                    <p className="text-[10px] text-muted-foreground">
+                    <p className="text-[11px] text-muted-foreground">
                       Suivi de {dog.name}
                     </p>
                   )}

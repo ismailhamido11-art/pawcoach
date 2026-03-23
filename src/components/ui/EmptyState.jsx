@@ -71,13 +71,13 @@ export default function EmptyState({
           <MascotComponent color="#2D9F82" />
         </motion.div>
       ) : LucideIcon ? (
-        <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mb-4">
-          <LucideIcon className="w-7 h-7 text-emerald-600" />
+        <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center mb-4">
+          <LucideIcon className="w-7 h-7 text-accent" />
         </div>
       ) : null}
 
       {/* Textes */}
-      <p className="font-bold text-base text-[#1A4D3E] leading-tight mb-1">{title}</p>
+      <p className="font-bold text-base text-primary leading-tight mb-1">{title}</p>
       {description && (
         <p className="text-sm text-muted-foreground leading-relaxed max-w-[260px]">{description}</p>
       )}
@@ -88,7 +88,7 @@ export default function EmptyState({
           whileTap={{ scale: 0.96 }}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
           onClick={onAction}
-          className="mt-5 px-5 py-2.5 rounded-xl bg-[#2D9F82] text-white text-sm font-semibold shadow-sm hover:bg-[#27896f] transition-colors"
+          className="mt-5 px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity"
         >
           {actionLabel}
         </motion.button>

@@ -145,7 +145,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                   className="overflow-hidden"
                 >
                   <p className="text-xs font-semibold text-muted-foreground mb-2">
-                    Symptômes observés ? <span className="font-normal text-[10px]">(optionnel)</span>
+                    Symptômes observés ? <span className="font-normal text-[11px]">(optionnel)</span>
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {SYMPTOMS.map(s => (
@@ -153,7 +153,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                         key={s.id}
                         onClick={() => toggleSymptom(s.id)}
                         className={cn(
-                          "px-2.5 py-2.5 rounded-lg border text-[10px] font-medium transition-all focus:ring-2 focus:ring-red-400 focus:outline-none",
+                          "px-2.5 py-2.5 rounded-lg border text-[11px] font-medium transition-all focus:ring-2 focus:ring-red-400 focus:outline-none",
                           symptoms.includes(s.id)
                             ? "border-red-300 bg-red-50 text-red-700"
                             : "border-border/40 bg-white/60 text-muted-foreground"

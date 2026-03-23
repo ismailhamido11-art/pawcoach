@@ -6,7 +6,7 @@ import { X, ChevronRight, MessageCircle, ScanLine, Dumbbell, Bell, Lock } from "
 import Illustration from "../illustrations/Illustration";
 
 const LOST_FEATURES = [
-  { icon: MessageCircle, label: "Chat IA illimite (retour a 10/jour)", color: "#3b82f6" },
+  { icon: MessageCircle, label: "Chat IA illimité (retour à 10/jour)", color: "#3b82f6" },
   { icon: ScanLine, label: "Scans illimités (retour à 3/semaine)", color: "#2d9f82" },
   { icon: Dumbbell, label: "Exercices avancés de dressage", color: "#6366f1" },
   { icon: Bell, label: "Rappels santé automatiques", color: "#ef4444" },
@@ -44,8 +44,9 @@ export default function PostTrialSheet({ visible, onClose, dogName }) {
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
-            transition={{ type: "spring", stiffness: 350, damping: 35 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl pb-10"
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl shadow-2xl"
+            style={{ paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))" }}
           >
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-10 h-1 rounded-full bg-muted" />
@@ -61,7 +62,7 @@ export default function PostTrialSheet({ visible, onClose, dogName }) {
               </div>
 
               <h2 className="text-xl font-black text-center text-foreground mb-1">
-                L'essai de {name} est termine
+                L'essai de {name} est terminé
               </h2>
               <p className="text-sm text-center text-muted-foreground mb-5">
                 Tu peux continuer gratuitement, mais voici ce que tu perds :
@@ -89,7 +90,7 @@ export default function PostTrialSheet({ visible, onClose, dogName }) {
                 onClick={handleUpgrade}
                 className="w-full h-14 rounded-2xl gradient-warm text-white font-black text-base flex items-center justify-center gap-2 shadow-lg border-0"
               >
-                S'abonner — a partir de 5 EUR/mois
+                S'abonner — à partir de 5 EUR/mois
                 <ChevronRight className="w-5 h-5" />
               </motion.button>
 

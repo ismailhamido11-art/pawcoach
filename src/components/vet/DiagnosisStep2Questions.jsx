@@ -47,7 +47,7 @@ export default function DiagnosisStep2Questions({ phase1, userAnswers, setUserAn
         <UrgencyIcon className="w-4 h-4 flex-shrink-0" />
         <div>
           <p className="text-xs font-bold">Première estimation : {urgency.label}</p>
-          <p className="text-[10px] mt-0.5">{phase1.preliminary_observations}</p>
+          <p className="text-[11px] mt-0.5">{phase1.preliminary_observations}</p>
         </div>
       </div>
 
@@ -55,7 +55,7 @@ export default function DiagnosisStep2Questions({ phase1, userAnswers, setUserAn
       <div className="flex items-center gap-2">
         <ClipboardList className="w-4 h-4 text-primary" />
         <h3 className="text-sm font-semibold">Questions complémentaires</h3>
-        <Badge variant="outline" className="text-[10px] ml-auto">{answeredCount}/{totalCount}</Badge>
+        <Badge variant="outline" className="text-[11px] ml-auto">{answeredCount}/{totalCount}</Badge>
       </div>
       <p className="text-xs text-muted-foreground -mt-2">
         Réponds à ces quelques questions — plus c'est précis, plus le rapport sera utile pour {dogName || "ton chien"}.
@@ -66,7 +66,7 @@ export default function DiagnosisStep2Questions({ phase1, userAnswers, setUserAn
         {questions.map((q, index) => (
           <div key={q.id} className="space-y-1.5">
             <label className="text-xs font-medium flex items-start gap-2">
-              <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[11px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                 {index + 1}
               </span>
               {q.question}

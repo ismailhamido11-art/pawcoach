@@ -9,7 +9,7 @@ function TrendBadge({ current, previous, label: _label }) {
   if (Math.abs(diff) < 0.1) return <Minus className="w-3 h-3 text-muted-foreground" />;
   const isUp = diff > 0;
   return (
-    <span className={`inline-flex items-center gap-0.5 text-[10px] font-bold ${isUp ? "text-emerald-600" : "text-amber-600"}`}>
+    <span className={`inline-flex items-center gap-0.5 text-[11px] font-bold ${isUp ? "text-emerald-600" : "text-amber-600"}`}>
       {isUp ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
       {isUp ? "+" : ""}{diff.toFixed(1)}
     </span>
@@ -43,14 +43,14 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
   const dateLabel = insight ? formatWeekDate(insight.week_start) : "";
 
   return (
-    <div className="mx-5 space-y-3">
+    <div className="space-y-3">
       {/* Current unread insight */}
       {insight && (
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, type: "spring" }}
-          className="rounded-3xl overflow-hidden border border-primary/15 shadow-sm"
+          className="rounded-2xl overflow-hidden border border-primary/15 shadow-sm"
           style={{ background: "linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary)))" }}
         >
           {/* Header */}
@@ -77,7 +77,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                   <p className="text-xl font-black text-primary">{insight.avg_mood.toFixed(1)}</p>
                   <TrendBadge current={insight.avg_mood} previous={previousInsight?.avg_mood} />
                 </div>
-                <p className="text-[10px] text-muted-foreground font-medium">humeur moy.</p>
+                <p className="text-[11px] text-muted-foreground font-medium">humeur moy.</p>
               </div>
             )}
             {insight.avg_energy != null && (
@@ -86,7 +86,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                   <p className="text-xl font-black text-accent">{insight.avg_energy.toFixed(1)}</p>
                   <TrendBadge current={insight.avg_energy} previous={previousInsight?.avg_energy} />
                 </div>
-                <p className="text-[10px] text-muted-foreground font-medium">énergie moy.</p>
+                <p className="text-[11px] text-muted-foreground font-medium">énergie moy.</p>
               </div>
             )}
             {insight.checkin_count > 0 && (
@@ -95,7 +95,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                   <p className="text-xl font-black text-emerald-600">{insight.checkin_count}</p>
                   <TrendBadge current={insight.checkin_count} previous={previousInsight?.checkin_count} />
                 </div>
-                <p className="text-[10px] text-muted-foreground font-medium">check-in{insight.checkin_count > 1 ? "s" : ""}</p>
+                <p className="text-[11px] text-muted-foreground font-medium">check-in{insight.checkin_count > 1 ? "s" : ""}</p>
               </div>
             )}
           </div>
@@ -117,7 +117,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
 
                   {highlights.length > 0 && (
                     <div>
-                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Points clés</p>
+                      <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Points clés</p>
                       <div className="space-y-1.5">
                         {highlights.map((h, i) => (
                           <div key={i} className="flex items-start gap-2 text-sm text-foreground">
@@ -131,7 +131,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
 
                   {recommendations.length > 0 && (
                     <div>
-                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Recommandations</p>
+                      <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Recommandations</p>
                       <div className="space-y-1.5">
                         {recommendations.map((r, i) => (
                           <div key={i} className="flex items-start gap-2 text-sm text-foreground">
@@ -191,7 +191,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                           <p className="text-xs font-semibold text-foreground">
                             Semaine du {formatWeekDate(pi.week_start)}
                           </p>
-                          <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                          <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
                             {pi.avg_mood != null && <span>Humeur {pi.avg_mood.toFixed(1)}</span>}
                             {pi.checkin_count > 0 && <span>{pi.checkin_count} check-in{pi.checkin_count > 1 ? "s" : ""}</span>}
                           </div>
@@ -201,7 +201,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                             <p className={`text-xs text-muted-foreground leading-relaxed ${isItemExpanded ? "" : "line-clamp-2"}`}>{pi.summary}</p>
                             <button
                               onClick={() => toggleInsightExpand(itemKey)}
-                              className="text-[10px] text-primary font-medium mt-0.5 hover:underline"
+                              className="text-[11px] text-primary font-medium mt-0.5 hover:underline"
                             >
                               {isItemExpanded ? "Reduire" : "Lire la suite"}
                             </button>
@@ -210,7 +210,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                         {piHighlights.length > 0 && (
                           <div className="flex flex-wrap gap-1.5 mt-1.5">
                             {piHighlights.slice(0, 2).map((h, j) => (
-                              <span key={j} className="text-[10px] bg-primary/5 text-primary/80 px-2 py-0.5 rounded-full">{h.slice(0, 50)}{h.length > 50 ? "..." : ""}</span>
+                              <span key={j} className="text-[11px] bg-primary/5 text-primary/80 px-2 py-0.5 rounded-full">{h.slice(0, 50)}{h.length > 50 ? "..." : ""}</span>
                             ))}
                           </div>
                         )}

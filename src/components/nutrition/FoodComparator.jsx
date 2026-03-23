@@ -295,13 +295,13 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
                       <CircleScore score={p.result.score} size={48} />
                       <div>
                         <p className="font-bold text-foreground text-sm leading-tight">{p.result.food_name}</p>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${col.bg} ${col.text}`}>
+                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${col.bg} ${col.text}`}>
                           Produit {i + 1}
                         </span>
                       </div>
                     </div>
                     {p.result.allergen_alert && (
-                      <div className="flex items-center gap-1 bg-red-100 text-red-600 text-[10px] font-bold px-2 py-1 rounded-full">
+                      <div className="flex items-center gap-1 bg-red-100 text-red-600 text-[11px] font-bold px-2 py-1 rounded-full">
                         <AlertTriangle className="w-3 h-3" />
                         Allergène
                       </div>
@@ -311,7 +311,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
                   {/* Pros */}
                   {p.result.pros?.length > 0 && (
                     <div className="space-y-1">
-                      <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-wide">✅ Avantages</p>
+                      <p className="text-[11px] font-bold text-emerald-700 uppercase tracking-wide">✅ Avantages</p>
                       {p.result.pros.map((pro, j) => (
                         <div key={j} className="flex gap-2 items-start">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
@@ -324,7 +324,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
                   {/* Cons */}
                   {p.result.cons?.length > 0 && (
                     <div className="space-y-1">
-                      <p className="text-[10px] font-bold text-red-700 uppercase tracking-wide">❌ Inconvénients</p>
+                      <p className="text-[11px] font-bold text-red-700 uppercase tracking-wide">❌ Inconvénients</p>
                       {p.result.cons.map((con, j) => (
                         <div key={j} className="flex gap-2 items-start">
                           <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
@@ -336,7 +336,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
 
                   {/* Recommendation */}
                   <div className="bg-white/80 rounded-xl p-2.5 border border-border/50">
-                    <p className="text-[10px] font-bold text-primary mb-1">💡 Pour {dog?.name || "ton chien"}</p>
+                    <p className="text-[11px] font-bold text-primary mb-1">💡 Pour {dog?.name || "ton chien"}</p>
                     <p className="text-xs text-foreground/80">{p.result.recommendation}</p>
                   </div>
 
@@ -396,7 +396,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
                     <Trophy className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-[10px] font-bold text-primary uppercase tracking-wide">Meilleur choix</p>
+                    <p className="text-[11px] font-bold text-primary uppercase tracking-wide">Meilleur choix</p>
                     <p className="font-bold text-foreground text-sm">{comparison.winner_name}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">{comparison.winner_reason}</p>
                   </div>
@@ -404,7 +404,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
 
                 {/* Summary */}
                 <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5">Bilan comparatif</p>
+                  <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5">Bilan comparatif</p>
                   <div className="text-sm text-foreground/80 leading-relaxed prose prose-sm max-w-none">
                     <ReactMarkdown
                       components={{
@@ -428,7 +428,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
                     <div key={i} className={`rounded-xl p-3 border-2 ${item.winner ? "border-primary/40 bg-primary/5" : "border-border bg-white/60"}`}>
                       <div className="flex items-center gap-1.5 mb-1">
                         {item.winner && <Trophy className="w-3 h-3 text-primary" />}
-                        <p className="text-[10px] font-bold text-foreground">{item.label}</p>
+                        <p className="text-[11px] font-bold text-foreground">{item.label}</p>
                       </div>
                       <p className="text-xs text-foreground/70 leading-relaxed">{item.text}</p>
                     </div>
@@ -437,7 +437,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
 
                 {/* Final recommendation */}
                 <div className="bg-white rounded-xl p-3 border border-primary/20">
-                  <p className="text-[10px] font-bold text-primary mb-1">🎯 Recommandation pour {dog?.name || "ton chien"}</p>
+                  <p className="text-[11px] font-bold text-primary mb-1">🎯 Recommandation pour {dog?.name || "ton chien"}</p>
                   <p className="text-xs text-foreground/80 leading-relaxed">{comparison.recommendation}</p>
                 </div>
 

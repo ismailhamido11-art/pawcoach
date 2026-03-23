@@ -9,7 +9,7 @@ export default function WellnessBanner() {
         height: "calc(28px + max(6px, env(safe-area-inset-top, 0px)))"
       }}
     >
-      <p className="text-[10px] text-accent-foreground font-medium">
+      <p className="text-[11px] text-accent-foreground font-medium">
         🐾 PawCoach est un coach bien-être, pas un vétérinaire.
       </p>
     </div>

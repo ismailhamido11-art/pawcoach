@@ -252,7 +252,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   // --- Voice ---
   const startListening = () => {
     if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
-      alert("Dict\u00e9e non support\u00e9e.");
+      toast.error("Dictée non supportée sur ce navigateur.");
       return;
     }
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -320,7 +320,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       }
 
       if (skippedCount > 0) {
-        alert(`${skippedCount} vaccin(s) d\u00e9j\u00e0 enregistr\u00e9(s) pour cette date \u2014 ignor\u00e9(s).`);
+        toast.info(`${skippedCount} vaccin(s) déjà enregistré(s) pour cette date — ignoré(s).`);
       }
 
       setPendingRecords([]);
@@ -333,7 +333,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       }, 2000);
     } catch (e) {
       console.error(e);
-      alert("Erreur lors de la sauvegarde. R\u00e9essaie.");
+      toast.error("Erreur lors de la sauvegarde. Réessaie.");
     }
   };
 
@@ -359,7 +359,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
             <p className="font-bold text-foreground text-sm leading-tight">Assistant Sant&eacute;</p>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-safe animate-pulse" />
-              <span className="text-[10px] text-muted-foreground">En ligne</span>
+              <span className="text-[11px] text-muted-foreground">En ligne</span>
             </div>
           </div>
         </div>
@@ -473,7 +473,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
 
               {/* Actions: time + copy */}
               <div className={`flex items-center gap-2.5 px-1 mt-1 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                <span className="text-[10px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
+                <span className="text-[11px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
                 {msg.role === "assistant" && (
                   <button
                     onClick={() => handleCopy(msg.content)}
@@ -506,7 +506,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                       </div>
                       <div>
                         <h4 className={`font-bold ${style.titleColor} text-xs`}>{style.title}</h4>
-                        <p className={`text-[10px] ${style.subColor}`}>{style.sub}</p>
+                        <p className={`text-[11px] ${style.subColor}`}>{style.sub}</p>
                       </div>
                     </div>
                     <div className="p-2 grid grid-cols-2 gap-2">

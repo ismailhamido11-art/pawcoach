@@ -124,7 +124,7 @@ export default function Activite() {
       <div className="gradient-primary px-5 safe-pt-14 pb-3 relative overflow-hidden mt-8">
         <div className="relative z-10 flex items-end gap-3 mb-3">
           <div className="flex-1 pb-1">
-            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
+            <p className="text-white/60 text-[11px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
             <h1 className="text-white font-black text-2xl">Activité</h1>
             {dog && <p className="text-white/70 text-xs mt-0.5">Suivi des balades de {dog.name}</p>}
           </div>
@@ -155,7 +155,7 @@ export default function Activite() {
                   <div className={`absolute inset-0 bg-gradient-to-br ${bg} opacity-100`} />
                 )}
                 <span className="relative text-xl leading-none">{emoji}</span>
-                <span className={`relative text-[10px] font-bold leading-tight ${active ? "text-white" : "text-white/75"}`}>{label}</span>
+                <span className={`relative text-[11px] font-bold leading-tight ${active ? "text-white" : "text-white/75"}`}>{label}</span>
                 {active && (
                   <motion.div
                     layoutId="activiteTabIndicator"

@@ -340,13 +340,13 @@ RÈGLES :
         <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-5 text-white">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="text-white/60 text-[10px] font-bold uppercase tracking-wider">Plan actif</p>
+              <p className="text-white/60 text-[11px] font-bold uppercase tracking-wider">Plan actif</p>
               <p className="text-white font-bold text-lg">
                 {progress.isExpired ? "Plan terminé" : `Jour ${progress.dayNumber}/7`}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-white/60 text-[10px]">
+              <p className="text-white/60 text-[11px]">
                 {format(progress.startDate, "d MMM", { locale: fr })} → {format(progress.endDate, "d MMM", { locale: fr })}
               </p>
               {activeData.calories_per_day && (
@@ -435,28 +435,28 @@ RÈGLES :
                         <div className="space-y-1">
                           {d.morning && (
                             <div className="flex gap-2 items-start">
-                              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5">Matin</span>
+                              <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5">Matin</span>
                               <div>
                                 <p className="text-xs text-foreground">{d.morning.food}</p>
-                                <p className="text-[10px] text-muted-foreground">{d.morning.quantity}</p>
+                                <p className="text-[11px] text-muted-foreground">{d.morning.quantity}</p>
                               </div>
                             </div>
                           )}
                           {d.noon && (
                             <div className="flex items-center gap-1.5 mt-0.5">
-                              <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded flex-shrink-0">Midi</span>
+                              <span className="text-[11px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded flex-shrink-0">Midi</span>
                               <div>
                                 <p className="text-xs text-foreground">{d.noon.food}</p>
-                                <p className="text-[10px] text-muted-foreground">{d.noon.quantity}</p>
+                                <p className="text-[11px] text-muted-foreground">{d.noon.quantity}</p>
                               </div>
                             </div>
                           )}
                           {d.evening && (
                             <div className="flex gap-2 items-start">
-                              <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5">Soir</span>
+                              <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5">Soir</span>
                               <div>
                                 <p className="text-xs text-foreground">{d.evening.food}</p>
-                                <p className="text-[10px] text-muted-foreground">{d.evening.quantity}</p>
+                                <p className="text-[11px] text-muted-foreground">{d.evening.quantity}</p>
                               </div>
                             </div>
                           )}
@@ -476,7 +476,7 @@ RÈGLES :
             <p className="text-xs font-bold text-foreground mb-2">Compléments</p>
             <div className="flex flex-wrap gap-1.5">
               {activeData.supplements.map((s, i) => (
-                <span key={i} className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
+                <span key={i} className="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
               ))}
             </div>
           </div>
@@ -487,7 +487,7 @@ RÈGLES :
             <p className="text-xs font-bold text-red-700 mb-2">À éviter</p>
             <div className="flex flex-wrap gap-1.5">
               {activeData.avoid.map((a, i) => (
-                <span key={i} className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
+                <span key={i} className="text-[11px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
               ))}
             </div>
           </div>
@@ -506,7 +506,7 @@ RÈGLES :
             <div className="space-y-1.5">
               {activeData.rationale.map((r, i) => (
                 <div key={i} className="flex items-start gap-2">
-                  <span className="text-[10px] text-primary mt-0.5 font-bold">{i + 1}.</span>
+                  <span className="text-[11px] text-primary mt-0.5 font-bold">{i + 1}.</span>
                   <p className="text-xs text-foreground/80">{r}</p>
                 </div>
               ))}
@@ -593,10 +593,10 @@ RÈGLES :
             {/* Data richness badges */}
             {(checkins.length > 0 || healthRecords.length > 0 || dietPrefs) && (
               <div className="flex flex-wrap gap-1.5 justify-center">
-                {checkins.length > 0 && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Check-ins intégrés</span>}
-                {healthRecords.length > 0 && <span className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">Santé intégrée</span>}
-                {dietPrefs && <span className="text-[10px] bg-violet-50 text-violet-700 px-2 py-0.5 rounded-full">Préférences intégrées</span>}
-                {dailyLogs.length > 0 && <span className="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full">Activité intégrée</span>}
+                {checkins.length > 0 && <span className="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Check-ins intégrés</span>}
+                {healthRecords.length > 0 && <span className="text-[11px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">Santé intégrée</span>}
+                {dietPrefs && <span className="text-[11px] bg-violet-50 text-violet-700 px-2 py-0.5 rounded-full">Préférences intégrées</span>}
+                {dailyLogs.length > 0 && <span className="text-[11px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full">Activité intégrée</span>}
               </div>
             )}
 
@@ -655,15 +655,15 @@ RÈGLES :
           <div className="space-y-4 animate-fade-in">
             {/* Summary */}
             <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-5 text-white">
-              <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider mb-1">Nouveau plan pour {dog.name}</p>
+              <p className="text-white/70 text-[11px] font-bold uppercase tracking-wider mb-1">Nouveau plan pour {dog.name}</p>
               <div className="flex gap-3 mt-2">
                 {plan.calories_per_day && (
-                  <span className="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+                  <span className="bg-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">
                     {plan.calories_per_day} kcal/jour
                   </span>
                 )}
                 {plan.quantity_summary && (
-                  <span className="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+                  <span className="bg-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">
                     {plan.quantity_summary}
                   </span>
                 )}
@@ -678,28 +678,28 @@ RÈGLES :
                   <div className="space-y-1.5">
                     {d.morning && (
                       <div className="flex items-start gap-2">
-                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5">Matin</span>
+                        <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mt-0.5">Matin</span>
                         <div className="flex-1">
                           <p className="text-xs text-foreground">{d.morning.food}</p>
-                          <p className="text-[10px] text-muted-foreground">{d.morning.quantity}</p>
+                          <p className="text-[11px] text-muted-foreground">{d.morning.quantity}</p>
                         </div>
                       </div>
                     )}
                     {d.noon && (
                       <div className="flex items-start gap-2">
-                        <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded mt-0.5">Midi</span>
+                        <span className="text-[11px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded mt-0.5">Midi</span>
                         <div className="flex-1">
                           <p className="text-xs text-foreground">{d.noon.food}</p>
-                          <p className="text-[10px] text-muted-foreground">{d.noon.quantity}</p>
+                          <p className="text-[11px] text-muted-foreground">{d.noon.quantity}</p>
                         </div>
                       </div>
                     )}
                     {d.evening && (
                       <div className="flex items-start gap-2">
-                        <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5">Soir</span>
+                        <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5">Soir</span>
                         <div className="flex-1">
                           <p className="text-xs text-foreground">{d.evening.food}</p>
-                          <p className="text-[10px] text-muted-foreground">{d.evening.quantity}</p>
+                          <p className="text-[11px] text-muted-foreground">{d.evening.quantity}</p>
                         </div>
                       </div>
                     )}
@@ -714,7 +714,7 @@ RÈGLES :
                 <p className="text-xs font-bold text-foreground mb-2">Compléments</p>
                 <div className="flex flex-wrap gap-1.5">
                   {plan.supplements.map((s, i) => (
-                    <span key={i} className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
+                    <span key={i} className="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
                   ))}
                 </div>
               </div>
@@ -725,7 +725,7 @@ RÈGLES :
                 <p className="text-xs font-bold text-red-700 mb-2">À éviter</p>
                 <div className="flex flex-wrap gap-1.5">
                   {plan.avoid.map((a, i) => (
-                    <span key={i} className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
+                    <span key={i} className="text-[11px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
                   ))}
                 </div>
               </div>
@@ -744,7 +744,7 @@ RÈGLES :
                 <div className="space-y-1.5">
                   {plan.rationale.map((r, i) => (
                     <div key={i} className="flex items-start gap-2">
-                      <span className="text-[10px] text-primary mt-0.5 font-bold">{i + 1}.</span>
+                      <span className="text-[11px] text-primary mt-0.5 font-bold">{i + 1}.</span>
                       <p className="text-xs text-foreground/80">{r}</p>
                     </div>
                   ))}
@@ -814,10 +814,10 @@ RÈGLES :
                           {pData?.calories_per_day ? ` • ${pData.calories_per_day} kcal` : ""}
                           {pProgress?.isExpired ? " • Terminé" : ""}
                         </p>
-                        {p.notes && <p className="text-[10px] text-muted-foreground truncate mt-0.5">{p.notes}</p>}
+                        {p.notes && <p className="text-[11px] text-muted-foreground truncate mt-0.5">{p.notes}</p>}
                       </div>
                       <div className="flex gap-1">
-                        <button onClick={() => handleActivateOld(p.id)} className="h-7 px-2 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-semibold">
+                        <button onClick={() => handleActivateOld(p.id)} className="h-7 px-2 rounded-lg bg-emerald-50 text-emerald-700 text-[11px] font-semibold">
                           Activer
                         </button>
                         <button onClick={() => setExpandedHistoryId(isExpanded ? null : p.id)} className="w-7 h-7 rounded-lg bg-muted/50 flex items-center justify-center">
@@ -834,10 +834,10 @@ RÈGLES :
                           <div className="p-3 bg-muted/20 space-y-2 max-h-64 overflow-y-auto">
                             {pData.days?.map((d, i) => (
                               <div key={i} className="bg-white rounded-lg p-2">
-                                <p className="text-[10px] font-bold text-foreground mb-1">{d.day}</p>
-                                {d.morning && <p className="text-[10px] text-foreground/70">Matin : {d.morning.food} ({d.morning.quantity})</p>}
-                                {d.noon && <p className="text-[10px] text-foreground/70">Midi : {d.noon.food} ({d.noon.quantity})</p>}
-                                {d.evening && <p className="text-[10px] text-foreground/70">Soir : {d.evening.food} ({d.evening.quantity})</p>}
+                                <p className="text-[11px] font-bold text-foreground mb-1">{d.day}</p>
+                                {d.morning && <p className="text-[11px] text-foreground/70">Matin : {d.morning.food} ({d.morning.quantity})</p>}
+                                {d.noon && <p className="text-[11px] text-foreground/70">Midi : {d.noon.food} ({d.noon.quantity})</p>}
+                                {d.evening && <p className="text-[11px] text-foreground/70">Soir : {d.evening.food} ({d.evening.quantity})</p>}
                               </div>
                             ))}
                           </div>
@@ -870,9 +870,9 @@ RÈGLES :
           <div className="flex-1 min-w-0">
             <p className="font-bold text-foreground text-sm">{dog.name}</p>
             <div className="flex flex-wrap gap-1 mt-0.5">
-              {dog.breed && <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">{dog.breed}</span>}
-              {dog.weight && <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">{dog.weight} kg</span>}
-              {dog.birth_date && <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">{getAge(dog.birth_date)}</span>}
+              {dog.breed && <span className="text-[11px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">{dog.breed}</span>}
+              {dog.weight && <span className="text-[11px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">{dog.weight} kg</span>}
+              {dog.birth_date && <span className="text-[11px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">{getAge(dog.birth_date)}</span>}
             </div>
           </div>
         </div>

@@ -57,12 +57,12 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
             <X className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         </div>
-        <p className="text-[10px] text-muted-foreground leading-relaxed">
+        <p className="text-[11px] text-muted-foreground leading-relaxed">
           Pèse ton chien et note le résultat. La courbe de poids se met à jour automatiquement.
         </p>
         <div className="grid grid-cols-2 gap-2.5">
           <div>
-            <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Poids (kg)</label>
+            <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Poids (kg)</label>
             <input
               type="number"
               step="0.1"
@@ -73,7 +73,7 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
             />
           </div>
           <div>
-            <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Date</label>
+            <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Date</label>
             <input
               type="date"
               value={date}
@@ -149,7 +149,7 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
           </div>
           <div>
             <p className="text-sm font-bold text-foreground">Suivi du poids</p>
-            <p className="text-[10px] text-muted-foreground">Pèse régulièrement pour suivre la courbe</p>
+            <p className="text-[11px] text-muted-foreground">Pèse régulièrement pour suivre la courbe</p>
           </div>
         </div>
       </div>
@@ -169,7 +169,7 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
                   {config.label}
                 </span>
                 {weightTrend.changeKg !== 0 && weightTrend.direction !== "unknown" && (
-                  <span className={`text-[10px] font-medium ${isAlert ? "text-red-500" : config.color} opacity-70`}>
+                  <span className={`text-[11px] font-medium ${isAlert ? "text-red-500" : config.color} opacity-70`}>
                     ({weightTrend.changeKg > 0 ? "+" : ""}{weightTrend.changeKg} kg)
                   </span>
                 )}
@@ -189,7 +189,7 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
             {/* Last weighed + CTA */}
             <div className="flex items-center justify-between">
               {lastDateFormatted && (
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground">
                   Dernière pesée : {lastDateFormatted}
                 </p>
               )}
@@ -197,7 +197,7 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
                 <motion.button
                   whileTap={{ scale: 0.96 }}
                   onClick={() => setShowForm(true)}
-                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary/10 text-primary text-[10px] font-bold"
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary/10 text-primary text-[11px] font-bold"
                 >
                   <Plus className="w-3 h-3" />
                   Nouvelle pesée

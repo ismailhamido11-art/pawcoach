@@ -84,7 +84,7 @@ export default function TodayCard({ dog, user: _user, todayCheckin, streak: _str
           <CheckCircle2 className="w-4 h-4 text-emerald-600" />
         </div>
         <p className="text-sm font-bold text-emerald-700">Check-in fait</p>
-        <div className="ml-auto flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium">
+        <div className="ml-auto flex items-center gap-1.5 text-[11px] text-muted-foreground font-medium">
           <span className="px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600">{todayCheckin.mood}/4</span>
           <span className="px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600">{todayCheckin.energy}/3</span>
         </div>
@@ -102,7 +102,7 @@ export default function TodayCard({ dog, user: _user, todayCheckin, streak: _str
       {todayCheckin.symptoms?.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-3">
           {todayCheckin.symptoms.map(s => (
-            <span key={s} className="px-2 py-0.5 rounded-md bg-red-50 border border-red-200 text-[10px] font-medium text-red-700">{s}</span>
+            <span key={s} className="px-2 py-0.5 rounded-md bg-red-50 border border-red-200 text-[11px] font-medium text-red-700">{s}</span>
           ))}
         </div>
       )}
@@ -121,7 +121,7 @@ export default function TodayCard({ dog, user: _user, todayCheckin, streak: _str
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-bold text-foreground truncate">{topRec.label}</p>
-              <p className="text-[10px] text-muted-foreground">{topRec.sub}</p>
+              <p className="text-[11px] text-muted-foreground">{topRec.sub}</p>
             </div>
             <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40" />
           </div>

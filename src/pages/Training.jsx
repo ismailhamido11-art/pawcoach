@@ -499,15 +499,15 @@ export default function Training() {
               <div className="space-y-3 mt-2">
                 {/* Program header */}
                 <div className="gradient-primary rounded-2xl p-5 text-white">
-                  <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider mb-1">Programme comportement</p>
+                  <p className="text-white/70 text-[11px] font-bold uppercase tracking-wider mb-1">Programme comportement</p>
                   <h3 className="font-black text-lg leading-tight">{activeProgram.program_title}</h3>
                   <p className="text-white/80 text-xs mt-1.5 leading-relaxed">{activeProgram.summary}</p>
                   <div className="mt-3 flex items-center gap-2">
-                    <span className="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">Jour {dayIndex + 1} / 7</span>
+                    <span className="bg-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">Jour {dayIndex + 1} / 7</span>
                     <div className="flex-1 h-1.5 bg-white/20 rounded-full overflow-hidden">
                       <div className="h-full bg-white/80 rounded-full transition-all" style={{ width: `${programProgress}%` }} />
                     </div>
-                    <span className="text-[10px] font-bold text-white/80">{programProgress}%</span>
+                    <span className="text-[11px] font-bold text-white/80">{programProgress}%</span>
                   </div>
                 </div>
 
@@ -517,14 +517,14 @@ export default function Training() {
                   {todayDay.exercises?.map((ex, i) => (
                     <div key={i} className="flex items-start gap-2.5 mt-2.5 first:mt-0">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-                        <span className="text-[10px] font-bold text-blue-600">{i + 1}</span>
+                        <span className="text-[11px] font-bold text-blue-600">{i + 1}</span>
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-foreground">
                           {ex.name} <span className="text-xs text-muted-foreground font-normal">({ex.duration_min} min)</span>
                         </p>
                         <p className="text-xs text-foreground/70 leading-relaxed mt-0.5">{ex.description}</p>
-                        {ex.tips && <p className="text-[10px] text-blue-600 italic mt-1">{ex.tips}</p>}
+                        {ex.tips && <p className="text-[11px] text-blue-600 italic mt-1">{ex.tips}</p>}
                       </div>
                     </div>
                   ))}
@@ -533,7 +533,7 @@ export default function Training() {
                 {/* Environment tips */}
                 {todayDay.environment_tips && (
                   <div className="bg-blue-50/80 rounded-2xl px-4 py-3 border border-blue-100">
-                    <p className="text-[10px] font-bold text-blue-700 uppercase tracking-widest mb-1">Environnement</p>
+                    <p className="text-[11px] font-bold text-blue-700 uppercase tracking-widest mb-1">Environnement</p>
                     <p className="text-xs text-blue-800 leading-relaxed">{todayDay.environment_tips}</p>
                   </div>
                 )}
@@ -543,13 +543,13 @@ export default function Training() {
                   <div className="grid grid-cols-2 gap-2">
                     {todayDay.do?.length > 0 && (
                       <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-200">
-                        <p className="text-[10px] font-bold text-emerald-700 uppercase mb-1.5">A faire</p>
+                        <p className="text-[11px] font-bold text-emerald-700 uppercase mb-1.5">A faire</p>
                         {todayDay.do.map((d, i) => <p key={i} className="text-xs text-emerald-800 leading-relaxed">✓ {d}</p>)}
                       </div>
                     )}
                     {todayDay.dont?.length > 0 && (
                       <div className="bg-red-50 rounded-xl p-3 border border-red-200">
-                        <p className="text-[10px] font-bold text-red-700 uppercase mb-1.5">A eviter</p>
+                        <p className="text-[11px] font-bold text-red-700 uppercase mb-1.5">A eviter</p>
                         {todayDay.dont.map((d, i) => <p key={i} className="text-xs text-red-800 leading-relaxed">✕ {d}</p>)}
                       </div>
                     )}
@@ -665,7 +665,7 @@ export default function Training() {
       <div className="gradient-primary safe-pt-16 pb-0 px-5 overflow-hidden relative">
         <div className="relative z-10 flex items-start justify-between">
           <div className="pb-6 flex-1">
-            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-2">PawCoach</p>
+            <p className="text-white/60 text-[11px] font-bold tracking-widest uppercase mb-2">PawCoach</p>
             <h1 className="text-white font-black text-2xl leading-tight">Dressage</h1>
             <p className="text-white/70 text-sm mt-1 mb-4">
               {dog ? `Parcours de ${dog.name}` : "Chargement..."}
@@ -680,7 +680,7 @@ export default function Training() {
                       ? "Tous les exercices maitrisés !"
                       : `${completedCount} exercice${completedCount > 1 ? "s" : ""} maitrisé${completedCount > 1 ? "s" : ""}`}
                   </span>
-                  <p className="text-white/60 text-[10px] mt-0.5">{EXERCISES.length - completedCount > 0 ? `${EXERCISES.length - completedCount} restant${EXERCISES.length - completedCount > 1 ? "s" : ""}` : "Parcours complet"}</p>
+                  <p className="text-white/60 text-[11px] mt-0.5">{EXERCISES.length - completedCount > 0 ? `${EXERCISES.length - completedCount} restant${EXERCISES.length - completedCount > 1 ? "s" : ""}` : "Parcours complet"}</p>
                 </div>
                 <span className="text-white font-black text-lg">{Math.round((completedCount / EXERCISES.length) * 100)}%</span>
               </div>
@@ -722,7 +722,7 @@ export default function Training() {
                   : `À ${ageMonths} mois, ${dog.name} peut aborder les exercices intermédiaires. Augmente la durée à 10 min progressivement.`
                 }
               </p>
-              <p className="text-[10px] text-emerald-600 mt-2 font-medium">
+              <p className="text-[11px] text-emerald-600 mt-2 font-medium">
                 Recommandé : {ageMonths < 4 ? "2x 2 min" : ageMonths < 8 ? "2x 5 min" : "2x 10 min"} par jour
               </p>
             </div>

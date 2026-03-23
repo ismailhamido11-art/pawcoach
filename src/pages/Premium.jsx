@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import { trackEvent } from "@/utils/analytics";
 import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
@@ -92,7 +93,7 @@ export default function Premium() {
         particleCount: 100,
         spread: 70,
         origin: { x: 0.5, y: 1 },
-        colors: ["#2d9f82", "#3db87a", "#ffffff"],
+        colors: ["#1A4D3E", "#2D9F82", "#10b981", "#34d399"],
       });
     }
   }, [user]);
@@ -100,7 +101,7 @@ export default function Premium() {
   const handleSubscribe = async () => {
     // Block if in iframe (preview)
     if (window.self !== window.top) {
-      alert("Le paiement fonctionne uniquement depuis l'application publiée.");
+      toast.error("Le paiement fonctionne uniquement depuis l'application publiée.");
       return;
     }
     trackEvent("premium_checkout_clicked", { plan });
@@ -112,7 +113,7 @@ export default function Premium() {
       if (url) window.location.href = url;
     } catch (err) {
       console.error("Stripe checkout error:", err);
-      alert("Erreur lors du paiement. Réessaie dans un instant.");
+      toast.error("Erreur lors du paiement. Réessaie dans un instant.");
     } finally {
       setLoading(false);
     }
@@ -120,7 +121,7 @@ export default function Premium() {
 
   if (pageLoading) {
     return (
-      <div className="min-h-screen bg-background pb-10">
+      <div className="min-h-screen bg-background pb-28">
         <div className="gradient-primary safe-pt-14 pb-8 px-5">
           <div className="text-center">
             <div className="w-16 h-16 bg-white/20 rounded-3xl mx-auto mb-3 animate-pulse" />
@@ -128,7 +129,7 @@ export default function Premium() {
             <div className="h-4 w-56 bg-white/10 rounded mx-auto animate-pulse mt-2" />
           </div>
         </div>
-        <div className="px-5 pt-6 space-y-5">
+        <div className="px-5 pt-4 space-y-4">
           <div className="h-16 bg-white rounded-2xl border border-border animate-pulse" />
           <div className="h-64 bg-white rounded-2xl border border-border animate-pulse" />
           <div className="h-14 rounded-xl bg-muted animate-pulse" />
@@ -310,7 +311,7 @@ export default function Premium() {
   const contextMsg = fromParam ? CONTEXTUAL_MESSAGES[fromParam] : null;
 
   return (
-    <div className="min-h-screen bg-background pb-10">
+    <div className="min-h-screen bg-background pb-28">
       {/* Header */}
       <div className="gradient-primary safe-pt-14 pb-8 px-5 relative overflow-hidden">
         <button
@@ -335,7 +336,7 @@ export default function Premium() {
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
-      <div className="px-5 pt-6 space-y-5">
+      <div className="px-5 pt-4 space-y-4">
         {/* Contextual banner */}
         {contextMsg && (() => {
           const CtxIcon = contextMsg.Icon;
@@ -372,12 +373,12 @@ export default function Premium() {
               plan === "annual" ? "gradient-primary text-white shadow" : "text-muted-foreground"
             }`}
           >
-            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
+            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-white text-[11px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
               -37% 🔥
             </span>
             Annuel<br />
             <span className={`text-xs font-normal ${plan === "annual" ? "text-white/80" : "text-muted-foreground"}`}>59,99 €/an · 5 €/mois</span>
-            <span className={`block text-[10px] mt-0.5 font-medium ${plan === "annual" ? "text-white/60" : "text-muted-foreground/60"}`}>Tu économises 36 € par an</span>
+            <span className={`block text-[11px] mt-0.5 font-medium ${plan === "annual" ? "text-white/60" : "text-muted-foreground/60"}`}>Tu économises 36 € par an</span>
           </motion.button>
         </div>
 

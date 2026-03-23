@@ -116,7 +116,7 @@ export default function SectionVaccins({ records = [], dogId, dogName, onDelete,
 
               {/* Vaccine selector */}
               <div>
-                <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Vaccin</label>
+                <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Vaccin</label>
                 <select
                   value={form.vaccineKey}
                   onChange={e => setForm(p => ({ ...p, vaccineKey: e.target.value, customTitle: "" }))}
@@ -145,7 +145,7 @@ export default function SectionVaccins({ records = [], dogId, dogName, onDelete,
               {/* Custom title input (only if "custom" selected) */}
               {form.vaccineKey === "custom" && (
                 <div>
-                  <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Nom du vaccin</label>
+                  <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Nom du vaccin</label>
                   <Input
                     value={form.customTitle}
                     onChange={e => setForm(p => ({ ...p, customTitle: e.target.value }))}
@@ -158,7 +158,7 @@ export default function SectionVaccins({ records = [], dogId, dogName, onDelete,
               {/* Date */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Date du vaccin</label>
+                  <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Date du vaccin</label>
                   <input
                     type="date"
                     value={form.date}
@@ -167,7 +167,7 @@ export default function SectionVaccins({ records = [], dogId, dogName, onDelete,
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Prochain rappel</label>
+                  <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Prochain rappel</label>
                   <input
                     type="date"
                     value={form.nextDate}
@@ -176,7 +176,7 @@ export default function SectionVaccins({ records = [], dogId, dogName, onDelete,
                     className="w-full mt-1 text-sm border border-border rounded-xl px-3 py-2.5 bg-background"
                   />
                   {!form.nextDate && form.vaccineKey && form.vaccineKey !== "custom" && (
-                    <p className="text-[10px] text-muted-foreground mt-1">Auto-calculé selon la fréquence WSAVA</p>
+                    <p className="text-[11px] text-muted-foreground mt-1">Auto-calculé selon la fréquence WSAVA</p>
                   )}
                 </div>
               </div>

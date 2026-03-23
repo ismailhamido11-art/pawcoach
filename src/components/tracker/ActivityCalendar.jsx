@@ -58,7 +58,7 @@ export default function ActivityCalendar({ logs }) {
         <div className="w-7 flex-shrink-0" />
         <div className="flex-1 grid grid-cols-7 gap-1">
           {["L", "M", "M", "J", "V", "S", "D"].map((d, i) => (
-            <div key={i} className="text-center text-[10px] font-bold text-muted-foreground">{d}</div>
+            <div key={i} className="text-center text-[11px] font-bold text-muted-foreground">{d}</div>
           ))}
         </div>
       </div>
@@ -84,7 +84,7 @@ export default function ActivityCalendar({ logs }) {
                       c.isFuture ? "bg-secondary/10" : getColor(c.min)
                     } ${c.isToday ? "ring-2 ring-primary ring-offset-1" : ""}`}
                   >
-                    <span className={`text-[10px] font-bold ${
+                    <span className={`text-[11px] font-bold ${
                       c.isFuture ? "text-muted-foreground/30" : c.min >= 20 ? "text-white" : "text-muted-foreground"
                     }`}>
                       {c.day}
@@ -98,12 +98,12 @@ export default function ActivityCalendar({ logs }) {
       </div>
 
       <div className="flex gap-1.5 mt-3 justify-center items-center">
-        <span className="text-[10px] text-muted-foreground">Moins</span>
+        <span className="text-[11px] text-muted-foreground">Moins</span>
         <div className="w-3 h-3 rounded-sm bg-secondary/30" />
         <div className="w-3 h-3 rounded-sm bg-emerald-200" />
         <div className="w-3 h-3 rounded-sm bg-emerald-400" />
         <div className="w-3 h-3 rounded-sm bg-emerald-600" />
-        <span className="text-[10px] text-muted-foreground">Plus</span>
+        <span className="text-[11px] text-muted-foreground">Plus</span>
       </div>
     </div>
   );

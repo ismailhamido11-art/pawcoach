@@ -104,9 +104,9 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
   };
 
   const statusBadge = (status) => {
-    if (status === "active") return <Badge className="bg-emerald-100 text-emerald-700 text-[10px]"><UserCheck className="w-3 h-3 mr-1" />Actif</Badge>;
-    if (status === "pending") return <Badge className="bg-emerald-100 text-emerald-700 text-[10px]"><Clock className="w-3 h-3 mr-1" />En attente</Badge>;
-    return <Badge className="bg-red-100 text-red-700 text-[10px]"><XCircle className="w-3 h-3 mr-1" />Révoqué</Badge>;
+    if (status === "active") return <Badge className="bg-emerald-100 text-emerald-700 text-[11px]"><UserCheck className="w-3 h-3 mr-1" />Actif</Badge>;
+    if (status === "pending") return <Badge className="bg-emerald-100 text-emerald-700 text-[11px]"><Clock className="w-3 h-3 mr-1" />En attente</Badge>;
+    return <Badge className="bg-red-100 text-red-700 text-[11px]"><XCircle className="w-3 h-3 mr-1" />Révoqué</Badge>;
   };
 
   return (
@@ -131,7 +131,7 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
                   <div className="flex items-center gap-2 mt-1">
                     {statusBadge(a.status)}
                     {a.status === "pending" && a.invite_code && (
-                      <button onClick={() => copyCode(a.invite_code)} className="flex items-center gap-1 text-[10px] text-primary hover:underline">
+                      <button onClick={() => copyCode(a.invite_code)} className="flex items-center gap-1 text-[11px] text-primary hover:underline">
                         {copiedCode === a.invite_code ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                         {a.invite_code}
                       </button>

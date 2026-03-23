@@ -144,11 +144,11 @@ export default function TrackerHistory({ logs, dog }) {
               {format(new Date(), "EEEE d MMMM", { locale: fr })}
             </p>
             {todayLog?.walk_minutes ? (
-              <p className="text-[10px] text-safe font-bold mt-0.5">
+              <p className="text-[11px] text-safe font-bold mt-0.5">
                 {todayLog.walk_minutes} min de balade aujourd'hui
               </p>
             ) : (
-              <p className="text-[10px] text-muted-foreground mt-0.5">Pas encore de balade aujourd'hui</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">Pas encore de balade aujourd'hui</p>
             )}
           </div>
           <div className="flex items-center gap-2">
@@ -196,7 +196,7 @@ export default function TrackerHistory({ logs, dog }) {
             style={{ width: `${weeklyProgress * 100}%` }}
           />
         </div>
-        <p className="text-[10px] text-muted-foreground mt-1.5">
+        <p className="text-[11px] text-muted-foreground mt-1.5">
           {weeklyWalks >= WEEKLY_GOAL
             ? `Bravo ! Objectif atteint pour ${dog?.name || "ton chien"} cette semaine !`
             : `${WEEKLY_GOAL - weeklyWalks} balade${WEEKLY_GOAL - weeklyWalks > 1 ? "s" : ""} de ${MIN_WALK_MINUTES}+ min restante${WEEKLY_GOAL - weeklyWalks > 1 ? "s" : ""}`
@@ -217,12 +217,12 @@ export default function TrackerHistory({ logs, dog }) {
         ].map((stat, i) => (
           <div key={i} className="bg-white border border-border rounded-2xl p-2.5 text-center">
             <p className={`text-lg font-black ${stat.color}`}>{stat.value}</p>
-            <p className="text-[10px] font-bold text-muted-foreground uppercase">{stat.unit}</p>
-            <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+            <p className="text-[11px] font-bold text-muted-foreground uppercase">{stat.unit}</p>
+            <p className="text-[11px] text-muted-foreground">{stat.label}</p>
           </div>
         ))}
       </div>
-      <p className="text-[10px] text-muted-foreground text-center mt-1">
+      <p className="text-[11px] text-muted-foreground text-center mt-1">
         {activeDays} jour{activeDays > 1 ? "s" : ""} actif{activeDays > 1 ? "s" : ""} sur {sorted.length}
       </p>
 
@@ -232,14 +232,14 @@ export default function TrackerHistory({ logs, dog }) {
           <div className="flex-1 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 flex items-center gap-2">
             <Trophy className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
             <div>
-              <p className="text-[10px] font-bold text-amber-700">Meilleur streak</p>
+              <p className="text-[11px] font-bold text-amber-700">Meilleur streak</p>
               <p className="text-xs font-black text-amber-800">{streaks.best} jours</p>
             </div>
           </div>
           <div className="flex-1 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 flex items-center gap-2">
             <Zap className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
             <div>
-              <p className="text-[10px] font-bold text-emerald-700">Jours 30+ min</p>
+              <p className="text-[11px] font-bold text-emerald-700">Jours 30+ min</p>
               <p className="text-xs font-black text-emerald-800">{daysOver30}</p>
             </div>
           </div>
@@ -252,7 +252,7 @@ export default function TrackerHistory({ logs, dog }) {
           <p className="text-xs font-bold text-muted-foreground mb-2">Comportements en balade</p>
           <div className="flex flex-wrap gap-1.5">
             {tagFreq.map(([tag, count]) => (
-              <span key={tag} className="text-[10px] font-semibold bg-primary/10 text-primary rounded-full px-2.5 py-1">
+              <span key={tag} className="text-[11px] font-semibold bg-primary/10 text-primary rounded-full px-2.5 py-1">
                 {tag} <span className="text-primary/50">{count}x</span>
               </span>
             ))}
@@ -272,13 +272,13 @@ export default function TrackerHistory({ logs, dog }) {
                   style={{ height: `${Math.max(4, (d.avg / maxDayAvg) * 100)}%` }}
                 />
               </div>
-              <span className="text-[10px] font-black text-foreground">{d.avg > 0 ? d.avg : "—"}</span>
-              <span className="text-[10px] font-bold text-muted-foreground">{d.label}</span>
+              <span className="text-[11px] font-black text-foreground">{d.avg > 0 ? d.avg : "—"}</span>
+              <span className="text-[11px] font-bold text-muted-foreground">{d.label}</span>
             </div>
           ))}
         </div>
         {bestDayInsight && (
-          <p className="text-[10px] text-primary/70 font-semibold mt-2 text-center">{bestDayInsight}</p>
+          <p className="text-[11px] text-primary/70 font-semibold mt-2 text-center">{bestDayInsight}</p>
         )}
       </div>
 
@@ -302,8 +302,8 @@ export default function TrackerHistory({ logs, dog }) {
             </BarChart>
           </ResponsiveContainer>
           <div className="flex gap-3 mt-2 justify-center">
-            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-emerald-400" /><span className="text-[10px] text-muted-foreground">≥ 30 min</span></div>
-            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-blue-400" /><span className="text-[10px] text-muted-foreground">&lt; 30 min</span></div>
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-emerald-400" /><span className="text-[11px] text-muted-foreground">≥ 30 min</span></div>
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-sm bg-blue-400" /><span className="text-[11px] text-muted-foreground">&lt; 30 min</span></div>
           </div>
         </div>
       )}
@@ -319,7 +319,7 @@ export default function TrackerHistory({ logs, dog }) {
           const elements = [];
           if (showMonthHeader) {
             elements.push(
-              <p key={`month-${log.date}`} className="text-[10px] font-bold text-muted-foreground tracking-wide pt-1 capitalize">
+              <p key={`month-${log.date}`} className="text-[11px] font-bold text-muted-foreground tracking-wide pt-1 capitalize">
                 {format(logDate, "MMMM yyyy", { locale: fr })}
               </p>
             );
@@ -336,7 +336,7 @@ export default function TrackerHistory({ logs, dog }) {
                   {mood?.tags?.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1">
                       {mood.tags.map(t => (
-                        <span key={t} className="text-[10px] bg-primary/10 text-primary font-semibold rounded px-1.5 py-0.5">{t}</span>
+                        <span key={t} className="text-[11px] bg-primary/10 text-primary font-semibold rounded px-1.5 py-0.5">{t}</span>
                       ))}
                     </div>
                   )}
@@ -350,15 +350,15 @@ export default function TrackerHistory({ logs, dog }) {
                         {log.walk_minutes} min
                       </span>
                       {log.date === recordDate && (
-                        <span className="text-[10px] bg-amber-100 text-amber-700 font-bold rounded px-1 py-0.5">Record</span>
+                        <span className="text-[11px] bg-amber-100 text-amber-700 font-bold rounded px-1 py-0.5">Record</span>
                       )}
                     </div>
-                    <p className="text-[10px] text-muted-foreground">{(log.walk_distance_km || log.walk_minutes * 0.065).toFixed(1)} km</p>
+                    <p className="text-[11px] text-muted-foreground">{(log.walk_distance_km || log.walk_minutes * 0.065).toFixed(1)} km</p>
                   </>
                 ) : (
                   <span className="text-xs text-muted-foreground">—</span>
                 )}
-                {log.weight_kg && <p className="text-[10px] text-muted-foreground">{log.weight_kg} kg</p>}
+                {log.weight_kg && <p className="text-[11px] text-muted-foreground">{log.weight_kg} kg</p>}
               </div>
             </div>
           );

@@ -97,7 +97,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
           <div className="bg-white rounded-2xl border border-border p-4 flex items-center justify-between mt-6 shadow-sm">
             <div>
               <p className="text-xs font-bold text-foreground">Accessoire recommandé</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">Lien partenaire</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">Lien partenaire</p>
             </div>
             <Button onClick={() => window.open("https://amazon.fr", "_blank")} size="sm" variant="outline" className="rounded-xl h-8 text-xs font-semibold">
               Voir l'offre
@@ -126,7 +126,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
             <HelpCircle className="w-5 h-5" />
             J'ai besoin d'aide
           </Button>
-          <p className="text-[10px] text-muted-foreground text-center">Utilise 1 credit IA (partage avec Chat + Nutri)</p>
+          <p className="text-[11px] text-muted-foreground text-center">Utilise 1 credit IA (partage avec Chat + Nutri)</p>
         </div>
       )}
     </div>

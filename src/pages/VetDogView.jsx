@@ -75,7 +75,7 @@ export default function VetDogView() {
           <div>
             <h1 className="text-white font-black text-2xl">{dog.name}</h1>
             <p className="text-white/80 text-xs">{[dog.breed, dog.weight ? `${dog.weight}kg` : null, dog.sex === "male" ? "♂" : dog.sex === "female" ? "♀" : null].filter(Boolean).join(" · ")}</p>
-            {dog.health_issues && <p className="text-white/70 text-[10px] mt-0.5">⚠️ {dog.health_issues}</p>}
+            {dog.health_issues && <p className="text-white/70 text-[11px] mt-0.5">⚠️ {dog.health_issues}</p>}
           </div>
         </div>
       </div>
@@ -105,7 +105,7 @@ export default function VetDogView() {
                     <p className="text-sm font-medium">{r.title}</p>
                     <p className="text-xs text-muted-foreground">{format(new Date(r.date), "d MMM yyyy", { locale: fr })}</p>
                     {r.details && <p className="text-xs text-muted-foreground mt-1">{r.details}</p>}
-                    {r.value && <Badge variant="outline" className="text-[10px] mt-1">{r.value} kg</Badge>}
+                    {r.value && <Badge variant="outline" className="text-[11px] mt-1">{r.value} kg</Badge>}
                   </div>
                 </div>
               ))
@@ -124,9 +124,9 @@ export default function VetDogView() {
                   <div className="flex items-center justify-between">
                     <p className="text-xs font-medium">{format(new Date(c.date), "EEEE d MMM", { locale: fr })}</p>
                     <div className="flex gap-2">
-                      <Badge variant="outline" className="text-[10px]">😊 {c.mood}/4</Badge>
-                      <Badge variant="outline" className="text-[10px]">⚡ {c.energy}/3</Badge>
-                      <Badge variant="outline" className="text-[10px]">🍽️ {c.appetite}/3</Badge>
+                      <Badge variant="outline" className="text-[11px]">😊 {c.mood}/4</Badge>
+                      <Badge variant="outline" className="text-[11px]">⚡ {c.energy}/3</Badge>
+                      <Badge variant="outline" className="text-[11px]">🍽️ {c.appetite}/3</Badge>
                     </div>
                   </div>
                   {c.notes && <p className="text-xs text-muted-foreground mt-1">{c.notes}</p>}
@@ -153,7 +153,7 @@ export default function VetDogView() {
                   {s.photo_url && <img src={s.photo_url} alt="" className="w-12 h-12 rounded-lg object-cover" />}
                   <div className="flex-1">
                     <p className="text-sm font-medium">{s.food_name || "Aliment scanné"}</p>
-                    <Badge className={`text-[10px] mt-1 ${s.verdict === "safe" ? "bg-emerald-100 text-emerald-700" : s.verdict === "caution" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
+                    <Badge className={`text-[11px] mt-1 ${s.verdict === "safe" ? "bg-emerald-100 text-emerald-700" : s.verdict === "caution" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
                       {s.verdict === "safe" ? "✅ Sûr" : s.verdict === "caution" ? "⚠️ Précaution" : "🚫 Toxique"} — {s.score}/10
                     </Badge>
                     {s.details && <p className="text-xs text-muted-foreground mt-1">{s.details}</p>}

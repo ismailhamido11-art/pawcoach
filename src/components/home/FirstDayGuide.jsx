@@ -145,7 +145,7 @@ export default function FirstDayGuide({ dog, todayCheckin, scans, dailyLogs, onS
   if (!dog) return null;
 
   return (
-    <div className="px-4 mt-3">
+    <div className="mt-3">
       {/* Header */}
       <AnimatePresence>
         {!allDone && (

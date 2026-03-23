@@ -59,7 +59,7 @@ export default function QRCodeCard({ dog }) {
         </div>
         <div className="flex gap-1">
           <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
-          <span className="text-emerald-400 text-[10px] font-bold">Actif</span>
+          <span className="text-emerald-400 text-[11px] font-bold">Actif</span>
         </div>
       </motion.button>
 
@@ -105,7 +105,7 @@ export default function QRCodeCard({ dog }) {
                   <div key={label} className="flex flex-col items-center text-center bg-slate-50 rounded-xl py-3 px-2">
                     <Icon style={{ color, width: 18, height: 18 }} className="mb-1" />
                     <p className="text-xs font-bold text-slate-700">{label}</p>
-                    <p className="text-[10px] text-slate-400">{sub}</p>
+                    <p className="text-[11px] text-slate-400">{sub}</p>
                   </div>
                 ))}
               </div>

@@ -37,7 +37,7 @@ export default function DiagnosisContent({ dog }) {
           <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
             Prépare ta visite chez le véto : décris ce que tu observes chez {dog?.name || "ton chien"} et obtiens un bilan structuré à présenter à ton vétérinaire.
           </p>
-          <p className="text-[10px] font-bold text-emerald-700 mt-1.5">À présenter à ton vétérinaire</p>
+          <p className="text-[11px] font-bold text-emerald-700 mt-1.5">À présenter à ton vétérinaire</p>
         </div>
       </div>
 
@@ -53,7 +53,7 @@ export default function DiagnosisContent({ dog }) {
               className="flex flex-col items-center gap-1 py-3 rounded-2xl bg-white border border-border text-center hover:border-emerald-300 hover:bg-emerald-50 transition-all"
             >
               <span className="text-xl">{emoji}</span>
-              <span className="text-[10px] font-medium text-foreground leading-tight">{label}</span>
+              <span className="text-[11px] font-medium text-foreground leading-tight">{label}</span>
             </motion.button>
           ))}
         </div>

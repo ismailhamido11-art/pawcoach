@@ -105,20 +105,20 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
             <span className={`text-xs font-bold ${isDone ? "text-muted-foreground line-through" : "text-foreground"}`}>
               {realDate ? formatDateFr(realDate) : `Jour ${dayIdx + 1}`}
             </span>
-            {today && <span className="text-[10px] font-bold bg-violet-200 text-violet-700 px-1.5 py-0.5 rounded-full leading-none">Aujourd'hui</span>}
-            {isDone && <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full leading-none">Fait</span>}
+            {today && <span className="text-[11px] font-bold bg-violet-200 text-violet-700 px-1.5 py-0.5 rounded-full leading-none">Aujourd'hui</span>}
+            {isDone && <span className="text-[11px] font-bold bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full leading-none">Fait</span>}
           </div>
           <div className="flex items-center gap-2">
             <span className="text-lg leading-none">{icon}</span>
             <p className={`text-sm font-bold flex-1 ${isDone ? "text-muted-foreground" : "text-foreground"}`}>
               {day.title || day.activity?.name || `Jour ${dayIdx + 1}`}
             </p>
-            <span className="text-[10px] font-bold text-primary flex items-center gap-0.5 flex-shrink-0">
+            <span className="text-[11px] font-bold text-primary flex items-center gap-0.5 flex-shrink-0">
               <Clock className="w-3 h-3" />{day.activity?.duration_min || 20} min
             </span>
           </div>
           {!isOpen && day.fun_fact && (
-            <p className="text-[10px] text-amber-700/70 mt-1.5 line-clamp-1 italic ml-7">📖 {day.fun_fact}</p>
+            <p className="text-[11px] text-amber-700/70 mt-1.5 line-clamp-1 italic ml-7">📖 {day.fun_fact}</p>
           )}
         </button>
 
@@ -131,13 +131,13 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
         {isOpen && (
           <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden">
             <div className="px-4 pb-4 space-y-3 border-t border-border pt-3">
-              {day.theme && <p className="text-[10px] font-bold text-violet-600 uppercase tracking-wider">{day.theme}</p>}
+              {day.theme && <p className="text-[11px] font-bold text-violet-600 uppercase tracking-wider">{day.theme}</p>}
 
               <div className="bg-violet-50/80 rounded-xl p-3 space-y-2">
                 <div className="flex items-center gap-2">
                   <span className="text-lg leading-none">{icon}</span>
                   <p className="text-xs font-bold text-foreground">{day.activity?.name}</p>
-                  <span className="text-[10px] text-muted-foreground capitalize ml-auto">{actType}</span>
+                  <span className="text-[11px] text-muted-foreground capitalize ml-auto">{actType}</span>
                 </div>
                 {day.activity?.description && <p className="text-xs text-foreground/80 leading-relaxed">{day.activity.description}</p>}
                 {day.activity?.steps?.length > 0 && (
@@ -145,7 +145,7 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
                     {day.activity.steps.map((step, i) => (
                       <div key={i} className="flex items-start gap-2">
                         <div className="w-5 h-5 rounded-full bg-violet-200 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-[10px] font-black text-violet-700">{i + 1}</span>
+                          <span className="text-[11px] font-black text-violet-700">{i + 1}</span>
                         </div>
                         <p className="text-xs text-foreground/80 leading-relaxed">{step}</p>
                       </div>
@@ -156,25 +156,25 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
 
               {day.fun_fact && (
                 <div className="bg-amber-50 rounded-xl p-3 border border-amber-100">
-                  <p className="text-[10px] font-bold text-amber-700 mb-1">📖 Le savais-tu ?</p>
+                  <p className="text-[11px] font-bold text-amber-700 mb-1">📖 Le savais-tu ?</p>
                   <p className="text-xs text-amber-900/80 leading-relaxed">{day.fun_fact}</p>
                 </div>
               )}
               {day.coach_tip && (
                 <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-100">
-                  <p className="text-[10px] font-bold text-emerald-700 mb-1 flex items-center gap-1.5"><Lightbulb className="w-3 h-3" /> Conseil du coach</p>
+                  <p className="text-[11px] font-bold text-emerald-700 mb-1 flex items-center gap-1.5"><Lightbulb className="w-3 h-3" /> Conseil du coach</p>
                   <p className="text-xs text-emerald-900/80 leading-relaxed">{day.coach_tip}</p>
                 </div>
               )}
               {day.observe && (
                 <div className="bg-blue-50 rounded-xl p-3 border border-blue-100">
-                  <p className="text-[10px] font-bold text-blue-700 mb-1 flex items-center gap-1.5"><Eye className="w-3 h-3" /> Observe</p>
+                  <p className="text-[11px] font-bold text-blue-700 mb-1 flex items-center gap-1.5"><Eye className="w-3 h-3" /> Observe</p>
                   <p className="text-xs text-blue-900/80 leading-relaxed">{day.observe}</p>
                 </div>
               )}
               {day.bonus_challenge && (
                 <div className="bg-purple-50 rounded-xl p-3 border border-purple-100">
-                  <p className="text-[10px] font-bold text-purple-700 mb-1 flex items-center gap-1.5"><Star className="w-3 h-3" /> Défi bonus</p>
+                  <p className="text-[11px] font-bold text-purple-700 mb-1 flex items-center gap-1.5"><Star className="w-3 h-3" /> Défi bonus</p>
                   <p className="text-xs text-purple-900/80 leading-relaxed">{day.bonus_challenge}</p>
                 </div>
               )}
@@ -235,15 +235,15 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
       <div className="grid grid-cols-3 gap-2">
         <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="bg-emerald-50 rounded-xl p-3 text-center border border-emerald-100">
           <p className="font-black text-lg text-emerald-700">7/7</p>
-          <p className="text-[10px] text-emerald-600 font-bold">Jours</p>
+          <p className="text-[11px] text-emerald-600 font-bold">Jours</p>
         </motion.div>
         <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }} className="bg-violet-50 rounded-xl p-3 text-center border border-violet-100">
           <p className="font-black text-lg text-violet-700">{totalMinutes}</p>
-          <p className="text-[10px] text-violet-600 font-bold">Minutes</p>
+          <p className="text-[11px] text-violet-600 font-bold">Minutes</p>
         </motion.div>
         <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.6 }} className="bg-amber-50 rounded-xl p-3 text-center border border-amber-100">
           <p className="font-black text-lg text-amber-700">{program.days?.length || 7}</p>
-          <p className="text-[10px] text-amber-600 font-bold">Activités</p>
+          <p className="text-[11px] text-amber-600 font-bold">Activités</p>
         </motion.div>
       </div>
 
@@ -270,7 +270,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
         {/* Progression indicators check */}
         {program.progression_indicators?.length > 0 && (
           <div>
-            <p className="text-[10px] font-bold text-blue-700 uppercase tracking-wider mb-2">
+            <p className="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-2">
               As-tu observé ces signes chez {dog?.name} ?
             </p>
             <div className="space-y-1.5">
@@ -299,7 +299,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
 
         {/* Feeling scale */}
         <div>
-          <p className="text-[10px] font-bold text-blue-700 uppercase tracking-wider mb-2">
+          <p className="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-2">
             Comment te sens-tu par rapport à ta relation avec {dog?.name} ?
           </p>
           <div className="flex justify-between gap-1">
@@ -320,7 +320,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
 
         {/* Open feedback */}
         <div>
-          <p className="text-[10px] font-bold text-blue-700 uppercase tracking-wider mb-2">
+          <p className="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-2">
             Un mot sur ton expérience ? (optionnel)
           </p>
           <textarea
@@ -334,7 +334,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
 
         {/* Next focus goals */}
         <div>
-          <p className="text-[10px] font-bold text-blue-700 uppercase tracking-wider mb-2">
+          <p className="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-2">
             Sur quoi te concentrer ensuite ?
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -344,7 +344,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
                 <button
                   key={label}
                   onClick={() => !bilanSaved && setNextFocus(prev => selected ? prev.filter(g => g !== label) : [...prev, label])}
-                  className={`text-[10px] font-bold px-2.5 py-2.5 rounded-full transition-all ${
+                  className={`text-[11px] font-bold px-2.5 py-2.5 rounded-full transition-all ${
                     selected ? "bg-blue-600 text-white" : "bg-white border border-blue-200 text-blue-700 hover:bg-blue-50"
                   }`}
                 >
@@ -419,7 +419,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {nextFocus.map(f => (
-                  <span key={f} className="text-[10px] font-bold bg-white/20 text-white px-2.5 py-2 rounded-full">
+                  <span key={f} className="text-[11px] font-bold bg-white/20 text-white px-2.5 py-2 rounded-full">
                     {GOAL_SUGGESTIONS.find(g => g.label === f)?.emoji} {f}
                   </span>
                 ))}
@@ -778,17 +778,17 @@ export default function AITrainingProgram({ dog, logs = [] }) {
 
           {/* Dog chips */}
           <div className="flex flex-wrap gap-1.5 mb-3">
-            {dog?.breed && <span className="text-[10px] font-bold bg-purple-100 text-purple-700 px-2 py-1 rounded-full">{dog.breed}</span>}
-            {dog?.activity_level && <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">Activité {ACTIVITY_LABELS[dog.activity_level]}</span>}
+            {dog?.breed && <span className="text-[11px] font-bold bg-purple-100 text-purple-700 px-2 py-1 rounded-full">{dog.breed}</span>}
+            {dog?.activity_level && <span className="text-[11px] font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">Activité {ACTIVITY_LABELS[dog.activity_level]}</span>}
             {dog?.birth_date && (() => {
               const m = differenceInMonths(new Date(), new Date(dog.birth_date));
-              return <span className="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-1 rounded-full">{m < 12 ? `${m} mois` : `${Math.floor(m/12)} ans`}</span>;
+              return <span className="text-[11px] font-bold bg-blue-100 text-blue-700 px-2 py-1 rounded-full">{m < 12 ? `${m} mois` : `${Math.floor(m/12)} ans`}</span>;
             })()}
           </div>
 
           {/* What you'll get preview */}
           <div className="bg-white/80 rounded-xl p-3 border border-purple-100/50 mb-4">
-            <p className="text-[10px] font-bold text-purple-700 uppercase tracking-wider mb-2">Chaque jour tu recevras</p>
+            <p className="text-[11px] font-bold text-purple-700 uppercase tracking-wider mb-2">Chaque jour tu recevras</p>
             <div className="grid grid-cols-2 gap-1.5">
               {[
                 { emoji: "📋", text: "Activité guidée pas à pas" },
@@ -800,14 +800,14 @@ export default function AITrainingProgram({ dog, logs = [] }) {
               ].map(({ emoji, text }) => (
                 <div key={text} className="flex items-center gap-1.5">
                   <span className="text-sm">{emoji}</span>
-                  <span className="text-[10px] text-foreground/70">{text}</span>
+                  <span className="text-[11px] text-foreground/70">{text}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Goal suggestions — quick pick chips */}
-          <p className="text-[10px] font-bold text-purple-700 uppercase tracking-wider mb-2">Tes objectifs</p>
+          <p className="text-[11px] font-bold text-purple-700 uppercase tracking-wider mb-2">Tes objectifs</p>
           <div className="flex flex-wrap gap-1.5 mb-3">
             {GOAL_SUGGESTIONS.map(({ label, emoji }) => {
               const selected = selectedGoals.includes(label);
@@ -815,7 +815,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
                 <button
                   key={label}
                   onClick={() => setSelectedGoals(prev => selected ? prev.filter(g => g !== label) : [...prev, label])}
-                  className={`text-[10px] font-bold px-2.5 py-2.5 rounded-full transition-all ${
+                  className={`text-[11px] font-bold px-2.5 py-2.5 rounded-full transition-all ${
                     selected ? "bg-purple-600 text-white" : "bg-white border border-purple-200 text-purple-700 hover:bg-purple-50"
                   }`}
                 >
@@ -845,17 +845,17 @@ export default function AITrainingProgram({ dog, logs = [] }) {
           {/* Past programs */}
           {pastPrograms.length > 0 && (
             <div className="mb-4 pt-3 border-t border-purple-100">
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Programmes terminés</p>
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Programmes terminés</p>
               <div className="space-y-1.5">
                 {pastPrograms.slice(0, 3).map((p, i) => (
                   <div key={i} className="flex items-center gap-2 bg-emerald-50/50 rounded-lg px-2.5 py-1.5">
                     <CheckCircle2 className="w-3 h-3 text-emerald-500 flex-shrink-0" />
-                    <span className="text-[10px] text-foreground/70 truncate flex-1">{p.title}</span>
-                    <span className="text-[10px] text-muted-foreground flex-shrink-0">{p.date}</span>
+                    <span className="text-[11px] text-foreground/70 truncate flex-1">{p.title}</span>
+                    <span className="text-[11px] text-muted-foreground flex-shrink-0">{p.date}</span>
                   </div>
                 ))}
               </div>
-              <p className="text-[10px] text-muted-foreground italic mt-1.5">Le prochain programme sera différent de ceux-ci</p>
+              <p className="text-[11px] text-muted-foreground italic mt-1.5">Le prochain programme sera différent de ceux-ci</p>
             </div>
           )}
 
@@ -909,19 +909,19 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     <div className="space-y-4 pb-8">
       {/* Program header */}
       <div className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-5 text-white">
-        <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider mb-1">Programme 7 jours</p>
+        <p className="text-white/70 text-[11px] font-bold uppercase tracking-wider mb-1">Programme 7 jours</p>
         <h3 className="font-black text-lg leading-tight">{program.program_title}</h3>
         <p className="text-white/80 text-xs mt-1.5 leading-relaxed">{program.summary}</p>
         <div className="flex gap-2 mt-3 flex-wrap">
-          {program.difficulty && <span className="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full capitalize">{program.difficulty}</span>}
-          <span className="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">7 jours</span>
-          {totalMinutes > 0 && <span className="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">~{totalMinutes} min total</span>}
+          {program.difficulty && <span className="bg-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-full capitalize">{program.difficulty}</span>}
+          <span className="bg-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">7 jours</span>
+          {totalMinutes > 0 && <span className="bg-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">~{totalMinutes} min total</span>}
         </div>
         {saved && (
           <div className="mt-4">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-white/70 text-[10px] font-bold">Progression</span>
-              <span className="text-white text-[10px] font-bold">{completedCount}/{totalDays} jours</span>
+              <span className="text-white/70 text-[11px] font-bold">Progression</span>
+              <span className="text-white text-[11px] font-bold">{completedCount}/{totalDays} jours</span>
             </div>
             <div className="h-2 bg-white/20 rounded-full overflow-hidden">
               <motion.div className="h-full bg-white rounded-full" initial={{ width: 0 }} animate={{ width: `${overallProgress}%` }} transition={{ duration: 0.8, ease: "easeOut" }} />
@@ -931,7 +931,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         {program.start_date && (
           <div className="mt-2 flex items-center gap-1.5">
             <CalendarDays className="w-3 h-3 text-white/50" />
-            <span className="text-white/60 text-[10px]">
+            <span className="text-white/60 text-[11px]">
               {formatDateFr(new Date(program.start_date + "T00:00:00"))} → {formatDateFr(addDaysToDate(program.start_date, totalDays - 1))}
             </span>
           </div>
@@ -940,7 +940,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
 
       {program.program_goal && (
         <div className="bg-violet-50 border border-violet-100 rounded-2xl px-4 py-3">
-          <p className="text-[10px] font-bold text-violet-600 uppercase tracking-wider mb-0.5">Objectif</p>
+          <p className="text-[11px] font-bold text-violet-600 uppercase tracking-wider mb-0.5">Objectif</p>
           <p className="text-xs text-foreground/80">{program.program_goal}</p>
         </div>
       )}

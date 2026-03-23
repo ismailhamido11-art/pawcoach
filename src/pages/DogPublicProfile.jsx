@@ -38,7 +38,7 @@ function RecordItem({ record }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
           <p className="text-sm font-semibold text-slate-800 truncate">{record.type === "vaccine" ? getVaccineDisplayName(record.title) : record.title}</p>
-          <span className="text-[10px] text-slate-400 flex-shrink-0">{record.date}</span>
+          <span className="text-[11px] text-slate-400 flex-shrink-0">{record.date}</span>
         </div>
         {record.details && <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{record.details}</p>}
         {record.type === 'weight' && record.value && (
@@ -47,7 +47,7 @@ function RecordItem({ record }) {
         {record.next_date && (
           <div className="flex items-center gap-1 mt-1">
             <Calendar className="w-3 h-3 text-amber-500" />
-            <span className="text-[10px] text-amber-600 font-medium">Rappel : {record.next_date}</span>
+            <span className="text-[11px] text-amber-600 font-medium">Rappel : {record.next_date}</span>
           </div>
         )}
       </div>
@@ -60,7 +60,7 @@ function StatPill({ icon: Icon, value, label, color }) {
     <div className="flex flex-col items-center gap-1 bg-white rounded-2xl px-4 py-3 shadow-sm border border-border">
       <Icon style={{ color, width: 18, height: 18 }} />
       <p className="text-sm font-bold text-slate-800">{value}</p>
-      <p className="text-[10px] text-slate-400">{label}</p>
+      <p className="text-[11px] text-slate-400">{label}</p>
     </div>
   );
 }
@@ -211,22 +211,22 @@ export default function DogPublicProfile() {
           <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Profil</h2>
           <div className="grid grid-cols-2 gap-2 text-sm">
             {dog.breed && (
-              <div><p className="text-[10px] text-slate-400">Race</p><p className="font-semibold text-slate-700">{dog.breed}</p></div>
+              <div><p className="text-[11px] text-slate-400">Race</p><p className="font-semibold text-slate-700">{dog.breed}</p></div>
             )}
             {dog.birth_date && (
-              <div><p className="text-[10px] text-slate-400">Âge</p><p className="font-semibold text-slate-700">{getAge(dog.birth_date)}</p></div>
+              <div><p className="text-[11px] text-slate-400">Âge</p><p className="font-semibold text-slate-700">{getAge(dog.birth_date)}</p></div>
             )}
             {dog.weight && (
-              <div><p className="text-[10px] text-slate-400">Poids</p><p className="font-semibold text-slate-700">{dog.weight} kg</p></div>
+              <div><p className="text-[11px] text-slate-400">Poids</p><p className="font-semibold text-slate-700">{dog.weight} kg</p></div>
             )}
             {dog.sex && (
-              <div><p className="text-[10px] text-slate-400">Sexe</p><p className="font-semibold text-slate-700">{dog.sex === "male" ? "Mâle" : "Femelle"}</p></div>
+              <div><p className="text-[11px] text-slate-400">Sexe</p><p className="font-semibold text-slate-700">{dog.sex === "male" ? "Mâle" : "Femelle"}</p></div>
             )}
             {dog.neutered !== undefined && dog.neutered !== null && (
-              <div><p className="text-[10px] text-slate-400">Stérilisé</p><p className="font-semibold text-slate-700">{dog.neutered ? "Oui" : "Non"}</p></div>
+              <div><p className="text-[11px] text-slate-400">Stérilisé</p><p className="font-semibold text-slate-700">{dog.neutered ? "Oui" : "Non"}</p></div>
             )}
             {dog.activity_level && (
-              <div><p className="text-[10px] text-slate-400">Activité</p><p className="font-semibold text-slate-700">{dog.activity_level}</p></div>
+              <div><p className="text-[11px] text-slate-400">Activité</p><p className="font-semibold text-slate-700">{dog.activity_level}</p></div>
             )}
           </div>
         </div>
@@ -271,7 +271,7 @@ export default function DogPublicProfile() {
             <span className="text-xs font-bold text-slate-600">Dossier géré via</span>
             <span className="text-xs font-black text-emerald-700">PawCoach</span>
           </div>
-          <p className="text-[10px] text-slate-400 mt-2">Ce dossier est partagé par le propriétaire. PawCoach n'est pas un service vétérinaire.</p>
+          <p className="text-[11px] text-slate-400 mt-2">Ce dossier est partagé par le propriétaire. PawCoach n'est pas un service vétérinaire.</p>
         </div>
       </div>
     </div>

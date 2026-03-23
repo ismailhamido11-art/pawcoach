@@ -31,7 +31,7 @@ export default function UpcomingReminders({ records = [], isPremium, onNavigate 
           <Bell className="w-4 h-4 text-emerald-500" />
           <span className="text-xs font-bold text-emerald-700">Rappels à venir</span>
           {!isPremium && (
-            <span className="ml-auto flex items-center gap-1 text-[10px] text-emerald-600 font-medium bg-emerald-100 px-2 py-0.5 rounded-full">
+            <span className="ml-auto flex items-center gap-1 text-[11px] text-emerald-600 font-medium bg-emerald-100 px-2 py-0.5 rounded-full">
               <Lock className="w-2.5 h-2.5" /> Emails Premium
             </span>
           )}
@@ -47,7 +47,7 @@ export default function UpcomingReminders({ records = [], isPremium, onNavigate 
               >
                 <div>
                   <p className="text-xs font-semibold text-foreground">{r.type === "vaccine" ? getVaccineDisplayName(r.title) : r.title}</p>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[11px] text-muted-foreground">
                     {new Date(r.next_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                   </p>
                 </div>

@@ -41,10 +41,10 @@ function ReviewCard({ review }) {
         <div className="flex items-center gap-1.5">
           <span className="text-xs font-bold text-foreground">{review.dog_name}</span>
           {review.dog_breed && (
-            <span className="text-[10px] text-muted-foreground">• {review.dog_breed}</span>
+            <span className="text-[11px] text-muted-foreground">• {review.dog_breed}</span>
           )}
         </div>
-        <span className="text-[10px]">{"🐾".repeat(review.rating)}</span>
+        <span className="text-[11px]">{"🐾".repeat(review.rating)}</span>
       </div>
       {review.comment && (
         <p className="text-xs text-foreground/80 leading-relaxed">{review.comment}</p>
@@ -52,7 +52,7 @@ function ReviewCard({ review }) {
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {tags.map(t => (
-            <span key={t} className="text-[10px] bg-primary/10 text-primary font-semibold rounded-md px-1.5 py-0.5">{t}</span>
+            <span key={t} className="text-[11px] bg-primary/10 text-primary font-semibold rounded-md px-1.5 py-0.5">{t}</span>
           ))}
         </div>
       )}
@@ -139,7 +139,7 @@ export default function ParkReviews({ park, dog, user }) {
     return (
       <div className="flex items-center gap-2 opacity-50">
         <MessageCircle className="w-3 h-3 text-muted-foreground" />
-        <p className="text-[10px] text-muted-foreground italic">Avis bientôt disponibles</p>
+        <p className="text-[11px] text-muted-foreground italic">Avis bientôt disponibles</p>
       </div>
     );
   }
@@ -150,19 +150,19 @@ export default function ParkReviews({ park, dog, user }) {
       {loading ? (
         <div className="flex items-center gap-2">
           <Loader2 className="w-3 h-3 animate-spin text-muted-foreground" />
-          <span className="text-[10px] text-muted-foreground">Chargement des avis...</span>
+          <span className="text-[11px] text-muted-foreground">Chargement des avis...</span>
         </div>
       ) : reviews.length > 0 ? (
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
             <span className="text-sm font-black text-foreground">{avgRating}</span>
             <span className="text-xs">{"🐾".repeat(Math.round(parseFloat(avgRating)))}</span>
-            <span className="text-[10px] text-muted-foreground">({reviews.length} avis)</span>
+            <span className="text-[11px] text-muted-foreground">({reviews.length} avis)</span>
           </div>
           {topTags.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {topTags.map(([tag, count]) => (
-                <span key={tag} className="text-[10px] bg-primary/10 text-primary font-semibold rounded-md px-1.5 py-0.5">
+                <span key={tag} className="text-[11px] bg-primary/10 text-primary font-semibold rounded-md px-1.5 py-0.5">
                   {tag} ({count})
                 </span>
               ))}
@@ -189,7 +189,7 @@ export default function ParkReviews({ park, dog, user }) {
       )}
 
       {userReviewed && !showForm && (
-        <p className="text-[10px] text-emerald-600 font-semibold text-center">Tu as déjà noté ce parc</p>
+        <p className="text-[11px] text-emerald-600 font-semibold text-center">Tu as déjà noté ce parc</p>
       )}
 
       {/* Review form */}
@@ -203,13 +203,13 @@ export default function ParkReviews({ park, dog, user }) {
 
           {/* Paw rating */}
           <div>
-            <p className="text-[10px] text-muted-foreground mb-1">Note</p>
+            <p className="text-[11px] text-muted-foreground mb-1">Note</p>
             <PawRatingInput value={rating} onChange={setRating} />
           </div>
 
           {/* Tags */}
           <div>
-            <p className="text-[10px] text-muted-foreground mb-1.5">Ce qui décrit le parc</p>
+            <p className="text-[11px] text-muted-foreground mb-1.5">Ce qui décrit le parc</p>
             <div className="flex flex-wrap gap-1.5">
               {REVIEW_TAGS.map(tag => {
                 const active = selectedTags.includes(tag.label);
@@ -218,7 +218,7 @@ export default function ParkReviews({ park, dog, user }) {
                     key={tag.id}
                     whileTap={{ scale: 0.93 }}
                     onClick={() => toggleTag(tag.label)}
-                    className={`text-[10px] font-semibold rounded-lg px-2.5 py-1 border transition-colors ${
+                    className={`text-[11px] font-semibold rounded-lg px-2.5 py-1 border transition-colors ${
                       active
                         ? "bg-primary/15 border-primary/40 text-primary"
                         : "bg-secondary/40 border-border text-muted-foreground"
@@ -233,7 +233,7 @@ export default function ParkReviews({ park, dog, user }) {
 
           {/* Comment */}
           <div>
-            <p className="text-[10px] text-muted-foreground mb-1">Un mot ? (optionnel)</p>
+            <p className="text-[11px] text-muted-foreground mb-1">Un mot ? (optionnel)</p>
             <textarea
               value={comment}
               onChange={e => setComment(e.target.value)}
@@ -325,14 +325,14 @@ export function PostWalkReviewPrompt({ park, dog, user, onDone }) {
       className="bg-white border border-border rounded-2xl p-3.5 space-y-2 w-full"
     >
       <p className="text-xs font-bold text-foreground">Tu étais au {park.name}</p>
-      <p className="text-[10px] text-muted-foreground">Comment c'était pour {dog?.name || "ton chien"} ?</p>
+      <p className="text-[11px] text-muted-foreground">Comment c'était pour {dog?.name || "ton chien"} ?</p>
       <div className="flex items-center justify-between">
         <PawRatingInput value={rating} onChange={setRating} />
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={submit}
           disabled={submitting || rating === 0}
-          className="px-3 py-1.5 rounded-xl text-[10px] font-bold text-white disabled:opacity-40 gradient-primary"
+          className="px-3 py-1.5 rounded-xl text-[11px] font-bold text-white disabled:opacity-40 gradient-primary"
         >
           {submitting ? <Loader2 className="w-3 h-3 animate-spin" /> : "Envoyer"}
         </motion.button>

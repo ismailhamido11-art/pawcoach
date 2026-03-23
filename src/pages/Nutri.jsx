@@ -306,7 +306,7 @@ export default function Nutri() {
           </div>
           <div className="grid grid-cols-5 gap-1.5 mt-1">
             {[0,1,2,3,4].map(i => (
-              <div key={i} className="h-14 rounded-2xl bg-white/10 animate-pulse" />
+              <div key={i} className="h-16 rounded-2xl bg-white/10 animate-pulse" />
             ))}
           </div>
         </div>
@@ -345,7 +345,7 @@ export default function Nutri() {
       <div className="gradient-primary safe-pt-14 pb-3 px-5 mt-8 overflow-hidden relative">
         <div className="relative z-10 flex items-end gap-3 mb-3">
           <div className="flex-1 pb-1">
-            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
+            <p className="text-white/60 text-[11px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
             <h1 className="text-white font-black text-2xl leading-tight">Nutrition</h1>
             {dog && <p className="text-white/70 text-xs mt-0.5">Pour {dog.name} &middot; {dog.breed}</p>}
             <div className="flex items-center gap-2 mt-2 flex-wrap">
@@ -410,7 +410,7 @@ export default function Nutri() {
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
 
         {/* Tabs — pill cards */}
-        <div className="grid grid-cols-5 gap-2 mt-1">
+        <div className="grid grid-cols-5 gap-1.5 mt-1">
           {TABS.map(({ id, label, emoji, bg }) => {
             const active = activeTab === id;
             return (
@@ -427,7 +427,7 @@ export default function Nutri() {
                   <div className={`absolute inset-0 bg-gradient-to-br ${bg} opacity-100`} />
                 )}
                 <span className="relative text-xl leading-none">{emoji}</span>
-                <span className={`relative text-[10px] font-bold leading-tight ${active ? "text-white" : "text-white/75"}`}>{label}</span>
+                <span className={`relative text-[11px] font-bold leading-tight ${active ? "text-white" : "text-white/75"}`}>{label}</span>
                 {active && (
                   <motion.div
                     layoutId="nutriTabIndicator"
@@ -518,7 +518,7 @@ export default function Nutri() {
                 {shouldShowDateSeparator(messages, i) && (
                   <div className="flex items-center gap-3 py-2 my-1">
                     <div className="flex-1 h-px bg-border" />
-                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">
+                    <span className="text-[11px] text-muted-foreground font-medium uppercase tracking-wide">
                       {getDateLabel(msg.timestamp)}
                     </span>
                     <div className="flex-1 h-px bg-border" />
@@ -545,7 +545,7 @@ export default function Nutri() {
                       )}
                     </div>
                     <div className="flex items-center gap-2.5 px-1 mt-0.5">
-                      <span className="text-[10px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
+                      <span className="text-[11px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
                       {msg.role === "assistant" && !msg.isError && (
                         <>
                           <button
@@ -571,7 +571,7 @@ export default function Nutri() {
                       {msg.isError && lastFailedInput && (
                         <button
                           onClick={() => sendMessage(lastFailedInput)}
-                          className="flex items-center gap-1 text-[10px] text-destructive hover:text-destructive/80 transition-colors"
+                          className="flex items-center gap-1 text-[11px] text-destructive hover:text-destructive/80 transition-colors"
                         >
                           <RotateCcw className="w-3 h-3" />
                           <span>R&eacute;essayer</span>

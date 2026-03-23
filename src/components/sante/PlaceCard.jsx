@@ -74,7 +74,7 @@ export default function PlaceCard({ place, isFavorite, favoriteId, favoriteNotes
         <div className="flex items-start justify-between gap-2 mb-2">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                 style={{ color: typeInfo.color, background: typeInfo.bg }}>
                 {typeInfo.label}
               </span>

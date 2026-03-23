@@ -30,7 +30,7 @@ export default function CelebrationScreen({ dogName, exerciseName, exerciseNumbe
       particleCount: 80,
       spread: 70,
       origin: { y: 0.5 },
-      colors: ["#3db87a", "#10b981", "#6366f1", "#ec4899"],
+      colors: ["#1A4D3E", "#2D9F82", "#10b981", "#34d399"],
     });
   }, []);
 
@@ -48,9 +48,10 @@ export default function CelebrationScreen({ dogName, exerciseName, exerciseNumbe
         initial={{ y: 300, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 300, opacity: 0 }}
-        transition={{ type: "spring", stiffness: 260, damping: 22 }}
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm bg-white rounded-t-3xl px-6 pt-6 pb-10 text-center shadow-2xl"
+        className="w-full max-w-sm bg-card rounded-t-3xl px-6 pt-6 text-center shadow-2xl"
+        style={{ paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))" }}
       >
         {/* Close pill */}
         <div className="w-10 h-1 bg-muted rounded-full mx-auto mb-6" />

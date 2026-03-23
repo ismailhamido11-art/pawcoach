@@ -47,7 +47,7 @@ export default function ContentArticles({ dog }) {
             />
             <div className="p-3">
               <p className="text-[12px] font-semibold text-[#2D2D2D]">{article.title}</p>
-              <p className="text-[10px] text-gray-400 mt-0.5">{article.subtitle}</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">{article.subtitle}</p>
             </div>
           </button>
         ))}

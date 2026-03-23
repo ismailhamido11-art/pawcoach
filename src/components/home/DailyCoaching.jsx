@@ -68,7 +68,7 @@ export default function DailyCoaching({ dog, recommendations = [] }) {
             <Lightbulb className="w-4 h-4 text-amber-600" />
           </div>
           <div>
-            <p className="text-[10px] font-bold text-amber-700/80 uppercase tracking-wider mb-1">Le savais-tu ?</p>
+            <p className="text-[11px] font-bold text-amber-700/80 uppercase tracking-wider mb-1">Le savais-tu ?</p>
             <p className="text-[12px] text-foreground/80 leading-relaxed">{tip}</p>
           </div>
         </div>
@@ -83,7 +83,7 @@ export default function DailyCoaching({ dog, recommendations = [] }) {
           <div>
             <div className="flex items-center gap-2 mb-2.5">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
-              <p className="text-[10px] font-bold text-foreground/60 uppercase tracking-wider">Pour {dog?.name || "ton chien"} aujourd'hui</p>
+              <p className="text-[11px] font-bold text-foreground/60 uppercase tracking-wider">Pour {dog?.name || "ton chien"} aujourd'hui</p>
             </div>
 
             {/* Hero card */}

@@ -358,7 +358,7 @@ export default function Chat() {
       <div className="gradient-primary safe-pt-14 pb-0 px-5 mt-8 overflow-hidden relative">
         <div className="relative z-10 flex items-end gap-3">
           <div className="flex-1 pb-4">
-            <p className="text-white/60 text-[10px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
+            <p className="text-white/60 text-[11px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
             <h1 className="text-white font-black text-2xl leading-tight">Assistant IA</h1>
             {dog && <p className="text-white/70 text-xs mt-0.5">Personnalise pour {dog.name} · {dog.breed}</p>}
             <div className="flex items-center gap-2 mt-2">
@@ -406,7 +406,7 @@ export default function Chat() {
             {shouldShowDateSeparator(messages, i) && (
               <div className="flex items-center gap-3 py-2 my-1">
                 <div className="flex-1 h-px bg-border" />
-                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">
+                <span className="text-[11px] text-muted-foreground font-medium uppercase tracking-wide">
                   {getDateLabel(msg.timestamp)}
                 </span>
                 <div className="flex-1 h-px bg-border" />
@@ -452,7 +452,7 @@ export default function Chat() {
                 )}
                 {/* Actions: time + copy + bookmark + retry */}
                 <div className="flex items-center gap-2.5 px-1 mt-0.5">
-                  <span className="text-[10px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
+                  <span className="text-[11px] text-muted-foreground/50">{getTimeStr(msg.timestamp)}</span>
                   {msg.role === "assistant" && !msg.isError && (
                     <>
                       <button
@@ -478,7 +478,7 @@ export default function Chat() {
                   {msg.isError && lastFailedInput && (
                     <button
                       onClick={() => sendMessage(lastFailedInput)}
-                      className="flex items-center gap-1 text-[10px] text-destructive hover:text-destructive/80 transition-colors"
+                      className="flex items-center gap-1 text-[11px] text-destructive hover:text-destructive/80 transition-colors"
                     >
                       <RotateCcw className="w-3 h-3" />
                       <span>Reessayer</span>

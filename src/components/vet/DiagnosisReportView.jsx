@@ -20,7 +20,7 @@ export default function DiagnosisReportView({ report, dogName, reportDate }) {
         <h3 className="font-semibold text-sm">
           Rapport complet pour {dogName || "ton chien"}
         </h3>
-        <span className="text-[10px] text-muted-foreground">{reportDate}</span>
+        <span className="text-[11px] text-muted-foreground">{reportDate}</span>
       </div>
 
       <div className={`flex items-center gap-2 p-3 rounded-xl ${urgency.color}`}>
@@ -42,7 +42,7 @@ export default function DiagnosisReportView({ report, dogName, reportDate }) {
           <ol className="space-y-1">
             {report.possible_causes.map((cause, i) => (
               <li key={i} className="text-xs text-muted-foreground flex gap-2">
-                <Badge variant="outline" className="text-[10px] px-1.5 flex-shrink-0">{i + 1}</Badge>
+                <Badge variant="outline" className="text-[11px] px-1.5 flex-shrink-0">{i + 1}</Badge>
                 {cause}
               </li>
             ))}
@@ -62,7 +62,7 @@ export default function DiagnosisReportView({ report, dogName, reportDate }) {
 
       {report.important_note && (
         <div className="p-2 bg-muted rounded-lg">
-          <p className="text-[10px] text-muted-foreground italic">{report.important_note}</p>
+          <p className="text-[11px] text-muted-foreground italic">{report.important_note}</p>
         </div>
       )}
     </div>

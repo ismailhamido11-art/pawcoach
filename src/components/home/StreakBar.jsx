@@ -78,14 +78,14 @@ export default function StreakBar({ streak, walkStreak = 0, exercises, dailyLogs
                 </motion.div>
               </div>
               <span className="text-lg font-black" style={{ color: level.color }}>{current}</span>
-              <span className="text-[10px] text-muted-foreground font-medium">jours</span>
+              <span className="text-[11px] text-muted-foreground font-medium">jours</span>
             </div>
 
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-bold" style={{ color: level.color }}>{level.label}</span>
+                <span className="text-[11px] font-bold" style={{ color: level.color }}>{level.label}</span>
                 {nextLevel && (
-                  <span className="text-[10px] text-muted-foreground">{nextLevel.label} dans {nextLevel.min - current}j</span>
+                  <span className="text-[11px] text-muted-foreground">{nextLevel.label} dans {nextLevel.min - current}j</span>
                 )}
               </div>
               <div className="h-1.5 bg-muted/50 rounded-full overflow-hidden">
@@ -102,7 +102,7 @@ export default function StreakBar({ streak, walkStreak = 0, exercises, dailyLogs
             {current >= longest && longest > 1 && (
               <div className="flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
                 <Trophy className="w-3 h-3 text-emerald-500" />
-                <span className="text-[10px] font-bold text-emerald-600">Record</span>
+                <span className="text-[11px] font-bold text-emerald-600">Record</span>
               </div>
             )}
           </div>
@@ -143,7 +143,7 @@ export default function StreakBar({ streak, walkStreak = 0, exercises, dailyLogs
                   style={{ width: `${Math.max(5, Math.round((nextBadge.current / nextBadge.target) * 100))}%` }}
                 />
               </div>
-              <span className="text-[10px] text-amber-600 font-bold">{nextBadge.current}/{nextBadge.target}</span>
+              <span className="text-[11px] text-amber-600 font-bold">{nextBadge.current}/{nextBadge.target}</span>
             </div>
           </motion.div>
         </Link>

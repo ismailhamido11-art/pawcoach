@@ -107,7 +107,7 @@ function BadgeCard({ badge, unlocked, achv, dogName, index }) {
       </span>
 
       {/* Name */}
-      <p className={`relative z-10 text-[10px] font-bold leading-tight ${
+      <p className={`relative z-10 text-[11px] font-bold leading-tight ${
         unlocked ? "text-foreground" : "text-muted-foreground/60"
       }`}>
         {badge.name}
@@ -117,7 +117,7 @@ function BadgeCard({ badge, unlocked, achv, dogName, index }) {
       {unlocked ? (
         <>
           {badge.points > 0 && (
-            <span className={`relative z-10 text-[10px] font-black px-1.5 py-0.5 rounded-full ${cat.bg} ${cat.text}`}>
+            <span className={`relative z-10 text-[11px] font-black px-1.5 py-0.5 rounded-full ${cat.bg} ${cat.text}`}>
               +{badge.points} pts
             </span>
           )}
@@ -217,7 +217,7 @@ export default function AchievementsSection({ dog }) {
             </div>
             <div className="text-right">
               <p className="text-white font-black text-xl leading-none">{animatedUnlocked} <span className="text-white/50 font-semibold text-sm">/ {TOTAL_BADGES}</span></p>
-              <p className="text-white/60 text-[10px]">badges débloqués</p>
+              <p className="text-white/60 text-[11px]">badges débloqués</p>
             </div>
           </div>
 
@@ -231,12 +231,12 @@ export default function AchievementsSection({ dog }) {
             {nextLevel && (
               <div className="flex items-center gap-1 bg-white/10 rounded-full px-2.5 py-1.5">
                 <Zap className="w-3 h-3 text-white/60" />
-                <span className="text-white/70 text-[10px]">{nextLevel.min - totalPoints} pts → {nextLevel.label}</span>
+                <span className="text-white/70 text-[11px]">{nextLevel.min - totalPoints} pts → {nextLevel.label}</span>
               </div>
             )}
             {!nextLevel && (
               <div className="flex items-center gap-1 bg-amber-400/20 rounded-full px-2.5 py-1.5">
-                <span className="text-amber-300 text-[10px] font-bold">Niveau max atteint !</span>
+                <span className="text-amber-300 text-[11px] font-bold">Niveau max atteint !</span>
               </div>
             )}
           </div>
