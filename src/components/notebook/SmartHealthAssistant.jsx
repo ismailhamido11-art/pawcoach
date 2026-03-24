@@ -373,7 +373,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
             </Button>
           )}
           {messages.length > 2 && !isProcessing && !isStreaming && !isFinished && (
-            <button onClick={startNewConversation} className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-2 rounded-lg hover:bg-slate-100">
+            <button onClick={startNewConversation} className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-2 rounded-lg hover:bg-muted">
               Nouveau
             </button>
           )}
@@ -381,7 +381,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       </div>
 
       {/* Chat Messages Area */}
-      <div ref={chatContainerRef} className="max-h-[50vh] overflow-y-auto p-4 space-y-4 scroll-smooth bg-gradient-to-b from-white to-slate-50/50">
+      <div ref={chatContainerRef} className="max-h-[50vh] overflow-y-auto p-4 space-y-4 scroll-smooth bg-gradient-to-b from-white to-muted/50">
 
         {/* Loading state before first message */}
          {messages.length === 0 && isProcessing && (
@@ -461,7 +461,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                         <button
                           key={idx}
                           onClick={() => handleSend(action)}
-                          className="text-xs bg-white hover:bg-slate-50 text-primary font-medium px-3 py-1.5 rounded-full shadow-sm border border-primary/20 transition-all active:scale-95"
+                          className="text-xs bg-white hover:bg-muted text-primary font-medium px-3 py-1.5 rounded-full shadow-sm border border-primary/20 transition-all active:scale-95"
                         >
                           {action}
                         </button>
@@ -514,28 +514,28 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                         href="https://www.google.com/maps/search/v%C3%A9t%C3%A9rinaire+%C3%A0+proximit%C3%A9"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-slate-50 transition-colors"
+                        className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-muted transition-colors"
                       >
                         <MapPin className="w-4 h-4 text-blue-600" />
-                        <span className="text-xs font-semibold text-slate-700">Maps</span>
+                        <span className="text-xs font-semibold text-foreground">Maps</span>
                       </a>
                       {level === "urgent" ? (
                         <a
                           href="tel:3115"
-                          className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-slate-50 transition-colors"
+                          className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-muted transition-colors"
                         >
                           <Phone className="w-4 h-4 text-red-600" />
-                          <span className="text-xs font-semibold text-slate-700">Urgences (3115)</span>
+                          <span className="text-xs font-semibold text-foreground">Urgences (3115)</span>
                         </a>
                       ) : (
                         <a
                           href="https://www.google.com/search?q=v%C3%A9t%C3%A9rinaire+%C3%A0+proximit%C3%A9"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-slate-50 transition-colors"
+                          className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-muted transition-colors"
                         >
                           <Phone className="w-4 h-4 text-primary" />
-                          <span className="text-xs font-semibold text-slate-700">Rechercher</span>
+                          <span className="text-xs font-semibold text-foreground">Rechercher</span>
                         </a>
                       )}
                     </div>
@@ -614,7 +614,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
             {/* Camera Button */}
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="w-10 h-10 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all flex-shrink-0"
+              className="w-10 h-10 rounded-full flex items-center justify-center bg-muted hover:bg-border text-muted-foreground transition-all flex-shrink-0"
             >
               <Camera className="w-4.5 h-4.5" />
             </button>
@@ -624,7 +624,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
               onClick={startListening}
               className={`
                 w-10 h-10 rounded-full flex items-center justify-center transition-all flex-shrink-0
-                ${isListening ? "bg-red-500 text-white animate-pulse" : "bg-slate-100 hover:bg-slate-200 text-slate-600"}
+                ${isListening ? "bg-red-500 text-white animate-pulse" : "bg-muted hover:bg-border text-muted-foreground"}
               `}
             >
               <Mic className="w-4.5 h-4.5" />
@@ -638,7 +638,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 placeholder="Écris ou parle..."
                 disabled={isProcessing || isStreaming}
-                className="h-10 rounded-full pl-4 pr-11 border-border bg-slate-50 focus:bg-white transition-colors text-sm"
+                className="h-10 rounded-full pl-4 pr-11 border-border bg-muted focus:bg-white transition-colors text-sm"
               />
               <button
                 onClick={() => handleSend()}

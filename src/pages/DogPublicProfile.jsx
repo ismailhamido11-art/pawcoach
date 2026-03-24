@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 import { Syringe, Weight, Stethoscope, Pill, AlertTriangle, Calendar, MapPin, PawPrint, ShieldCheck, FileText, Loader2 } from "lucide-react";
 import { getVaccineDisplayName } from "@/utils/healthStatus";
+import EmptyState from "@/components/ui/EmptyState";
 
 // Public page — no login required
 // URL: /DogPublicProfile?dogId=xxx
@@ -37,10 +38,10 @@ function RecordItem({ record }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm font-semibold text-slate-800 truncate">{record.type === "vaccine" ? getVaccineDisplayName(record.title) : record.title}</p>
-          <span className="text-[11px] text-slate-400 flex-shrink-0">{record.date}</span>
+          <p className="text-sm font-semibold text-foreground truncate">{record.type === "vaccine" ? getVaccineDisplayName(record.title) : record.title}</p>
+          <span className="text-[11px] text-muted-foreground flex-shrink-0">{record.date}</span>
         </div>
-        {record.details && <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{record.details}</p>}
+        {record.details && <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{record.details}</p>}
         {record.type === 'weight' && record.value && (
           <span className="text-xs font-bold text-blue-600">{record.value} kg</span>
         )}
@@ -59,8 +60,8 @@ function StatPill({ icon: Icon, value, label, color }) {
   return (
     <div className="flex flex-col items-center gap-1 bg-white rounded-2xl px-4 py-3 shadow-sm border border-border">
       <Icon style={{ color, width: 18, height: 18 }} />
-      <p className="text-sm font-bold text-slate-800">{value}</p>
-      <p className="text-[11px] text-slate-400">{label}</p>
+      <p className="text-sm font-bold text-foreground">{value}</p>
+      <p className="text-[11px] text-muted-foreground">{label}</p>
     </div>
   );
 }
@@ -94,10 +95,10 @@ export default function DogPublicProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
-          <p className="text-sm text-slate-500">Chargement du dossier…</p>
+          <p className="text-sm text-muted-foreground">Chargement du dossier…</p>
         </div>
       </div>
     );
@@ -105,11 +106,11 @@ export default function DogPublicProfile() {
 
   if (error || !dog) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <div className="text-center">
-          <PawPrint className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h1 className="text-2xl font-black text-slate-700">Dossier introuvable</h1>
-          <p className="text-sm text-slate-400 mt-2">Ce lien est invalide ou a expiré.</p>
+          <PawPrint className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h1 className="text-2xl font-black text-foreground">Dossier introuvable</h1>
+          <p className="text-sm text-muted-foreground mt-2">Ce lien est invalide ou a expiré.</p>
           <a
             href="/"
             className="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-emerald-600 text-white font-bold text-sm rounded-xl hover:bg-emerald-700 transition-colors"
@@ -131,7 +132,7 @@ export default function DogPublicProfile() {
   const hasHealthIssues = dog.health_issues && dog.health_issues.toLowerCase() !== "non" && dog.health_issues !== "null";
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       {/* Emergency Banner */}
       <div className="bg-red-600 text-white text-center py-2 px-4">
         <p className="text-xs font-bold tracking-wide uppercase">
@@ -208,38 +209,38 @@ export default function DogPublicProfile() {
 
         {/* Infos générales */}
         <div className="bg-white rounded-2xl border border-border shadow-sm p-4">
-          <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Profil</h2>
+          <h2 className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-3">Profil</h2>
           <div className="grid grid-cols-2 gap-2 text-sm">
             {dog.breed && (
-              <div><p className="text-[11px] text-slate-400">Race</p><p className="font-semibold text-slate-700">{dog.breed}</p></div>
+              <div><p className="text-[11px] text-muted-foreground">Race</p><p className="font-semibold text-foreground">{dog.breed}</p></div>
             )}
             {dog.birth_date && (
-              <div><p className="text-[11px] text-slate-400">Âge</p><p className="font-semibold text-slate-700">{getAge(dog.birth_date)}</p></div>
+              <div><p className="text-[11px] text-muted-foreground">Âge</p><p className="font-semibold text-foreground">{getAge(dog.birth_date)}</p></div>
             )}
             {dog.weight && (
-              <div><p className="text-[11px] text-slate-400">Poids</p><p className="font-semibold text-slate-700">{dog.weight} kg</p></div>
+              <div><p className="text-[11px] text-muted-foreground">Poids</p><p className="font-semibold text-foreground">{dog.weight} kg</p></div>
             )}
             {dog.sex && (
-              <div><p className="text-[11px] text-slate-400">Sexe</p><p className="font-semibold text-slate-700">{dog.sex === "male" ? "Mâle" : "Femelle"}</p></div>
+              <div><p className="text-[11px] text-muted-foreground">Sexe</p><p className="font-semibold text-foreground">{dog.sex === "male" ? "Mâle" : "Femelle"}</p></div>
             )}
             {dog.neutered !== undefined && dog.neutered !== null && (
-              <div><p className="text-[11px] text-slate-400">Stérilisé</p><p className="font-semibold text-slate-700">{dog.neutered ? "Oui" : "Non"}</p></div>
+              <div><p className="text-[11px] text-muted-foreground">Stérilisé</p><p className="font-semibold text-foreground">{dog.neutered ? "Oui" : "Non"}</p></div>
             )}
             {dog.activity_level && (
-              <div><p className="text-[11px] text-slate-400">Activité</p><p className="font-semibold text-slate-700">{dog.activity_level}</p></div>
+              <div><p className="text-[11px] text-muted-foreground">Activité</p><p className="font-semibold text-foreground">{dog.activity_level}</p></div>
             )}
           </div>
         </div>
 
         {/* Vétérinaire */}
         {(dog.vet_name || dog.vet_city) && (
-          <div className="bg-purple-50 border border-purple-100 rounded-2xl p-4">
-            <h2 className="text-xs font-black text-purple-400 uppercase tracking-widest mb-2">Vétérinaire habituel</h2>
-            {dog.vet_name && <p className="text-sm font-bold text-slate-800">{dog.vet_name}</p>}
+          <div className="bg-secondary border border-border rounded-2xl p-4">
+            <h2 className="text-xs font-black text-accent uppercase tracking-widest mb-2">Vétérinaire habituel</h2>
+            {dog.vet_name && <p className="text-sm font-bold text-foreground">{dog.vet_name}</p>}
             {dog.vet_city && (
               <div className="flex items-center gap-1 mt-1">
-                <MapPin className="w-3 h-3 text-purple-500" />
-                <p className="text-xs text-purple-700">{dog.vet_city}</p>
+                <MapPin className="w-3 h-3 text-accent" />
+                <p className="text-xs text-accent">{dog.vet_city}</p>
               </div>
             )}
           </div>
@@ -249,7 +250,7 @@ export default function DogPublicProfile() {
         {records.length > 0 && (
           <div className="bg-white rounded-2xl border border-border shadow-sm">
             <div className="px-4 pt-4 pb-2 border-b border-border">
-              <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest">Historique médical</h2>
+              <h2 className="text-xs font-black text-muted-foreground uppercase tracking-widest">Historique médical</h2>
             </div>
             <div className="px-4">
               {records.filter(r => r.type === 'vaccine' || r.type === 'weight').slice(0, 15).map(r => <RecordItem key={r.id} record={r} />)}
@@ -259,8 +260,7 @@ export default function DogPublicProfile() {
 
         {records.length === 0 && (
           <div className="bg-white rounded-2xl border border-border shadow-sm p-6 text-center">
-            <ShieldCheck className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-            <p className="text-sm text-slate-400">Aucun historique médical enregistré</p>
+            <EmptyState mascot="doctor" title="Aucun historique médical" description="Aucun historique médical enregistré" />
           </div>
         )}
 
@@ -268,10 +268,10 @@ export default function DogPublicProfile() {
         <div className="text-center pt-2">
           <div className="inline-flex items-center gap-2 bg-white border border-border rounded-full px-4 py-2 shadow-sm">
             <PawPrint className="w-4 h-4 text-emerald-600" />
-            <span className="text-xs font-bold text-slate-600">Dossier géré via</span>
+            <span className="text-xs font-bold text-muted-foreground">Dossier géré via</span>
             <span className="text-xs font-black text-emerald-700">PawCoach</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-2">Ce dossier est partagé par le propriétaire. PawCoach n'est pas un service vétérinaire.</p>
+          <p className="text-[11px] text-muted-foreground mt-2">Ce dossier est partagé par le propriétaire. PawCoach n'est pas un service vétérinaire.</p>
         </div>
       </div>
     </div>

@@ -82,16 +82,16 @@ export default function QRCodeCard({ dog }) {
               onClick={e => e.stopPropagation()}
             >
               {/* Handle */}
-              <div className="w-10 h-1 bg-slate-200 rounded-full mx-auto mb-6" />
+              <div className="w-10 h-1 bg-border rounded-full mx-auto mb-6" />
 
               {/* Header */}
               <div className="flex items-start justify-between mb-5">
                 <div>
-                  <h2 className="text-xl font-black text-slate-900">QR Code d'urgence</h2>
-                  <p className="text-sm text-slate-500 mt-0.5">{dog.name} · Dossier médical complet</p>
+                  <h2 className="text-xl font-black text-foreground">QR Code d'urgence</h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">{dog.name} · Dossier médical complet</p>
                 </div>
-                <button aria-label="Fermer" onClick={() => setOpen(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
-                  <X className="w-4 h-4 text-slate-600" />
+                <button aria-label="Fermer" onClick={() => setOpen(false)} className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                  <X className="w-4 h-4 text-muted-foreground" />
                 </button>
               </div>
 
@@ -102,10 +102,10 @@ export default function QRCodeCard({ dog }) {
                   { icon: Shield, label: "Sécurisé", sub: "Lecture seule", color: "#2d9f82" },
                   { icon: Smartphone, label: "Universel", sub: "Tout smartphone", color: "#3b82f6" },
                 ].map(({ icon: Icon, label, sub, color }) => (
-                  <div key={label} className="flex flex-col items-center text-center bg-slate-50 rounded-xl py-3 px-2">
+                  <div key={label} className="flex flex-col items-center text-center bg-muted rounded-xl py-3 px-2">
                     <Icon style={{ color, width: 18, height: 18 }} className="mb-1" />
-                    <p className="text-xs font-bold text-slate-700">{label}</p>
-                    <p className="text-[11px] text-slate-400">{sub}</p>
+                    <p className="text-xs font-bold text-foreground">{label}</p>
+                    <p className="text-[11px] text-muted-foreground">{sub}</p>
                   </div>
                 ))}
               </div>
@@ -132,8 +132,8 @@ export default function QRCodeCard({ dog }) {
               </div>
 
               {/* Instruction */}
-              <p className="text-center text-xs text-slate-400 mb-5">
-                Imprime ce code et colle-le sur le collier ou la laisse de <span className="font-bold text-slate-700">{dog.name}</span>
+              <p className="text-center text-xs text-muted-foreground mb-5">
+                Imprime ce code et colle-le sur le collier ou la laisse de <span className="font-bold text-foreground">{dog.name}</span>
               </p>
 
               {/* CTA Buttons */}
@@ -141,7 +141,7 @@ export default function QRCodeCard({ dog }) {
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   onClick={handleDownload}
-                  className="flex items-center justify-center gap-2 bg-slate-900 text-white rounded-2xl py-3.5 font-bold text-sm"
+                  className="flex items-center justify-center gap-2 bg-primary text-white rounded-2xl py-3.5 font-bold text-sm"
                 >
                   <Download className="w-4 h-4" />
                   Télécharger
