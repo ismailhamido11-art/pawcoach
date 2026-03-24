@@ -9,6 +9,7 @@ import { createPageUrl } from "@/utils";
 import VetDogCard from "../components/vet/VetDogCard";
 import { motion } from "framer-motion";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function VetPortal() {
   const [user, setUser] = useState(null);
@@ -157,11 +158,13 @@ export default function VetPortal() {
             Mes patients ({dogs.length})
           </h2>
           {dogs.length === 0 ? (
-            <div className="text-center py-12">
-              <Stethoscope className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground">Aucun patient pour le moment</p>
-              <p className="text-xs text-muted-foreground mt-1">Utilisez un code d'invitation pour accéder au carnet d'un chien</p>
-            </div>
+            <EmptyState
+              mascot="doctor"
+              illustration="vet-checkup"
+              title="Aucun patient pour le moment"
+              description="Utilise un code d'invitation PawCoach pour accéder au carnet partagé d'un chien."
+              className="rounded-3xl border border-border/60 bg-card shadow-sm"
+            />
           ) : (
             <div className="space-y-3">
               {dogs.map((dog) => (

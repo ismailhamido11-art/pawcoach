@@ -67,18 +67,18 @@ Mission: AJOUTER la couche émotionnelle sans toucher à la logique métier ni a
 
 ## PHASE 3 — SKELETONS (remplacer TOUS les spinners)
 
-- [ ] Home.jsx: loading → SkeletonPage variant="stats"
+- [x] Home.jsx: loading → SkeletonPage variant="stats"
 - [x] Activite.jsx: loading → SkeletonPage variant="stats"
-- [ ] Nutri.jsx: loading → SkeletonPage variant="list"
+- [x] Nutri.jsx: loading → SkeletonPage variant="list"
 - [x] Sante.jsx: loading → SkeletonPage variant="stats" + skeleton onglets
-- [ ] Training.jsx: loading → SkeletonPage variant="list"
-- [ ] Chat.jsx: loading → SkeletonPage variant="chat"
+- [x] Training.jsx: loading → SkeletonPage variant="list"
+- [x] Chat.jsx: loading → SkeletonPage variant="chat"
 - [x] Profile.jsx: loading → SkeletonPage variant="detail"
-- [ ] DogProfile.jsx: loading → SkeletonPage variant="detail"
+- [x] DogProfile.jsx: loading → SkeletonPage variant="detail"
 - [ ] Library.jsx: loading → SkeletonPage variant="list"
-- [ ] Dashboard.jsx: loading → SkeletonPage variant="stats"
+- [x] Dashboard.jsx: loading → SkeletonPage variant="stats"
 - [x] VetPortal.jsx: loading → SkeletonPage variant="list"
-- [ ] VetDogView.jsx: loading → SkeletonPage variant="detail"
+- [x] VetDogView.jsx: loading → SkeletonPage variant="detail"
 - [ ] grep -rn "animate-spin\|Loader2.*className.*spin\|Chargement\.\.\." src/ --include="*.jsx" → remplacer tout spinner restant
 - [ ] git commit -am "feat: skeleton loading on all pages"
 

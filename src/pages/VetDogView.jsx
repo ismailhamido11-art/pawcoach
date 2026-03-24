@@ -12,6 +12,7 @@ import VetNoteForm from "../components/vet/VetNoteForm";
 import VetNotesList from "../components/vet/VetNotesList";
 import SectionPoids from "../components/notebook/SectionPoids";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function VetDogView() {
   const [loading, setLoading] = useState(true);
@@ -116,9 +117,21 @@ export default function VetDogView() {
           {/* Check-ins */}
           <TabsContent value="checkins" className="mt-4 space-y-3">
             {!sharedSections.includes("checkins") ? (
-              <p className="text-center text-sm text-muted-foreground py-8">Check-ins non partagés</p>
+              <EmptyState
+                mascot="curious"
+                illustration="calendar"
+                title="Check-ins non partagés"
+                description="Le propriétaire n'a pas partagé les check-ins quotidiens pour le moment."
+                className="rounded-3xl border border-border/60 bg-card shadow-sm"
+              />
             ) : checkins.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground py-8">Aucun check-in</p>
+              <EmptyState
+                mascot="chat"
+                illustration="no-results"
+                title="Aucun check-in"
+                description="Aucun suivi humeur/énergie n'a encore été enregistré pour ce chien."
+                className="rounded-3xl border border-border/60 bg-card shadow-sm"
+              />
             ) : (
               [...checkins].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 30).map(c => (
                 <div key={c.id} className="p-3 rounded-2xl bg-white border border-border">

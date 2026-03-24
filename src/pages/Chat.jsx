@@ -20,6 +20,7 @@ import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateH
 import { motion, AnimatePresence } from "framer-motion";
 import { spring, springGentle } from "@/lib/animations";
 import { mdComponents } from "@/components/lib/markdown";
+import EmptyState from "@/components/ui/EmptyState";
 
 const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: springGentle };
 
@@ -305,22 +306,6 @@ export default function Chat() {
   // --- Loading skeleton ---
   if (initializing) {
     return <SkeletonPage variant="chat" currentPage="Chat" />;
-  }
-        <div className="h-7 bg-accent/10" />
-        <div className="gradient-primary safe-pt-14 pb-4 px-5 mt-7">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white/20 animate-pulse" />
-            <div className="space-y-2"><div className="h-4 w-24 bg-white/20 rounded animate-pulse" /><div className="h-3 w-32 bg-white/10 rounded animate-pulse" /></div>
-          </div>
-        </div>
-        <div className="flex-1 px-5 py-4 space-y-4">
-          <div className="flex gap-2"><div className="w-8 h-8 rounded-xl bg-muted animate-pulse" /><div className="h-16 w-3/4 bg-muted animate-pulse rounded-2xl" /></div>
-          <div className="flex gap-2 justify-end"><div className="h-10 w-1/2 bg-muted animate-pulse rounded-2xl" /></div>
-          <div className="flex gap-2"><div className="w-8 h-8 rounded-xl bg-muted animate-pulse" /><div className="h-24 w-4/5 bg-muted animate-pulse rounded-2xl" /></div>
-        </div>
-        <BottomNav currentPage="Chat" />
-      </div>
-    );
   }
 
   const startNewChat = () => {

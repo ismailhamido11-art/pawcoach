@@ -15,6 +15,9 @@ import {
   DogTrophy,
   DogCurious,
 } from "./PawIllustrations";
+import StorysetIllustration from "./StorysetIllustration";
+import LottieAnimation from "./LottieAnimation";
+import useReducedMotion from "@/hooks/useReducedMotion";
 
 const MASCOTS = {
   wave: DogWave,
@@ -27,16 +30,6 @@ const MASCOTS = {
   curious: DogCurious,
 };
 
-/**
- * EmptyState
- * @param {string}   icon         Nom d'icône Lucide (ex: "MapPin") OU null si mascot utilisé
- * @param {string}   title        Titre principal (court, accrocheur)
- * @param {string}   description  Description secondaire (1-2 lignes)
- * @param {string}   actionLabel  Label du bouton CTA (optionnel)
- * @param {function} onAction     Callback du bouton CTA (optionnel)
- * @param {string}   mascot       Nom de la mascotte PawMascot : wave|detective|grad|chef|doctor|chat|trophy|curious
- * @param {string}   className    Classes supplémentaires sur le conteneur
- */
 export default function EmptyState({
   icon,
   title,
@@ -44,31 +37,44 @@ export default function EmptyState({
   actionLabel,
   onAction,
   mascot = "curious",
+  illustration,
+  lottieSrc,
   className = "",
 }) {
+  const reduceMotion = useReducedMotion();
   const MascotComponent = mascot ? MASCOTS[mascot] : null;
 
-  // Résolution de l'icône Lucide si fournie (et pas de mascot)
   let LucideIcon = null;
-  if (icon && !MascotComponent) {
-    LucideIcon = LucideIcons[icon] || LucideIcons["HelpCircle"];
+  if (icon && !MascotComponent && !illustration && !lottieSrc) {
+    LucideIcon = LucideIcons[icon] || LucideIcons.HelpCircle;
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={reduceMotion ? false : { opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: "spring", stiffness: 400, damping: 30, duration: 0.4 }}
+      transition={{ type: "spring", stiffness: 360, damping: 28, duration: reduceMotion ? 0 : 0.32 }}
       className={`flex flex-col items-center justify-center text-center py-10 px-6 ${className}`}
     >
-      {/* Illustration */}
-      {MascotComponent ? (
+      {lottieSrc ? (
+        <div className="mb-4 flex items-center justify-center rounded-[2rem] border border-border/60 bg-card/80 p-3 shadow-sm">
+          <LottieAnimation src={lottieSrc} size={112} ariaLabel={title || "Animation"} />
+        </div>
+      ) : illustration ? (
         <motion.div
-          animate={{ y: [0, -4, 0] }}
+          animate={reduceMotion ? undefined : { y: [0, -4, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="w-36 h-36 mb-4"
+        >
+          <StorysetIllustration name={illustration} alt="" className="w-full h-full" />
+        </motion.div>
+      ) : MascotComponent ? (
+        <motion.div
+          animate={reduceMotion ? undefined : { y: [0, -4, 0] }}
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           className="w-24 h-24 mb-4"
         >
-          <MascotComponent color="#2D9F82" />
+          <MascotComponent color="hsl(var(--accent))" />
         </motion.div>
       ) : LucideIcon ? (
         <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center mb-4">
@@ -76,17 +82,15 @@ export default function EmptyState({
         </div>
       ) : null}
 
-      {/* Textes */}
       <p className="font-bold text-base text-primary leading-tight mb-1">{title}</p>
       {description && (
-        <p className="text-sm text-muted-foreground leading-relaxed max-w-[260px]">{description}</p>
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-[280px]">{description}</p>
       )}
 
-      {/* CTA */}
       {actionLabel && onAction && (
         <motion.button
-          whileTap={{ scale: 0.96 }}
-          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+          whileTap={reduceMotion ? undefined : { scale: 0.96 }}
+          transition={{ type: "spring", stiffness: 360, damping: 28 }}
           onClick={onAction}
           className="mt-5 px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity"
         >
