@@ -10,7 +10,15 @@
 // ─── Transition primitives ────────────────────────────────────────────────────
 
 /** Default spring — used for most UI transitions (buttons, cards, tabs) */
-export const spring = { type: "spring", stiffness: 400, damping: 30 };
+export const spring = { type: "spring", stiffness: 360, damping: 28 };
+
+/** Standard fade-in used for pages/cards */
+export const fadeIn = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+  transition: { duration: 0.24, ease: "easeOut" },
+};
 
 /** Gentle spring — used for message animations, slide-ins */
 export const springGentle = { type: "spring", stiffness: 120, damping: 20 };

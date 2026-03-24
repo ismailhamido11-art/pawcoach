@@ -43,16 +43,16 @@ Mission: AJOUTER la couche émotionnelle sans toucher à la logique métier ni a
 
 ## PHASE 1 — FONDATIONS TECHNIQUES
 
-- [ ] Créer src/components/ui/SkeletonPage.jsx (Bone, SkeletonCard, SkeletonHero, SkeletonList, SkeletonStats, SkeletonPage avec variants: list, stats, detail, chat)
-- [ ] Ajouter .card-hover dans index.css (@layer components): transition-all duration-150 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.97]
+- [x] Créer src/components/ui/SkeletonPage.jsx (Bone, SkeletonCard, SkeletonHero, SkeletonList, SkeletonStats, SkeletonPage avec variants: list, stats, detail, chat)
+- [x] Ajouter .card-hover dans index.css (@layer components): transition-all duration-150 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.97]
 - [ ] Créer src/hooks/useCountUp.js (end, duration=600 → nombre incrémental)
-- [ ] Créer src/components/ui/LottieAnimation.jsx (props: src, size, loop, autoplay — utiliser dotlottie-player CDN ou @lottiefiles/dotlottie-react)
-- [ ] Vérifier que src/lib/lottieLibrary.js existe (créé par Cowork shopping) — il DOIT être là (~70 URLs Lottie CDN)
+- [x] Créer src/components/ui/LottieAnimation.jsx (props: src, size, loop, autoplay — utiliser dotlottie-player CDN ou @lottiefiles/dotlottie-react)
+- [x] Vérifier que src/lib/lottieLibrary.js existe (créé par Cowork shopping) — il DOIT être là (~70 URLs Lottie CDN)
 - [ ] Copier les 23 illustrations Storyset de storyset/ vers src/assets/illustrations/storyset/ (welcome.svg, vet-checkup.svg, feeding.svg, running.svg, training.svg, walking.svg, playing.svg, achievement.svg, community.svg, health-record.svg, examination.svg, diagnosis.svg, growth.svg, healthy-food.svg, cooking.svg, meal-plan.svg, calendar.svg, search.svg, premium.svg, onboarding-1.svg, error.svg, no-results.svg, success.svg)
 - [ ] Ajouter 12 nouvelles mascottes SVG dans PawIllustrations.jsx: DogSleepy, DogRunner, DogEating, DogCamera, DogHeart, DogStar, DogQuestion, DogCalendar, DogWalking, DogReading, DogCrown, DogSad (même style que les 8 existantes: viewBox 200x200, ombre ellipse, prop color)
 - [ ] Mettre à jour MASCOTS dans EmptyState.jsx avec les 12 nouvelles mascottes
-- [ ] Modifier Layout.jsx: AnimatePresence mode="wait" + motion.div fadeIn sur {children} + Suspense fallback=SkeletonPage
-- [ ] Ajouter prefers-reduced-motion dans index.css si absent
+- [x] Modifier Layout.jsx: AnimatePresence mode="wait" + motion.div fadeIn sur {children} + Suspense fallback=SkeletonPage
+- [x] Ajouter prefers-reduced-motion dans index.css si absent
 - [ ] git commit -am "feat: design foundations"
 
 ## PHASE 2 — CORRECTIONS COHÉRENCE
@@ -68,16 +68,16 @@ Mission: AJOUTER la couche émotionnelle sans toucher à la logique métier ni a
 ## PHASE 3 — SKELETONS (remplacer TOUS les spinners)
 
 - [ ] Home.jsx: loading → SkeletonPage variant="stats"
-- [ ] Activite.jsx: loading → SkeletonPage variant="stats"
+- [x] Activite.jsx: loading → SkeletonPage variant="stats"
 - [ ] Nutri.jsx: loading → SkeletonPage variant="list"
-- [ ] Sante.jsx: loading → SkeletonPage variant="stats" + skeleton onglets
+- [x] Sante.jsx: loading → SkeletonPage variant="stats" + skeleton onglets
 - [ ] Training.jsx: loading → SkeletonPage variant="list"
 - [ ] Chat.jsx: loading → SkeletonPage variant="chat"
-- [ ] Profile.jsx: loading → SkeletonPage variant="detail"
+- [x] Profile.jsx: loading → SkeletonPage variant="detail"
 - [ ] DogProfile.jsx: loading → SkeletonPage variant="detail"
 - [ ] Library.jsx: loading → SkeletonPage variant="list"
 - [ ] Dashboard.jsx: loading → SkeletonPage variant="stats"
-- [ ] VetPortal.jsx: loading → SkeletonPage variant="list"
+- [x] VetPortal.jsx: loading → SkeletonPage variant="list"
 - [ ] VetDogView.jsx: loading → SkeletonPage variant="detail"
 - [ ] grep -rn "animate-spin\|Loader2.*className.*spin\|Chargement\.\.\." src/ --include="*.jsx" → remplacer tout spinner restant
 - [ ] git commit -am "feat: skeleton loading on all pages"

@@ -17,6 +17,7 @@ import WalkReminderSettings from "../components/profile/WalkReminderSettings.jsx
 import AchievementsSection from "../components/profile/AchievementsSection.jsx";
 import AchievementFeed from "../components/achievements/AchievementFeed.jsx";
 import ChatFAB from "../components/ChatFAB";
+import SkeletonPage from "@/components/ui/SkeletonPage";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -94,23 +95,7 @@ export default function Profile() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background pb-28">
-        <div className="gradient-primary safe-pt-16 pb-8 px-5">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-white/20 animate-pulse" />
-            <div className="space-y-2 flex-1">
-              <div className="h-5 w-32 bg-white/20 rounded animate-pulse" />
-              <div className="h-3 w-40 bg-white/10 rounded animate-pulse" />
-            </div>
-          </div>
-        </div>
-        <div className="px-5 pt-5 space-y-4">
-          {[1,2,3,4].map(i => <div key={i} className="h-20 bg-muted animate-pulse rounded-2xl" />)}
-        </div>
-        <BottomNav currentPage="Profile" />
-      </div>
-    );
+    return <SkeletonPage variant="detail" currentPage="Profile" />;
   }
 
   return (

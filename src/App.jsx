@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import PawLoader from '@/components/PawLoader';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import SkeletonPage from '@/components/ui/SkeletonPage';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -13,9 +14,9 @@ const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
 
 const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>
-    <Suspense fallback={<PawLoader text="Chargement..." />}>{children}</Suspense>
+    <Suspense fallback={<SkeletonPage variant="list" currentPage={currentPageName} />}>{children}</Suspense>
   </Layout>
-  : <Suspense fallback={<PawLoader text="Chargement..." />}>{children}</Suspense>;
+  : <Suspense fallback={<SkeletonPage variant="list" currentPage={currentPageName} />}>{children}</Suspense>;
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();

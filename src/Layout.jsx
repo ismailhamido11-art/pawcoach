@@ -1,11 +1,24 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import useReducedMotion from "@/hooks/useReducedMotion";
+import { fadeIn } from "@/lib/animations";
 
 export default function Layout({ children, currentPageName }) {
+  const reduceMotion = useReducedMotion();
+
   // Force light mode — dark mode not QA'd, disabled to avoid broken rendering
   useEffect(() => {
     document.documentElement.classList.remove("dark");
   }, []);
+
+  const transitionProps = reduceMotion
+    ? {
+        initial: { opacity: 1 },
+        animate: { opacity: 1 },
+        exit: { opacity: 1 },
+        transition: { duration: 0 },
+      }
+    : fadeIn;
 
   return (
     <>
@@ -16,13 +29,10 @@ export default function Layout({ children, currentPageName }) {
           -webkit-user-drag: none;
         }
       `}</style>
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={currentPageName}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.18, ease: "easeInOut" }}
+          {...transitionProps}
           style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom, 0px))" }}
         >
           {children}

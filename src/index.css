@@ -90,6 +90,12 @@
   }
 }
 
+@layer components {
+  .card-hover {
+    @apply transition-all duration-150 hover:shadow-md active:scale-[0.97];
+  }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -298,8 +304,16 @@ input:focus-visible, textarea:focus-visible, select:focus-visible,
 .dark .border-amber-200  { border-color: hsl(38, 20%, 20%) !important; }
 .dark .border-red-200    { border-color: hsl(0, 18%, 22%) !important; }
 
-/* Input focus ring — brighter in dark */
-.dark input:focus-visible, .dark textarea:focus-visible, .dark select:focus-visible,
-.dark [role="combobox"]:focus-visible {
-  box-shadow: 0 0 0 3px rgba(45, 159, 130, 0.25);
+/* Respect accessibility preferences */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
