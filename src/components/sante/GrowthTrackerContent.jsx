@@ -466,8 +466,14 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
       {entries.length > 0 && (
         <div className="space-y-2">
           <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Historique</p>
-          {historyEntries.map(entry => (
-            <div key={entry.id} className="bg-white border border-border rounded-2xl p-3 flex items-center gap-3 shadow-sm">
+          {historyEntries.map((entry, i) => (
+            <motion.div
+              key={entry.id}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.25 }}
+              className="bg-white border border-border rounded-2xl p-3 flex items-center gap-3 shadow-sm"
+            >
               {entry.photo_url ? (
                 <img src={entry.photo_url} alt="" loading="lazy" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
               ) : (
@@ -487,7 +493,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
               <button onClick={() => deleteEntry(entry.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}
@@ -503,6 +509,6 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
           className="rounded-3xl border border-border/60 bg-card shadow-sm"
         />
       )}
-    </div>
+    </motion.div>
   );
 }

@@ -167,8 +167,15 @@ export default function VetPortal() {
             />
           ) : (
             <div className="space-y-3">
-              {dogs.map((dog) => (
-                <VetDogCard key={dog.id} dog={dog} access={accesses.find(a => a.dog_id === dog.id || a.id === dog._accessId)} />
+              {dogs.map((dog, i) => (
+                <motion.div
+                  key={dog.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.06, duration: 0.25, ease: "easeOut" }}
+                >
+                  <VetDogCard dog={dog} access={accesses.find(a => a.dog_id === dog.id || a.id === dog._accessId)} />
+                </motion.div>
               ))}
             </div>
           )}

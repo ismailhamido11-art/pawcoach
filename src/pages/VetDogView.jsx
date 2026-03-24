@@ -13,6 +13,7 @@ import VetNotesList from "../components/vet/VetNotesList";
 import SectionPoids from "../components/notebook/SectionPoids";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import EmptyState from "@/components/ui/EmptyState";
+import { motion } from "framer-motion";
 
 export default function VetDogView() {
   const [loading, setLoading] = useState(true);
@@ -62,7 +63,12 @@ export default function VetDogView() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="min-h-screen bg-background"
+    >
       {/* Header */}
       <div className="gradient-primary safe-pt-14 pb-6 px-5 relative overflow-hidden">
         <Link to={createPageUrl("VetPortal")} className="flex items-center gap-1 text-white/80 text-xs mb-3 hover:text-white">
@@ -100,8 +106,14 @@ export default function VetDogView() {
             {records.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-8">Aucun enregistrement partagé</p>
             ) : (
-              [...records].sort((a, b) => new Date(b.date) - new Date(a.date)).map(r => (
-                <div key={r.id} className="flex items-start gap-3 p-3 rounded-2xl bg-white border border-border">
+              [...records].sort((a, b) => new Date(b.date) - new Date(a.date)).map((r, i) => (
+                <motion.div
+                  key={r.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.22, ease: "easeOut" }}
+                  className="flex items-start gap-3 p-3 rounded-2xl bg-white border border-border"
+                >
                   <div className="p-2 rounded-lg bg-muted">{getIconForType(r.type)}</div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{r.title}</p>
@@ -109,7 +121,7 @@ export default function VetDogView() {
                     {r.details && <p className="text-xs text-muted-foreground mt-1">{r.details}</p>}
                     {r.value && <Badge variant="outline" className="text-[11px] mt-1">{r.value} kg</Badge>}
                   </div>
-                </div>
+                </motion.div>
               ))
             )}
           </TabsContent>
@@ -133,8 +145,14 @@ export default function VetDogView() {
                 className="rounded-3xl border border-border/60 bg-card shadow-sm"
               />
             ) : (
-              [...checkins].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 30).map(c => (
-                <div key={c.id} className="p-3 rounded-2xl bg-white border border-border">
+              [...checkins].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 30).map((c, i) => (
+                <motion.div
+                  key={c.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.04, duration: 0.22, ease: "easeOut" }}
+                  className="p-3 rounded-2xl bg-white border border-border"
+                >
                   <div className="flex items-center justify-between">
                     <p className="text-xs font-medium">{format(new Date(c.date), "EEEE d MMM", { locale: fr })}</p>
                     <div className="flex gap-2">
@@ -144,7 +162,7 @@ export default function VetDogView() {
                     </div>
                   </div>
                   {c.notes && <p className="text-xs text-muted-foreground mt-1">{c.notes}</p>}
-                </div>
+                </motion.div>
               ))
             )}
           </TabsContent>
@@ -162,8 +180,14 @@ export default function VetDogView() {
             ) : scans.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-8">Aucun scan alimentaire</p>
             ) : (
-              [...scans].sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).slice(0, 20).map(s => (
-                <div key={s.id} className="flex items-start gap-3 p-3 rounded-2xl bg-white border border-border">
+              [...scans].sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).slice(0, 20).map((s, i) => (
+                <motion.div
+                  key={s.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.22, ease: "easeOut" }}
+                  className="flex items-start gap-3 p-3 rounded-2xl bg-white border border-border"
+                >
                   {s.photo_url && <img src={s.photo_url} alt="" loading="lazy" className="w-12 h-12 rounded-lg object-cover" />}
                   <div className="flex-1">
                     <p className="text-sm font-medium">{s.food_name || "Aliment scanné"}</p>
@@ -172,12 +196,12 @@ export default function VetDogView() {
                     </Badge>
                     {s.details && <p className="text-xs text-muted-foreground mt-1">{s.details}</p>}
                   </div>
-                </div>
+                </motion.div>
               ))
             )}
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </motion.div>
   );
 }

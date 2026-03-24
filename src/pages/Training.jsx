@@ -724,14 +724,20 @@ export default function Training() {
             return d === j.exerciseOrders.length || j.isPremium;
           });
           return (
-            <JourneyCard
+            <motion.div
               key={journey.id}
-              journey={journey}
-              completedCount={done}
-              isPremium={isPremium}
-              isNext={isNext}
-              onClick={() => locked ? navigate(createPageUrl("Premium")) : navigate(createPageUrl("Training") + `?journey=${journey.id}`)}
-            />
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.06, duration: 0.25 }}
+            >
+              <JourneyCard
+                journey={journey}
+                completedCount={done}
+                isPremium={isPremium}
+                isNext={isNext}
+                onClick={() => locked ? navigate(createPageUrl("Premium")) : navigate(createPageUrl("Training") + `?journey=${journey.id}`)}
+              />
+            </motion.div>
           );
         })}
       </div>
@@ -767,6 +773,6 @@ export default function Training() {
       </div>
 
       <BottomNav currentPage="Training" />
-    </div>
+    </motion.div>
   );
 }

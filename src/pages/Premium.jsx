@@ -11,8 +11,9 @@ import { createPageUrl, getActiveDog } from "@/utils";
 import { getDogAgeSegment } from "@/utils/healthStatus";
 import BottomNav from "../components/BottomNav";
 import confetti from "canvas-confetti";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { DogTrophy } from "../components/ui/PawIllustrations";
+import Illustration from "../components/illustrations/Illustration";
 
 const MONTHLY_PRICE_ID = "price_1T4tkFDuhaIxY4PGpnhDTx5L";
 const ANNUAL_PRICE_ID = "price_1T4tkFDuhaIxY4PGWLeWApDL";
@@ -337,7 +338,12 @@ export default function Premium() {
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
-      <div className="px-5 pt-4 space-y-4">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="px-5 pt-4 space-y-4"
+      >
         {/* Contextual banner */}
         {contextMsg && (() => {
           const CtxIcon = contextMsg.Icon;
@@ -391,7 +397,13 @@ export default function Premium() {
             <span className="text-center text-primary">Premium</span>
           </div>
           {FEATURES.map((f, i) => (
-            <div key={i} className={`grid grid-cols-3 px-4 py-3 items-center text-xs ${i < FEATURES.length - 1 ? "border-b border-border" : ""}`}>
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.22, ease: "easeOut" }}
+              className={`grid grid-cols-3 px-4 py-3 items-center text-xs ${i < FEATURES.length - 1 ? "border-b border-border" : ""}`}
+            >
               <span className="text-foreground font-medium leading-snug pr-2">{f.text}</span>
               <div className="flex justify-center">
                 {f.free === false ? (
@@ -409,7 +421,7 @@ export default function Premium() {
                   <span className="text-primary text-xs">{f.premium}</span>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
@@ -434,28 +446,30 @@ export default function Premium() {
         )}
 
         {/* CTA */}
-        <Button
-          onClick={handleSubscribe}
-          disabled={loading}
-          className="w-full h-14 rounded-2xl gradient-warm border-0 text-white font-bold text-base shadow-lg"
-        >
-          {loading ? (
-            <span className="flex items-center gap-2">
-              <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-              Chargement...
-            </span>
-          ) : (
-            <>
-              <Zap className="w-5 h-5" />
-              {plan === "annual" ? "Débloquer tout PawCoach · 5 €/mois" : "Débloquer tout PawCoach · 7,99 €/mois"}
-            </>
-          )}
-        </Button>
+        <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: 0.1 }}>
+          <Button
+            onClick={handleSubscribe}
+            disabled={loading}
+            className="w-full h-14 rounded-2xl gradient-warm border-0 text-white font-bold text-base shadow-lg"
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                Chargement...
+              </span>
+            ) : (
+              <>
+                <Zap className="w-5 h-5" />
+                {plan === "annual" ? "Débloquer tout PawCoach · 5 €/mois" : "Débloquer tout PawCoach · 7,99 €/mois"}
+              </>
+            )}
+          </Button>
+        </motion.div>
 
         <p className="text-center text-xs text-muted-foreground">
           Sans engagement · Résiliation à tout moment · Paiement sécurisé Stripe
         </p>
-      </div>
+      </motion.div>
 
       <BottomNav currentPage="Premium" />
     </div>

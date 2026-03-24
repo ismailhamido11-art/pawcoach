@@ -6,6 +6,7 @@ import { Search, MapPin, Loader2, Stethoscope, Scissors, ShoppingBag, Heart, Nav
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import Illustration from "../illustrations/Illustration";
+import EmptyState from "@/components/ui/EmptyState";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import PlaceCard from "./PlaceCard";
@@ -263,16 +264,22 @@ export default function FindVetContent({ dog, user }) {
             displayedPlaces.map((place, i) => {
               const fav = getFavoriteForPlace(place);
               return (
-                <PlaceCard
+                <motion.div
                   key={i}
-                  place={place}
-                  isFavorite={!!fav}
-                  favoriteId={fav?.id}
-                  favoriteNotes={fav?.notes}
-                  onFavoriteToggle={(favRecord) => handleFavoriteToggle(place, favRecord)}
-                  dog={dog}
-                  user={user}
-                />
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.25 }}
+                >
+                  <PlaceCard
+                    place={place}
+                    isFavorite={!!fav}
+                    favoriteId={fav?.id}
+                    favoriteNotes={fav?.notes}
+                    onFavoriteToggle={(favRecord) => handleFavoriteToggle(place, favRecord)}
+                    dog={dog}
+                    user={user}
+                  />
+                </motion.div>
               );
             })
           )}

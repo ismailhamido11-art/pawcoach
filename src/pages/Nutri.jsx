@@ -18,7 +18,7 @@ import { isUserPremium } from "@/utils/premium";
 import { initCredits } from "@/utils/ai-credits";
 import IconBadge from "@/components/ui/IconBadge";
 import ReactMarkdown from "react-markdown";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { toast } from "sonner";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
 import { spring, springGentle } from "@/lib/animations";
@@ -46,6 +46,7 @@ const TABS = [
 export default function Nutri() {
    const navigate = useNavigate();
    const { user: authUser, isLoadingAuth } = useAuth();
+   const prefersReducedMotion = useReducedMotion();
    const [dog, setDog] = useState(null);
    const [user, setUser] = useState(null);
    const [recentScans, setRecentScans] = useState([]);
@@ -312,7 +313,12 @@ export default function Nutri() {
       <WellnessBanner />
 
       {/* Header */}
-      <div className="gradient-primary safe-pt-14 pb-3 px-5 mt-8 overflow-hidden relative">
+      <motion.div
+        className="gradient-primary safe-pt-14 pb-3 px-5 mt-8 overflow-hidden relative"
+        initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
         <div className="relative z-10 flex items-end gap-3 mb-3">
           <div className="flex-1 pb-1">
             <p className="text-white/60 text-[11px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
@@ -409,7 +415,7 @@ export default function Nutri() {
             );
           })}
         </div>
-      </div>
+      </motion.div>
 
       <AnimatePresence mode="wait" custom={tabDir}>
         <motion.div
@@ -433,19 +439,31 @@ export default function Nutri() {
           >
             <DogCurious color="#2D9F82" />
           </motion.div>
-          <div className="text-center">
+          <motion.div
+            className="text-center"
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05, duration: 0.25 }}
+          >
             <h2 className="font-bold text-foreground text-lg">Scanner un aliment</h2>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
               Toxicit&eacute; d'un aliment brut ou analyse compl&egrave;te<br />
               d'une &eacute;tiquette nutritionnelle pour {dog?.name || "ton chien"}.
             </p>
-          </div>
-          <Button asChild className="gradient-primary border-0 text-white w-full max-w-xs h-14 rounded-2xl font-bold shadow-lg shadow-primary/25">
-            <Link to={createPageUrl("Scan")}>
-              <ScanLine className="w-5 h-5 mr-2" />
-              Ouvrir le Scanner
-            </Link>
-          </Button>
+          </motion.div>
+          <motion.div
+            className="w-full max-w-xs"
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.25 }}
+          >
+            <Button asChild className="gradient-primary border-0 text-white w-full h-14 rounded-2xl font-bold shadow-lg shadow-primary/25 active:scale-[0.97]">
+              <Link to={createPageUrl("Scan")}>
+                <ScanLine className="w-5 h-5 mr-2" />
+                Ouvrir le Scanner
+              </Link>
+            </Button>
+          </motion.div>
           {recentScans.length > 0 && (
             <p className="text-xs text-muted-foreground">{recentScans.length} scan{recentScans.length > 1 ? "s" : ""} r&eacute;cent{recentScans.length > 1 ? "s" : ""}</p>
           )}

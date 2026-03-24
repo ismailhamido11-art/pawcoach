@@ -167,13 +167,29 @@ export default function DogPublicProfile() {
       {/* Stats rapides */}
       <div className="px-4 -mt-4 mb-4">
         <div className="grid grid-cols-3 gap-2">
-          <StatPill icon={Syringe} value={vaccines.length} label="Vaccins" color="#2d9f82" />
-          <StatPill icon={Stethoscope} value={vetVisits.length} label="Visites" color="#8b5cf6" />
-          <StatPill icon={Pill} value={meds.length} label="Médoc." color="#10b981" />
+          {[
+            { icon: Syringe, value: vaccines.length, label: "Vaccins", color: "#2d9f82" },
+            { icon: Stethoscope, value: vetVisits.length, label: "Visites", color: "#8b5cf6" },
+            { icon: Pill, value: meds.length, label: "Médoc.", color: "#10b981" },
+          ].map((pill, i) => (
+            <motion.div
+              key={pill.label}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.07, duration: 0.25, ease: "easeOut" }}
+            >
+              <StatPill icon={pill.icon} value={pill.value} label={pill.label} color={pill.color} />
+            </motion.div>
+          ))}
         </div>
       </div>
 
-      <div className="px-4 space-y-4 pb-16">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut", delay: 0.15 }}
+        className="px-4 space-y-4 pb-16"
+      >
 
         {/* ALERTES CRITIQUES */}
         {(hasAllergies || hasHealthIssues) && (
@@ -267,7 +283,7 @@ export default function DogPublicProfile() {
           </div>
           <p className="text-[11px] text-muted-foreground mt-2">Ce dossier est partagé par le propriétaire. PawCoach n'est pas un service vétérinaire.</p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
