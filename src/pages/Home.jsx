@@ -27,6 +27,7 @@ import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
 import PostTrialSheet from "../components/premium/PostTrialSheet";
 import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
 import FirstDayGuide from "../components/home/FirstDayGuide";
+import SkeletonPage from "@/components/ui/SkeletonPage";
 
 
 const MILESTONES = [
@@ -282,27 +283,7 @@ export default function Home() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background pb-32">
-        <div className="bg-gradient-to-b from-secondary to-background px-5 pt-3 pb-5 space-y-4">
-          <div className="flex justify-between items-center">
-            <div className="space-y-2">
-              <div className="h-4 w-24 bg-border rounded-lg animate-pulse" />
-              <div className="h-6 w-36 bg-border rounded-lg animate-pulse" />
-            </div>
-            <div className="w-[52px] h-[52px] rounded-full bg-border animate-pulse" />
-          </div>
-        </div>
-        <div className="px-5 mt-6 space-y-3">
-          <div className="h-5 w-48 bg-border rounded-lg animate-pulse" />
-          <div className="h-4 w-64 bg-border rounded-lg animate-pulse" />
-          <div className="h-16 w-full bg-border rounded-2xl animate-pulse mt-4" />
-          <div className="h-24 w-full bg-border rounded-2xl animate-pulse mt-2" />
-          <div className="h-32 w-full bg-border rounded-2xl animate-pulse mt-2" />
-        </div>
-        <BottomNav currentPage="Home" />
-      </div>
-    );
+    return <SkeletonPage variant="stats" currentPage="Home" />;
   }
 
   return (

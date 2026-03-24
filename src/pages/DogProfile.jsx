@@ -19,6 +19,7 @@ import DogDietSection from "../components/dogprofile/DogDietSection.jsx";
 import DogPersonalitySection from "../components/dogprofile/DogPersonalitySection.jsx";
 import DogTrophiesRow from "../components/dogprofile/DogTrophiesRow.jsx";
 import DogEditModal from "../components/dogprofile/DogEditModal.jsx";
+import SkeletonPage from "@/components/ui/SkeletonPage";
 
 export default function DogProfile() {
   const navigate = useNavigate();
@@ -142,11 +143,7 @@ export default function DogProfile() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-10 h-10 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
-      </div>
-    );
+    return <SkeletonPage variant="detail" currentPage="DogProfile" />;
   }
 
   if (!dog) return null;

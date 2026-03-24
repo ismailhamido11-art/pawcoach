@@ -15,6 +15,7 @@ import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { getDogAgeLabel } from "@/utils/healthStatus";
+import SkeletonPage from "@/components/ui/SkeletonPage";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
 import { motion, AnimatePresence } from "framer-motion";
 import { spring, springGentle } from "@/lib/animations";
@@ -303,8 +304,8 @@ export default function Chat() {
 
   // --- Loading skeleton ---
   if (initializing) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col">
+    return <SkeletonPage variant="chat" currentPage="Chat" />;
+  }
         <div className="h-7 bg-accent/10" />
         <div className="gradient-primary safe-pt-14 pb-4 px-5 mt-7">
           <div className="flex items-center gap-3">

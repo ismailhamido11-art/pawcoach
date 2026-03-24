@@ -18,6 +18,7 @@ import { updateStreakSilently } from "../components/streakHelper";
 import { checkStreakBadges } from "@/components/achievements/badgeUtils";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import SkeletonPage from "@/components/ui/SkeletonPage";
 
 const EXERCISES = [
   { order_number: 1,  name: "Assis",               emoji: "🐶", icon: DogIcon,    iconColor: "#10b981", level: "debutant",      duration: "3 min",  is_premium: false, description: "La base de tout dressage – indispensable pour la sécurité.", steps: ["Tiens une friandise devant le museau de ton chien.", "Remonte lentement la friandise au-dessus de sa tête.", "Quand il s'assoit naturellement, dis « Assis » et donne la friandise.", "Répète 5 fois, puis réduis progressivement la friandise.", "Pratique dans différents endroits et situations."] },
@@ -282,31 +283,7 @@ export default function Training() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background pb-28">
-        <div className="gradient-primary safe-pt-16 pb-0 px-5 overflow-hidden relative">
-          <div className="flex items-start justify-between">
-            <div className="pb-6 flex-1">
-              <div className="h-3 w-16 bg-white/20 rounded animate-pulse mb-2" />
-              <div className="h-7 w-28 bg-white/20 rounded animate-pulse" />
-              <div className="h-4 w-36 bg-white/10 rounded animate-pulse mt-2 mb-4" />
-              <div className="bg-white/15 rounded-2xl p-4">
-                <div className="h-3 w-32 bg-white/20 rounded animate-pulse mb-2" />
-                <div className="bg-white/25 rounded-full h-2.5 w-full" />
-              </div>
-            </div>
-            <div className="w-28 h-28 flex-shrink-0 bg-white/10 rounded-full animate-pulse" />
-          </div>
-        </div>
-        <div className="px-4 pt-5 space-y-3">
-          <div className="h-3 w-24 bg-muted rounded animate-pulse mb-1" />
-          {[0, 1, 2, 3].map(i => (
-            <div key={i} className="h-24 rounded-2xl bg-white border border-border animate-pulse" />
-          ))}
-        </div>
-        <BottomNav currentPage="Training" />
-      </div>
-    );
+    return <SkeletonPage variant="list" currentPage="Training" />;
   }
 
   // Overlay screens

@@ -11,6 +11,7 @@ import { fr } from "date-fns/locale";
 import VetNoteForm from "../components/vet/VetNoteForm";
 import VetNotesList from "../components/vet/VetNotesList";
 import SectionPoids from "../components/notebook/SectionPoids";
+import SkeletonPage from "@/components/ui/SkeletonPage";
 
 export default function VetDogView() {
   const [loading, setLoading] = useState(true);
@@ -44,7 +45,7 @@ export default function VetDogView() {
     }));
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+  if (loading) return <SkeletonPage variant="detail" currentPage="VetDogView" />;
   if (error) return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
       <p className="text-sm text-red-600 mb-4">{error}</p>

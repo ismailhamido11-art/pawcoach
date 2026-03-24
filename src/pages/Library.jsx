@@ -9,6 +9,7 @@ import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import Illustration from "../components/illustrations/Illustration";
 import EmptyState from "@/components/ui/EmptyState";
+import SkeletonPage from "@/components/ui/SkeletonPage";
 
 
 const SOURCE_LABELS = {

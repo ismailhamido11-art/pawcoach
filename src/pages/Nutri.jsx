@@ -8,6 +8,7 @@ import WellnessBanner from "../components/WellnessBanner";
 import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
 import FoodComparator from "../components/nutrition/FoodComparator";
 import DietPreferencesPanel from "../components/nutrition/DietPreferencesPanel";
+import SkeletonPage from "@/components/ui/SkeletonPage";
 // SavedPlansPanel merged into NutritionMealPlan
 
 import { Button } from "@/components/ui/button";
@@ -294,8 +295,8 @@ export default function Nutri() {
   };
 
   if (initializing) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col">
+    return <SkeletonPage variant="list" currentPage="Nutri" />;
+  }
         <div className="gradient-primary safe-pt-14 pb-4 px-5 mt-8">
           <div className="flex items-end gap-3 mb-3">
             <div className="flex-1 pb-1">
