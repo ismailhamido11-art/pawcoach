@@ -68,7 +68,13 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
   const [expandedHistoryId, setExpandedHistoryId] = useState(null);
 
   if (!dog) {
-    return <p className="text-muted-foreground text-sm text-center py-10">Aucun chien trouvé.</p>;
+    return (
+      <EmptyState
+        mascot="chef"
+        title="Aucun chien trouvé"
+        description="Configure le profil de ton chien pour accéder aux plans nutrition personnalisés."
+      />
+    );
   }
 
   const isMonthlyLimitReached = !isPremium && monthlyPlanCount >= MONTHLY_FREE_LIMIT;

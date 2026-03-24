@@ -104,7 +104,12 @@ export default function VetDogView() {
               <SectionPoids records={records} dogId={dogId} />
             )}
             {records.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground py-8">Aucun enregistrement partagé</p>
+              <EmptyState
+                mascot="doctor"
+                title="Aucun enregistrement partagé"
+                description="Le propriétaire n'a pas encore partagé de données de santé."
+                className="rounded-3xl border border-border/60 bg-card shadow-sm"
+              />
             ) : (
               [...records].sort((a, b) => new Date(b.date) - new Date(a.date)).map((r, i) => (
                 <motion.div
@@ -176,9 +181,19 @@ export default function VetDogView() {
           {/* Food Scans */}
           <TabsContent value="scans" className="mt-4 space-y-3">
             {!sharedSections.includes("scans") ? (
-              <p className="text-center text-sm text-muted-foreground py-8">Scans non partagés</p>
+              <EmptyState
+                mascot="camera"
+                title="Scans non partagés"
+                description="Le propriétaire n'a pas partagé les scans alimentaires pour le moment."
+                className="rounded-3xl border border-border/60 bg-card shadow-sm"
+              />
             ) : scans.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground py-8">Aucun scan alimentaire</p>
+              <EmptyState
+                mascot="camera"
+                title="Aucun scan alimentaire"
+                description="Aucun aliment n'a encore été scanné pour ce chien."
+                className="rounded-3xl border border-border/60 bg-card shadow-sm"
+              />
             ) : (
               [...scans].sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).slice(0, 20).map((s, i) => (
                 <motion.div

@@ -81,19 +81,11 @@ export default function AchievementFeed({ dog }) {
       </div>
 
       {recent.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="bg-amber-50 border border-amber-100 rounded-xl px-4 py-4 text-center"
-        >
-          <p className="text-sm font-semibold text-amber-700 mb-1">
-            Tes premières récompenses arrivent bientôt !
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Enregistre une balade ou complète un exercice pour décrocher ton premier badge.
-          </p>
-        </motion.div>
+        <EmptyState
+          mascot="trophy"
+          title="Tes premières récompenses arrivent bientôt !"
+          description="Enregistre une balade ou complète un exercice pour décrocher ton premier badge."
+        />
       ) : (
         <motion.div
           className="space-y-2"

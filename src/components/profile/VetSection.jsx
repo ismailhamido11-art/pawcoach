@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { Stethoscope, Plus, CheckCircle, Clock, XCircle } from "lucide-react";
+import EmptyState from "@/components/ui/EmptyState";
 
 const STATUS_CONFIG = {
   active:  { label: "Actif", icon: CheckCircle, color: "text-emerald-600" },
@@ -38,15 +39,14 @@ export default function VetSection({ dogs: _dogs, activeDogId }) {
 
       <div className="px-4 py-3">
         {vetAccesses.length === 0 ? (
-          <div className="text-center py-4">
-            <p className="text-sm text-muted-foreground">Aucun vétérinaire invité</p>
-            <button
-              onClick={() => navigate(createPageUrl("Sante") + "?tab=vet")}
-              className="mt-2 text-xs text-primary font-semibold underline"
-            >
-              Inviter un vétérinaire
-            </button>
-          </div>
+          <EmptyState
+            mascot="doctor"
+            title="Aucun vétérinaire invité"
+            description="Partage le carnet de santé avec ton véto pour un suivi collaboratif."
+            actionLabel="Inviter un vétérinaire"
+            onAction={() => navigate(createPageUrl("Sante") + "?tab=vet")}
+            className="py-4"
+          />
         ) : (
           <div className="space-y-2">
             {vetAccesses.map(v => {

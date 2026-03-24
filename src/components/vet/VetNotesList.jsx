@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Eye, Lightbulb, Pill, CalendarCheck } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import EmptyState from "@/components/ui/EmptyState";
 
 const CATEGORY_CONFIG = {
   observation: { label: "Observation", icon: Eye, color: "bg-blue-50 text-blue-700" },
@@ -13,9 +14,11 @@ const CATEGORY_CONFIG = {
 export default function VetNotesList({ notes }) {
   if (!notes || notes.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-sm text-muted-foreground">Aucune note vétérinaire</p>
-      </div>
+      <EmptyState
+        mascot="doctor"
+        title="Aucune note vétérinaire"
+        description="Les observations, recommandations et prescriptions du vétérinaire apparaîtront ici."
+      />
     );
   }
 

@@ -6,6 +6,7 @@ import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
 import { matchVaccineKey, getVaccineDisplayName } from "@/utils/healthStatus";
 import { getDaysLeft } from "@/utils/dateHelpers";
+import EmptyState from "@/components/ui/EmptyState";
 
 const TYPE_CONFIG = {
   vaccine:    { icon: Syringe,     color: "text-safe",        bg: "bg-safe/10",    label: "Vaccin",      gradient: "from-safe to-green-500" },
@@ -207,13 +208,12 @@ export default function NotificationCenter() {
               {/* Content */}
               <div className="flex-1 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-                    <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mb-4">
-                      <CheckCheck className="w-8 h-8 text-emerald-500" />
-                    </div>
-                    <p className="font-bold text-foreground">Tout est a jour !</p>
-                    <p className="text-sm text-muted-foreground mt-1">Aucun rappel dans les 30 prochains jours</p>
-                  </div>
+                  <EmptyState
+                    mascot="trophy"
+                    title="Tout est a jour !"
+                    description="Aucun rappel dans les 30 prochains jours."
+                    className="py-16"
+                  />
                 ) : (
                   <div>
                     {/* Urgent */}
