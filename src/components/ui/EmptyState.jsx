@@ -14,6 +14,18 @@ import {
   DogChat,
   DogTrophy,
   DogCurious,
+  DogSleepy,
+  DogRunner,
+  DogEating,
+  DogCamera,
+  DogHeart,
+  DogStar,
+  DogQuestion,
+  DogCalendar,
+  DogWalking,
+  DogReading,
+  DogCrown,
+  DogSad,
 } from "./PawIllustrations";
 import StorysetIllustration from "./StorysetIllustration";
 import LottieAnimation from "./LottieAnimation";
@@ -28,6 +40,18 @@ const MASCOTS = {
   chat: DogChat,
   trophy: DogTrophy,
   curious: DogCurious,
+  sleepy: DogSleepy,
+  runner: DogRunner,
+  eating: DogEating,
+  camera: DogCamera,
+  heart: DogHeart,
+  star: DogStar,
+  question: DogQuestion,
+  calendar: DogCalendar,
+  walking: DogWalking,
+  reading: DogReading,
+  crown: DogCrown,
+  sad: DogSad,
 };
 
 export default function EmptyState({
