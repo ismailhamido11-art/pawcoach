@@ -174,9 +174,11 @@ export default function Library() {
       {/* Filter chips */}
       <div className="flex gap-2 px-5 pt-4 pb-2 overflow-x-auto no-scrollbar">
         {FILTERS.map(f => (
-          <button
+          <motion.button
             key={f.id}
             onClick={() => setFilter(f.id)}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.1 }}
             className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
               filter === f.id
                 ? "bg-primary text-white shadow-sm"
@@ -184,7 +186,7 @@ export default function Library() {
             }`}
           >
             {f.label}
-          </button>
+          </motion.button>
         ))}
       </div>
 

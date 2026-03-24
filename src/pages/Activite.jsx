@@ -12,7 +12,7 @@ import TrackerHistory from "@/components/tracker/TrackerHistory";
 import AITrainingProgram from "@/components/activite/AITrainingProgram";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Footprints, History, Dumbbell, Sparkles, ExternalLink } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { spring } from "@/lib/animations";
@@ -31,6 +31,7 @@ const TABS = [
 
 export default function Activite() {
   const { user: authUser, isLoadingAuth } = useAuth();
+  const prefersReducedMotion = useReducedMotion();
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
   const [logs, setLogs] = useState([]);
@@ -98,7 +99,12 @@ export default function Activite() {
       <WellnessBanner />
 
       {/* Hero */}
-      <div className="gradient-primary px-5 safe-pt-14 pb-3 relative overflow-hidden mt-8">
+      <motion.div
+        className="gradient-primary px-5 safe-pt-14 pb-3 relative overflow-hidden mt-8"
+        initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
         <div className="relative z-10 flex items-end gap-3 mb-3">
           <div className="flex-1 pb-1">
             <p className="text-white/60 text-[11px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
@@ -147,7 +153,7 @@ export default function Activite() {
 
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
-      </div>
+      </motion.div>
 
       {/* Offline error banner */}
       {loadError && !loading && (
@@ -205,6 +211,7 @@ export default function Activite() {
 }
 
 function DressageContent({ dog }) {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <div className="space-y-4 pb-4">
       {/* Hero card */}
@@ -249,11 +256,17 @@ function DressageContent({ dog }) {
           { emoji: "🎯", text: "Terminer sur une réussite pour motiver" },
           { emoji: "🍖", text: "Récompenses petites mais fréquentes" },
           { emoji: "📅", text: "Pratiquer à la même heure chaque jour" },
-        ].map(({ emoji, text }) => (
-          <div key={text} className="flex items-center gap-3">
+        ].map(({ emoji, text }, i) => (
+          <motion.div
+            key={text}
+            className="flex items-center gap-3"
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05, duration: 0.25 }}
+          >
             <span className="text-lg">{emoji}</span>
             <p className="text-xs text-muted-foreground">{text}</p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

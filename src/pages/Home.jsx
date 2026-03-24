@@ -308,7 +308,12 @@ export default function Home() {
         />
 
         {/* === Below the fold — scroll to discover === */}
-        <div className="px-5 space-y-6">
+        <motion.div
+          className="px-5 space-y-6"
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
 
           {/* Trial expiry — visible immediately */}
           <TrialExpiryBanner user={user} dog={dog} />
@@ -334,16 +339,19 @@ export default function Home() {
           {/* Quick Actions */}
           <div className="flex justify-between px-2">
             {quickActions.map((qa, i) => (
-              <button
+              <motion.button
                 key={i}
                 onClick={() => navigate(createPageUrl(qa.page))}
                 className="flex flex-col items-center gap-2 w-[72px] active:scale-95 transition-transform"
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05, duration: 0.25 }}
               >
                 <div className={`w-[52px] h-[52px] rounded-2xl flex items-center justify-center ${qa.bgClass}`}>
                   <qa.icon className={`w-[22px] h-[22px] ${qa.colorClass}`} />
                 </div>
                 <span className="text-[11px] font-medium text-muted-foreground">{qa.label}</span>
-              </button>
+              </motion.button>
             ))}
           </div>
 
@@ -352,7 +360,7 @@ export default function Home() {
 
           {/* Streak Card */}
           {streakDays > 0 && (
-            <div className="flex items-center gap-4 bg-card rounded-2xl border border-border p-[18px]">
+            <div className="flex items-center gap-4 bg-card rounded-2xl border border-border p-[18px] card-hover">
               <div className="w-11 h-11 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
                 <Flame className="w-[22px] h-[22px] text-amber-500" />
               </div>
@@ -392,7 +400,7 @@ export default function Home() {
           <p className="text-center text-[11px] text-muted-foreground px-6 pb-2">
             PawCoach est un outil de suivi. Consultez votre vétérinaire.
           </p>
-        </div>
+        </motion.div>
 
         {/* Milestone celebration */}
         <AnimatePresence>

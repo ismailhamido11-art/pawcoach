@@ -268,35 +268,37 @@ export default function Dashboard() {
         <div className="absolute bottom-[-30%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
-      <div className="px-5 pt-5 space-y-5">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="px-5 pt-5 space-y-5"
+      >
 
         {/* Stats row */}
         <div className="grid grid-cols-2 gap-3">
-          <StatCard
-            icon={Weight} color="#2d9f82"
-            label="Dernier poids"
-            value={weightData.length ? `${weightData[weightData.length - 1].poids} kg` : "—"}
-            sub={dog?.weight ? `Référence : ${dog.weight} kg` : undefined}
-            trend={weightTrend}
-          />
-          <StatCard
-            icon={Activity} color="#8b5cf6"
-            label="Check-ins (7j)"
-            value={checkins.filter(c => c.date >= new Date(Date.now() - 7 * 864e5).toISOString().split("T")[0]).length}
-            sub="jours enregistrés"
-          />
-          <StatCard
-            icon={Star} color="#2d9f82"
-            label="Humeur moy. (7j)"
-            value={avgMood ? `${avgMood}/4` : "—"}
-            sub="basé sur les check-ins"
-          />
-          <StatCard
-            icon={Dumbbell} color="#ec4899"
-            label="Exercices faits"
-            value={progress.length}
-            sub="tours maîtrisés"
-          />
+          {[
+            { icon: Weight, color: "#2d9f82", label: "Dernier poids", value: weightData.length ? `${weightData[weightData.length - 1].poids} kg` : "—", sub: dog?.weight ? `Référence : ${dog.weight} kg` : undefined, trend: weightTrend },
+            { icon: Activity, color: "#8b5cf6", label: "Check-ins (7j)", value: checkins.filter(c => c.date >= new Date(Date.now() - 7 * 864e5).toISOString().split("T")[0]).length, sub: "jours enregistrés" },
+            { icon: Star, color: "#2d9f82", label: "Humeur moy. (7j)", value: avgMood ? `${avgMood}/4` : "—", sub: "basé sur les check-ins" },
+            { icon: Dumbbell, color: "#ec4899", label: "Exercices faits", value: progress.length, sub: "tours maîtrisés" },
+          ].map((card, i) => (
+            <motion.div
+              key={card.label}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.07, duration: 0.28, ease: "easeOut" }}
+            >
+              <StatCard
+                icon={card.icon}
+                color={card.color}
+                label={card.label}
+                value={card.value}
+                sub={card.sub}
+                trend={card.trend}
+              />
+            </motion.div>
+          ))}
         </div>
 
         {/* Weight chart */}

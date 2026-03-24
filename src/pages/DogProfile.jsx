@@ -174,31 +174,46 @@ export default function DogProfile() {
       {/* Hero */}
       <DogProfileHero dog={dog} dailyLogs={dailyLogs} onSave={handleSaveDog} />
 
-      <div className="px-4 pt-4 space-y-4">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="px-4 pt-4 space-y-4"
+      >
         {/* Identity */}
-        <DogIdentityCards dog={dog} dailyLogs={dailyLogs} onSave={handleSaveDog} />
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05, duration: 0.25 }}>
+          <DogIdentityCards dog={dog} dailyLogs={dailyLogs} onSave={handleSaveDog} />
+        </motion.div>
 
         {/* Personality */}
-        <DogPersonalitySection dog={dog} onSave={handleSaveDog} />
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.25 }}>
+          <DogPersonalitySection dog={dog} onSave={handleSaveDog} />
+        </motion.div>
 
         {/* Health */}
-        <DogHealthSection dog={dog} onSave={handleSaveDog} />
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.25 }}>
+          <DogHealthSection dog={dog} onSave={handleSaveDog} />
+        </motion.div>
 
         {/* Diet */}
-        <DogDietSection dog={dog} onSave={handleSaveDog} />
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.25 }}>
+          <DogDietSection dog={dog} onSave={handleSaveDog} />
+        </motion.div>
 
         {/* Trophies */}
-        <DogTrophiesRow streak={streak} progress={progress} scansCount={scansCount} dailyLogs={dailyLogs} />
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.25 }}>
+          <DogTrophiesRow streak={streak} progress={progress} scansCount={scansCount} dailyLogs={dailyLogs} />
+        </motion.div>
 
         {/* Actions */}
-        <div className="bg-white rounded-2xl border border-border overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.25 }} className="bg-white rounded-2xl border border-border overflow-hidden">
           <div className="px-4 py-3 border-b border-border">
             <p className="font-bold text-sm text-foreground">Actions</p>
           </div>
           <div className="divide-y divide-border">
             <button
               onClick={() => navigate(createPageUrl("Sante") + "?tab=vet")}
-              className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-muted/30 transition-all"
+              className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-muted/30 transition-all active:scale-[0.97]"
             >
               <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
                 <Share2 className="w-4 h-4 text-blue-600" />
@@ -211,7 +226,7 @@ export default function DogProfile() {
             </button>
             <button
               onClick={() => navigate(createPageUrl("Sante") + "?tab=qr")}
-              className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-muted/30 transition-all"
+              className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-muted/30 transition-all active:scale-[0.97]"
             >
               <div className="w-9 h-9 rounded-xl bg-violet-50 flex items-center justify-center flex-shrink-0">
                 <QrCode className="w-4 h-4 text-violet-600" />
@@ -224,7 +239,7 @@ export default function DogProfile() {
             </button>
             <button
               onClick={handleExport}
-              className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-muted/30 transition-all"
+              className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-muted/30 transition-all active:scale-[0.97]"
             >
               <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
                 <Download className="w-4 h-4 text-emerald-600" />
@@ -237,7 +252,7 @@ export default function DogProfile() {
             </button>
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-red-50/50 transition-all"
+              className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-red-50/50 transition-all active:scale-[0.97]"
             >
               <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
                 <Trash2 className="w-4 h-4 text-red-500" />
@@ -248,8 +263,8 @@ export default function DogProfile() {
               </div>
             </button>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Delete confirmation */}
       {showDeleteConfirm && (

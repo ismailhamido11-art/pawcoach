@@ -233,7 +233,12 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
       {/* ================================================================ */}
       {/* SECTION 1 : STATUS FIRST — Health Dashboard                     */}
       {/* ================================================================ */}
-      <div className="px-4 pt-4 space-y-3">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="px-4 pt-4 space-y-3"
+      >
         {/* Health Score */}
         <HealthScoreCard
           score={summary.score}
@@ -255,12 +260,17 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
 
         {/* Upcoming reminders */}
         <UpcomingReminders records={records} isPremium={isPremium} onNavigate={handleNavigateToTab} />
-      </div>
+      </motion.div>
 
       {/* ================================================================ */}
       {/* SECTION 2 : SMART CARDS — Interpreted data                      */}
       {/* ================================================================ */}
-      <div className="px-4 space-y-3">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut", delay: 0.08 }}
+        className="px-4 space-y-3"
+      >
         {/* Vaccine calendar — WSAVA 2024 reference */}
         <div ref={vaccineCardRef}>
           <VaccineCard
@@ -297,12 +307,18 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
             <Share2 className="w-4 h-4" /> Partager le carnet
           </motion.button>
         )}
-      </div>
+      </motion.div>
 
       {/* ================================================================ */}
       {/* SECTION 3 : DATA SECOND — Raw records (accordion)               */}
       {/* ================================================================ */}
-      <div ref={recordsSectionRef} className="px-4 space-y-3">
+      <motion.div
+        ref={recordsSectionRef}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut", delay: 0.15 }}
+        className="px-4 space-y-3"
+      >
         {/* Records accordion header */}
         <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
           <button
@@ -358,15 +374,21 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
                     />
                   </div>
                 ) : (
-                  sortedRecords.map(r => (
-                    <RecordRow
+                  sortedRecords.map((r, i) => (
+                    <motion.div
                       key={r.id}
-                      record={r}
-                      onDelete={handleDelete}
-                      icon={getIconForType(r.type)}
-                      accentClass={getAccentClassForType(r.type)}
-                      extra={r.type === 'weight' ? <span className="text-xs font-bold text-emerald-600 mt-1 block">{r.value} kg</span> : null}
-                    />
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05, duration: 0.25 }}
+                    >
+                      <RecordRow
+                        record={r}
+                        onDelete={handleDelete}
+                        icon={getIconForType(r.type)}
+                        accentClass={getAccentClassForType(r.type)}
+                        extra={r.type === 'weight' ? <span className="text-xs font-bold text-emerald-600 mt-1 block">{r.value} kg</span> : null}
+                      />
+                    </motion.div>
                   ))
                 )}
               </div>
@@ -408,7 +430,7 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
             <VetNotesList notes={vetNotes} />
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* Share Modal */}
       {dog && (

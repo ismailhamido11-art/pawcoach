@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
 import BottomNav from "../components/BottomNav";
@@ -98,60 +99,92 @@ export default function Profile() {
     return <SkeletonPage variant="detail" currentPage="Profile" />;
   }
 
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: i * 0.05, duration: 0.25, ease: "easeOut" },
+    }),
+  };
+
   return (
     <div className="min-h-screen bg-background pb-28">
       <ProfileHeader user={user} achievementPoints={achievementPoints} />
 
-      <div className="px-5 pt-4 space-y-4">
-        <DogSwitcher
-          dogs={dogs}
-          activeDogId={activeDogId}
-          onSwitch={handleSwitchDog}
-          onAdd={handleAddDog}
-          isPremium={isUserPremium(user)}
-        />
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="px-5 pt-4 space-y-4"
+      >
+        <motion.div custom={0} variants={sectionVariants} initial="hidden" animate="visible">
+          <DogSwitcher
+            dogs={dogs}
+            activeDogId={activeDogId}
+            onSwitch={handleSwitchDog}
+            onAdd={handleAddDog}
+            isPremium={isUserPremium(user)}
+          />
+        </motion.div>
 
-        <SubscriptionSection user={user} />
+        <motion.div custom={1} variants={sectionVariants} initial="hidden" animate="visible">
+          <SubscriptionSection user={user} />
+        </motion.div>
 
         {/* Achievement Feed — 5 derniers badges gagnés */}
         {dogs.length > 0 && (
-          <div className="bg-white rounded-2xl border border-border shadow-sm px-4 py-3">
+          <motion.div custom={2} variants={sectionVariants} initial="hidden" animate="visible" className="bg-white rounded-2xl border border-border shadow-sm px-4 py-3">
             <AchievementFeed dog={activeDog} />
-          </div>
+          </motion.div>
         )}
 
         {/* Achievements — always visible, no accordion */}
         {dogs.length > 0 && (
-          <AchievementsSection dog={activeDog} />
+          <motion.div custom={3} variants={sectionVariants} initial="hidden" animate="visible">
+            <AchievementsSection dog={activeDog} />
+          </motion.div>
         )}
 
         {/* Lien vers le Dashboard statistiques */}
         {activeDog && (
-          <Link
-            to={createPageUrl("Dashboard")}
-            className="flex items-center gap-3 w-full bg-white rounded-2xl border border-border shadow-sm px-4 py-3.5 hover:border-primary/40 transition-colors"
-          >
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
-              <BarChart2 className="w-5 h-5 text-emerald-600" />
-            </div>
-            <div className="flex-1">
-              <p className="font-semibold text-sm text-foreground">Voir les statistiques de {activeDog.name}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Tableau de bord complet</p>
-            </div>
-            <span className="text-muted-foreground/50 text-lg leading-none">›</span>
-          </Link>
+          <motion.div custom={4} variants={sectionVariants} initial="hidden" animate="visible">
+            <Link
+              to={createPageUrl("Dashboard")}
+              className="flex items-center gap-3 w-full bg-white rounded-2xl border border-border shadow-sm px-4 py-3.5 hover:border-primary/40 transition-colors active:scale-[0.97]"
+            >
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                <BarChart2 className="w-5 h-5 text-emerald-600" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-sm text-foreground">Voir les statistiques de {activeDog.name}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Tableau de bord complet</p>
+              </div>
+              <span className="text-muted-foreground/50 text-lg leading-none">›</span>
+            </Link>
+          </motion.div>
         )}
 
-        <CoachSettings user={user} onSave={handleSaveUser} />
+        <motion.div custom={5} variants={sectionVariants} initial="hidden" animate="visible">
+          <CoachSettings user={user} onSave={handleSaveUser} />
+        </motion.div>
 
-        <WalkReminderSettings user={user} onSave={handleSaveUser} dogName={activeDog?.name} />
+        <motion.div custom={6} variants={sectionVariants} initial="hidden" animate="visible">
+          <WalkReminderSettings user={user} onSave={handleSaveUser} dogName={activeDog?.name} />
+        </motion.div>
 
-        <VetSection dogs={dogs} activeDogId={activeDogId} />
+        <motion.div custom={7} variants={sectionVariants} initial="hidden" animate="visible">
+          <VetSection dogs={dogs} activeDogId={activeDogId} />
+        </motion.div>
 
-        <ReferralSection user={user} onSave={handleSaveUser} />
+        <motion.div custom={8} variants={sectionVariants} initial="hidden" animate="visible">
+          <ReferralSection user={user} onSave={handleSaveUser} />
+        </motion.div>
 
-        <SettingsSection />
-      </div>
+        <motion.div custom={9} variants={sectionVariants} initial="hidden" animate="visible">
+          <SettingsSection />
+        </motion.div>
+      </motion.div>
 
       <ChatFAB />
       <BottomNav currentPage="Profile" />

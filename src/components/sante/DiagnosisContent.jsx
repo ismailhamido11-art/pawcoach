@@ -26,7 +26,12 @@ export default function DiagnosisContent({ dog }) {
   };
 
   return (
-    <div className="px-4 pt-4 pb-4 space-y-4">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="px-4 pt-4 pb-4 space-y-4"
+    >
       {/* Hero card */}
       <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 flex items-center gap-4">
         <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
@@ -45,9 +50,12 @@ export default function DiagnosisContent({ dog }) {
       <div>
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">Symptômes fréquents</p>
         <div className="grid grid-cols-4 gap-2">
-          {SYMPTOM_SHORTCUTS.map(({ emoji, label }) => (
+          {SYMPTOM_SHORTCUTS.map(({ emoji, label }, i) => (
             <motion.button
               key={label}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.25 }}
               whileTap={{ scale: 0.92 }}
               onClick={() => openWithSymptom(label)}
               className="flex flex-col items-center gap-1 py-3 rounded-2xl bg-white border border-border text-center hover:border-emerald-300 hover:bg-emerald-50 transition-all"
@@ -125,6 +133,6 @@ export default function DiagnosisContent({ dog }) {
           preSelectedSymptom={preSelectedSymptom}
         />
       )}
-    </div>
+    </motion.div>
   );
 }

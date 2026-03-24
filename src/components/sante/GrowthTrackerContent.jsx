@@ -248,7 +248,12 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
   const historyEntries = useMemo(() => [...sorted].reverse(), [sorted]);
 
   return (
-    <div className="px-4 py-4 pb-8 space-y-4">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="px-4 py-4 pb-8 space-y-4"
+    >
       {/* Header stats */}
       {latest && (
         <div className="grid grid-cols-3 gap-2">
