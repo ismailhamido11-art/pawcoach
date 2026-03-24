@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Syringe, Weight, Stethoscope, Pill, AlertTriangle, Calendar, MapPin, PawPrint, ShieldCheck, FileText, Loader2 } from "lucide-react";
 import { getVaccineDisplayName } from "@/utils/healthStatus";
 import EmptyState from "@/components/ui/EmptyState";
+import SkeletonPage from "@/components/ui/SkeletonPage";
 
 // Public page — no login required
 // URL: /DogPublicProfile?dogId=xxx
@@ -94,14 +95,7 @@ export default function DogPublicProfile() {
   }, [dogId]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
-          <p className="text-sm text-muted-foreground">Chargement du dossier…</p>
-        </div>
-      </div>
-    );
+    return <SkeletonPage variant="detail" />;
   }
 
   if (error || !dog) {

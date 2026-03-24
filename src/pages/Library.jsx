@@ -191,9 +191,7 @@ export default function Library() {
       {/* Content */}
       <div className="px-5 pt-2 space-y-3">
         {loading ? (
-          Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-24 bg-muted animate-pulse rounded-2xl" />
-          ))
+          <SkeletonPage variant="list" />
         ) : filtered.length === 0 ? (
           <EmptyState
             mascot="chat"
