@@ -1,0 +1,65 @@
+{
+  "_comment": "PawCoach — Settings Claude Code pour run autonome de polish visuel",
+
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./.env.local)",
+      "Read(./secrets/**)",
+      "Read(./.git/config)",
+      "Write(./package-lock.json)",
+      "Write(./yarn.lock)",
+      "Write(./.git/**)"
+    ]
+  },
+
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [{
+          "type": "command",
+          "command": "echo '{\"additionalContext\": \"Branch: '$(git branch --show-current 2>/dev/null || echo main)'. Session started: '$(date +\"%Y-%m-%d %H:%M\")'. Run: visual-polish\"}'"
+        }]
+      }
+    ],
+
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{
+          "type": "command",
+          "command": "python3 -c \"\nimport json, sys, re\ntry:\n  data = json.load(sys.stdin)\n  cmd = data.get('tool_input', {}).get('command', '')\n  patterns = [\n    r'rm\\s+-rf\\s+[~$]',\n    r'rm\\s+-rf\\s+/',\n    r'rm\\s+-rf\\s+\\*\\s*$',\n    r'DROP\\s+TABLE',\n    r'sudo\\s+rm\\s+-rf',\n  ]\n  for p in patterns:\n    if re.search(p, cmd, re.IGNORECASE):\n      print(json.dumps({'decision': 'deny', 'reason': f'Dangerous command blocked: {cmd[:120]}'}))\n      sys.exit(0)\nexcept Exception:\n  pass\nsys.exit(0)\n\""
+        }]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [{
+          "type": "command",
+          "command": "python3 -c \"\nimport json, sys\ntry:\n  data = json.load(sys.stdin)\n  path = data.get('tool_input', {}).get('file_path', '')\n  protected = ['.env', 'secrets/', '.git/', 'package-lock.json']\n  if any(p in path for p in protected):\n    print(json.dumps({'decision': 'deny', 'reason': f'Protected file: {path}'}))\n    sys.exit(0)\nexcept Exception:\n  pass\nsys.exit(0)\n\""
+        }]
+      }
+    ],
+
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [{
+          "type": "command",
+          "async": true,
+          "command": "bash -c 'if git rev-parse --git-dir >/dev/null 2>&1; then COUNT=$(git status --short | wc -l | tr -d \" \"); if [ \"$COUNT\" -ge 10 ]; then git add -A && git commit -m \"auto-checkpoint $(date +%H:%M) [$COUNT files]\" --no-verify 2>/dev/null; fi; fi'"
+        }]
+      }
+    ],
+
+    "Stop": [
+      {
+        "hooks": [{
+          "type": "command",
+          "async": true,
+          "command": "bash -c 'INPUT=$(cat); if [ \"$(echo \"$INPUT\" | python3 -c \"import json,sys; print(json.load(sys.stdin).get(\\\"stop_hook_active\\\", False))\" 2>/dev/null)\" = \"True\" ]; then exit 0; fi; git add -A && git commit -m \"session-end $(date +%H:%M)\" --no-verify 2>/dev/null || true'"
+        }]
+      }
+    ]
+  }
+}
