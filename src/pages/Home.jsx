@@ -21,7 +21,7 @@ import ContentArticles from "../components/home/ContentArticles";
 import { Flame, ScanLine, Footprints, Stethoscope, BookOpen } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { toast } from "sonner";
 import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
 import PostTrialSheet from "../components/premium/PostTrialSheet";
@@ -59,6 +59,7 @@ async function fetchDogData(dogId) {
 
 export default function Home() {
   const navigate = useNavigate();
+  const prefersReducedMotion = useReducedMotion();
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
   const [loading, setLoading] = useState(true);
