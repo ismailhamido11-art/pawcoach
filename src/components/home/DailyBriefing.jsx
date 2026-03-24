@@ -82,12 +82,12 @@ function generateBriefing({ dog, recentCheckins, dailyLogs, streak, todayCheckin
 }
 
 const MISSION_CONFIG = {
-  checkin: { icon: PawPrint, color: "#2D9F82", bg: "#E8F5F0", page: null },
-  walk: { icon: Footprints, color: "#2D9F82", bg: "#E8F5F0", page: "Activite" },
-  chat: { icon: MessageCircle, color: "#1A4D3E", bg: "#E8F5F0", page: "Chat" },
-  health: { icon: PawPrint, color: "#7C3AED", bg: "#EDE9FE", page: "Sante" },
-  scan: { icon: ScanLine, color: "#D97706", bg: "#FEF0E8", page: "Scan" },
-  train: { icon: Dumbbell, color: "#2D9F82", bg: "#E8F5F0", page: "Training" },
+  checkin: { icon: PawPrint, colorClass: "text-primary", bgClass: "bg-primary/10", page: null },
+  walk: { icon: Footprints, colorClass: "text-primary", bgClass: "bg-primary/10", page: "Activite" },
+  chat: { icon: MessageCircle, colorClass: "text-primary", bgClass: "bg-primary/10", page: "Chat" },
+  health: { icon: PawPrint, colorClass: "text-purple-600", bgClass: "bg-purple-50", page: "Sante" },
+  scan: { icon: ScanLine, colorClass: "text-amber-600", bgClass: "bg-amber-50", page: "Scan" },
+  train: { icon: Dumbbell, colorClass: "text-blue-600", bgClass: "bg-blue-50", page: "Training" },
 };
 
 export default function DailyBriefing({ dog, user, recentCheckins, dailyLogs, streak, todayCheckin, onQuickCheckin, submitting, recommendations }) {
@@ -219,17 +219,14 @@ export default function DailyBriefing({ dog, user, recentCheckins, dailyLogs, st
               onClick={handleMissionTap}
               className="mt-5 w-full flex items-center gap-3 bg-white rounded-2xl p-3.5 text-left active:scale-[0.97] transition-transform shadow-lg"
             >
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: missionConfig?.bg }}
-              >
-                <MissionIcon className="w-5 h-5" style={{ color: missionConfig?.color }} />
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${missionConfig?.bgClass || "bg-primary/10"}`}>
+                <MissionIcon className={`w-5 h-5 ${missionConfig?.colorClass || "text-primary"}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-bold text-[#1A4D3E]">{mission.label}</p>
-                <p className="text-[11px] text-gray-400 mt-0.5">{mission.sub}</p>
+                <p className="text-[14px] font-bold text-foreground">{mission.label}</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{mission.sub}</p>
               </div>
-              <ArrowRight className="w-5 h-5 text-[#2D9F82] flex-shrink-0" />
+              <ArrowRight className="w-5 h-5 text-primary flex-shrink-0" />
             </motion.button>
           )}
         </div>

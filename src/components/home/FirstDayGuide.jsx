@@ -9,9 +9,9 @@ const STEPS = [
   {
     id: "checkin",
     icon: Heart,
-    color: "#2D9F82",
-    bg: "rgba(45,159,130,0.08)",
-    border: "#2D9F82",
+    colorClass: "text-primary",
+    bgClass: "bg-primary/10",
+    borderClass: "border-primary",
     title: (name) => `Fais le check-in de ${name}`,
     desc: (name) => `Dis-nous comment va ${name} aujourd'hui`,
     cta: "Faire le check-in",
@@ -20,9 +20,9 @@ const STEPS = [
   {
     id: "scan",
     icon: Camera,
-    color: "#1A4D3E",
-    bg: "rgba(26,77,62,0.07)",
-    border: "#1A4D3E",
+    colorClass: "text-amber-600",
+    bgClass: "bg-amber-50",
+    borderClass: "border-amber-500",
     title: (name) => `Scanne la croquette de ${name}`,
     desc: (name) => `Vérifie si l'alimentation de ${name} est adaptée`,
     cta: "Scanner une croquette",
@@ -32,9 +32,9 @@ const STEPS = [
   {
     id: "walk",
     icon: MapPin,
-    color: "#2D9F82",
-    bg: "rgba(45,159,130,0.08)",
-    border: "#2D9F82",
+    colorClass: "text-blue-600",
+    bgClass: "bg-blue-50",
+    borderClass: "border-blue-500",
     title: (name) => `Lance une balade avec ${name}`,
     desc: (name) => `Enregistre ta première sortie avec ${name}`,
     cta: "Démarrer une balade",
@@ -162,7 +162,7 @@ export default function FirstDayGuide({ dog, todayCheckin, scans, dailyLogs, onS
             >
               <Star className="w-3.5 h-3.5" style={{ color: "#2D9F82" }} />
             </div>
-            <p className="text-sm font-bold" style={{ color: "#1A4D3E" }}>
+            <p className="text-sm font-bold text-foreground">
               Par où commencer avec {dogName} ?
             </p>
           </motion.div>
@@ -189,28 +189,17 @@ export default function FirstDayGuide({ dog, todayCheckin, scans, dailyLogs, onS
                   delay: i * 0.07,
                 }}
                 whileTap={{ scale: 0.98 }}
-                className="relative rounded-2xl overflow-hidden"
-                style={{
-                  background: "hsl(37,33%,97%)",
-                  borderLeft: `3.5px solid ${step.border}`,
-                  boxShadow: "0 1px 8px rgba(26,77,62,0.06), 0 0 0 1px rgba(26,77,62,0.06)",
-                }}
+                className={`relative rounded-2xl overflow-hidden bg-card border-l-4 shadow-sm ${step.borderClass}`}
               >
                 <div className="flex items-center gap-3 p-3.5">
                   {/* Icon */}
-                  <div
-                    className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: step.bg }}
-                  >
-                    <Icon className="w-5 h-5" style={{ color: step.color }} />
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${step.bgClass}`}>
+                    <Icon className={`w-5 h-5 ${step.colorClass}`} />
                   </div>
 
                   {/* Text */}
                   <div className="flex-1 min-w-0">
-                    <p
-                      className="text-sm font-semibold leading-tight"
-                      style={{ color: "#1A4D3E" }}
-                    >
+                    <p className="text-sm font-bold text-foreground leading-tight">
                       {step.title(dogName)}
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
@@ -223,18 +212,14 @@ export default function FirstDayGuide({ dog, todayCheckin, scans, dailyLogs, onS
                     <motion.button
                       whileTap={{ scale: 0.93 }}
                       onClick={() => handleCta(step)}
-                      className="flex-shrink-0 text-xs font-bold px-3 py-1.5 rounded-xl text-white"
-                      style={{ background: step.color }}
+                      className={`flex-shrink-0 text-xs font-bold px-3 py-1.5 rounded-xl ${step.bgClass} ${step.colorClass}`}
                     >
                       {step.cta}
                     </motion.button>
                   )}
 
                   {isDone && (
-                    <CheckCircle2
-                      className="w-5 h-5 flex-shrink-0"
-                      style={{ color: "#2D9F82" }}
-                    />
+                    <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${step.colorClass}`} />
                   )}
                 </div>
               </motion.div>

@@ -38,12 +38,12 @@ export default function EmotionalTip({ dog, dailyLogs, recentCheckins }) {
   }, []);
 
   return (
-    <div className="bg-gradient-to-r from-[#E8F5F0] to-[#FEF0E8] rounded-[20px] p-4 overflow-hidden">
+    <div className="bg-gradient-to-r from-primary/10 to-amber-50 rounded-[20px] p-4 overflow-hidden border border-primary/10">
       <div className="flex items-start gap-3">
-        <span className="text-2xl mt-0.5">{CAT_ICONS[tip.cat] || "🐾"}</span>
+        <span className="text-2xl mt-0.5 drop-shadow-sm">{CAT_ICONS[tip.cat] || "🐾"}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-[14px] font-semibold text-[#1A4D3E]">Le savais-tu ?</p>
-          <p className="text-[12px] text-gray-500 mt-1 leading-[1.6]">{tip.text}</p>
+          <p className="text-[14px] font-bold text-foreground">Le savais-tu ?</p>
+          <p className="text-[12px] text-muted-foreground mt-1 leading-[1.6]">{tip.text}</p>
         </div>
       </div>
     </div>

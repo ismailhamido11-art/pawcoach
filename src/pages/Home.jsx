@@ -19,7 +19,7 @@ import EmotionalTip from "../components/home/EmotionalTip";
 import ContentArticles from "../components/home/ContentArticles";
 
 import { Flame, ScanLine, Footprints, Stethoscope, BookOpen } from "lucide-react";
-import { DogTrophy } from "../components/ui/PawIllustrations";
+import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -267,10 +267,10 @@ export default function Home() {
   }, [dog, records, exercises, scans, recentCheckins, dailyLogs, todayCheckin, streak, diagnosisReports, nutritionPlans]);
 
   const quickActions = [
-    { icon: ScanLine, label: "Scanner", page: "Scan" },
-    { icon: Footprints, label: "Balade", page: "Activite" },
-    { icon: Stethoscope, label: "Santé", page: "Sante" },
-    { icon: BookOpen, label: "Guides", page: "Training" },
+    { icon: ScanLine, label: "Scanner", colorClass: "text-amber-600", bgClass: "bg-amber-50", page: "Scan" },
+    { icon: Footprints, label: "Balade", colorClass: "text-primary", bgClass: "bg-primary/10", page: "Activite" },
+    { icon: Stethoscope, label: "Santé", colorClass: "text-purple-600", bgClass: "bg-purple-50", page: "Sante" },
+    { icon: BookOpen, label: "Guides", colorClass: "text-blue-600", bgClass: "bg-blue-50", page: "Training" },
   ];
 
   const streakDays = streak?.current_streak || 0;
@@ -350,17 +350,17 @@ export default function Home() {
           />
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-4 gap-2 px-1">
+          <div className="flex justify-between px-2">
             {quickActions.map((qa, i) => (
               <button
                 key={i}
                 onClick={() => navigate(createPageUrl(qa.page))}
-                className="flex flex-col items-center gap-2 group active:scale-95 transition-all"
+                className="flex flex-col items-center gap-2 w-[72px] active:scale-95 transition-transform"
               >
-                <div className="w-14 h-14 rounded-2xl bg-card border border-border shadow-sm flex items-center justify-center group-hover:border-primary/30 group-hover:bg-primary/5 transition-colors">
-                  <qa.icon className="w-6 h-6 text-primary" strokeWidth={1.5} />
+                <div className={`w-[52px] h-[52px] rounded-2xl flex items-center justify-center ${qa.bgClass}`}>
+                  <qa.icon className={`w-[22px] h-[22px] ${qa.colorClass}`} />
                 </div>
-                <span className="text-[11px] font-semibold text-foreground/80">{qa.label}</span>
+                <span className="text-[11px] font-medium text-muted-foreground">{qa.label}</span>
               </button>
             ))}
           </div>
@@ -462,9 +462,9 @@ function MilestoneCelebration({ milestone, onClose }) {
         <motion.div
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="w-20 h-20 mx-auto mb-3"
+          className="w-24 h-24 mx-auto mb-2"
         >
-          <DogTrophy color="#2D9F82" />
+          <Illustration name="dogHighFive" alt="Bravo !" className="w-full h-full drop-shadow-lg" />
         </motion.div>
         <p className="text-2xl font-black text-foreground">{milestone.message}</p>
         <p className="text-sm text-muted-foreground mt-1.5">{milestone.sub}</p>

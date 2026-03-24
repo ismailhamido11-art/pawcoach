@@ -13,22 +13,22 @@ export default function DailyProgress({ dailyLogs = [], todayCheckin, dog }) {
       icon: Footprints,
       value: walkMinutes > 0 ? `${walkMinutes} min` : "0 min",
       label: "Balade",
-      color: "#2D9F82",
-      bg: "#E8F5F0",
+      colorClass: "text-primary",
+      bgClass: "bg-primary/10",
     },
     {
       icon: UtensilsCrossed,
       value: meals > 0 ? `${meals}` : "—",
       label: "Repas",
-      color: "#D97706",
-      bg: "#FEF3C7",
+      colorClass: "text-amber-600",
+      bgClass: "bg-amber-50",
     },
     {
       icon: CircleCheck,
       value: hasCheckin ? "Fait" : "A faire",
       label: "Check-in",
-      color: hasCheckin ? "#7C3AED" : "#8A8A8A",
-      bg: hasCheckin ? "#EDE9FE" : "#F5F5F5",
+      colorClass: hasCheckin ? "text-purple-600" : "text-muted-foreground",
+      bgClass: hasCheckin ? "bg-muted" : "bg-muted/50",
     },
   ];
 
@@ -37,16 +37,15 @@ export default function DailyProgress({ dailyLogs = [], todayCheckin, dog }) {
       {items.map((item, i) => (
         <div
           key={i}
-          className="flex flex-col items-center gap-1.5 bg-white rounded-2xl border border-[#E8E4DF] py-3.5 px-2"
+          className="flex flex-col items-center gap-1.5 bg-card rounded-2xl border border-border py-3.5 px-2 shadow-sm"
         >
           <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ backgroundColor: item.bg }}
+            className={`w-8 h-8 rounded-lg flex items-center justify-center ${item.bgClass}`}
           >
-            <item.icon className="w-[18px] h-[18px]" style={{ color: item.color }} />
+            <item.icon className={`w-[18px] h-[18px] ${item.colorClass}`} />
           </div>
-          <span className="text-[14px] font-semibold text-[#2D2D2D]">{item.value}</span>
-          <span className="text-[11px] text-gray-400">{item.label}</span>
+          <span className="text-[14px] font-bold text-foreground">{item.value}</span>
+          <span className="text-[11px] font-medium text-muted-foreground">{item.label}</span>
         </div>
       ))}
     </div>
