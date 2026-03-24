@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useReducedMotion from "@/hooks/useReducedMotion";
-import { fadeIn } from "@/lib/animations";
+const fadeIn = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+  transition: { duration: 0.24, ease: "easeOut" },
+};
 
 export default function Layout({ children, currentPageName }) {
   const reduceMotion = useReducedMotion();
