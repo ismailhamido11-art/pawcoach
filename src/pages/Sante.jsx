@@ -8,7 +8,7 @@ import WellnessBanner from "../components/WellnessBanner";
 import HealthAssistantBar from "@/components/sante/HealthAssistantBar";
 import HealthAssistantSheet from "@/components/sante/HealthAssistantSheet";
 import { updateStreakSilently } from "@/components/streakHelper";
-import Illustration from "../components/illustrations/Illustration";
+import { DogDoctor } from "../components/ui/PawIllustrations";
 import { motion, AnimatePresence } from "framer-motion";
 import { isUserPremium } from "@/utils/premium";
 import { toast } from "sonner";
@@ -190,7 +190,7 @@ export default function Sante() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-20 h-20 flex-shrink-0"
           >
-            <Illustration name="goodDoggy" alt="Santé" className="w-full h-full drop-shadow-lg" />
+            <DogDoctor color="#ffffff" accent="#a7f3d0" />
           </motion.div>
         </div>
 

@@ -12,7 +12,7 @@ import DietPreferencesPanel from "../components/nutrition/DietPreferencesPanel";
 
 import { Button } from "@/components/ui/button";
 import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, ChevronDown, Copy, RotateCcw } from "lucide-react";
-import Illustration from "../components/illustrations/Illustration";
+import { DogChef, DogCurious } from "../components/ui/PawIllustrations";
 import { isUserPremium } from "@/utils/premium";
 import { initCredits } from "@/utils/ai-credits";
 import IconBadge from "@/components/ui/IconBadge";
@@ -403,7 +403,7 @@ export default function Nutri() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-24 h-24 flex-shrink-0"
           >
-            <Illustration name="petFood" alt="Nutrition" className="w-full h-full drop-shadow-lg" />
+            <DogChef color="#ffffff" accent="#a7f3d0" />
           </motion.div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
@@ -459,9 +459,9 @@ export default function Nutri() {
           <motion.div
             animate={{ scale: [1, 1.03, 1] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="w-32 h-32"
+            className="w-28 h-28"
           >
-            <Illustration name="petFood" alt="Scanner" className="w-full h-full drop-shadow-lg" />
+            <DogCurious color="#2D9F82" />
           </motion.div>
           <div className="text-center">
             <h2 className="font-bold text-foreground text-lg">Scanner un aliment</h2>

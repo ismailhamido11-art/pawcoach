@@ -12,7 +12,7 @@ import { getDogAgeSegment } from "@/utils/healthStatus";
 import BottomNav from "../components/BottomNav";
 import confetti from "canvas-confetti";
 import { motion } from "framer-motion";
-import Illustration from "../components/illustrations/Illustration";
+import { DogTrophy } from "../components/ui/PawIllustrations";
 
 const MONTHLY_PRICE_ID = "price_1T4tkFDuhaIxY4PGpnhDTx5L";
 const ANNUAL_PRICE_ID = "price_1T4tkFDuhaIxY4PGWLeWApDL";
@@ -163,8 +163,8 @@ export default function Premium() {
                 className="w-24 h-24 rounded-full object-cover border-4 border-white/40 shadow-md mx-auto"
               />
             ) : (
-              <div className="w-24 h-24 rounded-full bg-white/10 border-4 border-white/30 flex items-center justify-center mx-auto shadow-md overflow-hidden">
-                <Illustration name="qualityTime" alt="Premium" className="w-full h-full object-cover" />
+              <div className="w-24 h-24 rounded-full bg-white/10 border-4 border-white/30 flex items-center justify-center mx-auto shadow-md">
+                <DogIcon className="w-10 h-10 text-white" />
               </div>
             )}
           </motion.div>
@@ -326,9 +326,9 @@ export default function Premium() {
           <motion.div
             animate={{ scale: [1, 1.03, 1] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="mx-auto mb-3"
+            className="w-28 h-28 mx-auto mb-3"
           >
-            <Illustration name="qualityTime" alt="PawCoach Premium" className="w-32 h-32 mx-auto drop-shadow-lg" />
+            <DogTrophy color="#ffffff" accent="#a7f3d0" />
           </motion.div>
           <h1 className="text-white font-black text-2xl">PawCoach Premium</h1>
           <p className="text-white/70 text-sm mt-1">{SEGMENT_HERO[segment].subtitle(dogName)}</p>
