@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { X, Download, Share2 } from "lucide-react";
 
@@ -62,7 +63,13 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
 
   return createPortal(
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-5" onClick={onClose}>
-      <div className="w-full max-w-[320px] space-y-4" onClick={e => e.stopPropagation()}>
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        className="w-full max-w-[320px] space-y-4"
+        onClick={e => e.stopPropagation()}
+      >
         {/* 1:1 viral card — scaled preview */}
         <div style={{ width: 540 * 0.56, height: 540 * 0.56, overflow: "hidden", borderRadius: 27 }}>
           <div
@@ -177,17 +184,17 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" onClick={downloadCard} className="h-14 rounded-2xl gap-2 bg-white">
+          <Button variant="outline" onClick={downloadCard} className="h-14 rounded-2xl gap-2 bg-white active:scale-[0.97] transition-transform">
             <Download className="w-4 h-4" /> Enregistrer
           </Button>
-          <Button onClick={shareCard} className="h-14 rounded-2xl gap-2 gradient-primary border-0 text-white">
+          <Button onClick={shareCard} className="h-14 rounded-2xl gap-2 gradient-primary border-0 text-white active:scale-[0.97] transition-transform">
             <Share2 className="w-4 h-4" /> Partager
           </Button>
         </div>
-        <button onClick={onClose} className="flex items-center justify-center gap-1 w-full text-sm text-white/80">
+        <button onClick={onClose} className="flex items-center justify-center gap-1 w-full text-sm text-white/80 active:scale-[0.97] transition-transform">
           <X className="w-4 h-4" /> Fermer
         </button>
-      </div>
+      </motion.div>
     </div>,
     document.body
   );

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 import { Trophy } from "lucide-react";
+import EmptyState from "@/components/ui/EmptyState";
 
 const containerVariants = {
   hidden: {},

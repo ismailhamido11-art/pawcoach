@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -121,7 +122,12 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
 
         {/* Existing accesses */}
         {accesses.filter(a => a.status !== "revoked").length > 0 && (
-          <div className="space-y-2 mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-2 mb-4"
+          >
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Accès actifs</p>
             {accesses.filter(a => a.status !== "revoked").map(a => (
               <div key={a.id} className="flex items-center justify-between p-3 rounded-xl bg-muted/50 border border-border">
@@ -143,11 +149,16 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
                 </Button>
               </div>
             ))}
-          </div>
+          </motion.div>
         )}
 
         {/* Invite form */}
-        <div className="space-y-3">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.05 }}
+          className="space-y-3"
+        >
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Inviter un vétérinaire</p>
 
           <div>
@@ -198,7 +209,7 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
             <p className="text-xs text-muted-foreground mb-2">Ou telecharge le carnet pour l'imprimer / l'envoyer toi-meme</p>
             <DownloadHealthPDF dogId={dogId} dogName={dogName} />
           </div>
-        </div>
+        </motion.div>
       </DialogContent>
     </Dialog>
   );
