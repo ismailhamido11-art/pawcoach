@@ -17,6 +17,7 @@ import Illustration from "../components/illustrations/Illustration";
 import { isUserPremium } from "@/utils/premium";
 import { toast } from "sonner";
 import { spring } from "@/lib/animations";
+import EmptyState from "@/components/ui/EmptyState";
 const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
 const listItem = {
   hidden: { opacity: 0, y: 12 },
@@ -542,6 +543,15 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
             {/* Upload zone */}
             {!result && !scanLimitReached && (
               <>
+                {!preview && (
+                  <EmptyState
+                    mascot="detective"
+                    illustration="search"
+                    title="Scanne un aliment pour PawCoach"
+                    description="Prends en photo un aliment brut ou un emballage pour obtenir un verdict immédiat adapté à ton chien."
+                    className="rounded-3xl border border-border/60 bg-card/70 shadow-sm"
+                  />
+                )}
                 <motion.button
                   whileTap={{ scale: 0.96 }}
                   transition={spring}

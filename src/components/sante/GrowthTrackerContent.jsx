@@ -490,10 +490,12 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
       {entries.length === 0 && !loading && (
         <EmptyState
           mascot="curious"
+          illustration="growth"
           title={`${dog?.name || "Ton chien"} grandit vite !`}
           description="Prends une photo ou ajoute une mesure manuelle pour suivre sa courbe de croissance."
           actionLabel="Ajouter une mesure"
           onAction={() => setShowAddManual(true)}
+          className="rounded-3xl border border-border/60 bg-card shadow-sm"
         />
       )}
     </div>

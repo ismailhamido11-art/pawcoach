@@ -215,10 +215,12 @@ export default function NearbyParks({ dog, user, onNearPark }) {
       <div className="bg-white border border-border rounded-2xl overflow-hidden">
         <EmptyState
           mascot="wave"
+          illustration="walking"
           title={`Pas de parc près de ${dog?.name || "toi"}`}
           description="Aucun parc canin dans un rayon de 3 km. Essaie d'élargir la zone ou reviens plus tard."
           actionLabel="Relancer la recherche"
           onAction={retryGeolocation}
+          className="rounded-3xl bg-card shadow-sm"
         />
       </div>
     );

@@ -123,8 +123,8 @@ Mission: AJOUTER la couche émotionnelle sans toucher à la logique métier ni a
 - [ ] grep -rn "length === 0\|\.length < 1\|\.length === 0" src/pages/ src/components/ --include="*.jsx" | head -80 → pour chaque: vérifier EmptyState avec mascotte
 - [ ] grep -rn "catch\|setError\|toast.error" src/pages/ src/components/ --include="*.jsx" | head -80 → pour chaque erreur: si page vide après→ajouter EmptyState + bouton Réessayer
 - [ ] Sante sous-pages: vérifier CHAQUE onglet vide (Journal, Vaccins, Visites, Poids, Médoc., Notes)
-- [ ] Chat vide → EmptyState mascot="chat" + "Posez votre première question"
-- [ ] VetPortal vide → mascot="doctor"
+- [x] Chat vide → EmptyState mascot="chat" + "Posez votre première question"
+- [x] VetPortal vide → mascot="doctor"
 - [ ] Library vide → illustration ou mascotte adaptée
 - [ ] Scan état initial → mascotte "camera" ou "detective"
 - [ ] Activite aucune balade → mascotte "runner"

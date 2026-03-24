@@ -252,14 +252,13 @@ export default function FindVetContent({ dog, user }) {
       {!loading && (
         <div className="px-4 mt-3 space-y-3">
           {displayedPlaces.length === 0 && (searched || showFavorites) ? (
-            <div className="text-center py-8">
-              <div className="w-20 h-20 mx-auto mb-3 opacity-50">
-                <Illustration name="cautiousDog" className="w-full h-full" />
-              </div>
-              <p className="text-sm text-muted-foreground">
-                {showFavorites ? "Aucun favori pour l'instant." : "Aucun résultat. Essaie une autre ville."}
-              </p>
-            </div>
+            <EmptyState
+              mascot="doctor"
+              illustration={showFavorites ? "community" : "search"}
+              title={showFavorites ? "Aucun favori pour l'instant" : "Aucun résultat trouvé"}
+              description={showFavorites ? "Ajoute un vétérinaire en favori pour le retrouver rapidement ici." : "Essaie une autre ville ou élargis la recherche autour de toi."}
+              className="rounded-3xl border border-border/60 bg-card shadow-sm"
+            />
           ) : (
             displayedPlaces.map((place, i) => {
               const fav = getFavoriteForPlace(place);

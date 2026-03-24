@@ -387,6 +387,15 @@ export default function Chat() {
 
       {/* Messages */}
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3" style={{ paddingBottom: "calc(11rem + env(safe-area-inset-bottom, 0px))" }}>
+        {messages.length <= 1 && !loading && !isStreaming && (
+          <EmptyState
+            mascot="chat"
+            illustration="welcome"
+            title={`Pose ta première question${dog?.name ? ` sur ${dog.name}` : ""}`}
+            description="Nutrition, comportement, activité, santé du quotidien: PawCoach peut te guider pas à pas."
+            className="rounded-3xl border border-border/60 bg-card/80 shadow-sm"
+          />
+        )}
         {messages.map((msg, i) => (
           <div key={i}>
             {shouldShowDateSeparator(messages, i) && (
