@@ -114,112 +114,126 @@ export default function DailyBriefing({ dog, user, recentCheckins, dailyLogs, st
     }
   };
 
+  const statusBadge = todayCheckin
+    ? (todayCheckin.mood >= 4 ? { label: "En pleine forme", color: "#2D9F82" } :
+       todayCheckin.mood <= 2 ? { label: "A surveiller", color: "#D97706" } :
+       { label: "Journee tranquille", color: "#1A4D3E" })
+    : { label: "En attente du check-in", color: "#8A8A8A" };
+
   return (
     <div className="px-5 pt-2 pb-6">
-      {/* Coach message */}
-      <motion.p
-        initial={{ opacity: 0, y: 8 }}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="text-[16px] text-[#2D2D2D] leading-[1.6] font-medium"
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        className="rounded-[1.5rem] overflow-hidden"
+        style={{ background: "linear-gradient(135deg, #1A4D3E 0%, #2D9F82 100%)" }}
       >
-        {message}
-      </motion.p>
+        <div className="p-6 relative">
+          {/* Subtle decorative circle */}
+          <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-white/5 pointer-events-none" />
 
-      {/* Quick check-in (if not done) */}
-      {mission?.type === "checkin" && !todayCheckin && !moodPicked && (
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-          className="mt-5"
-        >
-          <p className="text-[13px] text-gray-400 mb-3">Comment va {dog?.name} ?</p>
-          <div className="flex gap-3">
-            {MOOD_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => handleMoodTap(opt.value)}
-                disabled={submitting}
-                className="flex-1 flex flex-col items-center gap-1.5 py-3 rounded-2xl bg-white border border-[#E8E4DF] active:scale-95 active:bg-[#E8F5F0] transition-all disabled:opacity-50"
-              >
-                <span className="text-2xl">{opt.emoji}</span>
-                <span className="text-[11px] text-gray-500 font-medium">{opt.label}</span>
-              </button>
-            ))}
+          {/* Status badge */}
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: statusBadge.color === "#8A8A8A" ? "#aaa" : "#6FFBBE" }} />
+            <span className="text-[11px] font-bold text-white/80 uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full border border-white/15">
+              {statusBadge.label}
+            </span>
           </div>
-        </motion.div>
-      )}
 
-      {/* Checking in animation */}
-      <AnimatePresence>
-        {moodPicked && submitting && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mt-5 flex items-center gap-3 bg-[#E8F5F0] rounded-2xl p-4"
-          >
-            <div className="w-8 h-8 rounded-full bg-[#2D9F82] flex items-center justify-center animate-pulse">
-              <PawPrint className="w-4 h-4 text-white" />
+          {/* Briefing header */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/20">
+              <PawPrint className="w-5 h-5 text-white" />
             </div>
-            <p className="text-[14px] text-[#1A4D3E] font-medium">Le coach analyse...</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <h2 className="text-white font-bold text-lg tracking-tight">
+              Briefing de {dog?.name || "ton chien"}
+            </h2>
+          </div>
 
-      {/* AI response after check-in */}
-      {todayCheckin?.ai_response && (
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-4 bg-white rounded-2xl border border-[#E8E4DF] p-4"
-        >
-          <p className="text-[13px] text-gray-600 leading-[1.6] italic">
-            {todayCheckin.ai_response}
+          {/* Coach message */}
+          <p className="text-white/90 text-[15px] font-medium leading-relaxed italic">
+            "{message}"
           </p>
-        </motion.div>
-      )}
 
-      {/* Mission card */}
-      {mission && mission.type !== "checkin" && (
-        <motion.button
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          onClick={handleMissionTap}
-          className="mt-5 w-full flex items-center gap-4 bg-white rounded-2xl border border-[#E8E4DF] p-4 text-left active:scale-[0.98] transition-transform"
-        >
-          <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: missionConfig?.bg }}
-          >
-            <MissionIcon className="w-6 h-6" style={{ color: missionConfig?.color }} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-semibold text-[#1A4D3E]">{mission.label}</p>
-            <p className="text-[12px] text-gray-400 mt-0.5">{mission.sub}</p>
-          </div>
-          <ArrowRight className="w-5 h-5 text-gray-300 flex-shrink-0" />
-        </motion.button>
-      )}
+          {/* Quick check-in (if not done) */}
+          {mission?.type === "checkin" && !todayCheckin && !moodPicked && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="mt-5"
+            >
+              <p className="text-[12px] text-white/60 mb-3 font-medium">Comment va {dog?.name} ?</p>
+              <div className="flex gap-2">
+                {MOOD_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => handleMoodTap(opt.value)}
+                    disabled={submitting}
+                    className="flex-1 flex flex-col items-center gap-1 py-2.5 rounded-xl bg-white/15 border border-white/20 active:scale-95 active:bg-white/25 transition-all disabled:opacity-50 backdrop-blur-sm"
+                  >
+                    <span className="text-xl">{opt.emoji}</span>
+                    <span className="text-[10px] text-white/70 font-medium">{opt.label}</span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
-      {/* Mission card for check-in done state */}
-      {mission && mission.type !== "checkin" && todayCheckin && (
-        <motion.button
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.4 }}
-          onClick={handleMissionTap}
-          className="mt-3 w-full flex items-center gap-4 rounded-2xl p-4 text-left active:scale-[0.98] transition-transform"
-          style={{ backgroundColor: missionConfig?.bg }}
-        >
-          <MissionIcon className="w-5 h-5" style={{ color: missionConfig?.color }} />
-          <div className="flex-1 min-w-0">
-            <p className="text-[14px] font-semibold" style={{ color: missionConfig?.color }}>{mission.label}</p>
-          </div>
-          <ArrowRight className="w-4 h-4" style={{ color: missionConfig?.color }} />
-        </motion.button>
-      )}
+          {/* Checking in animation */}
+          <AnimatePresence>
+            {moodPicked && submitting && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="mt-5 flex items-center gap-3 bg-white/15 rounded-xl p-3 backdrop-blur-sm"
+              >
+                <div className="w-8 h-8 rounded-full bg-white/25 flex items-center justify-center animate-pulse">
+                  <PawPrint className="w-4 h-4 text-white" />
+                </div>
+                <p className="text-[14px] text-white font-medium">Le coach analyse...</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* AI response after check-in */}
+          {todayCheckin?.ai_response && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 bg-white/10 rounded-xl border border-white/15 p-4 backdrop-blur-sm"
+            >
+              <p className="text-[13px] text-white/85 leading-relaxed italic">
+                {todayCheckin.ai_response}
+              </p>
+            </motion.div>
+          )}
+
+          {/* Mission button */}
+          {mission && mission.type !== "checkin" && (
+            <motion.button
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              onClick={handleMissionTap}
+              className="mt-5 w-full flex items-center gap-3 bg-white rounded-2xl p-3.5 text-left active:scale-[0.97] transition-transform shadow-lg"
+            >
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: missionConfig?.bg }}
+              >
+                <MissionIcon className="w-5 h-5" style={{ color: missionConfig?.color }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-bold text-[#1A4D3E]">{mission.label}</p>
+                <p className="text-[11px] text-gray-400 mt-0.5">{mission.sub}</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-[#2D9F82] flex-shrink-0" />
+            </motion.button>
+          )}
+        </div>
+      </motion.div>
     </div>
   );
 }
