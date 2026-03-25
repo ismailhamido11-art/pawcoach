@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Video, Loader2, Sparkles, AlertCircle, BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from 'react-markdown';
-import { useActionCredits } from "@/utils/ai-credits";
+import { useActionCredits } from "@/hooks/useActionCredits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 export default function VideoCoaching({ exerciseName, dogName, dogId }) {

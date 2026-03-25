@@ -7,7 +7,7 @@ import { format, differenceInMonths } from "date-fns";
 import { fr } from "date-fns/locale";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { useActionCredits } from "@/utils/ai-credits";
+import { useActionCredits } from "@/hooks/useActionCredits";
 import EmptyState from "@/components/ui/EmptyState";
 
 // Breed reference curves (weight in kg by age in months)
