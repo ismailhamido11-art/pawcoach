@@ -6,6 +6,7 @@ import { Search, MapPin, Loader2, Stethoscope, Scissors, ShoppingBag, Heart, Nav
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import Illustration from "../illustrations/Illustration";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import EmptyState from "@/components/ui/EmptyState";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -288,10 +289,8 @@ export default function FindVetContent({ dog, user }) {
 
       {/* Empty initial state */}
       {!searched && !loading && !showFavorites && (
-        <div className="flex justify-center py-6">
-          <motion.div animate={{ scale: [1, 1.03, 1] }} transition={{ duration: 5, repeat: Infinity }} className="w-28 h-28 opacity-60">
-            <Illustration name="veterinary" className="w-full h-full drop-shadow" />
-          </motion.div>
+        <div className="flex justify-center py-4">
+          <StorysetIllustration name="vet-checkup" className="w-36 h-36 mx-auto" />
         </div>
       )}
 

@@ -436,9 +436,9 @@ export default function Nutri() {
           <motion.div
             animate={{ scale: [1, 1.03, 1] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="w-28 h-28"
+            className="w-40 h-40"
           >
-            <DogCurious color="#2D9F82" />
+            <StorysetIllustration name="feeding" className="w-full h-full" alt="Scanner un aliment" />
           </motion.div>
           <motion.div
             className="text-center"

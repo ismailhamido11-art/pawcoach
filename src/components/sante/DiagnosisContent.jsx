@@ -116,13 +116,7 @@ export default function DiagnosisContent({ dog }) {
 
       {/* Illustration */}
       <div className="flex justify-center">
-        <motion.div
-          animate={{ scale: [1, 1.03, 1] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="w-32 h-32 opacity-70"
-        >
-          <Illustration name="veterinary" alt="Vétérinaire" className="w-full h-full drop-shadow" />
-        </motion.div>
+        <StorysetIllustration name="diagnosis" className="w-36 h-36 mx-auto" />
       </div>
 
       {/* AI Diagnosis Modal */}

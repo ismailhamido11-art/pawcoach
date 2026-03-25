@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Camera, Plus, TrendingUp, Weight, Ruler, Sparkles, Trash2, Check, X } from "lucide-react";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 import { format, differenceInMonths } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -336,6 +337,13 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
               <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-caution inline-block rounded border-dashed" /> Référence race</span>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Illustration — shown when no entries yet */}
+      {entries.length === 0 && !loading && (
+        <div className="flex justify-center pt-2">
+          <StorysetIllustration name="growth" className="w-36 h-36 mx-auto" />
         </div>
       )}
 
