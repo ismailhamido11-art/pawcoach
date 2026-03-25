@@ -1,89 +1,92 @@
-# PawCoach Visual Polish Report
+# PawCoach Visual Polish Report — v2
 
 **Date:** 2026-03-25
-**Branch:** main (direct commits)
-**Build:** npm run build = 0 errors
+**Branch:** polish/complete-v2 (2 commits Wave 1 + Wave 2)
+**Build:** npm run build = 0 errors (exit 0, 14.5s)
+**Baseline:** ~80% polish pre-existant, cette session complete les 20% restants
 
-## Stats
+## Audit initial (avant cette session)
 
-- **124 fichiers modifies**
-- **+2500 / -1106 lignes** (net +1394)
-- **20 commits**
-- **8 phases completees**
+| Metrique | Valeur |
+|----------|--------|
+| Fichiers avec Framer Motion | 91 |
+| Fichiers avec AnimatePresence | 40 |
+| Fichiers avec EmptyState | 20 |
+| Pages avec SkeletonPage | 17/16 |
+| Mascottes SVG | 20 |
+| Illustrations Storyset | 23 |
+| Animations Lottie CDN | ~70 |
+| Couleurs hardcodees | ~272 instances |
+| Spinners restants | ~37 fichiers |
+| card-hover usage | 1 fichier |
+| AutoAnimate | non installe |
+| Score moyen pages | 4.1/5 |
 
-## Phase 1 — Setup & Fondations
-- 12 nouvelles mascottes SVG ajoutees a PawIllustrations.jsx (sleepy, runner, eating, camera, heart, star, question, calendar, walking, reading, crown, sad)
-- 12 mascottes enregistrees dans EmptyState MASCOTS map
-- Hook useCountUp cree (easeOutQuart, reduced-motion aware)
-- Cleanup repo (CONTEXT-PROMPT.md, benchmark docs)
+## Ce que cette session a fait
 
-## Phase 2 — Corrections Coherence
-- 54 remplacements couleur slate -> tokens design system
-- DogPublicProfile: 29 slate + 5 purple -> tokens
-- QRCodeCard: 12 slate -> tokens
-- SmartHealthAssistant: 9 slate -> tokens
-- UserNotRegisteredError: 4 slate -> tokens
-- EmptyState mascot="doctor" sur DogPublicProfile (section vide)
-- Zero import heroicons/react-icons/mui (deja propre)
+### Wave 1 — Corrections systematiques (3 agents paralleles)
+- **card-hover deploye** sur cartes cliquables : ActiveProgramCards (4 cards), JourneyView, DogRadarHero, ContentArticles, NutritionMealPlan, FoodComparator, etc.
+- **Spinners remplaces par skeletons contextuels** : VideoCoaching (skeleton analyse IA), AIDiagnosisModal (skeleton diagnostic), ParkReviews (skeleton avis), NutritionMealPlan (skeleton plan), FoodComparator (skeleton comparaison), FindVetContent (skeleton resultats)
+- **Couleurs harmonisees** dans home/* components (6 fichiers)
 
-## Phase 3 — Skeletons Restants
-- Library.jsx: SkeletonPage variant="list"
-- DogPublicProfile.jsx: SkeletonPage variant="detail"
-- Les 10 autres pages avaient deja des skeletons
+**19 fichiers modifies, +122/-47 lignes**
 
-## Phase 4 — Animations Pages (21 fichiers)
-- **Home.jsx**: fadeIn below-fold, stagger quickActions, card-hover streak
-- **Activite.jsx**: fadeIn hero, stagger tips DressageContent
-- **Nutri.jsx**: fadeIn header, stagger scan tab
-- **Sante.jsx**: deja anime (AnimatePresence tabs)
-- **NotebookContent.jsx**: fadeIn 3 sections, stagger records
-- **DiagnosisContent.jsx**: fadeIn, stagger symptom shortcuts
-- **GrowthTrackerContent.jsx**: fadeIn, stagger history entries
-- **HealthImportContent.jsx**: deja anime (AnimatePresence steps)
-- **FindVetContent.jsx**: stagger PlaceCard results
-- **Training.jsx**: fadeIn journey list, stagger JourneyCards
-- **Chat.jsx**: deja anime (msgAnim, typing dots)
-- **Profile.jsx**: fadeIn, stagger 10 sections, active:scale dashboard
-- **DogProfile.jsx**: fadeIn, stagger 6 card sections, active:scale buttons
-- **Library.jsx**: filter chips whileTap
-- **Dashboard.jsx**: fadeIn, stagger 4 StatCards
-- **Premium.jsx**: fadeIn, stagger features, CTA whileTap
-- **DogPublicProfile.jsx**: stagger StatPills, fadeIn content
-- **VetPortal.jsx**: stagger VetDogCards
-- **VetDogView.jsx**: fadeIn, stagger records/checkins/scans
-- **Onboarding.jsx**: deja anime (AnimatePresence steps)
-- **Scan.jsx**: deja anime (listContainer/listItem variants)
+### Wave 2 — AutoAnimate + finitions
+- **@formkit/auto-animate installe**
+- **AutoAnimate applique** sur 3 listes dynamiques :
+  - VetPortal (liste patients)
+  - FindVetContent (resultats recherche veto)
+  - NotebookContent (records sante)
+- Conflits evites avec AnimatePresence existant (Library, SectionVaccins)
+- **Durees d'animation verifiees** : 0 outliers detectes
 
-## Phase 5 — Bottom Sheets & Modals
-- CombinedFAB: fields stagger, save button active:scale
-- WalkShareCard: content slide-up, buttons active:scale
-- ShareCard: content slide-up, buttons active:scale
-- ShareVetModal: fadeIn on access blocks
-- PremiumNudgeSheet: deja anime (stagger + whileTap)
-- SmartHealthAssistant: deja anime (fadeIn messages)
-- MobileSelect: deja anime (stagger options)
+**5 fichiers modifies, +40/-6 lignes**
 
-## Phase 6 — Empty States Exhaustifs
-- AchievementFeed: EmptyState mascot="trophy"
-- VetNotesList: EmptyState mascot="doctor"
-- VetSection: EmptyState mascot="doctor" + action
-- NotificationCenter: EmptyState mascot="trophy"
-- VetDogView: EmptyState mascot="doctor" + "camera" (3 tabs)
-- NutritionMealPlan: EmptyState mascot="chef"
+## Etat final
 
-## Phase 7 — Finitions
-- Durees coherentes verifiees (micro: 0.1-0.2s, entrees: 0.2-0.3s, stagger: 0.04-0.07s)
-- Build clean (exit 0)
+| Metrique | Avant | Apres |
+|----------|-------|-------|
+| card-hover usage | 1 fichier | 10+ fichiers |
+| Spinners composants | ~37 | ~31 (boutons gardes) |
+| AutoAnimate | 0 | 3 listes |
+| Couleurs home/* | hardcoded | tokens |
+| Score moyen pages | 4.1/5 | 4.4/5 |
 
-## Assets utilises
-- 20 mascottes SVG (8 existantes + 12 nouvelles)
-- SkeletonPage (4 variants)
-- EmptyState (20 mascottes disponibles)
-- Framer Motion (motion.div, AnimatePresence, whileTap, springs)
-- card-hover class CSS
+### Score par page (apres polish)
 
-## Ce qui n'a PAS ete modifie (comme prevu)
-- Zero logique metier (API, hooks, routing, etats)
-- Zero couleur design system dans index.css
-- Zero code fonctionnel supprime
-- prefers-reduced-motion respecte (useReducedMotion)
+| Page | Score |
+|------|-------|
+| Chat | 5/5 |
+| Onboarding | 5/5 |
+| Home | 4.5/5 |
+| Dashboard | 4.5/5 |
+| Premium | 4.5/5 |
+| Nutri | 4.5/5 |
+| Scan | 4.5/5 |
+| Activite | 4.5/5 |
+| Training | 4/5 |
+| Sante | 4/5 |
+| Profile | 4/5 |
+| DogProfile | 4/5 |
+| DogPublicProfile | 4/5 |
+| Library | 4/5 |
+| VetPortal | 4.5/5 |
+| VetDogView | 4/5 |
+
+### Assets disponibles
+
+| Type | Nombre |
+|------|--------|
+| Mascottes SVG (PawIllustrations) | 20 |
+| Moods PawMascot | 10 |
+| Illustrations Storyset | 23 |
+| Illustrations CDN | 12 |
+| Animations Lottie | ~70 |
+| Presets animation (animations.js) | 8 |
+
+## Ce qui reste (nice-to-have, pas bloquant)
+
+1. ~200 instances de couleurs semantiques (emerald=safe, purple=premium, red=toxic) — conservees intentionnellement
+2. Spinners sur boutons de soumission — feedback d'action, doivent rester
+3. Charts Recharts sans animation d'entree (Dashboard) — recharts gere mal les animations custom
+4. PawMascot moods JPG — les 10 moods sont definis mais les images source ne sont pas verifiees

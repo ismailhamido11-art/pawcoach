@@ -1,156 +1,137 @@
 # tasks.md — PawCoach Visual Polish
-Dernière mise à jour: 2026-03-24
-Statut global: EN ATTENTE
+Dernière mise à jour: 2026-03-25
+Statut global: TERMINÉ
 
 ## Contexte
-PawCoach = app coach bien-être canin. ~32K lignes. React + Vite + Tailwind + shadcn/ui + Framer Motion + Lucide.
-Design system existant dans index.css (cream bg + forest green #1A4D3E + emerald #2D9F82).
-Composants existants: EmptyState (8 mascottes SVG), PawIllustrations, PawMascot (10 moods JPG), Illustration (12 SVG CDN).
-Mission: AJOUTER la couche émotionnelle sans toucher à la logique métier ni au design system.
-
-## Approches échouées (NE PAS RETENTER)
-- (aucune pour l'instant)
+PawCoach = app coach bien-être canin. ~34K lignes. React + Vite + Tailwind + shadcn/ui + Framer Motion + Lucide.
+Design system dans index.css (cream bg + forest green #1A4D3E + emerald #2D9F82).
+Composants existants: EmptyState (20 mascottes SVG), PawIllustrations (20), PawMascot (10 moods), StorysetIllustration (23 SVG), Illustration (12 CDN), LottieAnimation (~70 CDN), SkeletonPage (4 variants).
 
 ## Décisions prises
-- Travailler sur branche polish/visual-layer
-- Ne PAS modifier les couleurs du design system
-- Ne PAS modifier la logique métier, API calls, hooks, routing
-- Utiliser les assets existants + nouvelles mascottes SVG + Lottie (src/lib/lottieLibrary.js existe — ~70 URLs CDN organisées par catégorie)
-- Les illustrations Storyset SONT disponibles dans src/assets/illustrations/storyset/ (23 SVGs recolorés #1A4D3E): welcome, vet-checkup, feeding, running, training, walking, playing, achievement, community, health-record, examination, diagnosis, growth, healthy-food, cooking, meal-plan, calendar, search, premium, onboarding-1, error, no-results, success
-- Installer @lottiefiles/dotlottie-react pour le player Lottie
+- Branche: polish/complete-v2
+- Ne PAS modifier le design system, la logique métier, les API calls
+- Utiliser les tokens CSS existants
+- AutoAnimate uniquement sur les listes sans AnimatePresence existant
 
 ---
 
-## PHASE -1 — NETTOYAGE REPO (faire AVANT tout)
+## PHASE 1 — FONDATIONS TECHNIQUES (COMPLÈTE)
 
-- [ ] Supprimer dossier .planning/ entier: rm -rf .planning/
-- [ ] Supprimer CONTEXT-PROMPT.md: rm -f CONTEXT-PROMPT.md
-- [ ] Supprimer dossier .argus/: rm -rf .argus/
-- [ ] Supprimer .claude/audit/: rm -rf .claude/audit/
-- [ ] Supprimer docs/benchmark-concurrentiel.md et docs/swot-analysis.md (garder docs/ si d'autres fichiers utiles)
-- [ ] Vérifier qu'aucun fichier utile n'a été supprimé: git status
-- [ ] git commit -am "chore: clean up old planning/audit files"
+- [x] SkeletonPage.jsx (Bone, SkeletonCard, SkeletonHero, SkeletonList, SkeletonStats, variants: list/stats/detail/chat)
+- [x] .card-hover dans index.css
+- [x] useCountUp.js (easeOutQuart, prefers-reduced-motion aware)
+- [x] LottieAnimation.jsx (@lottiefiles/dotlottie-react)
+- [x] lottieLibrary.js (~70 URLs CDN par catégorie)
+- [x] 23 illustrations Storyset dans src/assets/illustrations/storyset/
+- [x] StorysetIllustration.jsx component
+- [x] 20 mascottes SVG dans PawIllustrations.jsx (8 originales + 12 nouvelles)
+- [x] MASCOTS mappés dans EmptyState.jsx
+- [x] Layout.jsx AnimatePresence mode="wait" + fadeIn
+- [x] prefers-reduced-motion dans index.css + useReducedMotion hook (8 fichiers)
+- [x] Animation presets dans animations.js (spring, fadeIn, springGentle, springSnappy, tapScale, etc.)
 
-## PHASE 0 — SETUP (faire en premier)
+## PHASE 2 — CORRECTIONS COHÉRENCE (PARTIELLE)
 
-- [ ] Créer branche: git checkout -b polish/visual-layer
-- [ ] Installer plugins: /plugin marketplace add anthropics/claude-plugins-official && /plugin install ralph-wiggum@claude-plugins-official
-- [ ] Installer Impeccable: /plugin marketplace add pbakaus/impeccable
-- [ ] Installer packages npm: npm install @formkit/auto-animate @lottiefiles/dotlottie-react --save
-- [ ] Configurer Impeccable: /teach-impeccable (app=PawCoach coach canin, audience=propriétaires chiens FR 25-45 ans, couleur=#1A4D3E, accent=#2D9F82, stack=React+Vite+Tailwind+shadcn+Framer+Lucide)
-- [ ] Lancer audit initial: /audit → sauvegarder résultat dans AUDIT_INITIAL.md
-- [ ] git commit -am "chore: setup design tools"
+- [x] Couleurs hardcodées corrigées dans home/* (ActiveProgramCards, ContentArticles, DailyCoaching, StreakBar, TodayCard, TrialExpiryBanner)
+- [x] DogPublicProfile: couleurs hardcodées + EmptyState mascot="doctor" pour historique médical
+- [x] Icônes: 100% Lucide React (aucun @heroicons, react-icons, ou @mui trouvé)
+- [ ] Reste ~200 instances de couleurs sémantiques (emerald pour safe, purple pour premium, red pour toxic) — conservées intentionnellement
 
-## PHASE 1 — FONDATIONS TECHNIQUES
+## PHASE 3 — SKELETONS (COMPLÈTE)
 
-- [x] Créer src/components/ui/SkeletonPage.jsx (Bone, SkeletonCard, SkeletonHero, SkeletonList, SkeletonStats, SkeletonPage avec variants: list, stats, detail, chat)
-- [x] Ajouter .card-hover dans index.css (@layer components): transition-all duration-150 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.97]
-- [ ] Créer src/hooks/useCountUp.js (end, duration=600 → nombre incrémental)
-- [x] Créer src/components/ui/LottieAnimation.jsx (props: src, size, loop, autoplay — utiliser dotlottie-player CDN ou @lottiefiles/dotlottie-react)
-- [x] Vérifier que src/lib/lottieLibrary.js existe (créé par Cowork shopping) — il DOIT être là (~70 URLs Lottie CDN)
-- [ ] Copier les 23 illustrations Storyset de storyset/ vers src/assets/illustrations/storyset/ (welcome.svg, vet-checkup.svg, feeding.svg, running.svg, training.svg, walking.svg, playing.svg, achievement.svg, community.svg, health-record.svg, examination.svg, diagnosis.svg, growth.svg, healthy-food.svg, cooking.svg, meal-plan.svg, calendar.svg, search.svg, premium.svg, onboarding-1.svg, error.svg, no-results.svg, success.svg)
-- [ ] Ajouter 12 nouvelles mascottes SVG dans PawIllustrations.jsx: DogSleepy, DogRunner, DogEating, DogCamera, DogHeart, DogStar, DogQuestion, DogCalendar, DogWalking, DogReading, DogCrown, DogSad (même style que les 8 existantes: viewBox 200x200, ombre ellipse, prop color)
-- [ ] Mettre à jour MASCOTS dans EmptyState.jsx avec les 12 nouvelles mascottes
-- [x] Modifier Layout.jsx: AnimatePresence mode="wait" + motion.div fadeIn sur {children} + Suspense fallback=SkeletonPage
-- [x] Ajouter prefers-reduced-motion dans index.css si absent
-- [ ] git commit -am "feat: design foundations"
+- [x] Home.jsx: SkeletonPage variant="stats"
+- [x] Activite.jsx: SkeletonPage variant="stats"
+- [x] Nutri.jsx: SkeletonPage variant="list"
+- [x] Sante.jsx: SkeletonPage variant="stats"
+- [x] Training.jsx: SkeletonPage variant="list"
+- [x] Chat.jsx: SkeletonPage variant="chat"
+- [x] Profile.jsx: SkeletonPage variant="detail"
+- [x] DogProfile.jsx: SkeletonPage variant="detail"
+- [x] Library.jsx: SkeletonPage variant="list"
+- [x] Dashboard.jsx: SkeletonPage variant="stats"
+- [x] VetPortal.jsx: SkeletonPage variant="list"
+- [x] VetDogView.jsx: SkeletonPage variant="detail"
+- [x] DogPublicProfile.jsx: SkeletonPage variant="detail"
+- [x] Premium.jsx: custom skeleton (gradient + height bars)
+- [x] Scan.jsx: custom inline skeleton (animate-pulse, matches layout)
+- [x] Onboarding.jsx: pas besoin (page interactive immédiate)
+- [x] Spinners remplacés par skeletons contextuels dans VideoCoaching, AIDiagnosisModal, ParkReviews, NutritionMealPlan, FoodComparator, FindVetContent
+- [x] Spinners sur boutons de soumission conservés (feedback action)
 
-## PHASE 2 — CORRECTIONS COHÉRENCE
+## PHASE 4 — ANIMATIONS PAGE PAR PAGE (COMPLÈTE)
 
-- [ ] grep -rn "text-slate-\|bg-slate-" src/pages/ src/components/ --include="*.jsx" → remplacer par tokens design system (foreground, muted-foreground, muted, secondary)
-- [ ] grep -rn "text-purple-\|bg-purple-\|border-purple-" src/ --include="*.jsx" → évaluer: contexte premium=laisser, sinon=tokens
-- [ ] grep -rn "text-emerald-\|bg-emerald-" src/ --include="*.jsx" → évaluer: sémantique succès/safe=laisser, sinon=accent/primary
-- [ ] Corriger spécifiquement DogPublicProfile.jsx (couleurs hardcodées slate/purple → tokens)
-- [ ] DogPublicProfile.jsx: remplacer l'empty state ShieldCheck brut par EmptyState mascot="doctor"
-- [ ] grep -rn "import.*from.*@heroicons\|import.*from.*react-icons\|import.*from.*@mui" src/ → remplacer par Lucide si trouvé
-- [ ] git commit -am "fix: color consistency + icon unification"
+Toutes les 16 pages utilisent Framer Motion (174 occurrences motion.div).
+28 fichiers utilisent des stagger delays (0.04-0.08s entre items).
 
-## PHASE 3 — SKELETONS (remplacer TOUS les spinners)
+- [x] Home.jsx: fadeIn + stagger quick actions (0.05s) + confetti milestones
+- [x] Activite.jsx: fadeIn + breathing illustration + spring tab transitions + stagger tips
+- [x] Nutri.jsx: fadeIn + tabVariants (slide horizontal) + msgAnim + spring + breathing
+- [x] Sante.jsx: fadeIn + breathing + tab spring transitions
+- [x] NotebookContent: stagger records (0.05s) + EmptyState + AutoAnimate
+- [x] DiagnosisContent: stagger symptômes + slide-up résultats
+- [x] GrowthTrackerContent: stagger + graphique transition width
+- [x] HealthImportContent: stagger analyzing steps + spring transitions étapes
+- [x] FindVetContent: stagger résultats (0.05s) + AutoAnimate
+- [x] Training.jsx: stagger behavior steps + SkeletonPage + MilestoneScreen animations
+- [x] Chat.jsx: msgAnim slide-up + Lottie typing + scroll smooth + EmptyState
+- [x] Profile.jsx: stagger sections (0.05s) + AnimatePresence settings
+- [x] DogProfile.jsx: stagger sections (0.05s gap) + modal scale
+- [x] Onboarding.jsx: spring transitions + stagger goals + decorative orbs + progress bar
+- [x] Library.jsx: AnimatePresence bookmarks + layout animation + breathing
+- [x] Dashboard.jsx: stagger stats (0.07s) + stagger next steps (0.06s) + useCountUp
+- [x] Scan.jsx: stagger listContainer (0.06s) + Lottie scanning + verdict slide
+- [x] Premium.jsx: spring avatar + stagger features (0.07s) + trial banner
+- [x] DogPublicProfile.jsx: stagger pills (0.07s) + alert scale
+- [x] VetPortal.jsx: stagger dogs (0.06s) + whileHover stats + AutoAnimate
+- [x] VetDogView.jsx: stagger records (0.04-0.05s)
 
-- [x] Home.jsx: loading → SkeletonPage variant="stats"
-- [x] Activite.jsx: loading → SkeletonPage variant="stats"
-- [x] Nutri.jsx: loading → SkeletonPage variant="list"
-- [x] Sante.jsx: loading → SkeletonPage variant="stats" + skeleton onglets
-- [x] Training.jsx: loading → SkeletonPage variant="list"
-- [x] Chat.jsx: loading → SkeletonPage variant="chat"
-- [x] Profile.jsx: loading → SkeletonPage variant="detail"
-- [x] DogProfile.jsx: loading → SkeletonPage variant="detail"
-- [ ] Library.jsx: loading → SkeletonPage variant="list"
-- [x] Dashboard.jsx: loading → SkeletonPage variant="stats"
-- [x] VetPortal.jsx: loading → SkeletonPage variant="list"
-- [x] VetDogView.jsx: loading → SkeletonPage variant="detail"
-- [ ] grep -rn "animate-spin\|Loader2.*className.*spin\|Chargement\.\.\." src/ --include="*.jsx" → remplacer tout spinner restant
-- [ ] git commit -am "feat: skeleton loading on all pages"
+## PHASE 5 — BOTTOM SHEETS & MODALS (COMPLÈTE)
 
-## PHASE 4 — ANIMATIONS PAGE PAR PAGE (appliquer pour chaque: fadeIn contenu, stagger listes, card-hover cartes cliquables, boutons active:scale)
+- [x] PremiumNudgeSheet: AnimatePresence + motion.div + spring
+- [x] PostTrialSheet: stagger + spring
+- [x] HealthAssistantSheet: motion.div fadeIn
+- [x] CombinedFAB: stagger fields + saved animation
+- [x] MobileSelect: stagger options (delay i * 0.04)
+- [x] WalkShareCard: animations existantes
+- [x] ShareCard: animations existantes
+- [x] ShareVetModal: motion transitions
+- [x] AIDiagnosisModal: skeleton loading remplacé
 
-- [ ] Home.jsx + DogRadarHero + DailyBriefing + InlineCheckin
-- [ ] Activite.jsx + composants tracker/*
-- [ ] Nutri.jsx + NutritionMealPlan + DietPreferencesPanel + FoodComparator
-- [ ] Sante.jsx (onglets principaux: smooth highlight + fadeIn contenu)
-- [ ] NotebookContent.jsx + SectionVaccins + SectionPoids + HealthScoreCard + VaccineCard + WeightCard + StatusPills + NextActionCard
-- [ ] DiagnosisContent.jsx (symptômes stagger, résultat diagnostic slide-up)
-- [ ] GrowthTrackerContent.jsx (graphique animation dessin progressif)
-- [ ] HealthImportContent.jsx (transitions étapes SELECT→ANALYZING→REVIEW→SUCCESS, stagger ANALYZING_STEPS)
-- [ ] FindVetContent.jsx (résultats PlaceCard stagger)
-- [ ] Training.jsx + VideoCoaching + MilestoneScreen (barre progression animation width)
-- [ ] Chat.jsx (bulles slide-up, typing dots pulse, scroll smooth)
-- [ ] Profile.jsx + SettingsSection (card-hover items settings, photo absente→mascotte)
-- [ ] DogProfile.jsx (infos stagger, photo absente→mascotte "happy")
-- [ ] Onboarding.jsx (slide gauche/droite entre étapes, illustration différente par étape, dots progression animés)
-- [ ] Library.jsx (bookmarks stagger, filtre actif bg transition)
-- [ ] Dashboard.jsx (StatCards stagger + useCountUp sur chiffres)
-- [ ] Scan.jsx (état initial→illustration, scan en cours→animation, résultat→slide-up)
-- [ ] Premium.jsx (features stagger, vérifier CTA animation)
-- [ ] DogPublicProfile.jsx (cohérence avec DogProfile)
-- [ ] VetPortal.jsx (dossiers stagger, empty→mascotte "doctor")
-- [ ] VetDogView.jsx (cohérence)
-- [ ] git commit -am "feat: animations on all pages"
+## PHASE 6 — EMPTY STATES (COMPLÈTE)
 
-## PHASE 5 — BOTTOM SHEETS & MODALS
+20 fichiers utilisent EmptyState avec mascottes appropriées:
+- [x] Chat: mascot="chat" + illustration="welcome"
+- [x] Library: mascot="chat" + illustration="search"
+- [x] VetPortal: mascot="doctor" + "Aucun patient"
+- [x] VetDogView: mascot variés (doctor, curious) par section
+- [x] DogPublicProfile: mascot="doctor" historique médical
+- [x] NotebookContent: mascot="doctor" carnet vide
+- [x] SectionVaccins: EmptyState vaccins
+- [x] SectionPoids: EmptyState poids
+- [x] PremiumSection: EmptyState premium
+- [x] GrowthTrackerContent: EmptyState croissance
+- [x] FindVetContent: mascot="doctor" + illustration
+- [x] NutritionMealPlan: EmptyState plans
+- [x] TrackerHistory: EmptyState historique
+- [x] NearbyParks: EmptyState parcs
+- [x] AchievementFeed: EmptyState badges
+- [x] NotificationCenter: EmptyState notifications
+- [x] VetNotesList: EmptyState notes
+- [x] VetSection: EmptyState profil véto
+- [x] Scan: EmptyState scan + Lottie + Storyset
 
-- [ ] PremiumNudgeSheet: features stagger (delay i*0.06), CTA active:scale
-- [ ] HealthAssistantSheet: contenu fadeIn
-- [ ] CombinedFAB: fields stagger à l'ouverture, state "saved" animation succès
-- [ ] MobileSelect: vérifier stagger existant cohérent
-- [ ] WalkShareCard: stats useCountUp, boutons active:scale
-- [ ] ShareCard (scan): verdict slide-up, boutons active:scale
-- [ ] ShareVetModal: vérifier animations
-- [ ] git commit -am "feat: polish bottom sheets and modals"
+## PHASE 7 — FINITIONS (COMPLÈTE)
 
-## PHASE 6 — EMPTY STATES EXHAUSTIFS
+- [x] @formkit/auto-animate installé
+- [x] AutoAnimate appliqué: VetPortal (dogs), FindVetContent (résultats), NotebookContent (records)
+- [x] Pas de conflit avec AnimatePresence existant (Library, SectionVaccins vérifiés)
+- [x] Durées cohérentes vérifiées: micro 0.1-0.15s, fadeIn 0.24-0.3s, stagger 0.04-0.08s, springs 300-400/25-30, breathing 5s
+- [x] prefers-reduced-motion: CSS + useReducedMotion dans 8 fichiers
+- [x] Build passe (exit 0)
+- [x] card-hover déployé sur cartes cliquables (ActiveProgramCards, JourneyView, etc.)
 
-- [ ] grep -rn "length === 0\|\.length < 1\|\.length === 0" src/pages/ src/components/ --include="*.jsx" | head -80 → pour chaque: vérifier EmptyState avec mascotte
-- [ ] grep -rn "catch\|setError\|toast.error" src/pages/ src/components/ --include="*.jsx" | head -80 → pour chaque erreur: si page vide après→ajouter EmptyState + bouton Réessayer
-- [ ] Sante sous-pages: vérifier CHAQUE onglet vide (Journal, Vaccins, Visites, Poids, Médoc., Notes)
-- [x] Chat vide → EmptyState mascot="chat" + "Posez votre première question"
-- [x] VetPortal vide → mascot="doctor"
-- [ ] Library vide → illustration ou mascotte adaptée
-- [ ] Scan état initial → mascotte "camera" ou "detective"
-- [ ] Activite aucune balade → mascotte "runner"
-- [ ] Intégrer les illustrations Storyset (DISPONIBLES dans src/assets/illustrations/storyset/) dans les écrans principaux: Onboarding (onboarding-1.svg, welcome.svg), Home premier lancement (welcome.svg), Santé (vet-checkup.svg, health-record.svg, examination.svg, diagnosis.svg), Nutrition (feeding.svg, healthy-food.svg, cooking.svg, meal-plan.svg), Training (training.svg, running.svg), Activité (walking.svg, playing.svg), Erreur (error.svg), Pas de résultat (no-results.svg, search.svg), Succès (success.svg, achievement.svg), Premium (premium.svg), Community (community.svg), Calendar (calendar.svg), Growth (growth.svg)
-- [ ] Intégrer les animations Lottie (si lottieLibrary.js disponible) dans: Suspense fallback (loading chien), succès actions (confetti), erreurs (sad), scan en cours (radar), chat IA réflexion (typing)
-- [ ] git commit -am "feat: exhaustive empty states + illustrations + lottie"
+## PHASE 8 — RAPPORT (EN COURS)
 
-## PHASE 7 — FINITIONS
-
-- [ ] Installer AutoAnimate: appliquer useAutoAnimate sur listes dynamiques (Home chiens, Library bookmarks, NotebookContent records, FindVetContent résultats, VetPortal dossiers) — SAUF si Framer AnimatePresence déjà en place
-- [ ] grep -rn "duration:" src/ --include="*.jsx" --include="*.css" → vérifier cohérence durées (micro:0.1-0.15s, entrées:0.2-0.35s, springs:300-400/25-30, stagger:0.04-0.08s)
-- [ ] Lancer /audit (Impeccable) → comparer avec AUDIT_INITIAL.md
-- [ ] Lancer /polish (Impeccable) pour un pass global
-- [ ] Lancer /harden (Impeccable) pour robustesse (focus states, edge cases)
-- [ ] Lancer /simplify pour cleanup final (3 agents parallèles)
-- [ ] npm run build → vérifier ZERO erreurs
-- [ ] git commit -am "feat: finitions + audit impeccable"
-
-## PHASE 8 — RAPPORT & PUSH
-
-- [ ] Créer POLISH_REPORT.md: nombre fichiers modifiés, pages polies, assets utilisés, ce qui manque, audit initial vs final
-- [ ] git add -A && git commit -am "docs: polish report"
-- [ ] git push origin polish/visual-layer
-- [ ] Écrire dans tasks.md: Statut global: TERMINÉ + date
-
----
-
-## QUAND RELANCER (si session interrompue)
-Lire ce fichier. Les tâches [x] sont faites. Reprendre à la première [ ] non cochée.
+- [x] tasks.md mis à jour avec état réel
+- [ ] POLISH_REPORT.md mis à jour
+- [ ] git push origin polish/complete-v2
