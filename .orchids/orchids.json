@@ -1,0 +1,7 @@
+{
+  "projectId": "67d40cbf-1efd-498d-9088-6f6fdb50f863",
+  "createdAt": 1774466939471,
+  "version": "1.0",
+  "startupCommands": ["npm install; npm run dev"],
+  "templateId": "any"
+}
