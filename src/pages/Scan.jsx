@@ -14,6 +14,7 @@ import {
 import { updateStreakSilently } from "../components/streakHelper";
 import { motion, AnimatePresence } from "framer-motion";
 import Illustration from "../components/illustrations/Illustration";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { isUserPremium } from "@/utils/premium";
 import { toast } from "sonner";
 import { spring } from "@/lib/animations";
@@ -567,6 +568,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                     </div>
                   ) : (
                     <>
+                      <StorysetIllustration name="search" className="w-40 h-40 mx-auto" />
                       <div className="w-20 h-20 gradient-primary rounded-3xl flex items-center justify-center shadow-lg">
                         <Camera className="w-10 h-10 text-white" />
                       </div>

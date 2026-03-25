@@ -196,7 +196,8 @@ export default function Library() {
           <SkeletonPage variant="list" />
         ) : filtered.length === 0 ? (
           <EmptyState
-            mascot="chat"
+            mascot={search ? undefined : "chat"}
+            illustration={search ? "no-results" : "search"}
             title={search ? "Aucun résultat" : "Bibliothèque vide pour l'instant"}
             description={
               search

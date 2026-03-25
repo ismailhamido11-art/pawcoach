@@ -6,6 +6,7 @@ import BottomNav from "@/components/BottomNav";
 import ChatFAB from "@/components/ChatFAB";
 import WellnessBanner from "@/components/WellnessBanner";
 import Illustration from "@/components/illustrations/Illustration";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import WalkMode from "@/components/tracker/WalkMode";
 import PullToRefresh from "@/components/PullToRefresh";
 import TrackerHistory from "@/components/tracker/TrackerHistory";
@@ -234,7 +235,7 @@ function DressageContent({ dog }) {
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           className="w-36 h-36"
         >
-          <Illustration name="dogHighFive" alt="Dressage" className="w-full h-full drop-shadow-lg" />
+          <StorysetIllustration name="training" alt="Dressage" className="w-full h-full drop-shadow-lg" />
         </motion.div>
       </div>
 

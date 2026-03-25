@@ -6,6 +6,7 @@ import { Flame, Trophy, Zap, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import ActivityCalendar from "./ActivityCalendar";
 import EmptyState from "@/components/ui/EmptyState";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 
 const WEEKLY_GOAL = 5;
 const MIN_WALK_MINUTES = 20;
@@ -126,11 +127,14 @@ export default function TrackerHistory({ logs, dog }) {
 
   if (sorted.length === 0) {
     return (
-      <EmptyState
-        mascot="wave"
-        title={dog?.name ? `${dog.name} attend sa première aventure !` : "Première balade à venir !"}
-        description="Lance une balade pour commencer à suivre vos sorties et voir vos statistiques ici."
-      />
+      <div className="flex flex-col items-center gap-4 py-6">
+        <StorysetIllustration name="walking" className="w-40 h-40 mx-auto" />
+        <EmptyState
+          mascot="wave"
+          title={dog?.name ? `${dog.name} attend sa première aventure !` : "Première balade à venir !"}
+          description="Lance une balade pour commencer à suivre vos sorties et voir vos statistiques ici."
+        />
+      </div>
     );
   }
 

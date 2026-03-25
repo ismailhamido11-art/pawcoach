@@ -14,6 +14,7 @@ import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { DogTrophy } from "../components/ui/PawIllustrations";
 import Illustration from "../components/illustrations/Illustration";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 
 const MONTHLY_PRICE_ID = "price_1T4tkFDuhaIxY4PGpnhDTx5L";
 const ANNUAL_PRICE_ID = "price_1T4tkFDuhaIxY4PGWLeWApDL";
@@ -427,6 +428,7 @@ export default function Premium() {
 
         {/* Social proof */}
         <div className="bg-muted/30 rounded-2xl p-4 border border-border">
+          <StorysetIllustration name="premium" className="w-36 h-36 mx-auto mb-2" />
           <div className="flex items-center gap-1 mb-2">
             {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 fill-primary text-primary" />)}
           </div>

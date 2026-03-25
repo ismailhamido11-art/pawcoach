@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Send, Camera, Bookmark, BookmarkCheck, ChevronDown, Copy, RotateCcw, Plus } from "lucide-react";
 import { DogChat } from "../components/ui/PawIllustrations";
 import Illustration from "../components/illustrations/Illustration";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { isUserPremium } from "@/utils/premium";
 import { initCredits } from "@/utils/ai-credits";
 import VoiceInput from "@/components/ui/VoiceInput";
@@ -378,7 +379,7 @@ export default function Chat() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-28 h-28 flex-shrink-0"
           >
-            <Illustration name="dogHighFive" alt="Assistant IA" className="w-full h-full drop-shadow-lg" />
+            <StorysetIllustration name="community" alt="Assistant IA" className="w-full h-full drop-shadow-lg" />
           </motion.div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />

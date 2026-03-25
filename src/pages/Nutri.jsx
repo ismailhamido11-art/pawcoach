@@ -9,6 +9,7 @@ import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
 import FoodComparator from "../components/nutrition/FoodComparator";
 import DietPreferencesPanel from "../components/nutrition/DietPreferencesPanel";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 // SavedPlansPanel merged into NutritionMealPlan
 
 import { Button } from "@/components/ui/button";

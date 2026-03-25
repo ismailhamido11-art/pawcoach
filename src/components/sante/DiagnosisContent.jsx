@@ -3,6 +3,7 @@ import AIDiagnosisModal from "../vet/AIDiagnosisModal";
 import { Button } from "@/components/ui/button";
 import { Stethoscope, Phone, ExternalLink } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { motion } from "framer-motion";
 
 const SYMPTOM_SHORTCUTS = [

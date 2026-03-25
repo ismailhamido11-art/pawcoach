@@ -10,6 +10,7 @@ import JourneyCard from "../components/training/JourneyCard";
 import JourneyView from "../components/training/JourneyView";
 import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw, ChevronRight, Sparkles, Lock } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { isUserPremium } from "@/utils/premium";
 import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
@@ -682,7 +683,7 @@ export default function Training() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-28 h-28 flex-shrink-0 -mb-2 ml-2"
           >
-            <Illustration name="dogWalking" alt="Dressage" className="w-full h-full drop-shadow-lg" />
+            <StorysetIllustration name="training" className="w-40 h-40" />
           </motion.div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
