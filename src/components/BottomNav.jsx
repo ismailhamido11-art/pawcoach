@@ -54,30 +54,42 @@ export default function BottomNav({ currentPage }) {
   };
 
   return (
-    <nav aria-label="Navigation principale" className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-lg flex justify-between items-center px-4 py-3 bg-black/90 backdrop-blur-3xl rounded-[2.5rem] z-50 shadow-2xl border border-white/10">
-      {tabs.map(({ label, icon: Icon, page }) => {
-        const active = currentPage === page;
-        return (
-          <Link
-            key={page}
-            to={getNavUrl(page)}
-            onClick={(e) => handleTabClick(e, page)}
-            className={`relative flex flex-col items-center justify-center h-14 w-14 transition-all duration-300 ${
-              active 
-                ? "bg-white text-forest-green rounded-[1.8rem] scale-105" 
-                : "text-white/50 hover:text-white"
-            }`}
-          >
-            <motion.div
-              whileHover={{ scale: active ? 1 : 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="flex items-center justify-center"
+    <nav aria-label="Navigation principale" className="fixed bottom-0 left-0 right-0 z-40 bottom-nav bg-background border-t border-border shadow-2xl">
+      <div className="flex items-center justify-around px-2 py-2">
+        {tabs.map(({ label, icon: Icon, page }) => {
+          const active = currentPage === page;
+          return (
+            <Link
+              key={page}
+              to={getNavUrl(page)}
+              onClick={(e) => handleTabClick(e, page)}
+              className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl transition-all duration-300 ${
+                active ? "text-primary" : "text-muted-foreground hover:text-primary"
+              }`}
             >
-              <Icon className={`w-6 h-6 ${active ? "fill-current" : ""}`} />
-            </motion.div>
-          </Link>
-        );
-      })}
+              <motion.div
+                className={`p-2 rounded-xl transition-all duration-300 ${
+                  active ? "bg-gradient-to-br from-secondary to-secondary/70 shadow-md" : "hover:bg-secondary/40"
+                }`}
+                whileHover={{ scale: active ? 1 : 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Icon className={`w-5 h-5 ${active ? "stroke-[2.5]" : "stroke-[1.75]"}`} />
+              </motion.div>
+              <span className={`text-xs font-semibold transition-all duration-200 ${active ? "text-primary" : "text-muted-foreground"}`}>
+                {label}
+              </span>
+              {active && (
+                <motion.div
+                  layoutId="bottomNavIndicator"
+                  className="absolute -bottom-1.5 w-6 h-1 rounded-full bg-gradient-to-r from-primary to-accent"
+                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                />
+              )}
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }

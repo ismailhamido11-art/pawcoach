@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { Star, Send, Loader2, MessageCircle } from "lucide-react";
-import { Bone } from "@/components/ui/SkeletonPage";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 
@@ -149,17 +148,9 @@ export default function ParkReviews({ park, dog, user }) {
     <div className="space-y-2.5">
       {/* Aggregate header */}
       {loading ? (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Bone className="h-4 w-8" />
-            <Bone className="h-3 w-12" />
-            <Bone className="h-3 w-16" />
-          </div>
-          <div className="flex flex-wrap gap-1">
-            <Bone className="h-5 w-14 rounded-md" />
-            <Bone className="h-5 w-18 rounded-md" />
-            <Bone className="h-5 w-12 rounded-md" />
-          </div>
+        <div className="flex items-center gap-2">
+          <Loader2 className="w-3 h-3 animate-spin text-muted-foreground" />
+          <span className="text-[11px] text-muted-foreground">Chargement des avis...</span>
         </div>
       ) : reviews.length > 0 ? (
         <div className="space-y-1.5">

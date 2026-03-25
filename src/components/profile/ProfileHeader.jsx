@@ -2,7 +2,7 @@ import { Crown, Star, Medal, Award, Trophy } from "lucide-react";
 import { getTrialDaysLeft } from "@/utils/premium";
 
 const BADGES = [
-  { name: "Novice", threshold: 0, icon: Star, color: "bg-muted text-muted-foreground" },
+  { name: "Novice", threshold: 0, icon: Star, color: "bg-slate-100 text-slate-500" },
   { name: "Apprenti", threshold: 50, icon: Medal, color: "bg-emerald-100 text-emerald-600" },
   { name: "Expert", threshold: 200, icon: Award, color: "bg-emerald-100 text-emerald-600" },
   { name: "Maître", threshold: 500, icon: Trophy, color: "bg-purple-100 text-purple-600" },

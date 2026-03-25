@@ -9,7 +9,6 @@ import { createPageUrl } from "@/utils";
 import DiagnosisReportView from "./DiagnosisReportView";
 import DiagnosisStep2Questions from "./DiagnosisStep2Questions";
 import { Loader2, Stethoscope, AlertTriangle, Download, MapPin, Camera, X } from "lucide-react";
-import { Bone } from "@/components/ui/SkeletonPage";
 import { toast } from "sonner";
 import { useActionCredits } from "@/hooks/useActionCredits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
@@ -335,20 +334,9 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
 
         {/* ====== LOADING 1 ====== */}
         {step === "loading1" && (
-          <div className="py-8 space-y-4">
-            <div className="flex items-center gap-3 mb-2">
-              <Bone className="h-10 w-10 rounded-xl" />
-              <div className="flex-1 space-y-2">
-                <Bone className="h-4 w-3/4" />
-                <Bone className="h-3 w-1/2" />
-              </div>
-            </div>
-            <div className="space-y-3">
-              <Bone className="h-12 w-full rounded-xl" />
-              <Bone className="h-12 w-full rounded-xl" />
-              <Bone className="h-12 w-5/6 rounded-xl" />
-            </div>
-            <p className="text-sm text-muted-foreground text-center pt-2">
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
+            <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            <p className="text-sm text-muted-foreground text-center">
               Preparation du bilan en cours...<br />
               <span className="text-xs">L'IA prepare des questions ciblees pour {dog?.name || "ton chien"}</span>
             </p>
@@ -368,24 +356,9 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
 
         {/* ====== LOADING 2 ====== */}
         {step === "loading2" && (
-          <div className="py-8 space-y-4">
-            <div className="flex items-center gap-3 mb-2">
-              <Bone className="h-10 w-10 rounded-xl" />
-              <div className="flex-1 space-y-2">
-                <Bone className="h-5 w-2/3" />
-                <Bone className="h-3 w-1/3" />
-              </div>
-            </div>
-            <div className="space-y-3">
-              <Bone className="h-20 w-full rounded-2xl" />
-              <div className="grid grid-cols-2 gap-3">
-                <Bone className="h-16 rounded-xl" />
-                <Bone className="h-16 rounded-xl" />
-              </div>
-              <Bone className="h-14 w-full rounded-xl" />
-              <Bone className="h-10 w-full rounded-xl" />
-            </div>
-            <p className="text-sm text-muted-foreground text-center pt-2">
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
+            <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            <p className="text-sm text-muted-foreground text-center">
               Finalisation du bilan...<br />
               <span className="text-xs">Generation du bilan complet pour {dog?.name || "ton chien"}</span>
             </p>

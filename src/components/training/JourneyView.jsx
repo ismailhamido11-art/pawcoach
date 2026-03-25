@@ -74,7 +74,7 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
               variants={listItem}
               whileTap={exerciseLocked ? {} : { scale: 0.97 }}
               onClick={() => onSelectExercise(exercise.order_number)}
-              className={`w-full flex items-center gap-3 p-3.5 rounded-2xl border text-left transition-all card-hover ${
+              className={`w-full flex items-center gap-3 p-3.5 rounded-2xl border text-left transition-all ${
                 done
                   ? "bg-white border-safe/30 shadow-sm"
                   : exerciseLocked

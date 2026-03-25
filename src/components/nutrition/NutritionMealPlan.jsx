@@ -2,7 +2,6 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCw, Check, Home, AlertTriangle, ChevronDown, ChevronUp, Pencil, X, Trash2, Calendar } from "lucide-react";
-import { Bone } from "@/components/ui/SkeletonPage";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useActionCredits } from "@/hooks/useActionCredits";
@@ -645,35 +644,16 @@ RÈGLES :
         )}
 
         {loading && (
-          <div className="py-8 space-y-4">
-            {/* Skeleton mimicking a meal plan */}
-            <div className="rounded-2xl bg-safe/10 p-5 space-y-3">
-              <Bone className="h-3 w-24 bg-safe/20" />
-              <Bone className="h-6 w-1/2 bg-safe/20" />
-              <div className="flex gap-3 mt-2">
-                <Bone className="h-7 w-20 rounded-full bg-safe/15" />
-                <Bone className="h-7 w-24 rounded-full bg-safe/15" />
-              </div>
+          <div className="flex flex-col items-center justify-center py-12 space-y-4">
+            <Loader2 className="w-10 h-10 text-safe animate-spin" />
+            <div className="text-center">
+              <p className="font-semibold text-foreground">NutriCoach analyse le profil de {dog.name}...</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {checkins.length > 0 || healthRecords.length > 0
+                  ? "Intégration des données santé, activité et préférences"
+                  : "Création du plan personnalisé"}
+              </p>
             </div>
-            {[1, 2, 3].map(i => (
-              <div key={i} className="rounded-2xl border border-border/40 bg-card p-4 space-y-2">
-                <div className="flex items-center gap-3">
-                  <Bone className="h-10 w-10 rounded-xl" />
-                  <div className="flex-1 space-y-1.5">
-                    <Bone className="h-4 w-1/3" />
-                    <Bone className="h-3 w-2/3" />
-                  </div>
-                </div>
-                <Bone className="h-3 w-full" />
-                <Bone className="h-3 w-4/5" />
-              </div>
-            ))}
-            <p className="text-center text-sm font-semibold text-foreground pt-2">NutriCoach analyse le profil de {dog.name}...</p>
-            <p className="text-center text-xs text-muted-foreground">
-              {checkins.length > 0 || healthRecords.length > 0
-                ? "Intégration des données santé, activité et préférences"
-                : "Création du plan personnalisé"}
-            </p>
           </div>
         )}
 

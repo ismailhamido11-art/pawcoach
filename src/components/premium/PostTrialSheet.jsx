@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import useBackClose from "@/hooks/useBackClose";
+import useBackClose from "@/components/hooks/useBackClose";
 import { createPageUrl } from "@/utils";
 import { X, ChevronRight, MessageCircle, ScanLine, Dumbbell, Bell, Lock } from "lucide-react";
 import Illustration from "../illustrations/Illustration";

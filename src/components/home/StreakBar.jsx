@@ -130,7 +130,7 @@ export default function StreakBar({ streak, walkStreak = 0, exercises, dailyLogs
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45 }}
-            className="flex items-center gap-2.5 bg-amber-50 border border-amber-100 rounded-xl px-3.5 py-2 card-hover"
+            className="flex items-center gap-2.5 bg-amber-50 border border-amber-100 rounded-xl px-3.5 py-2"
           >
             <span className="text-base leading-none">{nextBadge.emoji}</span>
             <span className="text-xs font-bold text-foreground flex-1 truncate">

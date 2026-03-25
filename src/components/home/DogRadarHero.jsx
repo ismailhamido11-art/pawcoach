@@ -97,7 +97,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="flex items-center gap-3 bg-white rounded-2xl p-3 shadow-[0_2px_8px_rgba(0,0,0,0.06)] mb-3 card-hover"
+        className="flex items-center gap-3 bg-white rounded-2xl p-3 shadow-[0_2px_8px_rgba(0,0,0,0.06)] mb-3"
       >
         {/* Photo ronde petite 48px — cliquable → DogProfile */}
         <div

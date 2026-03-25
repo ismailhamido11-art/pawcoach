@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import useReducedMotion from "@/hooks/useReducedMotion";
 const fadeIn = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },

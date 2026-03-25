@@ -46,7 +46,7 @@ export default function TrialExpiryBanner({ user, dog }) {
     >
       <Link to={createPageUrl("Premium")}>
         <div
-          className={`rounded-2xl px-4 py-3 flex items-center gap-3 border card-hover ${
+          className={`rounded-2xl px-4 py-3 flex items-center gap-3 border ${
             isUrgent
               ? "bg-amber-50 border-amber-300"
               : "bg-amber-50/60 border-amber-200"

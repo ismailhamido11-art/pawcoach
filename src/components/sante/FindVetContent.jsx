@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Search, MapPin, Loader2, Stethoscope, Scissors, ShoppingBag, Heart, Navigation } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import Illustration from "../illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import EmptyState from "@/components/ui/EmptyState";
@@ -55,7 +54,6 @@ export default function FindVetContent({ dog, user }) {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
-  const [resultsRef] = useAutoAnimate();
   const [activeType, setActiveType] = useState("vet");
   const [mapCenter, setMapCenter] = useState([46.603354, 1.888334]); // France center
   const [favorites, setFavorites] = useState([]);
@@ -254,7 +252,7 @@ export default function FindVetContent({ dog, user }) {
 
       {/* Results */}
       {!loading && (
-        <div className="px-4 mt-3 space-y-3" ref={resultsRef}>
+        <div className="px-4 mt-3 space-y-3">
           {displayedPlaces.length === 0 && (searched || showFavorites) ? (
             <EmptyState
               mascot="doctor"
@@ -299,7 +297,7 @@ export default function FindVetContent({ dog, user }) {
       {/* Portail vétérinaire */}
       <div className="mx-4 mt-4 pt-4 border-t border-border">
         <Link to={createPageUrl("VetPortal")}>
-          <div className="flex items-center justify-between bg-primary/5 border border-primary/15 rounded-2xl px-4 py-3 card-hover">
+          <div className="flex items-center justify-between bg-primary/5 border border-primary/15 rounded-2xl px-4 py-3">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                 <Stethoscope className="w-4 h-4 text-primary" />

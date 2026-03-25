@@ -1,60 +1,53 @@
-import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Activity, Utensils, HeartPulse, ScanLine } from "lucide-react";
+import { ScanLine, Scale, Dumbbell, MapPin, BookOpen } from "lucide-react";
+import { hoverGlow } from "@/lib/animations";
+
+const ACTIONS = [
+  { icon: ScanLine, label: "Scanner", page: "Scan", color: "#059669" },
+  { icon: Scale, label: "Peser", page: "Sante", tab: "weight", color: "#2d9f82" },
+  { icon: Dumbbell, label: "Exercice", page: "Activite", tab: "dressage", color: "#6366f1" },
+  { icon: MapPin, label: "Véto", page: "Sante", tab: "findvet", color: "#3b82f6" },
+  { icon: BookOpen, label: "Guides", page: "Library", color: "#8b5cf6" },
+];
 
 export default function QuickActions() {
-  const navigate = useNavigate();
-
-  const actions = [
-    { 
-      id: "track", 
-      label: "Lancer la\nbalade", 
-      icon: Activity, 
-      path: "Activite",
-      colorClass: "text-secondary bg-secondary/10"
-    },
-    { 
-      id: "food", 
-      label: "Noter le\nrepas", 
-      icon: Utensils, 
-      path: "Nutri",
-      colorClass: "text-orange-600 bg-orange-500/10"
-    },
-    { 
-      id: "health", 
-      label: "Suivi de\nsanté", 
-      icon: HeartPulse, 
-      path: "Sante",
-      colorClass: "text-blue-600 bg-blue-500/10"
-    },
-    { 
-      id: "scan", 
-      label: "Scanner un\nproduit", 
-      icon: ScanLine, 
-      path: "Scan",
-      colorClass: "text-premium-purple bg-premium-purple/10"
-    },
-  ];
-
   return (
-    <section className="space-y-6 mt-8">
-      <h3 className="font-extrabold text-2xl text-forest-green px-1">Actions Rapides</h3>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {actions.map((action) => (
-          <button
-            key={action.id}
-            onClick={() => navigate(createPageUrl(action.path))}
-            className="group relative bg-white hover:bg-emerald-50 transition-all p-6 rounded-[2rem] flex flex-col items-center justify-center gap-4 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-emerald-50/50 active:scale-95"
-          >
-            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500 action-icon-layered ${action.colorClass}`}>
-              <action.icon className="w-8 h-8" />
-            </div>
-            <span className="text-forest-green font-extrabold text-sm text-center leading-tight whitespace-pre-line">
-              {action.label}
-            </span>
-          </button>
-        ))}
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1 }}
+      className="px-4"
+    >
+      <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+        {ACTIONS.map((action, i) => {
+          const Icon = action.icon;
+          return (
+            <motion.div
+              key={action.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 + i * 0.05 }}
+              whileTap={{ scale: 0.92 }}
+              className="flex-shrink-0"
+            >
+              <Link
+                to={createPageUrl(action.page) + (action.tab ? `?tab=${action.tab}` : "")}
+                className="flex flex-col items-center gap-1.5 w-[60px] py-1"
+              >
+                <motion.div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-[0_2px_6px_rgba(0,0,0,0.06)] bg-white border border-border/20 relative"
+                  {...hoverGlow}
+                >
+                  <Icon className="w-6 h-6" style={{ color: action.color }} />
+                </motion.div>
+                <span className="text-xs font-semibold text-foreground/70">{action.label}</span>
+              </Link>
+            </motion.div>
+          );
+        })}
       </div>
-    </section>
+    </motion.div>
   );
 }

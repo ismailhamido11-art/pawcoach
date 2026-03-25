@@ -3,26 +3,41 @@ import { useEffect, useRef } from "react";
 /**
  * Makes the browser back button/gesture close a modal instead of navigating away.
  * Pushes a history entry when the modal opens; pops it on back press.
+ *
+ * @param {boolean} open - Whether the modal is currently open
+ * @param {Function} onClose - Function to close the modal
  */
-export default function useBackClose(isOpen, onClose) {
+export default function useBackClose(open, onClose) {
+  const pushed = useRef(false);
   const onCloseRef = useRef(onClose);
-
+  const isUnmounting = useRef(false);
+  
+  // Track component unmount
   useEffect(() => {
     onCloseRef.current = onClose;
   }, [onClose]);
 
+  useEffect(() => () => { isUnmounting.current = true; }, []);
+
   useEffect(() => {
-    if (!isOpen) return;
+    if (!open) return;
 
-    const handlePopState = () => {
-      if (onCloseRef.current) onCloseRef.current();
+    window.history.pushState({ __modal: true }, "");
+    pushed.current = true;
+
+    const handlePop = () => {
+      pushed.current = false;
+      onCloseRef.current();
     };
 
-    window.history.pushState(null, "", window.location.href);
-    window.addEventListener("popstate", handlePopState);
-
+    window.addEventListener("popstate", handlePop);
     return () => {
-      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("popstate", handlePop);
+      // Clean up extra history entry only if modal closed normally (not on page unmount)
+      if (pushed.current && !isUnmounting.current) {
+        pushed.current = false;
+        window.history.back();
+      }
     };
-  }, [isOpen]);
+  }, [open]);
 }

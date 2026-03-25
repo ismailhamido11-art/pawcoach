@@ -63,7 +63,7 @@ function TrainingCard({ program }) {
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
     >
       <Link to={createPageUrl("Activite") + "?tab=programme"}>
-        <div className="rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-purple-50 p-4 relative overflow-hidden group card-hover">
+        <div className="rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-purple-50 p-4 relative overflow-hidden group">
           <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-violet-400 opacity-[0.06]" />
 
           <div className="flex items-center justify-between mb-3">
@@ -207,7 +207,7 @@ function NutritionPlanCard({ plan }) {
         transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.05 }}
       >
         <Link to={createPageUrl("Nutri") + "?tab=mealplan"}>
-          <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-amber-50 p-4 relative overflow-hidden group card-hover">
+          <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-amber-50 p-4 relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center">
@@ -232,7 +232,7 @@ function NutritionPlanCard({ plan }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.05 }}
     >
-      <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-emerald-50 relative overflow-hidden card-hover">
+      <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-emerald-50 relative overflow-hidden">
         <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-emerald-400 opacity-[0.06]" />
 
         {/* Clickable header */}
@@ -400,7 +400,7 @@ function BehaviorProgramCard({ program }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.1 }}
     >
-      <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden card-hover">
+      <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden">
         <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-blue-400 opacity-[0.06]" />
 
         <button className="w-full text-left p-4" onClick={() => setOpen(v => !v)}>
