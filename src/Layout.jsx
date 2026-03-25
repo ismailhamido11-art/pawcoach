@@ -11,10 +11,7 @@ const fadeIn = {
 export default function Layout({ children, currentPageName }) {
   const reduceMotion = useReducedMotion();
 
-  // Force light mode — dark mode not QA'd, disabled to avoid broken rendering
-  useEffect(() => {
-    document.documentElement.classList.remove("dark");
-  }, []);
+
 
   const transitionProps = reduceMotion
     ? {

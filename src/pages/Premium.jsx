@@ -319,7 +319,7 @@ export default function Premium() {
       <div className="gradient-primary safe-pt-14 pb-8 px-5 relative overflow-hidden">
         <button
           aria-label="Retour"
-          onClick={() => window.history.length > 1 ? navigate(-1) : navigate(createPageUrl("Home"))}
+          onClick={() => navigate(createPageUrl("Home"))}
           className="absolute top-4 left-4 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center z-20"
         >
           <ArrowLeft className="w-5 h-5 text-white" />
