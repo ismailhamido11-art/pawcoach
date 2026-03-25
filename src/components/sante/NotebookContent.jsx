@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import SectionVaccins from "../notebook/SectionVaccins";
 import SectionPoids from "../notebook/SectionPoids";
 import PremiumSection from "../notebook/PremiumSection";
@@ -67,6 +68,7 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
   const [vetNotes, setVetNotes] = useState([]);
   const [vetNotesLoaded, setVetNotesLoaded] = useState(false);
   const recordsSectionRef = useRef(null);
+  const [recordsListRef] = useAutoAnimate();
   const vaccineCardRef = useRef(null);
   const weightCardRef = useRef(null);
   const [autoExpandVaccineKey, setAutoExpandVaccineKey] = useState(initialVaccineKey || null);
@@ -364,7 +366,7 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
 
             {/* Section content */}
             {activeTab === "all" && (
-              <div className="space-y-2.5">
+              <div className="space-y-2.5" ref={recordsListRef}>
                 {sortedRecords.length === 0 ? (
                   <div className="bg-white rounded-2xl border border-border">
                     <EmptyState

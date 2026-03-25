@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import VetDogCard from "../components/vet/VetDogCard";
 import { motion } from "framer-motion";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import EmptyState from "@/components/ui/EmptyState";
 
@@ -16,6 +17,7 @@ export default function VetPortal() {
   const [loading, setLoading] = useState(true);
   const [accesses, setAccesses] = useState([]);
   const [dogs, setDogs] = useState([]);
+  const [listRef] = useAutoAnimate();
   const [inviteCode, setInviteCode] = useState("");
   const [accepting, setAccepting] = useState(false);
 
@@ -166,7 +168,7 @@ export default function VetPortal() {
               className="rounded-3xl border border-border/60 bg-card shadow-sm"
             />
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-3" ref={listRef}>
               {dogs.map((dog, i) => (
                 <motion.div
                   key={dog.id}
