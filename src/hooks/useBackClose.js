@@ -11,9 +11,12 @@ export default function useBackClose(open, onClose) {
   const pushed = useRef(false);
   const onCloseRef = useRef(onClose);
   const isUnmounting = useRef(false);
-  onCloseRef.current = onClose;
-
+  
   // Track component unmount
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => () => { isUnmounting.current = true; }, []);
 
   useEffect(() => {

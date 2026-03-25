@@ -3,7 +3,6 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import useBackClose from "@/hooks/useBackClose";
 import { motion } from "framer-motion";
 import {
   ArrowLeft, Pencil, ChevronDown,
@@ -32,8 +31,31 @@ export default function DogProfile() {
   const [scansCount, setScansCount] = useState(0);
   const [editModal, setEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  useBackClose(editModal, () => setEditModal(false));
-  useBackClose(showDeleteConfirm, () => setShowDeleteConfirm(false));
+  
+  // Inline useBackClose for editModal
+  useEffect(() => {
+    if (!editModal) return;
+    window.history.pushState({ __modal: true }, "");
+    const handlePop = () => setEditModal(false);
+    window.addEventListener("popstate", handlePop);
+    return () => {
+      window.removeEventListener("popstate", handlePop);
+      if (editModal) window.history.back();
+    };
+  }, [editModal]);
+
+  // Inline useBackClose for showDeleteConfirm
+  useEffect(() => {
+    if (!showDeleteConfirm) return;
+    window.history.pushState({ __modal: true }, "");
+    const handlePop = () => setShowDeleteConfirm(false);
+    window.addEventListener("popstate", handlePop);
+    return () => {
+      window.removeEventListener("popstate", handlePop);
+      if (showDeleteConfirm) window.history.back();
+    };
+  }, [showDeleteConfirm]);
+
   const [deleting, setDeleting] = useState(false);
 
   const urlParams = new URLSearchParams(window.location.search);
