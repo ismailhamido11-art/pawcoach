@@ -1,103 +1,55 @@
-# Roadmap: PawCoach Visual Polish
+# Roadmap: PawCoach Visual Layer (Partie Visible)
 
 ## Overview
 
-Ajouter la couche emotionnelle visuelle sur toute l'app PawCoach: animations Framer Motion, skeletons, empty states, illustrations Storyset, Lottie, micro-interactions.
+Integrer les illustrations Storyset, animations Lottie, et mascottes sur les ecrans principaux pour un changement visuel concret et immediat.
 
 ## Phases
 
-- [ ] **Phase 1: Setup & Fondations** - Completer fondations techniques manquantes
-- [ ] **Phase 2: Corrections Coherence** - Unifier couleurs et icones vers design system
-- [ ] **Phase 3: Skeletons Restants** - Remplacer tous les spinners restants
-- [ ] **Phase 4: Animations Pages** - fadeIn, stagger, card-hover sur 16 pages
-- [ ] **Phase 5: Bottom Sheets & Modals** - Polish animations des 7 sheets
-- [ ] **Phase 6: Empty States** - Mascottes, illustrations Storyset, Lottie partout
-- [ ] **Phase 7: Finitions** - Coherence, audit, polish, harden
-- [ ] **Phase 8: Rapport & Push** - Rapport final et push branche
+- [ ] **Phase 1: Illustrations Storyset** - Ajouter les 23 SVG sur les ecrans principaux
+- [ ] **Phase 2: Animations Lottie** - Integrer Lottie sur loading, succes, erreurs, scan
+- [ ] **Phase 3: Push & Verification** - Build, push, verification visuelle browser
 
 ## Phase Details
 
-### Phase 1: Setup & Fondations
-**Goal**: Completer les fondations techniques manquantes: useCountUp hook, 12 nouvelles mascottes SVG, cleanup repo
+### Phase 1: Illustrations Storyset
+**Goal**: Integrer les illustrations SVG Storyset sur les ecrans principaux — changement visuel immediat et concret
 **Depends on**: Nothing
 **Success Criteria** (what must be TRUE):
-  1. useCountUp hook existe dans src/hooks/useCountUp.js
-  2. 12 nouvelles mascottes ajoutees dans PawIllustrations.jsx
-  3. EmptyState.jsx mis a jour avec les nouvelles mascottes
-  4. Repo clean (pas de fichiers .planning anciens, .argus, etc.)
+  1. Chat.jsx hero utilise illustration Storyset au lieu du CDN actuel ou en complement
+  2. Scan.jsx etat initial affiche illustration search ou feeding
+  3. Activite.jsx section vide balade affiche illustration walking ou playing
+  4. Training.jsx hero utilise illustration training
+  5. Premium.jsx hero enrichi avec illustration premium
+  6. Sante symptomes utilise illustration examination ou diagnosis
+  7. Nutrition scanner utilise illustration feeding ou healthy-food
+  8. Dashboard section poids vide utilise illustration growth
+  9. Library vide utilise illustration search ou no-results
 **Plans**: TBD
 
-### Phase 2: Corrections Coherence
-**Goal**: Unifier couleurs hardcodees (slate, purple hors contexte) vers tokens design system, unifier icones vers Lucide
+### Phase 2: Animations Lottie
+**Goal**: Integrer les animations Lottie CDN sur les moments cles (loading IA, succes actions, scan en cours)
 **Depends on**: Phase 1
 **Success Criteria** (what must be TRUE):
-  1. Zero couleur text-slate/bg-slate hors contexte semantique
-  2. Zero import heroicons/react-icons/mui
-  3. DogPublicProfile.jsx utilise EmptyState au lieu de brut
+  1. Chat.jsx typing indicator utilise Lottie loading.dots au lieu des divs bounce
+  2. Scan.jsx etat scanning utilise Lottie loading.general
+  3. Succes check-in/actions affiche Lottie success.checkmark
+  4. Dashboard useCountUp sur les 4 stat cards
 **Plans**: TBD
 
-### Phase 3: Skeletons Restants
-**Goal**: Remplacer tous les spinners restants par SkeletonPage sur les pages manquantes
-**Depends on**: Phase 1
-**Success Criteria** (what must be TRUE):
-  1. Library.jsx utilise SkeletonPage variant="list"
-  2. Zero animate-spin ou Loader2 spin restant dans src/pages/
-**Plans**: TBD
-
-### Phase 4: Animations Pages
-**Goal**: Ajouter fadeIn contenu, stagger listes, card-hover cartes, active:scale boutons sur les 16 pages + 5 sous-pages Sante
-**Depends on**: Phase 2, Phase 3
-**Success Criteria** (what must be TRUE):
-  1. Chaque page a motion.div fadeIn sur le contenu principal
-  2. Listes ont stagger delay 0.04-0.08s
-  3. Cartes cliquables ont card-hover
-  4. prefers-reduced-motion respecte partout
-**Plans**: TBD
-
-### Phase 5: Bottom Sheets & Modals
-**Goal**: Polish animations des 7 bottom sheets (PremiumNudge, HealthAssistant, CombinedFAB, MobileSelect, WalkShare, ShareCard, ShareVet)
-**Depends on**: Phase 4
-**Success Criteria** (what must be TRUE):
-  1. Chaque sheet a stagger sur ses items
-  2. CTA ont active:scale
-  3. WalkShareCard a useCountUp sur stats
-**Plans**: TBD
-
-### Phase 6: Empty States
-**Goal**: Chaque etat vide a un EmptyState avec mascotte + illustrations Storyset integrees + animations Lottie
-**Depends on**: Phase 4
-**Success Criteria** (what must be TRUE):
-  1. Chaque condition length===0 montre un EmptyState avec mascotte
-  2. Illustrations Storyset integrees dans onboarding, home, sante, nutrition, training
-  3. Lottie integre sur loading, succes, erreurs, scan
-**Plans**: TBD
-
-### Phase 7: Finitions
-**Goal**: Coherence durees animations, audit global, polish, harden, simplify
-**Depends on**: Phase 5, Phase 6
+### Phase 3: Push & Verification
+**Goal**: Build final, push, verification visuelle dans le browser
+**Depends on**: Phase 2
 **Success Criteria** (what must be TRUE):
   1. npm run build zero erreur
-  2. Durees coherentes (micro:0.1-0.15s, entrees:0.2-0.35s)
-  3. Audit Impeccable passe
-**Plans**: TBD
-
-### Phase 8: Rapport & Push
-**Goal**: Generer POLISH_REPORT.md et push branche polish/visual-layer
-**Depends on**: Phase 7
-**Success Criteria** (what must be TRUE):
-  1. POLISH_REPORT.md cree avec stats
-  2. Branche polish/visual-layer pushee
+  2. git push origin main reussi
+  3. Verification visuelle de chaque page modifiee dans le browser
 **Plans**: TBD
 
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Setup & Fondations | 0/TBD | Not started | - |
-| 2. Corrections Coherence | 0/TBD | Not started | - |
-| 3. Skeletons Restants | 0/TBD | Not started | - |
-| 4. Animations Pages | 0/TBD | Not started | - |
-| 5. Bottom Sheets & Modals | 0/TBD | Not started | - |
-| 6. Empty States | 0/TBD | Not started | - |
-| 7. Finitions | 0/TBD | Not started | - |
-| 8. Rapport & Push | 0/TBD | Not started | - |
+| 1. Illustrations Storyset | 0/TBD | Not started | - |
+| 2. Animations Lottie | 0/TBD | Not started | - |
+| 3. Push & Verification | 0/TBD | Not started | - |
