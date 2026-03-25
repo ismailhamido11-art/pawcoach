@@ -4,7 +4,7 @@
  * Animation : Framer Motion fadeIn + slight scale
  */
 import { motion } from "framer-motion";
-import * as LucideIcons from "lucide-react";
+import { HelpCircle, Search, Calendar, FileText, Settings, Heart, Star, StarOff, MessageCircle, AlertTriangle } from "lucide-react";
 import {
   DogWave,
   DogDetective,
@@ -29,7 +29,7 @@ import {
 } from "./PawIllustrations";
 import StorysetIllustration from "./StorysetIllustration";
 import LottieAnimation from "./LottieAnimation";
-import useReducedMotion from "@/hooks/useReducedMotion";
+import { useReducedMotion } from "framer-motion";
 
 const MASCOTS = {
   wave: DogWave,
@@ -68,9 +68,18 @@ export default function EmptyState({
   const reduceMotion = useReducedMotion();
   const MascotComponent = mascot ? MASCOTS[mascot] : null;
 
+  const ICON_MAP = {
+    Search, Calendar, FileText, Settings, Heart, Star, StarOff, MessageCircle, AlertTriangle
+  };
+
   let LucideIcon = null;
   if (icon && !MascotComponent && !illustration && !lottieSrc) {
-    LucideIcon = LucideIcons[icon] || LucideIcons.HelpCircle;
+    // If icon is a string, look it up. Otherwise if it's already a component, use it.
+    if (typeof icon === 'string') {
+      LucideIcon = ICON_MAP[icon] || HelpCircle;
+    } else {
+      LucideIcon = icon || HelpCircle;
+    }
   }
 
   return (

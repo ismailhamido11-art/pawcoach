@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import useReducedMotion from "@/hooks/useReducedMotion";
+import { useReducedMotion } from "framer-motion";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 
 function Bone({ className }) {
