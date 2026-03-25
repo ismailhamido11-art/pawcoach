@@ -29,6 +29,7 @@ import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
 import FirstDayGuide from "../components/home/FirstDayGuide";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
+import HomeWellnessHero from "../components/home/HomeWellnessHero";
 
 
 const MILESTONES = [
@@ -384,43 +385,16 @@ export default function Home() {
             dailyLogs={dailyLogs}
           />
 
-          {/* Hero Illustration — always visible, premium feel */}
-          <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="bg-gradient-to-br from-emerald-50 via-white to-amber-50/80 rounded-3xl p-5 border border-emerald-100/50 shadow-sm overflow-hidden relative"
-          >
-            <div className="flex items-center gap-4">
-              <StorysetIllustration name="walking" className="w-32 h-32 flex-shrink-0 -ml-2" />
-              <div className="flex-1 min-w-0">
-                <p className="text-[16px] font-bold text-foreground leading-snug">
-                  {todayCheckin
-                    ? `${dog?.name || "Ton chien"} est en forme !`
-                    : `${dog?.name || "Ton chien"} attend son check-in`
-                  }
-                </p>
-                <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">
-                  {todayCheckin
-                    ? "Continue comme ca, chaque jour compte pour sa sante."
-                    : "20 min de marche par jour renforcent son coeur et son moral."
-                  }
-                </p>
-              </div>
-            </div>
-            <div className="absolute -top-8 -right-8 w-24 h-24 bg-emerald-200/20 rounded-full blur-2xl" />
-            <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-amber-200/15 rounded-full blur-xl" />
-          </motion.div>
+          {/* Wellness Hero — big illustration + 4 metric cards (Gentler Streak style) */}
+          <HomeWellnessHero
+            dog={dog}
+            todayCheckin={todayCheckin}
+            streak={streak}
+            dailyLogs={dailyLogs}
+          />
 
           {/* Calendar Strip */}
           <CalendarStrip dailyLogs={dailyLogs} />
-
-          {/* Daily Progress — 3 mini cards */}
-          <DailyProgress
-            dailyLogs={dailyLogs}
-            todayCheckin={todayCheckin}
-            dog={dog}
-          />
 
           {/* Quick Actions */}
           <div className="flex justify-between px-2">
