@@ -29,11 +29,11 @@ export default function CoachHomeHeader({ user, dog }) {
           </div>
           <div className="flex items-center gap-2">
             <NotificationCenter transparent={true} />
-            <button 
+            <button
               onClick={() => navigate(createPageUrl("Profile"))}
               className="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors shadow-sm"
-              aria-label="Paramètres"
-            >
+              aria-label="Paramètres">
+              
               <Settings className="w-4 h-4" />
             </button>
           </div>
@@ -44,20 +44,20 @@ export default function CoachHomeHeader({ user, dog }) {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate(createPageUrl("DogProfile"))}
-            className="flex-shrink-0 relative group"
-          >
+            className="flex-shrink-0 relative group">
+            
             <div className="absolute inset-0 bg-white/20 rounded-[1.25rem] blur-md group-hover:bg-white/30 transition-all" />
-            {dog?.photo ? (
-              <img
-                src={dog.photo}
-                alt={dog?.name}
-                className="w-[72px] h-[72px] rounded-[1.25rem] border-[3px] border-white/40 object-cover shadow-xl relative z-10"
-              />
-            ) : (
-              <div className="w-[72px] h-[72px] rounded-[1.25rem] bg-white/10 border-[3px] border-white/30 flex items-center justify-center shadow-xl backdrop-blur-sm relative z-10">
+            {dog?.photo ?
+            <img
+              src={dog.photo}
+              alt={dog?.name}
+              className="w-[72px] h-[72px] rounded-[1.25rem] border-[3px] border-white/40 object-cover shadow-xl relative z-10" /> :
+
+
+            <div className="w-[72px] h-[72px] rounded-[1.25rem] bg-white/10 border-[3px] border-white/30 flex items-center justify-center shadow-xl backdrop-blur-sm relative z-10">
                 <span className="text-3xl">🐶</span>
               </div>
-            )}
+            }
           </motion.button>
 
           <div className="flex-1 min-w-0">
@@ -68,18 +68,18 @@ export default function CoachHomeHeader({ user, dog }) {
               <span className="bg-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-medium text-white/90 border border-white/10 backdrop-blur-sm shadow-sm">
                 {dog?.breed || "Compagnon"}
               </span>
-              {dog?.weight && (
-                <span className="bg-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-medium text-white/90 border border-white/10 backdrop-blur-sm shadow-sm">
+              {dog?.weight &&
+              <span className="bg-white/15 px-2.5 py-0.5 rounded-full text-[11px] font-medium text-white/90 border border-white/10 backdrop-blur-sm shadow-sm">
                   {dog.weight} kg
                 </span>
-              )}
+              }
             </div>
           </div>
         </div>
       </div>
 
       {/* Curved bottom */}
-      <div className="h-5 bg-gradient-to-br from-primary via-primary/95 to-[#1A4D3E] rounded-b-[32px] shadow-sm relative z-20 -mt-1" />
-    </header>
-  );
+      
+    </header>);
+
 }
