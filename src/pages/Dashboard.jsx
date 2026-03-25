@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useCountUp } from "@/hooks/useCountUp";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 import { computeVaccineMap, computeHealthScore } from "@/utils/healthStatus";
@@ -189,6 +190,17 @@ export default function Dashboard() {
   return { weightData, weightTrend, walkData, checkinChart, avgMood, alerts, score, scoreColor, scoreLabel };
   }, [records, dailyLogs, checkins]);
 
+  // --- Count-up values for stat cards ---
+  const lastWeightRaw = weightData.length ? weightData[weightData.length - 1].poids : 0;
+  const checkinCountRaw = checkins.filter(c => c.date >= new Date(Date.now() - 7 * 864e5).toISOString().split("T")[0]).length;
+  const avgMoodRaw = avgMood ? parseFloat(avgMood) : 0;
+  const exerciceCountRaw = progress.length;
+
+  const animatedWeight = useCountUp(lastWeightRaw, 800);
+  const animatedCheckins = useCountUp(checkinCountRaw, 600);
+  const animatedMood = useCountUp(avgMoodRaw * 10, 600); // multiply by 10 for integer animation, divide later
+  const animatedExercices = useCountUp(exerciceCountRaw, 600);
+
   // Next steps
   const nextSteps = [];
   if (checkins.filter(c => c.date >= new Date(Date.now() - 7 * 864e5).toISOString().split("T")[0]).length < 5) {
@@ -279,10 +291,10 @@ export default function Dashboard() {
         {/* Stats row */}
         <div className="grid grid-cols-2 gap-3">
           {[
-            { icon: Weight, color: "#2d9f82", label: "Dernier poids", value: weightData.length ? `${weightData[weightData.length - 1].poids} kg` : "—", sub: dog?.weight ? `Référence : ${dog.weight} kg` : undefined, trend: weightTrend },
-            { icon: Activity, color: "#8b5cf6", label: "Check-ins (7j)", value: checkins.filter(c => c.date >= new Date(Date.now() - 7 * 864e5).toISOString().split("T")[0]).length, sub: "jours enregistrés" },
-            { icon: Star, color: "#2d9f82", label: "Humeur moy. (7j)", value: avgMood ? `${avgMood}/4` : "—", sub: "basé sur les check-ins" },
-            { icon: Dumbbell, color: "#ec4899", label: "Exercices faits", value: progress.length, sub: "tours maîtrisés" },
+            { icon: Weight, color: "#2d9f82", label: "Dernier poids", value: weightData.length ? `${animatedWeight} kg` : "—", sub: dog?.weight ? `Référence : ${dog.weight} kg` : undefined, trend: weightTrend },
+            { icon: Activity, color: "#8b5cf6", label: "Check-ins (7j)", value: animatedCheckins, sub: "jours enregistrés" },
+            { icon: Star, color: "#2d9f82", label: "Humeur moy. (7j)", value: avgMood ? `${(animatedMood / 10).toFixed(1)}/4` : "—", sub: "basé sur les check-ins" },
+            { icon: Dumbbell, color: "#ec4899", label: "Exercices faits", value: animatedExercices, sub: "tours maîtrisés" },
           ].map((card, i) => (
             <motion.div
               key={card.label}

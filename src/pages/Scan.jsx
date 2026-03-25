@@ -19,6 +19,8 @@ import { isUserPremium } from "@/utils/premium";
 import { toast } from "sonner";
 import { spring } from "@/lib/animations";
 import EmptyState from "@/components/ui/EmptyState";
+import LottieAnimation from "@/components/ui/LottieAnimation";
+import { LOTTIE } from "@/lib/lottieLibrary";
 const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
 const listItem = {
   hidden: { opacity: 0, y: 12 },
@@ -583,15 +585,18 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                   onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
 
                 {preview && (
-                  <Button onClick={analyzeFood} disabled={scanning}
-                    className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold text-base shadow-lg shadow-primary/30">
-                    {scanning ? (
-                      <span className="flex items-center gap-2">
-                        <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                        Analyse en cours...
-                      </span>
-                    ) : "Analyser cet aliment"}
-                  </Button>
+                  <>
+                    {scanning && (
+                      <div className="flex flex-col items-center gap-1 py-2">
+                        <LottieAnimation src={LOTTIE.loading.general[0]} size={80} loop autoplay ariaLabel="Analyse en cours" />
+                        <p className="text-sm text-muted-foreground font-medium">Analyse en cours...</p>
+                      </div>
+                    )}
+                    <Button onClick={analyzeFood} disabled={scanning}
+                      className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold text-base shadow-lg shadow-primary/30">
+                      {scanning ? "Analyse en cours..." : "Analyser cet aliment"}
+                    </Button>
+                  </>
                 )}
               </>
             )}

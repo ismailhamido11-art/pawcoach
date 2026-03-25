@@ -24,6 +24,8 @@ import { toast } from "sonner";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
 import { spring, springGentle } from "@/lib/animations";
 import { mdComponents } from "@/components/lib/markdown";
+import LottieAnimation from "@/components/ui/LottieAnimation";
+import { LOTTIE } from "@/lib/lottieLibrary";
 
 const tabVariants = {
   enter: (d) => ({ opacity: 0, x: d * 60 }),
@@ -590,12 +592,8 @@ export default function Nutri() {
             {((loading && !isStreaming) || (isStreaming && !streamingText)) && (
               <div className="flex gap-2 justify-start">
                 <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
-                <div className="chat-bubble-assistant px-4 py-3.5 rounded-2xl rounded-bl-sm">
-                  <div className="flex gap-1.5 items-center">
-                    <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-2 h-2 bg-primary rounded-full" />
-                    <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }} className="w-2 h-2 bg-primary rounded-full" />
-                    <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }} className="w-2 h-2 bg-primary rounded-full" />
-                  </div>
+                <div className="chat-bubble-assistant px-2 py-1.5 rounded-2xl rounded-bl-sm">
+                  <LottieAnimation src={LOTTIE.loading.dots[0]} size={40} loop autoplay ariaLabel="Reflexion en cours" />
                 </div>
               </div>
             )}
