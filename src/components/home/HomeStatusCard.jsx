@@ -1,12 +1,21 @@
 import { Zap } from "lucide-react";
+import { getTodayString } from "@/utils/recommendations";
 
-export default function HomeStatusCard({ dog }) {
+export default function HomeStatusCard({ dog, todayCheckin, dailyLogs = [] }) {
+  // Compute basic health score based on checkin and recent logs
+  const score = todayCheckin ? 95 : 75;
+  const circumference = 2 * Math.PI * 45;
+  const strokeDashoffset = circumference - (score / 100) * circumference;
+
+  const todayStr = getTodayString();
+  const latestLog = dailyLogs.find(l => l.date === todayStr) || dailyLogs[0];
+  const waterBowls = latestLog?.water_bowls || 0;
+  
   return (
     <div className="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.04)] relative overflow-hidden">
       <div className="absolute top-0 right-0 w-32 h-32 bg-secondary-fixed/20 rounded-full blur-3xl -mr-10 -mt-10" />
       <div className="flex flex-col md:flex-row gap-8 items-center">
         <div className="relative w-48 h-48 flex items-center justify-center">
-          {/* Simple Radar-style Visual representation */}
           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
             <circle cx="50" cy="50" fill="none" r="45" stroke="#f1eee5" strokeWidth="8" />
             <circle
@@ -15,10 +24,11 @@ export default function HomeStatusCard({ dog }) {
               fill="none"
               r="45"
               stroke="url(#gradient-health)"
-              strokeDasharray="282.7"
-              strokeDashoffset="42.4"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
               strokeLinecap="round"
               strokeWidth="8"
+              className="transition-all duration-1000 ease-out"
             />
             <defs>
               <linearGradient id="gradient-health" x1="0%" x2="100%" y1="0%" y2="0%">
@@ -28,7 +38,7 @@ export default function HomeStatusCard({ dog }) {
             </defs>
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className="text-4xl font-extrabold text-[#00382b]">85</span>
+            <span className="text-4xl font-extrabold text-[#00382b]">{score}</span>
             <span className="text-[10px] font-bold text-outline uppercase tracking-widest mt-1">
               Score Santé
             </span>
@@ -43,7 +53,9 @@ export default function HomeStatusCard({ dog }) {
             {dog?.name || "Ton chien"} est prêt pour sa journée !
           </h2>
           <p className="text-on-surface-variant text-sm leading-relaxed">
-            Ses signes vitaux sont stables et son niveau d'énergie est optimal pour une séance d'entraînement ce matin.
+            {todayCheckin 
+              ? "Les signes vitaux d'aujourd'hui sont parfaits." 
+              : "Fais son check-in pour mettre à jour son statut de forme."}
           </p>
           <div className="flex gap-4 pt-2">
             <div className="flex-1 bg-surface-container-low rounded-2xl p-3 text-center">
@@ -51,8 +63,8 @@ export default function HomeStatusCard({ dog }) {
               <span className="font-bold text-[#1c1c16]">{dog?.weight ? `${dog.weight} kg` : "--"}</span>
             </div>
             <div className="flex-1 bg-surface-container-low rounded-2xl p-3 text-center">
-              <span className="block text-xs text-outline mb-1">Repos</span>
-              <span className="font-bold text-[#1c1c16]">9h 12m</span>
+              <span className="block text-xs text-outline mb-1">Hydraté</span>
+              <span className="font-bold text-[#1c1c16]">{waterBowls} bol{waterBowls > 1 ? "s" : ""}</span>
             </div>
           </div>
         </div>

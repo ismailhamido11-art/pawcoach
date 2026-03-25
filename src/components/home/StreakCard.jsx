@@ -1,8 +1,19 @@
 import { Flame } from "lucide-react";
 
-export default function StreakCard({ streakDays }) {
+export default function StreakCard({ streakDays, dailyLogs = [] }) {
   const days = ["L", "M", "M", "J", "V", "S", "D"];
-  // Mock logic for filled circles, just showing all filled for now as per design
+  const today = new Date();
+  
+  // Calculate the last 7 days of activity based on daily logs
+  const last7DaysActive = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(today);
+    // Start from Monday (1) to Sunday (0 -> 7) to align with days array
+    // Wait, simpler: just get the last 7 days leading up to today
+    d.setDate(today.getDate() - 6 + i);
+    const dateStr = d.toISOString().split("T")[0];
+    return dailyLogs.some(log => log.date === dateStr);
+  });
+
   return (
     <div className="bg-surface-container-lowest rounded-3xl p-5 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex items-center justify-between">
       <div className="flex items-center gap-3">
@@ -15,14 +26,19 @@ export default function StreakCard({ streakDays }) {
         </div>
       </div>
       <div className="flex gap-1.5">
-        {days.map((d, i) => (
-          <div
-            key={i}
-            className="w-6 h-6 rounded-full bg-[#00382b] flex items-center justify-center text-[10px] text-white font-bold"
-          >
-            {d}
-          </div>
-        ))}
+        {days.map((d, i) => {
+          const isActive = last7DaysActive[i];
+          return (
+            <div
+              key={i}
+              className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                isActive ? "bg-[#00382b] text-white" : "bg-surface-container-low text-outline"
+              }`}
+            >
+              {d}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

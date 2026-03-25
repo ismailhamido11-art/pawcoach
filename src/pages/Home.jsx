@@ -356,19 +356,19 @@ export default function Home() {
             className="space-y-6"
           >
             {/* Status Hero Card */}
-            <HomeStatusCard dog={dog} />
+            <HomeStatusCard dog={dog} todayCheckin={todayCheckin} dailyLogs={dailyLogs} />
 
             {/* Daily Briefing & Streak */}
             <div className="space-y-4">
-              <BriefingCard dog={dog} />
-              <StreakCard streakDays={streakDays} />
+              <BriefingCard dog={dog} todayCheckin={todayCheckin} />
+              <StreakCard streakDays={streakDays} dailyLogs={dailyLogs} />
             </div>
 
             {/* Quick Actions Grid */}
             <QuickActions />
 
             {/* Recent Activity Grid */}
-            <RecentActivity />
+            <RecentActivity dailyLogs={dailyLogs} recentCheckins={recentCheckins} records={records} />
 
             {/* Disclaimer */}
             <p className="text-center text-[11px] text-on-surface-variant px-6 pt-4 pb-2">
