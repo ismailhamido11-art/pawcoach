@@ -269,10 +269,10 @@ export default function Home() {
   }, [dog, records, exercises, scans, recentCheckins, dailyLogs, todayCheckin, streak, diagnosisReports, nutritionPlans]);
 
   const quickActions = [
-    { icon: ScanLine, label: "Scanner", colorClass: "text-amber-600", bgClass: "bg-amber-50", page: "Scan" },
-    { icon: Footprints, label: "Balade", colorClass: "text-primary", bgClass: "bg-primary/10", page: "Activite" },
-    { icon: Stethoscope, label: "Santé", colorClass: "text-purple-600", bgClass: "bg-purple-50", page: "Sante" },
-    { icon: BookOpen, label: "Guides", colorClass: "text-blue-600", bgClass: "bg-blue-50", page: "Training" },
+    { icon: ScanLine, label: "Scanner", colorClass: "text-white", bgClass: "bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg shadow-amber-200/50", page: "Scan" },
+    { icon: Footprints, label: "Balade", colorClass: "text-white", bgClass: "bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-200/50", page: "Activite" },
+    { icon: Stethoscope, label: "Santé", colorClass: "text-white", bgClass: "bg-gradient-to-br from-violet-400 to-violet-600 shadow-lg shadow-violet-200/50", page: "Sante" },
+    { icon: BookOpen, label: "Guides", colorClass: "text-white", bgClass: "bg-gradient-to-br from-blue-400 to-blue-600 shadow-lg shadow-blue-200/50", page: "Training" },
   ];
 
   const streakDays = streak?.current_streak || 0;
@@ -347,10 +347,10 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05, duration: 0.25 }}
               >
-                <div className={`w-[52px] h-[52px] rounded-2xl flex items-center justify-center ${qa.bgClass}`}>
-                  <qa.icon className={`w-[22px] h-[22px] ${qa.colorClass}`} />
+                <div className={`w-[56px] h-[56px] rounded-2xl flex items-center justify-center ${qa.bgClass}`}>
+                  <qa.icon className={`w-6 h-6 ${qa.colorClass}`} />
                 </div>
-                <span className="text-[11px] font-medium text-muted-foreground">{qa.label}</span>
+                <span className="text-[11px] font-bold text-foreground">{qa.label}</span>
               </motion.button>
             ))}
           </div>
@@ -360,16 +360,16 @@ export default function Home() {
 
           {/* Streak Card */}
           {streakDays > 0 && (
-            <div className="flex items-center gap-4 bg-card rounded-2xl border border-border p-[18px] card-hover">
-              <div className="w-11 h-11 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
-                <Flame className="w-[22px] h-[22px] text-amber-500" />
+            <div className="flex items-center gap-4 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 rounded-2xl border border-amber-200/60 p-[18px] card-hover shadow-sm">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-amber-200/50">
+                <Flame className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-semibold text-foreground">{streakDays} jours de suite</p>
+                <p className="text-[15px] font-bold text-foreground">{streakDays} jours de suite</p>
                 <p className="text-xs text-muted-foreground mt-0.5">La régularité paie — continue comme ça !</p>
               </div>
               {streakLabel && (
-                <span className="text-[11px] font-semibold text-accent bg-secondary px-3 py-1.5 rounded-full flex-shrink-0">
+                <span className="text-[11px] font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-full flex-shrink-0">
                   {streakLabel}
                 </span>
               )}
