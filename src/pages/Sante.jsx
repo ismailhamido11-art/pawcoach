@@ -21,6 +21,7 @@ import DiagnosisContent from "@/components/sante/DiagnosisContent";
 import GrowthTrackerContent from "@/components/sante/GrowthTrackerContent";
 
 import { BookHeart, Camera, MapPin, AlertTriangle, TrendingUp } from "lucide-react";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import PullToRefresh from "@/components/PullToRefresh";
 import DownloadHealthPDF from "@/components/vet/DownloadHealthPDF";
 import SkeletonPage from "@/components/ui/SkeletonPage";
@@ -206,6 +207,17 @@ export default function Sante() {
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
+      {/* Illustrated card — health overview */}
+      <div className="px-4 pt-4 pb-2">
+        <div className="bg-gradient-to-r from-emerald-50 to-teal-50/50 rounded-3xl p-4 border border-emerald-100/50 shadow-sm flex items-center gap-4">
+          <StorysetIllustration name="vet-checkup" className="w-24 h-24 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-[14px] font-bold text-foreground">Suivi complet{dog ? ` de ${dog.name}` : ""}</p>
+            <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Vaccins, poids, visites — tout au même endroit</p>
+          </div>
+        </div>
+      </div>
+
       {/* Tab content */}
       <PullToRefresh onRefresh={loadData}>
         <AnimatePresence mode="wait" custom={tabDir}>
@@ -237,7 +249,18 @@ export default function Sante() {
               />
             )}
             {activeTab === "malade" && (
-              <DiagnosisContent dog={dog} />
+              <>
+                <div className="px-4 pt-4 pb-2">
+                  <div className="bg-gradient-to-r from-red-50 to-orange-50/50 rounded-3xl p-4 border border-red-100/50 shadow-sm flex items-center gap-4">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] font-bold text-foreground">Diagnostic IA</p>
+                      <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Décris les symptômes, obtiens une analyse instantanée</p>
+                    </div>
+                    <StorysetIllustration name="examination" className="w-24 h-24 flex-shrink-0" />
+                  </div>
+                </div>
+                <DiagnosisContent dog={dog} />
+              </>
             )}
             {activeTab === "import" && (
               <HealthImportContent dog={dog} onImported={(newRecs) => setRecords(prev => [...prev, ...newRecs])} />

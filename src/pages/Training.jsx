@@ -743,9 +743,30 @@ export default function Training() {
         })}
       </div>
 
+      {/* Illustrated card — personalised program */}
+      <div className="px-4 pt-5">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50/50 rounded-3xl p-4 border border-blue-100/50 shadow-sm flex items-center gap-4">
+          <StorysetIllustration name="achievement" className="w-24 h-24 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-[14px] font-bold text-foreground">Programme personnalisé</p>
+            <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Des exercices adaptés à {dog ? dog.name : "ton chien"}</p>
+          </div>
+        </div>
+      </div>
+
       {/* Behavior guides section */}
       <div className="px-4 pt-6 space-y-3">
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1 mb-1">Problèmes courants</p>
+
+        {/* Illustrated card — behaviour */}
+        <div className="bg-gradient-to-r from-violet-50 to-purple-50/50 rounded-3xl p-4 border border-violet-100/50 shadow-sm flex items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <p className="text-[14px] font-bold text-foreground">Comportement</p>
+            <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Solutions aux problèmes du quotidien</p>
+          </div>
+          <StorysetIllustration name="training" className="w-24 h-24 flex-shrink-0" />
+        </div>
+
         {BEHAVIOR_GUIDES.map((guide, idx) => {
           const locked = !guide.isFree && !isPremium;
           return (

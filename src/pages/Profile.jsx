@@ -19,6 +19,7 @@ import AchievementsSection from "../components/profile/AchievementsSection.jsx";
 import AchievementFeed from "../components/achievements/AchievementFeed.jsx";
 import ChatFAB from "../components/ChatFAB";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -128,8 +129,30 @@ export default function Profile() {
           />
         </motion.div>
 
+        {/* Welcome card */}
+        <motion.div custom={0} variants={sectionVariants} initial="hidden" animate="visible">
+          <div className="bg-gradient-to-r from-blue-50 to-sky-50/50 rounded-3xl p-4 border border-blue-100/50 shadow-sm flex items-center gap-4">
+            <StorysetIllustration name="community" className="w-24 h-24 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-bold text-foreground">Ton espace PawCoach</p>
+              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Paramètres, vétérinaire, et suivi de ton compagnon</p>
+            </div>
+          </div>
+        </motion.div>
+
         <motion.div custom={1} variants={sectionVariants} initial="hidden" animate="visible">
           <SubscriptionSection user={user} />
+        </motion.div>
+
+        {/* Premium card */}
+        <motion.div custom={1} variants={sectionVariants} initial="hidden" animate="visible">
+          <div className="bg-gradient-to-r from-amber-50 to-yellow-50/50 rounded-3xl p-4 border border-amber-100/50 shadow-sm flex items-center gap-4">
+            <StorysetIllustration name="premium" className="w-24 h-24 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-bold text-foreground">Passe à Premium</p>
+              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Accès illimité à toutes les fonctionnalités</p>
+            </div>
+          </div>
         </motion.div>
 
         {/* Achievement Feed — 5 derniers badges gagnés */}

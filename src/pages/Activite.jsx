@@ -184,13 +184,22 @@ export default function Activite() {
             className="px-4 pt-4"
           >
             {activeTab === "balade" && (
-              <WalkMode
-                dog={dog}
-                user={user}
-                logs={logs}
-                onLogged={refreshLogs}
-                onViewHistory={() => changeTab("historique")}
-              />
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-emerald-50 to-green-50/50 rounded-3xl p-4 border border-emerald-100/50 shadow-sm flex items-center gap-4">
+                  <StorysetIllustration name="playing" className="w-24 h-24 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-bold text-foreground">Historique de balades</p>
+                    <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Chaque sortie est enregistrée automatiquement</p>
+                  </div>
+                </div>
+                <WalkMode
+                  dog={dog}
+                  user={user}
+                  logs={logs}
+                  onLogged={refreshLogs}
+                  onViewHistory={() => changeTab("historique")}
+                />
+              </div>
             )}
             {activeTab === "historique" && (
               <TrackerHistory logs={logs} dog={dog} />
@@ -215,6 +224,15 @@ function DressageContent({ dog }) {
   const prefersReducedMotion = useReducedMotion();
   return (
     <div className="space-y-4 pb-4">
+      {/* Illustrated info card */}
+      <div className="bg-gradient-to-r from-indigo-50 to-blue-50/50 rounded-3xl p-4 border border-indigo-100/50 shadow-sm flex items-center gap-4">
+        <StorysetIllustration name="training" className="w-24 h-24 flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <p className="text-[14px] font-bold text-foreground">Conseils personnalisés</p>
+          <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Des astuces adaptées au profil de {dog?.name || "ton chien"}</p>
+        </div>
+      </div>
+
       {/* Hero card */}
       <div className="bg-purple-50 border border-purple-200 rounded-2xl p-5 flex items-center gap-4">
         <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center flex-shrink-0">
