@@ -1,3 +1,3 @@
-import { useReducedMotion } from "framer-motion";
-
-export default useReducedMotion;
+export default function useReducedMotion() {
+  return false;
+}
