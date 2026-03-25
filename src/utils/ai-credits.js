@@ -80,3 +80,5 @@ export async function consumeActionCredit(currentRemaining) {
   if (newRemaining === 0) trackEvent("daily_limit_reached", { type: "action" });
   return newRemaining;
 }
+
+export { useActionCredits } from "@/hooks/useActionCredits";
