@@ -94,6 +94,44 @@
   .card-hover {
     @apply transition-all duration-150 hover:shadow-md active:scale-[0.97];
   }
+  
+  .premium-shimmer {
+    background: linear-gradient(90deg, rgba(109,40,217,1) 0%, rgba(167,139,250,1) 50%, rgba(109,40,217,1) 100%);
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
+  }
+  .glass-card {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  .radar-glow {
+    filter: drop-shadow(0 0 12px rgba(26, 77, 62, 0.2));
+  }
+  .organic-mask {
+    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23FF0066' d='M44.7,-76.4C58.2,-69.2,69.7,-57.4,77.3,-43.8C84.8,-30.2,88.4,-15.1,87.3,-0.6C86.2,13.8,80.4,27.7,72.1,40.1C63.8,52.5,53.1,63.4,40.3,71.2C27.5,79,13.7,83.7,-0.7,84.9C-15.1,86.1,-30.2,83.8,-43.3,76.3C-56.5,68.8,-67.6,56.1,-75.4,42.1C-83.3,28.1,-87.9,14,-87.3,0.3C-86.7,-13.4,-81,-26.8,-72.5,-38.9C-64,-51,-52.7,-61.8,-39.9,-69.5C-27.1,-77.2,-13.5,-81.8,1.1,-83.7C15.7,-85.6,31.3,-84.8,44.7,-76.4Z' transform='translate(100 100)' /%3E%3C/svg%3E");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+  }
+  .action-icon-layered {
+    position: relative;
+  }
+  .action-icon-layered::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    background: currentColor;
+    opacity: 0.1;
+    border-radius: 12px;
+    z-index: -1;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 /* Scrollbar */

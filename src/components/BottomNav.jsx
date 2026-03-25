@@ -54,33 +54,30 @@ export default function BottomNav({ currentPage }) {
   };
 
   return (
-    <nav aria-label="Navigation principale" className="fixed bottom-0 left-0 right-0 z-40 bottom-nav bg-surface border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
-      <div className="flex items-center justify-around px-2 py-2">
-        {tabs.map(({ label, icon: Icon, page }) => {
-          const active = currentPage === page;
-          return (
-            <Link
-              key={page}
-              to={getNavUrl(page)}
-              onClick={(e) => handleTabClick(e, page)}
-              className={`relative flex flex-col items-center justify-center w-[72px] h-[64px] rounded-3xl transition-all duration-300 ${
-                active ? "bg-[#00382b] text-white shadow-sm" : "text-outline hover:text-primary"
-              }`}
+    <nav aria-label="Navigation principale" className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-lg flex justify-between items-center px-4 py-3 bg-black/90 backdrop-blur-3xl rounded-[2.5rem] z-50 shadow-2xl border border-white/10">
+      {tabs.map(({ label, icon: Icon, page }) => {
+        const active = currentPage === page;
+        return (
+          <Link
+            key={page}
+            to={getNavUrl(page)}
+            onClick={(e) => handleTabClick(e, page)}
+            className={`relative flex flex-col items-center justify-center h-14 w-14 transition-all duration-300 ${
+              active 
+                ? "bg-white text-forest-green rounded-[1.8rem] scale-105" 
+                : "text-white/50 hover:text-white"
+            }`}
+          >
+            <motion.div
+              whileHover={{ scale: active ? 1 : 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="flex items-center justify-center"
             >
-              <motion.div
-                whileHover={{ scale: active ? 1 : 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="flex flex-col items-center justify-center gap-1"
-              >
-                <Icon className={`w-6 h-6 ${active ? "fill-white/20" : ""}`} />
-                <span className={`text-[10px] font-bold tracking-wide ${active ? "text-white" : "text-outline"}`}>
-                  {label}
-                </span>
-              </motion.div>
-            </Link>
-          );
-        })}
-      </div>
+              <Icon className={`w-6 h-6 ${active ? "fill-current" : ""}`} />
+            </motion.div>
+          </Link>
+        );
+      })}
     </nav>
   );
 }

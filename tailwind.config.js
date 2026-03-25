@@ -59,7 +59,13 @@ export default {
         "surface-container-low": "#f7f3ea",
         "surface-container": "#f1eee5",
         "outline": "#717972",
-        "surface-container-lowest": "#ffffff"
+        "surface-container-lowest": "#ffffff",
+        "forest-green": "#1A4D3E",
+        "deep-forest": "#0D261F",
+        "premium-gold": "#D4AF37",
+        "premium-purple": "#6D28D9",
+        "on-tertiary-fixed-variant": "#572e99",
+        "on-primary-fixed-variant": "#1c4f40"
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -1,4 +1,4 @@
-import { Footprints, Droplet, PawPrint } from "lucide-react";
+import { MapPin, Utensils, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { getTodayString } from "@/utils/recommendations";
@@ -9,77 +9,66 @@ export default function RecentActivity({ dailyLogs = [], recentCheckins = [], re
 
   const latestLog = dailyLogs.length > 0 ? dailyLogs[0] : null;
   const walkMinutes = latestLog?.walk_minutes || 0;
-  const waterBowls = latestLog?.water_bowls || 0;
-  const isTodayLog = latestLog?.date === todayStr;
-
-  const upcomingRecords = records
-    .filter(r => r.next_date && r.next_date >= todayStr)
-    .sort((a, b) => a.next_date.localeCompare(b.next_date));
-  const nextReminder = upcomingRecords.length > 0 ? upcomingRecords[0] : null;
+  const walkDistance = latestLog?.walk_distance_km || (walkMinutes * 0.08).toFixed(1); // rough estimate if no gps
+  
+  const latestCheckin = recentCheckins.length > 0 ? recentCheckins[0] : null;
 
   return (
-    <div className="mt-8">
-      <div className="flex items-end justify-between mb-6">
-        <h3 className="text-xl font-bold text-[#1c1c16]">Activités récentes</h3>
-        <button onClick={() => navigate(createPageUrl("Activite"))} className="text-[#00382b] text-sm font-bold">Tout voir</button>
+    <section className="space-y-6 pb-20 mt-8">
+      <div className="flex justify-between items-end px-1">
+        <h3 className="font-extrabold text-2xl text-forest-green">Chronologie Récente</h3>
+        <button 
+          onClick={() => navigate(createPageUrl("Profile"))}
+          className="text-secondary font-black text-xs uppercase tracking-widest hover:underline"
+        >
+          Historique complet
+        </button>
       </div>
       
-      <div className="grid grid-cols-2 gap-4">
-        {/* Walk Card */}
+      <div className="space-y-4">
+        {/* Walk Timeline Card */}
         <div 
           onClick={() => navigate(createPageUrl("Activite"))}
-          className="col-span-2 bg-surface-container-lowest rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-outline-variant/10 cursor-pointer active:scale-95 transition-transform"
+          className="flex items-center gap-6 p-6 rounded-3xl bg-white border border-emerald-50 shadow-sm hover:shadow-md transition-shadow group cursor-pointer active:scale-[0.98]"
         >
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-emerald-100 text-emerald-700 rounded-2xl">
-              <Footprints className="w-6 h-6" fill="currentColor" />
+          <div className="w-16 h-16 rounded-2xl bg-secondary/5 flex items-center justify-center text-secondary relative shrink-0">
+            <MapPin className="w-8 h-8" />
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-secondary rounded-full border-2 border-white"></div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-extrabold text-forest-green text-lg truncate">Balade</p>
+            <p className="text-sm font-medium text-on-surface-variant/60 tracking-tight truncate">
+              {latestLog?.date === todayStr ? "Aujourd'hui" : "Récemment"} • {walkDistance} km • {walkMinutes} min
+            </p>
+          </div>
+          {walkMinutes > 0 && (
+            <div className="text-right shrink-0">
+              <div className="bg-secondary/10 px-4 py-2 rounded-xl">
+                <span className="text-sm font-black text-secondary tracking-tight">+{(walkMinutes * 2)} pts</span>
+              </div>
             </div>
-            <span className="text-[10px] font-black text-outline uppercase tracking-widest mt-1">
-              {isTodayLog ? "AUJOURD'HUI" : "RÉCENT"}
-            </span>
-          </div>
-          <h4 className="font-bold text-lg text-[#1c1c16]">{walkMinutes > 0 ? "Dernière balade" : "Pas de balade signalée"}</h4>
-          <p className="text-sm text-on-surface-variant mb-4">{walkMinutes > 0 ? `${walkMinutes} min` : "Enregistre une balade"}</p>
-          <div className="h-2 w-full bg-surface-container-low rounded-full overflow-hidden">
-            <div className="h-full bg-[#00382b] rounded-full" style={{ width: walkMinutes > 0 ? `${Math.min((walkMinutes / 60) * 100, 100)}%` : "0%" }} />
-          </div>
+          )}
         </div>
 
-        {/* Hydration Card */}
-        <div className="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-outline-variant/10">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-blue-100 text-blue-700 rounded-2xl">
-              <Droplet className="w-6 h-6" fill="currentColor" />
-            </div>
-          </div>
-          <h4 className="font-bold text-lg text-[#1c1c16] leading-tight">Hydratation</h4>
-          <p className="text-sm text-on-surface-variant mt-1">{waterBowls} / 3 bols</p>
-          <div className="mt-4 flex gap-1.5">
-            {[1, 2, 3].map(bowl => (
-              <div key={bowl} className={`h-1.5 flex-1 rounded-full ${bowl <= waterBowls ? "bg-[#00382b]" : "bg-surface-container-low"}`} />
-            ))}
-          </div>
-        </div>
-
-        {/* Reminder Card */}
+        {/* Nutrition Timeline Card */}
         <div 
-          onClick={() => navigate(createPageUrl("Sante"))}
-          className="bg-[#00382b] text-white rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] relative overflow-hidden cursor-pointer active:scale-95 transition-transform"
+          onClick={() => navigate(createPageUrl("Nutri"))}
+          className="flex items-center gap-6 p-6 rounded-3xl bg-white border border-emerald-50 shadow-sm hover:shadow-md transition-shadow cursor-pointer active:scale-[0.98]"
         >
-          <div className="absolute -right-6 -bottom-6 opacity-10">
-            <PawPrint className="w-32 h-32" fill="currentColor" />
+          <div className="w-16 h-16 rounded-2xl bg-orange-500/5 flex items-center justify-center text-orange-600 shrink-0">
+            <Utensils className="w-8 h-8" />
           </div>
-          <div className="relative z-10">
-            <h4 className="font-bold text-lg mb-1 leading-tight">Rappel Santé</h4>
-            <p className="text-xs text-white/70 mb-4">
-              {nextReminder ? new Date(nextReminder.next_date).toLocaleDateString('fr-FR') : "Aucun rappel"}
+          <div className="flex-1 min-w-0">
+            <p className="font-extrabold text-forest-green text-lg truncate">Repas</p>
+            <p className="text-sm font-medium text-on-surface-variant/60 tracking-tight truncate">
+              {latestCheckin?.date === todayStr ? "Aujourd'hui" : "Récemment"} • Enregistré
             </p>
-            <p className="text-sm font-medium leading-snug">
-              {nextReminder ? nextReminder.title : "Tout est à jour !"}
-            </p>
+          </div>
+          <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-secondary shrink-0">
+            <CheckCircle2 className="w-6 h-6" fill="currentColor" />
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -348,30 +348,30 @@ export default function Home() {
         {/* Top Header */}
         <CoachHomeHeader user={user} dog={dog} />
 
-        <main className="px-6 -mt-6 z-20 relative">
+        <main className="px-6 pt-24 pb-12 max-w-screen-xl mx-auto space-y-10 z-20 relative">
           <motion.div
             initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="space-y-6"
+            className="space-y-10"
           >
-            {/* Status Hero Card */}
-            <HomeStatusCard dog={dog} todayCheckin={todayCheckin} dailyLogs={dailyLogs} />
+            {/* Greeting & Streak */}
+            <StreakCard streakDays={streakDays} dog={dog} dailyLogs={dailyLogs} />
 
-            {/* Daily Briefing & Streak */}
-            <div className="space-y-4">
+            {/* Status & Insight (Ultra Premium Grid) */}
+            <div className="space-y-6">
+              <HomeStatusCard dog={dog} todayCheckin={todayCheckin} dailyLogs={dailyLogs} />
               <BriefingCard dog={dog} todayCheckin={todayCheckin} />
-              <StreakCard streakDays={streakDays} dailyLogs={dailyLogs} />
             </div>
 
             {/* Quick Actions Grid */}
             <QuickActions />
 
-            {/* Recent Activity Grid */}
+            {/* Recent Activity Feed */}
             <RecentActivity dailyLogs={dailyLogs} recentCheckins={recentCheckins} records={records} />
 
             {/* Disclaimer */}
-            <p className="text-center text-[11px] text-on-surface-variant px-6 pt-4 pb-2">
+            <p className="text-center text-[11px] text-on-surface-variant px-6 pb-2">
               PawCoach est un outil de suivi. Consultez votre vétérinaire.
             </p>
           </motion.div>
