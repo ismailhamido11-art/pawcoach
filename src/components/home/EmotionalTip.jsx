@@ -32,9 +32,9 @@ const CAT_ICONS = {
 
 export default function EmotionalTip({ dog, dailyLogs, recentCheckins }) {
   const tip = useMemo(() => {
-    // Rotate through tips — one new tip per day, never repeats within 20 days
-    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-    return TIPS[dayOfYear % TIPS.length];
+    // Rotate through tips — one new tip per hour
+    const currentHour = Math.floor(Date.now() / 3600000); // 3600000 ms in an hour
+    return TIPS[currentHour % TIPS.length];
   }, []);
 
   return (
