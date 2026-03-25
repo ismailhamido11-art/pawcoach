@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCw, Check, Home, AlertTriangle, ChevronDown, ChevronUp, Pencil, X, Trash2, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { useActionCredits } from "@/utils/ai-credits";
+import { useActionCredits } from "@/hooks/useActionCredits";
 import { UpgradePrompt } from "@/components/ui/AICreditsGate";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";

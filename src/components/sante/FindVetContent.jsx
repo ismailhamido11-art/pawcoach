@@ -10,7 +10,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import PlaceCard from "./PlaceCard";
-import { useActionCredits } from "@/utils/ai-credits";
+import { useActionCredits } from "@/hooks/useActionCredits";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";

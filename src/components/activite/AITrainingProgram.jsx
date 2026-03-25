@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { differenceInMonths } from "date-fns";
 import { toast } from "sonner";
 import { checkTrainingBadges } from "@/components/achievements/badgeUtils";
-import { useActionCredits } from "@/utils/ai-credits";
+import { useActionCredits } from "@/hooks/useActionCredits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 const ACTIVITY_LABELS = {

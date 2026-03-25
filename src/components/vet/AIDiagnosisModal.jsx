@@ -10,7 +10,7 @@ import DiagnosisReportView from "./DiagnosisReportView";
 import DiagnosisStep2Questions from "./DiagnosisStep2Questions";
 import { Loader2, Stethoscope, AlertTriangle, Download, MapPin, Camera, X } from "lucide-react";
 import { toast } from "sonner";
-import { useActionCredits } from "@/utils/ai-credits";
+import { useActionCredits } from "@/hooks/useActionCredits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedSymptom }) {

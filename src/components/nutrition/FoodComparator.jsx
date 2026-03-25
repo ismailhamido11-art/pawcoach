@@ -6,7 +6,7 @@ import { Plus, X, BarChart2, ChevronDown, ChevronUp, Trophy, AlertTriangle, Chec
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
-import { useActionCredits } from "@/utils/ai-credits";
+import { useActionCredits } from "@/hooks/useActionCredits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 import { spring } from "@/lib/animations";
 
