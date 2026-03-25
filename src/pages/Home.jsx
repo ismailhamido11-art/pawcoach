@@ -327,28 +327,33 @@ export default function Home() {
             dailyLogs={dailyLogs}
           />
 
-          {/* Hero Illustration — visible, warm, premium feel */}
-          {!todayCheckin && (
-            <motion.div
-              initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="bg-gradient-to-br from-emerald-50 via-white to-amber-50 rounded-3xl p-5 border border-emerald-100/50 shadow-sm overflow-hidden relative"
-            >
-              <div className="flex items-center gap-4">
-                <StorysetIllustration name="walking" className="w-28 h-28 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-bold text-foreground leading-snug">
-                    {dog?.name || "Ton chien"} attend sa balade !
-                  </p>
-                  <p className="text-[12px] text-muted-foreground mt-1 leading-relaxed">
-                    20 min de marche par jour renforcent son coeur et son moral.
-                  </p>
-                </div>
+          {/* Hero Illustration — always visible, premium feel */}
+          <motion.div
+            initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="bg-gradient-to-br from-emerald-50 via-white to-amber-50/80 rounded-3xl p-5 border border-emerald-100/50 shadow-sm overflow-hidden relative"
+          >
+            <div className="flex items-center gap-4">
+              <StorysetIllustration name="walking" className="w-32 h-32 flex-shrink-0 -ml-2" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[16px] font-bold text-foreground leading-snug">
+                  {todayCheckin
+                    ? `${dog?.name || "Ton chien"} est en forme !`
+                    : `${dog?.name || "Ton chien"} attend son check-in`
+                  }
+                </p>
+                <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">
+                  {todayCheckin
+                    ? "Continue comme ca, chaque jour compte pour sa sante."
+                    : "20 min de marche par jour renforcent son coeur et son moral."
+                  }
+                </p>
               </div>
-              <div className="absolute -top-6 -right-6 w-20 h-20 bg-emerald-200/20 rounded-full blur-2xl" />
-            </motion.div>
-          )}
+            </div>
+            <div className="absolute -top-8 -right-8 w-24 h-24 bg-emerald-200/20 rounded-full blur-2xl" />
+            <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-amber-200/15 rounded-full blur-xl" />
+          </motion.div>
 
           {/* Calendar Strip */}
           <CalendarStrip dailyLogs={dailyLogs} />
@@ -379,6 +384,21 @@ export default function Home() {
             ))}
           </div>
 
+          {/* Nutrition tip card with illustration */}
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50/50 rounded-3xl p-4 border border-amber-100/50 shadow-sm flex items-center gap-4">
+            <StorysetIllustration name="feeding" className="w-24 h-24 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-bold text-foreground">Nutrition de {dog?.name || "ton chien"}</p>
+              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Scanne un aliment pour savoir s'il est adapte.</p>
+              <button
+                onClick={() => navigate(createPageUrl("Scan"))}
+                className="mt-2 text-[12px] font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-full active:scale-95 transition-transform"
+              >
+                Scanner un aliment
+              </button>
+            </div>
+          </div>
+
           {/* Active Programs */}
           <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} behaviorBookmarks={behaviorBookmarks} />
 
@@ -399,6 +419,21 @@ export default function Home() {
               )}
             </div>
           )}
+
+          {/* Health card with illustration */}
+          <div className="bg-gradient-to-r from-violet-50 to-fuchsia-50/50 rounded-3xl p-4 border border-violet-100/50 shadow-sm flex items-center gap-4">
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-bold text-foreground">Carnet de sante</p>
+              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Vaccins, visites, poids — tout est suivi automatiquement.</p>
+              <button
+                onClick={() => navigate(createPageUrl("Sante"))}
+                className="mt-2 text-[12px] font-bold text-violet-700 bg-violet-100 px-3 py-1.5 rounded-full active:scale-95 transition-transform"
+              >
+                Voir le carnet
+              </button>
+            </div>
+            <StorysetIllustration name="vet-checkup" className="w-24 h-24 flex-shrink-0" />
+          </div>
 
           {/* Emotional Tip — "Le savais-tu ?" */}
           <EmotionalTip dog={dog} />
