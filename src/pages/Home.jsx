@@ -28,6 +28,7 @@ import PostTrialSheet from "../components/premium/PostTrialSheet";
 import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
 import FirstDayGuide from "../components/home/FirstDayGuide";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 
 
 const MILESTONES = [
@@ -269,10 +270,10 @@ export default function Home() {
   }, [dog, records, exercises, scans, recentCheckins, dailyLogs, todayCheckin, streak, diagnosisReports, nutritionPlans]);
 
   const quickActions = [
-    { icon: ScanLine, label: "Scanner", colorClass: "text-white", bgClass: "bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg shadow-amber-200/50", page: "Scan" },
-    { icon: Footprints, label: "Balade", colorClass: "text-white", bgClass: "bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-200/50", page: "Activite" },
-    { icon: Stethoscope, label: "Santé", colorClass: "text-white", bgClass: "bg-gradient-to-br from-violet-400 to-violet-600 shadow-lg shadow-violet-200/50", page: "Sante" },
-    { icon: BookOpen, label: "Guides", colorClass: "text-white", bgClass: "bg-gradient-to-br from-blue-400 to-blue-600 shadow-lg shadow-blue-200/50", page: "Training" },
+    { emoji: "📸", label: "Scanner", bgClass: "bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg shadow-amber-200/50", page: "Scan" },
+    { emoji: "🐾", label: "Balade", bgClass: "bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-200/50", page: "Activite" },
+    { emoji: "💊", label: "Santé", bgClass: "bg-gradient-to-br from-violet-400 to-violet-600 shadow-lg shadow-violet-200/50", page: "Sante" },
+    { emoji: "📖", label: "Guides", bgClass: "bg-gradient-to-br from-blue-400 to-blue-600 shadow-lg shadow-blue-200/50", page: "Training" },
   ];
 
   const streakDays = streak?.current_streak || 0;
@@ -326,6 +327,29 @@ export default function Home() {
             dailyLogs={dailyLogs}
           />
 
+          {/* Hero Illustration — visible, warm, premium feel */}
+          {!todayCheckin && (
+            <motion.div
+              initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="bg-gradient-to-br from-emerald-50 via-white to-amber-50 rounded-3xl p-5 border border-emerald-100/50 shadow-sm overflow-hidden relative"
+            >
+              <div className="flex items-center gap-4">
+                <StorysetIllustration name="walking" className="w-28 h-28 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-bold text-foreground leading-snug">
+                    {dog?.name || "Ton chien"} attend sa balade !
+                  </p>
+                  <p className="text-[12px] text-muted-foreground mt-1 leading-relaxed">
+                    20 min de marche par jour renforcent son coeur et son moral.
+                  </p>
+                </div>
+              </div>
+              <div className="absolute -top-6 -right-6 w-20 h-20 bg-emerald-200/20 rounded-full blur-2xl" />
+            </motion.div>
+          )}
+
           {/* Calendar Strip */}
           <CalendarStrip dailyLogs={dailyLogs} />
 
@@ -348,7 +372,7 @@ export default function Home() {
                 transition={{ delay: i * 0.05, duration: 0.25 }}
               >
                 <div className={`w-[56px] h-[56px] rounded-2xl flex items-center justify-center ${qa.bgClass}`}>
-                  <qa.icon className={`w-6 h-6 ${qa.colorClass}`} />
+                  <span className="text-2xl drop-shadow-sm">{qa.emoji}</span>
                 </div>
                 <span className="text-[11px] font-bold text-foreground">{qa.label}</span>
               </motion.button>
