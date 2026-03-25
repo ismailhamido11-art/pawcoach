@@ -235,7 +235,7 @@ export default function Library() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.96 }}
-                  className="bg-white rounded-2xl border border-border/40 shadow-sm overflow-hidden"
+                  className="bg-white rounded-2xl border border-border/40 shadow-sm overflow-hidden card-hover"
                 >
                   <button
                     className="w-full text-left p-4"

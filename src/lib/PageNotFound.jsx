@@ -16,11 +16,11 @@ export default function PageNotFound() {
                     </div>
 
                     <div className="space-y-3">
-                        <h2 className="text-2xl font-semibold text-slate-800">
+                        <h2 className="text-2xl font-semibold text-foreground">
                             Page introuvable
                         </h2>
-                        <p className="text-slate-500 leading-relaxed text-sm">
-                            La page <span className="font-medium text-slate-700">"{pageName}"</span> n'existe pas ou a été déplacée.
+                        <p className="text-muted-foreground leading-relaxed text-sm">
+                            La page <span className="font-medium text-foreground">"{pageName}"</span> n'existe pas ou a été déplacée.
                         </p>
                     </div>
 

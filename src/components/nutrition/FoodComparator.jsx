@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, X, BarChart2, ChevronDown, ChevronUp, Trophy, AlertTriangle, CheckCircle2, Loader2, BookmarkPlus, BookmarkCheck } from "lucide-react";
+import { Bone } from "@/components/ui/SkeletonPage";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
@@ -82,9 +83,14 @@ function ProductSlot({ index, product, onAdd, onRemove }) {
       {/* Info */}
       <div className="p-3">
         {state === "analyzing" && (
-          <div className="flex flex-col items-center gap-2 py-2">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
-            <p className="text-xs text-muted-foreground text-center">Analyse IA…</p>
+          <div className="space-y-2 py-2">
+            <div className="flex items-center gap-2">
+              <Bone className="h-[52px] w-[52px] rounded-full" />
+              <Bone className="h-3 w-2/3" />
+            </div>
+            <Bone className="h-3 w-full" />
+            <Bone className="h-3 w-4/5" />
+            <p className="text-[10px] text-muted-foreground text-center pt-1">Analyse IA…</p>
           </div>
         )}
         {state === "done" && result && (

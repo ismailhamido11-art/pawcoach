@@ -22,7 +22,7 @@ export default function TodayCard({ dog, user: _user, todayCheckin, streak: _str
         className="mx-4"
       >
         <Link to={createPageUrl(topRec.page) + (topRec.tab ? `?tab=${topRec.tab}` : "") + (topRec.vaccineKey ? `&vaccineKey=${topRec.vaccineKey}` : "")}>
-          <div className="rounded-2xl bg-red-50 border border-red-200 p-4 shadow-sm">
+          <div className="rounded-2xl bg-red-50 border border-red-200 p-4 shadow-sm card-hover">
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
                 <AlertTriangle className="w-5 h-5 text-red-600" />
@@ -109,7 +109,7 @@ export default function TodayCard({ dog, user: _user, todayCheckin, streak: _str
 
       {topRec && (
         <Link to={createPageUrl(topRec.page) + (topRec.tab ? `?tab=${topRec.tab}` : "") + (topRec.vaccineKey ? `&vaccineKey=${topRec.vaccineKey}` : "")}>
-          <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-xl px-3 py-2.5 border border-border/20 transition-colors hover:bg-white">
+          <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-xl px-3 py-2.5 border border-border/20 transition-colors hover:bg-white card-hover">
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
               style={{

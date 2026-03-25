@@ -90,7 +90,7 @@ export default function DailyCoaching({ dog, recommendations = [] }) {
             <Link to={createPageUrl(hero.page) + (hero.tab ? `?tab=${hero.tab}` : "") + (hero.vaccineKey ? `&vaccineKey=${hero.vaccineKey}` : "")}>
               <motion.div
                 whileTap={{ scale: 0.97 }}
-                className={`flex items-center gap-4 bg-white rounded-2xl px-4 py-4 shadow-md border border-border/30 border-l-4 ${hero.accent} cursor-pointer`}
+                className={`flex items-center gap-4 bg-white rounded-2xl px-4 py-4 shadow-md border border-border/30 border-l-4 ${hero.accent} cursor-pointer card-hover`}
               >
                 <div className={`w-12 h-12 rounded-2xl ${hero.iconBg} flex items-center justify-center shrink-0`}>
                   <HeroIcon className="w-6 h-6" style={{ color: hero.iconColor }} strokeWidth={2} />
@@ -113,7 +113,7 @@ export default function DailyCoaching({ dog, recommendations = [] }) {
                   <Link key={rec.id} to={createPageUrl(rec.page) + (rec.tab ? `?tab=${rec.tab}` : "") + (rec.vaccineKey ? `&vaccineKey=${rec.vaccineKey}` : "")} className="flex-1">
                     <motion.div
                       whileTap={{ scale: 0.96 }}
-                      className="flex items-center gap-2.5 bg-white rounded-xl px-3 py-2.5 border border-border/20 cursor-pointer"
+                      className="flex items-center gap-2.5 bg-white rounded-xl px-3 py-2.5 border border-border/20 cursor-pointer card-hover"
                     >
                       <div className={`w-8 h-8 rounded-lg ${rec.iconBg} flex items-center justify-center shrink-0`}>
                         <rec.icon className="w-4 h-4" style={{ color: rec.iconColor }} strokeWidth={2} />

@@ -777,7 +777,7 @@ export default function Training() {
               whileTap={{ scale: 0.98 }}
               transition={{ delay: 0.05 * idx }}
               onClick={() => locked ? navigate(createPageUrl("Premium") + "?from=training") : navigate(createPageUrl("Training") + `?behavior=${guide.id}`)}
-              className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 border border-border/30 shadow-sm cursor-pointer"
+              className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 border border-border/30 shadow-sm cursor-pointer card-hover"
             >
               <span className="text-2xl shrink-0">{guide.emoji}</span>
               <div className="flex-1 min-w-0">

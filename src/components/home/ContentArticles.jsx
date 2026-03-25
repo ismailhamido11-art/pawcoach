@@ -38,7 +38,7 @@ export default function ContentArticles({ dog }) {
           <button
             key={i}
             onClick={() => navigate(createPageUrl(article.page))}
-            className="bg-white rounded-2xl border border-[#E8E4DF] overflow-hidden text-left active:scale-[0.98] transition-transform"
+            className="bg-white rounded-2xl border border-[#E8E4DF] overflow-hidden text-left card-hover"
           >
             <img
               src={article.img}

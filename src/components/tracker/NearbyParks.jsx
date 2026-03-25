@@ -44,7 +44,7 @@ const TYPE_LABELS = {
   dog_park: { label: "Parc canin", color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200", icon: Dog },
   park_dog_ok: { label: "Chiens acceptés", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", icon: TreePine },
   park_leashed: { label: "En laisse", color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200", icon: TreePine },
-  park_general: { label: "Parc public", color: "text-slate-600", bg: "bg-slate-50", border: "border-slate-200", icon: TreePine },
+  park_general: { label: "Parc public", color: "text-muted-foreground", bg: "bg-muted", border: "border-border", icon: TreePine },
 };
 
 const SURFACE_LABELS = { grass: "Herbe", sand: "Sable", gravel: "Gravier", asphalt: "Asphalte", earth: "Terre" };

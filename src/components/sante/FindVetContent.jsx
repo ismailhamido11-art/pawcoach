@@ -297,7 +297,7 @@ export default function FindVetContent({ dog, user }) {
       {/* Portail vétérinaire */}
       <div className="mx-4 mt-4 pt-4 border-t border-border">
         <Link to={createPageUrl("VetPortal")}>
-          <div className="flex items-center justify-between bg-primary/5 border border-primary/15 rounded-2xl px-4 py-3">
+          <div className="flex items-center justify-between bg-primary/5 border border-primary/15 rounded-2xl px-4 py-3 card-hover">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                 <Stethoscope className="w-4 h-4 text-primary" />

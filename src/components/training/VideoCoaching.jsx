@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Video, Loader2, Sparkles, AlertCircle, BookmarkPlus, BookmarkCheck } from "lucide-react";
+import { Bone } from "@/components/ui/SkeletonPage";
 import { toast } from "sonner";
 import ReactMarkdown from 'react-markdown';
 import { useActionCredits } from "@/hooks/useActionCredits";
@@ -137,12 +138,24 @@ export default function VideoCoaching({ exerciseName, dogName, dogId }) {
       )}
 
       {loading && (
-        <div className="flex flex-col items-center justify-center py-6 space-y-4">
-          <Loader2 className="w-8 h-8 text-purple-600 animate-spin" />
-          <div className="text-center">
-            <p className="font-semibold text-foreground">Analyse en cours...</p>
-            <p className="text-xs text-muted-foreground mt-1">Notre coach IA observe attentivement la technique.</p>
+        <div className="py-6 space-y-4">
+          <div className="rounded-2xl border border-purple-100 bg-white p-4 space-y-3">
+            <div className="flex items-center gap-3">
+              <Bone className="h-10 w-10 rounded-xl bg-purple-100" />
+              <div className="flex-1 space-y-1.5">
+                <Bone className="h-4 w-1/2 bg-purple-100" />
+                <Bone className="h-3 w-1/3 bg-purple-50" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Bone className="h-3 w-full bg-purple-50" />
+              <Bone className="h-3 w-full bg-purple-50" />
+              <Bone className="h-3 w-4/5 bg-purple-50" />
+              <Bone className="h-3 w-3/5 bg-purple-50" />
+            </div>
           </div>
+          <p className="text-center text-sm font-semibold text-foreground">Analyse en cours...</p>
+          <p className="text-center text-xs text-muted-foreground">Notre coach IA observe attentivement la technique.</p>
         </div>
       )}
 
