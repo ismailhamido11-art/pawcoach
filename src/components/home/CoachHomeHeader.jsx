@@ -28,7 +28,7 @@ export default function CoachHomeHeader({ user, dog }) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <NotificationCenter />
+            <NotificationCenter transparent={true} />
             <button 
               onClick={() => navigate(createPageUrl("Profile"))}
               className="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors shadow-sm"

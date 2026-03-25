@@ -91,7 +91,7 @@ export function useNotifications() {
   return items;
 }
 
-export default function NotificationCenter() {
+export default function NotificationCenter({ transparent = false }) {
   const [open, setOpen] = useState(false);
   const notifications = useNotifications();
   const navigate = useNavigate();
@@ -132,18 +132,23 @@ export default function NotificationCenter() {
         onClick={() => setOpen(true)}
         whileHover={{ scale: 1.12 }}
         whileTap={{ scale: 0.92 }}
-        className={`relative p-3 rounded-full transition-all ${
-          unreadCount > 0
-            ? "bg-gradient-to-br from-primary via-primary to-accent shadow-xl"
-            : "bg-gradient-to-br from-primary/20 to-accent/20 hover:from-primary/30 hover:to-accent/30 shadow-md"
-        }`}
+        className={transparent 
+          ? `relative w-9 h-9 flex items-center justify-center rounded-full border border-white/10 transition-colors shadow-sm ${
+              unreadCount > 0 ? "bg-white/20 hover:bg-white/30" : "bg-white/10 hover:bg-white/20"
+            }`
+          : `relative p-3 rounded-full transition-all ${
+              unreadCount > 0
+                ? "bg-gradient-to-br from-primary via-primary to-accent shadow-xl"
+                : "bg-gradient-to-br from-primary/20 to-accent/20 hover:from-primary/30 hover:to-accent/30 shadow-md"
+            }`
+        }
       >
         <motion.div
           animate={unreadCount > 0 ? { scale: [1, 1.08, 1] } : {}}
           transition={{ duration: 2.5, repeat: Infinity }}
-          className="relative"
+          className="relative flex items-center justify-center"
         >
-          <Bell className={`w-6 h-6 ${unreadCount > 0 ? "text-white drop-shadow-lg" : "text-primary"}`} strokeWidth={unreadCount > 0 ? 2 : 1.5} />
+          <Bell className={`${transparent ? 'w-4 h-4 text-white' : 'w-6 h-6'} ${!transparent && unreadCount > 0 ? "text-white drop-shadow-lg" : (!transparent ? "text-primary" : "")}`} strokeWidth={transparent ? 2 : (unreadCount > 0 ? 2 : 1.5)} />
         </motion.div>
         {unreadCount > 0 && (
             <>
