@@ -270,10 +270,67 @@ export default function Home() {
   }, [dog, records, exercises, scans, recentCheckins, dailyLogs, todayCheckin, streak, diagnosisReports, nutritionPlans]);
 
   const quickActions = [
-    { emoji: "📸", label: "Scanner", bgClass: "bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg shadow-amber-200/50", page: "Scan" },
-    { emoji: "🐾", label: "Balade", bgClass: "bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-200/50", page: "Activite" },
-    { emoji: "💊", label: "Santé", bgClass: "bg-gradient-to-br from-violet-400 to-violet-600 shadow-lg shadow-violet-200/50", page: "Sante" },
-    { emoji: "📖", label: "Guides", bgClass: "bg-gradient-to-br from-blue-400 to-blue-600 shadow-lg shadow-blue-200/50", page: "Training" },
+    {
+      label: "Scanner",
+      bgClass: "bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg shadow-amber-200/50",
+      page: "Scan",
+      svg: (
+        <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none">
+          <ellipse cx="16" cy="12" rx="7" ry="6" fill="white" fillOpacity="0.9"/>
+          <circle cx="13" cy="11" r="1.2" fill="#92400e"/>
+          <circle cx="19" cy="11" r="1.2" fill="#92400e"/>
+          <ellipse cx="16" cy="14" rx="2.5" ry="1.8" fill="#92400e" fillOpacity="0.7"/>
+          <path d="M9 8Q7 3 5 6" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.8"/>
+          <path d="M23 8Q25 3 27 6" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.8"/>
+          <rect x="6" y="22" width="20" height="6" rx="3" fill="white" fillOpacity="0.3"/>
+          <rect x="8" y="24" width="4" height="2" rx="1" fill="white" fillOpacity="0.6"/>
+          <rect x="14" y="24" width="4" height="2" rx="1" fill="white" fillOpacity="0.6"/>
+          <rect x="20" y="24" width="4" height="2" rx="1" fill="white" fillOpacity="0.6"/>
+        </svg>
+      ),
+    },
+    {
+      label: "Balade",
+      bgClass: "bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-200/50",
+      page: "Activite",
+      svg: (
+        <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none">
+          <circle cx="11" cy="9" r="3.5" fill="white" fillOpacity="0.85"/>
+          <circle cx="21" cy="9" r="3.5" fill="white" fillOpacity="0.85"/>
+          <circle cx="7" cy="18" r="3" fill="white" fillOpacity="0.85"/>
+          <circle cx="25" cy="18" r="3" fill="white" fillOpacity="0.85"/>
+          <ellipse cx="16" cy="24" rx="6" ry="4.5" fill="white" fillOpacity="0.9"/>
+          <path d="M13 22Q16 18 19 22" stroke="#065f46" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+        </svg>
+      ),
+    },
+    {
+      label: "Santé",
+      bgClass: "bg-gradient-to-br from-violet-400 to-violet-600 shadow-lg shadow-violet-200/50",
+      page: "Sante",
+      svg: (
+        <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none">
+          <path d="M16 28C10 22 4 18 4 12a6 6 0 0112-1 6 6 0 0112 1c0 6-6 10-12 16z" fill="white" fillOpacity="0.85"/>
+          <path d="M13 14h6M16 11v6" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round"/>
+        </svg>
+      ),
+    },
+    {
+      label: "Dressage",
+      bgClass: "bg-gradient-to-br from-blue-400 to-blue-600 shadow-lg shadow-blue-200/50",
+      page: "Training",
+      svg: (
+        <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none">
+          <circle cx="16" cy="18" r="8" fill="white" fillOpacity="0.85"/>
+          <ellipse cx="16" cy="20" rx="3" ry="2" fill="#1e40af" fillOpacity="0.5"/>
+          <circle cx="13" cy="16" r="1.2" fill="#1e40af"/>
+          <circle cx="19" cy="16" r="1.2" fill="#1e40af"/>
+          <path d="M10 12L8 5h16l-2 7" fill="white" fillOpacity="0.7"/>
+          <rect x="11" y="4" width="10" height="2" rx="1" fill="white" fillOpacity="0.5"/>
+          <circle cx="16" cy="3.5" r="1.5" fill="white" fillOpacity="0.7"/>
+        </svg>
+      ),
+    },
   ];
 
   const streakDays = streak?.current_streak || 0;
@@ -377,7 +434,7 @@ export default function Home() {
                 transition={{ delay: i * 0.05, duration: 0.25 }}
               >
                 <div className={`w-[56px] h-[56px] rounded-2xl flex items-center justify-center ${qa.bgClass}`}>
-                  <span className="text-2xl drop-shadow-sm">{qa.emoji}</span>
+                  {qa.svg}
                 </div>
                 <span className="text-[11px] font-bold text-foreground">{qa.label}</span>
               </motion.button>
