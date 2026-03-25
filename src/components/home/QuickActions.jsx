@@ -1,53 +1,31 @@
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { ScanLine, Scale, Dumbbell, MapPin, BookOpen } from "lucide-react";
-import { hoverGlow } from "@/lib/animations";
-
-const ACTIONS = [
-  { icon: ScanLine, label: "Scanner", page: "Scan", color: "#059669" },
-  { icon: Scale, label: "Peser", page: "Sante", tab: "weight", color: "#2d9f82" },
-  { icon: Dumbbell, label: "Exercice", page: "Activite", tab: "dressage", color: "#6366f1" },
-  { icon: MapPin, label: "Véto", page: "Sante", tab: "findvet", color: "#3b82f6" },
-  { icon: BookOpen, label: "Guides", page: "Library", color: "#8b5cf6" },
-];
+import { ScanLine, Route, Dumbbell, SquarePen } from "lucide-react";
 
 export default function QuickActions() {
+  const navigate = useNavigate();
+
+  const actions = [
+    { id: "scan", label: "Scan", icon: ScanLine, path: "Scan" },
+    { id: "track", label: "Track", icon: Route, path: "Activite" },
+    { id: "train", label: "Train", icon: Dumbbell, path: "Training" },
+    { id: "log", label: "Log", icon: SquarePen, path: "Sante" },
+  ];
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.1 }}
-      className="px-4"
-    >
-      <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
-        {ACTIONS.map((action, i) => {
-          const Icon = action.icon;
-          return (
-            <motion.div
-              key={action.label}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1 + i * 0.05 }}
-              whileTap={{ scale: 0.92 }}
-              className="flex-shrink-0"
-            >
-              <Link
-                to={createPageUrl(action.page) + (action.tab ? `?tab=${action.tab}` : "")}
-                className="flex flex-col items-center gap-1.5 w-[60px] py-1"
-              >
-                <motion.div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-[0_2px_6px_rgba(0,0,0,0.06)] bg-white border border-border/20 relative"
-                  {...hoverGlow}
-                >
-                  <Icon className="w-6 h-6" style={{ color: action.color }} />
-                </motion.div>
-                <span className="text-xs font-semibold text-foreground/70">{action.label}</span>
-              </Link>
-            </motion.div>
-          );
-        })}
-      </div>
-    </motion.div>
+    <div className="grid grid-cols-4 gap-4">
+      {actions.map((action) => (
+        <button
+          key={action.id}
+          onClick={() => navigate(createPageUrl(action.path))}
+          className="flex flex-col items-center gap-2 group"
+        >
+          <div className="w-14 h-14 bg-surface-container-lowest rounded-2xl shadow-sm flex items-center justify-center text-[#00382b] group-hover:bg-[#00382b] group-hover:text-white transition-all duration-300 active:scale-95">
+            <action.icon className="w-6 h-6" />
+          </div>
+          <span className="text-xs font-semibold text-on-surface">{action.label}</span>
+        </button>
+      ))}
+    </div>
   );
 }

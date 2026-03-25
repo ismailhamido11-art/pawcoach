@@ -54,7 +54,7 @@ export default function BottomNav({ currentPage }) {
   };
 
   return (
-    <nav aria-label="Navigation principale" className="fixed bottom-0 left-0 right-0 z-40 bottom-nav bg-background border-t border-border shadow-2xl">
+    <nav aria-label="Navigation principale" className="fixed bottom-0 left-0 right-0 z-40 bottom-nav bg-surface border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
       <div className="flex items-center justify-around px-2 py-2">
         {tabs.map(({ label, icon: Icon, page }) => {
           const active = currentPage === page;
@@ -63,29 +63,20 @@ export default function BottomNav({ currentPage }) {
               key={page}
               to={getNavUrl(page)}
               onClick={(e) => handleTabClick(e, page)}
-              className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl transition-all duration-300 ${
-                active ? "text-primary" : "text-muted-foreground hover:text-primary"
+              className={`relative flex flex-col items-center justify-center w-[72px] h-[64px] rounded-3xl transition-all duration-300 ${
+                active ? "bg-[#00382b] text-white shadow-sm" : "text-outline hover:text-primary"
               }`}
             >
               <motion.div
-                className={`p-2 rounded-xl transition-all duration-300 ${
-                  active ? "bg-gradient-to-br from-secondary to-secondary/70 shadow-md" : "hover:bg-secondary/40"
-                }`}
                 whileHover={{ scale: active ? 1 : 1.1 }}
                 whileTap={{ scale: 0.9 }}
+                className="flex flex-col items-center justify-center gap-1"
               >
-                <Icon className={`w-5 h-5 ${active ? "stroke-[2.5]" : "stroke-[1.75]"}`} />
+                <Icon className={`w-6 h-6 ${active ? "fill-white/20" : ""}`} />
+                <span className={`text-[10px] font-bold tracking-wide ${active ? "text-white" : "text-outline"}`}>
+                  {label}
+                </span>
               </motion.div>
-              <span className={`text-xs font-semibold transition-all duration-200 ${active ? "text-primary" : "text-muted-foreground"}`}>
-                {label}
-              </span>
-              {active && (
-                <motion.div
-                  layoutId="bottomNavIndicator"
-                  className="absolute -bottom-1.5 w-6 h-1 rounded-full bg-gradient-to-r from-primary to-accent"
-                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                />
-              )}
             </Link>
           );
         })}

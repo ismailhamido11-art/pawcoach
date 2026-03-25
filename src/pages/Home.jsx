@@ -12,24 +12,20 @@ import { checkStreakBadges } from "@/components/achievements/badgeUtils";
 import { buildRecommendations, getTodayString } from "@/utils/recommendations";
 
 import CoachHomeHeader from "../components/home/CoachHomeHeader";
-import CalendarStrip from "../components/home/CalendarStrip";
-import DailyBriefing from "../components/home/DailyBriefing";
-import DailyProgress from "../components/home/DailyProgress";
-import EmotionalTip from "../components/home/EmotionalTip";
-import ContentArticles from "../components/home/ContentArticles";
+import HomeStatusCard from "../components/home/HomeStatusCard";
+import BriefingCard from "../components/home/BriefingCard";
+import StreakCard from "../components/home/StreakCard";
+import QuickActions from "../components/home/QuickActions";
+import RecentActivity from "../components/home/RecentActivity";
 
-import { Flame, ScanLine, Footprints, Stethoscope, BookOpen } from "lucide-react";
+import { Flame } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { toast } from "sonner";
 import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
 import PostTrialSheet from "../components/premium/PostTrialSheet";
-import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
-import FirstDayGuide from "../components/home/FirstDayGuide";
 import SkeletonPage from "@/components/ui/SkeletonPage";
-import StorysetIllustration from "@/components/ui/StorysetIllustration";
-import HomeWellnessHero from "../components/home/HomeWellnessHero";
 
 
 const MILESTONES = [
@@ -347,152 +343,40 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-32 relative flex flex-col">
+    <div className="min-h-screen bg-surface pb-32 relative flex flex-col">
       <PullToRefresh onRefresh={handleRefresh}>
-
-        {/* 1. Warm Header — greeting + photo */}
+        {/* Top Header */}
         <CoachHomeHeader user={user} dog={dog} />
 
-        {/* 2. THE BRIEFING — coach speaks first */}
-        <DailyBriefing
-          dog={dog}
-          user={user}
-          recentCheckins={recentCheckins}
-          dailyLogs={dailyLogs}
-          streak={streak}
-          todayCheckin={todayCheckin}
-          onQuickCheckin={handleQuickCheckin}
-          submitting={submitting}
-          recommendations={recommendations}
-        />
+        <main className="px-6 -mt-6 z-20 relative">
+          <motion.div
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="space-y-6"
+          >
+            {/* Status Hero Card */}
+            <HomeStatusCard dog={dog} />
 
-        {/* === Below the fold — scroll to discover === */}
-        <motion.div
-          className="px-5 space-y-6"
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-        >
-
-          {/* Trial expiry — visible immediately */}
-          <TrialExpiryBanner user={user} dog={dog} />
-
-          {/* Guide J0 — early for new users */}
-          <FirstDayGuide
-            dog={dog}
-            todayCheckin={todayCheckin}
-            scans={scans}
-            dailyLogs={dailyLogs}
-          />
-
-          {/* Wellness Hero — big illustration + 4 metric cards (Gentler Streak style) */}
-          <HomeWellnessHero
-            dog={dog}
-            todayCheckin={todayCheckin}
-            streak={streak}
-            dailyLogs={dailyLogs}
-          />
-
-          {/* Calendar Strip */}
-          <CalendarStrip dailyLogs={dailyLogs} />
-
-          {/* Quick Actions */}
-          <div className="flex justify-between px-2">
-            {quickActions.map((qa, i) => (
-              <motion.button
-                key={i}
-                onClick={() => navigate(createPageUrl(qa.page))}
-                className="flex flex-col items-center gap-2 w-[72px] active:scale-95 transition-transform"
-                initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05, duration: 0.25 }}
-              >
-                <div className={`w-[56px] h-[56px] rounded-2xl flex items-center justify-center ${qa.bgClass}`}>
-                  {qa.svg}
-                </div>
-                <span className="text-[11px] font-bold text-foreground">{qa.label}</span>
-              </motion.button>
-            ))}
-          </div>
-
-          {/* Nutrition tip card with illustration */}
-          <div className="bg-gradient-to-r from-amber-50 to-orange-50/50 rounded-3xl p-4 border border-amber-100/50 shadow-sm flex items-center gap-4">
-            <StorysetIllustration name="feeding" className="w-24 h-24 flex-shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-bold text-foreground">Nutrition de {dog?.name || "ton chien"}</p>
-              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Scanne un aliment pour savoir s'il est adapte.</p>
-              <button
-                onClick={() => navigate(createPageUrl("Scan"))}
-                className="mt-2 text-[12px] font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-full active:scale-95 transition-transform"
-              >
-                Scanner un aliment
-              </button>
+            {/* Daily Briefing & Streak */}
+            <div className="space-y-4">
+              <BriefingCard dog={dog} />
+              <StreakCard streakDays={streakDays} />
             </div>
-          </div>
 
-          {/* Active Programs */}
-          <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} behaviorBookmarks={behaviorBookmarks} />
+            {/* Quick Actions Grid */}
+            <QuickActions />
 
-          {/* Streak Card */}
-          {streakDays > 0 && (
-            <div className="flex items-center gap-4 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 rounded-2xl border border-amber-200/60 p-[18px] card-hover shadow-sm">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-amber-200/50">
-                <Flame className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-bold text-foreground">{streakDays} jours de suite</p>
-                <p className="text-xs text-muted-foreground mt-0.5">La régularité paie — continue comme ça !</p>
-              </div>
-              {streakLabel && (
-                <span className="text-[11px] font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-full flex-shrink-0">
-                  {streakLabel}
-                </span>
-              )}
-            </div>
-          )}
+            {/* Recent Activity Grid */}
+            <RecentActivity />
 
-          {/* Health card with illustration */}
-          <div className="bg-gradient-to-r from-violet-50 to-fuchsia-50/50 rounded-3xl p-4 border border-violet-100/50 shadow-sm flex items-center gap-4">
-            <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-bold text-foreground">Carnet de sante</p>
-              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Vaccins, visites, poids — tout est suivi automatiquement.</p>
-              <button
-                onClick={() => navigate(createPageUrl("Sante"))}
-                className="mt-2 text-[12px] font-bold text-violet-700 bg-violet-100 px-3 py-1.5 rounded-full active:scale-95 transition-transform"
-              >
-                Voir le carnet
-              </button>
-            </div>
-            <StorysetIllustration name="vet-checkup" className="w-24 h-24 flex-shrink-0" />
-          </div>
+            {/* Disclaimer */}
+            <p className="text-center text-[11px] text-on-surface-variant px-6 pt-4 pb-2">
+              PawCoach est un outil de suivi. Consultez votre vétérinaire.
+            </p>
+          </motion.div>
+        </main>
 
-          {/* Emotional Tip — "Le savais-tu ?" */}
-          <EmotionalTip dog={dog} />
-
-          {/* Content Articles — "Pour Rex" */}
-          <ContentArticles dog={dog} />
-
-          {/* Weekly Insight */}
-          {(weeklyInsight || pastInsights.length > 0) && (
-            <WeeklyInsightCard
-              insight={weeklyInsight}
-              previousInsight={previousInsight}
-              pastInsights={pastInsights}
-              dog={dog}
-              expanded={insightExpanded}
-              onToggle={() => setInsightExpanded(e => !e)}
-              onMarkRead={handleMarkInsightRead}
-              markingRead={markingRead}
-            />
-          )}
-
-          {/* Disclaimer */}
-          <p className="text-center text-[11px] text-muted-foreground px-6 pb-2">
-            PawCoach est un outil de suivi. Consultez votre vétérinaire.
-          </p>
-        </motion.div>
-
-        {/* Milestone celebration */}
         <AnimatePresence>
           {milestone && <MilestoneCelebration milestone={milestone} onClose={() => setMilestone(null)} />}
         </AnimatePresence>
