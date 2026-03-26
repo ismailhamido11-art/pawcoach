@@ -1,16 +1,22 @@
 # State
 
 ## Current Phase
-Phase 1 — Setup & Fondations restantes
+Milestone v2.0 "Cleanup Technique" — Phases 1-2 DONE, Phases 3-6 a discuter
 
 ## Progress
-- Phase 1 partiellement faite (SkeletonPage, LottieAnimation, card-hover, Layout AnimatePresence, prefers-reduced-motion OK)
-- Phase 3 skeletons partiellement faite (10/13 pages OK)
+- Phase 1 (Catch vides): DONE — 14 catch corrigés, toast.error ajoutés, build OK
+- Phase 2 (Leaflet lazy): DONE — lazy loading dans Sante.jsx et WalkMode.jsx, build OK
+- Phase 3 (DogPublicProfile): NOT STARTED — decision produit requise
+- Phase 4 (Home cache): NOT STARTED — validation requise
+- Phase 5 (activeDogId): NOT STARTED — validation requise
+- Phase 6 (Data layer): NOT STARTED — planification requise
 
 ## Blockers
 None
 
 ## Decisions
-- Branche: polish/visual-layer
-- Assets Storyset disponibles dans src/assets/illustrations/storyset/
-- lottieLibrary.js existe avec ~70 URLs CDN
+- Branch: main
+- Phases 1-2: terminées, pas encore commitées
+- Phase 3: besoin decision produit Ismail
+- Phases 4-5: besoin validation avant execution
+- Phase 6: planification detaillee requise

@@ -1,26 +1,20 @@
-# PawCoach Visual Polish
+# PawCoach
 
 ## Vision
-Ajouter la couche emotionnelle visuelle sur toute l'app PawCoach — animations, skeletons, empty states, illustrations, Lottie, micro-interactions.
+PWA coach bien-etre canin — all-in-one pour proprietaires de chiens francophones. Mobile-first.
 
 ## Stack
-React 18 + Vite + Tailwind CSS + shadcn/ui + Framer Motion + Lucide React
-
-## Constraints
-- NE JAMAIS toucher la logique metier (API calls, hooks, routing, etats)
-- NE JAMAIS modifier les couleurs du design system dans index.css
-- NE JAMAIS supprimer du code fonctionnel
-- Utiliser UNIQUEMENT les tokens CSS existants (--primary, --accent, etc.)
-- npm run build DOIT passer sans erreur
-- Respecter prefers-reduced-motion
-
-## Assets disponibles
-- 23 illustrations SVG Storyset recolorees #1A4D3E dans src/assets/illustrations/storyset/
-- ~70 animations Lottie CDN dans src/lib/lottieLibrary.js
-- 8 mascottes SVG dans PawIllustrations.jsx
-- 10 mascottes JPG dans PawMascot.jsx
-- 12 illustrations CDN dans Illustration.jsx
-- SkeletonPage, LottieAnimation, EmptyState deja crees
+React 18 + Vite 6 + Tailwind 3 + shadcn/ui + Framer Motion + Lucide React
+Backend: Base44 platform (22 fonctions Deno)
+AI: OpenRouter (DeepSeek + GPT-4o vision)
+Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 
 ## Architecture
-16 pages, 5 sous-pages Sante, 7+ bottom sheets
+16 pages, ~102 composants custom, 22 fonctions backend, 22 entites Base44
+Detailed codebase docs in .planning/codebase/ (7 documents, 26 mars 2026)
+
+## Constraints
+- Git-first workflow (0 credit) — Build prompts only for schema changes
+- UI en francais, code en anglais
+- Design system: cream bg + forest #1A4D3E + emerald #2D9F82, ZERO orange
+- NE JAMAIS modifier pawcoach/src/components/ui/ (shadcn)
