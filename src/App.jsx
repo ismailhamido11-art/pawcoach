@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense, lazy } from 'react'
 import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
@@ -8,6 +8,10 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import PawLoader from '@/components/PawLoader';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import SkeletonPage from '@/components/ui/SkeletonPage';
+
+// Public pages — loaded outside auth wrapper
+const DogPublicProfile = lazy(() => import('./pages/DogPublicProfile'));
+const VetDogView = lazy(() => import('./pages/VetDogView'));
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -38,7 +42,7 @@ const AuthenticatedApp = () => {
     }
   }
 
-  // Render the main app
+  // Render the main app — excludes public routes handled at Router level
   return (
     <Routes>
       <Route path="/" element={
@@ -48,19 +52,21 @@ const AuthenticatedApp = () => {
           </ErrorBoundary>
         </LayoutWrapper>
       } />
-      {Object.entries(Pages).map(([path, Page]) => (
-        <Route
-          key={path}
-          path={`/${path}`}
-          element={
-            <LayoutWrapper currentPageName={path}>
-              <ErrorBoundary>
-                <Page />
-              </ErrorBoundary>
-            </LayoutWrapper>
-          }
-        />
-      ))}
+      {Object.entries(Pages)
+        .filter(([path]) => path !== 'DogPublicProfile' && path !== 'VetDogView')
+        .map(([path, Page]) => (
+          <Route
+            key={path}
+            path={`/${path}`}
+            element={
+              <LayoutWrapper currentPageName={path}>
+                <ErrorBoundary>
+                  <Page />
+                </ErrorBoundary>
+              </LayoutWrapper>
+            }
+          />
+        ))}
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
@@ -68,15 +74,34 @@ const AuthenticatedApp = () => {
 
 
 function App() {
-
   return (
-    <AuthProvider>
-      <HomeCacheProvider>
-        <Router>
-          <AuthenticatedApp />
-        </Router>
-      </HomeCacheProvider>
-    </AuthProvider>
+    <Router>
+      <Routes>
+        {/* Public routes — no auth required */}
+        <Route path="/DogPublicProfile" element={
+          <ErrorBoundary>
+            <Suspense fallback={<SkeletonPage variant="detail" currentPage="DogPublicProfile" />}>
+              <DogPublicProfile />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/VetDogView" element={
+          <ErrorBoundary>
+            <Suspense fallback={<SkeletonPage variant="detail" currentPage="VetDogView" />}>
+              <VetDogView />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        {/* All other routes go through auth */}
+        <Route path="/*" element={
+          <AuthProvider>
+            <HomeCacheProvider>
+              <AuthenticatedApp />
+            </HomeCacheProvider>
+          </AuthProvider>
+        } />
+      </Routes>
+    </Router>
   )
 }
 
