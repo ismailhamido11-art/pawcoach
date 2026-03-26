@@ -1,14 +1,18 @@
 # State
 
 ## Current Phase
-No active milestone — v2.0 completed and archived.
+Milestone v3.0 "Consolidation" — Phase 1 (Audit) about to start
 
 ## Progress
-- v2.0 "Cleanup Technique": COMPLETED (6/6 phases, 26 mars 2026)
+- Phase 1 (Audit): STARTING
 
 ## Blockers
 None
 
+## Quick Tasks Completed
+- 260326-wms (2026-03-27): Replaced all 245 unicode emojis with Lucide React icons across 48 files. 0 emojis remaining. Build verified exit 0.
+
 ## Decisions
 - Branch: main
-- Next: /gsd:new-milestone to start v3.0
+- 6 audit agents in parallel (Home, Sante, Activite, Nutrition, Profile/Premium, Secondary pages)
+- Emoji replacement: use {Icon, color} object pattern for data arrays; IIFE for dynamic JSX rendering; text markers for html2canvas contexts
