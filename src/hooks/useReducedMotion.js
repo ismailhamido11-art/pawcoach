@@ -1,24 +1,8 @@
-import { useEffect, useState } from "react";
+// Simple reduced-motion check — no React hooks to avoid dual-instance crashes
+// Uses Framer Motion's useReducedMotion internally when available in components
+// that import from framer-motion. This file is a fallback for UI components.
 
 export default function useReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches);
-
-    updatePreference();
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener("change", updatePreference);
-      return () => mediaQuery.removeEventListener("change", updatePreference);
-    }
-
-    mediaQuery.addListener(updatePreference);
-    return () => mediaQuery.removeListener(updatePreference);
-  }, []);
-
-  return prefersReducedMotion;
+  if (typeof window === "undefined" || !window.matchMedia) return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
