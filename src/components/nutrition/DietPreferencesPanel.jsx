@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { DietPreferences } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, Plus, X, Clock, Leaf, Wallet, Check, Loader2 } from "lucide-react";
+import { Save, Plus, X, Clock, Leaf, Wallet, Check, Loader2, Heart, Star, Diamond } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 const BUDGET_OPTIONS = [
-  { id: "low",    label: "\u{00c9}conomique", desc: "< 30\u20ac/mois", emoji: "\u{1F49A}" },
-  { id: "medium", label: "Standard",   desc: "30-70\u20ac/mois", emoji: "\u{1F49B}" },
-  { id: "high",   label: "Premium",    desc: "> 70\u20ac/mois", emoji: "\u{1F49C}" },
+  { id: "low",    label: "\u{00c9}conomique", desc: "< 30\u20ac/mois", Icon: Leaf, color: "text-emerald-500" },
+  { id: "medium", label: "Standard",   desc: "30-70\u20ac/mois", Icon: Star, color: "text-amber-500" },
+  { id: "high",   label: "Premium",    desc: "> 70\u20ac/mois", Icon: Diamond, color: "text-violet-500" },
 ];
 
 const PORTIONS_OPTIONS = [1, 2, 3];
@@ -276,12 +276,12 @@ export default function DietPreferencesPanel({ dog, user }) {
           <Wallet className="w-4 h-4 text-primary" /> Budget mensuel alimentation
         </p>
         <div className="flex gap-2">
-          {BUDGET_OPTIONS.map(({ id, label, desc, emoji }) => (
+          {BUDGET_OPTIONS.map(({ id, label, desc, Icon, color }) => (
             <button key={id} onClick={() => setBudget(id)}
               className={`flex-1 py-3 px-2 rounded-2xl text-center border-2 transition-all ${
                 budget === id ? "border-primary bg-primary/10" : "border-border bg-white"
               }`}>
-              <p className="text-lg">{emoji}</p>
+              <Icon className={`w-6 h-6 ${color}`} />
               <p className={`text-xs font-bold mt-0.5 ${budget === id ? "text-primary" : "text-foreground"}`}>{label}</p>
               <p className="text-[11px] text-muted-foreground">{desc}</p>
             </button>

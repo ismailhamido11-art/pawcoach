@@ -17,7 +17,7 @@ const MOOD_ICONS = {
   calm:  { Icon: Meh,      color: "text-slate-400" },
   hard:  { Icon: Frown,    color: "text-amber-500" },
 };
-const MOOD_EMOJIS = { super: "😄", good: "👍", calm: "😐", hard: "😟" };
+// MOOD_EMOJIS removed — use MOOD_ICONS (Lucide) instead
 
 function getMoods() {
   try { return JSON.parse(localStorage.getItem(MOOD_KEY) || "{}"); } catch { return {}; }
@@ -337,7 +337,7 @@ export default function TrackerHistory({ logs, dog }) {
           elements.push(
             <div key={log.date} className="bg-white border border-border rounded-2xl px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2.5 min-w-0">
-                {mood && <span className="text-base flex-shrink-0">{MOOD_EMOJIS[mood.mood] || ""}</span>}
+                {mood && MOOD_ICONS[mood.mood] && (() => { const M = MOOD_ICONS[mood.mood]; return <M.Icon className={`w-5 h-5 flex-shrink-0 ${M.color}`} />; })()}
                 <div className="min-w-0">
                   <p className="text-sm font-bold text-foreground capitalize">
                     {format(logDate, "EEEE d MMM", { locale: fr })}

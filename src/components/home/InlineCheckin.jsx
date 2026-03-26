@@ -1,23 +1,23 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send } from "lucide-react";
+import { Send, Frown, Meh, Smile, Laugh, Moon, Zap, Flame, Ban, UtensilsCrossed, Cookie } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const MOODS = [
-  { value: 1, emoji: "\u{1F622}", label: "Triste" },
-  { value: 2, emoji: "\u{1F610}", label: "Bof" },
-  { value: 3, emoji: "\u{1F60A}", label: "Bien" },
-  { value: 4, emoji: "\u{1F929}", label: "Super" },
+  { value: 1, Icon: Frown, color: "text-amber-500", label: "Triste" },
+  { value: 2, Icon: Meh, color: "text-slate-400", label: "Bof" },
+  { value: 3, Icon: Smile, color: "text-emerald-500", label: "Bien" },
+  { value: 4, Icon: Laugh, color: "text-emerald-600", label: "Super" },
 ];
 const ENERGIES = [
-  { value: 1, emoji: "\u{1F4A4}", label: "Faible" },
-  { value: 2, emoji: "\u26A1", label: "Moyen" },
-  { value: 3, emoji: "\u{1F525}", label: "Élevé" },
+  { value: 1, Icon: Moon, color: "text-slate-400", label: "Faible" },
+  { value: 2, Icon: Zap, color: "text-amber-500", label: "Moyen" },
+  { value: 3, Icon: Flame, color: "text-orange-500", label: "Élevé" },
 ];
 const APPETITES = [
-  { value: 1, emoji: "\u{1F6AB}", label: "Rien" },
-  { value: 2, emoji: "\u{1F60B}", label: "Normal" },
-  { value: 3, emoji: "\u{1F924}", label: "Glouton" },
+  { value: 1, Icon: Ban, color: "text-red-400", label: "Rien" },
+  { value: 2, Icon: UtensilsCrossed, color: "text-emerald-500", label: "Normal" },
+  { value: 3, Icon: Cookie, color: "text-amber-500", label: "Glouton" },
 ];
 
 const SYMPTOMS = [
@@ -73,7 +73,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                   : "border-border/40 bg-white/60"
               )}
             >
-              <span className="text-lg">{m.emoji}</span>
+              <m.Icon className={`w-6 h-6 mx-auto ${m.color}`} />
               <p className="text-xs font-semibold text-foreground mt-0.5">{m.label}</p>
             </button>
           ))}
@@ -105,7 +105,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                         : "border-border/40 bg-white/60"
                     )}
                   >
-                    <span className="text-base">{e.emoji}</span>
+                    <e.Icon className={`w-5 h-5 mx-auto ${e.color}`} />
                     <p className="text-xs font-semibold mt-0.5">{e.label}</p>
                   </button>
                 ))}
@@ -127,7 +127,7 @@ export default function InlineCheckin({ dogName, onSubmit, submitting }) {
                         : "border-border/40 bg-white/60"
                     )}
                   >
-                    <span className="text-base">{a.emoji}</span>
+                    <a.Icon className={`w-5 h-5 mx-auto ${a.color}`} />
                     <p className="text-xs font-semibold mt-0.5">{a.label}</p>
                   </button>
                 ))}

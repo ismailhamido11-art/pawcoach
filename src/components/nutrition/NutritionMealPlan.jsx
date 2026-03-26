@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NutritionPlan } from "@/api/entities";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw, Check, Home, AlertTriangle, ChevronDown, ChevronUp, Pencil, X, Trash2, Calendar } from "lucide-react";
+import { Loader2, RefreshCw, Check, Home, AlertTriangle, ChevronDown, ChevronUp, Pencil, X, Trash2, Calendar, MessageCircle, Dog } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useActionCredits } from "@/hooks/useActionCredits";
@@ -519,7 +519,7 @@ RÈGLES :
             onClick={() => onSwitchToCoach(`Je suis au jour ${progress.dayNumber}/7 de mon plan (${activeData.calories_per_day || "?"} kcal/jour). J'aimerais un conseil ou un ajustement.`)}
             className="w-full flex items-center justify-center gap-2 bg-emerald-50 border border-emerald-200 rounded-2xl py-3 text-sm font-semibold text-emerald-700 active:bg-emerald-100 transition-colors"
           >
-            {"\u{1F4AC}"} Ajuster via NutriCoach
+            <MessageCircle className="w-4 h-4 inline mr-1" /> Ajuster via NutriCoach
           </button>
         )}
 
@@ -864,7 +864,7 @@ RÈGLES :
           {dog.photo ? (
             <img src={dog.photo} alt={dog.name} loading="lazy" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
           ) : (
-            <div className="w-10 h-10 rounded-xl bg-safe/10 flex items-center justify-center text-xl flex-shrink-0">{"\u{1F415}"}</div>
+            <div className="w-10 h-10 rounded-xl bg-safe/10 flex items-center justify-center flex-shrink-0"><Dog className="w-5 h-5 text-emerald-600" /></div>
           )}
           <div className="flex-1 min-w-0">
             <p className="font-bold text-foreground text-sm">{dog.name}</p>

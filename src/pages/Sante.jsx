@@ -35,11 +35,11 @@ const tabVariants = {
 };
 
 const TABS = [
-  { id: "carnet",  label: "Carnet",       emoji: "\uD83D\uDCD6", icon: BookHeart,    color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
-  { id: "malade",  label: "Sympt\u00F4mes",    emoji: "\u26A0\uFE0F", icon: AlertTriangle, color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
-  { id: "growth",  label: "Croissance",   emoji: "\uD83D\uDCC8", icon: TrendingUp,   color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
-  { id: "import",  label: "Documents",    emoji: "\uD83D\uDCF7", icon: Camera,       color: "#8b5cf6", bg: "from-violet-500 to-purple-600" },
-  { id: "findvet", label: "V\u00E9to",         emoji: "\uD83D\uDCCD", icon: MapPin,       color: "#3b82f6", bg: "from-blue-500 to-indigo-600" },
+  { id: "carnet",  label: "Carnet",       Icon: BookHeart,    color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
+  { id: "malade",  label: "Sympt\u00F4mes",    Icon: AlertTriangle, color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
+  { id: "growth",  label: "Croissance",   Icon: TrendingUp,   color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
+  { id: "import",  label: "Documents",    Icon: Camera,       color: "#8b5cf6", bg: "from-violet-500 to-purple-600" },
+  { id: "findvet", label: "V\u00E9to",         Icon: MapPin,       color: "#3b82f6", bg: "from-blue-500 to-indigo-600" },
 ];
 
 export default function Sante() {
@@ -176,7 +176,7 @@ export default function Sante() {
 
         {/* Tabs — pill cards */}
         <div className="grid grid-cols-5 gap-1.5 mt-1">
-          {TABS.map(({ id, label, emoji, bg }) => {
+          {TABS.map(({ id, label, Icon, bg }) => {
             const active = activeTab === id;
             return (
               <motion.button
@@ -191,7 +191,7 @@ export default function Sante() {
                 {active && (
                   <div className={`absolute inset-0 bg-gradient-to-br ${bg} opacity-100`} />
                 )}
-                <span className="relative text-xl leading-none">{emoji}</span>
+                <Icon className="relative w-5 h-5" />
                 <span className={`relative text-[11px] font-bold leading-tight ${active ? "text-white" : "text-white/75"}`}>{label}</span>
                 {active && (
                   <motion.div

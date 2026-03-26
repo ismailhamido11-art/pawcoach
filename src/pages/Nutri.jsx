@@ -15,7 +15,7 @@ import EmptyState from "@/components/ui/EmptyState";
 // SavedPlansPanel merged into NutritionMealPlan
 
 import { Button } from "@/components/ui/button";
-import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, ChevronDown, Copy, RotateCcw } from "lucide-react";
+import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, ChevronDown, Copy, RotateCcw, Camera, Calendar, Scale, Settings } from "lucide-react";
 import { DogChef, DogCurious } from "../components/ui/PawIllustrations";
 import { isUserPremium } from "@/utils/premium";
 import { initCredits } from "@/utils/ai-credits";
@@ -41,11 +41,11 @@ const msgAnim = {
 };
 
 const TABS = [
-  { id: "scan",     label: "Scanner",           emoji: "\u{1F4F7}", bg: "from-violet-500 to-purple-600" },
-  { id: "mealplan", label: "Plan repas",         emoji: "\u{1F4C5}", bg: "from-amber-500 to-amber-600" },
-  { id: "coach",    label: "Coach IA",           emoji: "\u{1F957}", bg: "from-emerald-500 to-emerald-700" },
-  { id: "compare",  label: "Comparer croquettes", emoji: "\u2696\uFE0F", bg: "from-blue-500 to-indigo-600" },
-  { id: "prefs",    label: "Préférences",        emoji: "\u2699\uFE0F", bg: "from-slate-500 to-slate-700" },
+  { id: "scan",     label: "Scanner",           Icon: ScanLine, bg: "from-violet-500 to-purple-600" },
+  { id: "mealplan", label: "Plan repas",         Icon: Calendar, bg: "from-amber-500 to-amber-600" },
+  { id: "coach",    label: "Coach IA",           Icon: Salad,    bg: "from-emerald-500 to-emerald-700" },
+  { id: "compare",  label: "Comparer croquettes", Icon: Scale,    bg: "from-blue-500 to-indigo-600" },
+  { id: "prefs",    label: "Préférences",        Icon: Settings, bg: "from-slate-500 to-slate-700" },
 ];
 
 export default function Nutri() {
@@ -411,7 +411,7 @@ export default function Nutri() {
 
         {/* Tabs — pill cards */}
         <div className="grid grid-cols-5 gap-1.5 mt-1">
-          {TABS.map(({ id, label, emoji, bg }) => {
+          {TABS.map(({ id, label, Icon, bg }) => {
             const active = activeTab === id;
             return (
               <motion.button
@@ -426,7 +426,7 @@ export default function Nutri() {
                 {active && (
                   <div className={`absolute inset-0 bg-gradient-to-br ${bg} opacity-100`} />
                 )}
-                <span className="relative text-xl leading-none">{emoji}</span>
+                <Icon className="relative w-5 h-5" />
                 <span className={`relative text-[11px] font-bold leading-tight ${active ? "text-white" : "text-white/75"}`}>{label}</span>
                 {active && (
                   <motion.div
