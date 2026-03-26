@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { Bookmark } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Video, Loader2, Sparkles, AlertCircle, BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
@@ -21,7 +22,7 @@ export default function VideoCoaching({ exerciseName, dogName, dogId }) {
     try {
       const user = await base44.auth.me();
       const text = typeof feedback === "string" ? feedback : JSON.stringify(feedback);
-      await base44.entities.Bookmark.create({
+      await Bookmark.create({
         dog_id: dogId || null,
         owner: user.email,
         content: `# Coaching video — ${exerciseName}\n\n${text}`,

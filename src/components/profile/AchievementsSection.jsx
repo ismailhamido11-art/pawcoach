@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { base44 } from "@/api/base44Client";
+import { DogAchievement } from "@/api/entities";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Lock, ChevronRight, Zap, PawPrint, Footprints, Calendar, Medal, Sparkles, GraduationCap, Flame, Crown, Diamond, Dog, Target } from "lucide-react";
 
@@ -152,7 +152,7 @@ export default function AchievementsSection({ dog }) {
   useEffect(() => {
     if (!dog?.id) return;
     setLoading(true);
-    base44.entities.DogAchievement
+    DogAchievement
       .filter({ dog_id: dog.id }, "-unlocked_at", 100)
       .then(a => setAchievements(a || []))
       .finally(() => setLoading(false));

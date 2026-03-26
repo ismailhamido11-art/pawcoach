@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { NutritionPlan } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCw, Check, Home, AlertTriangle, ChevronDown, ChevronUp, Pencil, X, Trash2, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -91,7 +91,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
   const handleSaveNote = async () => {
     if (!activePlan) return;
     try {
-      await base44.entities.NutritionPlan.update(activePlan.id, { notes: tempNote });
+      await NutritionPlan.update(activePlan.id, { notes: tempNote });
       setEditingNote(false);
       toast.success("Note sauvegardée");
       onPlanSaved?.(); // refresh to get updated notes without mutating props
@@ -102,7 +102,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
 
   const handleDeletePlan = async (planId) => {
     try {
-      await base44.entities.NutritionPlan.delete(planId);
+      await NutritionPlan.delete(planId);
       onPlanSaved?.();
       toast.success("Plan supprimé");
     } catch {
@@ -113,9 +113,9 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
   const handleActivateOld = async (planId) => {
     try {
       if (activePlan) {
-        await base44.entities.NutritionPlan.update(activePlan.id, { is_active: false });
+        await NutritionPlan.update(activePlan.id, { is_active: false });
       }
-      await base44.entities.NutritionPlan.update(planId, { is_active: true });
+      await NutritionPlan.update(planId, { is_active: true });
       onPlanSaved?.();
       toast.success("Plan activé !");
     } catch {
@@ -127,15 +127,15 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
     if (!plan || !dog || !user) return;
     setSaving(true);
     try {
-      const existing = await base44.entities.NutritionPlan.filter(
+      const existing = await NutritionPlan.filter(
         { dog_id: dog.id, owner_email: user.email }
       ).catch(() => []);
       await Promise.all(
         (existing || []).filter(p => p.is_active).map(p =>
-          base44.entities.NutritionPlan.update(p.id, { is_active: false })
+          NutritionPlan.update(p.id, { is_active: false })
         )
       );
-      await base44.entities.NutritionPlan.create({
+      await NutritionPlan.create({
         dog_id: dog.id,
         owner_email: user.email,
         plan_text: JSON.stringify({ ...plan, start_date: new Date().toISOString().split("T")[0], dog_name: dog.name }),

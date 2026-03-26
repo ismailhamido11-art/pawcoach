@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { base44 } from "@/api/base44Client";
+import { SharedVetAccess } from "@/api/entities";
 import { Stethoscope, Plus, CheckCircle, Clock, XCircle } from "lucide-react";
 import EmptyState from "@/components/ui/EmptyState";
 
@@ -17,7 +17,7 @@ export default function VetSection({ dogs: _dogs, activeDogId }) {
 
   useEffect(() => {
     if (!activeDogId) return;
-    base44.entities.SharedVetAccess.filter({ dog_id: activeDogId })
+    SharedVetAccess.filter({ dog_id: activeDogId })
       .then(data => setVetAccesses(data || []))
       .catch(() => {});
   }, [activeDogId]);

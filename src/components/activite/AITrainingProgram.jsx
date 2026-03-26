@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { Bookmark } from "@/api/entities";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, Clock, RotateCcw, CheckCircle2, BookmarkCheck, Home, Check, CalendarDays, Lightbulb, Eye, Star, MessageSquare, ArrowRight } from "lucide-react";
+import { Sparkles, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, Clock, RotateCcw, CheckCircle2, BookmarkCheck, Home, Check, CalendarDays, Lightbulb, Eye, Star, MessageSquare, ArrowRight, PawPrint, Gamepad2, Brain, Wind, Moon, BookOpen, Heart, Zap, Dumbbell, Medal, PartyPopper, Smile, ThumbsUp, Meh, Frown, Laugh, Compass } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { differenceInMonths } from "date-fns";
 import { toast } from "sonner";
@@ -14,42 +15,46 @@ const ACTIVITY_LABELS = {
 };
 
 const ACTIVITY_ICONS = {
-  balade: "🐾", jeu: "🎾", "exercice mental": "🧠",
-  "repos actif": "💆", repos: "💤", entraînement: "🎯",
+  balade: { Icon: PawPrint, color: "text-emerald-600" },
+  jeu: { Icon: Gamepad2, color: "text-emerald-600" },
+  "exercice mental": { Icon: Brain, color: "text-violet-600" },
+  "repos actif": { Icon: Wind, color: "text-blue-500" },
+  repos: { Icon: Moon, color: "text-indigo-500" },
+  entraînement: { Icon: Target, color: "text-emerald-700" },
 };
 
 const JOURS_COURTS = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
 const MOIS_FR = ["jan.", "fév.", "mars", "avr.", "mai", "juin", "juil.", "août", "sep.", "oct.", "nov.", "déc."];
 
 const GOAL_SUGGESTIONS = [
-  { label: "Renforcer le lien", emoji: "❤️" },
-  { label: "Dépenser son énergie", emoji: "⚡" },
-  { label: "Calme et relaxation", emoji: "🧘" },
-  { label: "Perdre du poids", emoji: "🏋️" },
-  { label: "Stimulation mentale", emoji: "🧠" },
-  { label: "Obéissance de base", emoji: "🎯" },
+  { label: "Renforcer le lien", Icon: Heart, color: "text-rose-500" },
+  { label: "Dépenser son énergie", Icon: Zap, color: "text-amber-500" },
+  { label: "Calme et relaxation", Icon: Wind, color: "text-blue-500" },
+  { label: "Perdre du poids", Icon: Dumbbell, color: "text-emerald-600" },
+  { label: "Stimulation mentale", Icon: Brain, color: "text-violet-600" },
+  { label: "Obéissance de base", Icon: Target, color: "text-emerald-700" },
 ];
 
 const FEELING_OPTIONS = [
-  { emoji: "😕", label: "Pas convaincu" },
-  { emoji: "🙂", label: "Correct" },
-  { emoji: "😊", label: "Bien" },
-  { emoji: "😄", label: "Super" },
-  { emoji: "🤩", label: "Incroyable" },
+  { Icon: Frown, iconColor: "text-slate-400", label: "Pas convaincu" },
+  { Icon: Meh, iconColor: "text-amber-400", label: "Correct" },
+  { Icon: Smile, iconColor: "text-emerald-500", label: "Bien" },
+  { Icon: ThumbsUp, iconColor: "text-emerald-600", label: "Super" },
+  { Icon: Laugh, iconColor: "text-emerald-700", label: "Incroyable" },
 ];
 
 function getCoachInsight(feeling, observedCount, totalIndicators, dogName) {
   const name = dogName || "ton chien";
   if (feeling >= 4 && observedCount >= 2) {
-    return { emoji: "🌟", title: "Progression remarquable", message: `${observedCount}/${totalIndicators} signes de progression observés — ${name} et toi formez une super équipe. Le prochain programme va consolider ces acquis.` };
+    return { Icon: Star, iconColor: "text-amber-500", title: "Progression remarquable", message: `${observedCount}/${totalIndicators} signes de progression observés — ${name} et toi formez une super équipe. Le prochain programme va consolider ces acquis.` };
   }
   if (feeling >= 3 || observedCount >= 1) {
-    return { emoji: "💪", title: "Beau parcours", message: `Les résultats commencent à se voir ! Continue sur cette lancée avec ${name} — la régularité est la clé.` };
+    return { Icon: Zap, iconColor: "text-emerald-600", title: "Beau parcours", message: `Les résultats commencent à se voir ! Continue sur cette lancée avec ${name} — la régularité est la clé.` };
   }
   if (feeling >= 1) {
-    return { emoji: "🌱", title: "Les bases sont posées", message: `Chaque programme renforce ta relation avec ${name}. Les vrais résultats arrivent souvent au 2e ou 3e programme — persévère.` };
+    return { Icon: Compass, iconColor: "text-emerald-500", title: "Les bases sont posées", message: `Chaque programme renforce ta relation avec ${name}. Les vrais résultats arrivent souvent au 2e ou 3e programme — persévère.` };
   }
-  return { emoji: "🐾", title: "Premier pas franchi", message: `Tu as pris le temps de t'investir pour ${name} — c'est déjà énorme. Le prochain programme s'adaptera à tes observations.` };
+  return { Icon: PawPrint, iconColor: "text-emerald-600", title: "Premier pas franchi", message: `Tu as pris le temps de t'investir pour ${name} — c'est déjà énorme. Le prochain programme s'adaptera à tes observations.` };
 }
 
 function addDaysToDate(dateStr, days) {
@@ -82,7 +87,8 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
   const realDate = startDate ? addDaysToDate(startDate, dayIdx) : null;
   const today = realDate ? isSameDay(realDate) : false;
   const actType = day.activity?.type || "balade";
-  const icon = ACTIVITY_ICONS[actType] || "🐶";
+  const actIcon = ACTIVITY_ICONS[actType] || ACTIVITY_ICONS["balade"];
+  const ActIcon = actIcon.Icon;
 
   return (
     <div className={`bg-white border rounded-2xl overflow-hidden shadow-sm transition-colors ${
@@ -109,7 +115,7 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
             {isDone && <span className="text-[11px] font-bold bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full leading-none">Fait</span>}
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-lg leading-none">{icon}</span>
+            <ActIcon className={`w-5 h-5 ${actIcon.color} flex-shrink-0`} />
             <p className={`text-sm font-bold flex-1 ${isDone ? "text-muted-foreground" : "text-foreground"}`}>
               {day.title || day.activity?.name || `Jour ${dayIdx + 1}`}
             </p>
@@ -118,7 +124,7 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
             </span>
           </div>
           {!isOpen && day.fun_fact && (
-            <p className="text-[11px] text-amber-700/70 mt-1.5 line-clamp-1 italic ml-7">📖 {day.fun_fact}</p>
+            <p className="text-[11px] text-amber-700/70 mt-1.5 line-clamp-1 italic ml-7 flex items-center gap-1"><BookOpen className="w-3 h-3 inline flex-shrink-0" /> {day.fun_fact}</p>
           )}
         </button>
 
@@ -477,7 +483,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     let cancelled = false;
     async function loadSaved() {
       try {
-        const bookmarks = await base44.entities.Bookmark.filter(
+        const bookmarks = await Bookmark.filter(
           { dog_id: dog.id, source: "training" }, "-created_at", 10
         );
         if (cancelled) return;
@@ -558,7 +564,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       const user = await base44.auth.me();
       const startDate = new Date().toISOString().split("T")[0];
       const payload = { ...program, start_date: startDate, dog_name: dog.name, completed_days: [] };
-      const created = await base44.entities.Bookmark.create({
+      const created = await Bookmark.create({
         dog_id: dog.id, owner: user.email,
         content: JSON.stringify(payload), source: "training",
         title: program.program_title?.slice(0, 60) || "Programme activité",
@@ -592,7 +598,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     };
     setProgram(updatedProgram);
     try {
-      await base44.entities.Bookmark.update(bookmarkId, { content: JSON.stringify(updatedProgram) });
+      await Bookmark.update(bookmarkId, { content: JSON.stringify(updatedProgram) });
     } catch (e) {
       console.error(e);
       setCompletedDays(prev);
@@ -614,7 +620,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     setBilanSaved(true);
     setBilanJustSaved(true);
     try {
-      await base44.entities.Bookmark.update(bookmarkId, { content: JSON.stringify(updatedProgram) });
+      await Bookmark.update(bookmarkId, { content: JSON.stringify(updatedProgram) });
       toast.success("Bilan enregistré !");
     } catch (e) {
       console.error(e);
@@ -627,7 +633,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     if (bookmarkId && program) {
       try {
         const archived = { ...program, archived: true };
-        await base44.entities.Bookmark.update(bookmarkId, { content: JSON.stringify(archived) });
+        await Bookmark.update(bookmarkId, { content: JSON.stringify(archived) });
       } catch {}
     }
     // Add to pastPrograms for anti-redundancy
@@ -710,7 +716,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
 
       try {
         const user = await base44.auth.me();
-        const created = await base44.entities.Bookmark.create({
+        const created = await Bookmark.create({
           dog_id: dog.id, owner: user.email,
           content: JSON.stringify(payload), source: "training",
           title: prog.program_title?.slice(0, 60) || "Programme activité",

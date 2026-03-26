@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { trackEvent } from "@/utils/analytics";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { Dog } from "@/api/entities";
 import { isUserPremium } from "@/utils/premium";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -178,7 +179,7 @@ export default function Onboarding() {
       const user = await base44.auth.me();
       setCurrentUser(user);
       const FREE_MAX = 1, PREMIUM_MAX = 3;
-      const existingDogs = await base44.entities.Dog.filter({ owner: user.email });
+      const existingDogs = await Dog.filter({ owner: user.email });
       const maxDogs = isUserPremium(user) ? PREMIUM_MAX : FREE_MAX;
       if ((existingDogs || []).length >= maxDogs) {
         setSaving(false); savingRef.current = false;
@@ -211,7 +212,7 @@ Extrais ces informations et renvoie un objet JSON.
         }
       });
       const extracted = typeof aiResponse === "string" ? JSON.parse(aiResponse) : aiResponse;
-      const dog = await base44.entities.Dog.create({
+      const dog = await Dog.create({
         name: extracted.name || "Mon chien", photo: photoUrl || null,
         breed: extracted.breed || null, birth_date: extracted.birth_date || null,
         sex: extracted.sex || null, weight: extracted.weight || null,

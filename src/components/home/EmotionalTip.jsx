@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Footprints, Carrot, Heart, PawPrint } from "lucide-react";
 
 const TIPS = [
   { text: "Les chiens qui marchent 30 min par jour vivent en moyenne 2 ans de plus.", cat: "activite" },
@@ -24,10 +25,10 @@ const TIPS = [
 ];
 
 const CAT_ICONS = {
-  "activite": "🏃",
-  "nutrition": "🥕",
-  "sante": "💚",
-  "bien-etre": "🐾",
+  "activite": { Icon: Footprints, color: "text-emerald-600" },
+  "nutrition": { Icon: Carrot, color: "text-orange-500" },
+  "sante": { Icon: Heart, color: "text-emerald-600" },
+  "bien-etre": { Icon: PawPrint, color: "text-[#1A4D3E]" },
 };
 
 export default function EmotionalTip({ dog, dailyLogs, recentCheckins }) {
@@ -40,7 +41,7 @@ export default function EmotionalTip({ dog, dailyLogs, recentCheckins }) {
   return (
     <div className="bg-gradient-to-r from-primary/10 to-amber-50 rounded-[20px] p-4 overflow-hidden border border-primary/10">
       <div className="flex items-start gap-3">
-        <span className="text-2xl mt-0.5 drop-shadow-sm">{CAT_ICONS[tip.cat] || "🐾"}</span>
+        {(() => { const cat = CAT_ICONS[tip.cat] || CAT_ICONS["bien-etre"]; return <cat.Icon className={`w-6 h-6 ${cat.color} mt-0.5 flex-shrink-0`} />; })()}
         <div className="flex-1 min-w-0">
           <p className="text-[14px] font-bold text-foreground">Le savais-tu ?</p>
           <p className="text-[12px] text-muted-foreground mt-1 leading-[1.6]">{tip.text}</p>

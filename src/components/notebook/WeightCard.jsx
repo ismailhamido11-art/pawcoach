@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Weight, TrendingUp, TrendingDown, Minus, AlertTriangle, Plus, Check, X } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { HealthRecord, Dog } from "@/api/entities";
 import { toast } from "sonner";
 import { spring } from "@/lib/animations";
 
@@ -23,7 +23,7 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
     if (!date) { toast.error("Indique la date de la pesée."); return; }
     setSaving(true);
     try {
-      const record = await base44.entities.HealthRecord.create({
+      const record = await HealthRecord.create({
         dog_id: dogId,
         type: "weight",
         title: "Pesée",
@@ -31,7 +31,7 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
         value: w,
       });
       // Auto-update Dog.weight with latest value
-      try { await base44.entities.Dog.update(dogId, { weight: w }); } catch {}
+      try { await Dog.update(dogId, { weight: w }); } catch {}
       if (onRecordAdded) onRecordAdded(record);
       toast.success("Poids enregistré !");
       onClose();

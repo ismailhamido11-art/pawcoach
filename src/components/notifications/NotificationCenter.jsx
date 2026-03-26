@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
+import { Dog, HealthRecord } from "@/api/entities";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, X, Syringe, Stethoscope, Pill, ChevronRight, CheckCheck } from "lucide-react";
 import { createPageUrl } from "@/utils";
@@ -51,7 +52,7 @@ export async function loadNotifications() {
   try {
     const u = await base44.auth.me();
     if (!u) return;
-    const dogs = await base44.entities.Dog.filter({ owner: u.email });
+    const dogs = await Dog.filter({ owner: u.email });
     if (!dogs?.length) return;
 
     const items = [];
@@ -65,7 +66,7 @@ export async function loadNotifications() {
         }
       }
       // Health records with next_date
-      const records = await base44.entities.HealthRecord.filter({ dog_id: dog.id });
+      const records = await HealthRecord.filter({ dog_id: dog.id });
       for (const r of (records || [])) {
         if (!r.next_date || !["vaccine", "vet_visit", "medication"].includes(r.type)) continue;
         const days = getDaysLeft(r.next_date);

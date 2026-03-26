@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { HealthRecord } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Syringe, Plus, X, Calendar, Check } from "lucide-react";
@@ -69,7 +69,7 @@ export default function SectionVaccins({ records = [], dogId, dogName, onDelete,
         nextDate = d.toISOString().split("T")[0];
       }
 
-      const record = await base44.entities.HealthRecord.create({
+      const record = await HealthRecord.create({
         dog_id: dogId,
         type: "vaccine",
         title,

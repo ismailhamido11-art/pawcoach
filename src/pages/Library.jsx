@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
+import { Bookmark, NutritionPlan } from "@/api/entities";
 import BottomNav from "../components/BottomNav";
 import { ArrowLeft, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarChart2, Clock, Target, Home, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -43,8 +44,8 @@ export default function Library() {
       try {
         const u = await base44.auth.me();
         const [bks, plans] = await Promise.all([
-          base44.entities.Bookmark.filter({ owner: u.email }, "-created_at"),
-          base44.entities.NutritionPlan.filter({ owner_email: u.email }, "-generated_at").catch(() => []),
+          Bookmark.filter({ owner: u.email }, "-created_at"),
+          NutritionPlan.filter({ owner_email: u.email }, "-generated_at").catch(() => []),
         ]);
         setBookmarks(bks || []);
         setNutritionPlans(plans || []);
@@ -60,7 +61,7 @@ export default function Library() {
 
   const handleDelete = async (id) => {
     try {
-      await base44.entities.Bookmark.delete(id);
+      await Bookmark.delete(id);
       setBookmarks(prev => prev.filter(b => b.id !== id));
       if (expanded === id) setExpanded(null);
       toast.success("Conseil supprimé");
@@ -73,7 +74,7 @@ export default function Library() {
     try {
       const data = JSON.parse(bk.content);
       data.start_date = new Date().toISOString().split("T")[0];
-      await base44.entities.Bookmark.update(bk.id, { content: JSON.stringify(data) });
+      await Bookmark.update(bk.id, { content: JSON.stringify(data) });
       setBookmarks(prev => prev.map(b => b.id === bk.id ? { ...b, content: JSON.stringify(data) } : b));
       toast.success("Programme activé ! Retrouve-le sur ton accueil.");
     } catch {
@@ -83,7 +84,7 @@ export default function Library() {
 
   const handleDeleteNutritionPlan = async (id) => {
     try {
-      await base44.entities.NutritionPlan.delete(id);
+      await NutritionPlan.delete(id);
       setNutritionPlans(prev => prev.filter(p => p.id !== id));
       if (expanded === `nutri-${id}`) setExpanded(null);
       toast.success("Plan nutrition supprimé");
@@ -95,9 +96,9 @@ export default function Library() {
   const handleActivateNutritionPlan = async (planId) => {
     try {
       await Promise.all(nutritionPlans.filter(p => p.is_active).map(p =>
-        base44.entities.NutritionPlan.update(p.id, { is_active: false })
+        NutritionPlan.update(p.id, { is_active: false })
       ));
-      await base44.entities.NutritionPlan.update(planId, { is_active: true });
+      await NutritionPlan.update(planId, { is_active: true });
       setNutritionPlans(prev => prev.map(p => ({ ...p, is_active: p.id === planId })));
       toast.success("Plan nutrition activé ! Retrouve-le sur ton accueil.");
     } catch {

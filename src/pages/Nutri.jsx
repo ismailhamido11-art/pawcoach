@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { Dog, Bookmark as BookmarkEntity, NutritionPlan, FoodScan, DietPreferences, DailyCheckin, HealthRecord, DailyLog } from "@/api/entities";
 import { getActiveDog, createPageUrl } from "@/utils";
 import { useAuth } from "@/lib/AuthContext";
 import BottomNav from "../components/BottomNav";
@@ -159,7 +160,7 @@ export default function Nutri() {
     if (!dog || !user || bookmarked[msg.timestamp]) return;
     const title = msg.content.replace(/[#*_`]/g, "").split("\n")[0].slice(0, 60);
     try {
-      await base44.entities.Bookmark.create({
+      await BookmarkEntity.create({
         dog_id: dog.id,
         owner: user.email,
         content: msg.content,
@@ -183,7 +184,7 @@ export default function Nutri() {
   const refreshPlans = async () => {
     if (!dog || !user) return;
     try {
-      const nplans = await base44.entities.NutritionPlan.filter({ dog_id: dog.id, owner_email: user.email }, "-generated_at", 10).catch(() => []);
+      const nplans = await NutritionPlan.filter({ dog_id: dog.id, owner_email: user.email }, "-generated_at", 10).catch(() => []);
       const allP = nplans || [];
       setAllPlans(allP);
       const active = allP.find(p => p.is_active);
@@ -215,17 +216,17 @@ export default function Nutri() {
         setMessagesRemaining(msgCredits);
       }
 
-      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      const dogs = await Dog.filter({ owner: u.email });
       if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
         setDog(d);
         const [scans, prefs, ckns, hrecs, dlogs, nplans] = await Promise.all([
-          base44.entities.FoodScan.filter({ dog_id: d.id }, "-timestamp", 5).catch(() => []),
-          base44.entities.DietPreferences.filter({ dog_id: d.id, owner_email: u.email }).catch(() => []),
-          base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 7).catch(() => []),
-          base44.entities.HealthRecord.filter({ dog_id: d.id }, "-date", 10).catch(() => []),
-          base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 7).catch(() => []),
-          base44.entities.NutritionPlan.filter({ dog_id: d.id, owner_email: u.email }, "-generated_at", 10).catch(() => []),
+          FoodScan.filter({ dog_id: d.id }, "-timestamp", 5).catch(() => []),
+          DietPreferences.filter({ dog_id: d.id, owner_email: u.email }).catch(() => []),
+          DailyCheckin.filter({ dog_id: d.id }, "-date", 7).catch(() => []),
+          HealthRecord.filter({ dog_id: d.id }, "-date", 10).catch(() => []),
+          DailyLog.filter({ dog_id: d.id }, "-date", 7).catch(() => []),
+          NutritionPlan.filter({ dog_id: d.id, owner_email: u.email }, "-generated_at", 10).catch(() => []),
         ]);
         setRecentScans(scans || []);
         if (prefs?.length > 0) setDietPrefs(prefs[0]);

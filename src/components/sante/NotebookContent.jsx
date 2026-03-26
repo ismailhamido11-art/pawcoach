@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { base44 } from "@/api/base44Client";
+import { VetNote, HealthRecord } from "@/api/entities";
 import { motion } from "framer-motion";
 import SectionVaccins from "../notebook/SectionVaccins";
 import SectionPoids from "../notebook/SectionPoids";
@@ -102,7 +102,7 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
     if (vetNotesLoaded || !dog) return;
     setVetNotesLoaded(true); // guard immediately to prevent double-fetch
     try {
-      const notes = await base44.entities.VetNote.filter({ dog_id: dog.id });
+      const notes = await VetNote.filter({ dog_id: dog.id });
       setVetNotes(notes || []);
     } catch (e) {
       console.warn("Failed to load vet notes:", e?.message || String(e));
@@ -111,7 +111,7 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
 
   const handleDelete = async (id) => {
     if (typeof id === "string" && id.startsWith("dl-")) return;
-    await base44.entities.HealthRecord.delete(id);
+    await HealthRecord.delete(id);
     setRecords(prev => prev.filter(r => r.id !== id));
   };
 

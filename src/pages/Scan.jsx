@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { Dog, FoodScan, DietPreferences } from "@/api/entities";
 import { trackEvent } from "@/utils/analytics";
 import { getActiveDog, createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
@@ -170,7 +171,7 @@ export default function Scan() {
   const saveLabelResult = async () => {
     if (!labelResult || !dog || !user || labelSaved) return;
     try {
-      await base44.entities.FoodScan.create({
+      await FoodScan.create({
         dog_id: dog.id,
         food_name: labelResult.product_name || "Etiquette analysee",
         verdict: labelResult.compatibility_verdict === "excellent" || labelResult.compatibility_verdict === "good" ? "safe" : labelResult.compatibility_verdict === "avoid" ? "toxic" : "caution",
@@ -193,13 +194,13 @@ export default function Scan() {
     try {
       const u = await base44.auth.me();
       setUser(u);
-      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      const dogs = await Dog.filter({ owner: u.email });
       if (dogs?.length > 0) {
         const activeDog = getActiveDog(dogs);
         setDog(activeDog);
         const [scans, dietPrefs] = await Promise.all([
-          base44.entities.FoodScan.filter({ dog_id: activeDog.id }),
-          base44.entities.DietPreferences.filter({ dog_id: activeDog.id }).catch(() => []),
+          FoodScan.filter({ dog_id: activeDog.id }),
+          DietPreferences.filter({ dog_id: activeDog.id }).catch(() => []),
         ]);
         setHistory((scans || []).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
         setDietPreferences(dietPrefs?.[0] || null);
@@ -291,7 +292,7 @@ export default function Scan() {
   const saveResult = async () => {
     if (!result || !dog || !user) return;
     try {
-      await base44.entities.FoodScan.create({
+      await FoodScan.create({
         dog_id: dog.id,
         photo_url: result.photo_url,
         food_name: result.food_name,

@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { HealthRecord, Dog } from "@/api/entities";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FileText, Camera, ClipboardPaste, Sparkles,
@@ -135,7 +136,7 @@ export default function HealthImportContent({ dog, onImported }) {
     let failedCount = 0;
     for (const record of toImport) {
       try {
-        const r = await base44.entities.HealthRecord.create({
+        const r = await HealthRecord.create({
           dog_id: dog.id, type: record.type || "note", title: record.title, date: record.date,
           ...(record.next_date && { next_date: record.next_date }),
           ...(record.details && { details: record.details }),
@@ -143,7 +144,7 @@ export default function HealthImportContent({ dog, onImported }) {
         });
         // Auto-update Dog.weight when importing weight records
         if (record.type === "weight" && record.value) {
-          try { await base44.entities.Dog.update(dog.id, { weight: record.value }); } catch {}
+          try { await Dog.update(dog.id, { weight: record.value }); } catch {}
         }
         created.push(r);
       } catch {

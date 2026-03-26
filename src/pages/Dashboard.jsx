@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useCountUp } from "@/hooks/useCountUp";
 import { base44 } from "@/api/base44Client";
+import { Dog, HealthRecord, DailyCheckin, Streak, UserProgress, DailyLog, FoodScan } from "@/api/entities";
 import { motion } from "framer-motion";
 import { computeVaccineMap, computeHealthScore } from "@/utils/healthStatus";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -72,7 +73,7 @@ export default function Dashboard() {
       try {
         const u = await base44.auth.me();
         setUser(u);
-        const dogs = await base44.entities.Dog.filter({ owner: u.email });
+        const dogs = await Dog.filter({ owner: u.email });
         if (!dogs?.length) {
           navigate(createPageUrl("Onboarding"));
           return;
@@ -81,12 +82,12 @@ export default function Dashboard() {
         setDog(d);
 
         const [recs, cks, stk, prog, logs, foodScans] = await Promise.all([
-          base44.entities.HealthRecord.filter({ dog_id: d.id }),
-          base44.entities.DailyCheckin.filter({ dog_id: d.id }, "-date", 90),
-          base44.entities.Streak.filter({ dog_id: d.id }),
-          base44.entities.UserProgress.filter({ dog_id: d.id }),
-          base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 90),
-          base44.entities.FoodScan.filter({ dog_id: d.id }).catch(() => []),
+          HealthRecord.filter({ dog_id: d.id }),
+          DailyCheckin.filter({ dog_id: d.id }, "-date", 90),
+          Streak.filter({ dog_id: d.id }),
+          UserProgress.filter({ dog_id: d.id }),
+          DailyLog.filter({ dog_id: d.id }, "-date", 90),
+          FoodScan.filter({ dog_id: d.id }).catch(() => []),
         ]);
         setRecords(recs || []);
         setCheckins((cks || []).sort((a, b) => a.date > b.date ? 1 : -1));

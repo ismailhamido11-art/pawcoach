@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { HealthRecord } from "@/api/entities";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -81,7 +81,7 @@ export default function PremiumSection({ type, records = [], dogId, isPremium, o
       if (form.nextDate) payload.next_date = form.nextDate;
       if (form.details.trim()) payload.details = form.details.trim();
 
-      const record = await base44.entities.HealthRecord.create(payload);
+      const record = await HealthRecord.create(payload);
       if (onRecordAdded) onRecordAdded(record);
       toast.success("Enregistré !");
       setForm({ title: "", date: new Date().toISOString().split("T")[0], nextDate: "", details: "" });

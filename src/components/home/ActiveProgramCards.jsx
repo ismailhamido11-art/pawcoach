@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target, Brain, CheckCircle2 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { Bookmark } from "@/api/entities";
 
 const SESSION_ICONS = {
   balade: "🐾", jeu: "🎾", "exercice mental": "🧠", repos: "💤", "entraînement": "🎯",
@@ -386,7 +386,7 @@ function BehaviorProgramCard({ program }) {
     const newCompleted = [...completedDays, `d${elapsed}`];
     setLocalCompleted(newCompleted); // Optimistic update immediat
     try {
-      await base44.entities.Bookmark.update(program._bookmarkId, { completed_days: newCompleted });
+      await Bookmark.update(program._bookmarkId, { completed_days: newCompleted });
     } catch (e) {
       setLocalCompleted(null); // Rollback si erreur
       console.warn("Mark done failed:", e?.message);

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { HealthRecord, Dog } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Weight, Plus, X, Check } from "lucide-react";
@@ -21,7 +21,7 @@ export default function SectionPoids({ records = [], dogId, onDelete, onRecordAd
     if (!form.date) { toast.error("Indique la date de la pesée."); return; }
     setSaving(true);
     try {
-      const record = await base44.entities.HealthRecord.create({
+      const record = await HealthRecord.create({
         dog_id: dogId,
         type: "weight",
         title: "Pesée",
@@ -29,7 +29,7 @@ export default function SectionPoids({ records = [], dogId, onDelete, onRecordAd
         value: w,
       });
       // Auto-update Dog.weight with latest value
-      try { await base44.entities.Dog.update(dogId, { weight: w }); } catch {}
+      try { await Dog.update(dogId, { weight: w }); } catch {}
       if (onRecordAdded) onRecordAdded(record);
       toast.success("Poids enregistré !");
       setShowAddForm(false);

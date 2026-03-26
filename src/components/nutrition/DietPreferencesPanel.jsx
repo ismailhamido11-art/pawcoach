@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { DietPreferences } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Save, Plus, X, Clock, Leaf, Wallet, Check, Loader2 } from "lucide-react";
@@ -51,7 +51,7 @@ export default function DietPreferencesPanel({ dog, user }) {
   const loadPrefs = async () => {
     setLoading(true);
     try {
-      const existing = await base44.entities.DietPreferences.filter({ dog_id: dog.id, owner_email: user.email });
+      const existing = await DietPreferences.filter({ dog_id: dog.id, owner_email: user.email });
       if (existing?.length > 0) {
         const p = existing[0];
         setPrefs(p);
@@ -101,9 +101,9 @@ export default function DietPreferencesPanel({ dog, user }) {
     };
     try {
       if (prefs?.id) {
-        await base44.entities.DietPreferences.update(prefs.id, data);
+        await DietPreferences.update(prefs.id, data);
       } else {
-        const created = await base44.entities.DietPreferences.create(data);
+        const created = await DietPreferences.create(data);
         setPrefs(created);
       }
       setSaved(true);

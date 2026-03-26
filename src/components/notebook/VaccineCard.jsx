@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Syringe, ChevronDown, ChevronUp, Calendar, AlertTriangle, CheckCircle, Clock, HelpCircle, Check, X, MapPin } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { HealthRecord } from "@/api/entities";
 import { toast } from "sonner";
 import { spring } from "@/lib/animations";
 
@@ -34,7 +34,7 @@ function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
       const nextDate = new Date(date);
       nextDate.setMonth(nextDate.getMonth() + ref.frequencyMonths);
 
-      const record = await base44.entities.HealthRecord.create({
+      const record = await HealthRecord.create({
         dog_id: dogId,
         type: "vaccine",
         title: ref.name,

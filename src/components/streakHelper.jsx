@@ -1,10 +1,10 @@
-import { base44 } from "@/api/base44Client";
+import { Streak } from "@/api/entities";
 import { getTodayString } from "@/utils/recommendations";
 
 export async function updateStreakSilently(dogId, ownerEmail) {
   try {
     const today = getTodayString();
-    const streaks = await base44.entities.Streak.filter({ dog_id: dogId });
+    const streaks = await Streak.filter({ dog_id: dogId });
     if (streaks?.length > 0) {
       const s = streaks[0];
       if (s.last_activity_date === today) return; // Already updated today — dedup guard
@@ -26,7 +26,7 @@ export async function updateStreakSilently(dogId, ownerEmail) {
         graceDaysRemaining = 1;
       }
       const newLongest = Math.max(s.longest_streak || 0, newStreak);
-      await base44.entities.Streak.update(s.id, {
+      await Streak.update(s.id, {
         current_streak: newStreak,
         longest_streak: newLongest,
         last_activity_date: today,
@@ -34,7 +34,7 @@ export async function updateStreakSilently(dogId, ownerEmail) {
         grace_days_remaining: graceDaysRemaining,
       });
     } else {
-      await base44.entities.Streak.create({
+      await Streak.create({
         dog_id: dogId,
         owner_email: ownerEmail,
         current_streak: 1,

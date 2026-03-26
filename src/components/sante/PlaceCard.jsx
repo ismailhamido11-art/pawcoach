@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Star, Phone, MapPin, Globe, Heart, Pencil, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { base44 } from "@/api/base44Client";
+import { PlaceFavorite } from "@/api/entities";
 
 const TYPE_LABELS = {
   vet: { label: "Vétérinaire", color: "#ef4444", bg: "#ef444415" },
@@ -23,11 +23,11 @@ export default function PlaceCard({ place, isFavorite, favoriteId, favoriteNotes
     setSaving(true);
     try {
       if (isFavorite && favoriteId) {
-        await base44.entities.PlaceFavorite.delete(favoriteId);
+        await PlaceFavorite.delete(favoriteId);
         toast.success("Retiré des favoris");
         onFavoriteToggle(null);
       } else {
-        const fav = await base44.entities.PlaceFavorite.create({
+        const fav = await PlaceFavorite.create({
           owner: user.email,
           dog_id: dog?.id,
           place_name: place.name,
@@ -54,7 +54,7 @@ export default function PlaceCard({ place, isFavorite, favoriteId, favoriteNotes
   const handleSaveNote = async () => {
     if (!favoriteId) return;
     try {
-      await base44.entities.PlaceFavorite.update(favoriteId, { notes: tempNote });
+      await PlaceFavorite.update(favoriteId, { notes: tempNote });
       setNote(tempNote);
       setEditingNote(false);
       toast.success("Note sauvegardée");

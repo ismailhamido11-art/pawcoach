@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { base44 } from "@/api/base44Client";
+import { DiagnosisReport } from "@/api/entities";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import DiagnosisReportView from "./DiagnosisReportView";
@@ -159,7 +160,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
       setReport(diagnosisData);
 
       // Save to DB
-      await base44.entities.DiagnosisReport.create({
+      await DiagnosisReport.create({
         dog_id: dog?.id,
         owner_email: user.email,
         dog_name: dog?.name,

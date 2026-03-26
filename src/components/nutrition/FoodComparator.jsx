@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { Bookmark } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, X, BarChart2, ChevronDown, ChevronUp, Trophy, AlertTriangle, CheckCircle2, Loader2, BookmarkPlus, BookmarkCheck } from "lucide-react";
@@ -119,7 +120,7 @@ export default function FoodComparator({ dog, dietPreferences }) {
       const user = await base44.auth.me();
       const [a, b] = products;
       const content = `# Comparaison : ${a?.result?.food_name || "Produit 1"} vs ${b?.result?.food_name || "Produit 2"}\n\n**Gagnant** : ${comparison.winner_name}\n${comparison.winner_reason}\n\n## Bilan\n${comparison.comparison_summary}\n\n**Recommandation** : ${comparison.recommendation}`;
-      await base44.entities.Bookmark.create({
+      await Bookmark.create({
         dog_id: dog?.id,
         owner: user.email,
         content,

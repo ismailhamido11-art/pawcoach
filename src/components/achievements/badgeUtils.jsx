@@ -1,4 +1,4 @@
-import { base44 } from "@/api/base44Client";
+import { DogAchievement, UserProgress, Streak } from "@/api/entities";
 import { toast } from "sonner";
 import { PawPrint, Footprints, Calendar, Medal, Sparkles, GraduationCap, Flame, Zap, Crown, Star, Diamond } from "lucide-react";
 
@@ -23,7 +23,7 @@ export function renderBadgeIcon(badge, size = 16) {
 }
 
 async function checkPointMilestones(dogId, ownerEmail) {
-  const all = await base44.entities.DogAchievement.filter({ dog_id: dogId });
+  const all = await DogAchievement.filter({ dog_id: dogId });
   const total = (all || []).reduce((s, a) => s + (a.points_awarded || 0), 0);
   if (total >= 100) await unlockBadge(dogId, ownerEmail, "points_100");
   if (total >= 500) await unlockBadge(dogId, ownerEmail, "points_500");
@@ -34,10 +34,10 @@ export async function unlockBadge(dogId, ownerEmail, badgeId) {
   const meta = BADGE_META[badgeId];
   if (!meta) return;
 
-  const existing = await base44.entities.DogAchievement.filter({ dog_id: dogId, badge_id: badgeId });
+  const existing = await DogAchievement.filter({ dog_id: dogId, badge_id: badgeId });
   if (existing && existing.length > 0) return;
 
-  await base44.entities.DogAchievement.create({
+  await DogAchievement.create({
     dog_id: dogId,
     owner_email: ownerEmail,
     badge_id: badgeId,
@@ -82,14 +82,14 @@ export async function checkWalkBadges(dogId, ownerEmail, logs) {
 
 export async function checkTrainingBadges(dogId, ownerEmail) {
   // Count completed training programs (not badge records)
-  const progress = await base44.entities.UserProgress.filter({ dog_id: dogId, completed: true });
+  const progress = await UserProgress.filter({ dog_id: dogId, completed: true });
   const completedCount = progress?.length || 0;
   if (completedCount >= 1) await unlockBadge(dogId, ownerEmail, "first_program");
   if (completedCount >= 3) await unlockBadge(dogId, ownerEmail, "training_3programs");
 }
 
 export async function checkStreakBadges(dogId, ownerEmail) {
-  const streaks = await base44.entities.Streak.filter({ dog_id: dogId });
+  const streaks = await Streak.filter({ dog_id: dogId });
   const streak = streaks?.[0];
   if (!streak) return;
   if ((streak.current_streak >= 3) || (streak.longest_streak >= 3)) await unlockBadge(dogId, ownerEmail, "streak_3");

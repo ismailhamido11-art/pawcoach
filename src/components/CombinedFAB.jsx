@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useBackClose from "@/components/hooks/useBackClose";
 import { Plus, X, Scale, Droplets, Footprints, FileText, Check, Loader2 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { DailyLog } from "@/api/entities";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { getTodayString } from "@/utils/recommendations";
 
@@ -58,17 +58,17 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
       }
     });
 
-    const existing = await base44.entities.DailyLog.filter({ dog_id: dog.id, date: payload.date });
+    const existing = await DailyLog.filter({ dog_id: dog.id, date: payload.date });
     if (existing && existing.length > 0) {
-      await base44.entities.DailyLog.update(existing[0].id, payload);
+      await DailyLog.update(existing[0].id, payload);
     } else {
-      await base44.entities.DailyLog.create(payload);
+      await DailyLog.create(payload);
     }
 
     // Trigger walk badge check if walk was logged
     if (payload.walk_minutes > 0) {
       try {
-        const allLogs = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 60);
+        const allLogs = await DailyLog.filter({ dog_id: dog.id }, "-date", 60);
         checkWalkBadges(dog.id, user?.email, allLogs).catch(() => {});
       } catch {}
     }

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { Dog, Bookmark as BookmarkEntity, ChatMessage } from "@/api/entities";
 import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -116,7 +117,7 @@ export default function Chat() {
     if (!dog || !user || bookmarked[msg.timestamp]) return;
     const title = msg.content.replace(/[#*_`]/g, "").split("\n")[0].slice(0, 60);
     try {
-      await base44.entities.Bookmark.create({
+      await BookmarkEntity.create({
         dog_id: dog.id,
         owner: user.email,
         content: msg.content,
@@ -172,7 +173,7 @@ export default function Chat() {
         setMessagesRemaining(msgCredits);
       }
 
-      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      const dogs = await Dog.filter({ owner: u.email });
       if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
         setDog(d);
@@ -245,7 +246,7 @@ export default function Chat() {
         if (imageToSend.preview) URL.revokeObjectURL(imageToSend.preview);
       }
 
-      await base44.entities.ChatMessage.create({
+      await ChatMessage.create({
         dog_id: dog.id,
         role: "user",
         content: userMsg.content,
@@ -277,7 +278,7 @@ export default function Chat() {
       startStreaming(assistantContent, assistantTs);
 
       // Save to DB immediately
-      base44.entities.ChatMessage.create({
+      ChatMessage.create({
         dog_id: dog.id,
         role: "assistant",
         content: assistantContent,

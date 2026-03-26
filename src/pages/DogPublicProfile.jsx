@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { Dog, HealthRecord } from "@/api/entities";
 import { motion } from "framer-motion";
 import { Syringe, Weight, Stethoscope, Pill, AlertTriangle, Calendar, MapPin, PawPrint, ShieldCheck, FileText, Loader2 } from "lucide-react";
 import { getVaccineDisplayName } from "@/utils/healthStatus";
@@ -81,10 +81,10 @@ export default function DogPublicProfile() {
     (async () => {
       try {
         // Public read — no auth needed
-        const dogs = await base44.entities.Dog.filter({ id: dogId });
+        const dogs = await Dog.filter({ id: dogId });
         if (!dogs?.length) { setError(true); return; }
         setDog(dogs[0]);
-        const recs = await base44.entities.HealthRecord.filter({ dog_id: dogId });
+        const recs = await HealthRecord.filter({ dog_id: dogId });
         setRecords((recs || []).sort((a, b) => new Date(b.date) - new Date(a.date)));
       } catch {
         setError(true);

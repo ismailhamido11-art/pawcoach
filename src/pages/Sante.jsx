@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { Dog, HealthRecord, DailyLog, GrowthEntry } from "@/api/entities";
 import { getActiveDog } from "@/utils";
 import { useAuth } from "@/lib/AuthContext";
 import BottomNav from "../components/BottomNav";
@@ -90,14 +91,14 @@ export default function Sante() {
      try {
        const u = providedUser || await base44.auth.me();
        setUser(u);
-       const dogs = await base44.entities.Dog.filter({ owner: u.email });
+       const dogs = await Dog.filter({ owner: u.email });
        if (dogs?.length > 0) {
          const d = getActiveDog(dogs);
          setDog(d);
          const [recs, logs, growths] = await Promise.all([
-           base44.entities.HealthRecord.filter({ dog_id: d.id }),
-           base44.entities.DailyLog.filter({ dog_id: d.id }),
-           base44.entities.GrowthEntry.filter({ dog_id: d.id }),
+           HealthRecord.filter({ dog_id: d.id }),
+           DailyLog.filter({ dog_id: d.id }),
+           GrowthEntry.filter({ dog_id: d.id }),
          ]);
          setRecords(recs || []);
          setDailyLogs(logs || []);

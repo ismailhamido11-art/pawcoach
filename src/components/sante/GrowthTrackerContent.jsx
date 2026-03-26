@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
+import { GrowthEntry } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Camera, Plus, TrendingUp, Weight, Ruler, Sparkles, Trash2, Check, X } from "lucide-react";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
@@ -75,7 +76,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
   async function loadEntries() {
     setLoading(true);
     try {
-      const data = await base44.entities.GrowthEntry.filter({ dog_id: dog.id }, "-date", 50);
+      const data = await GrowthEntry.filter({ dog_id: dog.id }, "-date", 50);
       setEntries(data || []);
     } finally {
       setLoading(false);
@@ -116,7 +117,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
   async function saveAnalysis() {
     if (!analysisResult) return;
     try {
-      const entry = await base44.entities.GrowthEntry.create({
+      const entry = await GrowthEntry.create({
         dog_id: dog.id,
         owner_email: user.email,
         date: format(new Date(), "yyyy-MM-dd"),
@@ -159,7 +160,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
     }
     setSavingManual(true);
     try {
-      const entry = await base44.entities.GrowthEntry.create({
+      const entry = await GrowthEntry.create({
         dog_id: dog.id,
         owner_email: user.email,
         date: manualForm.date,
@@ -180,7 +181,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
   }
 
   async function deleteEntry(id) {
-    await base44.entities.GrowthEntry.delete(id);
+    await GrowthEntry.delete(id);
     setEntries(prev => prev.filter(e => e.id !== id));
   }
 

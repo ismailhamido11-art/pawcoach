@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { VetNote } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,7 +26,7 @@ export default function VetNoteForm({ dogId, vetEmail, vetName, onNoteAdded }) {
     if (!title.trim() || !content.trim()) return;
     setLoading(true);
 
-    const note = await base44.entities.VetNote.create({
+    const note = await VetNote.create({
       dog_id: dogId,
       vet_email: vetEmail,
       vet_name: vetName,

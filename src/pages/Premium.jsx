@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
+import { Dog } from "@/api/entities";
 import { trackEvent } from "@/utils/analytics";
 import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
 import { Button } from "@/components/ui/button";
@@ -69,7 +70,7 @@ export default function Premium() {
       try {
         const u = await base44.auth.me();
         setUser(u);
-        const dogs = await base44.entities.Dog.filter({ owner: u.email });
+        const dogs = await Dog.filter({ owner: u.email });
         if (dogs?.length > 0) setDog(getActiveDog(dogs));
 
         if (isUserPremium(u) && !u.premium_welcome_seen) {

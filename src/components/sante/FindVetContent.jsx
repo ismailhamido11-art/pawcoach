@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { PlaceFavorite } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, Loader2, Stethoscope, Scissors, ShoppingBag, Heart, Navigation } from "lucide-react";
@@ -64,7 +65,7 @@ export default function FindVetContent({ dog, user }) {
     async function loadFavorites() {
       if (!user?.email) return;
       try {
-        const favs = await base44.entities.PlaceFavorite.filter({ owner: user.email });
+        const favs = await PlaceFavorite.filter({ owner: user.email });
         setFavorites(favs || []);
       } catch (e) {
         console.error(e);

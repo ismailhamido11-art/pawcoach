@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { Dog, DailyLog } from "@/api/entities";
 import { getActiveDog, createPageUrl } from "@/utils";
 import { useAuth } from "@/lib/AuthContext";
 import BottomNav from "@/components/BottomNav";
@@ -62,11 +63,11 @@ export default function Activite() {
     try {
       const u = providedUser || await base44.auth.me();
       setUser(u);
-      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      const dogs = await Dog.filter({ owner: u.email });
       if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
         setDog(d);
-        const l = await base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30);
+        const l = await DailyLog.filter({ dog_id: d.id }, "-date", 30);
         setLogs(l || []);
       }
     } catch (e) {
@@ -85,7 +86,7 @@ export default function Activite() {
 
   const refreshLogs = async () => {
     if (!dog || !user) return;
-    const l = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 30);
+    const l = await DailyLog.filter({ dog_id: dog.id }, "-date", 30);
     setLogs(l || []);
     // Check walk badges after refresh
     checkWalkBadges(dog.id, user.email, l || []).catch(() => {});

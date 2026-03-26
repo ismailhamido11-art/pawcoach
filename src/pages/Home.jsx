@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { Dog, DailyCheckin, Streak, HealthRecord, UserProgress, FoodScan, DailyLog, DiagnosisReport, NutritionPlan, Bookmark, WeeklyInsight } from "@/api/entities";
 import { isUserPremium } from "@/utils/premium";
 import { useHomeCache } from "@/lib/HomeCacheContext";
 import BottomNav from "../components/BottomNav";
@@ -44,17 +45,17 @@ const MILESTONES = [
 async function fetchDogData(dogId) {
   const today = getTodayString();
   const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks] = await Promise.all([
-    base44.entities.DailyCheckin.filter({ dog_id: dogId, date: today }),
-    base44.entities.Streak.filter({ dog_id: dogId }),
-    base44.entities.DailyCheckin.filter({ dog_id: dogId }, "-date", 30),
-    base44.entities.HealthRecord.filter({ dog_id: dogId }),
-    base44.entities.UserProgress.filter({ dog_id: dogId }),
-    base44.entities.FoodScan.filter({ dog_id: dogId }),
-    base44.entities.DailyLog.filter({ dog_id: dogId }, "-date", 30),
-    base44.entities.DiagnosisReport.filter({ dog_id: dogId }, "-report_date", 5).catch(() => []),
-    base44.entities.NutritionPlan.filter({ dog_id: dogId }, "-generated_at", 3).catch(() => []),
-    base44.entities.Bookmark.filter({ dog_id: dogId, source: "training" }, "-created_at", 10).catch(() => []),
-    base44.entities.Bookmark.filter({ dog_id: dogId, source: "behavior_program" }, "-created_at", 10).catch(() => []),
+    DailyCheckin.filter({ dog_id: dogId, date: today }),
+    Streak.filter({ dog_id: dogId }),
+    DailyCheckin.filter({ dog_id: dogId }, "-date", 30),
+    HealthRecord.filter({ dog_id: dogId }),
+    UserProgress.filter({ dog_id: dogId }),
+    FoodScan.filter({ dog_id: dogId }),
+    DailyLog.filter({ dog_id: dogId }, "-date", 30),
+    DiagnosisReport.filter({ dog_id: dogId }, "-report_date", 5).catch(() => []),
+    NutritionPlan.filter({ dog_id: dogId }, "-generated_at", 3).catch(() => []),
+    Bookmark.filter({ dog_id: dogId, source: "training" }, "-created_at", 10).catch(() => []),
+    Bookmark.filter({ dog_id: dogId, source: "behavior_program" }, "-created_at", 10).catch(() => []),
   ]);
   return { checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks };
 }
@@ -115,7 +116,7 @@ export default function Home() {
   const loadInsights = async (u, dogId) => {
     if (!isUserPremium(u)) return null;
     try {
-      const allInsights = await base44.entities.WeeklyInsight.filter({ dog_id: dogId }, "-week_start", 10);
+      const allInsights = await WeeklyInsight.filter({ dog_id: dogId }, "-week_start", 10);
       if (allInsights?.length > 0) {
         const unread = allInsights.find(i => !i.is_read);
         const read = allInsights.filter(i => i.is_read);
@@ -162,7 +163,7 @@ export default function Home() {
         const u = await base44.auth.me();
         if (!mounted) return;
         setUser(u);
-        const dogs = await base44.entities.Dog.filter({ owner: u.email });
+        const dogs = await Dog.filter({ owner: u.email });
         if (!mounted) return;
         if (dogs && dogs.length > 0) {
           const d = getActiveDog(dogs);
@@ -255,7 +256,7 @@ export default function Home() {
     invalidateHome();
     try {
       const u = await base44.auth.me();
-      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      const dogs = await Dog.filter({ owner: u.email });
       if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
         setUser(u);
@@ -273,7 +274,7 @@ export default function Home() {
     if (!weeklyInsight || markingRead) return;
     setMarkingRead(true);
     try {
-      await base44.entities.WeeklyInsight.update(weeklyInsight.id, { is_read: true });
+      await WeeklyInsight.update(weeklyInsight.id, { is_read: true });
       setPastInsights(prev => [weeklyInsight, ...prev].slice(0, 5));
       setWeeklyInsight(null);
       setInsightExpanded(false);

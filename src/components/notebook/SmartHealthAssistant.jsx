@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
+import { HealthRecord, Dog } from "@/api/entities";
 import ReactMarkdown from "react-markdown";
 import {
   Mic, Camera, Check, Sparkles, ExternalLink, MapPin, Phone, AlertCircle, Send, Copy
@@ -74,7 +75,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
     return () => {
       if (pendingRecordsRef.current.length > 0 && dogId) {
         pendingRecordsRef.current.forEach(rec => {
-          base44.entities.HealthRecord.create({ dog_id: dogId, ...rec }).catch(() => {});
+          HealthRecord.create({ dog_id: dogId, ...rec }).catch(() => {});
         });
       }
     };
@@ -298,7 +299,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
 
   const saveAllRecords = async () => {
     try {
-      const existingRecords = await base44.entities.HealthRecord.filter({ dog_id: dogId });
+      const existingRecords = await HealthRecord.filter({ dog_id: dogId });
       let skippedCount = 0;
 
       for (const rec of pendingRecords) {
@@ -311,10 +312,10 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
             continue;
           }
         }
-        const created = await base44.entities.HealthRecord.create({ dog_id: dogId, ...rec });
+        const created = await HealthRecord.create({ dog_id: dogId, ...rec });
         // Auto-update Dog.weight when a weight record is saved
         if (rec.type === "weight" && rec.value) {
-          try { await base44.entities.Dog.update(dogId, { weight: rec.value }); } catch {}
+          try { await Dog.update(dogId, { weight: rec.value }); } catch {}
         }
         onRecordAdded(created);
       }

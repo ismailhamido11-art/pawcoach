@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useBackClose from "@/hooks/useBackClose";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { Dog, DailyLog, UserProgress, Streak, FoodScan } from "@/api/entities";
 import { motion } from "framer-motion";
 import {
   ArrowLeft, Pencil, ChevronDown,
@@ -49,10 +50,10 @@ export default function DogProfile() {
 
         let d;
         if (dogId) {
-          const results = await base44.entities.Dog.filter({ id: dogId });
+          const results = await Dog.filter({ id: dogId });
           d = (results || [])[0];
         } else {
-          const dogs = await base44.entities.Dog.filter({ owner: u.email });
+          const dogs = await Dog.filter({ owner: u.email });
           d = getActiveDog(dogs);
         }
 
@@ -62,10 +63,10 @@ export default function DogProfile() {
         setDog(d);
 
         const [logs, prog, stks, scans] = await Promise.all([
-          base44.entities.DailyLog.filter({ dog_id: d.id }, "-date", 30),
-          base44.entities.UserProgress.filter({ dog_id: d.id }),
-          base44.entities.Streak.filter({ dog_id: d.id }),
-          base44.entities.FoodScan.filter({ dog_id: d.id }),
+          DailyLog.filter({ dog_id: d.id }, "-date", 30),
+          UserProgress.filter({ dog_id: d.id }),
+          Streak.filter({ dog_id: d.id }),
+          FoodScan.filter({ dog_id: d.id }),
         ]);
         setDailyLogs(logs || []);
         setProgress(prog || []);
@@ -82,7 +83,7 @@ export default function DogProfile() {
   }, [dogId]);
 
   const handleSaveDog = async (updates) => {
-    const _updated = await base44.entities.Dog.update(dog.id, updates);
+    const _updated = await Dog.update(dog.id, updates);
     setDog(prev => ({ ...prev, ...updates }));
   };
 
@@ -131,7 +132,7 @@ export default function DogProfile() {
         )
       );
 
-      await base44.entities.Dog.delete(dog.id);
+      await Dog.delete(dog.id);
       // Clean up activeDogId if this was the active dog
       const storedId = localStorage.getItem("activeDogId");
       if (storedId === dog.id) {

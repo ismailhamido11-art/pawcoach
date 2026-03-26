@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
+import { Dog, DogAchievement } from "@/api/entities";
 import { isUserPremium } from "@/utils/premium";
 import BottomNav from "../components/BottomNav";
 import { useNavigate, Link } from "react-router-dom";
@@ -36,7 +37,7 @@ export default function Profile() {
       try {
         const u = await base44.auth.me();
         setUser(u);
-        const d = await base44.entities.Dog.filter({ owner: u.email });
+        const d = await Dog.filter({ owner: u.email });
         setDogs(d || []);
         // Set active dog if not already set
         const firstDogId = activeDogId || d?.[0]?.id;
@@ -47,7 +48,7 @@ export default function Profile() {
         // Load real achievement points from DogAchievement for the header
         if (firstDogId) {
           try {
-            const achvs = await base44.entities.DogAchievement.filter({ dog_id: firstDogId });
+            const achvs = await DogAchievement.filter({ dog_id: firstDogId });
             const pts = (achvs || []).reduce((s, a) => s + (a.points_awarded || 0), 0);
             setAchievementPoints(pts);
           } catch (_e) {
@@ -67,7 +68,7 @@ export default function Profile() {
   // Reload points when active dog changes
   useEffect(() => {
     if (!activeDogId) return;
-    base44.entities.DogAchievement
+    DogAchievement
       .filter({ dog_id: activeDogId })
       .then(achvs => {
         const pts = (achvs || []).reduce((s, a) => s + (a.points_awarded || 0), 0);
