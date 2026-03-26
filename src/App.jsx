@@ -3,6 +3,7 @@ import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import { HomeCacheProvider } from '@/lib/HomeCacheContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import PawLoader from '@/components/PawLoader';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -70,9 +71,11 @@ function App() {
 
   return (
     <AuthProvider>
-      <Router>
-        <AuthenticatedApp />
-      </Router>
+      <HomeCacheProvider>
+        <Router>
+          <AuthenticatedApp />
+        </Router>
+      </HomeCacheProvider>
     </AuthProvider>
   )
 }
