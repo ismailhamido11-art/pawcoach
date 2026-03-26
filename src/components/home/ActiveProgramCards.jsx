@@ -2,11 +2,11 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target, Brain, CheckCircle2 } from "lucide-react";
+import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target, Brain, CheckCircle2, PawPrint, Moon, Flower2, BookOpen, Lightbulb, Dog } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 const SESSION_ICONS = {
-  balade: "🐾", jeu: "🎾", "exercice mental": "🧠", repos: "💤", "entraînement": "🎯",
+  balade: PawPrint, jeu: Target, "exercice mental": Brain, repos: Moon, "entraînement": Dumbbell,
 };
 
 const DAY_NAMES = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -32,8 +32,8 @@ function getElapsedDays(startDate) {
 }
 
 const ACTIVITY_ICONS = {
-  balade: "🐾", jeu: "🎾", "exercice mental": "🧠",
-  "repos actif": "💆", repos: "💤", "entraînement": "🎯",
+  balade: PawPrint, jeu: Target, "exercice mental": Brain,
+  "repos actif": Flower2, repos: Moon, "entraînement": Dumbbell,
 };
 
 function TrainingCard({ program }) {
@@ -48,7 +48,7 @@ function TrainingCard({ program }) {
 
   const realDate = addDaysToDate(program.start_date, elapsed);
   const actType = today.activity?.type || "balade";
-  const icon = ACTIVITY_ICONS[actType] || SESSION_ICONS[actType] || "🐶";
+  const IconComponent = ACTIVITY_ICONS[actType] || SESSION_ICONS[actType] || Dog;
 
   // Completion tracking
   const completedDays = program.completed_days || [];
@@ -86,7 +86,7 @@ function TrainingCard({ program }) {
             todayDone ? "bg-emerald-50/80 border-emerald-100/60" : "bg-white/80 border-violet-100/60"
           }`}>
             <div className="flex items-start gap-3">
-              <span className="text-2xl leading-none mt-0.5">{icon}</span>
+              <IconComponent className="w-6 h-6 text-violet-500 mt-0.5" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className={`text-xs font-bold ${todayDone ? "line-through text-muted-foreground" : "text-foreground"}`}>
@@ -112,7 +112,7 @@ function TrainingCard({ program }) {
           {today.fun_fact && !todayDone && (
             <div className="mt-2 bg-amber-50/60 rounded-lg px-3 py-2 border border-amber-100/50">
               <p className="text-[11px] text-amber-800/80 line-clamp-2 italic">
-                📖 {today.fun_fact}
+                <BookOpen className="w-3.5 h-3.5 text-amber-600 inline mr-1 -mt-0.5" />{today.fun_fact}
               </p>
             </div>
           )}
@@ -121,7 +121,7 @@ function TrainingCard({ program }) {
           {today.coach_tip && todayDone && (
             <div className="mt-2 bg-emerald-50/60 rounded-lg px-3 py-2 border border-emerald-100/50">
               <p className="text-[11px] text-emerald-800/80 line-clamp-2 italic">
-                💡 {today.coach_tip}
+                <Lightbulb className="w-3.5 h-3.5 text-emerald-600 inline mr-1 -mt-0.5" />{today.coach_tip}
               </p>
             </div>
           )}
@@ -259,7 +259,7 @@ function NutritionPlanCard({ plan }) {
           {/* Compact preview when closed */}
           {!open && (
             <div className="flex items-center gap-2.5 bg-white/80 rounded-xl px-3 py-2.5 border border-emerald-100/60">
-              <span className="text-lg leading-none">🍽️</span>
+              <Utensils className="w-5 h-5 text-emerald-500" />
               <div className="flex-1 min-w-0">
                 <span className="text-xs font-bold text-foreground">{todayName}</span>
                 <span className="text-[11px] text-muted-foreground truncate">{" · "}{summary.slice(0, 45)}{summary.length > 45 ? "..." : ""}</span>
@@ -297,7 +297,7 @@ function NutritionPlanCard({ plan }) {
                 {todayData ? (
                   <div className="bg-white/80 rounded-xl p-3 border border-emerald-100/60 space-y-2">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-lg leading-none">🍽️</span>
+                      <Utensils className="w-5 h-5 text-emerald-500" />
                       <span className="text-xs font-bold text-foreground">{todayData.day || todayName}</span>
                       <span className="text-[11px] text-muted-foreground">Repas du jour</span>
                     </div>
