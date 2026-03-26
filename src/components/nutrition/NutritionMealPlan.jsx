@@ -104,6 +104,10 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
   };
 
   const handleActivateOld = async (planId) => {
+    if (activePlan) {
+      const confirmed = window.confirm("Tu as un plan actif en cours. L'activer le remplacera. Continuer ?");
+      if (!confirmed) return;
+    }
     try {
       if (activePlan) {
         await NutritionPlan.update(activePlan.id, { is_active: false });
@@ -311,13 +315,13 @@ RÈGLES :
             }
           });
           setPlan(parsed);
+          if (!isPremium) await consume();
         } else {
           throw new Error("Invalid structure");
         }
       } else {
         throw new Error("No JSON found");
       }
-      if (!isPremium) await consume();
     } catch (e) {
       console.error("Nutrition plan parse error:", e);
       setPlan(null);

@@ -304,6 +304,7 @@ export default function Scan() {
         timestamp: result.timestamp,
       });
       setSaved(true);
+      toast.success("Scan sauvegardé !");
       setHistory(prev => [result, ...prev]);
       if (navigator.vibrate) navigator.vibrate(30);
       const newPoints = (user.points || 0) + 10;
@@ -324,6 +325,8 @@ export default function Scan() {
 
   // ── Label mode ─────────────────────────────────────────────────────────────
   const handleLabelFile = (f) => {
+    if (checkScanLimit(user)) { setScanLimitReached(true); return; }
+    setScanLimitReached(false);
     setLabelFile(f);
     setLabelResult(null);
     setShowIngredients(false);
@@ -521,6 +524,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                 <Illustration name="petFood" alt="Limite atteinte" className="w-full h-full drop-shadow-md" />
               </div>
               <p className="font-bold text-foreground">Tu as utilisé tes {FREE_SCAN_LIMIT} scans gratuits cette semaine ({scansUsed}/{FREE_SCAN_LIMIT}).</p>
+              <p className="text-sm text-muted-foreground">(Aliment et Étiquette partagent le même quota)</p>
               <p className="text-sm text-muted-foreground">Passe en Premium pour scanner sans limite.</p>
               <Button onClick={() => navigate(createPageUrl("Premium") + "?from=scan")} className="w-full h-14 rounded-2xl gradient-warm border-0 text-white font-bold">
                 Passer Premium · dès 5 €/mois

@@ -12,6 +12,14 @@ const tabs = [
   { label: "Profil",     icon: User,     page: "Profile" },
 ];
 
+// Secondary pages map to their parent tab for highlight purposes
+const SECONDARY_PAGE_PARENT = {
+  Library:         "Profile",
+  Dashboard:       "Profile",
+  DogProfile:      "Profile",
+  Chat:            "Home",
+};
+
 // Pages with independent navigation stacks
 const STACK_PAGES = ["Sante", "Activite", "Nutri"];
 
@@ -57,7 +65,8 @@ export default function BottomNav({ currentPage }) {
     <nav aria-label="Navigation principale" className="fixed bottom-0 left-0 right-0 z-40 bottom-nav bg-background border-t border-border shadow-2xl">
       <div className="flex items-center justify-around px-2 py-2">
         {tabs.map(({ label, icon: Icon, page }) => {
-          const active = currentPage === page;
+          const effectivePage = SECONDARY_PAGE_PARENT[currentPage] || currentPage;
+          const active = effectivePage === page;
           return (
             <Link
               key={page}

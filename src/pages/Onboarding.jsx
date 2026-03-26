@@ -162,7 +162,7 @@ export default function Onboarding() {
       setCurrentAnswer(currentAnswer ? currentAnswer + " " + transcript : transcript);
       setListening(false);
     };
-    recognition.onerror = () => setListening(false);
+    recognition.onerror = () => { setListening(false); toast.error("Dictée vocale non disponible. Utilise le clavier."); };
     recognition.onend = () => setListening(false);
     recognitionRef.current = recognition;
     recognition.start();

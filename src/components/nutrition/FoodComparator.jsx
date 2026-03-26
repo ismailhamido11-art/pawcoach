@@ -253,6 +253,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
       setComparison(res);
     } catch {
       setComparison({ error: true });
+      toast.error("Erreur lors de la comparaison. Tes crédits n'ont pas été utilisés.");
     } finally {
       setComparing(false);
     }

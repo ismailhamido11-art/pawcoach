@@ -1,15 +1,19 @@
-import { Crown, Star, Medal, Award, Trophy } from "lucide-react";
+import { Crown, Star, Medal, Dog } from "lucide-react";
 import { getTrialDaysLeft } from "@/utils/premium";
 
-const BADGES = [
-  { name: "Novice", threshold: 0, icon: Star, color: "bg-slate-100 text-slate-500" },
-  { name: "Apprenti", threshold: 50, icon: Medal, color: "bg-emerald-100 text-emerald-600" },
-  { name: "Expert", threshold: 200, icon: Award, color: "bg-emerald-100 text-emerald-600" },
-  { name: "Maître", threshold: 500, icon: Trophy, color: "bg-purple-100 text-purple-600" },
+// Aligned with AchievementsSection LEVEL_THRESHOLDS
+const LEVEL_THRESHOLDS = [
+  { min: 0,    label: "Chiot",     icon: Dog,   color: "bg-emerald-100 text-emerald-500" },
+  { min: 100,  label: "Compagnon", icon: Dog,   color: "bg-emerald-100 text-emerald-600" },
+  { min: 300,  label: "Sportif",   icon: Star,  color: "bg-blue-100 text-blue-600" },
+  { min: 700,  label: "Champion",  icon: Medal, color: "bg-amber-100 text-amber-500" },
+  { min: 1200, label: "Légende",   icon: Crown, color: "bg-amber-100 text-amber-600" },
 ];
 
 function getBadge(points = 0) {
-  return [...BADGES].reverse().find(b => points >= b.threshold) || BADGES[0];
+  let level = LEVEL_THRESHOLDS[0];
+  for (const t of LEVEL_THRESHOLDS) { if (points >= t.min) level = t; }
+  return level;
 }
 
 export default function ProfileHeader({ user, achievementPoints }) {
@@ -55,7 +59,7 @@ export default function ProfileHeader({ user, achievementPoints }) {
         {/* Gamification badge — now shows real achievement points */}
         <div className={`flex flex-col items-center gap-1 px-3 py-2 rounded-2xl ${badge.color} flex-shrink-0`}>
           <BadgeIcon className="w-5 h-5" />
-          <span className="text-[11px] font-black">{badge.name}</span>
+          <span className="text-[11px] font-black">{badge.label}</span>
           <span className="text-[11px] font-bold opacity-70">
             {achievementPoints === null ? "..." : `${points} pts`}
           </span>

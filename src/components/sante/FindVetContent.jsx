@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { PlaceFavorite } from "@/api/entities";
 import { Button } from "@/components/ui/button";
@@ -60,6 +60,8 @@ export default function FindVetContent({ dog, user }) {
   const [favorites, setFavorites] = useState([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const [_loadingFavs, setLoadingFavs] = useState(true);
+  const hasAutoSearched = useRef(false);
+  const pendingGeoSearch = useRef(false);
 
   useEffect(() => {
     async function loadFavorites() {
@@ -76,16 +78,35 @@ export default function FindVetContent({ dog, user }) {
     loadFavorites();
   }, [user]);
 
+  // Auto-search on mount if query is pre-filled from dog.vet_city
+  useEffect(() => {
+    if (!hasAutoSearched.current && dog?.vet_city) {
+      hasAutoSearched.current = true;
+      handleSearch();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleGeolocate = () => {
     if (!navigator.geolocation) { toast.error("La géolocalisation n'est pas disponible sur ton appareil."); return; }
     navigator.geolocation.getCurrentPosition(
       pos => {
         setMapCenter([pos.coords.latitude, pos.coords.longitude]);
         toast.success("Position détectée !");
+        pendingGeoSearch.current = true;
       },
       () => toast.error("Impossible d'obtenir ta position. Vérifie que la localisation est autorisée.")
     );
   };
+
+  // Trigger search after geolocation sets the map center
+  useEffect(() => {
+    if (pendingGeoSearch.current) {
+      pendingGeoSearch.current = false;
+      handleSearch();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapCenter]);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -209,6 +230,12 @@ export default function FindVetContent({ dog, user }) {
             Mes favoris ({favorites.length})
           </button>
         </div>
+
+        {/* Disclaimer — visible, above results */}
+        <div className="bg-amber-100 border border-amber-300 rounded-2xl px-3 py-2.5 flex items-start gap-2">
+          <span className="text-amber-600 font-bold text-sm flex-shrink-0">⚠</span>
+          <p className="text-xs text-amber-800 font-medium leading-snug">Résultats générés par IA — les coordonnées peuvent être inexactes. Vérifie avant de te déplacer.</p>
+        </div>
       </div>
 
       {/* Map */}
@@ -234,11 +261,6 @@ export default function FindVetContent({ dog, user }) {
             );
           })}
         </MapContainer>
-      </div>
-
-      {/* Disclaimer */}
-      <div className="mx-4 mt-3 bg-amber-50 border border-amber-100 rounded-2xl px-3 py-2">
-        <p className="text-xs text-amber-700 font-medium">Résultats générés par IA — vérifie les coordonnées avant de te déplacer.</p>
       </div>
 
       {/* Loading */}

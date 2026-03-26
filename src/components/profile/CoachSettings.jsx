@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import { Bot, Check, Star, Target, BookOpen, Heart, Beef, Gamepad2, Brain } from "lucide-react";
 
 const TONES = [
@@ -23,18 +24,32 @@ export default function CoachSettings({ user, onSave }) {
   })();
 
   const handleTone = async (val) => {
+    const prev = currentTone;
     setSaving("tone");
-    await onSave({ coach_tone: val });
-    setSaving(null);
+    try {
+      await onSave({ coach_tone: val });
+    } catch {
+      toast.error("Impossible de sauvegarder le ton du coach. Réessaie.");
+      await onSave({ coach_tone: prev });
+    } finally {
+      setSaving(null);
+    }
   };
 
   const handleTopic = async (val) => {
+    const prev = currentTopics;
     const next = currentTopics.includes(val)
       ? currentTopics.filter(t => t !== val)
       : [...currentTopics, val];
     setSaving("topics");
-    await onSave({ coach_topics: JSON.stringify(next) });
-    setSaving(null);
+    try {
+      await onSave({ coach_topics: JSON.stringify(next) });
+    } catch {
+      toast.error("Impossible de sauvegarder les sujets. Réessaie.");
+      await onSave({ coach_topics: JSON.stringify(prev) });
+    } finally {
+      setSaving(null);
+    }
   };
 
   return (

@@ -7,7 +7,7 @@ import EmptyState from "@/components/ui/EmptyState";
 
 const STATUS_CONFIG = {
   active:  { label: "Actif", icon: CheckCircle, color: "text-emerald-600" },
-  pending: { label: "En attente", icon: Clock, color: "text-emerald-500" },
+  pending: { label: "En attente", icon: Clock, color: "text-amber-500" },
   revoked: { label: "Révoqué", icon: XCircle, color: "text-red-400" },
 };
 

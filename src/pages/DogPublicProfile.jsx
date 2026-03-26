@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Dog, HealthRecord } from "@/api/entities";
 import { motion } from "framer-motion";
 import { Syringe, Weight, Stethoscope, Pill, AlertTriangle, Calendar, MapPin, PawPrint, ShieldCheck, FileText, Loader2 } from "lucide-react";
@@ -105,12 +106,12 @@ export default function DogPublicProfile() {
           <PawPrint className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <h1 className="text-2xl font-black text-foreground">Dossier introuvable</h1>
           <p className="text-sm text-muted-foreground mt-2">Ce lien est invalide ou a expiré.</p>
-          <a
-            href="/"
+          <Link
+            to="/"
             className="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-emerald-600 text-white font-bold text-sm rounded-xl hover:bg-emerald-700 transition-colors"
           >
             Retour à l'accueil
-          </a>
+          </Link>
         </div>
       </div>
     );

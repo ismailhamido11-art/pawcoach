@@ -70,10 +70,44 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
     pendingRecordsRef.current = pendingRecords;
   }, [pendingRecords]);
 
+  const LS_KEY = dogId ? `pawcoach_pending_records_${dogId}` : null;
+
+  // On mount: check localStorage for unsaved records and offer to restore
+  useEffect(() => {
+    if (!LS_KEY) return;
+    try {
+      const saved = localStorage.getItem(LS_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setPendingRecords(parsed);
+          toast.info(
+            `${parsed.length} entrée${parsed.length > 1 ? "s" : ""} non sauvegardée${parsed.length > 1 ? "s" : ""} restaurée${parsed.length > 1 ? "s" : ""}. Clique sur "Sauver" pour les enregistrer.`,
+            { duration: 6000 }
+          );
+        }
+      }
+    } catch {}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Sync pending records to localStorage whenever they change
+  useEffect(() => {
+    if (!LS_KEY) return;
+    try {
+      if (pendingRecords.length > 0) {
+        localStorage.setItem(LS_KEY, JSON.stringify(pendingRecords));
+      } else {
+        localStorage.removeItem(LS_KEY);
+      }
+    } catch {}
+  }, [pendingRecords, LS_KEY]);
+
   // Auto-save pending records on unmount (prevents data loss on navigation)
   useEffect(() => {
     return () => {
       if (pendingRecordsRef.current.length > 0 && dogId) {
+        // localStorage is already up-to-date; also attempt DB save as backup
         pendingRecordsRef.current.forEach(rec => {
           HealthRecord.create({ dog_id: dogId, ...rec }).catch(() => {});
         });
@@ -345,6 +379,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       }
 
       setPendingRecords([]);
+      if (LS_KEY) { try { localStorage.removeItem(LS_KEY); } catch {} }
       setIsFinished(false);
       setHasSaved(true);
       setTimeout(() => {

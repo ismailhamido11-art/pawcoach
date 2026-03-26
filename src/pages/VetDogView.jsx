@@ -20,6 +20,7 @@ export default function VetDogView() {
   const [user, setUser] = useState(null);
   const [dogData, setDogData] = useState(null);
   const [error, setError] = useState(null);
+  const [localRecords, setLocalRecords] = useState(null);
 
   const urlParams = new URLSearchParams(window.location.search);
   const dogId = urlParams.get("dogId");
@@ -55,7 +56,12 @@ export default function VetDogView() {
     </div>
   );
 
-  const { dog, records, checkins, scans, vetNotes, sharedSections } = dogData;
+  const { dog, records: rawRecords, checkins, scans, vetNotes, sharedSections } = dogData;
+  // localRecords allows optimistic updates (e.g. vet adds a weight entry)
+  const records = localRecords ?? rawRecords;
+  const handleRecordAdded = (newRecord) => {
+    setLocalRecords(prev => [...(prev ?? rawRecords), newRecord]);
+  };
   const getIconForType = (type) => {
     const icons = { vaccine: Syringe, weight: Weight, vet_visit: Stethoscope, medication: Pill, note: FileText };
     const Icon = icons[type] || FileText;
@@ -101,7 +107,7 @@ export default function VetDogView() {
           {/* Health Records */}
           <TabsContent value="records" className="mt-4 space-y-3">
             {sharedSections.includes("weight") && records.filter(r => r.type === "weight").length > 0 && (
-              <SectionPoids records={records} dogId={dogId} />
+              <SectionPoids records={records} dogId={dogId} onRecordAdded={handleRecordAdded} />
             )}
             {records.length === 0 ? (
               <EmptyState

@@ -136,7 +136,9 @@ export default function Chat() {
   const handleCopy = (content) => {
     navigator.clipboard?.writeText(content).then(() => {
       toast.success("Copie !");
-    }).catch(() => {});
+    }).catch(() => {
+      toast.error("Copie impossible sur cet appareil.");
+    });
   };
 
   // --- Textarea auto-resize ---
@@ -268,6 +270,12 @@ export default function Chat() {
 
       if (response.data?.error === 'quota_exceeded') {
         setMessagesRemaining(0);
+        setMessages(prev => [...prev, {
+          role: "system",
+          content: `Tu as atteint ta limite quotidienne de messages. Réessaie demain ou passe en Premium pour des conversations illimitées avec PawCoach.`,
+          timestamp: new Date().toISOString(),
+          isQuotaMessage: true,
+        }]);
         return;
       }
 

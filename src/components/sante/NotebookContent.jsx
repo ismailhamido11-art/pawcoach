@@ -98,17 +98,17 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
     }
   }, [scrollToQR]);
 
-  // Load vet notes lazily
-  const ensureVetNotes = async () => {
-    if (vetNotesLoaded || !dog) return;
-    setVetNotesLoaded(true); // guard immediately to prevent double-fetch
-    try {
-      const notes = await VetNote.filter({ dog_id: dog.id });
-      setVetNotes(notes || []);
-    } catch (e) {
-      console.warn("Failed to load vet notes:", e?.message || String(e));
-    }
-  };
+  // Load vet notes on mount so badge count is available immediately
+  useEffect(() => {
+    if (!dog || vetNotesLoaded) return;
+    setVetNotesLoaded(true);
+    VetNote.filter({ dog_id: dog.id })
+      .then(notes => setVetNotes(notes || []))
+      .catch(e => console.warn("Failed to load vet notes:", e?.message || String(e)));
+  }, [dog]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // No-op kept for call sites that still invoke it (e.g. accordion open)
+  const ensureVetNotes = () => {};
 
   const handleDelete = async (id) => {
     if (typeof id === "string" && id.startsWith("dl-")) return;
@@ -338,6 +338,12 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
                 <ClipboardList className="w-4 h-4 text-primary" />
               </div>
               <span>Historique ({allRecords.length})</span>
+              {vetNotes.length > 0 && (
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[11px] font-bold">
+                  <Stethoscope className="w-3 h-3" />
+                  {vetNotes.length} vét.
+                </span>
+              )}
             </div>
             {allRecords.length > 0 && (showRecords ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />)}
           </button>

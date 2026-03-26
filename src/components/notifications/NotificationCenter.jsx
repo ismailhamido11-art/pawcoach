@@ -55,14 +55,13 @@ export async function loadNotifications() {
     const dogs = await Dog.filter({ owner: u.email });
     if (!dogs?.length) return;
 
-    const items = [];
-
-    for (const dog of dogs) {
+    const perDogResults = await Promise.all(dogs.map(async (dog) => {
+      const dogItems = [];
       // next_vet_appointment on dog profile
       if (dog.next_vet_appointment) {
         const days = getDaysLeft(dog.next_vet_appointment);
         if (days >= -3 && days <= 30) {
-          items.push({ id: `dog-${dog.id}-vet`, type: "vet_visit", title: `RDV veto · ${dog.name}`, daysLeft: days, next_date: dog.next_vet_appointment, dogName: dog.name });
+          dogItems.push({ id: `dog-${dog.id}-vet`, type: "vet_visit", title: `RDV veto · ${dog.name}`, daysLeft: days, next_date: dog.next_vet_appointment, dogName: dog.name });
         }
       }
       // Health records with next_date
@@ -71,10 +70,12 @@ export async function loadNotifications() {
         if (!r.next_date || !["vaccine", "vet_visit", "medication"].includes(r.type)) continue;
         const days = getDaysLeft(r.next_date);
         if (days >= -3 && days <= 30) {
-          items.push({ id: r.id, type: r.type, title: r.title, daysLeft: days, next_date: r.next_date, dogName: dog.name });
+          dogItems.push({ id: r.id, type: r.type, title: r.title, daysLeft: days, next_date: r.next_date, dogName: dog.name });
         }
       }
-    }
+      return dogItems;
+    }));
+    const items = perDogResults.flat();
 
     items.sort((a, b) => a.daysLeft - b.daysLeft);
     _notifications = items;
@@ -102,7 +103,7 @@ export default function NotificationCenter({ transparent = false }) {
   useEffect(() => { if (open) setReadIds(getReadIds()); }, [open]);
 
   const urgent = notifications.filter(n => n.daysLeft <= 7);
-  const unreadCount = urgent.filter(n => !readIds.includes(n.id)).length;
+  const unreadCount = notifications.filter(n => !readIds.includes(n.id)).length;
 
   const handleNotifClick = useCallback((n) => {
     markAsRead(n.id);
