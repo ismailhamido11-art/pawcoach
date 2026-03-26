@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Trophy } from "lucide-react";
+import { Trophy, Flame, Zap, Medal, PawPrint, Footprints, Calendar, Sparkles, GraduationCap, Search, FlaskConical, Diamond } from "lucide-react";
 
-function Trophy_({ emoji, label, earned }) {
+function TrophyItem({ Icon, iconColor, label, earned }) {
   return (
     <div className={`flex-shrink-0 flex flex-col items-center gap-1.5 w-20 ${!earned ? "opacity-35" : ""}`}>
-      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm border ${earned ? "bg-emerald-50 border-emerald-200" : "bg-muted border-border"}`}>
-        {emoji}
+      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm border ${earned ? "bg-emerald-50 border-emerald-200" : "bg-muted border-border"}`}>
+        <Icon className={`w-6 h-6 ${earned ? iconColor : "text-muted-foreground"}`} />
       </div>
       <p className="text-[11px] text-center text-muted-foreground font-medium leading-tight">{label}</p>
     </div>
@@ -39,18 +39,18 @@ export default function DogTrophiesRow({ streak, progress, scansCount, dailyLogs
   }, [dailyLogs]);
 
   const trophies = [
-    { emoji: "🔥", label: "1er streak", earned: longest >= 1 },
-    { emoji: "⚡", label: "7 jours", earned: longest >= 7 },
-    { emoji: "🏅", label: "30 jours", earned: longest >= 30 },
-    { emoji: "🐾", label: "1re balade", earned: walkDays >= 1 },
-    { emoji: "👟", label: "30 min+", earned: (dailyLogs || []).some(l => l.walk_minutes >= 30) },
-    { emoji: "📅", label: "7j de balade", earned: walkStreak >= 7 },
-    { emoji: "🏅", label: "Ultra marcheur", earned: totalWalkMin >= 1000 },
-    { emoji: "✨", label: "1er exercice", earned: exerciseCount >= 1 },
-    { emoji: "🎓", label: "3 exercices", earned: exerciseCount >= 3 },
-    { emoji: "🔍", label: "1er scan", earned: scansCount >= 1 },
-    { emoji: "🧪", label: "5 scans", earned: scansCount >= 5 },
-    { emoji: "💎", label: "100 jours", earned: longest >= 100 },
+    { Icon: Flame,         iconColor: "text-orange-500", label: "1er streak",     earned: longest >= 1 },
+    { Icon: Zap,           iconColor: "text-amber-500",  label: "7 jours",        earned: longest >= 7 },
+    { Icon: Medal,         iconColor: "text-amber-600",  label: "30 jours",       earned: longest >= 30 },
+    { Icon: PawPrint,      iconColor: "text-emerald-600",label: "1re balade",     earned: walkDays >= 1 },
+    { Icon: Footprints,    iconColor: "text-emerald-600",label: "30 min+",        earned: (dailyLogs || []).some(l => l.walk_minutes >= 30) },
+    { Icon: Calendar,      iconColor: "text-blue-600",   label: "7j de balade",   earned: walkStreak >= 7 },
+    { Icon: Medal,         iconColor: "text-amber-600",  label: "Ultra marcheur", earned: totalWalkMin >= 1000 },
+    { Icon: Sparkles,      iconColor: "text-violet-500", label: "1er exercice",   earned: exerciseCount >= 1 },
+    { Icon: GraduationCap, iconColor: "text-indigo-600", label: "3 exercices",    earned: exerciseCount >= 3 },
+    { Icon: Search,        iconColor: "text-blue-500",   label: "1er scan",       earned: scansCount >= 1 },
+    { Icon: FlaskConical,  iconColor: "text-violet-500", label: "5 scans",        earned: scansCount >= 5 },
+    { Icon: Diamond,       iconColor: "text-violet-500", label: "100 jours",      earned: longest >= 100 },
   ];
 
   const earnedCount = trophies.filter(t => t.earned).length;
@@ -67,7 +67,7 @@ export default function DogTrophiesRow({ streak, progress, scansCount, dailyLogs
       <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
         {trophies.map((t, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-            <Trophy_ {...t} />
+            <TrophyItem {...t} />
           </motion.div>
         ))}
       </div>

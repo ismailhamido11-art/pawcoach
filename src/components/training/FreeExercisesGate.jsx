@@ -2,15 +2,15 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
-import { Crown } from "lucide-react";
+import { Crown, Megaphone, Handshake, Target } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion } from "framer-motion";
 
 const NEXT_EXERCISES = [
-  { emoji: "📣", name: "Viens ici (Rappel)" },
-  { emoji: "🤝", name: "Donne la patte" },
-  { emoji: "🎾", name: "Lâche" },
+  { Icon: Megaphone, color: "text-red-500",     name: "Viens ici (Rappel)" },
+  { Icon: Handshake, color: "text-emerald-600", name: "Donne la patte" },
+  { Icon: Target,    color: "text-emerald-600", name: "Lâche" },
 ];
 
 export default function FreeExercisesGate({ dogName, onDismiss }) {
@@ -54,8 +54,8 @@ export default function FreeExercisesGate({ dogName, onDismiss }) {
             key={i}
             className="flex items-center gap-3 p-3 rounded-2xl border border-border bg-white/60 opacity-60"
           >
-            <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-2xl flex-shrink-0">
-              {ex.emoji}
+            <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+              <ex.Icon className={`w-5 h-5 ${ex.color}`} />
             </div>
             <span className="text-sm font-medium text-foreground flex-1 text-left">{ex.name}</span>
             <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 flex items-center gap-1">
@@ -69,9 +69,9 @@ export default function FreeExercisesGate({ dogName, onDismiss }) {
       <div className="w-full max-w-sm mt-8 space-y-3">
         <Button
           onClick={() => navigate(createPageUrl("Premium") + "?from=training")}
-          className="w-full h-14 rounded-2xl gradient-warm border-0 text-white font-bold text-base shadow-lg"
+          className="w-full h-14 rounded-2xl gradient-warm border-0 text-white font-bold text-base shadow-lg flex items-center justify-center gap-2"
         >
-          👑 Débloquer 7 exercices avancés
+          <Crown className="w-4 h-4 inline" /> Débloquer 7 exercices avancés
         </Button>
         <Button
           onClick={onDismiss}

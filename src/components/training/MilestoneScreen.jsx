@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Share2 } from "lucide-react";
+import { CheckCircle, Share2, PawPrint, ArrowRight, Trophy, Medal, Award } from "lucide-react";
 import { motion } from "framer-motion";
 import Illustration from "../illustrations/Illustration";
 
@@ -23,7 +23,7 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
   }, []);
 
   const handleShare = async () => {
-    const text = `🐾 ${dogName} a maîtrisé ${count} tours avec PawCoach !\n\n${completedExercises.map((e, i) => `✅ ${i + 1}. ${e.name}`).join("\n")}\n\nEntraîné par PawCoach 🏆`;
+    const text = `[paw] ${dogName} a maîtrisé ${count} tours avec PawCoach !\n\n${completedExercises.map((e, i) => `[v] ${i + 1}. ${e.name}`).join("\n")}\n\nEntraîné par PawCoach [trophy]`;
     if (navigator.share) {
       await navigator.share({ title: `${dogName} – PawCoach`, text });
     } else {
@@ -32,7 +32,7 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
     }
   };
 
-  const _milestoneEmoji = count >= 10 ? "🏆" : count >= 5 ? "🥇" : "🎖️";
+  const _MilestoneIcon = count >= 10 ? Trophy : count >= 5 ? Medal : Award;
 
   return (
     <motion.div
@@ -68,7 +68,7 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
             </motion.div>
           ))}
         </motion.div>
-        <p className="text-xs text-muted-foreground text-center mt-4 pt-3 border-t border-border">Entraîné par PawCoach 🐾</p>
+        <p className="text-xs text-muted-foreground text-center mt-4 pt-3 border-t border-border flex items-center justify-center gap-1">Entraîné par PawCoach <PawPrint className="w-3 h-3 text-emerald-600 inline" /></p>
       </div>
 
       <div className="flex gap-3 w-full max-w-sm">
@@ -79,7 +79,7 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
         </motion.div>
         <motion.div whileTap={{ scale: 0.96 }} transition={{ type: "spring", stiffness: 400, damping: 30 }} className="flex-1">
           <Button onClick={onContinue} className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold gap-2">
-            Continuer 🚀
+            Continuer <ArrowRight className="w-4 h-4 inline" />
           </Button>
         </motion.div>
       </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Pause, Play, StopCircle, Timer, Footprints, Zap, TrendingUp, TrendingDown, Minus, Share2, TreePine } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { MapPin, Pause, Play, StopCircle, Timer, Footprints, Zap, TrendingUp, TrendingDown, Minus, Share2, TreePine, Smile, ThumbsUp, Meh, Frown, Dog, PawPrint, Bone, Check } from "lucide-react";
+import { DailyLog } from "@/api/entities";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import WalkShareCard from "./WalkShareCard";
@@ -14,10 +14,10 @@ import { updateStreakSilently } from "@/components/streakHelper";
 import { getTodayString } from "@/utils/recommendations";
 
 const WALK_MOODS = [
-  { id: "super", emoji: "😊", label: "Super" },
-  { id: "good", emoji: "👍", label: "Bien" },
-  { id: "calm", emoji: "😐", label: "Calme" },
-  { id: "hard", emoji: "😤", label: "Difficile" },
+  { id: "super", Icon: Smile,    iconColor: "text-emerald-500", label: "Super" },
+  { id: "good",  Icon: ThumbsUp, iconColor: "text-emerald-600", label: "Bien" },
+  { id: "calm",  Icon: Meh,      iconColor: "text-slate-400",   label: "Calme" },
+  { id: "hard",  Icon: Frown,    iconColor: "text-amber-500",   label: "Difficile" },
 ];
 const WALK_TAGS = ["Tirait en laisse", "Bon rappel", "Sociable", "Distrait", "Très calme", "Énergique"];
 const MOOD_KEY = "pawcoach_walk_moods";
@@ -116,14 +116,14 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
             const today = new Date().toISOString().slice(0, 10);
             const minutes = Math.round(elapsedSec / 60);
             try {
-              const existing = await base44.entities.DailyLog.filter({ dog_id: saved.dogId, date: today });
+              const existing = await DailyLog.filter({ dog_id: saved.dogId, date: today });
               if (existing && existing.length > 0) {
                 const prev = existing[0];
-                await base44.entities.DailyLog.update(prev.id, {
+                await DailyLog.update(prev.id, {
                   walk_minutes: (prev.walk_minutes || 0) + minutes,
                 });
               } else {
-                await base44.entities.DailyLog.create({
+                await DailyLog.create({
                   dog_id: saved.dogId,
                   owner: user?.email,
                   date: today,
@@ -150,15 +150,15 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
         const synced = [];
         for (const walk of pending) {
           try {
-            const existing = await base44.entities.DailyLog.filter({ dog_id: walk.dog_id, date: walk.date });
+            const existing = await DailyLog.filter({ dog_id: walk.dog_id, date: walk.date });
             if (existing && existing.length > 0) {
               const prev = existing[0];
-              await base44.entities.DailyLog.update(prev.id, {
+              await DailyLog.update(prev.id, {
                 walk_minutes: (prev.walk_minutes || 0) + walk.walk_minutes,
                 ...(walk.walk_distance_km != null ? { walk_distance_km: (prev.walk_distance_km || 0) + walk.walk_distance_km } : {}),
               });
             } else {
-              await base44.entities.DailyLog.create(walk);
+              await DailyLog.create(walk);
             }
             synced.push(walk);
           } catch { break; } // Still offline, stop trying
@@ -322,19 +322,19 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
     setSaving(true);
     const today = getTodayString();
     try {
-      const existing = await base44.entities.DailyLog.filter({ dog_id: dog.id, date: today });
+      const existing = await DailyLog.filter({ dog_id: dog.id, date: today });
       // Persist walk data — mood/tags/distance saved to DailyLog fields
       const distanceKm = finalKm ? parseFloat(finalKm) : null;
       if (existing?.length > 0) {
         const prev = existing[0].walk_minutes || 0;
         const prevDist = existing[0].walk_distance_km || 0;
-        await base44.entities.DailyLog.update(existing[0].id, {
+        await DailyLog.update(existing[0].id, {
           walk_minutes: prev + minutes,
           notes: `Balade de ${prev + minutes} min${finalKm ? ` \u00b7 ${finalKm} km` : ""}${nearPark ? ` \u00b7 ${nearPark.name}` : ""}`,
           ...(distanceKm && { walk_distance_km: Math.round((prevDist + distanceKm) * 100) / 100 }),
         });
       } else {
-        await base44.entities.DailyLog.create({
+        await DailyLog.create({
           dog_id: dog.id,
           owner: user?.email,
           date: today,
@@ -344,7 +344,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
         });
       }
       // Check walk badges
-      const allLogs = await base44.entities.DailyLog.filter({ dog_id: dog.id }, "-date", 60);
+      const allLogs = await DailyLog.filter({ dog_id: dog.id }, "-date", 60);
       checkWalkBadges(dog.id, user?.email, allLogs || []).catch(() => {});
       updateStreakSilently(dog.id, user?.email).catch(() => {});
       onLogged?.();
@@ -382,9 +382,9 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
       localStorage.setItem(MOOD_KEY, JSON.stringify(stored));
       // Persist in DailyLog entity (survives device changes, visible to backend)
       const today = getTodayString();
-      const logs = await base44.entities.DailyLog.filter({ dog_id: dog?.id, date: today });
+      const logs = await DailyLog.filter({ dog_id: dog?.id, date: today });
       if (logs?.length > 0) {
-        await base44.entities.DailyLog.update(logs[0].id, {
+        await DailyLog.update(logs[0].id, {
           walk_mood: walkMood,
           walk_tags: JSON.stringify(selectedMoodTags),
         }).catch(() => {}); // Silently fail if schema not yet updated
@@ -453,7 +453,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
 
             {dog && (
               <div className="flex items-center gap-2 bg-secondary/60 rounded-2xl px-4 py-2.5">
-                <span className="text-xl">🐕</span>
+                <Dog className="w-5 h-5 text-[#1A4D3E]" />
                 <span className="text-sm font-semibold text-foreground">Balade avec {dog.name}</span>
               </div>
             )}
@@ -508,8 +508,8 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                 </div>
                 <div className="text-white/60 text-xs mt-1 font-medium">minutes : secondes</div>
                 {status === "paused" && (
-                  <div className="mt-1 bg-white/20 rounded-full px-3 py-0.5 text-white text-[11px] font-bold">
-                    ⏸ EN PAUSE
+                  <div className="mt-1 bg-white/20 rounded-full px-3 py-0.5 text-white text-[11px] font-bold flex items-center gap-1">
+                    <Pause className="w-3 h-3 inline" /> EN PAUSE
                   </div>
                 )}
               </div>
@@ -579,9 +579,9 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
             <motion.div
               animate={{ rotate: [0, -10, 10, -5, 0] }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-7xl"
+              className="flex items-center justify-center"
             >
-              🐾
+              <PawPrint className="w-16 h-16 text-emerald-600" />
             </motion.div>
             <div>
               <h2 className="text-2xl font-black text-foreground">Balade terminée !</h2>
@@ -606,14 +606,14 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
               </div>
               {kibbleEquiv > 0 && (
                 <div className="flex items-center justify-center gap-1.5 bg-white/60 rounded-xl py-1.5 px-3">
-                  <span className="text-sm">🦴</span>
+                  <Bone className="w-3.5 h-3.5 text-amber-600" />
                   <span className="text-xs font-bold text-foreground">= {kibbleEquiv} croquettes brûlées</span>
                 </div>
               )}
               {saving ? (
                 <div className="text-xs text-muted-foreground animate-pulse">Sauvegarde en cours…</div>
               ) : (
-                <div className="text-xs text-accent font-semibold">✓ Enregistré dans le journal</div>
+                <div className="text-xs text-accent font-semibold flex items-center gap-1"><Check className="w-3 h-3" /> Enregistré dans le journal</div>
               )}
             </div>
 
@@ -663,7 +663,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                               walkMood === m.id ? "bg-primary/10 ring-2 ring-primary scale-105" : "hover:bg-secondary/40"
                             }`}
                           >
-                            <span className="text-2xl">{m.emoji}</span>
+                            {(() => { const MI = m.Icon; return <MI className={`w-6 h-6 ${m.iconColor}`} />; })()}
                             <span className="text-[11px] font-bold text-muted-foreground">{m.label}</span>
                           </button>
                         ))}
@@ -703,7 +703,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                       animate={{ scale: 1, opacity: 1 }}
                       className="bg-emerald-50 border border-emerald-200 rounded-2xl py-2.5 px-4 flex items-center justify-center gap-2"
                     >
-                      <span className="text-xs text-emerald-600">✓</span>
+                      <Check className="w-3 h-3 text-emerald-600" />
                       <span className="text-xs font-bold text-emerald-700">Humeur enregistrée</span>
                     </motion.div>
                   )}

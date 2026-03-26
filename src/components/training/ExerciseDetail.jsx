@@ -1,5 +1,5 @@
 
-import { ArrowLeft, Timer, CheckCircle, HelpCircle } from "lucide-react";
+import { ArrowLeft, Timer, CheckCircle, HelpCircle, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -37,7 +37,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
         >
           <Illustration name="dogWalking" alt="" className="w-64 h-64" />
         </motion.div>
-        <span className="relative z-10 text-7xl select-none drop-shadow-lg">{exercise.emoji}</span>
+        {exercise.icon ? <exercise.icon className="relative z-10 w-16 h-16 text-white drop-shadow-lg" /> : <CheckCircle className="relative z-10 w-16 h-16 text-white drop-shadow-lg" />}
         {isCompleted && (
           <div className="absolute top-4 right-4 bg-safe rounded-full p-1.5 z-20">
             <CheckCircle className="w-4 h-4 text-white" />
@@ -116,7 +116,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
             className="w-full h-14 rounded-2xl bg-safe hover:bg-safe/90 text-white font-bold text-base gap-2 shadow-lg shadow-safe/30"
           >
             <CheckCircle className="w-5 h-5" />
-            {isCompleted ? "Marquer comme non fait" : "J'ai réussi ! 🎉"}
+            {isCompleted ? "Marquer comme non fait" : <><PartyPopper className="w-4 h-4 inline" /> J'ai réussi !</>}
           </Button>
           <Button
             onClick={onHelp}

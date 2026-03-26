@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Camera, Check } from "lucide-react";
+import { Camera, Check, Heart, Stethoscope, Plane } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import Illustration from "../illustrations/Illustration";
 import { getDogAgeLabel } from "@/utils/healthStatus";
 
 const STATUS_OPTIONS = [
-  { value: "healthy", label: "En pleine forme", emoji: "💪", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-  { value: "recovering", label: "En convalescence", emoji: "🩹", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-  { value: "traveling", label: "En voyage", emoji: "✈️", color: "bg-blue-100 text-blue-700 border-blue-200" },
+  { value: "healthy", label: "En pleine forme", Icon: Heart, iconColor: "text-emerald-600", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+  { value: "recovering", label: "En convalescence", Icon: Stethoscope, iconColor: "text-emerald-600", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+  { value: "traveling", label: "En voyage", Icon: Plane, iconColor: "text-blue-600", color: "bg-blue-100 text-blue-700 border-blue-200" },
 ];
 
 export default function DogProfileHero({ dog, dailyLogs, onSave }) {
@@ -95,7 +95,7 @@ export default function DogProfileHero({ dog, dailyLogs, onSave }) {
             onClick={() => setShowStatusPicker(!showStatusPicker)}
             className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-semibold ${currentStatus.color} bg-white`}
           >
-            <span>{currentStatus.emoji}</span>
+            <currentStatus.Icon className={`w-4 h-4 ${currentStatus.iconColor}`} />
             <span>{currentStatus.label}</span>
           </button>
 
@@ -111,7 +111,7 @@ export default function DogProfileHero({ dog, dailyLogs, onSave }) {
                   onClick={() => handleStatusChange(s.value)}
                   className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/40 transition-all text-sm font-medium ${s.value === (dog.status || "healthy") ? "bg-muted/20" : ""}`}
                 >
-                  <span>{s.emoji}</span>
+                  <s.Icon className={`w-4 h-4 ${s.iconColor}`} />
                   <span>{s.label}</span>
                   {s.value === (dog.status || "healthy") && <Check className="w-4 h-4 text-primary ml-auto" />}
                 </button>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Navigation, TreePine, Dog, Loader2, Shield, Droplets, Sun, Clock, ChevronDown, ExternalLink, Map as MapIcon } from "lucide-react";
+import { Navigation, TreePine, Dog, Loader2, Shield, Droplets, Sun, Clock, ChevronDown, ExternalLink, Map as MapIcon, PawPrint } from "lucide-react";
 import { fetchNearbyParks, findNearestPark } from "@/utils/overpass";
 import ParkReviews from "./ParkReviews";
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap } from "react-leaflet";
@@ -107,8 +107,13 @@ function getDogAdvice(park, dog) {
 
 function PawRating({ paws }) {
   return (
-    <span className="text-xs tracking-tight" title={`${paws}/3`}>
-      {"🐾".repeat(paws)}{"○".repeat(3 - paws)}
+    <span className="flex items-center gap-0.5" title={`${paws}/3`}>
+      {Array.from({ length: paws }).map((_, i) => (
+        <PawPrint key={`f${i}`} className="w-3 h-3 text-emerald-600 inline" />
+      ))}
+      {Array.from({ length: 3 - paws }).map((_, i) => (
+        <PawPrint key={`e${i}`} className="w-3 h-3 text-slate-200 inline" />
+      ))}
     </span>
   );
 }
@@ -273,7 +278,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                   <Popup>
                     <div className="text-xs" style={{ minWidth: 140 }}>
                       <p className="font-bold leading-tight">{park.name}</p>
-                      <p className="text-gray-500 mt-0.5">{"🐾".repeat(paws)} · {formatDistance(park.distanceKm)}</p>
+                      <p className="text-gray-500 mt-0.5 flex items-center gap-0.5">{Array.from({length: paws}).map((_,i)=><PawPrint key={i} className="w-2.5 h-2.5 text-emerald-600 inline" />)} · {formatDistance(park.distanceKm)}</p>
                       <div className="flex gap-2 mt-1.5">
                         <a
                           href={`https://www.google.com/maps/dir/?api=1&destination=${park.lat},${park.lng}&travelmode=walking`}

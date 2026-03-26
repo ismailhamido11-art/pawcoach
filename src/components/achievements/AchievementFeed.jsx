@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { DogAchievement } from "@/api/entities";
 import { motion } from "framer-motion";
-import { Trophy } from "lucide-react";
+import { Trophy, Medal } from "lucide-react";
 import EmptyState from "@/components/ui/EmptyState";
 
 const containerVariants = {
@@ -54,7 +54,7 @@ export default function AchievementFeed({ dog }) {
       setLoading(false);
       return;
     }
-    base44.entities.DogAchievement
+    DogAchievement
       .filter({ dog_id: dog.id }, "-unlocked_at", 5)
       .then((a) => setRecent(a || []))
       .catch(() => setRecent([]))
@@ -104,8 +104,8 @@ export default function AchievementFeed({ dog }) {
                 variants={itemVariants}
                 className="flex items-center gap-3 bg-white border border-amber-100 rounded-xl px-3.5 py-3 shadow-sm"
               >
-                <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-xl flex-shrink-0">
-                  {a.badge_emoji || "🏅"}
+                <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center flex-shrink-0">
+                  {a.badge_emoji && a.badge_emoji.match(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FABF}\u{2600}-\u{27BF}]/gu) ? <Trophy className="w-5 h-5 text-amber-500" /> : a.badge_emoji ? <span className="text-xs font-bold text-amber-700 text-center leading-tight">{a.badge_emoji}</span> : <Medal className="w-5 h-5 text-amber-500" />}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-foreground leading-tight truncate">

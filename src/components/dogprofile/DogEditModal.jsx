@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { X, Check, Camera } from "lucide-react";
+import { X, Check, Camera, Dog } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 
@@ -92,7 +92,7 @@ export default function DogEditModal({ dog, onClose, onSave }) {
                 {dog.photo ? (
                   <img src={dog.photo} alt="" loading="lazy" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-3xl">🐕</span>
+                  <Dog className="w-8 h-8 text-[#1A4D3E]" />
                 )}
               </div>
               <div className="absolute bottom-0 right-0 w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow">

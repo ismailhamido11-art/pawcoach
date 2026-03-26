@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { Dog, UserProgress, Bookmark } from "@/api/entities";
 import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
 import ExerciseDetail from "../components/training/ExerciseDetail";
@@ -8,7 +9,7 @@ import MilestoneScreen from "../components/training/MilestoneScreen";
 import FreeExercisesGate from "../components/training/FreeExercisesGate";
 import JourneyCard from "../components/training/JourneyCard";
 import JourneyView from "../components/training/JourneyView";
-import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw, ChevronRight, Sparkles, Lock } from "lucide-react";
+import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, Hourglass, RotateCw, ChevronRight, Sparkles, Lock, PawPrint, Shield, Anchor, CloudRain, BookOpen } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { isUserPremium } from "@/utils/premium";
@@ -22,23 +23,23 @@ import { toast } from "sonner";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 
 const EXERCISES = [
-  { order_number: 1,  name: "Assis",               emoji: "🐶", icon: DogIcon,    iconColor: "#10b981", level: "debutant",      duration: "3 min",  is_premium: false, description: "La base de tout dressage – indispensable pour la sécurité.", steps: ["Tiens une friandise devant le museau de ton chien.", "Remonte lentement la friandise au-dessus de sa tête.", "Quand il s'assoit naturellement, dis « Assis » et donne la friandise.", "Répète 5 fois, puis réduis progressivement la friandise.", "Pratique dans différents endroits et situations."] },
-  { order_number: 2,  name: "Couché",              emoji: "🌙", icon: Moon,       iconColor: "#6366f1", level: "debutant",      duration: "5 min",  is_premium: false, description: "Parfait pour les moments de calme et les lieux publics.", steps: ["Demande d'abord « Assis ».", "Place une friandise devant son museau puis descends-la vers le sol.", "Déplace-la lentement entre ses pattes.", "Dès qu'il se couche, dis « Couché » et récompense.", "Augmente progressivement la durée avant la récompense."] },
-  { order_number: 3,  name: "Pas bouger",          emoji: "✋", icon: Hand,       iconColor: "#10b981", level: "debutant",      duration: "5 min",  is_premium: false, description: "Un ordre de sécurité crucial dans toutes les situations.", steps: ["Demande « Assis » ou « Couché ».", "Montre ta paume ouverte et dis « Pas bouger ».", "Fais un pas en arrière, reviens et récompense.", "Augmente progressivement la distance et la durée.", "Introduis des distractions pour solidifier l'ordre."] },
-  { order_number: 4,  name: "Viens ici (Rappel)",  emoji: "📣", icon: Megaphone,  iconColor: "#ef4444", level: "debutant",      duration: "5 min",  is_premium: true,  description: "L'ordre le plus important pour la sécurité en extérieur.", steps: ["Commence en intérieur, à courte distance.", "Appelle son prénom + « Viens » avec enthousiasme.", "Récompense généreusement à chaque retour réussi.", "Augmente progressivement la distance.", "Pratique en laisse longue avant le rappel sans laisse."] },
-  { order_number: 6,  name: "Lâche",               emoji: "🎾", icon: Circle,     iconColor: "#10b981", level: "debutant",      duration: "5 min",  is_premium: true,  description: "Essentiel pour les jeux et la sécurité.", steps: ["Joue avec un jouet avec ton chien.", "Présente une friandise près de son museau.", "Quand il lâche, dis « Lâche » et donne la friandise.", "Rends le jouet immédiatement pour qu'il comprenne.", "Pratique régulièrement sans friandise ensuite."] },
-  { order_number: 8,  name: "Attends",             emoji: "⏳", icon: Hourglass,  iconColor: "#10b981", level: "intermediaire", duration: "5 min",  is_premium: true,  description: "Apprendre la patience avant une action.", steps: ["Demande « Assis » et dis « Attends ».", "Pose sa gamelle ou son jouet devant lui.", "Dis « Ok » ou « Vas-y » pour libérer.", "Augmente progressivement le temps d'attente.", "Pratique avant les repas, les jeux ou les sorties."] },
-  { order_number: 5,  name: "Donne la patte",      emoji: "🤝", icon: Handshake,  iconColor: "#10b981", level: "debutant",      duration: "3 min",  is_premium: true,  description: "Un tour sympathique qui renforce la complicité.", steps: ["Demande « Assis » à ton chien.", "Présente ta main paume vers le haut, légèrement inclinée.", "Quand il pose la patte, dis « Donne la patte » et récompense.", "Répète sans la friandise en utilisant uniquement le geste.", "Alterne les deux pattes pour l'équilibre."] },
-  { order_number: 9,  name: "Tourne",              emoji: "🔄", icon: RotateCw,   iconColor: "#6366f1", level: "intermediaire", duration: "5 min",  is_premium: true,  description: "Un tour sur lui-même – pour stimuler et épater !", steps: ["Tiens une friandise devant le museau de ton chien.", "Trace lentement un cercle complet avec la friandise.", "Quand il complète le tour, récompense.", "Ajoute le signal verbal « Tourne ».", "Remplace ensuite la friandise par un geste de la main."] },
-  { order_number: 10, name: "Touche",              emoji: "👋", icon: Hand,       iconColor: "#d97706", level: "intermediaire", duration: "3 min",  is_premium: true,  description: "Toucher un objet ou une main sur commande.", steps: ["Présente ta main paume vers le chien.", "Quand il touche la paume avec son museau, dis « Touche » et récompense.", "Déplace ta main à différentes hauteurs et angles.", "Introduis d'autres surfaces à toucher.", "Utilise « Touche » pour guider ton chien vers des endroits précis."] },
-  { order_number: 7,  name: "Au pied",             emoji: "🦮", icon: Footprints, iconColor: "#3b82f6", level: "intermediaire", duration: "10 min", is_premium: true,  description: "Promenades agréables sans tirer sur la laisse.", steps: ["Commence avec ton chien à ta gauche.", "Dès qu'il tire, arrête-toi complètement.", "Reprends quand la laisse se détend.", "Récompense fréquemment quand il marche bien.", "Progresse vers des environnements plus distractifs."] },
+  { order_number: 1,  name: "Assis",               icon: DogIcon,    iconColor: "#10b981", level: "debutant",      duration: "3 min",  is_premium: false, description: "La base de tout dressage – indispensable pour la sécurité.", steps: ["Tiens une friandise devant le museau de ton chien.", "Remonte lentement la friandise au-dessus de sa tête.", "Quand il s'assoit naturellement, dis « Assis » et donne la friandise.", "Répète 5 fois, puis réduis progressivement la friandise.", "Pratique dans différents endroits et situations."] },
+  { order_number: 2,  name: "Couché",              icon: Moon,       iconColor: "#6366f1", level: "debutant",      duration: "5 min",  is_premium: false, description: "Parfait pour les moments de calme et les lieux publics.", steps: ["Demande d'abord « Assis ».", "Place une friandise devant son museau puis descends-la vers le sol.", "Déplace-la lentement entre ses pattes.", "Dès qu'il se couche, dis « Couché » et récompense.", "Augmente progressivement la durée avant la récompense."] },
+  { order_number: 3,  name: "Pas bouger",          icon: Hand,       iconColor: "#10b981", level: "debutant",      duration: "5 min",  is_premium: false, description: "Un ordre de sécurité crucial dans toutes les situations.", steps: ["Demande « Assis » ou « Couché ».", "Montre ta paume ouverte et dis « Pas bouger ».", "Fais un pas en arrière, reviens et récompense.", "Augmente progressivement la distance et la durée.", "Introduis des distractions pour solidifier l'ordre."] },
+  { order_number: 4,  name: "Viens ici (Rappel)",  icon: Megaphone,  iconColor: "#ef4444", level: "debutant",      duration: "5 min",  is_premium: true,  description: "L'ordre le plus important pour la sécurité en extérieur.", steps: ["Commence en intérieur, à courte distance.", "Appelle son prénom + « Viens » avec enthousiasme.", "Récompense généreusement à chaque retour réussi.", "Augmente progressivement la distance.", "Pratique en laisse longue avant le rappel sans laisse."] },
+  { order_number: 6,  name: "Lâche",               icon: Circle,     iconColor: "#10b981", level: "debutant",      duration: "5 min",  is_premium: true,  description: "Essentiel pour les jeux et la sécurité.", steps: ["Joue avec un jouet avec ton chien.", "Présente une friandise près de son museau.", "Quand il lâche, dis « Lâche » et donne la friandise.", "Rends le jouet immédiatement pour qu'il comprenne.", "Pratique régulièrement sans friandise ensuite."] },
+  { order_number: 8,  name: "Attends",             icon: Hourglass,  iconColor: "#10b981", level: "intermediaire", duration: "5 min",  is_premium: true,  description: "Apprendre la patience avant une action.", steps: ["Demande « Assis » et dis « Attends ».", "Pose sa gamelle ou son jouet devant lui.", "Dis « Ok » ou « Vas-y » pour libérer.", "Augmente progressivement le temps d'attente.", "Pratique avant les repas, les jeux ou les sorties."] },
+  { order_number: 5,  name: "Donne la patte",      icon: Handshake,  iconColor: "#10b981", level: "debutant",      duration: "3 min",  is_premium: true,  description: "Un tour sympathique qui renforce la complicité.", steps: ["Demande « Assis » à ton chien.", "Présente ta main paume vers le haut, légèrement inclinée.", "Quand il pose la patte, dis « Donne la patte » et récompense.", "Répète sans la friandise en utilisant uniquement le geste.", "Alterne les deux pattes pour l'équilibre."] },
+  { order_number: 9,  name: "Tourne",              icon: RotateCw,   iconColor: "#6366f1", level: "intermediaire", duration: "5 min",  is_premium: true,  description: "Un tour sur lui-même – pour stimuler et épater !", steps: ["Tiens une friandise devant le museau de ton chien.", "Trace lentement un cercle complet avec la friandise.", "Quand il complète le tour, récompense.", "Ajoute le signal verbal « Tourne ».", "Remplace ensuite la friandise par un geste de la main."] },
+  { order_number: 10, name: "Touche",              icon: Hand,       iconColor: "#d97706", level: "intermediaire", duration: "3 min",  is_premium: true,  description: "Toucher un objet ou une main sur commande.", steps: ["Présente ta main paume vers le chien.", "Quand il touche la paume avec son museau, dis « Touche » et récompense.", "Déplace ta main à différentes hauteurs et angles.", "Introduis d'autres surfaces à toucher.", "Utilise « Touche » pour guider ton chien vers des endroits précis."] },
+  { order_number: 7,  name: "Au pied",             icon: Footprints, iconColor: "#3b82f6", level: "intermediaire", duration: "10 min", is_premium: true,  description: "Promenades agréables sans tirer sur la laisse.", steps: ["Commence avec ton chien à ta gauche.", "Dès qu'il tire, arrête-toi complètement.", "Reprends quand la laisse se détend.", "Récompense fréquemment quand il marche bien.", "Progresse vers des environnements plus distractifs."] },
 ];
 
 const JOURNEYS = [
   {
     id: "bases",
     name: "Les bases",
-    emoji: "🐾",
+    icon: PawPrint,
     description: "Les ordres fondamentaux pour tout chien",
     isPremium: false,
     exerciseOrders: [1, 2, 3],
@@ -46,7 +47,7 @@ const JOURNEYS = [
   {
     id: "securite",
     name: "La sécurité",
-    emoji: "🛡️",
+    icon: Shield,
     description: "Ordres essentiels pour la sécurité au quotidien",
     isPremium: true,
     exerciseOrders: [4, 6, 8],
@@ -54,7 +55,7 @@ const JOURNEYS = [
   {
     id: "complicite",
     name: "La complicité",
-    emoji: "🤝",
+    icon: Handshake,
     description: "Renforcer le lien et la communication",
     isPremium: true,
     exerciseOrders: [5, 9, 10],
@@ -62,7 +63,7 @@ const JOURNEYS = [
   {
     id: "promenade",
     name: "En promenade",
-    emoji: "🦮",
+    icon: DogIcon,
     description: "Maîtriser les balades en toute sérénité",
     isPremium: true,
     exerciseOrders: [7],
@@ -73,7 +74,7 @@ const BEHAVIOR_GUIDES = [
   {
     id: "reactivity",
     name: "Réactivité en laisse",
-    emoji: "😤",
+    icon: Anchor,
     description: "Ton chien aboie ou tire sur d'autres chiens/personnes en promenade",
     isFree: true,
     duration: "2-8 semaines",
@@ -88,7 +89,7 @@ const BEHAVIOR_GUIDES = [
   {
     id: "pulling",
     name: "Tirage en laisse",
-    emoji: "🦮",
+    icon: DogIcon,
     description: "Ton chien tire fort en promenade et tu as du mal à le contrôler",
     isFree: true,
     duration: "2-4 semaines",
@@ -103,7 +104,7 @@ const BEHAVIOR_GUIDES = [
   {
     id: "barking",
     name: "Aboiements intempestifs",
-    emoji: "📢",
+    icon: Megaphone,
     description: "Ton chien aboie excessivement à la maison ou en promenade",
     isFree: false,
     duration: "1-4 semaines",
@@ -118,7 +119,7 @@ const BEHAVIOR_GUIDES = [
   {
     id: "separation",
     name: "Anxiété de séparation",
-    emoji: "😰",
+    icon: CloudRain,
     description: "Ton chien panique, détruit ou aboie quand tu pars",
     isFree: false,
     duration: "4-12 semaines",
@@ -133,7 +134,7 @@ const BEHAVIOR_GUIDES = [
   {
     id: "noise",
     name: "Peur des bruits",
-    emoji: "🎆",
+    icon: Sparkles,
     description: "Ton chien tremble, se cache ou panique lors de bruits forts (orage, feux d'artifice, travaux)",
     isFree: false,
     duration: "2-6 semaines",
@@ -174,13 +175,13 @@ export default function Training() {
     try {
       const u = await base44.auth.me();
       setUser(u);
-      const dogs = await base44.entities.Dog.filter({ owner: u.email });
+      const dogs = await Dog.filter({ owner: u.email });
       if (dogs?.length > 0) {
         const activeDog = getActiveDog(dogs);
         setDog(activeDog);
         const [progs, bBks] = await Promise.all([
-          base44.entities.UserProgress.filter({ user_email: u.email, dog_id: activeDog.id }),
-          base44.entities.Bookmark.filter({ dog_id: activeDog.id, source: "behavior_program" }, "-created_at", 5).catch(() => []),
+          UserProgress.filter({ user_email: u.email, dog_id: activeDog.id }),
+          Bookmark.filter({ dog_id: activeDog.id, source: "behavior_program" }, "-created_at", 5).catch(() => []),
         ]);
         setProgresses(progs || []);
         setBehaviorBookmarks(bBks || []);
@@ -247,13 +248,13 @@ export default function Training() {
     try {
       let newProgresses;
       if (existing && existing.completed) {
-        await base44.entities.UserProgress.update(existing.id, { completed: false, completed_date: null });
+        await UserProgress.update(existing.id, { completed: false, completed_date: null });
         newProgresses = progresses.map(p => p.id === existing.id ? { ...p, completed: false } : p);
       } else if (existing) {
-        await base44.entities.UserProgress.update(existing.id, { completed: true, completed_date: new Date().toISOString().split("T")[0] });
+        await UserProgress.update(existing.id, { completed: true, completed_date: new Date().toISOString().split("T")[0] });
         newProgresses = progresses.map(p => p.id === existing.id ? { ...p, completed: true } : p);
       } else {
-        const newP = await base44.entities.UserProgress.create({
+        const newP = await UserProgress.create({
           user_email: user.email,
           dog_id: dog.id,
           exercise_id: key,
@@ -408,7 +409,7 @@ export default function Training() {
             <ChevronRight className="w-5 h-5 text-white rotate-180" />
           </button>
           <div className="text-center">
-            <span className="text-4xl mb-2 block">{guide.emoji}</span>
+            {guide.icon && <guide.icon className="w-10 h-10 text-white mx-auto mb-2" />}
             <h1 className="text-white font-black text-2xl">{guide.name}</h1>
             <p className="text-white/70 text-sm mt-1">{guide.duration} de travail</p>
           </div>
@@ -417,7 +418,7 @@ export default function Training() {
         {locked ? (
           <div className="px-5 pt-6">
             <div className="bg-muted/50 rounded-2xl p-6 text-center border border-border">
-              <p className="text-lg mb-2">🔒</p>
+              <Lock className="w-5 h-5 text-slate-400 mx-auto mb-2" />
               <p className="font-bold text-foreground mb-1">Fiche Premium</p>
               <p className="text-sm text-muted-foreground mb-4">Accede aux 5 fiches comportement avec Premium</p>
               <Link to={createPageUrl("Premium") + "?from=training"} className="inline-block bg-primary text-white font-bold text-sm px-6 py-3 rounded-xl">Debloquer</Link>
@@ -451,7 +452,7 @@ export default function Training() {
                 <ul className="space-y-1.5">
                   {guide.errors.map((err, i) => (
                     <li key={i} className="text-sm text-red-700 flex gap-2">
-                      <span className="shrink-0">✕</span>
+                      <span className="shrink-0">-</span>
                       <span>{err}</span>
                     </li>
                   ))}
@@ -523,13 +524,13 @@ export default function Training() {
                     {todayDay.do?.length > 0 && (
                       <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-200">
                         <p className="text-[11px] font-bold text-emerald-700 uppercase mb-1.5">A faire</p>
-                        {todayDay.do.map((d, i) => <p key={i} className="text-xs text-emerald-800 leading-relaxed">✓ {d}</p>)}
+                        {todayDay.do.map((d, i) => <p key={i} className="text-xs text-emerald-800 leading-relaxed">+ {d}</p>)}
                       </div>
                     )}
                     {todayDay.dont?.length > 0 && (
                       <div className="bg-red-50 rounded-xl p-3 border border-red-200">
                         <p className="text-[11px] font-bold text-red-700 uppercase mb-1.5">A eviter</p>
-                        {todayDay.dont.map((d, i) => <p key={i} className="text-xs text-red-800 leading-relaxed">✕ {d}</p>)}
+                        {todayDay.dont.map((d, i) => <p key={i} className="text-xs text-red-800 leading-relaxed">- {d}</p>)}
                       </div>
                     )}
                   </div>
@@ -548,7 +549,7 @@ export default function Training() {
                   <div className="bg-white rounded-2xl border border-border p-4">
                     <p className="font-bold text-sm mb-2">Signes de progres a observer</p>
                     {activeProgram.progress_indicators.map((ind, i) => (
-                      <p key={i} className="text-xs text-muted-foreground mt-1">✓ {ind}</p>
+                      <p key={i} className="text-xs text-muted-foreground mt-1">+ {ind}</p>
                     ))}
                   </div>
                 )}
@@ -590,7 +591,7 @@ export default function Training() {
                     if (!program || !program.days) throw new Error("No program returned");
                     const today = new Date().toISOString().slice(0, 10);
                     const programData = { ...program, start_date: today, problem_id: guide.id };
-                    await base44.entities.Bookmark.create({
+                    await Bookmark.create({
                       dog_id: dog.id,
                       owner: user.email,
                       source: "behavior_program",
@@ -695,7 +696,7 @@ export default function Training() {
       {isPuppy && (
         <div className="mx-4 mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
           <div className="flex items-start gap-3">
-            <span className="text-2xl flex-shrink-0">🐾</span>
+            <PawPrint className="w-6 h-6 text-emerald-600 flex-shrink-0 mt-0.5" />
             <div>
               <p className="font-bold text-sm text-emerald-900">Programme chiot — {dog.name} ({ageMonths} mois)</p>
               <p className="text-xs text-emerald-700 mt-1 leading-relaxed">
@@ -780,7 +781,7 @@ export default function Training() {
               onClick={() => locked ? navigate(createPageUrl("Premium") + "?from=training") : navigate(createPageUrl("Training") + `?behavior=${guide.id}`)}
               className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 border border-border/30 shadow-sm cursor-pointer"
             >
-              <span className="text-2xl shrink-0">{guide.emoji}</span>
+              {guide.icon && <guide.icon className="w-6 h-6 text-muted-foreground shrink-0" />}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-foreground truncate">{guide.name}</p>
                 <p className="text-xs text-muted-foreground line-clamp-1">{guide.description}</p>

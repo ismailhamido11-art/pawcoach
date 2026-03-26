@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCircle, Lock, Timer } from "lucide-react";
+import { ArrowLeft, CheckCircle, Lock, Timer, PawPrint } from "lucide-react";
 import { motion } from "framer-motion";
 
 const listContainer = { show: { transition: { staggerChildren: 0.07 } } };
@@ -31,8 +31,8 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
         </button>
 
         <div className="text-center mt-2">
-          <div className="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-3">
-            {journey.emoji}
+          <div className="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-3">
+            {journey.icon ? <journey.icon className="w-8 h-8 text-white" /> : <PawPrint className="w-8 h-8 text-white" />}
           </div>
           <h1 className="text-white font-black text-xl">{journey.name}</h1>
           <p className="text-white/70 text-sm mt-1">{journey.description}</p>
@@ -84,11 +84,11 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
             >
               {/* Number/emoji badge */}
               <div
-                className={`w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0 ${
+                className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
                   done ? "bg-safe/10" : exerciseLocked ? "bg-muted" : "bg-secondary"
                 }`}
               >
-                <span>{exercise.emoji || "🐾"}</span>
+                {exercise.icon ? <exercise.icon className="w-5 h-5" style={{ color: exercise.iconColor || "#1A4D3E" }} /> : <PawPrint className="w-5 h-5 text-emerald-600" />}
               </div>
 
               <div className="flex-1 min-w-0">

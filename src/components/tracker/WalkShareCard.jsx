@@ -2,13 +2,13 @@ import { useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { X, Download, Share2 } from "lucide-react";
+import { X, Download, Share2, Trophy, Target, PawPrint, Dog, Bone } from "lucide-react";
 
 function getWalkLevel(minutes) {
-  if (minutes >= 45) return { label: "SUPER BALADE", emoji: "🏆", bg: "linear-gradient(135deg, #064e3b, #059669)", accent: "#34d399" };
-  if (minutes >= 30) return { label: "OBJECTIF ATTEINT", emoji: "🎯", bg: "linear-gradient(135deg, #1a4d3e, #2d9f82)", accent: "#6ee7b7" };
-  if (minutes >= 15) return { label: "BONNE BALADE", emoji: "🐾", bg: "linear-gradient(135deg, #1e3a5f, #3b82f6)", accent: "#93c5fd" };
-  return { label: "PETITE SORTIE", emoji: "🐕", bg: "linear-gradient(135deg, #374151, #6b7280)", accent: "#d1d5db" };
+  if (minutes >= 45) return { label: "SUPER BALADE", Icon: Trophy, iconColor: "#f59e0b", bg: "linear-gradient(135deg, #064e3b, #059669)", accent: "#34d399" };
+  if (minutes >= 30) return { label: "OBJECTIF ATTEINT", Icon: Target, iconColor: "#6ee7b7", bg: "linear-gradient(135deg, #1a4d3e, #2d9f82)", accent: "#6ee7b7" };
+  if (minutes >= 15) return { label: "BONNE BALADE", Icon: PawPrint, iconColor: "#93c5fd", bg: "linear-gradient(135deg, #1e3a5f, #3b82f6)", accent: "#93c5fd" };
+  return { label: "PETITE SORTIE", Icon: Dog, iconColor: "#d1d5db", bg: "linear-gradient(135deg, #374151, #6b7280)", accent: "#d1d5db" };
 }
 
 export default function WalkShareCard({ minutes, km, calories, dogName, streak, kibbleEquiv, onClose }) {
@@ -45,7 +45,7 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
         await navigator.share({
           files: [file],
           title: `Balade avec ${dogName || "mon chien"} — PawCoach`,
-          text: `${level.emoji} ${minutes} min de balade avec ${dogName || "mon chien"}${km ? ` (${km} km)` : ""} ! Suis nos aventures sur PawCoach.`,
+          text: `${level.label} ${minutes} min de balade avec ${dogName || "mon chien"}${km ? ` (${km} km)` : ""} ! Suis nos aventures sur PawCoach.`,
         });
       } else {
         downloadCard();
@@ -92,8 +92,10 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
 
             {/* Content */}
             <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", padding: "36px 32px", textAlign: "center" }}>
-              {/* Emoji */}
-              <div style={{ fontSize: 64, lineHeight: 1, marginBottom: 12 }}>{level.emoji}</div>
+              {/* Icon */}
+              <div style={{ marginBottom: 12 }}>
+                <level.Icon style={{ width: 64, height: 64, color: level.iconColor }} />
+              </div>
 
               {/* Level badge */}
               <div style={{
@@ -158,8 +160,8 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
                   borderRadius: 999,
                   background: "rgba(255,255,255,0.08)",
                 }}>
-                  <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 600 }}>
-                    🦴 = {kibbleEquiv} croquettes brûlées
+                  <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
+                    <Bone style={{ width: 14, height: 14, color: "#fbbf24" }} /> {kibbleEquiv} croquettes brûlées
                   </span>
                 </div>
               )}
@@ -173,7 +175,7 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
                 textAlign: "center",
               }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-                  <span style={{ fontSize: 14 }}>🐾</span>
+                  <PawPrint style={{ width: 14, height: 14, color: "#34d399" }} />
                   <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, fontWeight: 700, letterSpacing: 1 }}>
                     PawCoach
                   </span>

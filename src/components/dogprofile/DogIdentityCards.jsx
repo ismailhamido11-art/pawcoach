@@ -19,7 +19,7 @@ export default function DogIdentityCards({ dog, dailyLogs, onSave }) {
 
   const trendColor = trend > 0 ? "text-emerald-500" : trend < 0 ? "text-blue-500" : "text-muted-foreground";
 
-  const _sexLabel = dog.sex === "male" ? "🐾 Mâle" : dog.sex === "female" ? "🐾 Femelle" : "—";
+  const _sexLabel = dog.sex === "male" ? "Mâle" : dog.sex === "female" ? "Femelle" : "—";
 
   return (
     <div className="grid grid-cols-2 gap-3">
@@ -43,7 +43,7 @@ export default function DogIdentityCards({ dog, dailyLogs, onSave }) {
       {/* Sex & neutered */}
       <div className="bg-white rounded-2xl border border-border p-4 flex items-center gap-3">
         <div className="w-9 h-9 rounded-xl bg-pink-50 flex items-center justify-center flex-shrink-0 text-lg">
-          {dog.sex === "male" ? "♂" : dog.sex === "female" ? "♀" : "?"}
+          {dog.sex === "male" ? "M" : dog.sex === "female" ? "F" : "?"}
         </div>
         <div className="min-w-0">
           <p className="text-xs text-muted-foreground">Sexe</p>

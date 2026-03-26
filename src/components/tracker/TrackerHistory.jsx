@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { format, parseISO, isSameWeek, subDays } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Flame, Trophy, Zap, Calendar } from "lucide-react";
+import { Flame, Trophy, Zap, Calendar, Smile, ThumbsUp, Meh, Frown, CheckCircle, Target } from "lucide-react";
 import { motion } from "framer-motion";
 import ActivityCalendar from "./ActivityCalendar";
 import EmptyState from "@/components/ui/EmptyState";
@@ -11,7 +11,12 @@ import StorysetIllustration from "@/components/ui/StorysetIllustration";
 const WEEKLY_GOAL = 5;
 const MIN_WALK_MINUTES = 20;
 const MOOD_KEY = "pawcoach_walk_moods";
-const MOOD_EMOJIS = { super: "😊", good: "👍", calm: "😐", hard: "😤" };
+const MOOD_ICONS = {
+  super: { Icon: Smile,    color: "text-emerald-500" },
+  good:  { Icon: ThumbsUp, color: "text-emerald-600" },
+  calm:  { Icon: Meh,      color: "text-slate-400" },
+  hard:  { Icon: Frown,    color: "text-amber-500" },
+};
 
 function getMoods() {
   try { return JSON.parse(localStorage.getItem(MOOD_KEY) || "{}"); } catch { return {}; }
@@ -156,10 +161,10 @@ export default function TrackerHistory({ logs, dog }) {
             )}
           </div>
           <div className="flex items-center gap-2">
-            {todayMood && <span className="text-xl">{MOOD_EMOJIS[todayMood.mood]}</span>}
+            {todayMood && MOOD_ICONS[todayMood.mood] && (() => { const M = MOOD_ICONS[todayMood.mood]; return <M.Icon className={`w-5 h-5 ${M.color}`} />; })()}
             {todayLog?.walk_minutes ? (
               <div className="w-10 h-10 rounded-full bg-safe/15 flex items-center justify-center">
-                <span className="text-base">✅</span>
+                <CheckCircle className="w-5 h-5 text-emerald-600" />
               </div>
             ) : (
               <div className="w-10 h-10 rounded-full bg-secondary/30 flex items-center justify-center">
@@ -179,7 +184,7 @@ export default function TrackerHistory({ logs, dog }) {
         >
           <Flame className="w-5 h-5 text-amber-500" />
           <span className="text-sm font-black text-amber-700">{streaks.current} jour{streaks.current > 1 ? "s" : ""} de suite</span>
-          {streaks.current >= 7 && <span className="text-xs">🔥</span>}
+          {streaks.current >= 7 && <Flame className="w-3 h-3 text-orange-500" />}
         </motion.div>
       )}
 
@@ -187,7 +192,7 @@ export default function TrackerHistory({ logs, dog }) {
       <div className={`rounded-2xl p-4 border ${weeklyWalks >= WEEKLY_GOAL ? "bg-emerald-50 border-emerald-200" : "bg-white border-border"}`}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <span className="text-lg">{weeklyWalks >= WEEKLY_GOAL ? "🏆" : "🎯"}</span>
+            {weeklyWalks >= WEEKLY_GOAL ? <Trophy className="w-5 h-5 text-amber-500" /> : <Target className="w-5 h-5 text-emerald-600" />}
             <p className="font-bold text-sm text-foreground">Objectif semaine</p>
           </div>
           <span className={`text-sm font-black ${weeklyWalks >= WEEKLY_GOAL ? "text-emerald-600" : "text-primary"}`}>

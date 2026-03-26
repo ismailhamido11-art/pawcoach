@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
-import { Star, Send, Loader2, MessageCircle } from "lucide-react";
+import { Star, Send, Loader2, MessageCircle, PawPrint } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { ParkReview } from "@/api/entities";
 import { toast } from "sonner";
 
 const REVIEW_TAGS = [
@@ -23,10 +24,10 @@ function PawRatingInput({ value, onChange }) {
           key={n}
           whileTap={{ scale: 0.85 }}
           onClick={() => onChange(n)}
-          className="text-2xl leading-none"
+          className="leading-none"
           style={{ opacity: n <= value ? 1 : 0.25 }}
         >
-          🐾
+          <PawPrint className="w-6 h-6 text-emerald-600" />
         </motion.button>
       ))}
     </div>
@@ -44,7 +45,7 @@ function ReviewCard({ review }) {
             <span className="text-[11px] text-muted-foreground">• {review.dog_breed}</span>
           )}
         </div>
-        <span className="text-[11px]">{"🐾".repeat(review.rating)}</span>
+        <span className="flex items-center gap-0.5">{Array.from({length: review.rating}).map((_,i) => <PawPrint key={i} className="w-2.5 h-2.5 text-emerald-600" />)}</span>
       </div>
       {review.comment && (
         <p className="text-xs text-foreground/80 leading-relaxed">{review.comment}</p>
@@ -79,7 +80,7 @@ export default function ParkReviews({ park, dog, user }) {
   const fetchReviews = useCallback(async () => {
     try {
       if (!base44.entities.ParkReview) { setEntityExists(false); setLoading(false); return; }
-      const results = await base44.entities.ParkReview.filter({ park_osm_id: park.id }, "-created_date", 20);
+      const results = await ParkReview.filter({ park_osm_id: park.id }, "-created_date", 20);
       setReviews(results || []);
     } catch {
       setEntityExists(false);
@@ -100,7 +101,7 @@ export default function ParkReviews({ park, dog, user }) {
     if (rating === 0) { toast.error("Choisis une note avant de publier ton avis."); return; }
     setSubmitting(true);
     try {
-      await base44.entities.ParkReview.create({
+      await ParkReview.create({
         park_osm_id: park.id,
         park_name: park.name,
         park_lat: park.lat,
@@ -156,7 +157,7 @@ export default function ParkReviews({ park, dog, user }) {
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
             <span className="text-sm font-black text-foreground">{avgRating}</span>
-            <span className="text-xs">{"🐾".repeat(Math.round(parseFloat(avgRating)))}</span>
+            <span className="flex items-center gap-0.5">{Array.from({length: Math.round(parseFloat(avgRating))}).map((_,i) => <PawPrint key={i} className="w-3 h-3 text-emerald-600" />)}</span>
             <span className="text-[11px] text-muted-foreground">({reviews.length} avis)</span>
           </div>
           {topTags.length > 0 && (
@@ -284,7 +285,7 @@ export function PostWalkReviewPrompt({ park, dog, user, onDone }) {
     setSubmitting(true);
     try {
       if (!base44.entities.ParkReview) throw new Error("Entity not ready");
-      await base44.entities.ParkReview.create({
+      await ParkReview.create({
         park_osm_id: park.id,
         park_name: park.name,
         park_lat: park.lat,

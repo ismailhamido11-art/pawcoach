@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Target, Leaf, Users, ShieldAlert, Bone, Anchor, Zap, HeartHandshake, Compass, CloudRain } from "lucide-react";
 import { motion } from "framer-motion";
 
 const ALL_TAGS = [
-  { value: "playful", label: "Joueur", emoji: "🎾" },
-  { value: "calm", label: "Calme", emoji: "😌" },
-  { value: "social", label: "Sociable", emoji: "🐾" },
-  { value: "fearful", label: "Craintif", emoji: "😟" },
-  { value: "foodie", label: "Gourmand", emoji: "🍖" },
-  { value: "stubborn", label: "Têtu", emoji: "😤" },
-  { value: "energetic", label: "Énergique", emoji: "⚡" },
-  { value: "cuddly", label: "Câlin", emoji: "🤗" },
-  { value: "independent", label: "Indépendant", emoji: "🦁" },
-  { value: "anxious", label: "Anxieux", emoji: "😰" },
+  { value: "playful",     label: "Joueur",       Icon: Target,       color: "text-emerald-600" },
+  { value: "calm",        label: "Calme",        Icon: Leaf,         color: "text-emerald-500" },
+  { value: "social",      label: "Sociable",     Icon: Users,        color: "text-blue-600" },
+  { value: "fearful",     label: "Craintif",     Icon: ShieldAlert,  color: "text-amber-500" },
+  { value: "foodie",      label: "Gourmand",     Icon: Bone,         color: "text-amber-600" },
+  { value: "stubborn",    label: "Têtu",         Icon: Anchor,       color: "text-slate-600" },
+  { value: "energetic",   label: "Énergique",    Icon: Zap,          color: "text-amber-500" },
+  { value: "cuddly",      label: "Câlin",        Icon: HeartHandshake, color: "text-rose-500" },
+  { value: "independent", label: "Indépendant",  Icon: Compass,      color: "text-slate-600" },
+  { value: "anxious",     label: "Anxieux",      Icon: CloudRain,    color: "text-blue-400" },
 ];
 
 export default function DogPersonalitySection({ dog, onSave }) {
@@ -44,6 +44,7 @@ export default function DogPersonalitySection({ dog, onSave }) {
       <div className="flex flex-wrap gap-2">
         {ALL_TAGS.map(tag => {
           const active = currentTags.includes(tag.value);
+          const TagIcon = tag.Icon;
           return (
             <motion.button
               key={tag.value}
@@ -55,7 +56,7 @@ export default function DogPersonalitySection({ dog, onSave }) {
                   : "bg-white text-muted-foreground border-dashed border-border/60 opacity-60"
               }`}
             >
-              <span>{tag.emoji}</span>
+              <TagIcon className={`w-4 h-4 ${active ? "text-white" : tag.color}`} />
               <span>{tag.label}</span>
             </motion.button>
           );
