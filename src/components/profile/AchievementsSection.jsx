@@ -1,26 +1,26 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Lock, ChevronRight, Zap } from "lucide-react";
+import { Star, Lock, ChevronRight, Zap, PawPrint, Footprints, Calendar, Medal, Sparkles, GraduationCap, Flame, Crown, Diamond, Dog, Target } from "lucide-react";
 
 // All possible badges — source of truth for display
 const ALL_BADGES = [
   // Walk
-  { id: "first_walk",       name: "Première balade",    emoji: "🐾", points: 10,  category: "walk",      hint: "Enregistre ta 1re balade avec {name}" },
-  { id: "walk_30min",       name: "Marcheur",            emoji: "👟", points: 20,  category: "walk",      hint: "30 min de balade en une journée" },
-  { id: "walk_7days",       name: "Régulier",            emoji: "📅", points: 50,  category: "walk",      hint: "Balade 7 jours de suite avec {name}" },
-  { id: "walk_marathon",    name: "Ultra Marcheur",      emoji: "🏅", points: 200, category: "walk",      hint: "1 000 min de balade cumulées" },
+  { id: "first_walk",       name: "Première balade",    Icon: PawPrint,      color: "text-emerald-600", points: 10,  category: "walk",      hint: "Enregistre ta 1re balade avec {name}" },
+  { id: "walk_30min",       name: "Marcheur",            Icon: Footprints,    color: "text-emerald-600", points: 20,  category: "walk",      hint: "30 min de balade en une journée" },
+  { id: "walk_7days",       name: "Régulier",            Icon: Calendar,      color: "text-blue-600",    points: 50,  category: "walk",      hint: "Balade 7 jours de suite avec {name}" },
+  { id: "walk_marathon",    name: "Ultra Marcheur",      Icon: Medal,         color: "text-amber-600",   points: 200, category: "walk",      hint: "1 000 min de balade cumulées" },
   // Training
-  { id: "first_program",    name: "Coach débutant",      emoji: "✨", points: 15,  category: "training",  hint: "Lance ton 1er programme IA" },
-  { id: "training_3programs",name: "Coach expert",       emoji: "🎓", points: 300, category: "training",  hint: "Génère 3 programmes différents" },
+  { id: "first_program",    name: "Coach débutant",      Icon: Sparkles,      color: "text-violet-500",  points: 15,  category: "training",  hint: "Lance ton 1er programme IA" },
+  { id: "training_3programs",name: "Coach expert",       Icon: GraduationCap, color: "text-indigo-600",  points: 300, category: "training",  hint: "Génère 3 programmes différents" },
   // Streak
-  { id: "streak_3",         name: "En forme",            emoji: "🔥", points: 30,  category: "streak",    hint: "3 jours d'activité consécutifs" },
-  { id: "streak_7",         name: "Habitude",            emoji: "⚡", points: 75,  category: "streak",    hint: "7 jours consécutifs avec {name}" },
-  { id: "streak_30",        name: "Légende",             emoji: "👑", points: 250, category: "streak",    hint: "30 jours consécutifs — du sérieux !" },
+  { id: "streak_3",         name: "En forme",            Icon: Flame,         color: "text-orange-500",  points: 30,  category: "streak",    hint: "3 jours d'activité consécutifs" },
+  { id: "streak_7",         name: "Habitude",            Icon: Zap,           color: "text-amber-500",   points: 75,  category: "streak",    hint: "7 jours consécutifs avec {name}" },
+  { id: "streak_30",        name: "Légende",             Icon: Crown,         color: "text-amber-600",   points: 250, category: "streak",    hint: "30 jours consécutifs — du sérieux !" },
   // Milestones
-  { id: "points_100",       name: "100 points",          emoji: "⭐", points: 0,   category: "milestone", hint: "Cumule 100 points d'activité" },
-  { id: "points_500",       name: "500 points",          emoji: "🌟", points: 0,   category: "milestone", hint: "Cumule 500 points — top 10% des owners" },
-  { id: "points_1000",      name: "Maître PawCoach",     emoji: "💎", points: 0,   category: "milestone", hint: "1 000 points — le summum absolu" },
+  { id: "points_100",       name: "100 points",          Icon: Star,          color: "text-amber-500",   points: 0,   category: "milestone", hint: "Cumule 100 points d'activité" },
+  { id: "points_500",       name: "500 points",          Icon: Star,          color: "text-amber-400",   points: 0,   category: "milestone", hint: "Cumule 500 points — top 10% des owners" },
+  { id: "points_1000",      name: "Maître PawCoach",     Icon: Diamond,       color: "text-violet-500",  points: 0,   category: "milestone", hint: "1 000 points — le summum absolu" },
 ];
 
 const TOTAL_BADGES = ALL_BADGES.length;
@@ -40,11 +40,11 @@ const CATEGORY_COLORS = {
 };
 
 const LEVEL_THRESHOLDS = [
-  { min: 0,    label: "Chiot",     emoji: "🐶", nextLabel: "Compagnon" },
-  { min: 100,  label: "Compagnon", emoji: "🐕", nextLabel: "Sportif" },
-  { min: 300,  label: "Sportif",   emoji: "🦮", nextLabel: "Champion" },
-  { min: 700,  label: "Champion",  emoji: "🏅", nextLabel: "Légende" },
-  { min: 1200, label: "Légende",   emoji: "👑", nextLabel: null },
+  { min: 0,    label: "Chiot",     Icon: Dog,   color: "text-emerald-500", nextLabel: "Compagnon" },
+  { min: 100,  label: "Compagnon", Icon: Dog,   color: "text-emerald-600", nextLabel: "Sportif" },
+  { min: 300,  label: "Sportif",   Icon: Dog,   color: "text-blue-600",    nextLabel: "Champion" },
+  { min: 700,  label: "Champion",  Icon: Medal, color: "text-amber-500",   nextLabel: "Légende" },
+  { min: 1200, label: "Légende",   Icon: Crown, color: "text-amber-600",   nextLabel: null },
 ];
 
 function getLevel(pts) {
@@ -79,6 +79,7 @@ function useCountUp(target, duration = 800) {
 function BadgeCard({ badge, unlocked, achv, dogName, index }) {
   const hint = badge.hint.replace("{name}", dogName || "ton chien");
   const cat = CATEGORY_COLORS[badge.category] || CATEGORY_COLORS.milestone;
+  const BadgeIcon = badge.Icon;
 
   return (
     <motion.div
@@ -96,14 +97,14 @@ function BadgeCard({ badge, unlocked, achv, dogName, index }) {
         <div className={`absolute inset-0 ${cat.bg} opacity-30 pointer-events-none`} />
       )}
 
-      {/* Emoji */}
+      {/* Icon */}
       <span
-        className={`relative z-10 text-3xl leading-none transition-all ${
-          !unlocked ? "grayscale opacity-30" : "drop-shadow-sm"
+        className={`relative z-10 leading-none transition-all ${
+          !unlocked ? "opacity-30" : "drop-shadow-sm"
         }`}
         style={unlocked ? { filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.15))" } : {}}
       >
-        {badge.emoji}
+        <BadgeIcon className={`w-8 h-8 ${badge.color}`} />
       </span>
 
       {/* Name */}
@@ -180,6 +181,8 @@ export default function AchievementsSection({ dog }) {
     ...filteredBadges.filter(b => !unlockedIds.has(b.id)),
   ];
 
+  const LevelIcon = level.Icon;
+
   if (loading) {
     return (
       <div className="space-y-3">
@@ -209,7 +212,7 @@ export default function AchievementsSection({ dog }) {
           {/* Top row: level + badge count */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">{level.emoji}</span>
+              <LevelIcon className={`w-6 h-6 ${level.color}`} />
               <div>
                 <p className="text-white font-black text-sm leading-none">{dog?.name}</p>
                 <p className="text-white/70 text-xs mt-0.5">Niveau {level.label}</p>
@@ -312,7 +315,14 @@ export default function AchievementsSection({ dog }) {
           transition={{ delay: 0.5 }}
           className="flex items-center gap-2 px-4 py-3 bg-emerald-50 border border-emerald-100 rounded-xl"
         >
-          <span className="text-base">{sortedBadges.find(b => !unlockedIds.has(b.id))?.emoji || "🎯"}</span>
+          {(() => {
+            const nextBadge = sortedBadges.find(b => !unlockedIds.has(b.id));
+            if (nextBadge) {
+              const NBI = nextBadge.Icon;
+              return <NBI className={`w-4 h-4 ${nextBadge.color}`} />;
+            }
+            return <Target className="w-4 h-4 text-emerald-600" />;
+          })()}
           <p className="text-xs text-emerald-700 font-medium flex-1">
             Prochain badge : <span className="font-bold">{sortedBadges.find(b => !unlockedIds.has(b.id))?.name}</span>
             {" — "}{sortedBadges.find(b => !unlockedIds.has(b.id))?.hint.replace("{name}", dog?.name || "ton chien")}
