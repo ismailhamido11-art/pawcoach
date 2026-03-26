@@ -9,9 +9,13 @@ Backend: Base44 platform (22 fonctions Deno)
 AI: OpenRouter (DeepSeek + GPT-4o vision)
 Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 
-## Architecture
-16 pages, ~102 composants custom, 22 fonctions backend, 22 entites Base44
-Detailed codebase docs in .planning/codebase/ (7 documents, 26 mars 2026)
+## Current State (v2.0 shipped)
+- 16 pages, ~102 composants custom, 22 fonctions backend, 19 entites Base44
+- Centralized data layer (src/api/entities.js)
+- Home cache with stale-while-revalidate
+- Error feedback on all critical paths
+- Leaflet lazy-loaded
+- Codebase docs: .planning/codebase/ (7 documents, 26 mars 2026)
 
 ## Constraints
 - Git-first workflow (0 credit) — Build prompts only for schema changes
