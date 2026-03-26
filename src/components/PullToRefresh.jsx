@@ -30,8 +30,11 @@ export default function PullToRefresh({ onRefresh, children }) {
       setRefreshing(true);
       setPullDistance(THRESHOLD * 0.7);
       if (navigator.vibrate) navigator.vibrate(30);
-      await onRefresh();
-      setRefreshing(false);
+      try {
+        await onRefresh();
+      } finally {
+        setRefreshing(false);
+      }
     }
     startY.current = null;
     setPullDistance(0);

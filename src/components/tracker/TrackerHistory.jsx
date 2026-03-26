@@ -17,6 +17,7 @@ const MOOD_ICONS = {
   calm:  { Icon: Meh,      color: "text-slate-400" },
   hard:  { Icon: Frown,    color: "text-amber-500" },
 };
+const MOOD_EMOJIS = { super: "😄", good: "👍", calm: "😐", hard: "😟" };
 
 function getMoods() {
   try { return JSON.parse(localStorage.getItem(MOOD_KEY) || "{}"); } catch { return {}; }

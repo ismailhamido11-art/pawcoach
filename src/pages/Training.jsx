@@ -13,7 +13,7 @@ import { Dog as DogIcon, Moon, Hand, Megaphone, Handshake, Circle, Footprints, H
 import Illustration from "../components/illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { isUserPremium } from "@/utils/premium";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { dogAgeMonths } from "@/utils/healthStatus";
 import { updateStreakSilently } from "../components/streakHelper";
@@ -164,10 +164,10 @@ export default function Training() {
    const [behaviorBookmarks, setBehaviorBookmarks] = useState([]);
 
    // Get journey and exercise IDs from URL query params
-   const params = new URLSearchParams(window.location.search);
-   const journeyId = params.get("journey");
-   const exerciseId = params.get("exercise");
-   const behaviorId = params.get("behavior");
+   const [searchParams] = useSearchParams();
+   const journeyId = searchParams.get("journey");
+   const exerciseId = searchParams.get("exercise");
+   const behaviorId = searchParams.get("behavior");
 
    useEffect(() => { loadData(); }, []);
 
@@ -322,6 +322,7 @@ export default function Training() {
            exercise={exercise}
            isCompleted={isCompleted(exercise.order_number)}
            isPremiumLocked={locked}
+           isPremium={isPremium}
            dogName={dog?.name}
            dogId={dog?.id}
            onBack={() => navigate(backUrl)}
@@ -332,6 +333,8 @@ export default function Training() {
            <CelebrationScreen
              dogName={dog?.name || "Ton chien"}
              exerciseName={celebration}
+             exerciseNumber={completedCount}
+             totalExercises={EXERCISES.length}
              onContinue={() => { setCelebration(null); navigate(backUrl); }}
            />
          )}
@@ -370,7 +373,17 @@ export default function Training() {
   // Behavior guide detail
   if (behaviorId) {
     const guide = BEHAVIOR_GUIDES.find(g => g.id === behaviorId);
-    if (!guide) return null;
+    if (!guide) return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 px-5">
+        <p className="text-base font-bold text-foreground">Guide introuvable</p>
+        <button
+          onClick={() => navigate(createPageUrl("Training"))}
+          className="px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity"
+        >
+          Retour
+        </button>
+      </div>
+    );
     const locked = !guide.isFree && !isPremium;
 
     // Find active behavior program for this guide

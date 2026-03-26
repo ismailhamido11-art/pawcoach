@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import Illustration from "../illustrations/Illustration";
+import { useActionCredits } from "@/hooks/useActionCredits";
+import { UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 const STEPS = { SELECT: "select", INPUT: "input", ANALYZING: "analyzing", REVIEW: "review", SUCCESS: "success" };
 
@@ -33,6 +35,7 @@ const TYPE_CONFIG = {
 const ANALYZING_STEPS = ["Lecture du document", "Analyse IA vétérinaire", "Extraction des données de santé"];
 
 export default function HealthImportContent({ dog, onImported }) {
+  const { hasCredits, isPremium } = useActionCredits();
   const [step, setStep] = useState(STEPS.SELECT);
   const [_source, setSource] = useState(null);
   const [textInput, setTextInput] = useState("");
@@ -176,25 +179,31 @@ export default function HealthImportContent({ dog, onImported }) {
       <AnimatePresence mode="wait">
         {step === STEPS.SELECT && (
           <motion.div key="select" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="space-y-3">
-            {SOURCES.map(src => {
-              const Icon = src.icon;
-              return (
-                <motion.button key={src.id} whileTap={{ scale: 0.97 }} onClick={() => handleSourceSelect(src)}
-                  className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 text-left hover:border-primary/30 transition-all">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${src.bgClass}`}>
-                    <Icon className={`w-[22px] h-[22px] ${src.colorClass}`} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-foreground text-sm">{src.label}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{src.desc}</p>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                </motion.button>
-              );
-            })}
-            <div className="bg-muted/40 rounded-2xl p-3 border border-border/30 text-center">
-              <p className="text-xs text-muted-foreground flex items-center justify-center gap-1"><Lock className="w-3 h-3" /> Documents analysés de façon sécurisée</p>
-            </div>
+            {!isPremium && !hasCredits ? (
+              <UpgradePrompt type="action" from="health-assistant" />
+            ) : (
+              <>
+                {SOURCES.map(src => {
+                  const Icon = src.icon;
+                  return (
+                    <motion.button key={src.id} whileTap={{ scale: 0.97 }} onClick={() => handleSourceSelect(src)}
+                      className="w-full bg-white rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-4 text-left hover:border-primary/30 transition-all">
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${src.bgClass}`}>
+                        <Icon className={`w-[22px] h-[22px] ${src.colorClass}`} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-foreground text-sm">{src.label}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{src.desc}</p>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    </motion.button>
+                  );
+                })}
+                <div className="bg-muted/40 rounded-2xl p-3 border border-border/30 text-center">
+                  <p className="text-xs text-muted-foreground flex items-center justify-center gap-1"><Lock className="w-3 h-3" /> Documents analysés de façon sécurisée</p>
+                </div>
+              </>
+            )}
           </motion.div>
         )}
 

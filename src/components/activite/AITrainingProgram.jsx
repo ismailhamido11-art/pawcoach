@@ -636,6 +636,14 @@ export default function AITrainingProgram({ dog, logs = [] }) {
   };
 
   const startNewProgram = async () => {
+    if (program) {
+      const totalDays = program.duration_days || 7;
+      const completedCount = completedDays.length;
+      if (completedCount < totalDays) {
+        const ok = window.confirm(`Tu es au jour ${completedCount}/${totalDays}. Abandonner ce programme ?`);
+        if (!ok) return;
+      }
+    }
     // Archive old bookmark so it won't reload as active
     if (bookmarkId && program) {
       try {

@@ -1,7 +1,10 @@
 import { Footprints, UtensilsCrossed, CircleCheck } from "lucide-react";
 import { getTodayString } from "@/utils/recommendations";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 export default function DailyProgress({ dailyLogs = [], todayCheckin, dog }) {
+  const navigate = useNavigate();
   const today = getTodayString();
   const todayLog = dailyLogs.find(l => l.date === today);
   const walkMinutes = todayLog?.walk_minutes || 0;
@@ -18,6 +21,7 @@ export default function DailyProgress({ dailyLogs = [], todayCheckin, dog }) {
       cardBg: "bg-emerald-50/60",
       borderColor: "border-emerald-200/50",
       done: walkMinutes > 0,
+      onClick: () => navigate(createPageUrl("Activite")),
     },
     {
       icon: UtensilsCrossed,
@@ -28,6 +32,7 @@ export default function DailyProgress({ dailyLogs = [], todayCheckin, dog }) {
       cardBg: "bg-amber-50/60",
       borderColor: "border-amber-200/50",
       done: meals > 0,
+      onClick: () => navigate(createPageUrl("Nutri")),
     },
     {
       icon: CircleCheck,
@@ -38,6 +43,7 @@ export default function DailyProgress({ dailyLogs = [], todayCheckin, dog }) {
       cardBg: hasCheckin ? "bg-violet-50/60" : "bg-muted/30",
       borderColor: hasCheckin ? "border-violet-200/50" : "border-border",
       done: hasCheckin,
+      onClick: null,
     },
   ];
 
@@ -46,7 +52,8 @@ export default function DailyProgress({ dailyLogs = [], todayCheckin, dog }) {
       {items.map((item, i) => (
         <div
           key={i}
-          className={`flex flex-col items-center gap-1.5 rounded-2xl border py-3.5 px-2 shadow-sm transition-all ${item.cardBg} ${item.borderColor}`}
+          onClick={item.onClick || undefined}
+          className={`flex flex-col items-center gap-1.5 rounded-2xl border py-3.5 px-2 shadow-sm transition-all ${item.cardBg} ${item.borderColor}${item.onClick ? " cursor-pointer active:scale-[0.97]" : ""}`}
         >
           <div
             className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-sm ${item.iconBg}`}

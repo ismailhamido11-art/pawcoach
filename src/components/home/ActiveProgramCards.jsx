@@ -4,6 +4,8 @@ import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target, Brain, CheckCircle2, PawPrint, Gamepad2, Moon, Wind, BookOpen, Lightbulb, Check, X } from "lucide-react";
 import { Bookmark } from "@/api/entities";
+import { toast } from "sonner";
+import EmptyState from "@/components/ui/EmptyState";
 
 const SESSION_ICONS = {
   balade: { Icon: PawPrint, color: "text-emerald-600" },
@@ -399,6 +401,7 @@ function BehaviorProgramCard({ program }) {
     } catch (e) {
       setLocalCompleted(null); // Rollback si erreur
       console.warn("Mark done failed:", e?.message);
+      toast.error("Impossible d'enregistrer. Réessaie.");
     }
     setMarking(false);
   };
@@ -593,7 +596,17 @@ export default function ActiveProgramCards({ trainingBookmarks = [], nutritionPl
     return null;
   }, [behaviorBookmarks]);
 
-  if (!activeTraining && !activePlan && !activeBehavior) return null;
+  if (!activeTraining && !activePlan && !activeBehavior) {
+    return (
+      <div className="rounded-2xl border border-border bg-card p-2">
+        <EmptyState
+          mascot="grad"
+          title="Pas de programme actif"
+          description="Crée un programme personnalisé pour ton chien"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, Stethoscope, KeyRound, LogOut, ArrowLeft, FileText, Users, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import VetDogCard from "../components/vet/VetDogCard";
 import { motion } from "framer-motion";
@@ -12,6 +12,7 @@ import SkeletonPage from "@/components/ui/SkeletonPage";
 import EmptyState from "@/components/ui/EmptyState";
 
 export default function VetPortal() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [accesses, setAccesses] = useState([]);
@@ -104,7 +105,15 @@ export default function VetPortal() {
           </p>
         </div>
         <button
-          onClick={() => base44.auth.logout()}
+          onClick={async () => {
+            try {
+              await base44.auth.logout();
+              navigate(createPageUrl("Home"));
+            } catch (e) {
+              console.error("VetPortal logout error:", e);
+              toast.error("Erreur lors de la déconnexion. Réessaie.");
+            }
+          }}
           className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-medium transition-all z-10"
         >
           <LogOut className="w-3.5 h-3.5" />
@@ -116,21 +125,21 @@ export default function VetPortal() {
       <div className="px-4 py-6 space-y-6">
         {/* Hub rapide */}
         <div className="grid grid-cols-3 gap-3">
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="p-3 rounded-xl bg-blue-50 border border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors text-center">
+          <div className="p-3 rounded-xl bg-blue-50 border border-blue-100 text-center">
             <Users className="w-5 h-5 text-blue-600 mx-auto mb-1" />
             <p className="text-xs font-semibold text-blue-800">Patients</p>
             <p className="text-sm font-bold text-blue-600">{dogs.length}</p>
-          </motion.div>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="p-3 rounded-xl bg-purple-50 border border-purple-100 cursor-pointer hover:bg-purple-100 transition-colors text-center">
+          </div>
+          <div className="p-3 rounded-xl bg-purple-50 border border-purple-100 text-center">
             <FileText className="w-5 h-5 text-purple-600 mx-auto mb-1" />
             <p className="text-xs font-semibold text-purple-800">Notes</p>
             <p className="text-sm font-bold text-purple-600">—</p>
-          </motion.div>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="p-3 rounded-xl bg-emerald-50 border border-emerald-100 cursor-pointer hover:bg-emerald-100 transition-colors text-center">
+          </div>
+          <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-100 text-center">
             <BarChart3 className="w-5 h-5 text-emerald-600 mx-auto mb-1" />
             <p className="text-xs font-semibold text-emerald-800">Rapports</p>
             <p className="text-sm font-bold text-emerald-600">—</p>
-          </motion.div>
+          </div>
         </div>
 
          {/* Accept invite */}

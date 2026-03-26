@@ -33,7 +33,7 @@ export default function JourneyCard({ journey, completedCount, isPremium, isNext
               : "bg-gradient-to-br from-secondary to-secondary/40"
           }`}
         >
-          {journey.emoji}
+          <journey.icon className="w-7 h-7 text-foreground/70" />
         </div>
 
         <div className="flex-1 min-w-0">

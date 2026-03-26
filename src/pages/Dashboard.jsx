@@ -172,7 +172,7 @@ export default function Dashboard() {
 
   if (dueSoonVaccines.length > 0) {
     const closest = dueSoonVaccines.sort((a, b) => a[1].daysUntilDue - b[1].daysUntilDue)[0];
-    alerts.push({ type: "info", title: `Rappel vaccin dans ${closest[1].daysUntilDue}j`, desc: dueSoonVaccines.map(([, v]) => v.ref.name).join(", ") });
+    alerts.push({ type: "info", title: `Rappel vaccin dans ${closest[1].daysUntilDue}j`, desc: dueSoonVaccines.map(([, v]) => v.ref.name).join(", "), cta: "Voir", to: createPageUrl("Sante") });
   }
 
   const vetVisits = records.filter(r => r.type === "vet_visit").sort((a, b) => b.date > a.date ? 1 : -1);
@@ -455,7 +455,7 @@ export default function Dashboard() {
 
         {/* Dog info summary card */}
         {dog && (
-          <div className="bg-white rounded-2xl p-4 shadow-sm border border-border/40">
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-border/40 cursor-pointer active:scale-[0.98] transition-transform" onClick={() => navigate(createPageUrl("DogProfile"))}>
             <p className="font-bold text-foreground text-sm mb-3">Fiche de {dog.name}</p>
             <div className="grid grid-cols-2 gap-2">
               {[

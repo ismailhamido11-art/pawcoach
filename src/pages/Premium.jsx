@@ -5,7 +5,7 @@ import { Dog } from "@/api/entities";
 import { trackEvent } from "@/utils/analytics";
 import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Check, Zap, Lock, ChevronRight, MessageCircle, ScanLine, Dumbbell, BookHeart, Salad, Search, Target, ClipboardList, Bell, BarChart3, Dog as DogIcon, Star } from "lucide-react";
+import { ArrowLeft, Check, Zap, Lock, ChevronRight, MessageCircle, ScanLine, Dumbbell, BookHeart, Salad, Search, Target, ClipboardList, Bell, BarChart3, Dog as DogIcon, Star, Crown } from "lucide-react";
 import IconBadge from "@/components/ui/IconBadge";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
@@ -91,7 +91,7 @@ export default function Premium() {
   }, []);
 
   useEffect(() => {
-    if (isUserPremium(user) && !confettiFired.current) {
+    if (isFirstVisit && !confettiFired.current) {
       confettiFired.current = true;
       confetti({
         particleCount: 100,
@@ -100,7 +100,7 @@ export default function Premium() {
         colors: ["#1A4D3E", "#2D9F82", "#10b981", "#34d399"],
       });
     }
-  }, [user]);
+  }, [isFirstVisit]);
 
   const handleSubscribe = async () => {
     // Block if in iframe (preview)
@@ -247,6 +247,42 @@ export default function Premium() {
             </div>
           </div>
 
+          {/* Plan selector for trial users */}
+          {isOnTrial && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.85 }}
+              className="bg-white rounded-2xl border border-border p-1.5 flex gap-1.5"
+            >
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                onClick={() => setPlan("monthly")}
+                className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                  plan === "monthly" ? "gradient-primary text-white shadow" : "text-muted-foreground"
+                }`}
+              >
+                Mensuel<br />
+                <span className={`text-xs font-normal ${plan === "monthly" ? "text-white/80" : "text-muted-foreground"}`}>7,99 €/mois</span>
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                onClick={() => setPlan("annual")}
+                className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-colors relative ${
+                  plan === "annual" ? "gradient-primary text-white shadow" : "text-muted-foreground"
+                }`}
+              >
+                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-white text-[11px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
+                  -37%
+                </span>
+                Annuel<br />
+                <span className={`text-xs font-normal ${plan === "annual" ? "text-white/80" : "text-muted-foreground"}`}>59,99 €/an · 5 €/mois</span>
+              </motion.button>
+            </motion.div>
+          )}
+
           {/* CTA */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -309,6 +345,7 @@ export default function Premium() {
     training: { title: "Tu as maîtrisé les bases !", desc: "Débloque les 7 exercices avancés pour aller plus loin", Icon: Dumbbell, color: "bg-primary/10 border-primary/20 text-primary" },
     notebook: { title: "Carnet santé complet disponible en Premium", desc: "Visites véto, médicaments, ordonnances — tout au même endroit", Icon: BookHeart, color: "bg-destructive/10 border-destructive/20 text-destructive" },
     nutrition:{ title: "Tu as atteint la limite NutriCoach", desc: "Passe en Premium pour un suivi nutrition illimité et personnalisé", Icon: Salad, color: "bg-safe/10 border-safe/20 text-safe" },
+    profile:  { title: "Débloquez tous les avantages pour vos compagnons", desc: "Passe en Premium pour accéder à toutes les fonctionnalités", Icon: Crown, color: "bg-amber-50 border-amber-200 text-amber-600" },
   };
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -321,7 +358,7 @@ export default function Premium() {
       <div className="gradient-primary safe-pt-14 pb-8 px-5 relative overflow-hidden">
         <button
           aria-label="Retour"
-          onClick={() => navigate(createPageUrl("Home"))}
+          onClick={() => navigate(-1)}
           className="absolute top-4 left-4 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center z-20"
         >
           <ArrowLeft className="w-5 h-5 text-white" />

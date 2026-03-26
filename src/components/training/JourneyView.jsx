@@ -1,5 +1,7 @@
-import { ArrowLeft, CheckCircle, Lock, Timer, PawPrint } from "lucide-react";
+import { ArrowLeft, CheckCircle, Lock, Timer, PawPrint, Crown } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 const listContainer = { show: { transition: { staggerChildren: 0.07 } } };
 const listItem = {
@@ -13,6 +15,7 @@ const LEVEL_CONFIG = {
 };
 
 export default function JourneyView({ journey, exercises, progresses, isPremium, onBack, onSelectExercise }) {
+  const navigate = useNavigate();
   const isCompleted = (order) => progresses.some(p => p.exercise_id === String(order) && p.completed);
   const completedCount = exercises.filter(e => isCompleted(e.order_number)).length;
   const total = exercises.length;
@@ -66,6 +69,8 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
         {exercises.map((exercise, idx) => {
           const done = isCompleted(exercise.order_number);
           const exerciseLocked = locked || (exercise.is_premium && !isPremium);
+          // When the whole journey is locked, only show first 2 exercises clearly
+          const hiddenByJourneyLock = locked && idx >= 2;
           const _lvl = LEVEL_CONFIG[exercise.level];
 
           return (
@@ -73,14 +78,14 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
               key={exercise.order_number}
               variants={listItem}
               whileTap={exerciseLocked ? {} : { scale: 0.97 }}
-              onClick={() => onSelectExercise(exercise.order_number)}
+              onClick={() => exerciseLocked ? null : onSelectExercise(exercise.order_number)}
               className={`w-full flex items-center gap-3 p-3.5 rounded-2xl border text-left transition-all ${
                 done
                   ? "bg-white border-safe/30 shadow-sm"
                   : exerciseLocked
                   ? "bg-muted/30 border-border opacity-50"
                   : "bg-white border-border shadow-sm"
-              }`}
+              } ${hiddenByJourneyLock ? "blur-sm pointer-events-none select-none" : ""}`}
             >
               {/* Number/emoji badge */}
               <div
@@ -121,6 +126,28 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
             </motion.button>
           );
         })}
+
+        {/* CTA to unlock when journey is locked */}
+        {locked && (
+          <motion.div
+            variants={listItem}
+            className="mt-2 bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 rounded-2xl p-5 text-center space-y-3"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
+              <Crown className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <p className="font-bold text-foreground text-sm">Débloquer ce parcours</p>
+              <p className="text-xs text-muted-foreground mt-1">Accède à tous les exercices avec Premium</p>
+            </div>
+            <button
+              onClick={() => navigate(createPageUrl("Premium") + "?from=training")}
+              className="w-full py-3 rounded-xl gradient-primary text-white font-bold text-sm"
+            >
+              Passer Premium
+            </button>
+          </motion.div>
+        )}
       </motion.div>
     </div>
   );

@@ -60,6 +60,7 @@ export default function Library() {
   }, []);
 
   const handleDelete = async (id) => {
+    if (!window.confirm("Supprimer cet élément sauvegardé ?")) return;
     try {
       await Bookmark.delete(id);
       setBookmarks(prev => prev.filter(b => b.id !== id));

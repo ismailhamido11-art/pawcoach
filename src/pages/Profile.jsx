@@ -21,6 +21,7 @@ import AchievementFeed from "../components/achievements/AchievementFeed.jsx";
 import ChatFAB from "../components/ChatFAB";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -86,7 +87,7 @@ export default function Profile() {
     if (!isUserPremium(user) && dogs.length >= 1) {
       navigate(createPageUrl("Premium") + "?from=profile");
     } else if (isUserPremium(user) && dogs.length >= 3) {
-      return;
+      toast.error("Tu as atteint la limite de 3 chiens.");
     } else {
       navigate(createPageUrl("Onboarding") + "?addDog=true");
     }
@@ -147,7 +148,7 @@ export default function Profile() {
 
         {/* Premium card */}
         <motion.div custom={1} variants={sectionVariants} initial="hidden" animate="visible">
-          <div className="bg-gradient-to-r from-amber-50 to-yellow-50/50 rounded-3xl p-4 border border-amber-100/50 shadow-sm flex items-center gap-4">
+          <div className="bg-gradient-to-r from-amber-50 to-yellow-50/50 rounded-3xl p-4 border border-amber-100/50 shadow-sm flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-transform" onClick={() => navigate(createPageUrl("Premium") + "?from=profile")}>
             <StorysetIllustration name="premium" className="w-24 h-24 flex-shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[14px] font-bold text-foreground">Passe à Premium</p>
@@ -157,9 +158,17 @@ export default function Profile() {
         </motion.div>
 
         {/* Achievement Feed — 5 derniers badges gagnés */}
-        {dogs.length > 0 && (
+        {dogs.length > 0 ? (
           <motion.div custom={2} variants={sectionVariants} initial="hidden" animate="visible" className="bg-white rounded-2xl border border-border shadow-sm px-4 py-3">
             <AchievementFeed dog={activeDog} />
+          </motion.div>
+        ) : (
+          <motion.div custom={2} variants={sectionVariants} initial="hidden" animate="visible" className="bg-white rounded-2xl border border-border shadow-sm">
+            <EmptyState
+              mascot="trophy"
+              title="Ajoute ton premier chien"
+              description="Tes récompenses apparaîtront ici"
+            />
           </motion.div>
         )}
 

@@ -658,17 +658,6 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                     )}
                   </CardContent>
                 </Card>
-                {result.verdict !== "toxic" && (
-                  <div className="bg-white rounded-2xl border border-border p-4 flex items-center justify-between shadow-sm">
-                    <div>
-                      <p className="text-xs font-bold text-foreground">Disponible chez nos partenaires</p>
-                      <p className="text-[11px] text-muted-foreground mt-0.5">Lien partenaire</p>
-                    </div>
-                    <Button onClick={() => window.open("https://zooplus.fr", "_blank")} size="sm" variant="outline" className="rounded-xl h-8 text-xs font-semibold">
-                      Voir l'offre
-                    </Button>
-                  </div>
-                )}
                 <div className="grid grid-cols-3 gap-2">
                   <Button variant="outline" onClick={reset} className="h-14 rounded-2xl font-semibold text-sm">Nouveau</Button>
                   <Button onClick={() => setShowShare(true)} variant="outline" className="h-14 rounded-2xl font-semibold text-sm gap-1">
@@ -898,7 +887,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                     disabled={labelSaved}
                     className={`flex-1 h-14 rounded-2xl font-semibold ${labelSaved ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "gradient-primary border-0 text-white"}`}
                   >
-                    {labelSaved ? "Sauvegardee" : "Sauvegarder"}
+                    {labelSaved ? "Sauvegardée" : "Sauvegarder"}
                   </Button>
                   <Button variant="outline" onClick={resetLabel} className="flex-1 h-14 rounded-2xl font-semibold">
                     Nouvelle analyse

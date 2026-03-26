@@ -326,7 +326,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
                   disabled={!symptoms.trim()}
                   className="w-full gradient-primary text-white"
                 >
-                  Generer le bilan
+                  Générer le bilan
                 </Button>
               </>
             )}
@@ -338,8 +338,8 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
           <div className="flex flex-col items-center justify-center py-12 gap-4">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
             <p className="text-sm text-muted-foreground text-center">
-              Preparation du bilan en cours...<br />
-              <span className="text-xs">L'IA prepare des questions ciblees pour {dog?.name || "ton chien"}</span>
+              Préparation du bilan en cours...<br />
+              <span className="text-xs">L'IA prépare des questions ciblées pour {dog?.name || "ton chien"}</span>
             </p>
           </div>
         )}

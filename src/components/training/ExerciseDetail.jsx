@@ -13,7 +13,7 @@ const LEVEL_CONFIG = {
 
 import VideoCoaching from "./VideoCoaching";
 
-export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked, dogName, dogId, onBack, onComplete, onHelp }) {
+export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked, isPremium, dogName, dogId, onBack, onComplete, onHelp }) {
   const navigate = useNavigate();
   const levelCfg = LEVEL_CONFIG[exercise.level];
 
@@ -93,18 +93,6 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
           </div>
         )}
 
-        {!isPremiumLocked && (
-          <div className="bg-white rounded-2xl border border-border p-4 flex items-center justify-between mt-6 shadow-sm">
-            <div>
-              <p className="text-xs font-bold text-foreground">Accessoire recommandé</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Lien partenaire</p>
-            </div>
-            <Button onClick={() => window.open("https://amazon.fr", "_blank")} size="sm" variant="outline" className="rounded-xl h-8 text-xs font-semibold">
-              Voir l'offre
-            </Button>
-          </div>
-        )}
-
         {!isPremiumLocked && <VideoCoaching exerciseName={exercise.name} dogName={dogName} dogId={dogId} />}
       </div>
 
@@ -126,7 +114,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
             <HelpCircle className="w-5 h-5" />
             J'ai besoin d'aide
           </Button>
-          <p className="text-[11px] text-muted-foreground text-center">Utilise 1 credit IA (partage avec Chat + Nutri)</p>
+          {!isPremium && <p className="text-[11px] text-muted-foreground text-center">Utilise 1 crédit IA (partagé avec Chat + Nutri)</p>}
         </div>
       )}
     </div>

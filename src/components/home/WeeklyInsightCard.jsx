@@ -203,7 +203,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                               onClick={() => toggleInsightExpand(itemKey)}
                               className="text-[11px] text-primary font-medium mt-0.5 hover:underline"
                             >
-                              {isItemExpanded ? "Reduire" : "Lire la suite"}
+                              {isItemExpanded ? "Réduire" : "Lire la suite"}
                             </button>
                           </div>
                         )}

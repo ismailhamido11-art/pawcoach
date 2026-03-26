@@ -26,23 +26,29 @@ export default function VetNoteForm({ dogId, vetEmail, vetName, onNoteAdded }) {
     if (!title.trim() || !content.trim()) return;
     setLoading(true);
 
-    const note = await VetNote.create({
-      dog_id: dogId,
-      vet_email: vetEmail,
-      vet_name: vetName,
-      title: title.trim(),
-      content: content.trim(),
-      category,
-      is_urgent: isUrgent,
-    });
+    try {
+      const note = await VetNote.create({
+        dog_id: dogId,
+        vet_email: vetEmail,
+        vet_name: vetName,
+        title: title.trim(),
+        content: content.trim(),
+        category,
+        is_urgent: isUrgent,
+      });
 
-    toast.success("Note ajoutée");
-    setTitle("");
-    setContent("");
-    setCategory("observation");
-    setIsUrgent(false);
-    setLoading(false);
-    if (onNoteAdded) onNoteAdded(note);
+      toast.success("Note ajoutée");
+      setTitle("");
+      setContent("");
+      setCategory("observation");
+      setIsUrgent(false);
+      if (onNoteAdded) onNoteAdded(note);
+    } catch (e) {
+      console.error("VetNoteForm submit error:", e);
+      toast.error("Erreur lors de l'envoi de la note. Réessaie.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

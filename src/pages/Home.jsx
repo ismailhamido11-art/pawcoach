@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -20,7 +20,7 @@ import DailyProgress from "../components/home/DailyProgress";
 import EmotionalTip from "../components/home/EmotionalTip";
 import ContentArticles from "../components/home/ContentArticles";
 
-import { Flame, ScanLine, Footprints, Stethoscope, BookOpen } from "lucide-react";
+import { Flame, ScanLine, Footprints, Stethoscope, BookOpen, Lock } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
@@ -64,6 +64,7 @@ export default function Home() {
   const navigate = useNavigate();
   const prefersReducedMotion = useReducedMotion();
   const { getCachedHome, setCachedHome, invalidateHome } = useHomeCache();
+  const dailyBriefingRef = useRef(null);
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -405,6 +406,7 @@ export default function Home() {
         <CoachHomeHeader user={user} dog={dog} />
 
         {/* 2. THE BRIEFING — coach speaks first */}
+        <div ref={dailyBriefingRef}>
         <DailyBriefing
           dog={dog}
           user={user}
@@ -416,6 +418,7 @@ export default function Home() {
           submitting={submitting}
           recommendations={recommendations}
         />
+        </div>
 
         {/* === Below the fold — scroll to discover === */}
         <motion.div
@@ -434,6 +437,7 @@ export default function Home() {
             todayCheckin={todayCheckin}
             scans={scans}
             dailyLogs={dailyLogs}
+            onScrollToCheckin={() => dailyBriefingRef.current?.scrollIntoView({ behavior: "smooth" })}
           />
 
           {/* Hero Illustration — always visible, premium feel */}
@@ -551,7 +555,7 @@ export default function Home() {
           <ContentArticles dog={dog} />
 
           {/* Weekly Insight */}
-          {(weeklyInsight || pastInsights.length > 0) && (
+          {(weeklyInsight || pastInsights.length > 0) ? (
             <WeeklyInsightCard
               insight={weeklyInsight}
               previousInsight={previousInsight}
@@ -562,6 +566,22 @@ export default function Home() {
               onMarkRead={handleMarkInsightRead}
               markingRead={markingRead}
             />
+          ) : !isUserPremium(user) && (
+            <button
+              onClick={() => navigate(createPageUrl("Premium"))}
+              className="w-full flex items-center gap-3 bg-white rounded-2xl border border-border p-4 shadow-sm text-left active:scale-[0.98] transition-transform"
+            >
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Flame className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-foreground">Bilan hebdomadaire</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Disponible en Premium</p>
+              </div>
+              <div className="flex-shrink-0">
+                <Lock className="w-4 h-4 text-muted-foreground" />
+              </div>
+            </button>
           )}
 
           {/* Disclaimer */}

@@ -91,7 +91,7 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
           {saving ? (
             <><span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Enregistrement...</>
           ) : (
-            <><Check className="w-3.5 h-3.5" /> C'est note !</>
+            <><Check className="w-3.5 h-3.5" /> C'est noté !</>
           )}
         </motion.button>
       </div>

@@ -87,7 +87,7 @@ export default function VideoCoaching({ exerciseName, dogName, dogId }) {
         <UpgradePrompt type="action" from="video-coaching" />
       )}
 
-      {!feedback && !loading && hasCredits && (
+      {!feedback && !loading && (isPremium || hasCredits) && (
         <div className="space-y-4">
           {!isPremium && credits != null && <CreditBadge remaining={credits} />}
           <p className="text-sm text-muted-foreground">

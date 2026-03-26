@@ -11,6 +11,7 @@ import FoodComparator from "../components/nutrition/FoodComparator";
 import DietPreferencesPanel from "../components/nutrition/DietPreferencesPanel";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
+import EmptyState from "@/components/ui/EmptyState";
 // SavedPlansPanel merged into NutritionMealPlan
 
 import { Button } from "@/components/ui/button";
@@ -302,6 +303,24 @@ export default function Nutri() {
 
   if (initializing) {
     return <SkeletonPage variant="list" currentPage="Nutri" />;
+  }
+
+  if (!dog) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <WellnessBanner />
+        <div className="flex-1 flex flex-col items-center justify-center pb-24">
+          <EmptyState
+            mascot="chef"
+            title="Crée le profil de ton chien"
+            description="Pour utiliser le NutriCoach, ajoute d'abord ton chien"
+            actionLabel="Ajouter mon chien"
+            onAction={() => navigate(createPageUrl("Onboarding") + "?addDog=true")}
+          />
+        </div>
+        <BottomNav currentPage="Nutri" />
+      </div>
+    );
   }
 
   const isLimitReached = !isUserPremium(user) && (messagesRemaining ?? 0) <= 0;

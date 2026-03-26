@@ -83,8 +83,13 @@ export default function DogProfile() {
   }, [dogId]);
 
   const handleSaveDog = async (updates) => {
-    const _updated = await Dog.update(dog.id, updates);
-    setDog(prev => ({ ...prev, ...updates }));
+    try {
+      await Dog.update(dog.id, updates);
+      setDog(prev => ({ ...prev, ...updates }));
+    } catch (e) {
+      console.error("DogProfile handleSaveDog error:", e);
+      toast.error("Impossible de sauvegarder les modifications.");
+    }
   };
 
   const handleExport = () => {

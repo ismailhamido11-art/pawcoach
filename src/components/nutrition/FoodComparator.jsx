@@ -451,7 +451,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
                     className={`flex-1 rounded-xl ${compSaved ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "gradient-primary border-0 text-white"}`}
                   >
                     {compSaved ? <BookmarkCheck className="w-3.5 h-3.5 mr-1.5" /> : <BookmarkPlus className="w-3.5 h-3.5 mr-1.5" />}
-                    {compSaved ? "Sauvegardee" : "Sauvegarder"}
+                    {compSaved ? "Sauvegardée" : "Sauvegarder"}
                   </Button>
                   <Button
                     onClick={() => { setProducts([null, null]); setComparison(null); setCompSaved(false); }}

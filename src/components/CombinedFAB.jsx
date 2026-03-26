@@ -5,6 +5,7 @@ import { Plus, X, Scale, Droplets, Footprints, FileText, Check, Loader2 } from "
 import { DailyLog } from "@/api/entities";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { getTodayString } from "@/utils/recommendations";
+import { toast } from "sonner";
 
 const FIELDS = [
   { key: "weight_kg", icon: Scale, label: "Poids", unit: "kg", type: "number", placeholder: "Ex: 12.5", color: "#3b82f6", bg: "bg-blue-50", min: 0.1, max: 200 },
@@ -58,29 +59,35 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
       }
     });
 
-    const existing = await DailyLog.filter({ dog_id: dog.id, date: payload.date });
-    if (existing && existing.length > 0) {
-      await DailyLog.update(existing[0].id, payload);
-    } else {
-      await DailyLog.create(payload);
-    }
+    try {
+      const existing = await DailyLog.filter({ dog_id: dog.id, date: payload.date });
+      if (existing && existing.length > 0) {
+        await DailyLog.update(existing[0].id, payload);
+      } else {
+        await DailyLog.create(payload);
+      }
 
-    // Trigger walk badge check if walk was logged
-    if (payload.walk_minutes > 0) {
-      try {
-        const allLogs = await DailyLog.filter({ dog_id: dog.id }, "-date", 60);
-        checkWalkBadges(dog.id, user?.email, allLogs).catch(() => {});
-      } catch {}
-    }
+      // Trigger walk badge check if walk was logged
+      if (payload.walk_minutes > 0) {
+        try {
+          const allLogs = await DailyLog.filter({ dog_id: dog.id }, "-date", 60);
+          checkWalkBadges(dog.id, user?.email, allLogs).catch(() => {});
+        } catch {}
+      }
 
-    setSaving(false);
-    setSaved(true);
-    onLogSaved?.();
-    setTimeout(() => {
-      setSaved(false);
-      setOpen(false);
-      setForm({});
-    }, 1200);
+      setSaved(true);
+      onLogSaved?.();
+      setTimeout(() => {
+        setSaved(false);
+        setOpen(false);
+        setForm({});
+      }, 1200);
+    } catch (e) {
+      console.error("CombinedFAB save error:", e);
+      toast.error("Erreur lors de la sauvegarde. Réessaie.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (

@@ -13,6 +13,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 import TrackerHistory from "@/components/tracker/TrackerHistory";
 import AITrainingProgram from "@/components/activite/AITrainingProgram";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import EmptyState from "@/components/ui/EmptyState";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Footprints, History, Dumbbell, Sparkles, ExternalLink, Lightbulb, Timer, Target, Bone, CalendarDays } from "lucide-react";
@@ -124,7 +125,7 @@ export default function Activite() {
 
         {/* Tabs — pill cards */}
         <div className="grid grid-cols-4 gap-1.5 mt-1">
-          {TABS.map(({ id, label, emoji, bg }) => {
+          {TABS.map(({ id, label, icon: TabIcon, bg }) => {
             const active = activeTab === id;
             return (
               <motion.button
@@ -139,7 +140,7 @@ export default function Activite() {
                 {active && (
                   <div className={`absolute inset-0 bg-gradient-to-br ${bg} opacity-100`} />
                 )}
-                <span className="relative text-xl leading-none">{emoji}</span>
+                <span className="relative text-xl leading-none"><TabIcon className="w-4 h-4" /></span>
                 <span className={`relative text-[11px] font-bold leading-tight ${active ? "text-white" : "text-white/75"}`}>{label}</span>
                 {active && (
                   <motion.div
@@ -186,20 +187,30 @@ export default function Activite() {
           >
             {activeTab === "balade" && (
               <div className="space-y-4">
-                <div className="bg-gradient-to-r from-emerald-50 to-green-50/50 rounded-3xl p-4 border border-emerald-100/50 shadow-sm flex items-center gap-4">
-                  <StorysetIllustration name="playing" className="w-24 h-24 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-bold text-foreground">Historique de balades</p>
-                    <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Chaque sortie est enregistrée automatiquement</p>
-                  </div>
-                </div>
-                <WalkMode
-                  dog={dog}
-                  user={user}
-                  logs={logs}
-                  onLogged={refreshLogs}
-                  onViewHistory={() => changeTab("historique")}
-                />
+                {!dog ? (
+                  <EmptyState
+                    mascot="walking"
+                    title="Crée le profil de ton chien"
+                    description="Pour démarrer une balade, ajoute d'abord ton chien"
+                  />
+                ) : (
+                  <>
+                    <div className="bg-gradient-to-r from-emerald-50 to-green-50/50 rounded-3xl p-4 border border-emerald-100/50 shadow-sm flex items-center gap-4">
+                      <StorysetIllustration name="playing" className="w-24 h-24 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[14px] font-bold text-foreground">Historique de balades</p>
+                        <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Chaque sortie est enregistrée automatiquement</p>
+                      </div>
+                    </div>
+                    <WalkMode
+                      dog={dog}
+                      user={user}
+                      logs={logs}
+                      onLogged={refreshLogs}
+                      onViewHistory={() => changeTab("historique")}
+                    />
+                  </>
+                )}
               </div>
             )}
             {activeTab === "historique" && (

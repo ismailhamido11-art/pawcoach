@@ -151,11 +151,11 @@ export default function PremiumSection({ type, records = [], dogId, isPremium, o
                 )}
               </div>
               <div>
-                <label className="text-xs font-medium text-foreground">Details</label>
+                <label className="text-xs font-medium text-foreground">Détails</label>
                 <Textarea
                   value={form.details}
                   onChange={(e) => setForm(f => ({ ...f, details: e.target.value }))}
-                  placeholder="Details optionnels..."
+                  placeholder="Détails optionnels..."
                   className="mt-1 bg-white min-h-[60px]"
                 />
               </div>

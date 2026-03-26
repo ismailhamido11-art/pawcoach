@@ -12,7 +12,7 @@ import { Component } from 'react';
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, retryCount: 0 };
     this.handleRetry = this.handleRetry.bind(this);
   }
 
@@ -30,7 +30,7 @@ class ErrorBoundary extends Component {
   handleRetry() {
     // Tenter une reprise douce : reset de l'état d'erreur.
     // Si l'erreur persiste, React re-plantera et on restera sur le fallback.
-    this.setState({ hasError: false, error: null });
+    this.setState(prev => ({ hasError: false, error: null, retryCount: prev.retryCount + 1 }));
   }
 
   render() {
@@ -97,25 +97,45 @@ class ErrorBoundary extends Component {
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-          {/* Bouton principal : réessayer sans recharger */}
+          {/* Bouton principal : réessayer sans recharger — désactivé après 2 tentatives */}
+          {this.state.retryCount < 2 ? (
+            <button
+              onClick={this.handleRetry}
+              style={{
+                backgroundColor: '#2D9F82', // emerald
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '9999px',
+                padding: '0.625rem 1.5rem',
+                fontSize: '0.9rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                minHeight: '44px', // tap target WCAG
+              }}
+            >
+              Réessayer
+            </button>
+          ) : null}
+
+          {/* Bouton recharger la page — toujours visible, primaire après 2 tentatives */}
           <button
-            onClick={this.handleRetry}
+            onClick={() => { window.location.reload(); }}
             style={{
-              backgroundColor: '#2D9F82', // emerald
-              color: '#ffffff',
-              border: 'none',
+              backgroundColor: this.state.retryCount >= 2 ? '#2D9F82' : 'transparent',
+              color: this.state.retryCount >= 2 ? '#ffffff' : '#1A4D3E',
+              border: this.state.retryCount >= 2 ? 'none' : '1.5px solid #1A4D3E',
               borderRadius: '9999px',
               padding: '0.625rem 1.5rem',
               fontSize: '0.9rem',
               fontWeight: 600,
               cursor: 'pointer',
-              minHeight: '44px', // tap target WCAG
+              minHeight: '44px',
             }}
           >
-            Réessayer
+            Recharger la page
           </button>
 
-          {/* Bouton secondaire : retour à l'accueil */}
+          {/* Bouton retour accueil — toujours présent en secondaire */}
           <button
             onClick={() => { window.location.href = '/'; }}
             style={{

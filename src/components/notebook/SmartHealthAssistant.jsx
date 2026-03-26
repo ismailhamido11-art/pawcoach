@@ -302,6 +302,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       const existingRecords = await HealthRecord.filter({ dog_id: dogId });
       let skippedCount = 0;
 
+      const toCreate = [];
       for (const rec of pendingRecords) {
         if (rec.type === "vaccine") {
           const isDuplicate = (existingRecords || []).some(
@@ -312,16 +313,35 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
             continue;
           }
         }
-        const created = await HealthRecord.create({ dog_id: dogId, ...rec });
-        // Auto-update Dog.weight when a weight record is saved
-        if (rec.type === "weight" && rec.value) {
-          try { await Dog.update(dogId, { weight: rec.value }); } catch {}
-        }
-        onRecordAdded(created);
+        toCreate.push(rec);
       }
+
+      const results = await Promise.allSettled(
+        toCreate.map(rec => HealthRecord.create({ dog_id: dogId, ...rec }))
+      );
+
+      const failedRecords = [];
+      results.forEach((result, i) => {
+        if (result.status === "fulfilled") {
+          const created = result.value;
+          // Auto-update Dog.weight when a weight record is saved
+          if (toCreate[i].type === "weight" && toCreate[i].value) {
+            try { Dog.update(dogId, { weight: toCreate[i].value }); } catch {}
+          }
+          onRecordAdded(created);
+        } else {
+          failedRecords.push(toCreate[i]);
+        }
+      });
 
       if (skippedCount > 0) {
         toast.info(`${skippedCount} vaccin(s) déjà enregistré(s) pour cette date — ignoré(s).`);
+      }
+
+      if (failedRecords.length > 0) {
+        setPendingRecords(failedRecords);
+        toast.error(`${failedRecords.length} enregistrement(s) ont échoué. Réessaie.`);
+        return;
       }
 
       setPendingRecords([]);

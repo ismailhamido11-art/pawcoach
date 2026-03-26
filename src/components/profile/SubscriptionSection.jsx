@@ -65,10 +65,10 @@ export default function SubscriptionSection({ user }) {
             ) : (
               <button
                 onClick={() => navigate(createPageUrl("Premium"))}
-                className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-accent text-sm font-semibold text-accent hover:bg-accent/5 transition-all"
+                className="w-full py-3 rounded-xl gradient-warm text-white font-bold text-sm flex items-center justify-center gap-2 shadow"
               >
-                Passer Premium · dès 5 €/mois
-                <ChevronRight className="w-4 h-4" />
+                <Crown className="w-4 h-4" />
+                S'abonner · dès 5 €/mois
               </button>
             )}
           </div>

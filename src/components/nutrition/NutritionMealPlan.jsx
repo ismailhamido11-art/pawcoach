@@ -45,14 +45,6 @@ function getPlanProgress(planData) {
   return { dayNumber, isExpired, elapsed, startDate: start, endDate };
 }
 
-const _AFFILIATE_BRANDS = [
-  { name: "Royal Canin", url: "https://amzn.to/royalcanin", emoji: "\u{1F451}" },
-  { name: "Hill's Science Plan", url: "https://amzn.to/hills", emoji: "\u{1F52C}" },
-  { name: "Orijen", url: "https://www.zooplus.fr", emoji: "\u{1F98C}" },
-  { name: "Purina Pro Plan", url: "https://amzn.to/proplan", emoji: "\u2B50" },
-  { name: "Acana", url: "https://www.zooplus.fr", emoji: "\u{1F33F}" },
-];
-
 export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPremiumProp, user, dietPrefs, checkins = [], healthRecords = [], dailyLogs = [], activePlan, monthlyPlanCount = 0, onPlanSaved, allPlans = [], onSwitchToCoach }) {
   const { credits: _credits, hasCredits, isPremium, consume } = useActionCredits();
   const [plan, setPlan] = useState(null);
@@ -101,6 +93,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
   };
 
   const handleDeletePlan = async (planId) => {
+    if (!window.confirm("Supprimer ce plan nutritionnel ?")) return;
     try {
       await NutritionPlan.delete(planId);
       onPlanSaved?.();

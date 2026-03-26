@@ -230,7 +230,7 @@ export default function Chat() {
 
     const userMsg = {
       role: "user",
-      content: content || "Photo envoyee",
+      content: content || "Photo envoyée",
       timestamp: new Date().toISOString(),
       has_image: hasImage,
       image_url: imageToSend?.preview || null,
@@ -271,7 +271,7 @@ export default function Chat() {
         return;
       }
 
-      const assistantContent = response.data?.content || "Desole, je n'ai pas pu repondre.";
+      const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
       const assistantTs = new Date().toISOString();
 
       // Typewriter streaming (message added to state when streaming completes)

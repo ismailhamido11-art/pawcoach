@@ -181,8 +181,15 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
   }
 
   async function deleteEntry(id) {
-    await GrowthEntry.delete(id);
-    setEntries(prev => prev.filter(e => e.id !== id));
+    const previousEntries = entries;
+    try {
+      await GrowthEntry.delete(id);
+      setEntries(prev => prev.filter(e => e.id !== id));
+    } catch (e) {
+      console.error("GrowthTrackerContent delete error:", e);
+      setEntries(previousEntries);
+      toast.error("Erreur lors de la suppression.");
+    }
   }
 
   // Build chart data — merge all weight sources for a unified view

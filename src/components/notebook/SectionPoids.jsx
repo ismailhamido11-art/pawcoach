@@ -163,6 +163,8 @@ export default function SectionPoids({ records = [], dogId, onDelete, onRecordAd
           mascot="curious"
           title="Première pesée à venir"
           description="Enregistre le poids régulièrement pour suivre l'évolution et détecter les tendances."
+          actionLabel="Ajouter un poids"
+          onAction={() => setShowAddForm(true)}
         />
       )}
 

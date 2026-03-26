@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { spring } from "@/lib/animations";
 import EmptyState from "@/components/ui/EmptyState";
+import { toast } from "sonner";
 
 const TABS = [
   { id: "all",        label: "Journal",  shortLabel: "Tous" },
@@ -111,8 +112,15 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
 
   const handleDelete = async (id) => {
     if (typeof id === "string" && id.startsWith("dl-")) return;
-    await HealthRecord.delete(id);
-    setRecords(prev => prev.filter(r => r.id !== id));
+    const previousRecords = records;
+    try {
+      await HealthRecord.delete(id);
+      setRecords(prev => prev.filter(r => r.id !== id));
+    } catch (e) {
+      console.error("NotebookContent delete error:", e);
+      setRecords(previousRecords);
+      toast.error("Erreur lors de la suppression.");
+    }
   };
 
   const getIconForType = (type) => {
