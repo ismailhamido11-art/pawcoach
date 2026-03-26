@@ -117,10 +117,15 @@ export default function Onboarding() {
   const [uploading, setUploading] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
+  const [saveError, setSaveError] = useState(false);
+
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef(null);
   const fileRef = useRef(null);
   const savingRef = useRef(false);
+
+  // Steps that are optional — user can skip without filling anything
+  const OPTIONAL_STEPS = new Set([3, 9]); // index 3 = race, index 9 = santé/allergies
 
   const currentAnswer = answers[step];
   const setCurrentAnswer = (val) => {
@@ -240,13 +245,18 @@ Extrais ces informations et renvoie un objet JSON.
             const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
             await base44.auth.updateMe({ premium_onboarding_nudge_shown: false, trial_expires_at: trialEnd });
           }
+          // Refetch user so isPremium reflects the freshly-activated trial
+          const freshUser = await base44.auth.me();
+          setCurrentUser(freshUser);
         } catch(e) {
           console.error("Trial setup failed:", e.message || e);
         }
       }
+      setSaveError(false);
       setDone(true);
     } catch (e) {
       console.error(e);
+      setSaveError(true);
       toast.error("Erreur lors de la création du profil. Réessaie.");
     } finally {
       setSaving(false); savingRef.current = false;
@@ -264,11 +274,12 @@ Extrais ces informations et renvoie un objet JSON.
     setTimeout(() => setStep(s => s + 1), 250);
   };
 
+  const isOptionalStep = OPTIONAL_STEPS.has(step);
   const canNext = currentStepData.type === "choice"
     ? currentAnswer.length > 0
     : currentStepData.type === "photo"
       ? !uploading
-      : currentAnswer.trim().length > 0;
+      : isOptionalStep || currentAnswer.trim().length > 0;
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-emerald-950 via-green-50/80 to-green-50">
@@ -403,14 +414,20 @@ Extrais ces informations et renvoie un objet JSON.
             {/* Next button (not for choice) */}
             {currentStepData.type !== "choice" && (
               <Button
-                onClick={handleNext}
+                onClick={() => { setSaveError(false); handleNext(); }}
                 disabled={!canNext || saving}
                 className="w-full max-w-sm h-14 rounded-2xl font-black text-base gap-2 gradient-primary"
               >
                 {saving ? (
                   <><Loader2 className="w-5 h-5 animate-spin" /> Création en cours...</>
                 ) : step === INTERVIEW_STEPS.length - 1 ? (
-                  <><Sparkles className="w-5 h-5" /> Créer le profil</>
+                  saveError ? (
+                    <>Réessayer <ChevronRight className="w-5 h-5" /></>
+                  ) : (
+                    <><Sparkles className="w-5 h-5" /> Créer le profil</>
+                  )
+                ) : isOptionalStep && !currentAnswer.trim() ? (
+                  <>Passer <ChevronRight className="w-5 h-5" /></>
                 ) : (
                   <>Suivant <ChevronRight className="w-5 h-5" /></>
                 )}

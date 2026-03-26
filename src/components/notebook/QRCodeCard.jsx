@@ -45,13 +45,22 @@ export default function QRCodeCard({ dog }) {
   const qrSrc = buildQRUrl(profileUrl, 400);
 
   const handleDownload = async () => {
-    const a = document.createElement("a");
-    a.href = qrSrc;
-    a.download = `qr-urgence-${dog.name}.png`;
-    a.target = "_blank";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    try {
+      // Fetch → blob → URL.createObjectURL : fonctionne sur iOS Safari PWA (target="_blank" bloque)
+      const resp = await fetch(qrSrc);
+      const blob = await resp.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = `qr-urgence-${dog.name}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(objectUrl);
+    } catch {
+      // Fallback : ouvrir dans un nouvel onglet
+      window.open(qrSrc, "_blank", "noopener,noreferrer");
+    }
   };
 
   const handleShare = async () => {

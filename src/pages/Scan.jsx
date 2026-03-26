@@ -410,7 +410,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pb-32">
+      <div className="min-h-screen bg-background">
         <div className="gradient-primary pb-0 px-5 safe-pt-14 overflow-hidden relative">
           <div className="flex items-start justify-between">
             <div className="pb-6">
@@ -437,7 +437,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
   const labelCfg = labelResult ? LABEL_VERDICT_CONFIG[labelResult.compatibility_verdict] || LABEL_VERDICT_CONFIG.caution : null;
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen bg-background">
       {/* Emergency banner */}
       {result?.verdict === "toxic" && dogAteIt && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-red-600 px-4 py-3 text-white text-center shadow-lg">

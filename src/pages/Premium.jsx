@@ -125,7 +125,7 @@ export default function Premium() {
 
   if (pageLoading) {
     return (
-      <div className="min-h-screen bg-background pb-28">
+      <div className="min-h-screen bg-background">
         <div className="gradient-primary safe-pt-14 pb-8 px-5">
           <div className="text-center">
             <div className="w-16 h-16 bg-white/20 rounded-3xl mx-auto mb-3 animate-pulse" />
@@ -150,7 +150,7 @@ export default function Premium() {
 
   if (isUserPremium(user)) {
     return (
-      <div className="min-h-screen bg-background pb-28">
+      <div className="min-h-screen bg-background">
         <div className="gradient-primary safe-pt-14 pb-10 px-5 text-center">
           {/* Avatar */}
           <motion.div
@@ -353,7 +353,7 @@ export default function Premium() {
   const contextMsg = fromParam ? CONTEXTUAL_MESSAGES[fromParam] : null;
 
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="gradient-primary safe-pt-14 pb-8 px-5 relative overflow-hidden">
         <button

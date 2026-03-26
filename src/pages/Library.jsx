@@ -140,7 +140,7 @@ export default function Library() {
   });
 
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="gradient-primary safe-pt-14 pb-6 px-5 relative overflow-hidden">
         <button aria-label="Retour" onClick={() => window.history.length > 1 ? navigate(-1) : navigate(createPageUrl("Home"))} className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-3">

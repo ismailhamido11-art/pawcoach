@@ -44,9 +44,19 @@ function resolveVaccineKey(title) {
 
 // Shared state across instances
 let _notifications = [];
+let _loadedAt = 0;
 let _listeners = [];
 function subscribe(fn) { _listeners.push(fn); return () => { _listeners = _listeners.filter(l => l !== fn); }; }
 function notify() { _listeners.forEach(fn => fn([..._notifications])); }
+
+// Vider le cache (appele au logout pour eviter les fuites cross-session)
+export function clearNotifications() {
+  _notifications = [];
+  _loadedAt = 0;
+  notify();
+}
+
+const NOTIF_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 export async function loadNotifications() {
   try {
@@ -79,6 +89,7 @@ export async function loadNotifications() {
 
     items.sort((a, b) => a.daysLeft - b.daysLeft);
     _notifications = items;
+    _loadedAt = Date.now();
     notify();
   } catch (e) { console.warn("loadNotifications error:", e?.message || String(e)); }
 }
@@ -87,7 +98,8 @@ export function useNotifications() {
   const [items, setItems] = useState(_notifications);
   useEffect(() => {
     const unsub = subscribe(setItems);
-    if (_notifications.length === 0) loadNotifications();
+    const isStale = Date.now() - _loadedAt > NOTIF_TTL_MS;
+    if (_notifications.length === 0 || isStale) loadNotifications();
     return unsub;
   }, []);
   return items;

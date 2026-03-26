@@ -29,10 +29,13 @@ export default function Layout({ children, currentPageName }) {
           -webkit-user-drag: none;
         }
       `}</style>
+      {/* NOTE : Layout applique deja un paddingBottom pour le BottomNav.
+           Les pages NE doivent PAS ajouter leur propre pb-* sur le wrapper principal. */}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={currentPageName}
           {...transitionProps}
+          className="layout-padding"
           style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom, 0px))" }}
         >
           {children}

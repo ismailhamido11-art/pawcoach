@@ -112,7 +112,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen bg-background">
       <ProfileHeader user={user} achievementPoints={achievementPoints} />
 
       <motion.div

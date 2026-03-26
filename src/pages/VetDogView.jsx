@@ -30,8 +30,13 @@ export default function VetDogView() {
   const loadData = async () => {
     if (!dogId) { setError("Aucun chien spécifié"); setLoading(false); return; }
     try {
-      const u = await base44.auth.me();
-      setUser(u);
+      // Try to get vet identity — optional, page works without it
+      try {
+        const u = await base44.auth.me();
+        setUser(u);
+      } catch {
+        // Not authenticated — vet identity unavailable, continue anyway
+      }
       const res = await base44.functions.invoke("vetAccess", { action: "getDogData", dogId });
       if (res.data.error) { setError(res.data.error); }
       else { setDogData(res.data); }

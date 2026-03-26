@@ -220,7 +220,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen bg-background">
       <WellnessBanner />
 
       {/* Header */}

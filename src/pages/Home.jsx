@@ -399,7 +399,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-32 relative flex flex-col">
+    <div className="min-h-screen bg-background relative flex flex-col">
       <PullToRefresh onRefresh={handleRefresh}>
 
         {/* 1. Warm Header — greeting + photo */}
