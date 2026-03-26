@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Gift, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { toast } from "sonner";
 import PremiumNudgeSheet from "../premium/PremiumNudgeSheet";
 import Illustration from "../illustrations/Illustration";
 
@@ -19,6 +20,7 @@ export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium
       setReferralSaved(true);
     } catch (e) {
       console.error(e);
+      toast.error("Impossible d'enregistrer le code parrain. Réessaie.");
     }
   };
 

@@ -73,6 +73,7 @@ export default function DogProfile() {
         setScansCount((scans || []).length);
       } catch (err) {
         console.error("DogProfile load error:", err);
+        toast.error("Impossible de charger le profil. Vérifie ta connexion.");
       } finally {
         setLoading(false);
       }

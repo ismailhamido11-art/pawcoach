@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { toast } from "sonner";
 import { Crown, ChevronRight, Zap } from "lucide-react";
 import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
 
@@ -14,6 +15,7 @@ export default function SubscriptionSection({ user }) {
       if (url) window.location.href = url;
     } catch (err) {
       console.error(err);
+      toast.error("Impossible d'accéder au portail de paiement. Réessaie.");
     }
   };
 

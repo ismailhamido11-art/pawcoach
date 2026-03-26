@@ -275,6 +275,7 @@ export default function Training() {
       console.error("Training complete error:", err);
       // Rollback on failure
       setProgresses(progresses);
+      toast.error("Erreur lors de la sauvegarde de l'exercice. Réessaie.");
     }
   };
 

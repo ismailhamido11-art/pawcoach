@@ -215,7 +215,7 @@ export default function Home() {
         applyDogData(data);
         await loadInsights(u, d.id);
       }
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error(e); toast.error("Impossible de rafraîchir les données. Vérifie ta connexion."); }
   };
 
   const handleMarkInsightRead = async () => {
@@ -226,7 +226,7 @@ export default function Home() {
       setPastInsights(prev => [weeklyInsight, ...prev].slice(0, 5));
       setWeeklyInsight(null);
       setInsightExpanded(false);
-    } catch (e) { console.error("Mark read error:", e); }
+    } catch (e) { console.error("Mark read error:", e); toast.error("Impossible de marquer le bilan comme lu. Réessaie."); }
     finally { setMarkingRead(false); }
   };
 

@@ -257,6 +257,7 @@ export default function Nutri() {
       }
     } catch (err) {
       console.error("Nutri init error:", err);
+      toast.error("Impossible de démarrer le NutriCoach. Vérifie ta connexion.");
     } finally {
       setInitializing(false);
     }

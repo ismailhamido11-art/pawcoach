@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getActiveDog } from "@/utils";
@@ -16,9 +16,10 @@ import { toast } from "sonner";
 // Sub-pages content (imported inline)
 import NotebookContent from "@/components/sante/NotebookContent";
 import HealthImportContent from "@/components/sante/HealthImportContent";
-import FindVetContent from "@/components/sante/FindVetContent";
 import DiagnosisContent from "@/components/sante/DiagnosisContent";
 import GrowthTrackerContent from "@/components/sante/GrowthTrackerContent";
+// Lazy-loaded: contains Leaflet (~150KB gzipped), only needed on "Véto" tab
+const FindVetContent = lazy(() => import("@/components/sante/FindVetContent"));
 
 import { BookHeart, Camera, MapPin, AlertTriangle, TrendingUp } from "lucide-react";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
@@ -275,7 +276,17 @@ export default function Sante() {
               />
             )}
             {activeTab === "findvet" && (
-              <FindVetContent dog={dog} user={user} />
+              <Suspense fallback={
+                <div className="px-4 pt-4 space-y-3">
+                  <div className="flex gap-2">
+                    {[1, 2, 3].map(i => <div key={i} className="flex-1 h-16 rounded-2xl bg-muted/60 animate-pulse" />)}
+                  </div>
+                  <div className="h-10 rounded-2xl bg-muted/60 animate-pulse" />
+                  <div className="h-56 rounded-2xl bg-muted/60 animate-pulse" />
+                </div>
+              }>
+                <FindVetContent dog={dog} user={user} />
+              </Suspense>
             )}
           </motion.div>
         </AnimatePresence>

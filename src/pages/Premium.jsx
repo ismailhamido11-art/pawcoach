@@ -78,6 +78,7 @@ export default function Premium() {
         }
       } catch (err) {
         console.error("Premium load error:", err);
+        toast.error("Impossible de charger la page. Vérifie ta connexion.");
       } finally {
         setPageLoading(false);
       }

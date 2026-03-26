@@ -50,6 +50,7 @@ export default function Library() {
         setNutritionPlans(plans || []);
       } catch (e) {
         console.error(e);
+        toast.error("Impossible de charger ta bibliothèque. Vérifie ta connexion.");
       } finally {
         setLoading(false);
       }

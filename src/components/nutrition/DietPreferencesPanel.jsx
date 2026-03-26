@@ -73,6 +73,7 @@ export default function DietPreferencesPanel({ dog, user }) {
       }
     } catch (e) {
       console.error(e);
+      toast.error("Impossible de charger tes préférences. Réessaie.");
     } finally {
       setLoading(false);
     }

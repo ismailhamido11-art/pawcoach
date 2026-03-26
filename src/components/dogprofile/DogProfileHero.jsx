@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Camera, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { toast } from "sonner";
 import Illustration from "../illustrations/Illustration";
 import { getDogAgeLabel } from "@/utils/healthStatus";
 
@@ -30,6 +31,7 @@ export default function DogProfileHero({ dog, dailyLogs, onSave }) {
       await onSave({ photo: file_url });
     } catch (err) {
       console.error(err);
+      toast.error("Impossible d'envoyer la photo. Réessaie.");
     } finally {
       setUploadingPhoto(false);
     }

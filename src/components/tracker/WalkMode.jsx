@@ -1,11 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Pause, Play, StopCircle, Timer, Footprints, Zap, TrendingUp, TrendingDown, Minus, Share2, TreePine } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
-import WalkMap from "./WalkMap";
+import { Skeleton } from "@/components/ui/skeleton";
 import WalkShareCard from "./WalkShareCard";
-import NearbyParks from "./NearbyParks";
+
+const WalkMap = lazy(() => import("./WalkMap"));
+const NearbyParks = lazy(() => import("./NearbyParks"));
 import { PostWalkReviewPrompt } from "./ParkReviews";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { updateStreakSilently } from "@/components/streakHelper";
@@ -474,7 +476,9 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
             )}
 
             {/* Nearby parks */}
-            <NearbyParks dog={dog} user={user} onNearPark={setNearPark} />
+            <Suspense fallback={<Skeleton className="w-full h-48 rounded-2xl" />}>
+              <NearbyParks dog={dog} user={user} onNearPark={setNearPark} />
+            </Suspense>
           </motion.div>
         )}
 
@@ -512,7 +516,9 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
             </div>
 
             {/* Live map */}
-            <WalkMap path={path} currentPos={currentPos} />
+            <Suspense fallback={<Skeleton className="w-full h-52 rounded-2xl" />}>
+              <WalkMap path={path} currentPos={currentPos} />
+            </Suspense>
 
             {/* Stats row */}
             <div className="flex gap-3 w-full">

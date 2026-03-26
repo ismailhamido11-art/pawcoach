@@ -185,6 +185,7 @@ export default function Chat() {
       }
     } catch (err) {
       console.error("Chat init error:", err);
+      toast.error("Impossible de démarrer le chat. Vérifie ta connexion.");
     } finally {
       setInitializing(false);
     }

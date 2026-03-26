@@ -597,6 +597,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       console.error(e);
       setCompletedDays(prev);
       setProgram({ ...program, completed_days: prev });
+      toast.error("Erreur lors de la sauvegarde. Réessaie.");
     }
   };
 
@@ -617,6 +618,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       toast.success("Bilan enregistré !");
     } catch (e) {
       console.error(e);
+      toast.error("Erreur lors de la sauvegarde du bilan. Réessaie.");
     }
   };
 

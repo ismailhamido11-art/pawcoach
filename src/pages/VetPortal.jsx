@@ -33,6 +33,7 @@ export default function VetPortal() {
       await loadAccesses();
     } catch (e) {
       console.error("VetPortal init error:", e);
+      toast.error("Impossible de charger le portail vétérinaire. Vérifie ta connexion.");
     }
     setLoading(false);
   };
