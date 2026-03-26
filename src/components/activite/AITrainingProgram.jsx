@@ -141,7 +141,7 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
 
               <div className="bg-violet-50/80 rounded-xl p-3 space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg leading-none">{icon}</span>
+                  <ActIcon className={`w-5 h-5 ${actIcon.color} flex-shrink-0`} />
                   <p className="text-xs font-bold text-foreground">{day.activity?.name}</p>
                   <span className="text-[11px] text-muted-foreground capitalize ml-auto">{actType}</span>
                 </div>
@@ -162,7 +162,7 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
 
               {day.fun_fact && (
                 <div className="bg-amber-50 rounded-xl p-3 border border-amber-100">
-                  <p className="text-[11px] font-bold text-amber-700 mb-1">📖 Le savais-tu ?</p>
+                  <p className="text-[11px] font-bold text-amber-700 mb-1 flex items-center gap-1"><BookOpen className="w-3 h-3" /> Le savais-tu ?</p>
                   <p className="text-xs text-amber-900/80 leading-relaxed">{day.fun_fact}</p>
                 </div>
               )}
@@ -196,10 +196,11 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
 // ─── CompletionCard ────────────────────────────────────────
 function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, onNewProgram, bilanJustSaved }) {
   const { observed, setObserved, feeling, setFeeling, feedback, setFeedback, nextFocus, setNextFocus, bilanSaved } = bilanState;
+  const CONFETTI_ICONS = [PartyPopper, Star, PawPrint, Zap, Medal];
   const confetti = Array.from({ length: 10 }, (_, i) => ({
     x: 10 + Math.random() * 80,
     delay: Math.random() * 0.6,
-    emoji: ["🎉", "⭐", "🐾", "💪", "🏆"][i % 5],
+    IconComp: CONFETTI_ICONS[i % 5],
   }));
 
   const totalIndicators = program.progression_indicators?.length || 0;
@@ -217,20 +218,22 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
         {confetti.map((c, i) => (
           <motion.span
             key={i}
-            className="absolute text-lg pointer-events-none"
+            className="absolute pointer-events-none"
             style={{ left: `${c.x}%`, top: -10 }}
             initial={{ y: -10, opacity: 1, rotate: 0 }}
             animate={{ y: 180, opacity: 0, rotate: 360 }}
             transition={{ duration: 2.5 + Math.random(), delay: c.delay, ease: "easeOut" }}
           >
-            {c.emoji}
+            <c.IconComp className="w-5 h-5 text-white/80" />
           </motion.span>
         ))}
         <motion.div
           animate={{ scale: [1, 1.15, 1], rotate: [0, 8, -8, 0] }}
           transition={{ duration: 1, delay: 0.3 }}
-          className="text-5xl mb-3"
-        >🎉</motion.div>
+          className="flex justify-center mb-3"
+        >
+          <PartyPopper className="w-12 h-12 text-white" />
+        </motion.div>
         <h3 className="font-black text-xl relative">Programme terminé !</h3>
         <p className="text-white/80 text-sm mt-2 relative">
           Bravo ! Tu as complété les 7 jours avec {dog?.name || "ton chien"}
@@ -317,7 +320,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
                   feeling === i + 1 ? "bg-blue-100 border-blue-300 scale-105" : "bg-white border-border hover:border-blue-200"
                 }`}
               >
-                <span className="text-xl">{opt.emoji}</span>
+                {(() => { const FI = opt.Icon; return <FI className={`w-5 h-5 ${opt.iconColor}`} />; })()}
                 <span className="text-xs text-muted-foreground leading-tight">{opt.label}</span>
               </button>
             ))}
@@ -344,17 +347,17 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
             Sur quoi te concentrer ensuite ?
           </p>
           <div className="flex flex-wrap gap-1.5">
-            {GOAL_SUGGESTIONS.map(({ label, emoji }) => {
+            {GOAL_SUGGESTIONS.map(({ label, Icon: GI, color }) => {
               const selected = nextFocus.includes(label);
               return (
                 <button
                   key={label}
                   onClick={() => !bilanSaved && setNextFocus(prev => selected ? prev.filter(g => g !== label) : [...prev, label])}
-                  className={`text-[11px] font-bold px-2.5 py-2.5 rounded-full transition-all ${
+                  className={`text-[11px] font-bold px-2.5 py-2.5 rounded-full transition-all flex items-center gap-1 ${
                     selected ? "bg-blue-600 text-white" : "bg-white border border-blue-200 text-blue-700 hover:bg-blue-50"
                   }`}
                 >
-                  {emoji} {label}
+                  <GI className={`w-3 h-3 ${selected ? "text-white" : color}`} /> {label}
                 </button>
               );
             })}
@@ -391,13 +394,13 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
           className="bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 rounded-2xl p-4"
         >
           <div className="flex items-start gap-3">
-            <motion.span
-              className="text-2xl flex-shrink-0"
+            <motion.div
+              className="flex-shrink-0"
               animate={bilanJustSaved ? { scale: [0, 1.2, 1], rotate: [0, 10, -10, 0] } : {}}
               transition={{ duration: 0.6, delay: bilanJustSaved ? 0.5 : 0 }}
             >
-              {insight.emoji}
-            </motion.span>
+              {(() => { const II = insight.Icon; return <II className={`w-6 h-6 ${insight.iconColor}`} />; })()}
+            </motion.div>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-sm text-emerald-800">{insight.title}</p>
               <p className="text-xs text-emerald-700/80 leading-relaxed mt-1">{insight.message}</p>
@@ -424,11 +427,15 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
                 Prochain focus : <strong>{nextFocus.join(", ")}</strong>. Le programme sera taillé sur mesure.
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {nextFocus.map(f => (
-                  <span key={f} className="text-[11px] font-bold bg-white/20 text-white px-2.5 py-2 rounded-full">
-                    {GOAL_SUGGESTIONS.find(g => g.label === f)?.emoji} {f}
-                  </span>
-                ))}
+                {nextFocus.map(f => {
+                  const gs = GOAL_SUGGESTIONS.find(g => g.label === f);
+                  return (
+                    <span key={f} className="text-[11px] font-bold bg-white/20 text-white px-2.5 py-2 rounded-full flex items-center gap-1">
+                      {gs && (() => { const GI2 = gs.Icon; return <GI2 className="w-3 h-3 text-white" />; })()}
+                      {f}
+                    </span>
+                  );
+                })}
               </div>
             </>
           ) : (
@@ -799,15 +806,15 @@ export default function AITrainingProgram({ dog, logs = [] }) {
             <p className="text-[11px] font-bold text-purple-700 uppercase tracking-wider mb-2">Chaque jour tu recevras</p>
             <div className="grid grid-cols-2 gap-1.5">
               {[
-                { emoji: "📋", text: "Activité guidée pas à pas" },
-                { emoji: "📖", text: "Fait surprenant du jour" },
-                { emoji: "💡", text: "Conseil de pro non-évident" },
-                { emoji: "👀", text: "Observation comportementale" },
-                { emoji: "⭐", text: "Défi bonus amusant" },
-                { emoji: "🐕", text: "Adapté à la race" },
-              ].map(({ emoji, text }) => (
+                { Icon: CalendarDays, color: "text-violet-600", text: "Activité guidée pas à pas" },
+                { Icon: BookOpen, color: "text-amber-600", text: "Fait surprenant du jour" },
+                { Icon: Lightbulb, color: "text-yellow-500", text: "Conseil de pro non-évident" },
+                { Icon: Eye, color: "text-blue-500", text: "Observation comportementale" },
+                { Icon: Star, color: "text-amber-500", text: "Défi bonus amusant" },
+                { Icon: PawPrint, color: "text-emerald-600", text: "Adapté à la race" },
+              ].map(({ Icon: FeatIcon, color, text }) => (
                 <div key={text} className="flex items-center gap-1.5">
-                  <span className="text-sm">{emoji}</span>
+                  <FeatIcon className={`w-4 h-4 ${color} flex-shrink-0`} />
                   <span className="text-[11px] text-foreground/70">{text}</span>
                 </div>
               ))}
@@ -817,17 +824,17 @@ export default function AITrainingProgram({ dog, logs = [] }) {
           {/* Goal suggestions — quick pick chips */}
           <p className="text-[11px] font-bold text-purple-700 uppercase tracking-wider mb-2">Tes objectifs</p>
           <div className="flex flex-wrap gap-1.5 mb-3">
-            {GOAL_SUGGESTIONS.map(({ label, emoji }) => {
+            {GOAL_SUGGESTIONS.map(({ label, Icon: GI3, color }) => {
               const selected = selectedGoals.includes(label);
               return (
                 <button
                   key={label}
                   onClick={() => setSelectedGoals(prev => selected ? prev.filter(g => g !== label) : [...prev, label])}
-                  className={`text-[11px] font-bold px-2.5 py-2.5 rounded-full transition-all ${
+                  className={`text-[11px] font-bold px-2.5 py-2.5 rounded-full transition-all flex items-center gap-1 ${
                     selected ? "bg-purple-600 text-white" : "bg-white border border-purple-200 text-purple-700 hover:bg-purple-50"
                   }`}
                 >
-                  {emoji} {label}
+                  <GI3 className={`w-3 h-3 ${selected ? "text-white" : color}`} /> {label}
                 </button>
               );
             })}
@@ -963,7 +970,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
 
       {program.breed_specific_tips?.length > 0 && (
         <div className="bg-white border border-border rounded-2xl p-4">
-          <p className="font-bold text-sm mb-3 flex items-center gap-2"><span>🐕</span> Conseils pour la race</p>
+          <p className="font-bold text-sm mb-3 flex items-center gap-2"><PawPrint className="w-4 h-4 text-emerald-600" /> Conseils pour la race</p>
           <div className="space-y-2">
             {program.breed_specific_tips.map((tip, i) => (
               <div key={i} className="flex items-start gap-2">
@@ -985,7 +992,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       {program.progression_indicators?.length > 0 && (
         <div className="bg-white border border-border rounded-2xl p-4">
           <p className="font-bold text-sm mb-3 flex items-center gap-2"><TrendingUp className="w-4 h-4 text-emerald-500" /> Indicateurs de progression</p>
-          <div className="space-y-1">{program.progression_indicators.map((ind, i) => <p key={i} className="text-xs text-muted-foreground">✓ {ind}</p>)}</div>
+          <div className="space-y-1">{program.progression_indicators.map((ind, i) => <p key={i} className="text-xs text-muted-foreground flex items-center gap-1"><Check className="w-3 h-3 text-emerald-500 flex-shrink-0" /> {ind}</p>)}</div>
         </div>
       )}
 

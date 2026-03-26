@@ -93,7 +93,7 @@ export default function DogProfile() {
       ? `${Math.floor((Date.now() - new Date(dog.birth_date)) / (365.25 * 864e5))} ans`
       : "Âge inconnu";
     const text = [
-      `🐾 Fiche de ${dog.name}`,
+      `Fiche de ${dog.name}`,
       `Race: ${dog.breed || "—"}`,
       `Âge: ${age}`,
       `Sexe: ${dog.sex === "male" ? "Mâle" : dog.sex === "female" ? "Femelle" : "—"}`,

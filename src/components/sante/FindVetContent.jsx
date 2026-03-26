@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { PlaceFavorite } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, MapPin, Loader2, Stethoscope, Scissors, ShoppingBag, Heart, Navigation } from "lucide-react";
+import { Search, MapPin, Loader2, Stethoscope, Scissors, ShoppingBag, Heart, Navigation, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import Illustration from "../illustrations/Illustration";
@@ -227,7 +227,7 @@ export default function FindVetContent({ dog, user }) {
                   <div className="text-xs">
                     <p className="font-bold">{place.name}</p>
                     {place.address && <p className="text-gray-500 mt-0.5">{place.address}</p>}
-                    {place.phone && <p className="mt-0.5">📞 {place.phone}</p>}
+                    {place.phone && <p className="mt-0.5 flex items-center gap-1"><Phone className="w-3 h-3" /> {place.phone}</p>}
                   </div>
                 </Popup>
               </Marker>

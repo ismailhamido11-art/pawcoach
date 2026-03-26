@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, ArrowLeft, Syringe, Weight, Stethoscope, Pill, FileText, Activity, Camera, ClipboardList } from "lucide-react";
+import { Loader2, ArrowLeft, Syringe, Weight, Stethoscope, Pill, FileText, Activity, Camera, ClipboardList, PawPrint, AlertTriangle, Smile, Zap, UtensilsCrossed, CheckCircle, ShieldAlert, Ban } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { format } from "date-fns";
@@ -78,12 +78,12 @@ export default function VetDogView() {
           {dog.photo ? (
             <img src={dog.photo} alt={dog.name} loading="lazy" className="w-16 h-16 rounded-2xl object-cover border-2 border-white/30" />
           ) : (
-            <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center text-3xl">🐾</div>
+            <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center"><PawPrint className="w-8 h-8 text-white" /></div>
           )}
           <div>
             <h1 className="text-white font-black text-2xl">{dog.name}</h1>
-            <p className="text-white/80 text-xs">{[dog.breed, dog.weight ? `${dog.weight}kg` : null, dog.sex === "male" ? "♂" : dog.sex === "female" ? "♀" : null].filter(Boolean).join(" · ")}</p>
-            {dog.health_issues && <p className="text-white/70 text-[11px] mt-0.5">⚠️ {dog.health_issues}</p>}
+            <p className="text-white/80 text-xs">{[dog.breed, dog.weight ? `${dog.weight}kg` : null, dog.sex === "male" ? "M" : dog.sex === "female" ? "F" : null].filter(Boolean).join(" · ")}</p>
+            {dog.health_issues && <p className="text-white/70 text-[11px] mt-0.5 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> {dog.health_issues}</p>}
           </div>
         </div>
       </div>
@@ -161,9 +161,9 @@ export default function VetDogView() {
                   <div className="flex items-center justify-between">
                     <p className="text-xs font-medium">{format(new Date(c.date), "EEEE d MMM", { locale: fr })}</p>
                     <div className="flex gap-2">
-                      <Badge variant="outline" className="text-[11px]">😊 {c.mood}/4</Badge>
-                      <Badge variant="outline" className="text-[11px]">⚡ {c.energy}/3</Badge>
-                      <Badge variant="outline" className="text-[11px]">🍽️ {c.appetite}/3</Badge>
+                      <Badge variant="outline" className="text-[11px] flex items-center gap-1"><Smile className="w-3 h-3" /> {c.mood}/4</Badge>
+                      <Badge variant="outline" className="text-[11px] flex items-center gap-1"><Zap className="w-3 h-3" /> {c.energy}/3</Badge>
+                      <Badge variant="outline" className="text-[11px] flex items-center gap-1"><UtensilsCrossed className="w-3 h-3" /> {c.appetite}/3</Badge>
                     </div>
                   </div>
                   {c.notes && <p className="text-xs text-muted-foreground mt-1">{c.notes}</p>}
@@ -207,7 +207,7 @@ export default function VetDogView() {
                   <div className="flex-1">
                     <p className="text-sm font-medium">{s.food_name || "Aliment scanné"}</p>
                     <Badge className={`text-[11px] mt-1 ${s.verdict === "safe" ? "bg-emerald-100 text-emerald-700" : s.verdict === "caution" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
-                      {s.verdict === "safe" ? "✅ Sûr" : s.verdict === "caution" ? "⚠️ Précaution" : "🚫 Toxique"} — {s.score}/10
+                      {s.verdict === "safe" ? <><CheckCircle className="w-3 h-3 inline mr-0.5" />Sûr</> : s.verdict === "caution" ? <><AlertTriangle className="w-3 h-3 inline mr-0.5" />Précaution</> : <><Ban className="w-3 h-3 inline mr-0.5" />Toxique</>} — {s.score}/10
                     </Badge>
                     {s.details && <p className="text-xs text-muted-foreground mt-1">{s.details}</p>}
                   </div>

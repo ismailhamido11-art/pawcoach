@@ -19,7 +19,7 @@ export default function WalkReminderSettings({ user, onSave, dogName }) {
     setSaving(true);
     try {
       await onSave({ walk_reminder_enabled: val, walk_reminder_time: time });
-      toast.success(val ? `Rappel activé à ${time} 🐾` : "Rappel désactivé");
+      toast.success(val ? `Rappel activé à ${time}` : "Rappel désactivé");
     } finally {
       setSaving(false);
     }

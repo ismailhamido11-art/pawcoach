@@ -4,7 +4,7 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import {
   Settings, ChevronDown, ChevronUp, ChevronRight,
-  BookMarked, ShieldCheck, Info, LogOut, Trash2, Mail, Loader2
+  BookMarked, ShieldCheck, Info, LogOut, Trash2, Mail, Loader2, PawPrint
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -75,7 +75,7 @@ export default function SettingsSection() {
                   <a href="mailto:support@pawcoach.app" className="flex items-center gap-1 text-primary">
                     <Mail className="w-3 h-3" /> support@pawcoach.app
                   </a>
-                  <p className="leading-relaxed mt-1">🐾 PawCoach est un coach bien-être canin. Il ne remplace pas un vétérinaire qualifié.</p>
+                  <p className="leading-relaxed mt-1 flex items-start gap-1"><PawPrint className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" /> PawCoach est un coach bien-être canin. Il ne remplace pas un vétérinaire qualifié.</p>
                 </div>
               </div>
 
@@ -127,7 +127,7 @@ export default function SettingsSection() {
                   try {
                     const response = await base44.functions.invoke('deleteUser', {});
                     if (response.data?.success) {
-                      toast.success('Compte supprimé', { description: 'Au revoir ! 👋' });
+                      toast.success('Compte supprimé', { description: 'Au revoir !' });
                       await new Promise(resolve => setTimeout(resolve, 1500));
                       base44.auth.logout();
                     } else {

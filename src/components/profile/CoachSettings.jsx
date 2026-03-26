@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { Bot, Check } from "lucide-react";
+import { Bot, Check, Star, Target, BookOpen, Heart, Beef, Gamepad2, Brain } from "lucide-react";
 
 const TONES = [
-  { value: "encouraging", label: "Encourageant", emoji: "🌟" },
-  { value: "direct", label: "Direct", emoji: "🎯" },
-  { value: "pedagogical", label: "Pédagogue", emoji: "📚" },
+  { value: "encouraging", label: "Encourageant", Icon: Star, color: "text-amber-500" },
+  { value: "direct", label: "Direct", Icon: Target, color: "text-emerald-600" },
+  { value: "pedagogical", label: "Pédagogue", Icon: BookOpen, color: "text-blue-500" },
 ];
 
 const TOPICS = [
-  { value: "health", label: "Santé", emoji: "❤️" },
-  { value: "nutrition", label: "Nutrition", emoji: "🥩" },
-  { value: "training", label: "Dressage", emoji: "🎾" },
-  { value: "behavior", label: "Comportement", emoji: "🧠" },
+  { value: "health", label: "Santé", Icon: Heart, color: "text-rose-500" },
+  { value: "nutrition", label: "Nutrition", Icon: Beef, color: "text-orange-500" },
+  { value: "training", label: "Dressage", Icon: Gamepad2, color: "text-emerald-600" },
+  { value: "behavior", label: "Comportement", Icon: Brain, color: "text-violet-600" },
 ];
 
 export default function CoachSettings({ user, onSave }) {
@@ -60,7 +60,7 @@ export default function CoachSettings({ user, onSave }) {
                     : "border-border text-muted-foreground hover:border-primary/30"
                 }`}
               >
-                <span className="text-base">{t.emoji}</span>
+                {(() => { const TI = t.Icon; return <TI className={`w-4 h-4 ${currentTone === t.value ? "text-white" : t.color}`} />; })()}
                 <span className="text-xs">{t.label}</span>
               </button>
             ))}
@@ -83,7 +83,7 @@ export default function CoachSettings({ user, onSave }) {
                       : "border-border text-muted-foreground"
                   }`}
                 >
-                  <span>{t.emoji}</span>
+                  {(() => { const TI2 = t.Icon; return <TI2 className={`w-3 h-3 ${active ? "text-white" : t.color}`} />; })()}
                   {t.label}
                   {active && <Check className="w-3 h-3" />}
                 </button>

@@ -384,7 +384,7 @@ export default function Premium() {
             }`}
           >
             <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-white text-[11px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
-              -37% 🔥
+              -37%
             </span>
             Annuel<br />
             <span className={`text-xs font-normal ${plan === "annual" ? "text-white/80" : "text-muted-foreground"}`}>59,99 €/an · 5 €/mois</span>

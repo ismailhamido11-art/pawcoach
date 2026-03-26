@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Flame, Trophy, Footprints, Sparkles } from "lucide-react";
+import { Flame, Trophy, Footprints, Sparkles, Zap, Crown, GraduationCap, PawPrint, CalendarDays } from "lucide-react";
 
 const LEVELS = [
   { min: 1,  max: 2,  label: "Débutant",   color: "#94a3b8" },
@@ -18,15 +18,15 @@ function getNextBadge({ streak, exercises, dailyLogs }) {
   const walkDays = (dailyLogs || []).filter(l => (l.walk_minutes || 0) > 0).length;
   const candidates = [];
 
-  if (currentStreak < 3) candidates.push({ emoji: "🔥", name: "En forme", current: currentStreak, target: 3 });
-  else if (currentStreak < 7) candidates.push({ emoji: "⚡", name: "Habitude", current: currentStreak, target: 7 });
-  else if (currentStreak < 30) candidates.push({ emoji: "👑", name: "Légende", current: currentStreak, target: 30 });
+  if (currentStreak < 3) candidates.push({ Icon: Flame, iconColor: "text-orange-500", name: "En forme", current: currentStreak, target: 3 });
+  else if (currentStreak < 7) candidates.push({ Icon: Zap, iconColor: "text-amber-500", name: "Habitude", current: currentStreak, target: 7 });
+  else if (currentStreak < 30) candidates.push({ Icon: Crown, iconColor: "text-violet-500", name: "Légende", current: currentStreak, target: 30 });
 
-  if (completedExercises < 1) candidates.push({ emoji: "✨", name: "Coach débutant", current: 0, target: 1 });
-  else if (completedExercises < 3) candidates.push({ emoji: "🎓", name: "Coach expert", current: completedExercises, target: 3 });
+  if (completedExercises < 1) candidates.push({ Icon: Sparkles, iconColor: "text-amber-500", name: "Coach débutant", current: 0, target: 1 });
+  else if (completedExercises < 3) candidates.push({ Icon: GraduationCap, iconColor: "text-blue-500", name: "Coach expert", current: completedExercises, target: 3 });
 
-  if (walkDays < 1) candidates.push({ emoji: "🐾", name: "1re balade", current: 0, target: 1 });
-  else if (walkDays < 7) candidates.push({ emoji: "📅", name: "Régulier", current: walkDays, target: 7 });
+  if (walkDays < 1) candidates.push({ Icon: PawPrint, iconColor: "text-emerald-600", name: "1re balade", current: 0, target: 1 });
+  else if (walkDays < 7) candidates.push({ Icon: CalendarDays, iconColor: "text-blue-600", name: "Régulier", current: walkDays, target: 7 });
 
   return candidates.sort((a, b) => (b.current / b.target) - (a.current / a.target))[0] || null;
 }
@@ -132,7 +132,7 @@ export default function StreakBar({ streak, walkStreak = 0, exercises, dailyLogs
             transition={{ delay: 0.45 }}
             className="flex items-center gap-2.5 bg-amber-50 border border-amber-100 rounded-xl px-3.5 py-2"
           >
-            <span className="text-base leading-none">{nextBadge.emoji}</span>
+            {(() => { const BI = nextBadge.Icon; return <BI className={`w-4 h-4 ${nextBadge.iconColor} flex-shrink-0`} />; })()}
             <span className="text-xs font-bold text-foreground flex-1 truncate">
               {nextBadge.name}
             </span>

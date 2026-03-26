@@ -130,7 +130,7 @@ export default function DogPublicProfile() {
       {/* Emergency Banner */}
       <div className="bg-red-600 text-white text-center py-2 px-4">
         <p className="text-xs font-bold tracking-wide uppercase">
-          🚨 Dossier d'urgence — PawCoach
+          Dossier d'urgence — PawCoach
         </p>
       </div>
 
@@ -200,7 +200,7 @@ export default function DogPublicProfile() {
           >
             <div className="flex items-center gap-2 mb-3">
               <AlertTriangle className="w-5 h-5 text-red-600" />
-              <h2 className="text-sm font-black text-red-700 uppercase tracking-wide">⚠️ Informations critiques</h2>
+              <h2 className="text-sm font-black text-red-700 uppercase tracking-wide">Informations critiques</h2>
             </div>
             {hasAllergies && (
               <div className="mb-2">

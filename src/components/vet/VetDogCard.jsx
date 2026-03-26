@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Badge } from "@/components/ui/badge";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, PawPrint } from "lucide-react";
 
 export default function VetDogCard({ dog, access }) {
   const sharedSections = (() => {
@@ -17,7 +17,7 @@ export default function VetDogCard({ dog, access }) {
         {dog.photo ? (
           <img src={dog.photo} alt={dog.name} loading="lazy" className="w-14 h-14 rounded-xl object-cover" />
         ) : (
-          <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-2xl">🐾</div>
+          <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center"><PawPrint className="w-7 h-7 text-emerald-600" /></div>
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">

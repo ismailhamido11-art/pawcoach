@@ -1,20 +1,20 @@
 import { useState } from "react";
 import AIDiagnosisModal from "../vet/AIDiagnosisModal";
 import { Button } from "@/components/ui/button";
-import { Stethoscope, Phone, ExternalLink } from "lucide-react";
+import { Stethoscope, Phone, ExternalLink, AlertTriangle, ThumbsDown, Bed, UtensilsCrossed, PawPrint, Eye, Wind, Droplets } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { motion } from "framer-motion";
 
 const SYMPTOM_SHORTCUTS = [
-  { emoji: "🤮", label: "Vomissements" },
-  { emoji: "💩", label: "Diarrhée" },
-  { emoji: "😴", label: "Fatigue" },
-  { emoji: "🍽️", label: "Perte d'appétit" },
-  { emoji: "🐾", label: "Boite" },
-  { emoji: "👁️", label: "Problème oculaire" },
-  { emoji: "😤", label: "Respiration difficile" },
-  { emoji: "🩸", label: "Saignement" },
+  { Icon: ThumbsDown, color: "text-amber-600", label: "Vomissements" },
+  { Icon: AlertTriangle, color: "text-amber-500", label: "Diarrhée" },
+  { Icon: Bed, color: "text-blue-500", label: "Fatigue" },
+  { Icon: UtensilsCrossed, color: "text-rose-500", label: "Perte d'appétit" },
+  { Icon: PawPrint, color: "text-emerald-600", label: "Boite" },
+  { Icon: Eye, color: "text-blue-600", label: "Problème oculaire" },
+  { Icon: Wind, color: "text-slate-500", label: "Respiration difficile" },
+  { Icon: Droplets, color: "text-red-500", label: "Saignement" },
 ];
 
 export default function DiagnosisContent({ dog }) {
@@ -51,7 +51,7 @@ export default function DiagnosisContent({ dog }) {
       <div>
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">Symptômes fréquents</p>
         <div className="grid grid-cols-4 gap-2">
-          {SYMPTOM_SHORTCUTS.map(({ emoji, label }, i) => (
+          {SYMPTOM_SHORTCUTS.map(({ Icon: SI, color, label }, i) => (
             <motion.button
               key={label}
               initial={{ opacity: 0, y: 8 }}
@@ -61,7 +61,7 @@ export default function DiagnosisContent({ dog }) {
               onClick={() => openWithSymptom(label)}
               className="flex flex-col items-center gap-1 py-3 rounded-2xl bg-white border border-border text-center hover:border-emerald-300 hover:bg-emerald-50 transition-all"
             >
-              <span className="text-xl">{emoji}</span>
+              <SI className={`w-5 h-5 ${color}`} />
               <span className="text-[11px] font-medium text-foreground leading-tight">{label}</span>
             </motion.button>
           ))}
@@ -79,7 +79,7 @@ export default function DiagnosisContent({ dog }) {
 
       {/* Emergency section */}
       <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
-        <p className="font-bold text-sm text-foreground">🚨 En cas d'urgence</p>
+        <p className="font-bold text-sm text-foreground flex items-center gap-1"><AlertTriangle className="w-4 h-4 text-red-600" /> En cas d'urgence</p>
         <a
           href="tel:3115"
           className="flex items-center gap-3 p-3 bg-red-50 border border-red-200 rounded-xl"

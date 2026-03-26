@@ -15,7 +15,7 @@ import AITrainingProgram from "@/components/activite/AITrainingProgram";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Footprints, History, Dumbbell, Sparkles, ExternalLink } from "lucide-react";
+import { Footprints, History, Dumbbell, Sparkles, ExternalLink, Lightbulb, Timer, Target, Bone, CalendarDays } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { spring } from "@/lib/animations";
 const tabVariants = {
@@ -25,10 +25,10 @@ const tabVariants = {
 };
 
 const TABS = [
-  { id: "balade",     label: "Balade",     emoji: "🐾", icon: Footprints, bg: "from-emerald-500 to-emerald-700" },
-  { id: "historique", label: "Historique", emoji: "📊", icon: History,    bg: "from-blue-500 to-indigo-600" },
-  { id: "programme",  label: "Programme",  emoji: "✨", icon: Sparkles,   bg: "from-violet-500 to-purple-600" },
-  { id: "dressage",   label: "Dressage",   emoji: "🎯", icon: Dumbbell,   bg: "from-amber-500 to-amber-600" },
+  { id: "balade",     label: "Balade",     icon: Footprints, bg: "from-emerald-500 to-emerald-700" },
+  { id: "historique", label: "Historique", icon: History,    bg: "from-blue-500 to-indigo-600" },
+  { id: "programme",  label: "Programme",  icon: Sparkles,   bg: "from-violet-500 to-purple-600" },
+  { id: "dressage",   label: "Dressage",   icon: Dumbbell,   bg: "from-amber-500 to-amber-600" },
 ];
 
 export default function Activite() {
@@ -270,13 +270,13 @@ function DressageContent({ dog }) {
 
       {/* Tips */}
       <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
-        <p className="font-bold text-sm text-foreground">💡 Conseils rapides</p>
+        <p className="font-bold text-sm text-foreground flex items-center gap-1"><Lightbulb className="w-4 h-4 text-amber-500" /> Conseils rapides</p>
         {[
-          { emoji: "⏱️", text: "Sessions courtes (5-10 min) et régulières" },
-          { emoji: "🎯", text: "Terminer sur une réussite pour motiver" },
-          { emoji: "🍖", text: "Récompenses petites mais fréquentes" },
-          { emoji: "📅", text: "Pratiquer à la même heure chaque jour" },
-        ].map(({ emoji, text }, i) => (
+          { Icon: Timer, color: "text-blue-500", text: "Sessions courtes (5-10 min) et régulières" },
+          { Icon: Target, color: "text-emerald-600", text: "Terminer sur une réussite pour motiver" },
+          { Icon: Bone, color: "text-amber-600", text: "Récompenses petites mais fréquentes" },
+          { Icon: CalendarDays, color: "text-violet-600", text: "Pratiquer à la même heure chaque jour" },
+        ].map(({ Icon: TI, color, text }, i) => (
           <motion.div
             key={text}
             className="flex items-center gap-3"
@@ -284,7 +284,7 @@ function DressageContent({ dog }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05, duration: 0.25 }}
           >
-            <span className="text-lg">{emoji}</span>
+            <TI className={`w-5 h-5 ${color} flex-shrink-0`} />
             <p className="text-xs text-muted-foreground">{text}</p>
           </motion.div>
         ))}

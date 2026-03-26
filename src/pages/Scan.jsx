@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Camera, ChevronDown, ChevronUp, CheckCircle, AlertTriangle,
-  AlertCircle, X, History, Share2, Phone, Crown, ScanLine, Tag, Loader2, ArrowLeft
+  AlertCircle, X, History, Share2, Phone, Crown, ScanLine, Tag, Loader2, ArrowLeft,
+  Lightbulb, Check
 } from "lucide-react";
 import { updateStreakSilently } from "../components/streakHelper";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,7 +31,7 @@ const listItem = {
 
 const VERDICT_CONFIG = {
   safe: {
-    label: "✅ Sans danger",
+    label: "Sans danger",
     badgeBg: "bg-emerald-100 text-emerald-700",
     cardBg: "bg-emerald-50",
     border: "border-emerald-200",
@@ -39,7 +40,7 @@ const VERDICT_CONFIG = {
     iconColor: "text-emerald-500",
   },
   caution: {
-    label: "⚠️ Avec précaution",
+    label: "Avec précaution",
     badgeBg: "bg-amber-100 text-amber-700",
     cardBg: "bg-amber-50",
     border: "border-amber-200",
@@ -48,7 +49,7 @@ const VERDICT_CONFIG = {
     iconColor: "text-amber-600",
   },
   toxic: {
-    label: "💀 TOXIQUE",
+    label: "TOXIQUE",
     badgeBg: "bg-red-100 text-red-700",
     cardBg: "bg-red-50",
     border: "border-red-200",
@@ -437,7 +438,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
       {/* Emergency banner */}
       {result?.verdict === "toxic" && dogAteIt && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-red-600 px-4 py-3 text-white text-center shadow-lg">
-          <p className="font-bold text-sm">🚨 URGENCE — Appelle immédiatement ton vétérinaire</p>
+          <p className="font-bold text-sm flex items-center justify-center gap-1"><AlertTriangle className="w-4 h-4" /> URGENCE — Appelle immédiatement ton vétérinaire</p>
           <a href="tel:0478871040" className="flex items-center justify-center gap-2 mt-1 text-white font-extrabold text-base">
             <Phone className="w-4 h-4" /> Centre antipoison : 04 78 87 10 40
           </a>
@@ -495,8 +496,8 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
               }`}
             >
               {mode === "food"
-                ? "📸 Photo d'un aliment brut ou d'un emballage → verdict toxicité immédiat"
-                : "🏷️ Photo de l'étiquette nutritionnelle → ingrédients, calories, macros & compatibilité personnalisée"}
+                ? "Photo d'un aliment brut ou d'un emballage → verdict toxicité immédiat"
+                : "Photo de l'étiquette nutritionnelle → ingrédients, calories, macros & compatibilité personnalisée"}
             </motion.div>
           </AnimatePresence>
         )}
@@ -619,7 +620,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                     <p className="text-sm text-foreground/80 leading-relaxed">{result.summary}</p>
                     {result.allergen_alerts?.length > 0 && (
                       <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl">
-                        <p className="text-xs font-bold text-amber-700 mb-1.5">⚠️ Aliments indésirables détectés</p>
+                        <p className="text-xs font-bold text-amber-700 mb-1.5 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Aliments indésirables détectés</p>
                         <div className="flex flex-wrap gap-1.5">
                           {result.allergen_alerts.map((alert, i) => (
                             <span key={i} className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
@@ -631,11 +632,11 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                     )}
                     {result.verdict === "toxic" && (
                       <div className={`p-3 rounded-2xl border-2 ${dogAteIt ? "bg-red-100 border-red-400" : "bg-red-50 border-red-200"}`}>
-                        <p className="text-sm font-bold text-red-700 mb-2">⚠️ {dog?.name} a-t-il/elle mangé cet aliment ?</p>
+                        <p className="text-sm font-bold text-red-700 mb-2 flex items-center gap-1"><AlertTriangle className="w-4 h-4" /> {dog?.name} a-t-il/elle mangé cet aliment ?</p>
                         <div className="flex gap-2">
                           <button onClick={() => setDogAteIt(true)}
                             className={`flex-1 py-2 rounded-xl text-sm font-bold border-2 transition-all ${dogAteIt ? "bg-red-600 text-white border-red-600" : "bg-white text-red-600 border-red-300"}`}>
-                            Oui 😱
+                            Oui
                           </button>
                           <button onClick={() => setDogAteIt(false)}
                             className={`flex-1 py-2 rounded-xl text-sm font-bold border-2 transition-all ${!dogAteIt ? "bg-white text-emerald-600 border-emerald-300" : "bg-white text-gray-400 border-gray-200"}`}>
@@ -645,7 +646,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                       </div>
                     )}
                     <div className="p-3 bg-white/70 rounded-2xl border border-white">
-                      <p className="text-xs font-bold text-primary mb-1">💡 Pour {dog?.name}</p>
+                      <p className="text-xs font-bold text-primary mb-1 flex items-center gap-1"><Lightbulb className="w-3 h-3" /> Pour {dog?.name}</p>
                       <p className="text-sm text-foreground">{result.recommendation}</p>
                     </div>
                     <button onClick={() => setShowDetails(s => !s)} className="flex items-center gap-1.5 text-xs font-semibold text-primary">
@@ -674,7 +675,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                     <Share2 className="w-3.5 h-3.5" /> Partager
                   </Button>
                   <Button onClick={saveResult} disabled={saved} className="h-14 rounded-2xl gradient-primary border-0 text-white font-semibold text-sm">
-                    {saved ? "✅ Ok" : "Sauvegarder"}
+                    {saved ? <><Check className="w-3.5 h-3.5 mr-1" /> Ok</> : "Sauvegarder"}
                   </Button>
                 </div>
               </div>
@@ -813,7 +814,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                   {/* Allergen alert */}
                   {labelResult.allergen_alerts?.length > 0 && (
                     <div className="bg-red-100 border border-red-300 rounded-xl p-3 mb-3">
-                      <p className="text-xs font-bold text-red-700 mb-1.5">⚠️ Alertes pour {dog?.name}</p>
+                      <p className="text-xs font-bold text-red-700 mb-1.5 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Alertes pour {dog?.name}</p>
                       <div className="flex flex-wrap gap-1">
                         {labelResult.allergen_alerts.map((a, i) => (
                           <span key={i} className="text-xs bg-red-200 text-red-800 px-2 py-0.5 rounded-full font-semibold">{a}</span>
@@ -848,13 +849,13 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
                     <div className="grid grid-cols-2 gap-2 mb-3">
                       {labelResult.pros?.length > 0 && (
                         <div className="bg-white rounded-xl p-3">
-                          <p className="text-[11px] font-bold text-emerald-700 mb-1">✅ Points positifs</p>
+                          <p className="text-[11px] font-bold text-emerald-700 mb-1 flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Points positifs</p>
                           <ul className="space-y-1">{labelResult.pros.map((p, i) => <li key={i} className="text-xs text-foreground/80">{p}</li>)}</ul>
                         </div>
                       )}
                       {labelResult.cons?.length > 0 && (
                         <div className="bg-white rounded-xl p-3">
-                          <p className="text-[11px] font-bold text-red-600 mb-1">⚠️ Points négatifs</p>
+                          <p className="text-[11px] font-bold text-red-600 mb-1 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Points négatifs</p>
                           <ul className="space-y-1">{labelResult.cons.map((c, i) => <li key={i} className="text-xs text-foreground/80">{c}</li>)}</ul>
                         </div>
                       )}
@@ -863,7 +864,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
 
                   {/* Recommendation */}
                   <div className="bg-white/80 rounded-xl p-3 mb-2">
-                    <p className="text-xs font-bold text-violet-600 mb-1">💡 Avis NutriCoach pour {dog?.name}</p>
+                    <p className="text-xs font-bold text-violet-600 mb-1 flex items-center gap-1"><Lightbulb className="w-3 h-3" /> Avis NutriCoach pour {dog?.name}</p>
                     <p className="text-sm text-foreground leading-relaxed">{labelResult.recommendation}</p>
                   </div>
 

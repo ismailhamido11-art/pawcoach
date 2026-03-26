@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import DiagnosisReportView from "./DiagnosisReportView";
 import DiagnosisStep2Questions from "./DiagnosisStep2Questions";
-import { Loader2, Stethoscope, AlertTriangle, Download, MapPin, Camera, X } from "lucide-react";
+import { Loader2, Stethoscope, AlertTriangle, Download, MapPin, Camera, X, Check } from "lucide-react";
 import { toast } from "sonner";
 import { useActionCredits } from "@/hooks/useActionCredits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
@@ -372,12 +372,12 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
             {/* Step indicator */}
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5">
-                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center">✓</div>
+                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center"><Check className="w-3.5 h-3.5" /></div>
                 <span className="text-xs text-emerald-700">Symptômes</span>
               </div>
               <div className="flex-1 h-px bg-emerald-300" />
               <div className="flex items-center gap-1.5">
-                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center">✓</div>
+                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center"><Check className="w-3.5 h-3.5" /></div>
                 <span className="text-xs text-emerald-700">Questions</span>
               </div>
               <div className="flex-1 h-px bg-emerald-300" />

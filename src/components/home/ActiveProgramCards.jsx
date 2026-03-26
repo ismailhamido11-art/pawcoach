@@ -2,11 +2,15 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target, Brain, CheckCircle2 } from "lucide-react";
+import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target, Brain, CheckCircle2, PawPrint, Gamepad2, Moon, Wind, BookOpen, Lightbulb, Check, X } from "lucide-react";
 import { Bookmark } from "@/api/entities";
 
 const SESSION_ICONS = {
-  balade: "🐾", jeu: "🎾", "exercice mental": "🧠", repos: "💤", "entraînement": "🎯",
+  balade: { Icon: PawPrint, color: "text-emerald-600" },
+  jeu: { Icon: Gamepad2, color: "text-emerald-600" },
+  "exercice mental": { Icon: Brain, color: "text-violet-600" },
+  repos: { Icon: Moon, color: "text-indigo-500" },
+  entraînement: { Icon: Target, color: "text-emerald-700" },
 };
 
 const DAY_NAMES = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -32,8 +36,12 @@ function getElapsedDays(startDate) {
 }
 
 const ACTIVITY_ICONS = {
-  balade: "🐾", jeu: "🎾", "exercice mental": "🧠",
-  "repos actif": "💆", repos: "💤", "entraînement": "🎯",
+  balade: { Icon: PawPrint, color: "text-emerald-600" },
+  jeu: { Icon: Gamepad2, color: "text-emerald-600" },
+  "exercice mental": { Icon: Brain, color: "text-violet-600" },
+  "repos actif": { Icon: Wind, color: "text-blue-500" },
+  repos: { Icon: Moon, color: "text-indigo-500" },
+  entraînement: { Icon: Target, color: "text-emerald-700" },
 };
 
 function TrainingCard({ program }) {
@@ -48,7 +56,8 @@ function TrainingCard({ program }) {
 
   const realDate = addDaysToDate(program.start_date, elapsed);
   const actType = today.activity?.type || "balade";
-  const icon = ACTIVITY_ICONS[actType] || SESSION_ICONS[actType] || "🐶";
+  const actIconObj = ACTIVITY_ICONS[actType] || SESSION_ICONS[actType] || ACTIVITY_ICONS["balade"];
+  const ActIcon = actIconObj.Icon;
 
   // Completion tracking
   const completedDays = program.completed_days || [];
@@ -86,7 +95,7 @@ function TrainingCard({ program }) {
             todayDone ? "bg-emerald-50/80 border-emerald-100/60" : "bg-white/80 border-violet-100/60"
           }`}>
             <div className="flex items-start gap-3">
-              <span className="text-2xl leading-none mt-0.5">{icon}</span>
+              <ActIcon className={`w-6 h-6 ${actIconObj.color} mt-0.5 flex-shrink-0`} />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className={`text-xs font-bold ${todayDone ? "line-through text-muted-foreground" : "text-foreground"}`}>
@@ -111,8 +120,8 @@ function TrainingCard({ program }) {
           {/* Fun fact hook */}
           {today.fun_fact && !todayDone && (
             <div className="mt-2 bg-amber-50/60 rounded-lg px-3 py-2 border border-amber-100/50">
-              <p className="text-[11px] text-amber-800/80 line-clamp-2 italic">
-                📖 {today.fun_fact}
+              <p className="text-[11px] text-amber-800/80 line-clamp-2 italic flex items-start gap-1">
+                <BookOpen className="w-3 h-3 flex-shrink-0 mt-0.5" /> {today.fun_fact}
               </p>
             </div>
           )}
@@ -120,8 +129,8 @@ function TrainingCard({ program }) {
           {/* Coach tip when done */}
           {today.coach_tip && todayDone && (
             <div className="mt-2 bg-emerald-50/60 rounded-lg px-3 py-2 border border-emerald-100/50">
-              <p className="text-[11px] text-emerald-800/80 line-clamp-2 italic">
-                💡 {today.coach_tip}
+              <p className="text-[11px] text-emerald-800/80 line-clamp-2 italic flex items-start gap-1">
+                <Lightbulb className="w-3 h-3 flex-shrink-0 mt-0.5" /> {today.coach_tip}
               </p>
             </div>
           )}
@@ -259,7 +268,7 @@ function NutritionPlanCard({ plan }) {
           {/* Compact preview when closed */}
           {!open && (
             <div className="flex items-center gap-2.5 bg-white/80 rounded-xl px-3 py-2.5 border border-emerald-100/60">
-              <span className="text-lg leading-none">🍽️</span>
+              <Utensils className="w-5 h-5 text-emerald-600 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <span className="text-xs font-bold text-foreground">{todayName}</span>
                 <span className="text-[11px] text-muted-foreground truncate">{" · "}{summary.slice(0, 45)}{summary.length > 45 ? "..." : ""}</span>
@@ -297,7 +306,7 @@ function NutritionPlanCard({ plan }) {
                 {todayData ? (
                   <div className="bg-white/80 rounded-xl p-3 border border-emerald-100/60 space-y-2">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-lg leading-none">🍽️</span>
+                      <Utensils className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                       <span className="text-xs font-bold text-foreground">{todayData.day || todayName}</span>
                       <span className="text-[11px] text-muted-foreground">Repas du jour</span>
                     </div>
@@ -495,13 +504,13 @@ function BehaviorProgramCard({ program }) {
                     {day.do?.length > 0 && (
                       <div className="bg-emerald-50 rounded-lg px-2.5 py-2 border border-emerald-100">
                         <p className="text-[11px] font-bold text-emerald-700 uppercase mb-0.5">À faire</p>
-                        {day.do.slice(0, 2).map((d, i) => <p key={i} className="text-[11px] text-emerald-800 truncate">✓ {d}</p>)}
+                        {day.do.slice(0, 2).map((d, i) => <p key={i} className="text-[11px] text-emerald-800 truncate flex items-center gap-1"><Check className="w-3 h-3 flex-shrink-0" /> {d}</p>)}
                       </div>
                     )}
                     {day.dont?.length > 0 && (
                       <div className="bg-red-50 rounded-lg px-2.5 py-2 border border-red-100">
                         <p className="text-[11px] font-bold text-red-700 uppercase mb-0.5">À éviter</p>
-                        {day.dont.slice(0, 2).map((d, i) => <p key={i} className="text-[11px] text-red-800 truncate">✕ {d}</p>)}
+                        {day.dont.slice(0, 2).map((d, i) => <p key={i} className="text-[11px] text-red-800 truncate flex items-center gap-1"><X className="w-3 h-3 flex-shrink-0" /> {d}</p>)}
                       </div>
                     )}
                   </div>

@@ -6,7 +6,7 @@ import {
   FileText, Camera, ClipboardPaste, Sparkles,
   CheckCircle, Loader2, Syringe, Weight,
   Stethoscope, Pill, AlertCircle, StickyNote,
-  ChevronRight, Check, RefreshCw
+  ChevronRight, Check, RefreshCw, Lock, Bot, CalendarDays, AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -193,7 +193,7 @@ export default function HealthImportContent({ dog, onImported }) {
               );
             })}
             <div className="bg-muted/40 rounded-2xl p-3 border border-border/30 text-center">
-              <p className="text-xs text-muted-foreground">🔒 Documents analysés de façon sécurisée</p>
+              <p className="text-xs text-muted-foreground flex items-center justify-center gap-1"><Lock className="w-3 h-3" /> Documents analysés de façon sécurisée</p>
             </div>
           </motion.div>
         )}
@@ -244,7 +244,7 @@ export default function HealthImportContent({ dog, onImported }) {
             {(summary || docType) && (
               <div className="bg-primary/5 border border-primary/15 rounded-2xl p-4">
                 {docType && <p className="text-[11px] font-bold uppercase tracking-widest text-primary mb-1">{docType}</p>}
-                {summary && <p className="text-sm text-foreground leading-relaxed">🤖 {summary}</p>}
+                {summary && <p className="text-sm text-foreground leading-relaxed flex items-start gap-1"><Bot className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" /> {summary}</p>}
               </div>
             )}
             <div className="flex items-center justify-between">
@@ -285,8 +285,8 @@ export default function HealthImportContent({ dog, onImported }) {
                           {record.date && <span className="text-xs text-muted-foreground">{record.date}</span>}
                           {record.value != null && <span className="text-xs font-medium text-muted-foreground">{record.value} kg</span>}
                         </div>
-                        {record.next_date && <p className="text-xs text-primary mt-1 font-medium">📅 Prochain : {record.next_date}</p>}
-                        {suspicious && <p className="text-xs text-red-600 font-bold mt-1">⚠️ Donnée suspecte — vérifier</p>}
+                        {record.next_date && <p className="text-xs text-primary mt-1 font-medium flex items-center gap-1"><CalendarDays className="w-3 h-3" /> Prochain : {record.next_date}</p>}
+                        {suspicious && <p className="text-xs text-red-600 font-bold mt-1 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Donnée suspecte — vérifier</p>}
                       </div>
                       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${isSelected ? "bg-primary border-primary" : "border-border bg-white"}`}>
                         {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
@@ -313,7 +313,7 @@ export default function HealthImportContent({ dog, onImported }) {
             <div className="w-28 h-28 mb-4">
               <Illustration name="veterinary" alt="Import réussi" className="w-full h-full drop-shadow-lg" />
             </div>
-            <h2 className="font-bold text-foreground text-xl mb-2">Importé ! 🎉</h2>
+            <h2 className="font-bold text-foreground text-xl mb-2">Importé !</h2>
             <p className="text-muted-foreground">
               <span className="font-bold text-primary text-xl">{importedCount}</span>{" "}
               enregistrement{importedCount > 1 ? "s" : ""} ajouté{importedCount > 1 ? "s" : ""}<br />

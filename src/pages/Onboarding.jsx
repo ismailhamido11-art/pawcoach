@@ -79,7 +79,7 @@ function OnboardingWelcome({ onStart }) {
 
         {/* Feature pills */}
         <div className="flex flex-wrap gap-2 justify-center mb-12">
-          {["🤖 IA personnalisée", "📊 Suivi quotidien", "🏥 Carnet santé", "🍽️ NutriCoach"].map(f => (
+          {["IA personnalisée", "Suivi quotidien", "Carnet santé", "NutriCoach"].map(f => (
             <span key={f} className="px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-white/70 text-xs font-medium">
               {f}
             </span>
@@ -339,7 +339,7 @@ Extrais ces informations et renvoie un objet JSON.
                     </div>
                     <span className="text-sm font-semibold text-foreground">{opt.label}</span>
                     {currentAnswer === opt.label && (
-                      <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="ml-auto text-lg">✓</motion.span>
+                      <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="ml-auto"><ChevronRight className="w-4 h-4 text-emerald-600" /></motion.span>
                     )}
                   </motion.button>
                 ))}
@@ -389,7 +389,7 @@ Extrais ces informations et renvoie un objet JSON.
                 </motion.button>
 
                 <p className="text-sm text-muted-foreground mb-4 font-medium">
-                  {listening ? "🎙️ Je t'écoute..." : "Appuie pour dicter ou tape ci-dessous"}
+                  {listening ? "Je t'écoute..." : "Appuie pour dicter ou tape ci-dessous"}
                 </p>
                 <Input
                   value={currentAnswer}

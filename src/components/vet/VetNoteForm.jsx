@@ -5,14 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MobileSelect from "@/components/ui/MobileSelect";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, Send, Search, Lightbulb, Pill, CalendarDays, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 const CATEGORIES = [
-  { value: "observation", label: "🔍 Observation" },
-  { value: "recommendation", label: "💡 Recommandation" },
-  { value: "prescription", label: "💊 Prescription" },
-  { value: "follow_up", label: "📅 Suivi à prévoir" },
+  { value: "observation", label: "Observation" },
+  { value: "recommendation", label: "Recommandation" },
+  { value: "prescription", label: "Prescription" },
+  { value: "follow_up", label: "Suivi à prévoir" },
 ];
 
 export default function VetNoteForm({ dogId, vetEmail, vetName, onNoteAdded }) {
@@ -72,7 +72,7 @@ export default function VetNoteForm({ dogId, vetEmail, vetName, onNoteAdded }) {
 
         <label className="flex items-center gap-2 cursor-pointer">
           <Checkbox checked={isUrgent} onCheckedChange={setIsUrgent} />
-          <span className="text-xs text-red-600 font-medium">⚠️ Urgent</span>
+          <span className="text-xs text-red-600 font-medium flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Urgent</span>
         </label>
       </div>
 

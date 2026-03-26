@@ -7,19 +7,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Share2, Mail, Copy, Check, Trash2, Loader2, UserCheck, Clock, XCircle } from "lucide-react";
+import { Share2, Mail, Copy, Check, Trash2, Loader2, UserCheck, Clock, XCircle, Syringe, Scale, Hospital, Pill, StickyNote, BarChart2, Camera, Stethoscope } from "lucide-react";
 import { toast } from "sonner";
 import DownloadHealthPDF from "./DownloadHealthPDF";
 
 const SECTIONS = [
-  { id: "vaccine", label: "Vaccins", emoji: "💉" },
-  { id: "weight", label: "Poids", emoji: "⚖️" },
-  { id: "vet_visit", label: "Visites véto", emoji: "🏥" },
-  { id: "medication", label: "Médicaments", emoji: "💊" },
-  { id: "note", label: "Notes", emoji: "📝" },
-  { id: "checkins", label: "Check-ins quotidiens", emoji: "📊" },
-  { id: "scans", label: "Scans alimentaires", emoji: "📷" },
-  { id: "diagnosis", label: "Bilans de visite", emoji: "🩺" },
+  { id: "vaccine", label: "Vaccins", Icon: Syringe },
+  { id: "weight", label: "Poids", Icon: Scale },
+  { id: "vet_visit", label: "Visites véto", Icon: Hospital },
+  { id: "medication", label: "Médicaments", Icon: Pill },
+  { id: "note", label: "Notes", Icon: StickyNote },
+  { id: "checkins", label: "Check-ins quotidiens", Icon: BarChart2 },
+  { id: "scans", label: "Scans alimentaires", Icon: Camera },
+  { id: "diagnosis", label: "Bilans de visite", Icon: Stethoscope },
 ];
 
 export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
@@ -194,7 +194,7 @@ export default function ShareVetModal({ open, onOpenChange, dogId, dogName }) {
                     checked={selectedSections.includes(s.id)}
                     onCheckedChange={() => toggleSection(s.id)}
                   />
-                  <span className="text-xs">{s.emoji} {s.label}</span>
+                  <span className="text-xs flex items-center gap-1">{(() => { const SI = s.Icon; return <SI className="w-3 h-3 text-muted-foreground" />; })()} {s.label}</span>
                 </label>
               ))}
             </div>

@@ -1,3 +1,5 @@
+import { PawPrint } from "lucide-react";
+
 export default function WellnessBanner() {
   return (
     <div
@@ -9,8 +11,8 @@ export default function WellnessBanner() {
         height: "calc(28px + max(6px, env(safe-area-inset-top, 0px)))"
       }}
     >
-      <p className="text-[11px] text-accent-foreground font-medium">
-        🐾 PawCoach est un coach bien-être, pas un vétérinaire.
+      <p className="text-[11px] text-accent-foreground font-medium flex items-center gap-1">
+        <PawPrint className="w-3 h-3 flex-shrink-0" /> PawCoach est un coach bien-être, pas un vétérinaire.
       </p>
     </div>
   );

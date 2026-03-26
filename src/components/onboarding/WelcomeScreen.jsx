@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Gift, Check } from "lucide-react";
+import { Sparkles, Gift, Check, PartyPopper } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import PremiumNudgeSheet from "../premium/PremiumNudgeSheet";
@@ -42,7 +42,7 @@ export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium
         </div>
         {/* Badge */}
         <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-accent rounded-full flex items-center justify-center shadow-lg border-2 border-white">
-          <span className="text-2xl">🎉</span>
+          <PartyPopper className="w-6 h-6 text-white" />
         </div>
       </div>
 

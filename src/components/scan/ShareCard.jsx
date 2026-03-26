@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { X, Download, Share2 } from "lucide-react";
 
 const VERDICT_STYLE = {
-  safe:    { label: "SANS DANGER", emoji: "✅", bg: "linear-gradient(135deg, #065f46, #10b981)", accent: "#34d399", ring: "#22c55e" },
-  caution: { label: "AVEC PRECAUTION", emoji: "⚠️", bg: "linear-gradient(135deg, #78350f, #d97706)", accent: "#fbbf24", ring: "#d97706" },
-  toxic:   { label: "TOXIQUE", emoji: "💀", bg: "linear-gradient(135deg, #7f1d1d, #ef4444)", accent: "#f87171", ring: "#ef4444" },
+  safe:    { label: "SANS DANGER", icon: "[OK]", bg: "linear-gradient(135deg, #065f46, #10b981)", accent: "#34d399", ring: "#22c55e" },
+  caution: { label: "AVEC PRECAUTION", icon: "[!]", bg: "linear-gradient(135deg, #78350f, #d97706)", accent: "#fbbf24", ring: "#d97706" },
+  toxic:   { label: "TOXIQUE", icon: "[X]", bg: "linear-gradient(135deg, #7f1d1d, #ef4444)", accent: "#f87171", ring: "#ef4444" },
 };
 
 export default function ShareCard({ result, dogName, onClose }) {
@@ -41,7 +41,7 @@ export default function ShareCard({ result, dogName, onClose }) {
         await navigator.share({
           files: [file],
           title: `${result.food_name} — PawCoach`,
-          text: `${s.emoji} ${result.food_name} est ${s.label.toLowerCase()} pour ${dogName || "mon chien"} ! Verifie avec PawCoach.`,
+          text: `${result.food_name} est ${s.label.toLowerCase()} pour ${dogName || "mon chien"} ! Verifie avec PawCoach.`,
         });
       } else {
         downloadCard();
@@ -81,8 +81,8 @@ export default function ShareCard({ result, dogName, onClose }) {
 
           {/* Content */}
           <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", padding: "40px 36px", textAlign: "center" }}>
-            {/* Emoji verdict */}
-            <div style={{ fontSize: 72, lineHeight: 1, marginBottom: 16 }}>{s.emoji}</div>
+            {/* Verdict icon */}
+            <div style={{ fontSize: 48, fontWeight: 900, color: s.accent, lineHeight: 1, marginBottom: 16 }}>{s.icon}</div>
 
             {/* Verdict label */}
             <div style={{
@@ -143,7 +143,7 @@ export default function ShareCard({ result, dogName, onClose }) {
               textAlign: "center",
             }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-                <span style={{ fontSize: 16 }}>🐾</span>
+                <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, fontWeight: 700 }}>*</span>
                 <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, fontWeight: 700, letterSpacing: 1 }}>
                   PawCoach
                 </span>

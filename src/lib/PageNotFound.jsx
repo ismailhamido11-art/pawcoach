@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+import { PawPrint } from 'lucide-react';
 
 export default function PageNotFound() {
     const location = useLocation();
@@ -8,7 +9,7 @@ export default function PageNotFound() {
         <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(160deg, #f0fdf4, #ecfdf5, #f8faf9)' }}>
             <div className="max-w-md w-full">
                 <div className="text-center space-y-6">
-                    <div className="text-6xl mb-2">🐾</div>
+                    <div className="flex justify-center mb-2"><PawPrint className="w-16 h-16" style={{ color: '#2d8a70' }} /></div>
 
                     <div className="space-y-2">
                         <h1 className="text-6xl font-light" style={{ color: '#2d8a70' }}>404</h1>

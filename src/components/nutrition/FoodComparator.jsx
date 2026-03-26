@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Bookmark } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Plus, X, BarChart2, ChevronDown, ChevronUp, Trophy, AlertTriangle, CheckCircle2, Loader2, BookmarkPlus, BookmarkCheck } from "lucide-react";
+import { Plus, X, BarChart2, ChevronDown, ChevronUp, Trophy, AlertTriangle, CheckCircle2, Loader2, BookmarkPlus, BookmarkCheck, Lightbulb, Target } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
@@ -312,7 +312,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
                   {/* Pros */}
                   {p.result.pros?.length > 0 && (
                     <div className="space-y-1">
-                      <p className="text-[11px] font-bold text-emerald-700 uppercase tracking-wide">✅ Avantages</p>
+                      <p className="text-[11px] font-bold text-emerald-700 uppercase tracking-wide flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Avantages</p>
                       {p.result.pros.map((pro, j) => (
                         <div key={j} className="flex gap-2 items-start">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
@@ -325,7 +325,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
                   {/* Cons */}
                   {p.result.cons?.length > 0 && (
                     <div className="space-y-1">
-                      <p className="text-[11px] font-bold text-red-700 uppercase tracking-wide">❌ Inconvénients</p>
+                      <p className="text-[11px] font-bold text-red-700 uppercase tracking-wide flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Inconvénients</p>
                       {p.result.cons.map((con, j) => (
                         <div key={j} className="flex gap-2 items-start">
                           <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
@@ -337,7 +337,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
 
                   {/* Recommendation */}
                   <div className="bg-white/80 rounded-xl p-2.5 border border-border/50">
-                    <p className="text-[11px] font-bold text-primary mb-1">💡 Pour {dog?.name || "ton chien"}</p>
+                    <p className="text-[11px] font-bold text-primary mb-1 flex items-center gap-1"><Lightbulb className="w-3 h-3" /> Pour {dog?.name || "ton chien"}</p>
                     <p className="text-xs text-foreground/80">{p.result.recommendation}</p>
                   </div>
 
@@ -438,7 +438,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
 
                 {/* Final recommendation */}
                 <div className="bg-white rounded-xl p-3 border border-primary/20">
-                  <p className="text-[11px] font-bold text-primary mb-1">🎯 Recommandation pour {dog?.name || "ton chien"}</p>
+                  <p className="text-[11px] font-bold text-primary mb-1 flex items-center gap-1"><Target className="w-3 h-3" /> Recommandation pour {dog?.name || "ton chien"}</p>
                   <p className="text-xs text-foreground/80 leading-relaxed">{comparison.recommendation}</p>
                 </div>
 

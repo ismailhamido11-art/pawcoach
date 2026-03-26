@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle, AlertCircle, Siren, ClipboardList } from "lucide-react";
+import { AlertTriangle, CheckCircle, AlertCircle, Siren, ClipboardList, Check } from "lucide-react";
 
 const URGENCY_CONFIG = {
   low: { label: "Faible", color: "bg-emerald-100 text-emerald-800", icon: CheckCircle },
@@ -27,7 +27,7 @@ export default function DiagnosisStep2Questions({ phase1, userAnswers, setUserAn
       {/* Step indicator */}
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1.5">
-          <div className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center">✓</div>
+          <div className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center"><Check className="w-3.5 h-3.5" /></div>
           <span className="text-xs text-emerald-700">Symptômes</span>
         </div>
         <div className="flex-1 h-px bg-emerald-300" />
