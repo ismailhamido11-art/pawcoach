@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { getTodayString } from "@/utils/recommendations";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Footprints, PawPrint, ScanLine, Dumbbell, MessageCircle, Laugh, Smile, Meh, Frown } from "lucide-react";
+import { ArrowRight, Footprints, PawPrint, ScanLine, Dumbbell, MessageCircle } from "lucide-react";
 
 const MOOD_OPTIONS = [
-  { value: 5, Icon: Laugh, label: "Super" },
-  { value: 4, Icon: Smile, label: "Bien" },
-  { value: 3, Icon: Meh, label: "Bof" },
-  { value: 2, Icon: Frown, label: "Pas top" },
+  { value: 5, emoji: "😄", label: "Super" },
+  { value: 4, emoji: "🙂", label: "Bien" },
+  { value: 3, emoji: "😐", label: "Bof" },
+  { value: 2, emoji: "😟", label: "Pas top" },
 ];
 
 function getTimeGreeting() {
@@ -173,7 +173,7 @@ export default function DailyBriefing({ dog, user, recentCheckins, dailyLogs, st
                     disabled={submitting}
                     className="flex-1 flex flex-col items-center gap-1 py-2.5 rounded-xl bg-white/15 border border-white/20 active:scale-95 active:bg-white/25 transition-all disabled:opacity-50 backdrop-blur-sm"
                   >
-                    <opt.Icon className="w-6 h-6 text-white" />
+                    <span className="text-xl">{opt.emoji}</span>
                     <span className="text-[10px] text-white/70 font-medium">{opt.label}</span>
                   </button>
                 ))}

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import NotificationCenter from "../notifications/NotificationCenter";
-import { PawPrint, Settings, Heart, Hand, Dog } from "lucide-react";
+import { PawPrint, Settings, Heart } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function CoachHomeHeader({ user, dog }) {
@@ -21,7 +21,7 @@ export default function CoachHomeHeader({ user, dog }) {
         {/* Top row: greeting + actions */}
         <div className="flex items-start justify-between mb-5 relative z-10">
           <div className="flex flex-col">
-            <p className="text-[14px] text-white/90 font-medium flex items-center gap-1.5">Bonjour {firstName} <Hand className="w-4 h-4 text-white/80" /></p>
+            <p className="text-[14px] text-white/90 font-medium">Bonjour {firstName} 👋</p>
             <div className="flex items-center gap-1.5 mt-1">
               <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
               <p className="text-[12px] text-white/70 font-medium italic">Une belle journée avec {dog?.name || "ton chien"}</p>
@@ -55,7 +55,7 @@ export default function CoachHomeHeader({ user, dog }) {
 
 
             <div className="w-[72px] h-[72px] rounded-[1.25rem] bg-white/10 border-[3px] border-white/30 flex items-center justify-center shadow-xl backdrop-blur-sm relative z-10">
-                <Dog className="w-8 h-8 text-white/60" />
+                <span className="text-3xl">🐶</span>
               </div>
             }
           </motion.button>

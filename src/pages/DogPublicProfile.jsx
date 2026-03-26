@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
-import { Syringe, Weight, Stethoscope, Pill, AlertTriangle, Calendar, MapPin, PawPrint, ShieldCheck, FileText, Loader2, Mail, Fingerprint, Phone } from "lucide-react";
+import { Syringe, Weight, Stethoscope, Pill, AlertTriangle, Calendar, MapPin, PawPrint, ShieldCheck, FileText, Loader2 } from "lucide-react";
 import { getVaccineDisplayName } from "@/utils/healthStatus";
 import EmptyState from "@/components/ui/EmptyState";
 import SkeletonPage from "@/components/ui/SkeletonPage";
@@ -241,36 +241,6 @@ export default function DogPublicProfile() {
             )}
           </div>
         </div>
-
-        {/* Contacter le propriétaire */}
-        {dog.owner && (
-          <div className="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Phone className="w-5 h-5 text-emerald-600" />
-              <h2 className="text-sm font-black text-emerald-700 uppercase tracking-wide">Contacter le propriétaire</h2>
-            </div>
-            <div className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-              <a href={`mailto:${dog.owner}`} className="text-sm font-semibold text-emerald-700 underline underline-offset-2 break-all">
-                {dog.owner}
-              </a>
-            </div>
-          </div>
-        )}
-
-        {/* Identification */}
-        {dog.chip_number && (
-          <div className="bg-white rounded-2xl border border-border shadow-sm p-4">
-            <h2 className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-2">Identification</h2>
-            <div className="flex items-center gap-2">
-              <Fingerprint className="w-4 h-4 text-blue-500 flex-shrink-0" />
-              <div>
-                <p className="text-[11px] text-muted-foreground">N° de puce</p>
-                <p className="text-sm font-bold text-foreground font-mono">{dog.chip_number}</p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Vétérinaire */}
         {(dog.vet_name || dog.vet_city) && (

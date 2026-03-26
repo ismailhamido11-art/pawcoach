@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
-import { useHomeCache } from "@/lib/HomeCacheContext";
 import BottomNav from "../components/BottomNav";
 import PullToRefresh from "../components/PullToRefresh";
 import ActiveProgramCards from "../components/home/ActiveProgramCards";
@@ -62,7 +61,6 @@ async function fetchDogData(dogId) {
 export default function Home() {
   const navigate = useNavigate();
   const prefersReducedMotion = useReducedMotion();
-  const { getCachedHome, setCachedHome, invalidateHome } = useHomeCache();
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -105,59 +103,23 @@ export default function Home() {
     setRecentCheckins((recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7));
   };
 
-  const applyInsights = (insights) => {
-    if (!insights) return;
-    setWeeklyInsight(insights.weeklyInsight ?? null);
-    setPreviousInsight(insights.previousInsight ?? null);
-    setPastInsights(insights.pastInsights ?? []);
-  };
-
   const loadInsights = async (u, dogId) => {
-    if (!isUserPremium(u)) return null;
+    if (!isUserPremium(u)) return;
     try {
       const allInsights = await base44.entities.WeeklyInsight.filter({ dog_id: dogId }, "-week_start", 10);
       if (allInsights?.length > 0) {
         const unread = allInsights.find(i => !i.is_read);
         const read = allInsights.filter(i => i.is_read);
-        const insights = {
-          weeklyInsight: unread || null,
-          previousInsight: allInsights[1] || null,
-          pastInsights: read.slice(0, 5),
-        };
-        applyInsights(insights);
-        return insights;
+        setWeeklyInsight(unread || null);
+        setPreviousInsight(allInsights[1] || null);
+        setPastInsights(read.slice(0, 5));
       }
-      return null;
-    } catch (e) { console.warn("Weekly insights load failed:", e); return null; }
+    } catch (e) { console.warn("Weekly insights load failed:", e); }
   };
 
   useEffect(() => {
     let mounted = true;
-
-    // Apply premium nudge/post-trial logic (shared between first load and bg refresh)
-    const applyPremiumLogic = (u) => {
-      const signupDaysAgo = u.signup_date
-        ? Math.floor((Date.now() - new Date(u.signup_date)) / (1000 * 60 * 60 * 24))
-        : 0;
-      if (!isUserPremium(u) && !u.premium_onboarding_nudge_shown && signupDaysAgo >= 2) {
-        setShowPremiumNudge(true);
-        base44.auth.updateMe({ premium_onboarding_nudge_shown: true }).catch(e => console.warn("Nudge flag update failed:", e));
-      }
-      if (!isUserPremium(u) && u.trial_expires_at) {
-        const trialEnd = new Date(u.trial_expires_at);
-        const daysSinceExpiry = Math.floor((Date.now() - trialEnd.getTime()) / (1000 * 60 * 60 * 24));
-        if (daysSinceExpiry >= 0 && daysSinceExpiry <= 3) {
-          try {
-            if (!localStorage.getItem("pawcoach_post_trial_dismissed")) {
-              setShowPostTrial(true);
-            }
-          } catch {}
-        }
-      }
-    };
-
-    // Full fetch: fetch everything, update state, update cache
-    const fetchAndCache = async (skipLoadingState = false) => {
+    async function loadData() {
       try {
         const u = await base44.auth.me();
         if (!mounted) return;
@@ -167,48 +129,41 @@ export default function Home() {
         if (dogs && dogs.length > 0) {
           const d = getActiveDog(dogs);
           setDog(d);
-          const dogData = await fetchDogData(d.id);
+          const data = await fetchDogData(d.id);
           if (!mounted) return;
-          applyDogData(dogData);
-          const insights = await loadInsights(u, d.id);
+          applyDogData(data);
+          await loadInsights(u, d.id);
           if (!mounted) return;
-          // Update cache with fresh data
-          setCachedHome({ user: u, dog: d, dogData, insights });
-          applyPremiumLogic(u);
+          // Premium nudge — declenche a J2+ (pas J0)
+          const signupDaysAgo = u.signup_date
+            ? Math.floor((Date.now() - new Date(u.signup_date)) / (1000 * 60 * 60 * 24))
+            : 0;
+          if (!isUserPremium(u) && !u.premium_onboarding_nudge_shown && signupDaysAgo >= 2) {
+            setShowPremiumNudge(true);
+            try { await base44.auth.updateMe({ premium_onboarding_nudge_shown: true }); } catch(e) { console.warn("Nudge flag update failed:", e); }
+          }
+          // Post-trial sheet — trial expire, pas premium, pas deja vu
+          if (!isUserPremium(u) && u.trial_expires_at) {
+            const trialEnd = new Date(u.trial_expires_at);
+            const daysSinceExpiry = Math.floor((Date.now() - trialEnd.getTime()) / (1000 * 60 * 60 * 24));
+            if (daysSinceExpiry >= 0 && daysSinceExpiry <= 3) {
+              try {
+                if (!localStorage.getItem("pawcoach_post_trial_dismissed")) {
+                  setShowPostTrial(true);
+                }
+              } catch {}
+            }
+          }
         } else {
           navigate(createPageUrl("Onboarding"));
         }
       } catch (err) {
         console.error(err);
-        // Only show error toast on first load (not background refresh)
-        if (!skipLoadingState) {
-          toast.error("Impossible de charger les données. Vérifie ta connexion.");
-        }
+        toast.error("Impossible de charger les données. Vérifie ta connexion.");
       } finally {
-        // Only update loading state on first load (background refresh doesn't touch it)
-        if (mounted && !skipLoadingState) setLoading(false);
-      }
-    };
-
-    async function loadData() {
-      const cached = getCachedHome();
-
-      if (cached) {
-        // Cache exists (fresh or stale): apply immediately, skip loading screen
-        setUser(cached.user);
-        setDog(cached.dog);
-        applyDogData(cached.dogData);
-        applyInsights(cached.insights);
-        setLoading(false);
-
-        // Always refresh in background (fresh cache = silent update, stale = revalidate)
-        fetchAndCache(true);
-      } else {
-        // No cache: first visit — show loading, fetch, cache result
-        await fetchAndCache(false);
+        if (mounted) setLoading(false);
       }
     }
-
     loadData();
     return () => { mounted = false; };
   }, [navigate]);
@@ -251,20 +206,14 @@ export default function Home() {
   };
 
   const handleRefresh = async () => {
-    // Invalidate cache so next visit fetches fresh data
-    invalidateHome();
     try {
       const u = await base44.auth.me();
       const dogs = await base44.entities.Dog.filter({ owner: u.email });
       if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
-        setUser(u);
-        setDog(d);
-        const dogData = await fetchDogData(d.id);
-        applyDogData(dogData);
-        const insights = await loadInsights(u, d.id);
-        // Re-cache fresh data after manual refresh
-        setCachedHome({ user: u, dog: d, dogData, insights });
+        const data = await fetchDogData(d.id);
+        applyDogData(data);
+        await loadInsights(u, d.id);
       }
     } catch (e) { console.error(e); toast.error("Impossible de rafraîchir les données. Vérifie ta connexion."); }
   };
