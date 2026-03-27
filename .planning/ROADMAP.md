@@ -42,9 +42,9 @@
   4. Le bouton CombinedFAB est visible sur au moins une page et ses actions (log poids, eau, balade) se declenchent
 **Plans**: 4 plans
 Plans:
-- [ ] 01-01-PLAN.md — CRASH-01: handleQuickCheckin defaults energy=2 appetite=2 (Home.jsx)
+- [x] 01-01-PLAN.md — CRASH-01: handleQuickCheckin defaults energy=2 appetite=2 (Home.jsx)
 - [ ] 01-02-PLAN.md — CRASH-02: labelResult declare dans Scan.jsx (ReferenceError fix)
-- [ ] 01-03-PLAN.md — CRASH-03: imports Stethoscope + Pill dans DogPublicProfile.jsx
+- [x] 01-03-PLAN.md — CRASH-03: imports Stethoscope + Pill dans DogPublicProfile.jsx
 - [ ] 01-04-PLAN.md — CRASH-04: CombinedFAB monte dans Home.jsx avec invalidateHome
 
 ### Phase 2: Donnees Stale
@@ -77,6 +77,6 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Crashs & Features Mortes | 0/4 | Planned | - |
+| 1. Crashs & Features Mortes | 2/4 | In Progress|  |
 | 2. Donnees Stale | 0/? | Not started | - |
 | 3. Cache, UX & Securite | 0/? | Not started | - |

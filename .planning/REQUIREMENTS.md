@@ -10,7 +10,7 @@
 
 - [ ] **CRASH-01**: Le quick check-in (mood tap) fonctionne — handleQuickCheckin passe des valeurs par defaut pour energy/appetite au lieu de undefined (regression v7.0)
 - [ ] **CRASH-02**: La page Scanner se charge sans erreur — labelResult declare dans Scan.jsx (pas seulement dans le composant enfant)
-- [ ] **CRASH-03**: DogPublicProfile ne crashe pas sur les records vet_visit/medication — imports Stethoscope et Pill manquants
+- [x] **CRASH-03**: DogPublicProfile ne crashe pas sur les records vet_visit/medication — imports Stethoscope et Pill manquants
 - [ ] **CRASH-04**: CombinedFAB est visible et fonctionnel — importe dans au moins une page (Home ou Layout)
 
 ### Donnees Stale / Fausses (STALE)
@@ -61,7 +61,7 @@
 |-------------|-------|--------|
 | CRASH-01 | Phase 1 | Pending |
 | CRASH-02 | Phase 1 | Pending |
-| CRASH-03 | Phase 1 | Pending |
+| CRASH-03 | Phase 1 | Complete |
 | CRASH-04 | Phase 1 | Pending |
 | STALE-01 | Phase 2 | Pending |
 | STALE-02 | Phase 2 | Pending |

@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
 milestone: v8.0
-milestone_name: "SFA Fixes"
-status: roadmap_ready
-stopped_at: Roadmap created — Phase 1 ready to plan
-last_updated: "2026-03-27"
+milestone_name: "SFA Fixes" — Active
+status: executing
+stopped_at: Completed 01-crashs-features-mortes 01-03-PLAN.md
+last_updated: "2026-03-27T19:00:45.235Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 3
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 4
+  completed_plans: 2
 ---
 
 # Project State
@@ -21,7 +20,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Chaque action utilisateur fonctionne de bout en bout — zero crash, zero feature morte, zero donnee stale
-**Current focus:** Phase 1 — Crashs & Features Mortes (ready to plan)
+**Current focus:** Phase 01 — Crashs & Features Mortes
 
 ## Current Position
 
@@ -31,10 +30,10 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 HERE
 ```
 
-Phase: 1 — Crashs & Features Mortes
-Plan: Not started
-Status: Roadmap ready, awaiting /gsd:plan-phase 1
-Last activity: 2026-03-27 — Roadmap v8.0 created (3 phases, 19 requirements)
+Phase: 01 (Crashs & Features Mortes) — EXECUTING
+Plan: 2 of 4
+Status: Ready to execute
+Last activity: 2026-03-27
 
 ## Performance Metrics
 
@@ -44,6 +43,7 @@ Last activity: 2026-03-27 — Roadmap v8.0 created (3 phases, 19 requirements)
 | v8.0 requirements | 19 |
 | v8.0 phases | 3 |
 | Coverage | 19/19 (100%) |
+| Phase 01-crashs-features-mortes P03 | 2 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -55,6 +55,7 @@ Last activity: 2026-03-27 — Roadmap v8.0 created (3 phases, 19 requirements)
 - Phase ordering: CRASH first (unblocks everything) → STALE (data truth) → CACHE+UX (propagation + polish)
 - Phases deriveees des categories SFA, pas d'une structure arbitraire
 - CGC obligatoire dans chaque phase (blast radius avant chaque modif)
+- [Phase 01-crashs-features-mortes]: Fix minimal : 2 imports lucide-react ajoutes dans DogPublicProfile.jsx, TYPE_CONFIG inchange
 
 ### Pending Todos
 
@@ -66,7 +67,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27
-Stopped at: Roadmap v8.0 complete — 3 phases, 19 requirements mapped 100%
+Last session: 2026-03-27T19:00:45.228Z
+Stopped at: Completed 01-crashs-features-mortes 01-03-PLAN.md
 Resume file: None
 Next action: /gsd:plan-phase 1
