@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: "E2E Fixes"
-status: completed
-stopped_at: Completed 05-edge-cases-polish 05-02-PLAN.md
+status: archived
+stopped_at: Milestone v4.0 archived
 last_updated: "2026-03-27T03:17:17.284Z"
 last_activity: 2026-03-27
 progress:

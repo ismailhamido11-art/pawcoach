@@ -18,18 +18,12 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 - All unicode emojis replaced with Lucide icons
 - Codebase docs: .planning/codebase/ (7 documents, 26 mars 2026)
 
-## Current Milestone: v4.0 E2E Fixes
-
-**Goal:** Corriger les 78 problemes (8 CASSES + 70 FRAGILES) identifies par l'audit E2E exhaustif de 165 flows.
-
-**Target features:**
-- Securite + Legal : RGPD deleteUser, VetNote acces, email expose, quota scan server-side
-- Bugs fonctionnels : double credit diagnostic, lien 404, historique diagnostics, erreur anglaise, email mensonger
-- Scalabilite backend : queries non filtrees (Dog.list, HealthRecord.list, etc.)
-- UX fragile : polling Stripe, UpgradePrompt silencieux, prefs stale, onboarding persistance, poids desync
-- Edge cases : sessionStorage try/catch, z-index, error handling, voice input, auth flow
-
-**Source:** .planning/phases/1-audit/E2E-AUDIT-REPORT.md (27 mars 2026)
+## Current State (v4.0 shipped — 27 mars 2026)
+- v4.0 "E2E Fixes": 35 requirements, 5 phases, 165 flows audites, 18 fichiers modifies
+- RGPD conforme (deleteUser, VetNote, email masque)
+- Backend scalable (queries filtrees, polling Stripe, guard double-clic)
+- UX coherente (erreurs FR, confirmations, prefs refresh, sessionStorage safe)
+- Edge cases couverts (BCS, QR fallback, PDF erreur, dead code supprime)
 
 ## Evolution
 
