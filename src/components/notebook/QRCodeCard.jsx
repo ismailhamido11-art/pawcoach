@@ -153,7 +153,10 @@ export default function QRCodeCard({ dog }) {
                     alt="QR Code urgence"
                     loading="lazy"
                     className="w-48 h-48 rounded-xl"
-                    onError={e => { e.target.src = "data:image/svg+xml,..."; }}
+                    onError={e => {
+                      e.target.onerror = null;
+                      e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='12' fill='%23f3f4f6'/%3E%3Ctext x='96' y='104' text-anchor='middle' font-size='14' fill='%236b7280'%3EQR indisponible%3C/text%3E%3C/svg%3E";
+                    }}
                   />
                   {/* Dog photo overlay */}
                   {dog.photo && (
