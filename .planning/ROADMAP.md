@@ -74,8 +74,11 @@ Plans:
   4. La card "Passe a Premium" est invisible pour un utilisateur deja abonne
   5. L'email du proprietaire n'est pas visible sur DogPublicProfile
   6. Une erreur lors de la sauvegarde du profil utilisateur affiche un message d'erreur (pas de silence)
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 3 plans
+Plans:
+- [ ] 03-01-PLAN.md — CACHE-01+02+03+04: invalidateHome dans DogProfile + recentScans refresh dans Nutri
+- [ ] 03-02-PLAN.md — UX-01+02+03: card premium masquee + email retire + handleSaveUser try/catch
+- [ ] 03-03-PLAN.md — UX-04+05: checkWalkBadges doublon supprime + training points rollback
 
 ## Progress
 
@@ -83,4 +86,4 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Crashs & Features Mortes | 4/4 | Complete | 2026-03-27 |
 | 2. Donnees Stale | 3/3 | Complete   | 2026-03-27 |
-| 3. Cache, UX & Securite | 0/? | Not started | - |
+| 3. Cache, UX & Securite | 0/3 | In progress | - |
