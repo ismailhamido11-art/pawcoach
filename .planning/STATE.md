@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v9.0
 milestone_name: "Production Ready" — Active
 status: executing
-stopped_at: Completed 09-01-PLAN.md
-last_updated: "2026-03-27T23:40:06.474Z"
-last_activity: 2026-03-28 — 09-04 executed (PWA PNG icons FIX-52/53, dead ReferralSection import FIX-54, version 9.0 FIX-55)
+stopped_at: Completed 10-04-PLAN.md
+last_updated: "2026-03-27T23:53:22Z"
+last_activity: 2026-03-27 — 10-04 executed (VetPortal batch FIX-65, verdictFr/sanitize annotations FIX-66/67, analytics.js removal FIX-68)
 progress:
   total_phases: 11
   completed_phases: 5
-  total_plans: 17
-  completed_plans: 22
+  total_plans: 21
+  completed_plans: 24
 ---
 
 # Project State
@@ -30,8 +30,8 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 HERE
 ```
 
-Phase: 09-visual-polish — Plans 01-04 complete
-Last activity: 2026-03-28 — 09-04 executed (PWA PNG icons FIX-52/53, dead ReferralSection import FIX-54, version 9.0 FIX-55)
+Phase: 10-performance-cleanup — Plans 01-04 complete
+Last activity: 2026-03-27 — 10-04 executed (VetPortal batch FIX-65, verdictFr/sanitize annotations FIX-66/67, analytics.js removal FIX-68)
 
 ## Performance Metrics
 
@@ -49,6 +49,8 @@ Last activity: 2026-03-28 — 09-04 executed (PWA PNG icons FIX-52/53, dead Refe
 | Phase 08-ux-activation P01 | 20 | 2 tasks | 2 files |
 | Phase 09-visual-polish P04 | 8 | 2 tasks | 7 files |
 | Phase 09-visual-polish P01 | 305 | 2 tasks | 13 files |
+| Phase 10-performance-cleanup P01 | 8 | 3 tasks | 4 files |
+| Phase 10-performance-cleanup P04 | 15 | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -75,6 +77,11 @@ Last activity: 2026-03-28 — 09-04 executed (PWA PNG icons FIX-52/53, dead Refe
 - [Phase 09-visual-polish P04]: FIX-56 hex colors skipped pour Dashboard.jsx et Premium.jsx — color prop est un hex inline style (StatCard + nextSteps); conversion vers Tailwind nécessite restructuration JSX (risk > value)
 - [Phase 09-visual-polish P04]: PNG generation via pure Node.js zlib.deflateSync (aucune dépendance externe)
 - [Phase 09-visual-polish]: All orange/yellow/teal Tailwind colors replaced with amber (warnings) and emerald (positive) per Nature Premium charter
+- [Phase 10-performance-cleanup]: buildHealthSummaryHTML decomposed into 4 pure sub-functions in vetAccess (Deno cannot share modules)
+- [Phase 10-performance-cleanup]: getAge duplication kept per Deno constraint, annotated with reciprocal sync comments
+- [Phase 10-performance-cleanup]: DownloadHealthPDF handleDownload: all calls are jsPDF API or pdfHelpers — no extraction needed (FIX-61)
+- [Phase 10-performance-cleanup P04]: listMyPatients action added in vetAccess — additive, listMyAccess preserved
+- [Phase 10-performance-cleanup P04]: analytics.js deleted — localStorage placeholder, no real insights, RGPD checkbox preserved in Onboarding
 
 ### Pending Todos
 
@@ -86,7 +93,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T23:40:06.468Z
-Stopped at: Completed 09-01-PLAN.md
+Last session: 2026-03-27T23:54:23.999Z
+Stopped at: Completed 10-01-PLAN.md
 Resume file: None
 Next action: Continue with next plan in phase 09-visual-polish
