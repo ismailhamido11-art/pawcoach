@@ -136,6 +136,9 @@ export default function Scan() {
 
   const [dietPreferences, setDietPreferences] = useState(null);
 
+  // CRASH-02: labelResult leve depuis LabelScanMode pour controler le mode switcher
+  const [labelResult, setLabelResult] = useState(null);
+
   useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
@@ -615,6 +618,7 @@ export default function Scan() {
             checkScanLimit={checkScanLimit}
             incrementScanCount={incrementScanCount}
             setScanLimitReached={setScanLimitReached}
+            onLabelResult={setLabelResult}
           />
         )}
 

@@ -42,7 +42,7 @@ function ScoreBar({ label, value, colorClass }) {
  * - setScanLimitReached: (boolean) => void — pour remonter l'etat de limite
  * - onLabelSaved: () => void — callback apres sauvegarde (optionnel)
  */
-export default function LabelScanMode({ dog, user, dietPreferences, checkScanLimit, incrementScanCount, setScanLimitReached, onLabelSaved }) {
+export default function LabelScanMode({ dog, user, dietPreferences, checkScanLimit, incrementScanCount, setScanLimitReached, onLabelSaved, onLabelResult }) {
   const [labelPreview, setLabelPreview] = useState(null);
   const [labelFile, setLabelFile] = useState(null);
   const [labelScanning, setLabelScanning] = useState(false);
@@ -114,6 +114,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
         },
       });
       setLabelResult(ai);
+      onLabelResult?.(ai);
       await incrementScanCount(freshUser);
       if (ai.allergen_alerts?.length > 0 && navigator.vibrate) navigator.vibrate([100, 50, 100]);
     } catch (e) {
