@@ -326,11 +326,11 @@ export default function Premium() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
-            className="text-center text-xs text-muted-foreground mt-4"
+            className="text-center text-xs text-muted-foreground mt-4 leading-relaxed"
           >
             {isOnTrial
-              ? "Sans engagement · Résiliation à tout moment · Paiement sécurisé Stripe"
-              : "Tu peux gérer ton abonnement à tout moment depuis ton Profil."}
+              ? <>Renouvellement automatique à chaque période. Résiliation à tout moment depuis ton profil.{plan === "annual" ? " Facturation annuelle de 59,99 EUR." : " Facturation mensuelle de 7,99 EUR."}{" "}Paiement sécurisé via Stripe.</>
+              : "Tu peux gérer ton abonnement à tout moment depuis ton Profil. Renouvellement automatique."}
           </motion.p>
         </div>
 
@@ -507,8 +507,10 @@ export default function Premium() {
           </Button>
         </motion.div>
 
-        <p className="text-center text-xs text-muted-foreground">
-          Sans engagement · Résiliation à tout moment · Paiement sécurisé Stripe
+        <p className="text-center text-xs text-muted-foreground leading-relaxed">
+          Renouvellement automatique à chaque période. Résiliation à tout moment depuis ton profil.{" "}
+          {plan === "annual" ? "Facturation annuelle de 59,99 EUR." : "Facturation mensuelle de 7,99 EUR."}{" "}
+          Paiement sécurisé via Stripe.
         </p>
       </motion.div>
 

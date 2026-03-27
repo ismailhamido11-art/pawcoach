@@ -47,6 +47,14 @@ export default function DiagnosisContent({ dog }) {
       transition={{ duration: 0.3, ease: "easeOut" }}
       className="px-4 pt-4 pb-4 space-y-4"
     >
+      {/* Disclaimer médical — FIX-07 */}
+      <div className="mx-1 px-3 py-2.5 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-2">
+        <span className="text-amber-600 text-sm font-bold flex-shrink-0">⚠</span>
+        <p className="text-xs text-amber-800 leading-relaxed">
+          Ces informations sont fournies à titre indicatif uniquement. Elles ne remplacent pas l'avis d'un vétérinaire qualifié. En cas de doute, consultez votre vétérinaire.
+        </p>
+      </div>
+
       {/* Hero card */}
       <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 flex items-center gap-4">
         <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
