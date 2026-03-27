@@ -41,21 +41,10 @@ export default function VetPortal() {
 
   const loadAccesses = async () => {
     try {
-      const res = await base44.functions.invoke("vetAccess", { action: "listMyAccess" });
-      const accessList = res.data.accesses || [];
-      setAccesses(accessList);
-
-      // Fetch dog info for each access
-      const dogPromises = accessList.map(async (a) => {
-        try {
-          const dogRes = await base44.functions.invoke("vetAccess", { action: "getDogData", dogId: a.dog_id });
-          return { ...dogRes.data.dog, _accessId: a.id };
-        } catch {
-          return null;
-        }
-      });
-      const dogResults = await Promise.all(dogPromises);
-      setDogs(dogResults.filter(Boolean));
+      const res = await base44.functions.invoke("vetAccess", { action: "listMyPatients" });
+      const { accesses: accessList, dogs: dogList } = res.data;
+      setAccesses(accessList || []);
+      setDogs((dogList || []).filter(Boolean));
     } catch (e) {
       console.error("loadAccesses error:", e);
       toast.error("Impossible de charger tes patients. Vérifie ta connexion.");

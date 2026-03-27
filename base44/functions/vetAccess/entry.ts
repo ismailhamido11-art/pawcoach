@@ -214,6 +214,30 @@ Deno.serve(async (req) => {
       return Response.json({ accesses: accesses || [] });
     }
 
+    // --- VET: List dogs shared with me (batch — replaces N+1 getDogData calls) ---
+    if (action === 'listMyPatients') {
+      const accesses = await base44.asServiceRole.entities.SharedVetAccess.filter({ vet_email: user.email, status: 'active' });
+      if (!accesses || accesses.length === 0) return Response.json({ accesses: [], dogs: [] });
+
+      // Fetch all dogs in parallel (one query per dog, but parallel not sequential)
+      const dogResults = await Promise.all(
+        accesses.map(async (a: any) => {
+          try {
+            const dogs = await base44.asServiceRole.entities.Dog.filter({ id: a.dog_id });
+            if (!dogs || dogs.length === 0) return null;
+            return { ...dogs[0], _accessId: a.id };
+          } catch {
+            return null;
+          }
+        })
+      );
+
+      return Response.json({
+        accesses,
+        dogs: dogResults.filter(Boolean),
+      });
+    }
+
     // --- VET: Get dog data (with permission check) ---
     if (action === 'getDogData') {
       if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
