@@ -30,11 +30,14 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 - Securite ownership, scalabilite, utils centralises, monolithes decoupes
 - UX PWA (AlertDialog), bundle allege (~900KB), code propre
 
-## Current Milestone: v6.0 Deep Clean & PWA
-
-**Goal:** Corriger les 21 issues restantes (2 CRITICAL + 5 HIGH + 7 MEDIUM + 7 LOW) du scan post-v5.0 — PWA fonctionnelle, derniers CRONs scalables, fichiers monolithes restants decoupes, accessibilite, RGPD complet.
-
-**Source:** .planning/codebase/CONCERNS.md (27 mars 2026, post-v5.0)
+## Current State (v6.0 shipped — 27 mars 2026)
+- v6.0 "Deep Clean & PWA": 21 requirements, 7 phases, 10 gaps corriges
+- PWA installable (manifest.json + sw.js + icons SVG)
+- Securite backend complete (quota operant, ownership checks, RGPD ParkReview)
+- Monolithes decoupes (DayCard, VoiceButton, RecordReviewPanel, pdfHelpers, Nutri useState)
+- Accessibilite (14 aria-labels, 3 keyboard nav)
+- Performance (Leaflet lazy, 26 key={index} corriges, catches logges)
+- Codebase propre (deps retirees, Stripe idempotency, walkReminder parallele)
 
 ## Evolution
 
