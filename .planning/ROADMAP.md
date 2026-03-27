@@ -82,8 +82,10 @@ Plans:
   2. Apres avoir change de chien dans le selecteur, toutes les donnees sur Home (hero, repas, activite, wellnes) correspondent au chien selectionne — plus aucune donnee de l'ancien chien visible
   3. Quand SmartHealthAssistant traite un batch de 3 records, les 3 notifications apparaissent dans Sante — pas seulement la premiere
   4. Apres un paiement Stripe confirme, toutes les pages de l'app (Chat, Sante, Dashboard, Profile) affichent le statut premium — pas seulement Home
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 2 plans
+Plans:
+- [ ] 03-01-PLAN.md — invalidateHome apres balade (FLOW-01) + invalidateHome apres switch chien (FLOW-02)
+- [ ] 03-02-PLAN.md — Supprimer auto-save silencieux SmartHealthAssistant (FLOW-03) + propagation premium via AuthContext (FLOW-04)
 
 ### Phase 4: UX Trompeuse
 
@@ -106,5 +108,5 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Backend Critique | 3/3 | Complete   | 2026-03-27 |
 | 2. Donnees Fausses | 3/3 | Complete   | 2026-03-27 |
-| 3. Flux Deconnectes | 0/? | Not started | - |
+| 3. Flux Deconnectes | 0/2 | Planned | - |
 | 4. UX Trompeuse | 0/? | Not started | - |
