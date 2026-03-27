@@ -58,6 +58,9 @@ Plans:
   1. monthlySummary n'appelle plus Dog.list() ni User.list() sans filtre — uniquement User.filter({ is_premium: true })
   2. streakReminder filtre les streaks a la source ou applique un cap avec log d'avertissement
   3. Les deux fonctions passent le code review sans aucun appel .list() non filtre
+**Plans**: 1 plan
+Plans:
+- [ ] 02-cron-01-PLAN.md — Remplacer list() globaux dans monthlySummary et streakReminder
 
 ### Phase 3: SEC
 **Goal**: Les trois failles de securite backend restantes sont bouchees
@@ -114,7 +117,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. PWA | 1/1 | Complete   | 2026-03-27 |
-| 2. CRON | 0/TBD | Not started | - |
+| 2. CRON | 0/1 | Not started | - |
 | 3. SEC | 0/TBD | Not started | - |
 | 4. SPLIT | 0/TBD | Not started | - |
 | 5. A11Y | 0/TBD | Not started | - |
