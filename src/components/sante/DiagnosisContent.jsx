@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AIDiagnosisModal from "../vet/AIDiagnosisModal";
+import { DiagnosisReport } from "@/api/entities";
+import DiagnosisReportView from "@/components/vet/DiagnosisReportView";
 import { Button } from "@/components/ui/button";
-import { Stethoscope, Phone, ExternalLink, AlertTriangle, ThumbsDown, Bed, UtensilsCrossed, PawPrint, Eye, Wind, Droplets } from "lucide-react";
+import { Stethoscope, Phone, ExternalLink, AlertTriangle, ThumbsDown, Bed, UtensilsCrossed, PawPrint, Eye, Wind, Droplets, History, ChevronDown, ChevronUp } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { motion } from "framer-motion";
@@ -20,6 +22,18 @@ const SYMPTOM_SHORTCUTS = [
 export default function DiagnosisContent({ dog }) {
   const [showModal, setShowModal] = useState(false);
   const [preSelectedSymptom, setPreSelectedSymptom] = useState(null);
+  const [reports, setReports] = useState([]);
+  const [loadingReports, setLoadingReports] = useState(false);
+  const [expandedReport, setExpandedReport] = useState(null);
+
+  useEffect(() => {
+    if (!dog?.id) return;
+    setLoadingReports(true);
+    DiagnosisReport.filter({ dog_id: dog.id }, "-report_date", 10)
+      .then(data => setReports(data || []))
+      .catch(() => setReports([]))
+      .finally(() => setLoadingReports(false));
+  }, [dog?.id]);
 
   const openWithSymptom = (symptom) => {
     setPreSelectedSymptom(symptom);
@@ -76,6 +90,66 @@ export default function DiagnosisContent({ dog }) {
         <Stethoscope className="w-4 h-4 mr-2" />
         Préparer mon bilan
       </Button>
+
+      {/* Diagnosis history */}
+      {(loadingReports || reports.length > 0) && (
+        <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <History className="w-4 h-4 text-muted-foreground" />
+            <p className="font-bold text-sm text-foreground">Bilans precedents</p>
+            <span className="ml-auto text-xs text-muted-foreground">{reports.length} rapport{reports.length > 1 ? 's' : ''}</span>
+          </div>
+          {loadingReports && (
+            <p className="text-xs text-muted-foreground text-center py-2">Chargement...</p>
+          )}
+          {!loadingReports && reports.map((r) => {
+            const parsedReport = (() => {
+              try { return typeof r.diagnosis_text === 'string' ? JSON.parse(r.diagnosis_text) : r.diagnosis_text; }
+              catch { return null; }
+            })();
+            const isExpanded = expandedReport === r.id;
+            const urgencyColors = {
+              low: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+              medium: 'text-amber-600 bg-amber-50 border-amber-200',
+              high: 'text-orange-600 bg-orange-50 border-orange-200',
+              emergency: 'text-red-600 bg-red-50 border-red-200',
+            };
+            const colorClass = urgencyColors[r.urgency_level] || urgencyColors.medium;
+            return (
+              <div key={r.id} className="border border-border rounded-xl overflow-hidden">
+                <button
+                  className="w-full flex items-center justify-between p-3 text-left hover:bg-muted/30 transition-colors"
+                  aria-expanded={expandedReport === r.id}
+                  onClick={() => setExpandedReport(isExpanded ? null : r.id)}
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${colorClass} flex-shrink-0`}>
+                      {r.urgency_level === 'emergency' ? 'Urgence' : r.urgency_level === 'high' ? 'Eleve' : r.urgency_level === 'low' ? 'Faible' : 'Modere'}
+                    </span>
+                    <span className="text-xs text-muted-foreground truncate">{r.symptoms?.substring(0, 40)}{r.symptoms?.length > 40 ? '...' : ''}</span>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                    <span className="text-[11px] text-muted-foreground">{r.report_date}</span>
+                    {isExpanded ? <ChevronUp className="w-3.5 h-3.5 text-muted-foreground" /> : <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />}
+                  </div>
+                </button>
+                {isExpanded && parsedReport && (
+                  <div className="px-3 pb-3 border-t border-border bg-muted/10">
+                    <div className="pt-3">
+                      <DiagnosisReportView report={parsedReport} dogName={r.dog_name} reportDate={r.report_date} />
+                    </div>
+                  </div>
+                )}
+                {isExpanded && !parsedReport && (
+                  <div className="px-3 pb-3 border-t border-border">
+                    <p className="text-xs text-muted-foreground pt-3">Rapport non disponible.</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Emergency section */}
       <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
