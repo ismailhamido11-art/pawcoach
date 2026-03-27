@@ -15,23 +15,31 @@ export default function WalkReminderSettings({ user, onSave, dogName }) {
   const [saving, setSaving] = useState(false);
 
   const handleToggle = async (val) => {
+    const prevEnabled = enabled;
     setEnabled(val);
     setSaving(true);
     try {
       await onSave({ walk_reminder_enabled: val, walk_reminder_time: time });
       toast.success(val ? `Rappel activé à ${time}` : "Rappel désactivé");
+    } catch {
+      setEnabled(prevEnabled); // rollback
+      toast.error("Impossible de modifier le rappel. Réessaie.");
     } finally {
       setSaving(false);
     }
   };
 
   const handleTimeChange = async (val) => {
+    const prevTime = time;
     setTime(val);
     if (!enabled) return;
     setSaving(true);
     try {
       await onSave({ walk_reminder_time: val, walk_reminder_enabled: true });
       toast.success(`Rappel mis à jour à ${val}`);
+    } catch {
+      setTime(prevTime); // rollback
+      toast.error("Impossible de modifier l'heure. Réessaie.");
     } finally {
       setSaving(false);
     }
