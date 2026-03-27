@@ -107,6 +107,7 @@ export default function Home() {
   const [milestone, setMilestone] = useState(null);
   const [showPremiumNudge, setShowPremiumNudge] = useState(false);
   const [showPostTrial, setShowPostTrial] = useState(false);
+  const [isDataStale, setIsDataStale] = useState(false);
 
   const applyDogData = ({ checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks }) => {
     setDogData({
@@ -195,6 +196,7 @@ export default function Home() {
           if (!mounted) return;
           // Update cache with fresh data
           setCachedHome({ user: u, dog: d, dogData: fetchedDogData, insights: fetchedInsights });
+          setIsDataStale(false);
           applyPremiumLogic(u);
         } else {
           navigate(createPageUrl("Onboarding"));
@@ -204,6 +206,8 @@ export default function Home() {
         // Only show error toast on first load (not background refresh)
         if (!skipLoadingState) {
           toast.error("Impossible de charger les données. Vérifie ta connexion.");
+        } else {
+          setIsDataStale(true); // background refresh failed — cached data may be stale
         }
       } finally {
         // Only update loading state on first load (background refresh doesn't touch it)
@@ -285,12 +289,25 @@ export default function Home() {
     try {
       const response = await base44.functions.invoke("dailyCheckinProcess", { dogId: dog.id, mood, energy, appetite, notes, symptoms: symptoms || [], behavior_notes: behaviorNotes || "" });
       const result = response.data || {};
-      const newCheckin = result.checkin || { mood, energy, appetite, ai_response: result.aiResponse, date: getTodayString() };
+      let newCheckin = result.checkin;
+      if (!newCheckin) {
+        // API did not return the checkin object — avoid storing an id-less object
+        // Attempt silent re-fetch from DB to get a valid object with id
+        try {
+          const todayStr = getTodayString();
+          const [freshCheckin] = await DailyCheckin.filter({ dog_id: dog.id, date: todayStr }, "-date", 1).catch(() => []);
+          newCheckin = freshCheckin || null;
+        } catch {
+          newCheckin = null; // leave todayCheckin as null rather than store without id
+        }
+      }
       setDogData(prev => ({
         ...prev,
         todayCheckin: newCheckin,
         streak: result.streak || prev.streak,
-        recentCheckins: [newCheckin, ...prev.recentCheckins.filter(c => !c._syncing)].slice(0, 7),
+        recentCheckins: newCheckin
+          ? [newCheckin, ...prev.recentCheckins.filter(c => !c._syncing)].slice(0, 7)
+          : prev.recentCheckins.filter(c => !c._syncing),
       }));
       const newStreak = result.streak?.current_streak;
       if (newStreak) {
@@ -460,6 +477,13 @@ export default function Home() {
 
         {/* 1. Warm Header — greeting + photo */}
         <CoachHomeHeader user={user} dog={dog} />
+
+        {/* Stale data indicator — shown when background refresh fails */}
+        {isDataStale && (
+          <div className="mx-5 mb-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-2">
+            <span className="text-xs text-amber-600 font-medium">Données mises en cache — actualise pour rafraîchir</span>
+          </div>
+        )}
 
         {/* 2. THE BRIEFING — coach speaks first */}
         <div ref={dailyBriefingRef}>
