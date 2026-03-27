@@ -2,8 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import useReducedMotion from "@/hooks/useReducedMotion";
-
 export default function LottieAnimation({
   src,
   size = 120,
@@ -12,7 +10,7 @@ export default function LottieAnimation({
   className = "",
   ariaLabel = "Animation",
 }) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
   const [failed, setFailed] = useState(false);
   const mountedRef = useRef(true);
 
