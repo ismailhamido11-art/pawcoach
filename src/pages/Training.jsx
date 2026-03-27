@@ -264,8 +264,15 @@ export default function Training() {
         // Replace the optimistic placeholder with the real record
         newProgresses = [...progresses.filter(p => !p._optimistic), newP];
         const newPoints = (user.points || 0) + 50;
-        await base44.auth.updateMe({ points: newPoints });
-        setUser(prev => ({ ...prev, points: newPoints }));
+        try {
+          await base44.auth.updateMe({ points: newPoints });
+          setUser(prev => ({ ...prev, points: newPoints }));
+        } catch (pointsErr) {
+          // UX-05: Rollback UserProgress if points update fails
+          console.error("Training points update failed, rolling back UserProgress:", pointsErr);
+          await UserProgress.delete(newP.id).catch(() => {});
+          throw pointsErr; // Re-throw to hit the outer catch for UI rollback
+        }
       }
       setProgresses(newProgresses);
       if (!wasCompleted) {
