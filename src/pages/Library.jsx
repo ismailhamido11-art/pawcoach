@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import { Bookmark, NutritionPlan, FoodScan, Dog } from "@/api/entities";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import { ArrowLeft, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarChart2, Clock, Target, Home, CheckCircle2, ScanLine } from "lucide-react";
@@ -48,6 +49,7 @@ export default function Library() {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState(null);
+  const [confirmDialog, setConfirmDialog] = useState(null);
 
   useEffect(() => {
     async function load() {
@@ -75,16 +77,21 @@ export default function Library() {
     load();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Supprimer cet élément sauvegardé ?")) return;
-    try {
-      await Bookmark.delete(id);
-      setBookmarks(prev => prev.filter(b => b.id !== id));
-      if (expanded === id) setExpanded(null);
-      toast.success("Conseil supprimé");
-    } catch {
-      toast.error("Impossible de supprimer ce conseil. Réessaie.");
-    }
+  const handleDelete = (id) => {
+    setConfirmDialog({
+      title: "Supprimer ce conseil ?",
+      description: "Ce conseil sera retiré de ta bibliothèque définitivement.",
+      action: async () => {
+        try {
+          await Bookmark.delete(id);
+          setBookmarks(prev => prev.filter(b => b.id !== id));
+          if (expanded === id) setExpanded(null);
+          toast.success("Conseil supprimé");
+        } catch {
+          toast.error("Impossible de supprimer ce conseil. Réessaie.");
+        }
+      },
+    });
   };
 
   const handleActivateTraining = async (bk) => {
@@ -99,27 +106,37 @@ export default function Library() {
     }
   };
 
-  const handleDeleteNutritionPlan = async (id) => {
-    if (!window.confirm("Supprimer ce plan nutrition ?")) return;
-    try {
-      await NutritionPlan.delete(id);
-      setNutritionPlans(prev => prev.filter(p => p.id !== id));
-      if (expanded === `nutri-${id}`) setExpanded(null);
-      toast.success("Plan nutrition supprimé");
-    } catch {
-      toast.error("Impossible de supprimer ce plan. Réessaie.");
-    }
+  const handleDeleteNutritionPlan = (id) => {
+    setConfirmDialog({
+      title: "Supprimer ce plan nutrition ?",
+      description: "Ce plan nutritionnel sera définitivement supprimé.",
+      action: async () => {
+        try {
+          await NutritionPlan.delete(id);
+          setNutritionPlans(prev => prev.filter(p => p.id !== id));
+          if (expanded === `nutri-${id}`) setExpanded(null);
+          toast.success("Plan nutrition supprimé");
+        } catch {
+          toast.error("Impossible de supprimer ce plan. Réessaie.");
+        }
+      },
+    });
   };
 
-  const handleDeleteScan = async (id) => {
-    if (!window.confirm("Supprimer ce scan alimentaire ?")) return;
-    try {
-      await FoodScan.delete(id);
-      setFoodScans(prev => prev.filter(s => s.id !== id));
-      toast.success("Scan supprimé");
-    } catch {
-      toast.error("Impossible de supprimer ce scan. Réessaie.");
-    }
+  const handleDeleteScan = (id) => {
+    setConfirmDialog({
+      title: "Supprimer ce scan ?",
+      description: "Ce scan alimentaire sera définitivement supprimé.",
+      action: async () => {
+        try {
+          await FoodScan.delete(id);
+          setFoodScans(prev => prev.filter(s => s.id !== id));
+          toast.success("Scan supprimé");
+        } catch {
+          toast.error("Impossible de supprimer ce scan. Réessaie.");
+        }
+      },
+    });
   };
 
   const handleActivateNutritionPlan = async (planId) => {
@@ -435,6 +452,21 @@ export default function Library() {
       </div>
 
       <BottomNav currentPage="Library" />
+
+      <AlertDialog open={!!confirmDialog} onOpenChange={(open) => !open && setConfirmDialog(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{confirmDialog?.title}</AlertDialogTitle>
+            <AlertDialogDescription>{confirmDialog?.description}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => { confirmDialog?.action(); setConfirmDialog(null); }}>
+              Confirmer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
