@@ -59,6 +59,31 @@ None — all concerns scoped to this milestone.
 - preDiagnosis/finalDiagnosis stateless dog data (L7) — design intentionnel, documenter seulement
 
 ## Traceability
+
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (filled by roadmapper) | | |
+| SEC-01 | Phase 1 | Pending |
+| SEC-02 | Phase 1 | Pending |
+| SEC-03 | Phase 1 | Pending |
+| SCALE-01 | Phase 2 | Pending |
+| SCALE-02 | Phase 2 | Pending |
+| SCALE-03 | Phase 2 | Pending |
+| REFAC-01 | Phase 3 | Pending |
+| REFAC-02 | Phase 3 | Pending |
+| REFAC-03 | Phase 3 | Pending |
+| REFAC-04 | Phase 3 | Pending |
+| SPLIT-01 | Phase 4 | Pending |
+| SPLIT-02 | Phase 4 | Pending |
+| SPLIT-03 | Phase 4 | Pending |
+| SPLIT-04 | Phase 4 | Pending |
+| UX-01 | Phase 5 | Pending |
+| PERF-01 | Phase 6 | Pending |
+| PERF-02 | Phase 6 | Pending |
+| PERF-03 | Phase 6 | Pending |
+| PERF-04 | Phase 6 | Pending |
+| POLISH-01 | Phase 7 | Pending |
+| POLISH-02 | Phase 7 | Pending |
+| POLISH-03 | Phase 7 | Pending |
+| POLISH-04 | Phase 7 | Pending |
+| POLISH-05 | Phase 7 | Pending |
+| POLISH-06 | Phase 7 | Pending |
