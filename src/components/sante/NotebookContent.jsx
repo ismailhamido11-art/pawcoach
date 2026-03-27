@@ -114,7 +114,7 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
   const ensureVetNotes = () => {};
 
   const handleDelete = async (id) => {
-    if (typeof id === "string" && id.startsWith("dl-")) return;
+    if (typeof id === "string" && (id.startsWith("dl-") || id.startsWith("ge-"))) return;
     const previousRecords = records;
     try {
       await HealthRecord.delete(id);
