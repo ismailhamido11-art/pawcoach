@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { Dog, DogAchievement } from "@/api/entities";
 import { isUserPremium } from "@/utils/premium";
+import { useHomeCache } from "@/lib/HomeCacheContext";
 import BottomNav from "../components/BottomNav";
 import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -25,6 +26,7 @@ import EmptyState from "@/components/ui/EmptyState";
 
 export default function Profile() {
   const navigate = useNavigate();
+  const { invalidateHome } = useHomeCache();
   const [user, setUser] = useState(null);
   const [dogs, setDogs] = useState([]);
   const [activeDogId, setActiveDogId] = useState(() => localStorage.getItem("activeDogId") || null);
@@ -81,6 +83,8 @@ export default function Profile() {
   const handleSwitchDog = (dogId) => {
     setActiveDogId(dogId);
     localStorage.setItem("activeDogId", dogId);
+    // Invalidate Home cache so data reflects the new active dog immediately
+    invalidateHome();
   };
 
   const handleAddDog = () => {
