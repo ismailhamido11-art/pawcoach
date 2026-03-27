@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: "E2E Fixes"
 status: completed
-stopped_at: Completed 02-bugs-fonctionnels-02-PLAN.md
-last_updated: "2026-03-27T02:34:53.614Z"
+stopped_at: Completed 03-scalabilite-premium-01-PLAN.md
+last_updated: "2026-03-27T02:45:22.677Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 5
-  completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  completed_phases: 3
+  total_plans: 7
+  completed_plans: 7
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 ## Current Position
 
 Phase: 3
-Plan: Not started
+Plan: 02 complete
 Status: Plan complete — ready for next plan
 Last activity: 2026-03-27
 
@@ -75,6 +75,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 02-bugs-fonctionnels]: BUG-05: Limite chat IA corrigee a 10/jour dans email trial J-1
 - [Phase 02-bugs-fonctionnels]: Reused DiagnosisReportView for history accordion — zero duplication
 - [Phase 02-bugs-fonctionnels]: Single sessionStorage key onboarding_state holds both step and answers — single parse per mount
+- [Phase 03-scalabilite-premium]: Dog.list() global replaced by Dog.filter per-owner in walkReminder and trialExpiryReminder — queries proportional to matched users not total DB
+- [Phase 03-scalabilite-premium]: HealthRecord.list() and DailyCheckin.list() global moved inside loop as per-dog filter() in monthlySummary — non-premium dogs skip DB queries entirely
 
 ### Pending Todos
 
@@ -86,6 +88,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T02:30:56.895Z
-Stopped at: Completed 02-bugs-fonctionnels-02-PLAN.md
+Last session: 2026-03-27T02:45:04.054Z
+Stopped at: Completed 03-scalabilite-premium-01-PLAN.md
 Resume file: None
