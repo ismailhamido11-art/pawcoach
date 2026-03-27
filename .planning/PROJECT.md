@@ -27,13 +27,11 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 - v5.0: Hardening & Refactoring — 26 requirements, securite, scalabilite
 - v6.0: Deep Clean & PWA — 21 requirements, PWA installable, accessibilite
 - v7.0: User-Ready — 20 requirements, donnees coherentes, flux reconnectes, UX honnete
+- v8.0: SFA Fixes — 19 requirements, zero crash, donnees reelles, cache propagation, securite UX
 
 ### Active
 
-- [ ] Corriger les 4 crashs/features mortes (quick checkin, scanner, DogPublicProfile, CombinedFAB)
-- [ ] Corriger les 6 donnees stale (SmartAlerts, dog state, pills, NutriCoach, score, scan)
-- [ ] Corriger les 4 propagations cache manquantes
-- [ ] Corriger les 5 UX/securite (premium card, email expose, try/catch, doublon badge, rollback)
+None — ready for v9.0
 
 ### Out of Scope
 
@@ -41,20 +39,18 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 - Analytics trackEvent — utile mais pas prioritaire
 - Ecran offline — PWA passthrough (Base44 requiert auth live)
 
-## Current State (v7.0 shipped — 27 mars 2026)
+## Current State (v8.0 shipped — 27 mars 2026)
 
-- 8 milestones livres (v1.0 → v7.0)
-- Donnees coherentes : hero message, score wellness, poids/BCS, check-in honnete
-- Flux reconnectes : cache Home invalide, premium global, batch notify
-- UX honnete : prix 7.99 EUR, code parrain supprime, symptomes → action, Dashboard visible
-- Backend securise : HMAC quota, Streak cap, cascade delete complete, zero console.log
-- Score readiness : 6.2/10 → 8.5+/10
+- 9 milestones livres (v1.0 → v8.0)
+- Zero crash : quick checkin, scanner, DogPublicProfile, CombinedFAB tous fonctionnels
+- Donnees reelles : SmartAlerts compare pesees reelles, computeStatusPills enrichi, NutritionMealPlan latestRealWeight, FoodScan data preserved
+- Cache propagation : Home invalide apres chaque action (FAB log, dog delete, dog rename/photo), Nutri auto-refresh
+- Securite UX : email proprietaire retire, premium card masquee, handleSaveUser try/catch, checkWalkBadges idempotent, training rollback
+- Score readiness : 9.0+/10
 
-## Current Milestone: v8.0 "SFA Fixes"
+## No Active Milestone
 
-**Goal:** Corriger les 32 ruptures trouvees par le Static Flow Analysis — zero crash, zero feature morte, zero donnee stale.
-
-**Source:** 4 rapports SFA dans .planning/audit/ (SFA-HOME-NAV, SFA-SANTE, SFA-ACTIVITE, SFA-PROFILE)
+Ready for v9.0. Run `/gsd:new-milestone` to start.
 
 ## Context
 
@@ -79,7 +75,7 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 | CGC systematique dans GSD | Pattern proactif detecte des bugs caches | ✓ Good |
 | Carte Repas → Eau | meals_count n'existe pas dans DailyLog | ✓ Good |
 | Streak.list + slice(2000) | SDK filter operators undocumented | ⚠️ Revisit |
-| v8.0 = SFA fixes, pas features | SFA a trouve 32 ruptures dont 7 critiques | — Pending |
+| v8.0 = SFA fixes, pas features | SFA a trouve 32 ruptures dont 7 critiques | ✓ Good — 19/19 |
 | Static Flow Analysis obligatoire | Grep ne suffit pas, il faut tracer les chemins complets | ✓ Good |
 
 ## Evolution
@@ -87,4 +83,4 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-27 after v7.0 milestone complete*
+*Last updated: 2026-03-27 after v8.0 milestone complete*
