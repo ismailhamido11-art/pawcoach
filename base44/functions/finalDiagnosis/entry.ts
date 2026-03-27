@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { symptoms, duration, additional_info, image_url, preliminary_observations, followup_questions, user_answers, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies, personality_tags, dog_status, owner_goal, neutered, activity_level, environment, vet_name, vet_city, diet_type, diet_restrictions, behavior_summary, dog_id } = await req.json();
+    const { symptoms, duration, additional_info, image_url, preliminary_observations, followup_questions, user_answers, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies, personality_tags, dog_status, owner_goal, neutered, activity_level, environment, vet_name, vet_city, diet_type, diet_restrictions, behavior_summary, dog_id, pre_diagnosis_token } = await req.json();
 
     if (!symptoms) return Response.json({ error: 'Symptoms required' }, { status: 400 });
 
@@ -18,25 +18,50 @@ Deno.serve(async (req) => {
       if (dog.owner !== user.email) return Response.json({ error: 'Forbidden: dog does not belong to this user' }, { status: 403 });
     }
 
-    // SEC-01: Quota guard — prevent direct calls bypassing preDiagnosis quota.
-    // Uses actions_remaining (same field as preDiagnosis) — no decrement here (step 2).
-    const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
-    if (!isPremium) {
-      const ACTION_DAILY_LIMIT = 3;
-      const today = new Date().toISOString().split("T")[0];
-      let remaining = user.actions_remaining ?? ACTION_DAILY_LIMIT;
-      const lastReset = user.actions_daily_reset;
-      if (lastReset !== today) {
-        remaining = ACTION_DAILY_LIMIT;
-      }
-      if (remaining <= 0) {
-        return Response.json({ error: "daily_limit_reached", message: "Tu as atteint la limite du jour." }, { status: 429 });
-      }
-      // No decrement — preDiagnosis already decremented for this flow.
+    // TECH-01: Token validation — preDiagnosis must have been called before finalDiagnosis.
+    // This prevents quota bypass via direct API calls (free users circumventing the daily limit).
+    if (!pre_diagnosis_token) {
+      return Response.json({ error: "pre_diagnosis_required", message: "Appelle d'abord preDiagnosis." }, { status: 400 });
     }
 
-    // No credit decrement here — preDiagnosis already decremented for this diagnostic flow.
-    // finalDiagnosis is always called as step 2 of the same user-initiated action.
+    // Verify token format: "userId:timestamp:base64signature"
+    const tokenParts = pre_diagnosis_token.split(":");
+    if (tokenParts.length < 3) {
+      return Response.json({ error: "invalid_token" }, { status: 403 });
+    }
+    const [tokenUserId, tokenTs, ...sigParts] = tokenParts;
+    const tokenSig = sigParts.join(":");
+
+    // Verify the token belongs to the authenticated user
+    if (tokenUserId !== user.id) {
+      return Response.json({ error: "token_user_mismatch" }, { status: 403 });
+    }
+
+    // Verify token is not expired (5 minutes = 300000ms) and not from the future
+    const tokenAge = Date.now() - parseInt(tokenTs, 10);
+    if (tokenAge > 300000 || tokenAge < 0) {
+      return Response.json({ error: "token_expired", message: "Le diagnostic a expiré. Recommence depuis le début." }, { status: 403 });
+    }
+
+    // Verify HMAC-SHA256 signature
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(Deno.env.get("PRE_DIAG_SECRET") || "pawcoach-diag-secret-v1"),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["verify"]
+    );
+    const expectedPayload = `${tokenUserId}:${tokenTs}`;
+    let sigBytes: Uint8Array;
+    try {
+      sigBytes = Uint8Array.from(atob(tokenSig), c => c.charCodeAt(0));
+    } catch {
+      return Response.json({ error: "invalid_token_format" }, { status: 403 });
+    }
+    const isValid = await crypto.subtle.verify("HMAC", keyMaterial, sigBytes, new TextEncoder().encode(expectedPayload));
+    if (!isValid) {
+      return Response.json({ error: "invalid_token_signature" }, { status: 403 });
+    }
 
     // Sanitize user inputs to prevent prompt injection and limit length
     const sanitize = (s, max = 2000) => String(s || '').substring(0, max).replace(/[<>]/g, '');

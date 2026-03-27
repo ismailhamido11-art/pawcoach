@@ -126,7 +126,20 @@ Genere un JSON avec:
       result.followup_questions = [];
     }
 
-    return Response.json(result);
+    // TECH-01: Generate a short-lived HMAC-SHA256 token to prove preDiagnosis was executed.
+    // finalDiagnosis will verify this token before proceeding — prevents quota bypass.
+    const tokenPayload = `${user.id}:${Date.now()}`;
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(Deno.env.get("PRE_DIAG_SECRET") || "pawcoach-diag-secret-v1"),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+    const signature = await crypto.subtle.sign("HMAC", keyMaterial, new TextEncoder().encode(tokenPayload));
+    const pre_diagnosis_token = `${tokenPayload}:${btoa(String.fromCharCode(...new Uint8Array(signature)))}`;
+
+    return Response.json({ ...result, pre_diagnosis_token });
 
   } catch (error) {
     console.error("preDiagnosis error:", error?.message || String(error));
