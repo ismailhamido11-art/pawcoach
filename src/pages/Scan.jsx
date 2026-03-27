@@ -252,8 +252,10 @@ export default function Scan() {
         food_name: result.food_name,
         verdict: result.verdict,
         score: result.score,
+        summary: result.summary,
         details: result.details,
         recommendation: result.recommendation,
+        allergen_alerts: result.allergen_alerts,
         timestamp: result.timestamp,
       });
       setSaved(true);
