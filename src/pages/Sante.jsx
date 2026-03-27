@@ -224,7 +224,7 @@ export default function Sante() {
 
       {/* Illustrated card — health overview */}
       <div className="px-5 pt-4 pb-2">
-        <div className="bg-gradient-to-r from-emerald-50 to-teal-50/50 rounded-3xl p-4 border border-emerald-100/50 shadow-sm flex items-center gap-4">
+        <div className="bg-gradient-to-r from-emerald-50 to-emerald-50/80 rounded-3xl p-4 border border-emerald-100/50 shadow-sm flex items-center gap-4">
           <StorysetIllustration name="vet-checkup" className="w-24 h-24 flex-shrink-0" />
           <div className="flex-1 min-w-0">
             <p className="text-[14px] font-bold text-foreground">Suivi complet{dog ? ` de ${dog.name}` : ""}</p>
@@ -267,7 +267,7 @@ export default function Sante() {
             {activeTab === "malade" && (
               <>
                 <div className="px-5 pt-4 pb-2">
-                  <div className="bg-gradient-to-r from-red-50 to-orange-50/50 rounded-3xl p-4 border border-red-100/50 shadow-sm flex items-center gap-4">
+                  <div className="bg-gradient-to-r from-red-50 to-amber-50/50 rounded-3xl p-4 border border-red-100/50 shadow-sm flex items-center gap-4">
                     <div className="flex-1 min-w-0">
                       <p className="text-[14px] font-bold text-foreground">Diagnostic IA</p>
                       <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Décris les symptômes, obtiens une analyse instantanée</p>

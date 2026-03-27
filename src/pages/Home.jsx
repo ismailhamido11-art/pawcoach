@@ -632,7 +632,7 @@ export default function Home() {
           </div>
 
           {/* Nutrition tip card with illustration */}
-          <div className="bg-gradient-to-r from-amber-50 to-orange-50/50 rounded-3xl p-4 border border-amber-100/50 shadow-sm flex items-center gap-4">
+          <div className="bg-gradient-to-r from-amber-50 to-amber-50/50 rounded-3xl p-4 border border-amber-100/50 shadow-sm flex items-center gap-4">
             <StorysetIllustration name="feeding" className="w-24 h-24 flex-shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[14px] font-bold text-foreground">Nutrition de {dog?.name || "ton chien"}</p>
@@ -651,8 +651,8 @@ export default function Home() {
 
           {/* Streak Card */}
           {streakDays > 0 && (
-            <div className="flex items-center gap-4 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 rounded-2xl border border-amber-200/60 p-[18px] card-hover shadow-sm">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-amber-200/50">
+            <div className="flex items-center gap-4 bg-gradient-to-r from-amber-50 via-amber-100 to-amber-50 rounded-2xl border border-amber-200/60 p-[18px] card-hover shadow-sm">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-amber-200/50">
                 <Flame className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1 min-w-0">

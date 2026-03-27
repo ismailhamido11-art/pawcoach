@@ -76,7 +76,7 @@ function computeParkInfo(park) {
   if (park.tags.surface && SURFACE_LABELS[park.tags.surface]) {
     badges.push({ icon: TreePine, label: SURFACE_LABELS[park.tags.surface], color: "text-green-600" });
   }
-  if (park.tags.lit === "yes") badges.push({ icon: Sun, label: "Éclairé", color: "text-yellow-600" });
+  if (park.tags.lit === "yes") badges.push({ icon: Sun, label: "Éclairé", color: "text-amber-600" });
   if (park.tags.drinking_water === "yes") badges.push({ icon: Droplets, label: "Point d'eau", color: "text-blue-500" });
   if (park.tags.opening_hours) badges.push({ icon: Clock, label: park.tags.opening_hours, color: "text-muted-foreground" });
 

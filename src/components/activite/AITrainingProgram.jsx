@@ -398,7 +398,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
               {[
                 { Icon: CalendarDays, color: "text-violet-600", text: "Activité guidée pas à pas" },
                 { Icon: BookOpen, color: "text-amber-600", text: "Fait surprenant du jour" },
-                { Icon: Lightbulb, color: "text-yellow-500", text: "Conseil de pro non-évident" },
+                { Icon: Lightbulb, color: "text-amber-500", text: "Conseil de pro non-évident" },
                 { Icon: Eye, color: "text-blue-500", text: "Observation comportementale" },
                 { Icon: Star, color: "text-amber-500", text: "Défi bonus amusant" },
                 { Icon: PawPrint, color: "text-emerald-600", text: "Adapté à la race" },
