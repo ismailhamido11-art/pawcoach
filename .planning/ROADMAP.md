@@ -48,7 +48,11 @@
   4. monthlySummary s'execute sans erreur sur tous les users — plus de reference a is_trial inexistant
   5. La suppression d'un chien efface ParkReview et PlaceFavorite sans erreur silencieuse — les entites orphelines n'existent plus
   6. Aucun console.log ne s'affiche dans les logs du backend en production
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 01-01-PLAN.md — Token HMAC preDiagnosis→finalDiagnosis (TECH-01) + Streak.filter sans .list() global (TECH-02)
+- [ ] 01-02-PLAN.md — Resoudre conflit Git icon-192.svg (TECH-03) + Supprimer console.log debug (TECH-06)
+- [ ] 01-03-PLAN.md — Corriger is_trial inexistant dans monthlySummary (TECH-04) + ParkReview/PlaceFavorite dans cascade delete (TECH-05)
 
 ### Phase 2: Donnees Fausses
 
@@ -97,7 +101,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Backend Critique | 0/? | Not started | - |
+| 1. Backend Critique | 0/3 | Planned | - |
 | 2. Donnees Fausses | 0/? | Not started | - |
 | 3. Flux Deconnectes | 0/? | Not started | - |
 | 4. UX Trompeuse | 0/? | Not started | - |
