@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: "Deep Clean & PWA"
-status: executing
-stopped_at: Completed Phase 05 A11Y — 05-01-PLAN.md execute (2/2 tasks)
-last_updated: "2026-03-27T14:30:00.000Z"
-last_activity: 2026-03-27 -- Phase 05 A11Y completed
+status: verifying
+stopped_at: Completed 01-pwa-01-PLAN.md (2/2 tasks)
+last_updated: "2026-03-27T13:33:24.084Z"
+last_activity: 2026-03-27
 progress:
   total_phases: 7
-  completed_phases: 0
-  total_plans: 1
-  completed_plans: 3
-  percent: 21
+  completed_phases: 3
+  total_plans: 3
+  completed_plans: 4
+  percent: 14
 ---
 
 # Project State
@@ -27,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 
 Phase: 05 (A11Y) — COMPLETED
 Plan: 1 of 1
-Status: Phase 05 A11Y terminee
-Last activity: 2026-03-27 -- Phase 05 A11Y execute (2/2 tasks)
+Status: Phase complete — ready for verification
+Last activity: 2026-03-27
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -47,6 +47,7 @@ Progress: [█░░░░░░░░░] 14%
 | 7. CLEAN | 1 | ~15 min | ~15 min |
 
 *Updated after each plan completion*
+| Phase 01-pwa P01 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -60,6 +61,8 @@ Progress: [█░░░░░░░░░] 14%
 - CLEAN-03: Idempotency par comparaison d'etat DB (is_premium + stripe_subscription_id) — Deno stateless, pas de Set en memoire
 - CLEAN-04: useReducedMotion custom supprime — zero import, tous les fichiers utilisent framer-motion directement
 - CLEAN-05: DailyLog parallelise, SendEmail sequentiel (eviter saturation quota Base44)
+- [Phase 01-pwa]: PWA-01: icones reutilisent /mascot/paw-happy.jpg — pas de nouveaux assets generes
+- [Phase 01-pwa]: PWA-02: SW passthrough (pas cache-first) — Base44 requiert auth live
 
 ### Pending Todos
 
@@ -72,6 +75,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27
-Stopped at: Completed Phase 05 A11Y — 05-01-PLAN.md execute (2/2 tasks)
+Last session: 2026-03-27T13:33:24.079Z
+Stopped at: Completed 01-pwa-01-PLAN.md (2/2 tasks)
 Resume file: None

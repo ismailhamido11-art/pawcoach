@@ -26,7 +26,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: PWA** - Creer manifest.json et sw.js pour rendre l'app installable
+- [x] **Phase 1: PWA** - Creer manifest.json et sw.js pour rendre l'app installable (completed 2026-03-27)
 - [ ] **Phase 2: CRON** - Rendre les deux fonctions CRON restantes scalables
 - [ ] **Phase 3: SEC** - Corriger les 3 failles de securite backend restantes
 - [ ] **Phase 4: SPLIT** - Decouperles 4 monolithes restants en composants separes
@@ -47,7 +47,7 @@
   4. L'app charge en mode standalone (sans barre URL du navigateur) apres installation
 **Plans**: 1 plan
 Plans:
-- [ ] 01-pwa-01-PLAN.md — Creer public/manifest.json et public/sw.js
+- [x] 01-pwa-01-PLAN.md — Creer public/manifest.json et public/sw.js
 **UI hint**: yes
 
 ### Phase 2: CRON
@@ -113,7 +113,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. PWA | 0/1 | Planned | - |
+| 1. PWA | 1/1 | Complete   | 2026-03-27 |
 | 2. CRON | 0/TBD | Not started | - |
 | 3. SEC | 0/TBD | Not started | - |
 | 4. SPLIT | 0/TBD | Not started | - |

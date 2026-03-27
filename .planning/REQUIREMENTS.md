@@ -7,8 +7,8 @@ Scan codebase post-v5.0 — .planning/codebase/CONCERNS.md (27 mars 2026)
 
 ### PWA — Progressive Web App
 
-- [ ] **PWA-01**: Creer public/manifest.json fonctionnel (name, icons, start_url, display:standalone, theme_color) (C1)
-- [ ] **PWA-02**: Creer public/sw.js minimal (passthrough fetch handler, offline fallback) (C1)
+- [x] **PWA-01**: Creer public/manifest.json fonctionnel (name, icons, start_url, display:standalone, theme_color) (C1)
+- [x] **PWA-02**: Creer public/sw.js minimal (passthrough fetch handler, offline fallback) (C1)
 
 ### CRON — Backend Scalabilite Restante
 
@@ -56,8 +56,8 @@ Scan codebase post-v5.0 — .planning/codebase/CONCERNS.md (27 mars 2026)
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PWA-01 | Phase 1 | Pending |
-| PWA-02 | Phase 1 | Pending |
+| PWA-01 | Phase 1 | Complete |
+| PWA-02 | Phase 1 | Complete |
 | CRON-01 | Phase 2 | Pending |
 | CRON-02 | Phase 2 | Pending |
 | SEC-01 | Phase 3 | Pending |
