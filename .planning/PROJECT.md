@@ -30,7 +30,10 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 
 ### Active
 
-(None — ready for /gsd:new-milestone)
+- [ ] Corriger les 4 crashs/features mortes (quick checkin, scanner, DogPublicProfile, CombinedFAB)
+- [ ] Corriger les 6 donnees stale (SmartAlerts, dog state, pills, NutriCoach, score, scan)
+- [ ] Corriger les 4 propagations cache manquantes
+- [ ] Corriger les 5 UX/securite (premium card, email expose, try/catch, doublon badge, rollback)
 
 ### Out of Scope
 
@@ -47,10 +50,17 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 - Backend securise : HMAC quota, Streak cap, cascade delete complete, zero console.log
 - Score readiness : 6.2/10 → 8.5+/10
 
+## Current Milestone: v8.0 "SFA Fixes"
+
+**Goal:** Corriger les 32 ruptures trouvees par le Static Flow Analysis — zero crash, zero feature morte, zero donnee stale.
+
+**Source:** 4 rapports SFA dans .planning/audit/ (SFA-HOME-NAV, SFA-SANTE, SFA-ACTIVITE, SFA-PROFILE)
+
 ## Context
 
 - CGC indexe sur le codebase — utilise systematiquement dans chaque phase GSD
-- 3 rapports audit dans .planning/audit/ (data-coherence, user-journey, app-readiness)
+- 4 rapports SFA dans .planning/audit/ — traces de flux end-to-end
+- Static Flow Analysis ancre comme process de verification obligatoire
 - Pattern proactif ancre dans CLAUDE.md
 
 ## Constraints
@@ -69,6 +79,8 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 | CGC systematique dans GSD | Pattern proactif detecte des bugs caches | ✓ Good |
 | Carte Repas → Eau | meals_count n'existe pas dans DailyLog | ✓ Good |
 | Streak.list + slice(2000) | SDK filter operators undocumented | ⚠️ Revisit |
+| v8.0 = SFA fixes, pas features | SFA a trouve 32 ruptures dont 7 critiques | — Pending |
+| Static Flow Analysis obligatoire | Grep ne suffit pas, il faut tracer les chemins complets | ✓ Good |
 
 ## Evolution
 
