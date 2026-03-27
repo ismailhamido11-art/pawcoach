@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v8.0
 milestone_name: "SFA Fixes" — Active
 status: Phase complete — ready for verification
-stopped_at: Completed 02-donnees-stale 02-01-PLAN.md
-last_updated: "2026-03-27T19:58:33.926Z"
+stopped_at: Completed 02-donnees-stale-02-02-PLAN.md
+last_updated: "2026-03-27T19:58:56.655Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 3
@@ -62,6 +62,8 @@ Last activity: 2026-03-27
 - [Phase 02-donnees-stale]: Label mode FoodScan.create: allergen_alerts defaults to [] and summary uses fallback string (label AI schema has no summary field)
 - [Phase 02-donnees-stale]: SmartAlerts weight drift now compares 2 real measured weights, not latest vs stale dog.weight profile
 - [Phase 02-donnees-stale]: computeStatusPills extraWeightSources param (default=[]) keeps DownloadHealthPDF.jsx backward-compatible
+- [Phase 02-donnees-stale]: STALE-05 confirmed dead code: DogRadarHero never rendered, Dashboard/NotebookContent already use correct computeHealthScore formula
+- [Phase 02-donnees-stale]: latestRealWeight in NutritionMealPlan falls back to dog?.weight when no measured data exists — safe backward compatibility
 
 ### Pending Todos
 
@@ -73,7 +75,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T19:58:07.659Z
-Stopped at: Completed 02-donnees-stale 02-01-PLAN.md
+Last session: 2026-03-27T19:58:56.644Z
+Stopped at: Completed 02-donnees-stale-02-02-PLAN.md
 Resume file: None
 Next action: /gsd:plan-phase 2
