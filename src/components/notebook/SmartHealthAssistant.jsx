@@ -103,18 +103,6 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
     } catch {}
   }, [pendingRecords, LS_KEY]);
 
-  // Auto-save pending records on unmount (prevents data loss on navigation)
-  useEffect(() => {
-    return () => {
-      if (pendingRecordsRef.current.length > 0 && dogId) {
-        // localStorage is already up-to-date; also attempt DB save as backup
-        pendingRecordsRef.current.forEach(rec => {
-          HealthRecord.create({ dog_id: dogId, ...rec }).catch(() => {});
-        });
-      }
-    };
-  }, [dogId]);
-
   // Warn before closing page with unsaved records
   useEffect(() => {
     const handleBeforeUnload = (e) => {
