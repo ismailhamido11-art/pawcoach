@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { trackEvent } from "@/utils/analytics";
 import { createPageUrl } from "@/utils";
@@ -109,8 +109,23 @@ export default function Onboarding() {
   const urlParams = new URLSearchParams(window.location.search);
   const isAddDog = urlParams.get("addDog") === "true";
   const [started, setStarted] = useState(isAddDog); // skip welcome splash when adding a dog
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState(Array(INTERVIEW_STEPS.length).fill(""));
+  const [step, setStep] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('onboarding_state');
+      if (saved) { const parsed = JSON.parse(saved); return typeof parsed.step === 'number' ? parsed.step : 0; }
+    } catch {}
+    return 0;
+  });
+  const [answers, setAnswers] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('onboarding_state');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed.answers) && parsed.answers.length === INTERVIEW_STEPS.length) return parsed.answers;
+      }
+    } catch {}
+    return Array(INTERVIEW_STEPS.length).fill("");
+  });
   const [done, setDone] = useState(false);
   const [saving, setSaving] = useState(false);
   const [dogData, setDogData] = useState(null);
@@ -123,6 +138,13 @@ export default function Onboarding() {
   const recognitionRef = useRef(null);
   const fileRef = useRef(null);
   const savingRef = useRef(false);
+
+  // Persist onboarding progress so page reload restores the user's position
+  useEffect(() => {
+    try {
+      sessionStorage.setItem('onboarding_state', JSON.stringify({ step, answers }));
+    } catch {}
+  }, [step, answers]);
 
   // Steps that are optional — user can skip without filling anything
   const OPTIONAL_STEPS = new Set([3, 9]); // index 3 = race, index 9 = santé/allergies
@@ -253,6 +275,7 @@ Extrais ces informations et renvoie un objet JSON.
         }
       }
       setSaveError(false);
+      try { sessionStorage.removeItem('onboarding_state'); } catch {}
       setDone(true);
     } catch (e) {
       console.error(e);
