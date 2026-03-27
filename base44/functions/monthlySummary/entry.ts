@@ -12,15 +12,16 @@ Deno.serve(async (req) => {
 
     // Fetch only premium users to avoid loading the entire user table
     const premiumUsers = await base44.asServiceRole.entities.User.filter({ is_premium: true });
-    const trialUsers = await base44.asServiceRole.entities.User.filter({ is_trial: true }).catch(() => []);
-    // Merge and deduplicate: include active trial users even if not yet flagged is_premium
-    const allEligibleUsers = [...(premiumUsers || []), ...(trialUsers || [])].filter(
-      (u, i, arr) => u.email && arr.findIndex(x => x.email === u.email) === i
-    ).filter(u => {
-      const isPremium = u.is_premium;
-      const isActiveTrial = u.trial_expires_at && new Date(u.trial_expires_at) > new Date();
-      return isPremium || isActiveTrial;
+    // TECH-04: is_trial n'existe pas dans le schema — utiliser trial_expires_at pour les trial users
+    // On charge les non-premium et on filtre in-memory sur trial_expires_at > now
+    const nonPremiumUsers = await base44.asServiceRole.entities.User.filter({ is_premium: false }).catch(() => []);
+    const activeTrialUsers = (nonPremiumUsers || []).filter(u => {
+      return u.trial_expires_at && new Date(u.trial_expires_at) > now;
     });
+    // Merge and deduplicate: include active trial users even if not yet flagged is_premium
+    const allEligibleUsers = [...(premiumUsers || []), ...activeTrialUsers].filter(
+      (u, i, arr) => u.email && arr.findIndex(x => x.email === u.email) === i
+    );
 
     // Build a flat list of dogs from eligible users only — avoids Dog.list() global scan
     const dogsByUser = await Promise.all(
