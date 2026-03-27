@@ -447,6 +447,8 @@ Deno.serve(async (req) => {
     };
     const statusContext = dog.status && dog.status !== "healthy" ? (statusMessages[dog.status] || "") : "";
 
+    // getAge v1 — sync avec weeklyInsightGenerate/entry.ts — NE PAS modifier sans mettre a jour les deux
+    // Retourne: "moins d'un mois" | "N mois" | "N an(s)" | "N an(s) et N mois" | null
     const getAge = (birthDate: string) => {
       if (!birthDate) return null;
       const months = Math.floor((Date.now() - new Date(birthDate).getTime()) / (1000 * 60 * 60 * 24 * 30));

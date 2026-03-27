@@ -201,7 +201,8 @@ Deno.serve(async (req) => {
 
         const prevBehavior = dog.behavior_summary ? `\nProfil comportemental precedent: "${sanitize(dog.behavior_summary, 300)}"` : "";
 
-        // ── Enriched dog profile (aligned with pawcoachChat) ──
+        // getAge v1 — sync avec pawcoachChat/entry.ts — NE PAS modifier sans mettre a jour les deux
+        // Retourne: "moins d'un mois" | "N mois" | "N an(s)" | "N an(s) et N mois" | null
         const getAge = (birthDate: string) => {
           if (!birthDate) return null;
           const months = Math.floor((Date.now() - new Date(birthDate).getTime()) / (1000 * 60 * 60 * 24 * 30));
