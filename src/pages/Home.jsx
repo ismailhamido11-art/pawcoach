@@ -300,6 +300,18 @@ export default function Home() {
         }
       }
       toast.success("Check-in enregistré !");
+      // UX-01: Réagir si symptomes détectés
+      if (symptoms && symptoms.length > 0) {
+        setTimeout(() => {
+          toast("Des symptomes signalés — consulte l'onglet Santé.", {
+            duration: 6000,
+            action: {
+              label: "Voir Santé",
+              onClick: () => navigate(createPageUrl("Sante")),
+            },
+          });
+        }, 800);
+      }
       checkStreakBadges(dog.id, user.email).catch(() => {});
     } catch (err) {
       console.error("Check-in error:", err);
