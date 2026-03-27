@@ -120,7 +120,7 @@ export default function DogProfile() {
     a.href = url;
     a.download = `fiche-${dog.name}.txt`;
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 5000); // délai 5s pour mobile
   };
 
   const handleDeleteDog = async () => {
