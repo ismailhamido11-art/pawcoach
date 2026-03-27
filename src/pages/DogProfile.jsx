@@ -5,6 +5,7 @@ import useBackClose from "@/hooks/useBackClose";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { Dog, DailyLog, UserProgress, Streak, FoodScan } from "@/api/entities";
+import { useHomeCache } from "@/lib/HomeCacheContext";
 import { motion } from "framer-motion";
 import {
   ArrowLeft, Pencil, ChevronDown,
@@ -24,6 +25,7 @@ import SkeletonPage from "@/components/ui/SkeletonPage";
 
 export default function DogProfile() {
   const navigate = useNavigate();
+  const { invalidateHome } = useHomeCache();
   const [dog, setDog] = useState(null);
   const [_user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -86,6 +88,7 @@ export default function DogProfile() {
     try {
       await Dog.update(dog.id, updates);
       setDog(prev => ({ ...prev, ...updates }));
+      invalidateHome();
     } catch (e) {
       console.error("DogProfile handleSaveDog error:", e);
       toast.error("Impossible de sauvegarder les modifications.");
@@ -145,6 +148,7 @@ export default function DogProfile() {
       if (storedId === dog.id) {
         localStorage.removeItem("activeDogId");
       }
+      invalidateHome();
       navigate(createPageUrl("Profile"));
     } catch (err) {
       console.error("Delete dog error:", err);
