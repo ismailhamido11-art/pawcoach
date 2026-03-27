@@ -240,7 +240,7 @@ export default function ParkReviews({ park, dog, user }) {
               onChange={e => setComment(e.target.value)}
               placeholder={`Comment était l'expérience avec ${dog?.name || "ton chien"} ?`}
               rows={2}
-              maxLength={200}
+              maxLength={300}
               className="w-full text-xs bg-secondary/30 border border-border rounded-xl px-3 py-2 resize-none focus:outline-none focus:border-primary/40"
             />
           </div>
