@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v6.0
-milestone_name: "Deep Clean & PWA"
-status: archived
-stopped_at: Milestone v6.0 archived
+milestone: v7.0
+milestone_name: "User-Ready"
+status: roadmap_ready
+stopped_at: Roadmap created — ready to plan Phase 1
 last_updated: "2026-03-27"
 last_activity: 2026-03-27
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 7
-  completed_plans: 7
-  percent: 100
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -20,64 +20,48 @@ progress:
 
 See: .planning/PROJECT.md (updated 2026-03-27)
 
-**Core value:** Corriger les 21 issues restantes post-v5.0 (2 CRITICAL + 5 HIGH + 7 MEDIUM + 7 LOW) — PWA fonctionnelle, CRONs scalables, securite backend, monolithes decoupes. Git direct, 0 credit.
-**Current focus:** Phase 06 — PERF (terminee)
+**Core value:** Donnees fiables et coherentes qui refletent la realite du chien
+**Current focus:** v7.0 "User-Ready" — roadmap pret, pret pour /gsd:plan-phase 1
 
 ## Current Position
 
-Phase: 07
-Plan: Not started
-Status: Phase complete — ready for Phase 7 (CLEAN)
-Last activity: 2026-03-27
+Phase: 1 — Backend Critique (not started)
+Plan: —
+Status: Roadmap defined, awaiting plan
+Last activity: 2026-03-27 — Roadmap v7.0 created (4 phases, 20 requirements)
 
-Progress: [████████░░] 86%
+## Progress Bar
 
-## Performance Metrics
+```
+v7.0: [░░░░░░░░░░░░░░░░░░░░] 0% (0/4 phases)
 
-**Velocity:**
-
-- Total plans completed: 1
-- Average duration: ~15 min
-- Total execution time: ~15 min
-
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 7. CLEAN | 1 | ~15 min | ~15 min |
-
-*Updated after each plan completion*
-| Phase 01-pwa P01 | 5 | 2 tasks | 2 files |
+Phase 1: Backend Critique    [ ] Not started
+Phase 2: Donnees Fausses     [ ] Not started
+Phase 3: Flux Deconnectes    [ ] Not started
+Phase 4: UX Trompeuse        [ ] Not started
+```
 
 ## Accumulated Context
 
 ### Decisions
 
-- v6.0: CRITICAL first — Phase 1 (PWA) et Phase 2 (CRON) avant tout, puis HIGH (SEC, SPLIT), puis MEDIUM (A11Y, PERF), puis LOW (CLEAN)
-- v6.0: Tout via Git direct (0 credit Build prompt) — manifest.json et sw.js ecrits manuellement sans vite-plugin-pwa
-- v5.0: 7 phases = 7 categories (SEC, SCALE, REFAC, SPLIT, UX, PERF, POLISH) — pattern repris pour v6.0
-- v4.0: Toutes corrections via Git direct (0 credit Build prompt)
-- CLEAN-01: cmdk/vaul/input-otp conserves — utilises dans src/components/ui/ (shadcn), ne pas casser les wrappers shadcn
-- CLEAN-03: Idempotency par comparaison d'etat DB (is_premium + stripe_subscription_id) — Deno stateless, pas de Set en memoire
-- CLEAN-04: useReducedMotion custom supprime — zero import, tous les fichiers utilisent framer-motion directement
-- CLEAN-05: DailyLog parallelise, SendEmail sequentiel (eviter saturation quota Base44)
-- [Phase 01-pwa]: PWA-01: icones reutilisent /mascot/paw-happy.jpg — pas de nouveaux assets generes
-- [Phase 01-pwa]: PWA-02: SW passthrough (pas cache-first) — Base44 requiert auth live
-- [Phase 06-perf]: PERF-01 deja implemente — FindVetContent lazy dans Sante.jsx, WalkMap+NearbyParks lazy dans WalkMode.jsx
-- [Phase 06-perf]: Cles stables : item.id/label si dispo, sinon prefix-i pour strings
-- [Phase 06-perf]: Catches non-critiques laisses vides : localStorage, JSON.parse, audio, wakeLock
+- v7.0 scope: 20 requirements (6 donnees fausses + 4 flux deconnectes + 4 UX trompeuses + 6 bugs techniques)
+- Phase order: TECH first (securite critique), puis DATA (donnees correctes), puis FLOW (propagation), puis UX (interface)
+- Logique: le backend doit etre propre avant de corriger les donnees, les donnees doivent etre correctes avant de corriger les flux
+- Source: 3 rapports audit (.planning/audit/) + CONCERNS.md + CGC pattern search
+- CGC systematique dans chaque phase GSD (plan, execute, verify)
+- Pattern proactif: chaque fix verifie et corrige toutes les instances dans tout le codebase
 
 ### Pending Todos
 
-None.
+- Lancer /gsd:plan-phase 1 pour decomposer Phase 1 en plans executables
 
 ### Blockers/Concerns
 
-- PERF-01 (react-leaflet lazy): RESOLU — deja implemente (FindVetContent lazy dans Sante.jsx, WalkMap+NearbyParks lazy dans WalkMode.jsx)
-- CLEAN-01 (deps npm): RESOLU — verifie que cmdk/vaul/input-otp viennent de composants ui/ (shadcn), seuls @hello-pangea/dnd et @stripe/react-stripe-js supprimes
+None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T13:45:00.000Z
-Stopped at: Completed 06-perf-01-PLAN.md (2/2 tasks — PERF done, Phase 7 CLEAN next)
-Resume file: None
+Last session: 2026-03-27
+Stopped at: Roadmap v7.0 created — 4 phases, 20/20 requirements mapped
+Resume with: `/gsd:plan-phase 1`
