@@ -33,6 +33,11 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Ownership check — prevent accessing data from another user's dog
+    const dogs = await base44.asServiceRole.entities.Dog.filter({ id: dogId });
+    const dog = dogs?.[0];
+    if (!dog || dog.owner !== user.email) return Response.json({ error: 'Forbidden' }, { status: 403 });
+
     // Sanitize user-controlled strings before prompt injection
     const sanitize = (s: any, max = 500) => String(s || '').substring(0, max).replace(/[<>]/g, '');
 

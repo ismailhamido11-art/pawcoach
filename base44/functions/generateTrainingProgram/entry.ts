@@ -38,6 +38,7 @@ Deno.serve(async (req) => {
     // ═══════════════════════════════════════════════════════════
     const dogs = await base44.asServiceRole.entities.Dog.filter({ id: dogId });
     const dog = dogs?.[0];
+    if (!dog || dog.owner !== user.email) return Response.json({ error: 'Forbidden' }, { status: 403 });
 
     const previousBookmarks = await base44.asServiceRole.entities.Bookmark.filter({ dog_id: dogId }).catch(() => []);
     const pastProgramTitles = (Array.isArray(previousBookmarks) ? previousBookmarks : [])
