@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
       if (users[0]?.id) userEntityId = users[0].id;
       if (subscriptionId) {
         await stripe.subscriptions.cancel(subscriptionId);
-        console.log(`Stripe subscription cancelled: ${subscriptionId}`);
+        console.info(`Stripe subscription cancelled: ${subscriptionId}`);
       }
     } catch (stripeErr) {
       console.error('Stripe cancel failed (non-blocking):', stripeErr?.message || String(stripeErr));

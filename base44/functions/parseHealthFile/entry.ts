@@ -97,8 +97,6 @@ ${text_content ? `Texte à analyser:\n\n${sanitize(text_content, 5000)}` : ''}`;
 
         const result = await base44.integrations.Core.InvokeLLM(params);
 
-        console.log(`Extracted ${result.records?.length || 0} health records from ${result.document_type || 'document'}`);
-
         return Response.json(result);
     } catch (error) {
         console.error('Error in parseHealthFile:', error);
