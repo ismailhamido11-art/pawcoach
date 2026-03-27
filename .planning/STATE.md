@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v9.0
 milestone_name: "Production Ready" — Active
 status: executing
-stopped_at: Completed 07-flow-fixes-04-PLAN.md
-last_updated: "2026-03-27T23:06:15.384Z"
+stopped_at: Completed 08-04-PLAN.md
+last_updated: "2026-03-27T23:22:08.964Z"
 last_activity: "2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + SettingsSection) | 06-02 executed (RGPD consent gate: analytics.js + Onboarding checkbox)"
 progress:
   total_phases: 11
   completed_phases: 3
-  total_plans: 9
-  completed_plans: 14
+  total_plans: 13
+  completed_plans: 17
 ---
 
 # Project State
@@ -43,6 +43,9 @@ Last activity: 2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + Set
 | Coverage | 18/18 (100%) |
 | Phase 07-flow-fixes P03 | 15 | 3 tasks | 5 files |
 | Phase 07-flow-fixes P04 | 15 | 3 tasks | 3 files |
+| Phase 08-ux-activation P02 | 8 | 1 tasks | 1 files |
+| Phase 08-ux-activation P03 | 8 | 2 tasks | 4 files |
+| Phase 08-ux-activation P04 | 15 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -61,6 +64,10 @@ Last activity: 2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + Set
 - [Phase 07-flow-fixes]: FIX-26: onWeightAdded prop ajoutée à NotebookContent pour sync dog.weight en mémoire après SectionPoids
 - [Phase 07-flow-fixes]: FIX-23: silent re-fetch fallback instead of id-less checkin object avoids silent failures on todayCheckin operations
 - [Phase 07-flow-fixes]: FIX-22: amber badge preferred over toast for stale-data UX to avoid interrupting active sessions
+- [Phase 08-ux-activation]: AI card placed after DailyBriefing (outside fold) for maximum first-scroll visibility; Dashboard moved before Hero illustration; Vet button uses custom onClick pattern in quickActions map
+- [Phase 08-ux-activation]: Toaster ajouté dans App.jsx pour activer les toasts Sonner globalement
+- [Phase 08-ux-activation]: SW skipWaiting déplacé du install event vers message listener pour update non-destructif
+- [Phase 08-ux-activation]: FIX-34: gradient edge conditionnel (caché quand dernier tab actif) sur Sante/Nutri/Activite; FIX-38: badge amber <= 2 messages + wording "X messages restants aujourd'hui"
 
 ### Pending Todos
 
@@ -72,7 +79,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T23:06:15.377Z
-Stopped at: Completed 07-flow-fixes-04-PLAN.md
+Last session: 2026-03-27T23:22:08.949Z
+Stopped at: Completed 08-04-PLAN.md
 Resume file: None
 Next action: Continue with next plan
