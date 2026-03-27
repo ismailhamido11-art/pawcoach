@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { trackEvent } from "@/utils/analytics";
+import { trackEvent, setAnalyticsConsent } from "@/utils/analytics";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { Dog } from "@/api/entities";
 import { isUserPremium } from "@/utils/premium";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera as CameraIcon, PawPrint, Dog as DogIcon, Cake, Users, Scale, PersonStanding, Home as HomeIcon, Hospital, HeartPulse, GraduationCap, Salad, Smile, Handshake, Loader2, ArrowRight } from "lucide-react";
+import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera as CameraIcon, PawPrint, Dog as DogIcon, Cake, Users, Scale, PersonStanding, Home as HomeIcon, Hospital, HeartPulse, GraduationCap, Salad, Smile, Handshake, Loader2, ArrowRight, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import WelcomeScreen from "../components/onboarding/WelcomeScreen";
@@ -133,6 +133,9 @@ export default function Onboarding() {
   const [currentUser, setCurrentUser] = useState(null);
 
   const [saveError, setSaveError] = useState(false);
+  const [showConsent, setShowConsent] = useState(false);
+  const [gdprConsent, setGdprConsent] = useState(false);
+  const [consentError, setConsentError] = useState(false);
 
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef(null);
@@ -196,9 +199,20 @@ export default function Onboarding() {
     setListening(true);
   };
 
-  const handleNext = async () => {
+  const handleNext = () => {
     if (listening) { recognitionRef.current?.stop(); setListening(false); }
     if (step < INTERVIEW_STEPS.length - 1) { setStep(s => s + 1); return; }
+    // Last interview step → show RGPD consent screen instead of creating dog
+    setSaveError(false);
+    setShowConsent(true);
+  };
+
+  const handleFinish = async () => {
+    if (!gdprConsent) {
+      setConsentError(true);
+      return;
+    }
+    setConsentError(false);
     if (savingRef.current) return;
     savingRef.current = true;
     setSaving(true);
@@ -239,6 +253,8 @@ Extrais ces informations et renvoie un objet JSON.
         }
       });
       const extracted = typeof aiResponse === "string" ? JSON.parse(aiResponse) : aiResponse;
+      // Record analytics consent before creating dog
+      setAnalyticsConsent(true);
       const dog = await Dog.create({
         name: extracted.name || "Mon chien", photo: photoUrl || null,
         breed: extracted.breed || null, birth_date: extracted.birth_date || null,
@@ -290,6 +306,106 @@ Extrais ces informations et renvoie un objet JSON.
   if (done && dogData) {
     const destination = isAddDog ? "Profile" : "Home";
     return <WelcomeScreen dogName={dogData.name} dogPhoto={dogData.photo} isPremium={isUserPremium(currentUser)} onDiscover={() => navigate(createPageUrl(destination))} />;
+  }
+
+  // RGPD consent screen — shown after the last interview step, before Dog.create()
+  if (showConsent) {
+    const dogNameAnswer = answers[2] || "mon chien";
+    return (
+      <div className="min-h-screen flex flex-col bg-gradient-to-b from-emerald-950 via-green-50/80 to-green-50">
+        {/* Back button */}
+        <div className="safe-pt-14 px-6 pb-6 flex items-center gap-4">
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            transition={spring}
+            onClick={() => setShowConsent(false)}
+            className="w-10 h-10 flex items-center justify-center bg-white/20 backdrop-blur rounded-full border border-white/30"
+          >
+            <ChevronLeft className="w-5 h-5 text-white" />
+          </motion.button>
+          <div className="flex-1 bg-white/20 backdrop-blur h-1.5 rounded-full overflow-hidden">
+            <div className="h-full rounded-full bg-white w-full" />
+          </div>
+          <span className="text-white/70 font-bold text-sm w-10 text-right">OK</span>
+        </div>
+
+        <div className="flex-1 flex flex-col items-center justify-center px-6 pb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 200, damping: 25 }}
+            className="w-full max-w-sm space-y-5"
+          >
+            {/* Header */}
+            <div className="text-center">
+              <div className="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+                <ShieldCheck className="w-7 h-7 text-emerald-600" />
+              </div>
+              <h2 className="text-xl font-black text-foreground">Presque là !</h2>
+              <p className="text-sm text-muted-foreground mt-2">
+                Quelques confirmations avant de créer le profil de ton chien.
+              </p>
+            </div>
+
+            {/* Consent box */}
+            <div className="bg-white rounded-2xl border border-border p-4 space-y-4">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={gdprConsent}
+                  onChange={e => { setGdprConsent(e.target.checked); setConsentError(false); }}
+                  className="mt-0.5 w-4 h-4 accent-emerald-600 flex-shrink-0"
+                />
+                <span className="text-xs text-muted-foreground leading-relaxed">
+                  J'ai 16 ans ou plus (ou j'ai l'autorisation parentale) et j'accepte la{" "}
+                  <button
+                    type="button"
+                    onClick={() => navigate(createPageUrl("Privacy"))}
+                    className="text-primary underline"
+                  >
+                    politique de confidentialité
+                  </button>{" "}
+                  et les{" "}
+                  <button
+                    type="button"
+                    onClick={() => navigate(createPageUrl("Terms"))}
+                    className="text-primary underline"
+                  >
+                    conditions d'utilisation
+                  </button>
+                  .
+                </span>
+              </label>
+
+              {consentError && (
+                <p className="text-xs text-destructive font-medium">
+                  Tu dois accepter pour créer un profil.
+                </p>
+              )}
+            </div>
+
+            {/* Create button */}
+            <Button
+              onClick={handleFinish}
+              disabled={saving || !gdprConsent}
+              className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
+            >
+              {saving ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Création en cours...</>
+              ) : (
+                <>Créer le profil de {dogNameAnswer} <ArrowRight className="w-5 h-5" /></>
+              )}
+            </Button>
+
+            {saveError && (
+              <p className="text-xs text-destructive text-center font-medium">
+                Erreur lors de la création. Réessaie.
+              </p>
+            )}
+          </motion.div>
+        </div>
+      </div>
+    );
   }
 
   const handleGoalSelect = (label) => {
@@ -437,18 +553,12 @@ Extrais ces informations et renvoie un objet JSON.
             {/* Next button (not for choice) */}
             {currentStepData.type !== "choice" && (
               <Button
-                onClick={() => { setSaveError(false); handleNext(); }}
-                disabled={!canNext || saving}
+                onClick={handleNext}
+                disabled={!canNext}
                 className="w-full max-w-sm h-14 rounded-2xl font-black text-base gap-2 gradient-primary"
               >
-                {saving ? (
-                  <><Loader2 className="w-5 h-5 animate-spin" /> Création en cours...</>
-                ) : step === INTERVIEW_STEPS.length - 1 ? (
-                  saveError ? (
-                    <>Réessayer <ChevronRight className="w-5 h-5" /></>
-                  ) : (
-                    <><Sparkles className="w-5 h-5" /> Créer le profil</>
-                  )
+                {step === INTERVIEW_STEPS.length - 1 ? (
+                  <><Sparkles className="w-5 h-5" /> Continuer</>
                 ) : isOptionalStep && !currentAnswer.trim() ? (
                   <>Passer <ChevronRight className="w-5 h-5" /></>
                 ) : (
