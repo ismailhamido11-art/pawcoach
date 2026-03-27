@@ -132,7 +132,10 @@ export default function VetDogView() {
                 className="rounded-3xl border border-border/60 bg-card shadow-sm"
               />
             ) : (
-              [...records].sort((a, b) => new Date(b.date) - new Date(a.date)).map((r, i) => (
+              [...records]
+              .filter(r => !(sharedSections.includes("weight") && r.type === "weight"))
+              .sort((a, b) => new Date(b.date) - new Date(a.date))
+              .map((r, i) => (
                 <motion.div
                   key={r.id}
                   initial={{ opacity: 0, y: 8 }}
