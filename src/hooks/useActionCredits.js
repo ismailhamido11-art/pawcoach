@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
 import { initCredits, consumeActionCredit } from "@/utils/ai-credits";
@@ -27,12 +27,20 @@ export function useActionCredits() {
     })();
   }, []);
 
+  const consumingRef = useRef(false);
+
   const consume = async () => {
     if (isPremium) return true;
     if ((credits ?? 0) <= 0) return false;
-    const newRemaining = await consumeActionCredit(credits);
-    setCredits(newRemaining);
-    return true;
+    if (consumingRef.current) return false; // guard anti-double-appel
+    consumingRef.current = true;
+    try {
+      const newRemaining = await consumeActionCredit(credits);
+      setCredits(newRemaining);
+      return true;
+    } finally {
+      consumingRef.current = false;
+    }
   };
 
   const hasCredits = isPremium || (credits ?? 0) > 0;
