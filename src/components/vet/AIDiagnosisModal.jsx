@@ -197,6 +197,23 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
         followup_questions: phase1?.followup_questions,
         user_answers: userAnswers,
       });
+      // Detect JSON error response before creating PDF blob
+      if (res.data && typeof res.data === "object" && res.data.error) {
+        toast.error(res.data.message || "Erreur lors de la generation du PDF.");
+        setDownloading(false);
+        return;
+      }
+      // Guard against non-binary response (string containing JSON)
+      if (typeof res.data === "string" && res.data.startsWith("{")) {
+        try {
+          const parsed = JSON.parse(res.data);
+          if (parsed.error) {
+            toast.error(parsed.message || "Erreur lors de la generation du PDF.");
+            setDownloading(false);
+            return;
+          }
+        } catch {}
+      }
       const blob = new Blob([res.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
