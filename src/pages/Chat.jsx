@@ -335,7 +335,7 @@ export default function Chat() {
   };
 
   const isLimitReached = !isUserPremium(user) && (messagesRemaining ?? 0) <= 0;
-  const showSuggestions = messages.length <= 1 && !isLimitReached;
+  const showSuggestions = messages.length <= 1 && !isLimitReached && !loading && !isStreaming;
 
   const suggestions = dog ? [
     `Comment va ${dog.name} en ce moment ?`,
