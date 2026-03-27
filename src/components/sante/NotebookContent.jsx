@@ -188,8 +188,8 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
 
   // --- Smart Notebook summary (memoized) ---
   const summary = useMemo(
-    () => computeNotebookSummary(allRecords, dog, growthEntries),
-    [allRecords, dog, growthEntries]
+    () => computeNotebookSummary(allRecords, dog, [...(growthEntries || []), ...(dailyLogs || [])]),
+    [allRecords, dog, growthEntries, dailyLogs]
   );
 
   // Cleanup any pending scroll timeouts on unmount
