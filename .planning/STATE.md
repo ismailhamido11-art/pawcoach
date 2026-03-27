@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v9.0
 milestone_name: "Production Ready" — Active
 status: executing
-stopped_at: Completed 09-03-PLAN.md
-last_updated: "2026-03-27T23:36:53.286Z"
-last_activity: "2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + SettingsSection) | 06-02 executed (RGPD consent gate: analytics.js + Onboarding checkbox)"
+stopped_at: Completed 09-04-PLAN.md
+last_updated: "2026-03-28T00:40:00.000Z"
+last_activity: "2026-03-28 — 09-04 executed (PWA PNG icons FIX-52/53, dead ReferralSection import FIX-54, version 9.0 FIX-55; FIX-56 hex colors skipped — inline style pattern requires JSX restructure)"
 progress:
   total_phases: 11
   completed_phases: 4
   total_plans: 17
-  completed_plans: 20
+  completed_plans: 21
 ---
 
 # Project State
@@ -30,8 +30,8 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 HERE
 ```
 
-Phase: 06-legal-security — Plans 01 + 02 complete
-Last activity: 2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + SettingsSection) | 06-02 executed (RGPD consent gate: analytics.js + Onboarding checkbox)
+Phase: 09-visual-polish — Plans 01-04 complete
+Last activity: 2026-03-28 — 09-04 executed (PWA PNG icons FIX-52/53, dead ReferralSection import FIX-54, version 9.0 FIX-55)
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Last activity: 2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + Set
 | Phase 08-ux-activation P03 | 8 | 2 tasks | 4 files |
 | Phase 08-ux-activation P04 | 15 | 2 tasks | 5 files |
 | Phase 08-ux-activation P01 | 20 | 2 tasks | 2 files |
+| Phase 09-visual-polish P04 | 8 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Last activity: 2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + Set
 - [Phase 08-ux-activation]: SW skipWaiting déplacé du install event vers message listener pour update non-destructif
 - [Phase 08-ux-activation]: FIX-34: gradient edge conditionnel (caché quand dernier tab actif) sur Sante/Nutri/Activite; FIX-38: badge amber <= 2 messages + wording "X messages restants aujourd'hui"
 - [Phase 08-ux-activation P01]: FIX-31/32/37: STEP_GROUPS regroupe 10 steps en 5 groupes visibles; quick-start "Remplir plus tard" crée Dog(onboarding_completed:false); WelcomeScreen personnalisée breed+age avec hints spécialisés
+- [Phase 09-visual-polish P04]: FIX-56 hex colors skipped pour Dashboard.jsx et Premium.jsx — color prop est un hex inline style (StatCard + nextSteps); conversion vers Tailwind nécessite restructuration JSX (risk > value)
+- [Phase 09-visual-polish P04]: PNG generation via pure Node.js zlib.deflateSync (aucune dépendance externe)
 
 ### Pending Todos
 
@@ -81,7 +84,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T23:36:53.278Z
-Stopped at: Completed 09-03-PLAN.md
+Last session: 2026-03-28T00:40:00.000Z
+Stopped at: Completed 09-04-PLAN.md
 Resume file: None
-Next action: Continue with next plan
+Next action: Continue with next plan in phase 09-visual-polish
