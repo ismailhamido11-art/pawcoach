@@ -245,7 +245,10 @@ export default function Scan() {
 
   const analyzeFood = async () => {
     if (!file || !dog) return;
-    if (checkScanLimit(user)) { setScanLimitReached(true); return; }
+    // SEC-04 : Re-fetch user depuis la base pour verifier le quota cote serveur
+    const freshUser = await base44.auth.me();
+    setUser(freshUser);
+    if (checkScanLimit(freshUser)) { setScanLimitReached(true); return; }
     setScanning(true);
     setShowDetails(false);
     setDogAteIt(false);
@@ -275,7 +278,7 @@ export default function Scan() {
           },
         },
       });
-      await incrementScanCount(user);
+      await incrementScanCount(freshUser);
       const updatedUser = await base44.auth.me();
       setUser(updatedUser);
       const finalResult = { ...aiResult, photo_url: file_url, timestamp: new Date().toISOString() };
@@ -337,7 +340,10 @@ export default function Scan() {
 
   const analyzeLabel = async () => {
     if (!labelFile || !dog) return;
-    if (checkScanLimit(user)) { setScanLimitReached(true); return; }
+    // SEC-04 : Re-fetch user depuis la base pour verifier le quota cote serveur
+    const freshUser = await base44.auth.me();
+    setUser(freshUser);
+    if (checkScanLimit(freshUser)) { setScanLimitReached(true); return; }
     setLabelScanning(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file: labelFile });
@@ -386,7 +392,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
         },
       });
       setLabelResult(ai);
-      await incrementScanCount(user);
+      await incrementScanCount(freshUser);
       const updatedUser = await base44.auth.me();
       setUser(updatedUser);
       if (ai.allergen_alerts?.length > 0 && navigator.vibrate) navigator.vibrate([100, 50, 100]);
