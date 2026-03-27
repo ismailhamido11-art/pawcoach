@@ -125,11 +125,13 @@ export default function DogProfile() {
     setDeleting(true);
     try {
       // Cascade delete: clean up all related entities using deleteMany
+      // TECH-05: include ParkReview and PlaceFavorite (filtered by dog_id) to avoid orphaned records
       const entityNames = [
         "HealthRecord", "DailyCheckin", "DailyLog", "Streak",
         "FoodScan", "Bookmark", "UserProgress", "WeeklyInsight",
         "ChatMessage", "SharedVetAccess", "VetNote", "DiagnosisReport",
-        "DogAchievement", "GrowthEntry", "NutritionPlan", "DietPreferences"
+        "DogAchievement", "GrowthEntry", "NutritionPlan", "DietPreferences",
+        "ParkReview", "PlaceFavorite"
       ];
       await Promise.all(
         entityNames.map(name =>
