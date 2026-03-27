@@ -35,6 +35,24 @@ const INTERVIEW_STEPS = [
   { type: "voice", question: "Des problèmes de santé ou allergies ?", icon: Hospital, iconColor: "#ef4444", placeholder: "Non, ou préciser..." },
 ];
 
+// Groups of interview steps displayed as a single "visible" step
+// answers array indices are preserved (0..9) so handleFinish() needs no changes
+const STEP_GROUPS = [
+  { label: "1/5", steps: [0] },         // Goal
+  { label: "2/5", steps: [1, 2] },      // Photo + Prénom
+  { label: "3/5", steps: [3, 4] },      // Race + Âge
+  { label: "4/5", steps: [5, 6, 7] },   // Sexe + Poids + Activité
+  { label: "5/5", steps: [8, 9] },      // Environnement + Santé
+];
+
+function getGroupForStep(step) {
+  return STEP_GROUPS.find(g => g.steps.includes(step));
+}
+
+function getGroupIndex(step) {
+  return STEP_GROUPS.findIndex(g => g.steps.includes(step));
+}
+
 // Welcome splash shown before the form
 function OnboardingWelcome({ onStart }) {
   return (
@@ -141,6 +159,7 @@ export default function Onboarding() {
   const recognitionRef = useRef(null);
   const fileRef = useRef(null);
   const savingRef = useRef(false);
+  const isQuickStartRef = useRef(false);
 
   // Persist onboarding progress so page reload restores the user's position
   useEffect(() => {
@@ -159,15 +178,26 @@ export default function Onboarding() {
     setAnswers(newAnswers);
   };
 
+  // Helper to set an answer for any specific step index
+  const setAnswerAtIndex = (index, val) => {
+    const newAnswers = [...answers];
+    newAnswers[index] = val;
+    setAnswers(newAnswers);
+  };
+
   const currentStepData = INTERVIEW_STEPS[step];
-  const progress = ((step + 1) / INTERVIEW_STEPS.length) * 100;
+
+  // Group-based progress
+  const groupIndex = getGroupIndex(step);
+  const currentGroup = STEP_GROUPS[groupIndex];
+  const groupProgress = ((groupIndex + 1) / STEP_GROUPS.length) * 100;
 
   const handlePhoto = async (file) => {
     if (!file) return;
     setUploading(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setCurrentAnswer(file_url);
+      setAnswerAtIndex(1, file_url);
     } catch (e) {
       console.error(e);
       toast.error("Impossible d'envoyer la photo. Réessaie.");
@@ -199,10 +229,23 @@ export default function Onboarding() {
     setListening(true);
   };
 
+  // Navigate to the first step of the next group
   const handleNext = () => {
     if (listening) { recognitionRef.current?.stop(); setListening(false); }
-    if (step < INTERVIEW_STEPS.length - 1) { setStep(s => s + 1); return; }
-    // Last interview step → show RGPD consent screen instead of creating dog
+    const nextGroupIndex = groupIndex + 1;
+    if (nextGroupIndex < STEP_GROUPS.length) {
+      setStep(STEP_GROUPS[nextGroupIndex].steps[0]);
+      return;
+    }
+    // Last group → show RGPD consent screen instead of creating dog
+    setSaveError(false);
+    setShowConsent(true);
+  };
+
+  // Quick-start: skip remaining steps, go directly to consent with minimal data
+  const handleQuickStart = () => {
+    if (listening) { recognitionRef.current?.stop(); setListening(false); }
+    isQuickStartRef.current = true;
     setSaveError(false);
     setShowConsent(true);
   };
@@ -228,11 +271,29 @@ export default function Onboarding() {
         else { toast.error("Tu as atteint la limite de 3 chiens en Premium."); navigate(createPageUrl("Profile")); }
         return;
       }
-      const ownerGoal = answers[0];
-      const photoUrl = answers[1];
-      const textAnswers = answers.slice(2);
-      const textSteps = INTERVIEW_STEPS.slice(2);
-      const prompt = `Voici les réponses d'un utilisateur concernant son chien :
+
+      let dog;
+
+      if (isQuickStartRef.current) {
+        // Quick-start path: create dog with minimal data only
+        const name = answers[2]?.trim() || "Mon chien";
+        const ownerGoal = answers[0] || null;
+        const photoUrl = answers[1] || null;
+        setAnalyticsConsent(true);
+        dog = await Dog.create({
+          name,
+          photo: photoUrl,
+          owner: user.email,
+          owner_goal: ownerGoal,
+          onboarding_completed: false,
+        });
+      } else {
+        // Full onboarding path
+        const ownerGoal = answers[0];
+        const photoUrl = answers[1];
+        const textAnswers = answers.slice(2);
+        const textSteps = INTERVIEW_STEPS.slice(2);
+        const prompt = `Voici les réponses d'un utilisateur concernant son chien :
 ${textSteps.map((s, i) => `- ${s.question} : ${textAnswers[i]}`).join('\n')}
 Extrais ces informations et renvoie un objet JSON.
 - Calcule une "birth_date" (YYYY-MM-DD) approximative si l'âge est donné (l'année actuelle est ${new Date().getFullYear()}).
@@ -240,33 +301,35 @@ Extrais ces informations et renvoie un objet JSON.
 - Pour le niveau d'activité: "faible", "modere", "eleve", ou "tres_eleve".
 - Pour l'environnement: "appartement", "maison_sans_jardin", ou "maison_avec_jardin".
 - Si une info est inconnue, mets null.`;
-      const aiResponse = await base44.integrations.Core.InvokeLLM({
-        prompt,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            name: { type: "string" }, breed: { type: "string" }, birth_date: { type: "string" },
-            sex: { type: "string" }, weight: { type: "number" }, activity_level: { type: "string" },
-            environment: { type: "string" }, allergies: { type: "string" }, health_issues: { type: "string" }
-          },
-          required: ["name"]
-        }
-      });
-      const extracted = typeof aiResponse === "string" ? JSON.parse(aiResponse) : aiResponse;
-      // Record analytics consent before creating dog
-      setAnalyticsConsent(true);
-      const dog = await Dog.create({
-        name: extracted.name || "Mon chien", photo: photoUrl || null,
-        breed: extracted.breed || null, birth_date: extracted.birth_date || null,
-        sex: extracted.sex || null, weight: extracted.weight || null,
-        activity_level: extracted.activity_level || null, environment: extracted.environment || null,
-        allergies: extracted.allergies || null, health_issues: extracted.health_issues || null,
-        owner: user.email, owner_goal: ownerGoal || null, onboarding_completed: true,
-      });
+        const aiResponse = await base44.integrations.Core.InvokeLLM({
+          prompt,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              name: { type: "string" }, breed: { type: "string" }, birth_date: { type: "string" },
+              sex: { type: "string" }, weight: { type: "number" }, activity_level: { type: "string" },
+              environment: { type: "string" }, allergies: { type: "string" }, health_issues: { type: "string" }
+            },
+            required: ["name"]
+          }
+        });
+        const extracted = typeof aiResponse === "string" ? JSON.parse(aiResponse) : aiResponse;
+        // Record analytics consent before creating dog
+        setAnalyticsConsent(true);
+        dog = await Dog.create({
+          name: extracted.name || "Mon chien", photo: photoUrl || null,
+          breed: extracted.breed || null, birth_date: extracted.birth_date || null,
+          sex: extracted.sex || null, weight: extracted.weight || null,
+          activity_level: extracted.activity_level || null, environment: extracted.environment || null,
+          allergies: extracted.allergies || null, health_issues: extracted.health_issues || null,
+          owner: user.email, owner_goal: ownerGoal || null, onboarding_completed: true,
+        });
+      }
+
       setDogData(dog);
       // Set new dog as active
       localStorage.setItem("activeDogId", dog.id);
-      trackEvent("onboarding_complete", { is_add_dog: isAddDog, owner_goal: answers[0] || null });
+      trackEvent("onboarding_complete", { is_add_dog: isAddDog, owner_goal: answers[0] || null, quick_start: isQuickStartRef.current });
       if (!isAddDog) {
         try {
           await base44.integrations.Core.SendEmail({
@@ -305,10 +368,19 @@ Extrais ces informations et renvoie un objet JSON.
   if (!started) return <OnboardingWelcome onStart={() => setStarted(true)} />;
   if (done && dogData) {
     const destination = isAddDog ? "Profile" : "Home";
-    return <WelcomeScreen dogName={dogData.name} dogPhoto={dogData.photo} isPremium={isUserPremium(currentUser)} onDiscover={() => navigate(createPageUrl(destination))} />;
+    return (
+      <WelcomeScreen
+        dogName={dogData.name}
+        dogPhoto={dogData.photo}
+        isPremium={isUserPremium(currentUser)}
+        onDiscover={() => navigate(createPageUrl(destination))}
+        dogBreed={answers[3] || null}
+        dogAge={answers[4] || null}
+      />
+    );
   }
 
-  // RGPD consent screen — shown after the last interview step, before Dog.create()
+  // RGPD consent screen — shown after the last interview step or after quick-start, before Dog.create()
   if (showConsent) {
     const dogNameAnswer = answers[2] || "mon chien";
     return (
@@ -318,7 +390,7 @@ Extrais ces informations et renvoie un objet JSON.
           <motion.button
             whileTap={{ scale: 0.96 }}
             transition={spring}
-            onClick={() => setShowConsent(false)}
+            onClick={() => { setShowConsent(false); isQuickStartRef.current = false; }}
             className="w-10 h-10 flex items-center justify-center bg-white/20 backdrop-blur rounded-full border border-white/30"
           >
             <ChevronLeft className="w-5 h-5 text-white" />
@@ -409,23 +481,51 @@ Extrais ces informations et renvoie un objet JSON.
   }
 
   const handleGoalSelect = (label) => {
-    setCurrentAnswer(label);
-    setTimeout(() => setStep(s => s + 1), 250);
+    setAnswerAtIndex(0, label);
+    // Goal selection auto-advances to next group
+    setTimeout(() => {
+      const nextGroupIndex = groupIndex + 1;
+      if (nextGroupIndex < STEP_GROUPS.length) {
+        setStep(STEP_GROUPS[nextGroupIndex].steps[0]);
+      }
+    }, 250);
   };
 
-  const isOptionalStep = OPTIONAL_STEPS.has(step);
-  const canNext = currentStepData.type === "choice"
-    ? currentAnswer.length > 0
-    : currentStepData.type === "photo"
-      ? !uploading
-      : isOptionalStep || currentAnswer.trim().length > 0;
+  // Navigate back to the first step of the previous group
+  const handleBack = () => {
+    if (listening) { recognitionRef.current?.stop(); setListening(false); }
+    if (groupIndex > 0) {
+      setStep(STEP_GROUPS[groupIndex - 1].steps[0]);
+    }
+  };
+
+  // Determine if the current group has all required fields filled
+  const isGroupValid = () => {
+    const group = currentGroup;
+    if (!group) return false;
+    return group.steps.every(idx => {
+      if (OPTIONAL_STEPS.has(idx)) return true;
+      if (INTERVIEW_STEPS[idx].type === "photo") return !uploading;
+      if (INTERVIEW_STEPS[idx].type === "choice") return (answers[idx] || "").length > 0;
+      return (answers[idx] || "").trim().length > 0;
+    });
+  };
+
+  const canNext = isGroupValid();
+
+  // For the current group, the primary displayed step is the first one in the group
+  // (voice/photo inputs are rendered per-step within the group)
+  const primaryStepData = INTERVIEW_STEPS[currentGroup.steps[0]];
+
+  // Check if any optional step in current group has empty required neighbor
+  const hasOptionalOnly = currentGroup.steps.every(idx => OPTIONAL_STEPS.has(idx) || (answers[idx] || "").trim().length > 0 || INTERVIEW_STEPS[idx].type === "photo");
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-emerald-950 via-green-50/80 to-green-50">
       {/* Progress header */}
       <div className="safe-pt-14 px-6 pb-6 flex items-center gap-4">
-        {step > 0 ? (
-          <motion.button whileTap={{ scale: 0.96 }} transition={spring} onClick={() => setStep(s => s - 1)}
+        {groupIndex > 0 ? (
+          <motion.button whileTap={{ scale: 0.96 }} transition={spring} onClick={handleBack}
             className="w-10 h-10 flex items-center justify-center bg-white/20 backdrop-blur rounded-full border border-white/30">
             <ChevronLeft className="w-5 h-5 text-white" />
           </motion.button>
@@ -435,38 +535,39 @@ Extrais ces informations et renvoie un objet JSON.
         <div className="flex-1 bg-white/20 backdrop-blur h-1.5 rounded-full overflow-hidden">
           <motion.div
             className="h-full rounded-full bg-white"
-            animate={{ width: `${progress}%` }}
+            animate={{ width: `${groupProgress}%` }}
             transition={{ duration: 0.4, ease: "easeOut" }}
           />
         </div>
-        <span className="text-white/70 font-bold text-sm w-10 text-right">{step + 1}/{INTERVIEW_STEPS.length}</span>
+        <span className="text-white/70 font-bold text-sm w-10 text-right">{currentGroup.label}</span>
       </div>
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 pb-12">
         <AnimatePresence mode="wait">
           <motion.div
-            key={step}
+            key={groupIndex}
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -40 }}
             transition={{ type: "spring", stiffness: 200, damping: 25 }}
             className="flex flex-col items-center w-full"
           >
-            {/* Step icon */}
+            {/* Group icon — use the first step's icon */}
             <div
               className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg"
-              style={{ background: `${currentStepData.iconColor}20`, border: `1.5px solid ${currentStepData.iconColor}30` }}
+              style={{ background: `${primaryStepData.iconColor}20`, border: `1.5px solid ${primaryStepData.iconColor}30` }}
             >
-              <currentStepData.icon style={{ color: currentStepData.iconColor, width: 28, height: 28 }} />
+              <primaryStepData.icon style={{ color: primaryStepData.iconColor, width: 28, height: 28 }} />
             </div>
 
-            <h1 className="text-2xl font-black text-center text-foreground mb-10 leading-tight">
-              {currentStepData.question}
+            {/* Group question / title */}
+            <h1 className="text-2xl font-black text-center text-foreground mb-8 leading-tight">
+              {primaryStepData.question}
             </h1>
 
-            {/* Goal choice */}
-            {currentStepData.type === "choice" && (
+            {/* Group 1 (index 0): Goal choice */}
+            {groupIndex === 0 && (
               <div className="w-full max-w-sm space-y-2.5 mb-10">
                 {GOAL_OPTIONS.map((opt, i) => (
                   <motion.button
@@ -478,9 +579,9 @@ Extrais ces informations et renvoie un objet JSON.
                     onClick={() => handleGoalSelect(opt.label)}
                     className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all text-left"
                     style={{
-                      background: currentAnswer === opt.label ? opt.bg : "white",
-                      borderColor: currentAnswer === opt.label ? opt.color : "#e2e8f0",
-                      boxShadow: currentAnswer === opt.label ? `0 4px 20px ${opt.color}25` : "none",
+                      background: answers[0] === opt.label ? opt.bg : "white",
+                      borderColor: answers[0] === opt.label ? opt.color : "#e2e8f0",
+                      boxShadow: answers[0] === opt.label ? `0 4px 20px ${opt.color}25` : "none",
                     }}
                   >
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -488,7 +589,7 @@ Extrais ces informations et renvoie un objet JSON.
                       <opt.icon style={{ color: opt.color, width: 20, height: 20 }} />
                     </div>
                     <span className="text-sm font-semibold text-foreground">{opt.label}</span>
-                    {currentAnswer === opt.label && (
+                    {answers[0] === opt.label && (
                       <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="ml-auto"><ChevronRight className="w-4 h-4 text-emerald-600" /></motion.span>
                     )}
                   </motion.button>
@@ -496,75 +597,164 @@ Extrais ces informations et renvoie un objet JSON.
               </div>
             )}
 
-            {/* Photo */}
-            {currentStepData.type === "photo" && (
-              <div className="flex flex-col items-center mb-10">
-                <motion.button
-                  whileTap={{ scale: 0.96 }}
-                  onClick={() => fileRef.current?.click()}
-                  className="relative w-44 h-44 rounded-3xl border-2 border-dashed bg-white flex items-center justify-center overflow-hidden shadow-md mb-4 transition-all"
-                  style={{ borderColor: currentAnswer ? "#10b981" : "#cbd5e1" }}
-                >
-                  {currentAnswer ? (
-                    <img src={currentAnswer} alt="Chien" loading="lazy" className="w-full h-full object-cover" />
-                  ) : uploading ? (
-                    <Loader2 className="w-10 h-10 text-primary animate-spin" />
-                  ) : (
-                    <div className="flex flex-col items-center gap-2">
-                      <CameraIcon className="w-10 h-10 text-muted-foreground/50" />
-                      <span className="text-xs text-muted-foreground font-medium">Appuyer pour choisir</span>
-                    </div>
-                  )}
-                </motion.button>
-                <input ref={fileRef} type="file" accept="image/*" className="hidden"
-                  onChange={e => e.target.files[0] && handlePhoto(e.target.files[0])} />
-                <p className="text-sm text-muted-foreground">Optionnel — tu pourras le changer</p>
+            {/* Group 2 (index 1): Photo + Prénom */}
+            {groupIndex === 1 && (
+              <div className="w-full max-w-sm space-y-6 mb-8">
+                {/* Photo */}
+                <div className="flex flex-col items-center">
+                  <motion.button
+                    whileTap={{ scale: 0.96 }}
+                    onClick={() => fileRef.current?.click()}
+                    className="relative w-36 h-36 rounded-3xl border-2 border-dashed bg-white flex items-center justify-center overflow-hidden shadow-md mb-2 transition-all"
+                    style={{ borderColor: answers[1] ? "#10b981" : "#cbd5e1" }}
+                  >
+                    {answers[1] ? (
+                      <img src={answers[1]} alt="Chien" loading="lazy" className="w-full h-full object-cover" />
+                    ) : uploading ? (
+                      <Loader2 className="w-10 h-10 text-primary animate-spin" />
+                    ) : (
+                      <div className="flex flex-col items-center gap-2">
+                        <CameraIcon className="w-10 h-10 text-muted-foreground/50" />
+                        <span className="text-xs text-muted-foreground font-medium">Appuyer pour choisir</span>
+                      </div>
+                    )}
+                  </motion.button>
+                  <input ref={fileRef} type="file" accept="image/*" className="hidden"
+                    onChange={e => e.target.files[0] && handlePhoto(e.target.files[0])} />
+                  <p className="text-xs text-muted-foreground">Optionnel — tu pourras le changer</p>
+                </div>
+
+                {/* Prénom */}
+                <div>
+                  <p className="text-sm font-semibold text-foreground mb-2 text-center">
+                    {INTERVIEW_STEPS[2].question}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={answers[2]}
+                      onChange={(e) => setAnswerAtIndex(2, e.target.value)}
+                      placeholder={INTERVIEW_STEPS[2].placeholder}
+                      className="h-12 text-center text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm flex-1"
+                    />
+                    <motion.button
+                      whileTap={{ scale: 0.96 }}
+                      onClick={toggleMic}
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
+                      style={{
+                        background: listening ? "#ef4444" : "linear-gradient(135deg, #1A4D3E, #2D9F82)",
+                      }}
+                    >
+                      {listening ? <MicOff className="w-5 h-5 text-white" /> : <Mic className="w-5 h-5 text-white" />}
+                    </motion.button>
+                  </div>
+                </div>
               </div>
             )}
 
-            {/* Voice + text */}
-            {currentStepData.type === "voice" && (
-              <>
-                <motion.button
-                  whileTap={{ scale: 0.96 }}
-                  onClick={toggleMic}
-                  className="relative w-32 h-32 rounded-full flex items-center justify-center mb-8 transition-all"
-                  style={{
-                    background: listening ? "#ef4444" : "linear-gradient(135deg, #1A4D3E, #2D9F82)",
-                    boxShadow: listening ? "0 0 50px rgba(239,68,68,0.45)" : "0 12px 40px rgba(26,77,62,0.35)",
-                  }}
-                >
-                  {listening && <div className="absolute inset-0 rounded-full border-4 border-red-400 animate-ping" />}
-                  {listening ? <MicOff className="w-14 h-14 text-white" /> : <Mic className="w-14 h-14 text-white" />}
-                </motion.button>
-
-                <p className="text-sm text-muted-foreground mb-4 font-medium">
-                  {listening ? "Je t'écoute..." : "Appuie pour dicter ou tape ci-dessous"}
-                </p>
-                <Input
-                  value={currentAnswer}
-                  onChange={(e) => setCurrentAnswer(e.target.value)}
-                  placeholder={currentStepData.placeholder}
-                  className="h-14 text-center text-lg rounded-2xl border-2 focus-visible:ring-primary shadow-sm w-full max-w-sm mb-8"
-                />
-              </>
+            {/* Group 3 (index 2): Race + Âge */}
+            {groupIndex === 2 && (
+              <div className="w-full max-w-sm space-y-4 mb-8">
+                {/* Race (optionnel) */}
+                <div>
+                  <p className="text-sm font-semibold text-foreground mb-2">
+                    {INTERVIEW_STEPS[3].question} <span className="text-muted-foreground font-normal">(optionnel)</span>
+                  </p>
+                  <Input
+                    value={answers[3]}
+                    onChange={(e) => setAnswerAtIndex(3, e.target.value)}
+                    placeholder={INTERVIEW_STEPS[3].placeholder}
+                    className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
+                  />
+                </div>
+                {/* Âge */}
+                <div>
+                  <p className="text-sm font-semibold text-foreground mb-2">
+                    {INTERVIEW_STEPS[4].question}
+                  </p>
+                  <Input
+                    value={answers[4]}
+                    onChange={(e) => setAnswerAtIndex(4, e.target.value)}
+                    placeholder={INTERVIEW_STEPS[4].placeholder}
+                    className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
+                  />
+                </div>
+              </div>
             )}
 
-            {/* Next button (not for choice) */}
-            {currentStepData.type !== "choice" && (
-              <Button
-                onClick={handleNext}
-                disabled={!canNext}
-                className="w-full max-w-sm h-14 rounded-2xl font-black text-base gap-2 gradient-primary"
-              >
-                {step === INTERVIEW_STEPS.length - 1 ? (
-                  <><Sparkles className="w-5 h-5" /> Continuer</>
-                ) : isOptionalStep && !currentAnswer.trim() ? (
-                  <>Passer <ChevronRight className="w-5 h-5" /></>
-                ) : (
-                  <>Suivant <ChevronRight className="w-5 h-5" /></>
+            {/* Group 4 (index 3): Sexe + Poids + Activité */}
+            {groupIndex === 3 && (
+              <div className="w-full max-w-sm space-y-4 mb-8">
+                {[5, 6, 7].map(idx => (
+                  <div key={idx}>
+                    <p className="text-sm font-semibold text-foreground mb-2">
+                      {INTERVIEW_STEPS[idx].question}
+                    </p>
+                    <Input
+                      value={answers[idx]}
+                      onChange={(e) => setAnswerAtIndex(idx, e.target.value)}
+                      placeholder={INTERVIEW_STEPS[idx].placeholder}
+                      className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Group 5 (index 4): Environnement + Santé */}
+            {groupIndex === 4 && (
+              <div className="w-full max-w-sm space-y-4 mb-8">
+                {/* Environnement */}
+                <div>
+                  <p className="text-sm font-semibold text-foreground mb-2">
+                    {INTERVIEW_STEPS[8].question}
+                  </p>
+                  <Input
+                    value={answers[8]}
+                    onChange={(e) => setAnswerAtIndex(8, e.target.value)}
+                    placeholder={INTERVIEW_STEPS[8].placeholder}
+                    className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
+                  />
+                </div>
+                {/* Santé (optionnel) */}
+                <div>
+                  <p className="text-sm font-semibold text-foreground mb-2">
+                    {INTERVIEW_STEPS[9].question} <span className="text-muted-foreground font-normal">(optionnel)</span>
+                  </p>
+                  <Input
+                    value={answers[9]}
+                    onChange={(e) => setAnswerAtIndex(9, e.target.value)}
+                    placeholder={INTERVIEW_STEPS[9].placeholder}
+                    className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Next button (not for goal choice — that auto-advances) */}
+            {groupIndex !== 0 && (
+              <>
+                <Button
+                  onClick={handleNext}
+                  disabled={!canNext}
+                  className="w-full max-w-sm h-14 rounded-2xl font-black text-base gap-2 gradient-primary"
+                >
+                  {groupIndex === STEP_GROUPS.length - 1 ? (
+                    <><Sparkles className="w-5 h-5" /> Continuer</>
+                  ) : (
+                    <>Suivant <ChevronRight className="w-5 h-5" /></>
+                  )}
+                </Button>
+
+                {/* Quick-start link — available from group 2 onwards */}
+                {groupIndex >= 1 && (
+                  <button
+                    onClick={handleQuickStart}
+                    className="mt-3 text-sm text-muted-foreground underline underline-offset-2"
+                  >
+                    Remplir plus tard
+                  </button>
                 )}
-              </Button>
+              </>
             )}
           </motion.div>
         </AnimatePresence>
