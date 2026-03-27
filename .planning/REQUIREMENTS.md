@@ -24,10 +24,10 @@
 
 ### Cache & Propagation (CACHE)
 
-- [ ] **CACHE-01**: CombinedFAB appelle invalidateHome apres chaque log (poids, eau, balade)
-- [ ] **CACHE-02**: Home cache invalide apres suppression d'un chien
-- [ ] **CACHE-03**: Home cache invalide apres renommage ou changement photo chien
-- [ ] **CACHE-04**: recentScans recharge dans Nutri apres retour de Scan
+- [x] **CACHE-01**: CombinedFAB appelle invalidateHome apres chaque log (poids, eau, balade)
+- [x] **CACHE-02**: Home cache invalide apres suppression d'un chien
+- [x] **CACHE-03**: Home cache invalide apres renommage ou changement photo chien
+- [x] **CACHE-04**: recentScans recharge dans Nutri apres retour de Scan
 
 ### UX & Securite (UX)
 
@@ -69,10 +69,10 @@
 | STALE-04 | Phase 2 | Complete |
 | STALE-05 | Phase 2 | Complete |
 | STALE-06 | Phase 2 | Complete |
-| CACHE-01 | Phase 3 | Pending |
-| CACHE-02 | Phase 3 | Pending |
-| CACHE-03 | Phase 3 | Pending |
-| CACHE-04 | Phase 3 | Pending |
+| CACHE-01 | Phase 3 | Complete |
+| CACHE-02 | Phase 3 | Complete |
+| CACHE-03 | Phase 3 | Complete |
+| CACHE-04 | Phase 3 | Complete |
 | UX-01 | Phase 3 | Complete |
 | UX-02 | Phase 3 | Complete |
 | UX-03 | Phase 3 | Complete |
