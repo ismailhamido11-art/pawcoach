@@ -10,6 +10,19 @@ Deno.serve(async (req) => {
 
     if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
 
+    // Input length validation — FIX-10
+    const MAX_INPUT_LENGTH = 2000;
+    if (typeof text === 'string' && text.length > MAX_INPUT_LENGTH) {
+      return Response.json({ error: 'Texte trop long. Maximum 2000 caractères.' }, { status: 400 });
+    }
+    if (Array.isArray(messages)) {
+      for (const m of messages) {
+        if (m?.role === 'user' && typeof m?.content === 'string' && m.content.length > MAX_INPUT_LENGTH) {
+          return Response.json({ error: 'Message trop long. Maximum 2000 caractères.' }, { status: 400 });
+        }
+      }
+    }
+
     // Server-side quota check — prevents client-side bypass
     const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
     if (!isPremium) {

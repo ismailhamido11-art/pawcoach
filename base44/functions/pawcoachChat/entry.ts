@@ -10,6 +10,16 @@ Deno.serve(async (req) => {
 
     if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
 
+    // Input length validation — FIX-10
+    const MAX_MSG_LENGTH = 2000;
+    if (Array.isArray(rawMessages)) {
+      for (const m of rawMessages) {
+        if (m?.role === 'user' && typeof m?.content === 'string' && m.content.length > MAX_MSG_LENGTH) {
+          return Response.json({ error: 'Message trop long. Maximum 2000 caractères.' }, { status: 400 });
+        }
+      }
+    }
+
     // Sanitize helper — used throughout to prevent prompt injection
     const sanitize = (s: any, max = 500) => String(s || '').substring(0, max).replace(/[<>]/g, '');
 

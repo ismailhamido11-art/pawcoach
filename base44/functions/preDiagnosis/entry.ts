@@ -10,6 +10,15 @@ Deno.serve(async (req) => {
 
     if (!symptoms) return Response.json({ error: 'Symptoms required' }, { status: 400 });
 
+    // Input length validation — FIX-10
+    const MAX_INPUT_LENGTH = 2000;
+    if (typeof symptoms === 'string' && symptoms.length > MAX_INPUT_LENGTH) {
+      return Response.json({ error: 'Symptoms trop longs. Maximum 2000 caractères.' }, { status: 400 });
+    }
+    if (typeof additional_info === 'string' && additional_info.length > MAX_INPUT_LENGTH) {
+      return Response.json({ error: 'additional_info trop long. Maximum 2000 caractères.' }, { status: 400 });
+    }
+
     // Server-side quota check — prevents client-side bypass
     const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
     if (!isPremium) {
