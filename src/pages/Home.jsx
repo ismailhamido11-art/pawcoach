@@ -70,49 +70,64 @@ export default function Home() {
   const [dog, setDog] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [todayCheckin, setTodayCheckin] = useState(null);
-  const [streak, setStreak] = useState(null);
-  const [recentCheckins, setRecentCheckins] = useState([]);
+  // Dog data group — all fetched entity data for the active dog
+  const [dogData, setDogData] = useState({
+    todayCheckin: null,
+    streak: null,
+    recentCheckins: [],
+    records: [],
+    exercises: [],
+    scans: [],
+    dailyLogs: [],
+    diagnosisReports: [],
+    nutritionPlans: [],
+    trainingBookmarks: [],
+    behaviorBookmarks: [],
+  });
+
+  // Checkin UI state
   const [submitting, setSubmitting] = useState(false);
 
-  const [records, setRecords] = useState([]);
-  const [exercises, setExercises] = useState([]);
-  const [scans, setScans] = useState([]);
-  const [dailyLogs, setDailyLogs] = useState([]);
-  const [diagnosisReports, setDiagnosisReports] = useState([]);
-  const [nutritionPlans, setNutritionPlans] = useState([]);
-  const [trainingBookmarks, setTrainingBookmarks] = useState([]);
-  const [behaviorBookmarks, setBehaviorBookmarks] = useState([]);
-
-  const [weeklyInsight, setWeeklyInsight] = useState(null);
-  const [previousInsight, setPreviousInsight] = useState(null);
-  const [pastInsights, setPastInsights] = useState([]);
+  // Insights group — weekly AI insights data
+  const [insights, setInsights] = useState({
+    weeklyInsight: null,
+    previousInsight: null,
+    pastInsights: [],
+  });
   const [insightExpanded, setInsightExpanded] = useState(false);
   const [markingRead, setMarkingRead] = useState(false);
+
+  // Destructure for easy consumption in render
+  const { todayCheckin, streak, recentCheckins, records, exercises, scans, dailyLogs, diagnosisReports, nutritionPlans, trainingBookmarks, behaviorBookmarks } = dogData;
+  const { weeklyInsight, previousInsight, pastInsights } = insights;
 
   const [milestone, setMilestone] = useState(null);
   const [showPremiumNudge, setShowPremiumNudge] = useState(false);
   const [showPostTrial, setShowPostTrial] = useState(false);
 
   const applyDogData = ({ checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks }) => {
-    setRecords(recs || []);
-    setExercises(exs || []);
-    setScans(scs || []);
-    setDailyLogs(logs || []);
-    setDiagnosisReports(diags || []);
-    setNutritionPlans(plans || []);
-    setTrainingBookmarks(tBks || []);
-    setBehaviorBookmarks(bBks || []);
-    setTodayCheckin(checkins?.length > 0 ? checkins[0] : null);
-    if (streaks?.length > 0) setStreak(streaks[0]);
-    setRecentCheckins((recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7));
+    setDogData({
+      todayCheckin: checkins?.length > 0 ? checkins[0] : null,
+      streak: streaks?.length > 0 ? streaks[0] : null,
+      recentCheckins: (recent || []).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7),
+      records: recs || [],
+      exercises: exs || [],
+      scans: scs || [],
+      dailyLogs: logs || [],
+      diagnosisReports: diags || [],
+      nutritionPlans: plans || [],
+      trainingBookmarks: tBks || [],
+      behaviorBookmarks: bBks || [],
+    });
   };
 
-  const applyInsights = (insights) => {
-    if (!insights) return;
-    setWeeklyInsight(insights.weeklyInsight ?? null);
-    setPreviousInsight(insights.previousInsight ?? null);
-    setPastInsights(insights.pastInsights ?? []);
+  const applyInsights = (insightsData) => {
+    if (!insightsData) return;
+    setInsights({
+      weeklyInsight: insightsData.weeklyInsight ?? null,
+      previousInsight: insightsData.previousInsight ?? null,
+      pastInsights: insightsData.pastInsights ?? [],
+    });
   };
 
   const loadInsights = async (u, dogId) => {
@@ -170,13 +185,13 @@ export default function Home() {
         if (dogs && dogs.length > 0) {
           const d = getActiveDog(dogs);
           setDog(d);
-          const dogData = await fetchDogData(d.id);
+          const fetchedDogData = await fetchDogData(d.id);
           if (!mounted) return;
-          applyDogData(dogData);
-          const insights = await loadInsights(u, d.id);
+          applyDogData(fetchedDogData);
+          const fetchedInsights = await loadInsights(u, d.id);
           if (!mounted) return;
           // Update cache with fresh data
-          setCachedHome({ user: u, dog: d, dogData, insights });
+          setCachedHome({ user: u, dog: d, dogData: fetchedDogData, insights: fetchedInsights });
           applyPremiumLogic(u);
         } else {
           navigate(createPageUrl("Onboarding"));
@@ -256,17 +271,23 @@ export default function Home() {
 
     // Optimistic update
     const optimisticCheckin = { mood, energy, appetite, notes, symptoms, date: getTodayString(), ai_response: null, _syncing: true };
-    setTodayCheckin(optimisticCheckin);
-    setRecentCheckins(prev => [optimisticCheckin, ...prev].slice(0, 7));
+    setDogData(prev => ({
+      ...prev,
+      todayCheckin: optimisticCheckin,
+      recentCheckins: [optimisticCheckin, ...prev.recentCheckins].slice(0, 7),
+    }));
     if (navigator.vibrate) navigator.vibrate([30, 20, 30]);
 
     try {
       const response = await base44.functions.invoke("dailyCheckinProcess", { dogId: dog.id, mood, energy, appetite, notes, symptoms: symptoms || [], behavior_notes: behaviorNotes || "" });
       const result = response.data || {};
       const newCheckin = result.checkin || { mood, energy, appetite, ai_response: result.aiResponse, date: getTodayString() };
-      setTodayCheckin(newCheckin);
-      setStreak(result.streak || streak);
-      setRecentCheckins(prev => [newCheckin, ...prev.filter(c => !c._syncing)].slice(0, 7));
+      setDogData(prev => ({
+        ...prev,
+        todayCheckin: newCheckin,
+        streak: result.streak || prev.streak,
+        recentCheckins: [newCheckin, ...prev.recentCheckins.filter(c => !c._syncing)].slice(0, 7),
+      }));
       const newStreak = result.streak?.current_streak;
       if (newStreak) {
         const ms = MILESTONES.filter(m => m.days <= newStreak).pop();
@@ -279,8 +300,11 @@ export default function Home() {
       checkStreakBadges(dog.id, user.email).catch(() => {});
     } catch (err) {
       console.error("Check-in error:", err);
-      setTodayCheckin(null);
-      setRecentCheckins(prev => prev.filter(c => !c._syncing));
+      setDogData(prev => ({
+        ...prev,
+        todayCheckin: null,
+        recentCheckins: prev.recentCheckins.filter(c => !c._syncing),
+      }));
       toast.error("Erreur lors du check-in. Réessaie dans quelques instants.");
     } finally {
       setSubmitting(false);
@@ -297,11 +321,11 @@ export default function Home() {
         const d = getActiveDog(dogs);
         setUser(u);
         setDog(d);
-        const dogData = await fetchDogData(d.id);
-        applyDogData(dogData);
-        const insights = await loadInsights(u, d.id);
+        const fetchedDogData = await fetchDogData(d.id);
+        applyDogData(fetchedDogData);
+        const fetchedInsights = await loadInsights(u, d.id);
         // Re-cache fresh data after manual refresh
-        setCachedHome({ user: u, dog: d, dogData, insights });
+        setCachedHome({ user: u, dog: d, dogData: fetchedDogData, insights: fetchedInsights });
       }
     } catch (e) { console.error(e); toast.error("Impossible de rafraîchir les données. Vérifie ta connexion."); }
   };
@@ -311,8 +335,11 @@ export default function Home() {
     setMarkingRead(true);
     try {
       await WeeklyInsight.update(weeklyInsight.id, { is_read: true });
-      setPastInsights(prev => [weeklyInsight, ...prev].slice(0, 5));
-      setWeeklyInsight(null);
+      setInsights(prev => ({
+        ...prev,
+        weeklyInsight: null,
+        pastInsights: [weeklyInsight, ...prev.pastInsights].slice(0, 5),
+      }));
       setInsightExpanded(false);
     } catch (e) { console.error("Mark read error:", e); toast.error("Impossible de marquer le bilan comme lu. Réessaie."); }
     finally { setMarkingRead(false); }
@@ -332,7 +359,7 @@ export default function Home() {
       diagnosisReports: diagnosisReports || [],
       nutritionPlans: nutritionPlans || [],
     });
-  }, [dog, records, exercises, scans, recentCheckins, dailyLogs, todayCheckin, streak, diagnosisReports, nutritionPlans]);
+  }, [dog, dogData]);
 
   const quickActions = [
     {
