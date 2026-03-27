@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { action, dogId, vetEmail, vetName, sections, accessId, inviteCode } = await req.json();
+    const { action, dogId, vetEmail, vetName, sections, accessId, inviteCode, title, content, category, is_urgent } = await req.json();
 
     // --- OWNER: Invite a vet ---
     if (action === 'invite') {
@@ -262,6 +262,29 @@ Deno.serve(async (req) => {
         growthEntries: growthEntries || [],
         dailyLogs: dailyLogs || [],
       });
+    }
+
+    // --- VET: Add a note (with access check) ---
+    if (action === 'addVetNote') {
+      if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
+
+      // Verify active access
+      const accesses = await base44.asServiceRole.entities.SharedVetAccess.filter({ dog_id: dogId, vet_email: user.email, status: 'active' });
+      if (!accesses || accesses.length === 0) {
+        return Response.json({ error: 'No active access to this dog' }, { status: 403 });
+      }
+
+      const note = await base44.asServiceRole.entities.VetNote.create({
+        dog_id: dogId,
+        vet_email: user.email,
+        vet_name: user.full_name || vetName || '',
+        title: String(title || '').trim(),
+        content: String(content || '').trim(),
+        category: category || 'observation',
+        is_urgent: Boolean(is_urgent),
+      });
+
+      return Response.json({ success: true, note });
     }
 
     return Response.json({ error: 'Unknown action' }, { status: 400 });
