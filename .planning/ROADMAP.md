@@ -27,7 +27,7 @@
 ## Phases
 
 - [x] **Phase 1: PWA** - Creer manifest.json et sw.js pour rendre l'app installable (completed 2026-03-27)
-- [ ] **Phase 2: CRON** - Rendre les deux fonctions CRON restantes scalables
+- [x] **Phase 2: CRON** - Rendre les deux fonctions CRON restantes scalables (completed 2026-03-27)
 - [ ] **Phase 3: SEC** - Corriger les 3 failles de securite backend restantes
 - [ ] **Phase 4: SPLIT** - Decouperles 4 monolithes restants en composants separes
 - [ ] **Phase 5: A11Y** - Ajouter aria-labels et navigation clavier sur les boutons interactifs
@@ -60,7 +60,7 @@ Plans:
   3. Les deux fonctions passent le code review sans aucun appel .list() non filtre
 **Plans**: 1 plan
 Plans:
-- [ ] 02-cron-01-PLAN.md — Remplacer list() globaux dans monthlySummary et streakReminder
+- [x] 02-cron-01-PLAN.md — Remplacer list() globaux dans monthlySummary et streakReminder
 
 ### Phase 3: SEC
 **Goal**: Les trois failles de securite backend restantes sont bouchees
@@ -117,7 +117,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. PWA | 1/1 | Complete   | 2026-03-27 |
-| 2. CRON | 0/1 | Not started | - |
+| 2. CRON | 1/1 | Complete | 2026-03-27 |
 | 3. SEC | 0/TBD | Not started | - |
 | 4. SPLIT | 0/TBD | Not started | - |
 | 5. A11Y | 0/TBD | Not started | - |
