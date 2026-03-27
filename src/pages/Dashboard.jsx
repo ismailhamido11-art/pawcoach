@@ -73,11 +73,11 @@ export default function Dashboard() {
         setDog(d);
 
         const [recs, cks, stk, prog, logs, foodScans, growthData] = await Promise.all([
-          HealthRecord.filter({ dog_id: d.id }, "-date", 100),
-          DailyCheckin.filter({ dog_id: d.id }, "-date", 90),
-          Streak.filter({ dog_id: d.id }),
-          UserProgress.filter({ dog_id: d.id }),
-          DailyLog.filter({ dog_id: d.id }, "-date", 90),
+          HealthRecord.filter({ dog_id: d.id }, "-date", 100).catch(() => []),
+          DailyCheckin.filter({ dog_id: d.id }, "-date", 90).catch(() => []),
+          Streak.filter({ dog_id: d.id }).catch(() => []),
+          UserProgress.filter({ dog_id: d.id }).catch(() => []),
+          DailyLog.filter({ dog_id: d.id }, "-date", 90).catch(() => []),
           FoodScan.filter({ dog_id: d.id }, "-timestamp", 20).catch(() => []),
           GrowthEntry.filter({ dog_id: d.id }, "-date", 50).catch(() => []),
         ]);
