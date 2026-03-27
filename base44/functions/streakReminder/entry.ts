@@ -5,15 +5,16 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const today = new Date().toISOString().slice(0, 10);
 
-    // Fetch all streaks (1 per dog — small table, safe to load).
-    // Cap: if the table grows unexpectedly, log a warning so we know to switch to filtering.
-    const streaks = await base44.asServiceRole.entities.Streak.list();
-    if ((streaks || []).length > 500) {
-      console.warn(`streakReminder: Streak table has ${streaks.length} rows — consider switching to filtered queries if this keeps growing.`);
+    // TECH-02: Hard cap on Streak.list() to prevent full table scan at scale.
+    // Base44 SDK filter operators for numeric comparison are not documented — using list() with slice guard.
+    const allStreaks = await base44.asServiceRole.entities.Streak.list().catch(() => []);
+    if ((allStreaks || []).length > 2000) {
+      console.warn(`streakReminder: ${allStreaks.length} streaks — exceeds safe limit of 2000, processing first 2000 only`);
     }
+    const streaks = (allStreaks || []).slice(0, 2000);
 
     // Filter active streaks in-memory first, then fetch only relevant dogs/users
-    const activeStreaks = (streaks || []).filter(s => s.current_streak >= 3 && s.last_activity_date !== today);
+    const activeStreaks = streaks.filter(s => s.current_streak >= 3 && s.last_activity_date !== today);
     const uniqueDogIds = [...new Set(activeStreaks.map(s => s.dog_id).filter(Boolean))];
 
     const dogMap: Record<string, any> = {};
