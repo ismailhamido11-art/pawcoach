@@ -8,13 +8,8 @@ Deno.serve(async (req) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Fetch all data upfront to avoid N+1 queries
+    // Fetch medications upfront (filtered by type — avoids loading all HealthRecords)
     const medications = await base44.asServiceRole.entities.HealthRecord.filter({ type: "medication" });
-    const allDogs = await base44.asServiceRole.entities.Dog.list();
-    const allUsers = await base44.asServiceRole.entities.User.list();
-
-    const dogMap = new Map((allDogs || []).map(d => [d.id, d]));
-    const userMap = new Map((allUsers || []).map(u => [u.email, u]));
 
     // Only send reminders at specific intervals: 14, 7, 3, 1, 0 days before
     const REMINDER_DAYS = [14, 7, 3, 1, 0];
@@ -27,6 +22,20 @@ Deno.serve(async (req) => {
       const diffDays = Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
       return diffDays >= 0 && REMINDER_DAYS.includes(diffDays);
     });
+
+    // Build dog and user maps from upcoming medications only (targeted — avoids Dog.list/User.list)
+    const uniqueDogIds = [...new Set((upcoming || []).map(r => r.dog_id).filter(Boolean))];
+    const dogMap = new Map<string, any>();
+    for (const dogId of uniqueDogIds) {
+      const dogs = await base44.asServiceRole.entities.Dog.filter({ id: dogId });
+      if (dogs?.[0]) dogMap.set(dogId, dogs[0]);
+    }
+    const uniqueOwnerEmails = [...new Set([...dogMap.values()].map(d => d.owner).filter(Boolean))];
+    const userMap = new Map<string, any>();
+    for (const email of uniqueOwnerEmails) {
+      const users = await base44.asServiceRole.entities.User.filter({ email });
+      if (users?.[0]) userMap.set(email, users[0]);
+    }
 
     let sent = 0;
     for (const record of upcoming) {

@@ -5,24 +5,29 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const today = new Date().toISOString().slice(0, 10);
 
-    // Fetch all data upfront
-    const [streaks, dogs, users] = await Promise.all([
-      base44.asServiceRole.entities.Streak.list(),
-      base44.asServiceRole.entities.Dog.list(),
-      base44.asServiceRole.entities.User.list(),
-    ]);
+    // Fetch all streaks (1 per dog — small table, safe to load)
+    const streaks = await base44.asServiceRole.entities.Streak.list();
 
-    const dogMap = {};
-    for (const d of dogs || []) dogMap[d.id] = d;
+    // Filter active streaks in-memory first, then fetch only relevant dogs/users
+    const activeStreaks = (streaks || []).filter(s => s.current_streak >= 3 && s.last_activity_date !== today);
+    const uniqueDogIds = [...new Set(activeStreaks.map(s => s.dog_id).filter(Boolean))];
 
-    const userMap = {};
-    for (const u of users || []) userMap[u.email] = u;
+    const dogMap: Record<string, any> = {};
+    for (const dogId of uniqueDogIds) {
+      const dogs = await base44.asServiceRole.entities.Dog.filter({ id: dogId });
+      if (dogs?.[0]) dogMap[dogId] = dogs[0];
+    }
+    const uniqueOwnerEmails = [...new Set(Object.values(dogMap).map((d: any) => d.owner).filter(Boolean))];
+    const userMap: Record<string, any> = {};
+    for (const email of uniqueOwnerEmails) {
+      const users = await base44.asServiceRole.entities.User.filter({ email });
+      if (users?.[0]) userMap[email as string] = users[0];
+    }
 
     let remindersSent = 0;
     const notifiedEmails = new Set<string>(); // deduplicate: one email per user regardless of dog count
 
-    for (const s of streaks || []) {
-      if (s.current_streak < 3 || s.last_activity_date === today) continue;
+    for (const s of activeStreaks) {
 
       const dog = dogMap[s.dog_id];
       if (!dog) continue;

@@ -16,12 +16,6 @@ Deno.serve(async (req) => {
     const weekStart = prevMonday.toISOString().slice(0, 10);
     const weekEnd = prevSunday.toISOString().slice(0, 10);
 
-    // Fetch all dogs
-    const dogs = await base44.asServiceRole.entities.Dog.list();
-    if (!dogs || dogs.length === 0) {
-      return Response.json({ ok: true, generated: 0 });
-    }
-
     const apiKey = Deno.env.get("OPENROUTER_API_KEY");
     if (!apiKey) {
       console.warn("weeklyInsightGenerate: OPENROUTER_API_KEY not set — skipping insight generation");
@@ -29,17 +23,34 @@ Deno.serve(async (req) => {
     }
     let generated = 0;
 
-    // Fetch all users upfront for premium check
-    const allUsers = await base44.asServiceRole.entities.User.list();
+    // Fetch only premium users (avoids loading entire User table)
+    const allUsers = await base44.asServiceRole.entities.User.filter({ is_premium: true });
+    // Also include trial users (trial_expires_at in the future)
+    const trialUsers = await base44.asServiceRole.entities.User.filter({ trial_expires_at__gte: new Date().toISOString().slice(0, 10) });
+    // Merge into a single map, dedup by email
     const userMap: Record<string, any> = {};
     for (const u of allUsers || []) userMap[u.email] = u;
+    for (const u of trialUsers || []) userMap[u.email] = u;
+
+    const premiumEmails = Object.keys(userMap);
+    if (premiumEmails.length === 0) {
+      return Response.json({ ok: true, generated: 0 });
+    }
+
+    // Collect dogs for premium users only (targeted filter instead of Dog.list())
+    let dogs: any[] = [];
+    for (const email of premiumEmails) {
+      const userDogs = await base44.asServiceRole.entities.Dog.filter({ owner: email });
+      if (userDogs?.length) dogs = dogs.concat(userDogs);
+    }
+    if (dogs.length === 0) {
+      return Response.json({ ok: true, generated: 0 });
+    }
 
     for (const dog of dogs) {
-      // Premium gate: only generate insights for premium users
+      // Premium gate: confirm the owner is still in our premium map
       const owner = userMap[dog.owner];
-      if (!owner) continue; // Skip orphaned dogs (owner deleted)
-      const ownerIsPremium = owner.is_premium || (owner.trial_expires_at && new Date(owner.trial_expires_at) > new Date());
-      if (!ownerIsPremium) continue;
+      if (!owner) continue;
 
       // Dedup BEFORE LLM call: skip if insight already exists for this dog + week
       const existing = await base44.asServiceRole.entities.WeeklyInsight.filter({ dog_id: dog.id, week_start: weekStart });
