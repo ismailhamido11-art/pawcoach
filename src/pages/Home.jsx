@@ -445,7 +445,8 @@ export default function Home() {
 
   const handleQuickCheckin = async ({ mood, energy, appetite }) => {
     if (submitting) return;
-    handleCheckin({ mood, energy, appetite, notes: "", symptoms: [], behaviorNotes: "" });
+    // CRASH-01: DailyBriefing ne passe que mood — on applique des valeurs neutres par defaut
+    handleCheckin({ mood, energy: energy ?? 2, appetite: appetite ?? 2, notes: "", symptoms: [], behaviorNotes: "" });
   };
 
   if (loading) {
