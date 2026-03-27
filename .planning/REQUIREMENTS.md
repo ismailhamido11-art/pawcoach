@@ -53,6 +53,27 @@ Scan codebase post-v5.0 — .planning/codebase/CONCERNS.md (27 mars 2026)
 - next-themes removal — shadcn dep, risque de casse
 
 ## Traceability
+
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (filled by roadmapper) | | |
+| PWA-01 | Phase 1 | Pending |
+| PWA-02 | Phase 1 | Pending |
+| CRON-01 | Phase 2 | Pending |
+| CRON-02 | Phase 2 | Pending |
+| SEC-01 | Phase 3 | Pending |
+| SEC-02 | Phase 3 | Pending |
+| SEC-03 | Phase 3 | Pending |
+| SPLIT-01 | Phase 4 | Pending |
+| SPLIT-02 | Phase 4 | Pending |
+| SPLIT-03 | Phase 4 | Pending |
+| SPLIT-04 | Phase 4 | Pending |
+| A11Y-01 | Phase 5 | Pending |
+| A11Y-02 | Phase 5 | Pending |
+| PERF-01 | Phase 6 | Pending |
+| PERF-02 | Phase 6 | Pending |
+| PERF-03 | Phase 6 | Pending |
+| CLEAN-01 | Phase 7 | Pending |
+| CLEAN-02 | Phase 7 | Pending |
+| CLEAN-03 | Phase 7 | Pending |
+| CLEAN-04 | Phase 7 | Pending |
+| CLEAN-05 | Phase 7 | Pending |
