@@ -1,21 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
-<<<<<<< HEAD
   <rect width="192" height="192" rx="40" fill="#1A4D3E"/>
-  <!-- Paw pads -->
-  <ellipse cx="96" cy="115" rx="30" ry="25" fill="#F5F0E8"/>
+  <!-- Main paw pad -->
+  <ellipse cx="96" cy="118" rx="30" ry="25" fill="#F5F0E8"/>
   <!-- Toe pads -->
-  <ellipse cx="62" cy="90" rx="14" ry="16" fill="#F5F0E8"/>
-  <ellipse cx="82" cy="75" rx="14" ry="16" fill="#F5F0E8"/>
-  <ellipse cx="110" cy="75" rx="14" ry="16" fill="#F5F0E8"/>
-  <ellipse cx="130" cy="90" rx="14" ry="16" fill="#F5F0E8"/>
-=======
-  <rect width="192" height="192" rx="32" fill="#1A4D3E"/>
-  <g transform="translate(96,96)" fill="#F5F0E8">
-    <ellipse cx="-28" cy="-32" rx="14" ry="18"/>
-    <ellipse cx="28" cy="-32" rx="14" ry="18"/>
-    <ellipse cx="-48" cy="0" rx="12" ry="16"/>
-    <ellipse cx="48" cy="0" rx="12" ry="16"/>
-    <ellipse cx="0" cy="16" rx="28" ry="24"/>
-  </g>
->>>>>>> 55eb949 (fix(01-pwa): add PWA icons SVG and fix manifest paths)
+  <ellipse cx="62" cy="88" rx="14" ry="16" fill="#F5F0E8"/>
+  <ellipse cx="82" cy="72" rx="14" ry="16" fill="#F5F0E8"/>
+  <ellipse cx="110" cy="72" rx="14" ry="16" fill="#F5F0E8"/>
+  <ellipse cx="130" cy="88" rx="14" ry="16" fill="#F5F0E8"/>
 </svg>
