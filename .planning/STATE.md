@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v5.0
 milestone_name: "Hardening & Refactoring"
 status: in_progress
-stopped_at: "Phase 4 Plan 1 complete — Monolith Split (4 components extracted)"
+stopped_at: "Phase 7 Plan 1 complete — Polish (6 code quality fixes)"
 last_updated: "2026-03-27"
 last_activity: 2026-03-27
 progress:
   total_phases: 7
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
-  percent: 14
+  completed_phases: 2
+  total_plans: 2
+  completed_plans: 2
+  percent: 29
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 
 ## Current Position
 
-Phase: 4 of 7 (Monolith Split) — COMPLETE
+Phase: 7 of 7 (Polish) — COMPLETE
 Plan: 1/1 done
-Status: In progress (phases 1, 2, 3, 5, 6, 7 still pending)
-Last activity: 2026-03-27 — Phase 4 Plan 1 Monolith Split executed (4 components extracted)
+Status: In progress (phases 1, 2, 3, 5, 6 still pending)
+Last activity: 2026-03-27 — Phase 7 Plan 1 Polish executed (6 code quality fixes)
 
-Progress: [##░░░░░░░░] 14%
+Progress: [###░░░░░░░] 29%
 
 ## Performance Metrics
 
@@ -44,6 +44,7 @@ Progress: [##░░░░░░░░] 14%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 4 — Monolith Split | 1 | ~90min | ~90min |
+| 7 — Polish | 1 | ~30min | ~30min |
 
 *Updated after each plan completion*
 
@@ -57,6 +58,8 @@ Progress: [##░░░░░░░░] 14%
 - v4.0: Historique decisions dans STATE.md precedent (v4.0 archive)
 - Phase 4: GOAL_SUGGESTIONS exported from CompletionCard (used both in CompletionCard and AITrainingProgram generate screen)
 - Phase 4: MOOD_KEY kept in WalkMode (saveMoodData function stays there, not in WalkSummary)
+- Phase 7: dogData/insights destructured at component level pour backward-compat avec le JSX existant sans modifier les props
+- Phase 7: POLISH-03 deja resolu dans code existant — unlockBadge utilise badge_id dans son filter depuis les phases precedentes
 
 ### Pending Todos
 
@@ -69,5 +72,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-27
-Stopped at: Phase 4 Plan 1 complete — 4 components extracted (LabelScanMode, CompletionCard, WalkSummary, MealPlanGenerator)
+Stopped at: Phase 7 Plan 1 complete — 6 code quality fixes (POLISH-01 through POLISH-06)
 Resume file: None
