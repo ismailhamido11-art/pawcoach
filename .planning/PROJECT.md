@@ -48,9 +48,17 @@ None — ready for v9.0
 - Securite UX : email proprietaire retire, premium card masquee, handleSaveUser try/catch, checkWalkBadges idempotent, training rollback
 - Score readiness : 9.0+/10
 
-## No Active Milestone
+## Current Milestone: v9.0 "Production Ready"
 
-Ready for v9.0. Run `/gsd:new-milestone` to start.
+**Goal:** Passer PawCoach au rouleau compresseur — auditer chaque dimension par le code (completude, architecture, flux, qualite percue), puis corriger tout pour avoir une app presentable.
+
+**Pipeline :**
+- Phase 0: Socle (CGC re-index + map-codebase)
+- Phases 1-4: Audits (radiographie, architecture, flux, qualite percue)
+- Phase 5: Synthese (agreger, prioriser, creer les phases de fix)
+- Phases 6+: Corrections (ajoutees dynamiquement apres synthese)
+
+**Methode :** 100% code-based, zero Chrome. CGC en socle. GSD autonomous.
 
 ## Context
 
