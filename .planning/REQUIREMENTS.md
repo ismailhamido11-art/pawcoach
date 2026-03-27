@@ -26,10 +26,10 @@ Scan codebase post-v4.0 — .planning/codebase/CONCERNS.md (27 mars 2026)
 
 ### SPLIT — Split Monolithes
 
-- [ ] **SPLIT-01**: Scan.jsx decoupe — LabelScanMode extrait comme composant separe (H5)
-- [ ] **SPLIT-02**: AITrainingProgram.jsx — ProgramBilanModal et CompletionCard extraits (H5)
-- [ ] **SPLIT-03**: WalkMode.jsx — WalkSummary extrait comme composant separe (H5)
-- [ ] **SPLIT-04**: NutritionMealPlan.jsx — sections generateur et historique separees (H5)
+- [x] **SPLIT-01**: Scan.jsx decoupe — LabelScanMode extrait comme composant separe (H5)
+- [x] **SPLIT-02**: AITrainingProgram.jsx — ProgramBilanModal et CompletionCard extraits (H5)
+- [x] **SPLIT-03**: WalkMode.jsx — WalkSummary extrait comme composant separe (H5)
+- [x] **SPLIT-04**: NutritionMealPlan.jsx — sections generateur et historique separees (H5)
 
 ### UX — Confirmations PWA
 
@@ -72,10 +72,10 @@ None — all concerns scoped to this milestone.
 | REFAC-02 | Phase 3 | Pending |
 | REFAC-03 | Phase 3 | Pending |
 | REFAC-04 | Phase 3 | Pending |
-| SPLIT-01 | Phase 4 | Pending |
-| SPLIT-02 | Phase 4 | Pending |
-| SPLIT-03 | Phase 4 | Pending |
-| SPLIT-04 | Phase 4 | Pending |
+| SPLIT-01 | Phase 4 | Complete |
+| SPLIT-02 | Phase 4 | Complete |
+| SPLIT-03 | Phase 4 | Complete |
+| SPLIT-04 | Phase 4 | Complete |
 | UX-01 | Phase 5 | Pending |
 | PERF-01 | Phase 6 | Pending |
 | PERF-02 | Phase 6 | Pending |

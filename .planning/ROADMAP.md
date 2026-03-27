@@ -27,7 +27,7 @@
 - [ ] **Phase 1: Security** - Corriger les 3 failles CRITICAL (ownership, privacy, chat unbounded)
 - [ ] **Phase 2: Scalability** - Borner les 6 CRONs et les queries frontend sans limite
 - [ ] **Phase 3: Utils Extraction** - Extraire les fonctions dupliquees dans des fichiers partages
-- [ ] **Phase 4: Monolith Split** - Decouper les 4 fichiers monolithes en composants separes
+- [x] **Phase 4: Monolith Split** - Decouper les 4 fichiers monolithes en composants separes
 - [ ] **Phase 5: UX Confirmations** - Remplacer les 6 window.confirm par AlertDialog PWA-friendly
 - [ ] **Phase 6: Performance** - Nettoyer le bundle et les fuites memoire
 - [ ] **Phase 7: Polish** - Consolider l'etat Home, fallbacks, pagination, analytics TTL
