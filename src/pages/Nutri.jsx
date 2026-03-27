@@ -239,6 +239,27 @@ export default function Nutri() {
       init(authUser || undefined);
     }
   }, [isLoadingAuth, authUser]);
+
+  // CACHE-04: Refresh recentScans when returning to this page (after Scan)
+  useEffect(() => {
+    const refreshScans = () => {
+      if (dog?.id) {
+        FoodScan.filter({ dog_id: dog.id }, "-timestamp", 5)
+          .then(scans => setRecentScans(scans || []))
+          .catch(() => {});
+      }
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") refreshScans();
+    };
+    window.addEventListener("focus", refreshScans);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("focus", refreshScans);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [dog?.id]);
+
   useEffect(() => {
     const ta = textareaRef.current;
     if (!ta) return;
