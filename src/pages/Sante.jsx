@@ -223,7 +223,7 @@ export default function Sante() {
       </div>
 
       {/* Illustrated card — health overview */}
-      <div className="px-4 pt-4 pb-2">
+      <div className="px-5 pt-4 pb-2">
         <div className="bg-gradient-to-r from-emerald-50 to-teal-50/50 rounded-3xl p-4 border border-emerald-100/50 shadow-sm flex items-center gap-4">
           <StorysetIllustration name="vet-checkup" className="w-24 h-24 flex-shrink-0" />
           <div className="flex-1 min-w-0">
@@ -266,7 +266,7 @@ export default function Sante() {
             )}
             {activeTab === "malade" && (
               <>
-                <div className="px-4 pt-4 pb-2">
+                <div className="px-5 pt-4 pb-2">
                   <div className="bg-gradient-to-r from-red-50 to-orange-50/50 rounded-3xl p-4 border border-red-100/50 shadow-sm flex items-center gap-4">
                     <div className="flex-1 min-w-0">
                       <p className="text-[14px] font-bold text-foreground">Diagnostic IA</p>
@@ -297,7 +297,7 @@ export default function Sante() {
             )}
             {activeTab === "findvet" && (
               <Suspense fallback={
-                <div className="px-4 pt-4 space-y-3">
+                <div className="px-5 pt-4 space-y-3">
                   <div className="flex gap-2">
                     {[1, 2, 3].map(i => <div key={i} className="flex-1 h-16 rounded-2xl bg-muted/60 animate-pulse" />)}
                   </div>
@@ -313,7 +313,7 @@ export default function Sante() {
       </PullToRefresh>
       {/* PDF export — visible uniquement sur l'onglet carnet */}
       {activeTab === "carnet" && dog && !loading && (
-        <div className="px-4 pb-4">
+        <div className="px-5 pb-4">
           <DownloadHealthPDF dogId={dog.id} dogName={dog.name} />
         </div>
       )}

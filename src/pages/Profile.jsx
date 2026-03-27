@@ -128,7 +128,7 @@ export default function Profile() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
-        className="px-5 pt-4 space-y-4"
+        className="px-5 pt-4 space-y-5"
       >
         <motion.div custom={0} variants={sectionVariants} initial="hidden" animate="visible">
           <DogSwitcher

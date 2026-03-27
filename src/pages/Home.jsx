@@ -532,7 +532,7 @@ export default function Home() {
 
         {/* === Below the fold — scroll to discover === */}
         <motion.div
-          className="px-5 space-y-6"
+          className="px-5 space-y-5"
           initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
