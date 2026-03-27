@@ -11,6 +11,7 @@ import PullToRefresh from "../components/PullToRefresh";
 import ActiveProgramCards from "../components/home/ActiveProgramCards";
 import WeeklyInsightCard from "../components/home/WeeklyInsightCard";
 import ChatFAB from "../components/ChatFAB";
+import CombinedFAB from "../components/CombinedFAB";
 import { checkStreakBadges } from "@/components/achievements/badgeUtils";
 import { buildRecommendations, getTodayString } from "@/utils/recommendations";
 
@@ -676,6 +677,13 @@ export default function Home() {
         <ChatFAB offsetBottom={4.5} />
       </PullToRefresh>
       <BottomNav currentPage="Home" />
+
+      {/* CRASH-04: Log rapide FAB — poids, eau, balade */}
+      <CombinedFAB
+        dog={dog}
+        user={user}
+        onLogSaved={invalidateHome}
+      />
 
       <PremiumNudgeSheet
         visible={showPremiumNudge}
