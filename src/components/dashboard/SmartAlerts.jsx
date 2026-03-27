@@ -198,18 +198,19 @@ export function computeAlerts({ dog, checkins = [], records = [], streak, dailyL
     ...dailyLogs.filter(l => l.weight_kg).map(l => ({ date: l.date, v: l.weight_kg })),
   ].sort((a, b) => a.date > b.date ? 1 : -1);
 
-  if (allWeights.length >= 2 && dog?.weight) {
+  if (allWeights.length >= 2) {
     const latest = allWeights[allWeights.length - 1].v;
-    const drift = latest - dog.weight;
-    const pct = Math.abs(drift / dog.weight) * 100;
+    const previous = allWeights[allWeights.length - 2].v;
+    const drift = latest - previous;
+    const pct = previous > 0 ? Math.abs(drift / previous) * 100 : 0;
     if (pct >= 10) {
       alerts.push({
         id: "weight_drift",
-        severity: drift > 0 ? "warning" : "warning",
+        severity: "warning",
         icon: Scale,
         iconColor: "#d97706",
         title: `Variation de poids : ${drift > 0 ? "+" : ""}${drift.toFixed(1)} kg`,
-        desc: `${pct.toFixed(0)}% d'écart par rapport au poids de référence (${dog.weight} kg). Consulte ton vétérinaire.`,
+        desc: `${pct.toFixed(0)}% d'écart entre les 2 dernières pesées (${previous.toFixed?.(1) ?? previous} kg → ${latest.toFixed?.(1) ?? latest} kg). Consulte ton vétérinaire.`,
         cta: "Voir l'évolution",
         to: createPageUrl("Dashboard"),
       });
