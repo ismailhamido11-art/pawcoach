@@ -25,8 +25,8 @@
 ### UX Trompeuse (UX)
 
 - [x] **UX-01**: Quand l'utilisateur coche des symptomes dans le check-in, l'app propose une action (suggestion diagnostic, lien vers Sante)
-- [ ] **UX-02**: Le prix affiche correspond au vrai prix mensuel (7.99 EUR), pas au prix annuel ramene au mois (5 EUR)
-- [ ] **UX-03**: Le champ code parrain est masque ou desactive tant que le backend n'existe pas
+- [x] **UX-02**: Le prix affiche correspond au vrai prix mensuel (7.99 EUR), pas au prix annuel ramene au mois (5 EUR)
+- [x] **UX-03**: Le champ code parrain est masque ou desactive tant que le backend n'existe pas
 - [x] **UX-04**: Le Dashboard (SmartAlerts vaccin/poids) est accessible depuis la Home ou la navigation principale
 
 ### Bugs Techniques (TECH)
@@ -75,8 +75,8 @@
 | FLOW-03 | Phase 3 | Complete |
 | FLOW-04 | Phase 3 | Complete |
 | UX-01 | Phase 4 | Complete |
-| UX-02 | Phase 4 | Pending |
-| UX-03 | Phase 4 | Pending |
+| UX-02 | Phase 4 | Complete |
+| UX-03 | Phase 4 | Complete |
 | UX-04 | Phase 4 | Complete |
 
 **Coverage:**

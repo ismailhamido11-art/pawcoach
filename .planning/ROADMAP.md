@@ -30,7 +30,7 @@
 - [x] **Phase 1: Backend Critique** — Securite, quota, cleanup backend (TECH-01 a TECH-06) (completed 2026-03-27)
 - [x] **Phase 2: Donnees Fausses** — Corriger toutes les donnees incorrectes affichees (DATA-01 a DATA-06) (completed 2026-03-27)
 - [x] **Phase 3: Flux Deconnectes** — Invalider les caches et reconnecter les propagations (FLOW-01 a FLOW-04) (completed 2026-03-27)
-- [ ] **Phase 4: UX Trompeuse** — Corriger les interfaces qui induisent l'utilisateur en erreur (UX-01 a UX-04)
+- [x] **Phase 4: UX Trompeuse** — Corriger les interfaces qui induisent l'utilisateur en erreur (UX-01 a UX-04) (completed 2026-03-27)
 
 ---
 
@@ -99,7 +99,7 @@ Plans:
   4. Les SmartAlerts (vaccins, poids) du Dashboard sont accessibles depuis la Home ou la navigation principale — l'utilisateur n'a pas a deviner qu'un Dashboard existe
 **Plans**: 2 plans
 Plans:
-- [ ] 04-01-PLAN.md — Corriger CTAs prix trompeurs (UX-02) + Supprimer champ code parrain (UX-03)
+- [x] 04-01-PLAN.md — Corriger CTAs prix trompeurs (UX-02) + Supprimer champ code parrain (UX-03)
 - [x] 04-02-PLAN.md — Reaction symptomes check-in (UX-01) + Carte Dashboard depuis Home (UX-04)
 
 ---
@@ -111,4 +111,4 @@ Plans:
 | 1. Backend Critique | 3/3 | Complete   | 2026-03-27 |
 | 2. Donnees Fausses | 3/3 | Complete   | 2026-03-27 |
 | 3. Flux Deconnectes | 2/2 | Complete   | 2026-03-27 |
-| 4. UX Trompeuse | 1/2 | In Progress|  |
+| 4. UX Trompeuse | 2/2 | Complete   | 2026-03-27 |

@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v7.0
 milestone_name: "User-Ready" — Phases
-status: executing
-stopped_at: Completed 04-ux-trompeuse/04-02-PLAN.md
-last_updated: "2026-03-27T17:26:58.116Z"
+status: verifying
+stopped_at: Completed 04-ux-trompeuse/04-01-PLAN.md
+last_updated: "2026-03-27T17:28:08.923Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 10
-  completed_plans: 9
+  completed_plans: 10
 ---
 
 # Project State
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 
 Phase: 04 (UX Trompeuse) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-27
 
 ## Progress Bar
@@ -66,6 +66,8 @@ Phase 4: UX Trompeuse        [ ] Not started
 - [Phase 03-flux-deconnectes]: checkAppState() called after Stripe premium confirmation in Home.jsx — propagates is_premium via AuthContext to all useAuth() subscribers (FLOW-04)
 - [Phase 04-ux-trompeuse]: Toast symptomes decale 800ms dans handleCheckin pour eviter chevauchement visuel avec premier toast
 - [Phase 04-ux-trompeuse]: Dashboard card insertee avant Quick Actions sur Home — premier emplacement visible, lien direct sans recalcul computeAlerts
+- [Phase 04-01]: PostTrialSheet shows dual pricing (7,99/mois + 59,99/an) to surface annual option honestly without misleading on minimum price
+- [Phase 04-01]: WelcomeScreen: base44 and toast imports removed entirely — were only used by dead handleReferralSubmit
 
 ### Pending Todos
 
@@ -77,6 +79,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T17:26:58.111Z
-Stopped at: Completed 04-ux-trompeuse/04-02-PLAN.md
+Last session: 2026-03-27T17:28:08.919Z
+Stopped at: Completed 04-ux-trompeuse/04-01-PLAN.md
 Resume with: `/gsd:plan-phase 1`
