@@ -105,7 +105,7 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
                 {day.activity?.steps?.length > 0 && (
                   <div className="space-y-1.5 mt-1">
                     {day.activity.steps.map((step, i) => (
-                      <div key={i} className="flex items-start gap-2">
+                      <div key={`step-${i}`} className="flex items-start gap-2">
                         <div className="w-5 h-5 rounded-full bg-violet-200 flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-[11px] font-black text-violet-700">{i + 1}</span>
                         </div>
@@ -572,7 +572,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
               <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Programmes terminés</p>
               <div className="space-y-1.5">
                 {pastPrograms.slice(0, 3).map((p, i) => (
-                  <div key={i} className="flex items-center gap-2 bg-emerald-50/50 rounded-lg px-2.5 py-1.5">
+                  <div key={p.title ? `${p.title}-${i}` : i} className="flex items-center gap-2 bg-emerald-50/50 rounded-lg px-2.5 py-1.5">
                     <CheckCircle2 className="w-3 h-3 text-emerald-500 flex-shrink-0" />
                     <span className="text-[11px] text-foreground/70 truncate flex-1">{p.title}</span>
                     <span className="text-[11px] text-muted-foreground flex-shrink-0">{p.date}</span>
@@ -673,7 +673,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       <div className="space-y-2">
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Tes 7 jours</p>
         {days.map((day, i) => (
-          <DayCard key={i} day={day} dayIdx={i} isOpen={openDay === i} onToggle={() => setOpenDay(openDay === i ? -1 : i)} startDate={program.start_date} isDone={completedDays.includes(`d${i}`)} onToggleComplete={saved ? () => toggleDay(i) : undefined} />
+          <DayCard key={day.theme || day.title || i} day={day} dayIdx={i} isOpen={openDay === i} onToggle={() => setOpenDay(openDay === i ? -1 : i)} startDate={program.start_date} isDone={completedDays.includes(`d${i}`)} onToggleComplete={saved ? () => toggleDay(i) : undefined} />
         ))}
       </div>
 
@@ -682,7 +682,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
           <p className="font-bold text-sm mb-3 flex items-center gap-2"><PawPrint className="w-4 h-4 text-emerald-600" /> Conseils pour la race</p>
           <div className="space-y-2">
             {program.breed_specific_tips.map((tip, i) => (
-              <div key={i} className="flex items-start gap-2">
+              <div key={`tip-${i}`} className="flex items-start gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-muted-foreground">{tip}</p>
               </div>
@@ -694,14 +694,14 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       {program.warning_signs?.length > 0 && (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
           <p className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2"><AlertTriangle className="w-4 h-4" /> Signes à surveiller</p>
-          <div className="space-y-1">{program.warning_signs.map((sign, i) => <p key={i} className="text-xs text-amber-700">• {sign}</p>)}</div>
+          <div className="space-y-1">{program.warning_signs.map((sign, i) => <p key={`warn-${i}`} className="text-xs text-amber-700">• {sign}</p>)}</div>
         </div>
       )}
 
       {program.progression_indicators?.length > 0 && (
         <div className="bg-white border border-border rounded-2xl p-4">
           <p className="font-bold text-sm mb-3 flex items-center gap-2"><TrendingUp className="w-4 h-4 text-emerald-500" /> Indicateurs de progression</p>
-          <div className="space-y-1">{program.progression_indicators.map((ind, i) => <p key={i} className="text-xs text-muted-foreground flex items-center gap-1"><Check className="w-3 h-3 text-emerald-500 flex-shrink-0" /> {ind}</p>)}</div>
+          <div className="space-y-1">{program.progression_indicators.map((ind, i) => <p key={`ind-${i}`} className="text-xs text-muted-foreground flex items-center gap-1"><Check className="w-3 h-3 text-emerald-500 flex-shrink-0" /> {ind}</p>)}</div>
         </div>
       )}
 
