@@ -90,8 +90,11 @@ Plans:
   8. Les onglets VetPortal et VetDogView sont correctement highlights dans la BottomNav
   9. Plus aucun acces sessionStorage ne peut faire crasher l'app en navigation privee
   10. ErrorBoundary redirige vers Home via createPageUrl, pas vers "/"
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 3 plans
+Plans:
+- [ ] 04-01-PLAN.md — UX-01 (diet prefs re-fetch), UX-02 (FAB weight HealthRecord), UX-05 (logout confirm), UX-06 (nutri plan delete confirm)
+- [ ] 04-02-PLAN.md — UX-03 (GPS/micro erreurs FR), UX-04 (VetDogView erreurs FR), NAV-04 (ErrorBoundary createPageUrl)
+- [ ] 04-03-PLAN.md — NAV-01 (ChatFAB z-index), NAV-02 (BottomNav VetPortal/VetDogView highlight), NAV-03 (sessionStorage try/catch)
 
 ### Phase 5: Edge Cases & Polish
 **Goal**: Les calculs de sante sont complets, le dead code est supprime, et les cas limites sont couverts
@@ -116,5 +119,5 @@ Plans:
 | 1. Security & Legal | 2/2 | Complete   | 2026-03-27 |
 | 2. Bugs Fonctionnels | 0/2 | Not started | - |
 | 3. Scalabilite & Premium | 0/3 | Not started | - |
-| 4. UX & Navigation | 0/TBD | Not started | - |
+| 4. UX & Navigation | 0/3 | Not started | - |
 | 5. Edge Cases & Polish | 0/TBD | Not started | - |
