@@ -39,7 +39,7 @@ export default function DogTrophiesRow({ streak, progress, scansCount, dailyLogs
   }, [dailyLogs]);
 
   const trophies = [
-    { Icon: Flame,         iconColor: "text-orange-500", label: "1er streak",     earned: longest >= 1 },
+    { Icon: Flame,         iconColor: "text-amber-500",  label: "1er streak",     earned: longest >= 1 },
     { Icon: Zap,           iconColor: "text-amber-500",  label: "7 jours",        earned: longest >= 7 },
     { Icon: Medal,         iconColor: "text-amber-600",  label: "30 jours",       earned: longest >= 30 },
     { Icon: PawPrint,      iconColor: "text-emerald-600",label: "1re balade",     earned: walkDays >= 1 },

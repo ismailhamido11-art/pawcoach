@@ -9,7 +9,7 @@ export const BADGE_META = {
   walk_marathon:     { name: "Ultra Marcheur",      Icon: Medal,         color: "text-amber-600",   points: 200, category: "walk" },
   first_program:     { name: "Coach débutant",      Icon: Sparkles,      color: "text-violet-500",  points: 15,  category: "training" },
   training_3programs:{ name: "Coach expert",        Icon: GraduationCap, color: "text-indigo-600",  points: 300, category: "training" },
-  streak_3:          { name: "En forme",            Icon: Flame,         color: "text-orange-500",  points: 30,  category: "streak" },
+  streak_3:          { name: "En forme",            Icon: Flame,         color: "text-amber-500",   points: 30,  category: "streak" },
   streak_7:          { name: "Habitude",            Icon: Zap,           color: "text-amber-500",   points: 75,  category: "streak" },
   streak_30:         { name: "Légende",             Icon: Crown,         color: "text-amber-600",   points: 250, category: "streak" },
   points_100:        { name: "100 points",          Icon: Star,          color: "text-amber-500",   points: 0,   category: "milestone" },

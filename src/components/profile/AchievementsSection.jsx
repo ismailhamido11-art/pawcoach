@@ -14,7 +14,7 @@ const ALL_BADGES = [
   { id: "first_program",    name: "Coach débutant",      Icon: Sparkles,      color: "text-violet-500",  points: 15,  category: "training",  hint: "Lance ton 1er programme IA" },
   { id: "training_3programs",name: "Coach expert",       Icon: GraduationCap, color: "text-indigo-600",  points: 300, category: "training",  hint: "Génère 3 programmes différents" },
   // Streak
-  { id: "streak_3",         name: "En forme",            Icon: Flame,         color: "text-orange-500",  points: 30,  category: "streak",    hint: "3 jours d'activité consécutifs" },
+  { id: "streak_3",         name: "En forme",            Icon: Flame,         color: "text-amber-500",   points: 30,  category: "streak",    hint: "3 jours d'activité consécutifs" },
   { id: "streak_7",         name: "Habitude",            Icon: Zap,           color: "text-amber-500",   points: 75,  category: "streak",    hint: "7 jours consécutifs avec {name}" },
   { id: "streak_30",        name: "Légende",             Icon: Crown,         color: "text-amber-600",   points: 250, category: "streak",    hint: "30 jours consécutifs — du sérieux !" },
   // Milestones

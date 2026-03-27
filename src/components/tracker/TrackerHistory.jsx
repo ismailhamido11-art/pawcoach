@@ -185,7 +185,7 @@ export default function TrackerHistory({ logs, dog }) {
         >
           <Flame className="w-5 h-5 text-amber-500" />
           <span className="text-sm font-black text-amber-700">{streaks.current} jour{streaks.current > 1 ? "s" : ""} de suite</span>
-          {streaks.current >= 7 && <Flame className="w-3 h-3 text-orange-500" />}
+          {streaks.current >= 7 && <Flame className="w-3 h-3 text-amber-500" />}
         </motion.div>
       )}
 

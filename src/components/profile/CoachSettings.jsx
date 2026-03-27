@@ -10,7 +10,7 @@ const TONES = [
 
 const TOPICS = [
   { value: "health", label: "Santé", Icon: Heart, color: "text-rose-500" },
-  { value: "nutrition", label: "Nutrition", Icon: Beef, color: "text-orange-500" },
+  { value: "nutrition", label: "Nutrition", Icon: Beef, color: "text-amber-500" },
   { value: "training", label: "Dressage", Icon: Gamepad2, color: "text-emerald-600" },
   { value: "behavior", label: "Comportement", Icon: Brain, color: "text-violet-600" },
 ];

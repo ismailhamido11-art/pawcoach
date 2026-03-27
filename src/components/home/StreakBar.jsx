@@ -18,7 +18,7 @@ function getNextBadge({ streak, exercises, dailyLogs }) {
   const walkDays = (dailyLogs || []).filter(l => (l.walk_minutes || 0) > 0).length;
   const candidates = [];
 
-  if (currentStreak < 3) candidates.push({ Icon: Flame, iconColor: "text-orange-500", name: "En forme", current: currentStreak, target: 3 });
+  if (currentStreak < 3) candidates.push({ Icon: Flame, iconColor: "text-amber-500", name: "En forme", current: currentStreak, target: 3 });
   else if (currentStreak < 7) candidates.push({ Icon: Zap, iconColor: "text-amber-500", name: "Habitude", current: currentStreak, target: 7 });
   else if (currentStreak < 30) candidates.push({ Icon: Crown, iconColor: "text-violet-500", name: "Légende", current: currentStreak, target: 30 });
 

@@ -12,7 +12,7 @@ const MOODS = [
 const ENERGIES = [
   { value: 1, Icon: Moon, color: "text-slate-400", label: "Faible" },
   { value: 2, Icon: Zap, color: "text-amber-500", label: "Moyen" },
-  { value: 3, Icon: Flame, color: "text-orange-500", label: "Élevé" },
+  { value: 3, Icon: Flame, color: "text-amber-500", label: "Élevé" },
 ];
 const APPETITES = [
   { value: 1, Icon: Ban, color: "text-red-400", label: "Rien" },
