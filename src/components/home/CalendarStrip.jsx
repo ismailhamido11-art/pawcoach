@@ -9,14 +9,12 @@ export default function CalendarStrip({ dailyLogs = [] }) {
     const monday = new Date(today);
     monday.setDate(today.getDate() - ((dayOfWeek + 6) % 7));
 
-    const logDates = new Set(dailyLogs.map(l => l.date));
-
     return Array.from({ length: 7 }, (_, i) => {
       const d = new Date(monday);
       d.setDate(monday.getDate() + i);
       const dateStr = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
       const isToday = d.toDateString() === today.toDateString();
-      const hasActivity = logDates.has(dateStr) || (dailyLogs || []).some(l => l.date === dateStr && (l.walk_minutes > 0 || l.water_bowls > 0));
+      const hasActivity = (dailyLogs || []).some(l => l.date === dateStr && (l.walk_minutes || 0) > 0);
 
       return {
         label: DAY_LABELS[d.getDay()],

@@ -1,4 +1,4 @@
-import { Footprints, UtensilsCrossed, CircleCheck } from "lucide-react";
+import { Footprints, Droplets, CircleCheck } from "lucide-react";
 import { getTodayString } from "@/utils/recommendations";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -8,7 +8,7 @@ export default function DailyProgress({ dailyLogs = [], todayCheckin, dog }) {
   const today = getTodayString();
   const todayLog = dailyLogs.find(l => l.date === today);
   const walkMinutes = todayLog?.walk_minutes || 0;
-  const meals = todayLog?.water_bowls || 0;
+  const waterBowls = todayLog?.water_bowls || 0;
   const hasCheckin = !!todayCheckin;
 
   const items = [
@@ -24,15 +24,15 @@ export default function DailyProgress({ dailyLogs = [], todayCheckin, dog }) {
       onClick: () => navigate(createPageUrl("Activite")),
     },
     {
-      icon: UtensilsCrossed,
-      value: meals > 0 ? `${meals}` : "\u2014",
-      label: "Repas",
+      icon: Droplets,
+      value: waterBowls > 0 ? `${waterBowls} bol` : "\u2014",
+      label: "Eau",
       iconColor: "text-white",
-      iconBg: "bg-gradient-to-br from-amber-400 to-amber-600",
-      cardBg: "bg-amber-50/60",
-      borderColor: "border-amber-200/50",
-      done: meals > 0,
-      onClick: () => navigate(createPageUrl("Nutri")),
+      iconBg: "bg-gradient-to-br from-cyan-400 to-cyan-600",
+      cardBg: "bg-cyan-50/60",
+      borderColor: "border-cyan-200/50",
+      done: waterBowls > 0,
+      onClick: null,
     },
     {
       icon: CircleCheck,
