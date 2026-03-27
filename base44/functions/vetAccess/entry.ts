@@ -10,6 +10,54 @@ function formatDate(d) {
   catch { return d; }
 }
 
+function buildAlertSection(dog) {
+  if (!dog.allergies && !dog.health_issues) return '';
+  return `<tr><td style="background:#f8faf9; padding:0 24px 12px;">
+      <div style="background:#fff3f3; border:1px solid #fecaca; border-radius:8px; padding:12px;">
+        <strong style="color:#dc2626; font-size:12px;">⚠️ Alertes santé</strong>
+        ${dog.allergies ? `<p style="margin:4px 0 0; font-size:13px; color:#333;">Allergies : ${escapeHtml(dog.allergies)}</p>` : ''}
+        ${dog.health_issues ? `<p style="margin:4px 0 0; font-size:13px; color:#333;">Problèmes : ${escapeHtml(dog.health_issues)}</p>` : ''}
+      </div>
+    </td></tr>`;
+}
+
+function buildVaccineSection(vaccines) {
+  if (vaccines.length === 0) return '';
+  let html = `<tr><td style="background:#f8faf9; padding:8px 24px;">
+      <p style="font-size:12px; font-weight:bold; color:#555; margin:0 0 6px;">💉 Derniers vaccins</p>`;
+  vaccines.slice(0, 5).forEach(v => {
+    html += `<div style="background:white; border:1px solid #e8ede9; border-radius:6px; padding:8px 12px; margin-bottom:4px; font-size:13px;">
+        <strong>${escapeHtml(v.title)}</strong> — ${formatDate(v.date)}${v.next_date ? ` · <span style="color:#d97706;">Rappel: ${formatDate(v.next_date)}</span>` : ''}
+      </div>`;
+  });
+  html += `</td></tr>`;
+  return html;
+}
+
+function buildMedSection(meds) {
+  if (meds.length === 0) return '';
+  let html = `<tr><td style="background:#f8faf9; padding:8px 24px;">
+      <p style="font-size:12px; font-weight:bold; color:#555; margin:0 0 6px;">💊 Médicaments récents</p>`;
+  meds.slice(0, 5).forEach(m => {
+    html += `<div style="background:white; border:1px solid #e8ede9; border-radius:6px; padding:8px 12px; margin-bottom:4px; font-size:13px;">
+        <strong>${escapeHtml(m.title)}</strong> — ${formatDate(m.date)}${m.details ? ` · ${escapeHtml(m.details)}` : ''}
+      </div>`;
+  });
+  html += `</td></tr>`;
+  return html;
+}
+
+function buildWeightSection(weights) {
+  if (weights.length <= 1) return '';
+  let html = `<tr><td style="background:#f8faf9; padding:8px 24px;">
+      <p style="font-size:12px; font-weight:bold; color:#555; margin:0 0 6px;">⚖️ Évolution du poids</p>`;
+  weights.slice(0, 6).forEach(w => {
+    html += `<span style="display:inline-block; background:white; border:1px solid #e8ede9; border-radius:20px; padding:4px 10px; margin:2px 4px 2px 0; font-size:12px;">${w.value}kg · ${formatDate(w.date)}</span>`;
+  });
+  html += `</td></tr>`;
+  return html;
+}
+
 function buildHealthSummaryHTML(dog, records) {
   const safeRecords = records || [];
   const vaccines = safeRecords.filter(r => r.type === 'vaccine').sort((a,b) => new Date(b.date) - new Date(a.date));
@@ -50,50 +98,10 @@ function buildHealthSummaryHTML(dog, records) {
         </table>
       </td></tr>`;
 
-  // Allergies / Health issues
-  if (dog.allergies || dog.health_issues) {
-    html += `<tr><td style="background:#f8faf9; padding:0 24px 12px;">
-      <div style="background:#fff3f3; border:1px solid #fecaca; border-radius:8px; padding:12px;">
-        <strong style="color:#dc2626; font-size:12px;">⚠️ Alertes santé</strong>
-        ${dog.allergies ? `<p style="margin:4px 0 0; font-size:13px; color:#333;">Allergies : ${escapeHtml(dog.allergies)}</p>` : ''}
-        ${dog.health_issues ? `<p style="margin:4px 0 0; font-size:13px; color:#333;">Problèmes : ${escapeHtml(dog.health_issues)}</p>` : ''}
-      </div>
-    </td></tr>`;
-  }
-
-  // Recent vaccines
-  if (vaccines.length > 0) {
-    html += `<tr><td style="background:#f8faf9; padding:8px 24px;">
-      <p style="font-size:12px; font-weight:bold; color:#555; margin:0 0 6px;">💉 Derniers vaccins</p>`;
-    vaccines.slice(0, 5).forEach(v => {
-      html += `<div style="background:white; border:1px solid #e8ede9; border-radius:6px; padding:8px 12px; margin-bottom:4px; font-size:13px;">
-        <strong>${escapeHtml(v.title)}</strong> — ${formatDate(v.date)}${v.next_date ? ` · <span style="color:#d97706;">Rappel: ${formatDate(v.next_date)}</span>` : ''}
-      </div>`;
-    });
-    html += `</td></tr>`;
-  }
-
-  // Recent meds
-  if (meds.length > 0) {
-    html += `<tr><td style="background:#f8faf9; padding:8px 24px;">
-      <p style="font-size:12px; font-weight:bold; color:#555; margin:0 0 6px;">💊 Médicaments récents</p>`;
-    meds.slice(0, 5).forEach(m => {
-      html += `<div style="background:white; border:1px solid #e8ede9; border-radius:6px; padding:8px 12px; margin-bottom:4px; font-size:13px;">
-        <strong>${escapeHtml(m.title)}</strong> — ${formatDate(m.date)}${m.details ? ` · ${escapeHtml(m.details)}` : ''}
-      </div>`;
-    });
-    html += `</td></tr>`;
-  }
-
-  // Weight trend
-  if (weights.length > 1) {
-    html += `<tr><td style="background:#f8faf9; padding:8px 24px;">
-      <p style="font-size:12px; font-weight:bold; color:#555; margin:0 0 6px;">⚖️ Évolution du poids</p>`;
-    weights.slice(0, 6).forEach(w => {
-      html += `<span style="display:inline-block; background:white; border:1px solid #e8ede9; border-radius:20px; padding:4px 10px; margin:2px 4px 2px 0; font-size:12px;">${w.value}kg · ${formatDate(w.date)}</span>`;
-    });
-    html += `</td></tr>`;
-  }
+  html += buildAlertSection(dog);
+  html += buildVaccineSection(vaccines);
+  html += buildMedSection(meds);
+  html += buildWeightSection(weights);
 
   html += `<tr><td style="background:#f8faf9; padding:16px 24px; border-radius:0 0 12px 12px; text-align:center;">
     <p style="font-size:11px; color:#999; margin:0;">Généré par PawCoach · ${formatDate(new Date().toISOString())}</p>
@@ -150,7 +158,7 @@ Deno.serve(async (req) => {
           <div style="font-family:Arial,sans-serif; max-width:600px; margin:0 auto;">
             <p style="font-size:15px; color:#333;">Bonjour${vetName ? ` Dr. ${escapeHtml(vetName)}` : ''},</p>
             <p style="font-size:14px; color:#555;"><strong>${escapeHtml(user.full_name || user.email)}</strong> vous partage le carnet de santé de son chien via PawCoach.</p>
-            
+
             <div style="margin:20px 0;">
               ${healthSummary}
             </div>
