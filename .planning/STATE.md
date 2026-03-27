@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v7.0
 milestone_name: "User-Ready" — Phases
 status: verifying
-stopped_at: Completed 02-donnees-fausses/02-01-PLAN.md
-last_updated: "2026-03-27T16:57:06.813Z"
+stopped_at: Completed 03-flux-deconnectes/03-02-PLAN.md
+last_updated: "2026-03-27T17:13:57.422Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 4
-  completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
+  completed_phases: 3
+  total_plans: 8
+  completed_plans: 8
 ---
 
 # Project State
@@ -20,12 +20,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Donnees fiables et coherentes qui refletent la realite du chien
-**Current focus:** Phase 02 — Donnees Fausses
+**Current focus:** Phase 03 — Flux Deconnectes
 
 ## Current Position
 
-Phase: 02 (Donnees Fausses) — EXECUTING
-Plan: 3 of 3
+Phase: 03 (Flux Deconnectes) — EXECUTING
+Plan: 2 of 2
 Status: Phase complete — ready for verification
 Last activity: 2026-03-27
 
@@ -60,6 +60,10 @@ Phase 4: UX Trompeuse        [ ] Not started
 - [Phase 02-donnees-fausses]: handleMoodTap sends only { mood } — energy/appetite remain null until user explicitly inputs them
 - [Phase 02-donnees-fausses]: Dashboard passe [...growthEntries, ...dailyLogs] a computeHealthScore — elimine divergence score visible avec Sante (DATA-05)
 - [Phase 02-donnees-fausses]: DailyLog has no meals_count field — CombinedFAB only tracks water_bowls; renamed Repas card to Eau (semantically correct)
+- [Phase 03-flux-deconnectes]: invalidateHome() called at end of refreshLogs() in Activite — after setLogs and checkWalkBadges, ensuring cache is null before user returns to Home
+- [Phase 03-flux-deconnectes]: invalidateHome() called after localStorage.setItem in handleSwitchDog — local state updated first, then cache invalidated
+- [Phase 03-flux-deconnectes]: Remove auto-save on unmount in SmartHealthAssistant — localStorage is sufficient; silent DB writes caused FLOW-03 (Sante not notified)
+- [Phase 03-flux-deconnectes]: checkAppState() called after Stripe premium confirmation in Home.jsx — propagates is_premium via AuthContext to all useAuth() subscribers (FLOW-04)
 
 ### Pending Todos
 
@@ -71,6 +75,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T16:57:06.808Z
-Stopped at: Completed 02-donnees-fausses/02-01-PLAN.md
+Last session: 2026-03-27T17:13:57.416Z
+Stopped at: Completed 03-flux-deconnectes/03-02-PLAN.md
 Resume with: `/gsd:plan-phase 1`

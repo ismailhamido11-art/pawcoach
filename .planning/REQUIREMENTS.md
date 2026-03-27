@@ -17,10 +17,10 @@
 
 ### Flux Deconnectes (FLOW)
 
-- [ ] **FLOW-01**: Apres une balade terminee, le cache Home est invalide (DailyProgress montre les vraies stats)
-- [ ] **FLOW-02**: Apres un switch de chien, le cache Home est invalide (toutes les donnees rafraichies)
-- [ ] **FLOW-03**: SmartHealthAssistant notifie Sante pour TOUS les records d'un batch (pas juste le premier)
-- [ ] **FLOW-04**: Apres paiement Stripe, le statut premium est rafraichi sur TOUTES les pages (pas juste Home)
+- [x] **FLOW-01**: Apres une balade terminee, le cache Home est invalide (DailyProgress montre les vraies stats)
+- [x] **FLOW-02**: Apres un switch de chien, le cache Home est invalide (toutes les donnees rafraichies)
+- [x] **FLOW-03**: SmartHealthAssistant notifie Sante pour TOUS les records d'un batch (pas juste le premier)
+- [x] **FLOW-04**: Apres paiement Stripe, le statut premium est rafraichi sur TOUTES les pages (pas juste Home)
 
 ### UX Trompeuse (UX)
 
@@ -70,10 +70,10 @@
 | DATA-04 | Phase 2 | Complete |
 | DATA-05 | Phase 2 | Complete |
 | DATA-06 | Phase 2 | Complete |
-| FLOW-01 | Phase 3 | Pending |
-| FLOW-02 | Phase 3 | Pending |
-| FLOW-03 | Phase 3 | Pending |
-| FLOW-04 | Phase 3 | Pending |
+| FLOW-01 | Phase 3 | Complete |
+| FLOW-02 | Phase 3 | Complete |
+| FLOW-03 | Phase 3 | Complete |
+| FLOW-04 | Phase 3 | Complete |
 | UX-01 | Phase 4 | Pending |
 | UX-02 | Phase 4 | Pending |
 | UX-03 | Phase 4 | Pending |
