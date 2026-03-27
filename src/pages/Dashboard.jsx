@@ -82,12 +82,12 @@ export default function Dashboard() {
         setDog(d);
 
         const [recs, cks, stk, prog, logs, foodScans] = await Promise.all([
-          HealthRecord.filter({ dog_id: d.id }),
+          HealthRecord.filter({ dog_id: d.id }, "-date", 100),
           DailyCheckin.filter({ dog_id: d.id }, "-date", 90),
           Streak.filter({ dog_id: d.id }),
           UserProgress.filter({ dog_id: d.id }),
           DailyLog.filter({ dog_id: d.id }, "-date", 90),
-          FoodScan.filter({ dog_id: d.id }).catch(() => []),
+          FoodScan.filter({ dog_id: d.id }, "-timestamp", 20).catch(() => []),
         ]);
         setRecords(recs || []);
         setCheckins((cks || []).sort((a, b) => a.date > b.date ? 1 : -1));

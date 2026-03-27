@@ -335,7 +335,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
 
   const saveAllRecords = async () => {
     try {
-      const existingRecords = await HealthRecord.filter({ dog_id: dogId });
+      const existingRecords = await HealthRecord.filter({ dog_id: dogId }, "-date", 200);
       let skippedCount = 0;
 
       const toCreate = [];

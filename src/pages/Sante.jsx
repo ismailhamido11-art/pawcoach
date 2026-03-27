@@ -96,7 +96,7 @@ export default function Sante() {
          const d = getActiveDog(dogs);
          setDog(d);
          const [recs, logs, growths] = await Promise.all([
-           HealthRecord.filter({ dog_id: d.id }),
+           HealthRecord.filter({ dog_id: d.id }, "-date", 200),
            DailyLog.filter({ dog_id: d.id }),
            GrowthEntry.filter({ dog_id: d.id }),
          ]);

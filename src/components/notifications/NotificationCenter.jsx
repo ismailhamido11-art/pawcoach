@@ -75,7 +75,7 @@ export async function loadNotifications() {
         }
       }
       // Health records with next_date
-      const records = await HealthRecord.filter({ dog_id: dog.id });
+      const records = await HealthRecord.filter({ dog_id: dog.id }, "-next_date", 50);
       for (const r of (records || [])) {
         if (!r.next_date || !["vaccine", "vet_visit", "medication"].includes(r.type)) continue;
         const days = getDaysLeft(r.next_date);

@@ -85,7 +85,7 @@ export default function DogPublicProfile() {
         const dogs = await Dog.filter({ id: dogId });
         if (!dogs?.length) { setError(true); return; }
         setDog(dogs[0]);
-        const recs = await HealthRecord.filter({ dog_id: dogId });
+        const recs = await HealthRecord.filter({ dog_id: dogId }, "-date", 100);
         setRecords((recs || []).sort((a, b) => new Date(b.date) - new Date(a.date)));
       } catch {
         setError(true);
