@@ -195,6 +195,15 @@ export default function Nutri() {
     } catch { /* ignore */ }
   };
 
+  const refreshDietPrefs = async () => {
+    if (!dog || !user) return;
+    try {
+      const prefs = await DietPreferences.filter({ dog_id: dog.id, owner_email: user.email }).catch(() => []);
+      if (prefs?.length > 0) setDietPrefs(prefs[0]);
+      else setDietPrefs(null);
+    } catch { /* ignore */ }
+  };
+
   useEffect(() => {
     if (!isLoadingAuth) {
       init(authUser || undefined);
@@ -504,7 +513,7 @@ export default function Nutri() {
       {/* Tab: Preferences */}
       {activeTab === "prefs" && (
         <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
-          <DietPreferencesPanel dog={dog} user={user} />
+          <DietPreferencesPanel dog={dog} user={user} onPreferencesSaved={refreshDietPrefs} />
         </div>
       )}
 

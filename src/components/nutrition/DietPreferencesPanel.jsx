@@ -25,7 +25,7 @@ const COMMON_DISLIKES = [
   "Cereales", "Gluten", "Soja", "Mais",
 ];
 
-export default function DietPreferencesPanel({ dog, user }) {
+export default function DietPreferencesPanel({ dog, user, onPreferencesSaved }) {
   const [prefs, setPrefs] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -108,6 +108,7 @@ export default function DietPreferencesPanel({ dog, user }) {
       }
       setSaved(true);
       toast.success("Préférences sauvegardées !");
+      onPreferencesSaved?.();
       setTimeout(() => setSaved(false), 3000);
     } catch {
       toast.error("Impossible de sauvegarder tes préférences. Réessaie.");
