@@ -639,9 +639,9 @@ export function getDogAgeSegment(dog) {
  * Compute a summary object for the "Carnet intelligent" view.
  * Single entry point that returns everything the UI needs.
  */
-export function computeNotebookSummary(records, dog) {
+export function computeNotebookSummary(records, dog, growthEntries = []) {
   const recs = records || [];
-  const score = computeHealthScore(recs, dog);
+  const score = computeHealthScore(recs, dog, growthEntries);
   return {
     score,
     scoreLevel: getScoreLevel(score),

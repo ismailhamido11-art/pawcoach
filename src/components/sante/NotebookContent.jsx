@@ -185,8 +185,8 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
 
   // --- Smart Notebook summary (memoized) ---
   const summary = useMemo(
-    () => computeNotebookSummary(allRecords, dog),
-    [allRecords, dog]
+    () => computeNotebookSummary(allRecords, dog, growthEntries),
+    [allRecords, dog, growthEntries]
   );
 
   // Navigate to a tab from NextActionCard, StatusPills, or smart cards
