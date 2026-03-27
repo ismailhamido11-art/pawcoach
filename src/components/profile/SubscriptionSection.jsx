@@ -54,7 +54,7 @@ export default function SubscriptionSection({ user }) {
                 </div>
               </div>
             )}
-            {user?.is_premium ? (
+            {isUserPremium(user) ? (
               <button
                 onClick={handlePortal}
                 className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-muted/30 transition-all"
