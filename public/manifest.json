@@ -1,0 +1,27 @@
+{
+  "name": "PawCoach",
+  "short_name": "PawCoach",
+  "description": "Coach bien-être canin intelligent. Suivi santé, nutrition, dressage et activité de votre chien avec l'aide de l'IA.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F0E8",
+  "theme_color": "#1A4D3E",
+  "orientation": "portrait",
+  "lang": "fr",
+  "scope": "/",
+  "categories": ["health", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
