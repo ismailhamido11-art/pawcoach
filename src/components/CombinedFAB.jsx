@@ -86,8 +86,8 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
       if (payload.walk_minutes > 0) {
         try {
           const allLogs = await DailyLog.filter({ dog_id: dog.id }, "-date", 60);
-          checkWalkBadges(dog.id, user?.email, allLogs).catch(() => {});
-        } catch {}
+          checkWalkBadges(dog.id, user?.email, allLogs).catch((e) => console.warn("CombinedFAB: checkWalkBadges failed", e?.message));
+        } catch (e) { console.warn("CombinedFAB: walk badge fetch failed", e?.message); }
       }
 
       setSaved(true);

@@ -227,7 +227,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
                 bilan: data.bilan || null,
               });
             }
-          } catch {}
+          } catch (e) { console.warn("AITrainingProgram: bookmark parse failed", e?.message); }
         }
         setPastPrograms(past);
       } catch (e) {
@@ -349,7 +349,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       try {
         const archived = { ...program, archived: true };
         await Bookmark.update(bookmarkId, { content: JSON.stringify(archived) });
-      } catch {}
+      } catch (e) { console.warn("AITrainingProgram: archive bookmark failed", e?.message); }
     }
     // Add to pastPrograms for anti-redundancy
     if (program?.program_title) {
@@ -411,9 +411,9 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       });
       // Robust response parsing (handles both resp.data.program and resp.program)
       let respData = resp?.data || resp;
-      if (typeof respData === "string") { try { respData = JSON.parse(respData); } catch {} }
+      if (typeof respData === "string") { try { respData = JSON.parse(respData); } catch (e) { console.warn("AITrainingProgram: respData JSON parse failed", e?.message); } }
       let prog = respData?.program;
-      if (typeof prog === "string") { try { prog = JSON.parse(prog); } catch {} }
+      if (typeof prog === "string") { try { prog = JSON.parse(prog); } catch (e) { console.warn("AITrainingProgram: prog JSON parse failed", e?.message); } }
 
       // Validate program structure
       if (!prog || !Array.isArray(prog.days) || prog.days.length === 0) {
