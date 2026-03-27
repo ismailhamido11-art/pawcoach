@@ -98,8 +98,13 @@ export default function Profile() {
   };
 
   const handleSaveUser = async (updates) => {
-    await base44.auth.updateMe(updates);
-    setUser(prev => ({ ...prev, ...updates }));
+    try {
+      await base44.auth.updateMe(updates);
+      setUser(prev => ({ ...prev, ...updates }));
+    } catch (e) {
+      console.error("Profile handleSaveUser error:", e);
+      toast.error("Impossible de sauvegarder. Verifie ta connexion et reessaie.");
+    }
   };
 
   if (loading) {
@@ -150,16 +155,18 @@ export default function Profile() {
           <SubscriptionSection user={user} />
         </motion.div>
 
-        {/* Premium card */}
-        <motion.div custom={1} variants={sectionVariants} initial="hidden" animate="visible">
-          <div className="bg-gradient-to-r from-amber-50 to-yellow-50/50 rounded-3xl p-4 border border-amber-100/50 shadow-sm flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-transform" onClick={() => navigate(createPageUrl("Premium") + "?from=profile")}>
-            <StorysetIllustration name="premium" className="w-24 h-24 flex-shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-bold text-foreground">Passe à Premium</p>
-              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Accès illimité à toutes les fonctionnalités</p>
+        {/* Premium card — hidden for existing premium users */}
+        {!isUserPremium(user) && (
+          <motion.div custom={1} variants={sectionVariants} initial="hidden" animate="visible">
+            <div className="bg-gradient-to-r from-amber-50 to-yellow-50/50 rounded-3xl p-4 border border-amber-100/50 shadow-sm flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-transform" onClick={() => navigate(createPageUrl("Premium") + "?from=profile")}>
+              <StorysetIllustration name="premium" className="w-24 h-24 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-bold text-foreground">Passe à Premium</p>
+                <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Accès illimité à toutes les fonctionnalités</p>
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
 
         {/* Achievement Feed — 5 derniers badges gagnés */}
         {dogs.length > 0 ? (
