@@ -32,6 +32,9 @@ const fmtDate = fmtDateLong;
 export default function DownloadHealthPDF({ dogId, dogName: _dogName }) {
   const [loading, setLoading] = useState(false);
 
+  // Audit FIX-61: no extractable pattern — outgoing calls are jsPDF API calls (doc.text, doc.setFontSize,
+  // doc.rect, etc.) and pdfHelpers abstractions (drawSectionHeader x9, drawTable x4, drawScoreBadge x1).
+  // drawBar is already extracted as a local const. No additional extraction warranted.
   const handleDownload = async () => {
     setLoading(true);
     try {
