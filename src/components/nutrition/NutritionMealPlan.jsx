@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { NutritionPlan } from "@/api/entities";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
@@ -58,6 +58,15 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
   const [showHistory, setShowHistory] = useState(false);
   const [expandedHistoryId, setExpandedHistoryId] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState(null);
+
+  // Compute latest real weight from all sources (per STALE-04)
+  const latestRealWeight = useMemo(() => {
+    const allWeights = [
+      ...(healthRecords || []).filter(r => r.type === "weight" && r.value).map(r => ({ date: r.date, v: parseFloat(r.value) })),
+      ...(dailyLogs || []).filter(l => l.weight_kg).map(l => ({ date: l.date, v: parseFloat(l.weight_kg) })),
+    ].filter(w => !isNaN(w.v)).sort((a, b) => a.date > b.date ? 1 : -1);
+    return allWeights.length > 0 ? allWeights[allWeights.length - 1].v : dog?.weight || null;
+  }, [healthRecords, dailyLogs, dog?.weight]);
 
   if (!dog) {
     return (
@@ -150,7 +159,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
         owner_email: user.email,
         plan_text: JSON.stringify({ ...plan, start_date: new Date().toISOString().split("T")[0], dog_name: dog.name }),
         generated_at: new Date().toISOString(),
-        dog_weight_at_generation: dog.weight,
+        dog_weight_at_generation: latestRealWeight,
         is_active: true,
         notes: generationNotes || "",
       });
@@ -271,7 +280,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
 
     const prompt = `Tu es un nutritionniste vétérinaire expert. Génère un plan repas de 7 jours pour ce chien.
 
-PROFIL : ${dog.name}, ${dog.breed || "race inconnue"}, ${lifeStage} (${getAge(dog.birth_date) || "âge inconnu"}), ${dog.weight ? dog.weight + " kg" : "poids inconnu"}, ${dog.sex === "male" ? "mâle" : dog.sex === "female" ? "femelle" : "sexe inconnu"}, activité ${activityMap[dog.activity_level] || "modérée"}, ${dog.neutered ? "stérilisé(e)" : "non stérilisé(e)"}, alimentation ${dietMap[dog.diet_type] || "croquettes"} ${dog.diet_brand ? `(${dog.diet_brand})` : ""}, allergies : ${dog.allergies || "aucune"}, santé : ${dog.health_issues || "aucun problème"}, environnement : ${dog.environment || "non précisé"}${dog.status && dog.status !== "healthy" ? `, STATUT : ${dog.status === "recovering" ? "en convalescence (repas doux, faciles à digérer)" : dog.status}` : ""}
+PROFIL : ${dog.name}, ${dog.breed || "race inconnue"}, ${lifeStage} (${getAge(dog.birth_date) || "âge inconnu"}), ${latestRealWeight ? latestRealWeight + " kg" : "poids inconnu"}, ${dog.sex === "male" ? "mâle" : dog.sex === "female" ? "femelle" : "sexe inconnu"}, activité ${activityMap[dog.activity_level] || "modérée"}, ${dog.neutered ? "stérilisé(e)" : "non stérilisé(e)"}, alimentation ${dietMap[dog.diet_type] || "croquettes"} ${dog.diet_brand ? `(${dog.diet_brand})` : ""}, allergies : ${dog.allergies || "aucune"}, santé : ${dog.health_issues || "aucun problème"}, environnement : ${dog.environment || "non précisé"}${dog.status && dog.status !== "healthy" ? `, STATUT : ${dog.status === "recovering" ? "en convalescence (repas doux, faciles à digérer)" : dog.status}` : ""}
 Saison : ${season}${scansContext}${prefsContext}${checkinContext}${healthContext}${activityContext}${previousPlanContext}${userNotesContext}
 
 RÉPONDS UNIQUEMENT avec un objet JSON valide, sans texte avant ni après, sans bloc markdown. Structure exacte :
@@ -672,7 +681,7 @@ RÈGLES :
             <p className="font-bold text-foreground text-sm">{dog.name}</p>
             <div className="flex flex-wrap gap-1 mt-0.5">
               {dog.breed && <span className="text-[11px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">{dog.breed}</span>}
-              {dog.weight && <span className="text-[11px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">{dog.weight} kg</span>}
+              {latestRealWeight && <span className="text-[11px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">{latestRealWeight} kg</span>}
               {dog.birth_date && <span className="text-[11px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">{getAge(dog.birth_date)}</span>}
             </div>
           </div>
