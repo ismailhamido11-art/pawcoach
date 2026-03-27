@@ -491,13 +491,21 @@ export default function Home() {
               <div className="flex-1 min-w-0">
                 <p className="text-[16px] font-bold text-foreground leading-snug">
                   {todayCheckin
-                    ? `${dog?.name || "Ton chien"} est en forme !`
+                    ? (todayCheckin.mood >= 4
+                        ? `${dog?.name || "Ton chien"} est en forme !`
+                        : todayCheckin.mood <= 2
+                          ? `${dog?.name || "Ton chien"} n'est pas au top...`
+                          : `${dog?.name || "Ton chien"} a une journee tranquille`)
                     : `${dog?.name || "Ton chien"} attend son check-in`
                   }
                 </p>
                 <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">
                   {todayCheckin
-                    ? "Continue comme ca, chaque jour compte pour sa sante."
+                    ? (todayCheckin.mood >= 4
+                        ? "Continue comme ca, chaque jour compte pour sa sante."
+                        : todayCheckin.mood <= 2
+                          ? "Garde un oeil sur lui et note tout changement."
+                          : "Une petite balade lui ferait du bien.")
                     : "20 min de marche par jour renforcent son coeur et son moral."
                   }
                 </p>
