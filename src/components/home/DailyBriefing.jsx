@@ -104,7 +104,7 @@ export default function DailyBriefing({ dog, user, recentCheckins, dailyLogs, st
 
   const handleMoodTap = (mood) => {
     setMoodPicked(true);
-    onQuickCheckin({ mood, energy: mood >= 4 ? 4 : 3, appetite: mood >= 4 ? 4 : 3 });
+    onQuickCheckin({ mood });
   };
 
   const handleMissionTap = () => {
