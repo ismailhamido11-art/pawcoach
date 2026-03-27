@@ -12,7 +12,7 @@
 - [ ] **DATA-02**: La carte "Repas" affiche les vrais repas, pas les bols d'eau (water_bowls) — DailyProgress + CalendarStrip (2 instances)
 - [x] **DATA-03**: GrowthTracker met a jour Dog.weight apres creation de GrowthEntry (comme SectionPoids/WeightCard le font deja)
 - [x] **DATA-04**: Le check-in rapide ne fabrique plus energy/appetite a partir du mood — demander ou laisser vide
-- [ ] **DATA-05**: Dashboard et Sante utilisent la meme source pour le score wellness (pas de divergence)
+- [x] **DATA-05**: Dashboard et Sante utilisent la meme source pour le score wellness (pas de divergence)
 - [ ] **DATA-06**: Textes DailyBriefing et EmotionalTip avec accents corrects (pas "debut", "hydrate", "regularite")
 
 ### Flux Deconnectes (FLOW)
@@ -68,7 +68,7 @@
 | DATA-02 | Phase 2 | Pending |
 | DATA-03 | Phase 2 | Complete |
 | DATA-04 | Phase 2 | Complete |
-| DATA-05 | Phase 2 | Pending |
+| DATA-05 | Phase 2 | Complete |
 | DATA-06 | Phase 2 | Pending |
 | FLOW-01 | Phase 3 | Pending |
 | FLOW-02 | Phase 3 | Pending |

@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v7.0
 milestone_name: "User-Ready" — Phases
 status: executing
-stopped_at: Completed 02-donnees-fausses/02-02-PLAN.md
-last_updated: "2026-03-27T16:53:26.611Z"
+stopped_at: Completed 02-donnees-fausses/02-03-PLAN.md
+last_updated: "2026-03-27T16:53:58.565Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 4
@@ -58,6 +58,7 @@ Phase 4: UX Trompeuse        [ ] Not started
 - [Phase 01-backend-critique]: TECH-02: streakReminder uses list() + slice(0, 2000) hard cap — Base44 SDK __gte operator undocumented
 - [Phase 02-donnees-fausses]: Dog.update wrapped in try/catch so GrowthEntry.create flow never breaks if sync fails
 - [Phase 02-donnees-fausses]: handleMoodTap sends only { mood } — energy/appetite remain null until user explicitly inputs them
+- [Phase 02-donnees-fausses]: Dashboard passe [...growthEntries, ...dailyLogs] a computeHealthScore — elimine divergence score visible avec Sante (DATA-05)
 
 ### Pending Todos
 
@@ -69,6 +70,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T16:53:06.674Z
-Stopped at: Completed 02-donnees-fausses/02-02-PLAN.md
+Last session: 2026-03-27T16:53:58.560Z
+Stopped at: Completed 02-donnees-fausses/02-03-PLAN.md
 Resume with: `/gsd:plan-phase 1`
