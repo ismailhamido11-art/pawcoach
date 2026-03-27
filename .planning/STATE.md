@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v9.0
 milestone_name: "Production Ready" — Active
 status: executing
-stopped_at: Completed 10-04-PLAN.md
-last_updated: "2026-03-27T23:53:22Z"
-last_activity: 2026-03-27 — 10-04 executed (VetPortal batch FIX-65, verdictFr/sanitize annotations FIX-66/67, analytics.js removal FIX-68)
+stopped_at: Completed 10-02-PLAN.md
+last_updated: "2026-03-27T23:56:00Z"
+last_activity: 2026-03-27 — 10-02 executed (DogContext FIX-62, useHomeData extraction FIX-63)
 progress:
   total_phases: 11
   completed_phases: 5
@@ -30,8 +30,8 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 HERE
 ```
 
-Phase: 10-performance-cleanup — Plans 01-04 complete
-Last activity: 2026-03-27 — 10-04 executed (VetPortal batch FIX-65, verdictFr/sanitize annotations FIX-66/67, analytics.js removal FIX-68)
+Phase: 10-performance-cleanup — Plans 01-04 complete (02 added to completed set)
+Last activity: 2026-03-27 — 10-02 executed (DogContext FIX-62, useHomeData extraction FIX-63)
 
 ## Performance Metrics
 
@@ -51,6 +51,7 @@ Last activity: 2026-03-27 — 10-04 executed (VetPortal batch FIX-65, verdictFr/
 | Phase 09-visual-polish P01 | 305 | 2 tasks | 13 files |
 | Phase 10-performance-cleanup P01 | 8 | 3 tasks | 4 files |
 | Phase 10-performance-cleanup P04 | 15 | 3 tasks | 9 files |
+| Phase 10-performance-cleanup P02 | 311 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,8 @@ Last activity: 2026-03-27 — 10-04 executed (VetPortal batch FIX-65, verdictFr/
 - [Phase 10-performance-cleanup]: DownloadHealthPDF handleDownload: all calls are jsPDF API or pdfHelpers — no extraction needed (FIX-61)
 - [Phase 10-performance-cleanup P04]: listMyPatients action added in vetAccess — additive, listMyAccess preserved
 - [Phase 10-performance-cleanup P04]: analytics.js deleted — localStorage placeholder, no real insights, RGPD checkbox preserved in Onboarding
+- [Phase 10-performance-cleanup P02]: DogProvider wraps HomeCacheProvider (AuthProvider > DogProvider > HomeCacheProvider); useDog() exposes shared dog state app-wide
+- [Phase 10-performance-cleanup P02]: useHomeData is file-local hook in Home.jsx; refreshHome(u, d) uses explicit params to avoid stale closures; setDogData+setInsights exposed for optimistic updates in handleCheckin
 
 ### Pending Todos
 
@@ -93,7 +96,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T23:53:22Z
-Stopped at: Completed 10-04-PLAN.md
+Last session: 2026-03-27T23:56:00Z
+Stopped at: Completed 10-02-PLAN.md
 Resume file: None
 Next action: Continue with next plan in phase 10-performance-cleanup
