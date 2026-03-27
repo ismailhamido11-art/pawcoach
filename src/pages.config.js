@@ -68,6 +68,8 @@ const Scan = lazy(() => import('./pages/Scan'));
 const Training = lazy(() => import('./pages/Training'));
 const VetDogView = lazy(() => import('./pages/VetDogView'));
 const VetPortal = lazy(() => import('./pages/VetPortal'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const Terms = lazy(() => import('./pages/Terms'));
 
 import __Layout from './Layout.jsx';
 
@@ -89,6 +91,8 @@ export const PAGES = {
     "Training": Training,
     "VetDogView": VetDogView,
     "VetPortal": VetPortal,
+    "Privacy": Privacy,
+    "Terms": Terms,
 }
 
 export const pagesConfig = {

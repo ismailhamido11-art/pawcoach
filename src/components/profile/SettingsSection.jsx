@@ -111,6 +111,20 @@ export default function SettingsSection() {
                   }
                   {exporting ? "Export en cours..." : "Exporter mes données"}
                 </button>
+                <button
+                  onClick={() => navigate(createPageUrl("Privacy"))}
+                  className="flex items-center gap-2 text-sm text-primary py-1"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  Politique de confidentialité
+                </button>
+                <button
+                  onClick={() => navigate(createPageUrl("Terms"))}
+                  className="flex items-center gap-2 text-sm text-primary py-1"
+                >
+                  <BookMarked className="w-3.5 h-3.5" />
+                  Conditions d'utilisation
+                </button>
               </div>
 
               {/* About */}
