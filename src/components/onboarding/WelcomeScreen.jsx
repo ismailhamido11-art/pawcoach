@@ -4,8 +4,34 @@ import { Sparkles, PartyPopper } from "lucide-react";
 import PremiumNudgeSheet from "../premium/PremiumNudgeSheet";
 import Illustration from "../illustrations/Illustration";
 
-export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium }) {
+function getPersonalizedLines(dogName, dogBreed, dogAge) {
+  if (!dogBreed && !dogAge) {
+    return ["Alimentation · Bien-être · Dressage"];
+  }
+  const lines = [];
+  const breedLabel = dogBreed ? `Pour un ${dogBreed}` : `Pour ${dogName}`;
+  const ageLabel = dogAge ? ` de ${dogAge}` : "";
+  lines.push(`${breedLabel}${ageLabel}, on va suivre :`);
+  lines.push("Santé · Nutrition · Activité");
+  // Breed-specific hint (simple mapping, no external data)
+  const breedLower = (dogBreed || "").toLowerCase();
+  if (breedLower.includes("labrador") || breedLower.includes("golden")) {
+    lines.push("Spécial : surveillance du poids et des articulations.");
+  } else if (breedLower.includes("berger") || breedLower.includes("border")) {
+    lines.push("Spécial : exercice quotidien et stimulation mentale.");
+  } else if (breedLower.includes("bouledogue") || breedLower.includes("carlin")) {
+    lines.push("Spécial : surveillance respiratoire et chaleur.");
+  } else if (dogAge) {
+    const isYoung = dogAge.includes("mois") || dogAge.includes("1 an") || dogAge.includes("an");
+    if (isYoung) lines.push("Spécial : croissance et socialisation en cours.");
+  }
+  return lines;
+}
+
+export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium, dogBreed, dogAge }) {
   const [showNudge, setShowNudge] = useState(false);
+
+  const personalizedLines = getPersonalizedLines(dogName, dogBreed, dogAge);
 
   return (
     <div className="min-h-screen gradient-primary flex flex-col items-center justify-center px-6 text-center">
@@ -36,9 +62,15 @@ export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium
       <p className="text-white/80 text-base mb-2 leading-relaxed max-w-xs">
         Le profil de {dogName} est créé. PawCoach est prêt à t'accompagner au quotidien
       </p>
-      <p className="text-white/60 text-sm mb-4">
-        Alimentation · Bien-être · Dressage
-      </p>
+
+      {/* Personalized lines (breed/age) or fallback generic */}
+      <div className="mb-4">
+        {personalizedLines.map((line, i) => (
+          <p key={i} className={`text-white/70 text-sm mb-1 ${i === 0 ? "font-semibold" : ""}`}>
+            {line}
+          </p>
+        ))}
+      </div>
 
       {/* Trial badge */}
       <div className="bg-white/15 border border-white/25 rounded-2xl px-4 py-3 mb-6 text-center max-w-xs">
