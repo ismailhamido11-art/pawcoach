@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: "E2E Fixes"
 status: completed
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-27T03:04:22.679Z"
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-03-27T03:11:44Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 5
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 ## Current Position
 
 Phase: 5
-Plan: Not started
+Plan: 01 complete
 Status: Plan complete — ready for next plan
 Last activity: 2026-03-27
 
@@ -86,6 +86,9 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 04-01]: Logout dialog styled sans rouge — logout reversible, contrairement a la suppression de compte
 - [Phase 04-01]: HealthRecord create isole en try/catch — echec secondaire ne bloque jamais le save DailyLog principal
 - [Phase 04-01]: refreshDietPrefs re-fetch depuis API (pas depuis l'etat interne de DietPreferencesPanel) — state Nutri.jsx reste canonique
+- [Phase 05-01]: Backend est la seule autorite pour le decrement credit — frontend re-fetch via initCredits() apres appel IA
+- [Phase 05-01]: BCS des GrowthEntry inclus dans computeHealthScore via growthEntries transmis a computeNotebookSummary
+- [Phase 05-01]: SVG fallback QR code encode en data URI percent-encoded avec onerror=null pour eviter boucle infinie
 
 ### Pending Todos
 
@@ -97,6 +100,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T02:59:41Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-03-27T03:11:44Z
+Stopped at: Completed 05-01-PLAN.md
 Resume file: None
