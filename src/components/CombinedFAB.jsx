@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useBackClose from "@/components/hooks/useBackClose";
 import { Plus, X, Scale, Droplets, Footprints, FileText, Check, Loader2 } from "lucide-react";
-import { DailyLog } from "@/api/entities";
+import { DailyLog, HealthRecord } from "@/api/entities";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { getTodayString } from "@/utils/recommendations";
 import { toast } from "sonner";
@@ -65,6 +65,21 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
         await DailyLog.update(existing[0].id, payload);
       } else {
         await DailyLog.create(payload);
+      }
+
+      // Create HealthRecord for weight if provided (so Sante/Growth can read it)
+      if (payload.weight_kg) {
+        try {
+          await HealthRecord.create({
+            dog_id: dog.id,
+            type: "weight",
+            title: "Pesée",
+            date: payload.date,
+            value: payload.weight_kg,
+          });
+        } catch (e) {
+          console.warn("CombinedFAB: HealthRecord weight create failed", e);
+        }
       }
 
       // Trigger walk badge check if walk was logged
