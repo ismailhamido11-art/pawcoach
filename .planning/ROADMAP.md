@@ -36,7 +36,7 @@
 - [ ] **Phase 6: Legal & Security** - Privacy Policy, Terms, GDPR consent, CSP, input validation (P0)
 - [ ] **Phase 7: Flow Fixes** - 6 ruptures + 7 suspects critiques (P0/P1)
 - [ ] **Phase 8: UX & Activation** - Onboarding 5 etapes, IA visible, paywall, offline banner (P1)
-- [ ] **Phase 9: Visual Polish** - Orange cleanup, padding, typography, animation presets (P2)
+- [x] **Phase 9: Visual Polish** - Orange cleanup, padding, typography, animation presets (P2) (completed 2026-03-27)
 - [ ] **Phase 10: Performance & Cleanup** - Complexity, dead code, shared context, backend batch (P2/P3)
 
 ## Phase Details
@@ -149,6 +149,12 @@ Plans:
 **Goal**: L'app respecte la charte Nature Premium sans exception et le design est coherent
 **Depends on**: Phase 8
 **Requirements**: FIX-44, FIX-45, FIX-46, FIX-47, FIX-48, FIX-49, FIX-50, FIX-51, FIX-52, FIX-53, FIX-54, FIX-55, FIX-56, FIX-57
+**Plans:** 4/4 plans complete
+Plans:
+- [x] 09-01-PLAN.md — Orange/yellow/teal cleanup (FIX-44, FIX-45, FIX-46)
+- [x] 09-02-PLAN.md — Spacing px-5 + section rhythm + font sizes (FIX-47, FIX-48, FIX-49)
+- [x] 09-03-PLAN.md — Animation presets centralises + useReducedMotion (FIX-50, FIX-51, FIX-57)
+- [x] 09-04-PLAN.md — PWA icons PNG + dead import + version + hex tokens (FIX-52, FIX-53, FIX-54, FIX-55, FIX-56)
 **Success Criteria** (what must be TRUE):
   1. grep "orange" dans src/ retourne 0 classes Tailwind orange
   2. Toutes les pages utilisent px-5 pour le padding horizontal
@@ -174,7 +180,7 @@ Plans:
 | 4. Qualite Percue | 1/1 | Complete | 2026-03-27 |
 | 5. Synthese | 1/1 | Complete | 2026-03-27 |
 | 6. Legal & Security | 0/4 | Not started | - |
-| 7. Flow Fixes | 3/4 | In Progress|  |
+| 7. Flow Fixes | 4/4 | Complete | 2026-03-27 |
 | 8. UX & Activation | 3/4 | In Progress|  |
-| 9. Visual Polish | 0/? | Not started | - |
+| 9. Visual Polish | 4/4 | Complete   | 2026-03-27 |
 | 10. Performance | 0/? | Not started | - |
