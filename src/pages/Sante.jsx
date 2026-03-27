@@ -126,6 +126,10 @@ export default function Sante() {
      if (dog && user) await updateStreakSilently(dog.id, user.email);
    };
 
+   const handleWeightAdded = (weightKg) => {
+     if (weightKg) setDog(prev => prev ? { ...prev, weight: weightKg } : prev);
+   };
+
   const vaccineCount = records.filter(r => r.type === "vaccine").length;
   const vetCount = records.filter(r => r.type === "vet_visit").length;
   const weightRecords = records.filter(r => r.type === "weight");
@@ -248,6 +252,7 @@ export default function Sante() {
                 scrollToQR={urlTab === "qr"}
                 onOpenAssistant={() => setIsAssistantOpen(true)}
                 onChangeMainTab={changeTab}
+                onWeightAdded={handleWeightAdded}
               />
             )}
             {activeTab === "malade" && (

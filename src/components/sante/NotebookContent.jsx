@@ -59,7 +59,7 @@ const PREMIUM_CONFIGS = {
 // Map pill IDs to tab IDs for navigation
 const PILL_TO_TAB = { vaccines: "vaccine", weight: "weight", vet: "vet_visit" };
 
-export default function NotebookContent({ dog, user: _user, records = [], setRecords, dailyLogs = [], growthEntries = [], isPremium, loading, initialSubTab, initialVaccineKey, showShareModalInit, scrollToQR, onOpenAssistant, onChangeMainTab }) {
+export default function NotebookContent({ dog, user: _user, records = [], setRecords, dailyLogs = [], growthEntries = [], isPremium, loading, initialSubTab, initialVaccineKey, showShareModalInit, scrollToQR, onOpenAssistant, onChangeMainTab, onWeightAdded }) {
   // Sub-tab persistence: initialSubTab (from URL) > sessionStorage > default
   const savedSubTab = typeof window !== "undefined" ? sessionStorage.getItem("subTab_Sante_carnet") : null;
   const [activeTab, setActiveTab] = useState(initialSubTab || savedSubTab || "all");
@@ -422,7 +422,10 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
               <SectionVaccins records={records} dogId={dog?.id} dogName={dog?.name} onDelete={handleDelete} onRecordAdded={(rec) => setRecords(prev => [...prev, rec])} />
             )}
             {activeTab === "weight" && (
-              <SectionPoids records={allRecords} dogId={dog?.id} onDelete={handleDelete} onRecordAdded={(rec) => setRecords(prev => [...prev, rec])} />
+              <SectionPoids records={allRecords} dogId={dog?.id} onDelete={handleDelete} onRecordAdded={(rec) => {
+                setRecords(prev => [...prev, rec]);
+                if (rec.type === "weight" && rec.value) onWeightAdded?.(rec.value);
+              }} />
             )}
             {(activeTab === "vet_visit" || activeTab === "medication" || activeTab === "note") && (
               <PremiumSection

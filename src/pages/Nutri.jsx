@@ -342,7 +342,7 @@ export default function Nutri() {
       const contextMsgs = messages.slice(-15).map(m => ({ role: m.role, content: m.content }));
       contextMsgs.push({ role: "user", content });
       const response = await base44.functions.invoke("pawcoachChat", { dogId: dog.id, mode: "nutrition", messages: contextMsgs });
-      if (response.data?.error === "quota_exceeded") { setMessagesRemaining(0); return; }
+      if (response.data?.error === "quota_exceeded") { setMessagesRemaining(0); toast.error("Limite de messages atteinte pour aujourd'hui."); return; }
       const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
       const assistantTs = new Date().toISOString();
 
@@ -353,7 +353,7 @@ export default function Nutri() {
       }
     } catch (err) {
       console.error("Nutri send error:", err);
-      if (err?.message?.includes?.("quota_exceeded") || err?.status === 429) { setMessagesRemaining(0); return; }
+      if (err?.message?.includes?.("quota_exceeded") || err?.status === 429) { setMessagesRemaining(0); toast.error("Limite de messages atteinte pour aujourd'hui."); return; }
       setLastFailedInput(content);
       setMessages(prev => [...prev, { role: "assistant", content: "Oups, une erreur est survenue. Réessaie dans un instant.", timestamp: new Date().toISOString(), isError: true }]);
     } finally {
@@ -384,7 +384,7 @@ export default function Nutri() {
   }
 
   const isLimitReached = !isUserPremium(user) && (messagesRemaining ?? 0) <= 0;
-  const showQuickActions = messages.length <= 1 && !isLimitReached;
+  const showQuickActions = messages.length <= 1 && !isLimitReached && !loading && !isStreaming;
   const quickActions = dog ? [
     `Plan de repas hebdomadaire pour ${dog.name}`,
     `Meilleures croquettes pour ${dog.breed || "mon chien"}`,
