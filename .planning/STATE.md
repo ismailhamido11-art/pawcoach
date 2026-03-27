@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: "E2E Fixes"
 status: completed
-stopped_at: Completed 03-scalabilite-premium-01-PLAN.md
+stopped_at: Completed 03-scalabilite-premium-03-PLAN.md
 last_updated: "2026-03-27T02:45:22.677Z"
 last_activity: 2026-03-27
 progress:
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 ## Current Position
 
 Phase: 3
-Plan: 02 complete
+Plan: 03 complete
 Status: Plan complete — ready for next plan
 Last activity: 2026-03-27
 
@@ -77,6 +77,9 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 02-bugs-fonctionnels]: Single sessionStorage key onboarding_state holds both step and answers — single parse per mount
 - [Phase 03-scalabilite-premium]: Dog.list() global replaced by Dog.filter per-owner in walkReminder and trialExpiryReminder — queries proportional to matched users not total DB
 - [Phase 03-scalabilite-premium]: HealthRecord.list() and DailyCheckin.list() global moved inside loop as per-dog filter() in monthlySummary — non-premium dogs skip DB queries entirely
+- [Phase 03-scalabilite-premium]: consumingRef (useRef) chosen over useState for double-click guard — avoids re-render, atomically safe in closure
+- [Phase 03-scalabilite-premium]: ReferralSection returns null (file kept) — no backend validation exists for referral codes (PREM-04)
+- [Phase 03-scalabilite-premium]: !loading added to UpgradePrompt condition in AITrainingProgram — prevents flash during credits initialization
 
 ### Pending Todos
 
@@ -88,6 +91,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T02:45:04.054Z
-Stopped at: Completed 03-scalabilite-premium-01-PLAN.md
+Last session: 2026-03-27T02:44:47Z
+Stopped at: Completed 03-scalabilite-premium-03-PLAN.md
 Resume file: None
