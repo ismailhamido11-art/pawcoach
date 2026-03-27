@@ -134,7 +134,7 @@ export default function SettingsSection() {
                   <span className="text-sm font-semibold text-foreground">À propos de PawCoach</span>
                 </div>
                 <div className="space-y-1 text-xs text-muted-foreground">
-                  <p>Version 1.0.0</p>
+                  <p>Version 9.0</p>
                   <a href="mailto:support@pawcoach.app" className="flex items-center gap-1 text-primary">
                     <Mail className="w-3 h-3" /> support@pawcoach.app
                   </a>

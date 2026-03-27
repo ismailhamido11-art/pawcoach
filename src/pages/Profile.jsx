@@ -14,7 +14,6 @@ import DogSwitcher from "../components/profile/DogSwitcher.jsx";
 import CoachSettings from "../components/profile/CoachSettings.jsx";
 import VetSection from "../components/profile/VetSection.jsx";
 import SubscriptionSection from "../components/profile/SubscriptionSection.jsx";
-import ReferralSection from "../components/profile/ReferralSection.jsx";
 import SettingsSection from "../components/profile/SettingsSection.jsx";
 import WalkReminderSettings from "../components/profile/WalkReminderSettings.jsx";
 import AchievementsSection from "../components/profile/AchievementsSection.jsx";
@@ -159,7 +158,7 @@ export default function Profile() {
         {/* Premium card — hidden for existing premium users */}
         {!isUserPremium(user) && (
           <motion.div custom={1} variants={sectionVariants} initial="hidden" animate="visible">
-            <div className="bg-gradient-to-r from-amber-50 to-yellow-50/50 rounded-3xl p-4 border border-amber-100/50 shadow-sm flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-transform" onClick={() => navigate(createPageUrl("Premium") + "?from=profile")}>
+            <div className="bg-gradient-to-r from-amber-50 to-amber-50/50 rounded-3xl p-4 border border-amber-100/50 shadow-sm flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-transform" onClick={() => navigate(createPageUrl("Premium") + "?from=profile")}>
               <StorysetIllustration name="premium" className="w-24 h-24 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-[14px] font-bold text-foreground">Passe à Premium</p>
@@ -223,10 +222,6 @@ export default function Profile() {
         </motion.div>
 
         <motion.div custom={8} variants={sectionVariants} initial="hidden" animate="visible">
-          <ReferralSection user={user} onSave={handleSaveUser} />
-        </motion.div>
-
-        <motion.div custom={9} variants={sectionVariants} initial="hidden" animate="visible">
           <SettingsSection />
         </motion.div>
       </motion.div>
