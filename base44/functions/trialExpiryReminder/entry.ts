@@ -17,14 +17,19 @@ Deno.serve(async (req) => {
       return Response.json({ ok: true, sent: 0, message: "No trial users found" });
     }
 
-    // Get all dogs for name personalization
-    const dogs = await base44.asServiceRole.entities.Dog.list();
+    // Build owner email set from trial users
+    const ownerEmails = (users || []).map(u => u.email).filter(Boolean);
+
+    // Load only dogs owned by these trial users
     const dogsByOwner: Record<string, { name: string }> = {};
-    for (const d of dogs || []) {
-      if (d.owner && !dogsByOwner[d.owner]) {
-        dogsByOwner[d.owner] = d;
-      }
-    }
+    await Promise.all(
+      ownerEmails.map(async (email) => {
+        const userDogs = await base44.asServiceRole.entities.Dog.filter({ owner: email });
+        if (userDogs?.length > 0 && !dogsByOwner[email]) {
+          dogsByOwner[email] = userDogs[0];
+        }
+      })
+    );
 
     let sent = 0;
 
