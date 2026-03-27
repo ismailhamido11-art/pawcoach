@@ -8,7 +8,7 @@
 
 **Assertion Library:** None.
 
-**Test files found:** Zero. `find src/ -name "*.test.*" -o -name "*.spec.*"` returns empty.
+**Test files found:** Zero in `src/`. `find src/ -name "*.test.*" -o -name "*.spec.*"` returns empty. Only test files found are in `node_modules/` (vendor test suites — not ours).
 
 **Test config files found:** None. No `jest.config.*`, `vitest.config.*`, or `playwright.config.*` in the project root.
 
@@ -42,16 +42,16 @@ The project uses **static analysis only** as its quality layer:
 **CodeGraphContext MCP (active):**
 - `cgc analyze complexity` — identifies functions with cyclomatic complexity > 10
 - `cgc analyze dead-code` — detects potentially unused exports
-- `cgc find pattern` — finds code patterns across the codebase
-- Requires: `cgc index .` in the project root before use
+- `cgc find content "<pattern>"` — finds all instances of a pattern before fixing
+- Requires: `cgc index .` in the `pawcoach/` directory before use
 
 **E2E Audit (historical):**
-- `.planning/phases/1-audit/E2E-AUDIT-REPORT.md` — manual audit of 165 user flows conducted for v4.0
+- `.planning/phases/1-audit/E2E-AUDIT-REPORT.md` — manual audit of 165 user flows (v4.0)
 - Not automated — was a one-time manual QA exercise
 
 ## What Is Tested
 
-Nothing is automated. There are no unit tests, integration tests, or E2E tests.
+Nothing is automated. Zero unit tests, integration tests, or E2E tests exist.
 
 ## What Is NOT Tested (coverage gaps)
 
@@ -61,32 +61,40 @@ Nothing is automated. There are no unit tests, integration tests, or E2E tests.
 - `src/utils/premium.js` — `isUserPremium`, `isUserOnTrial`, `getTrialDaysLeft`
 - `src/utils/ai-credits.js` — `initCredits`, `consumeMessageCredit`, `consumeActionCredit`
 - `src/hooks/useActionCredits.js` — credit consumption with anti-double-call guard
-- Risk: incorrect credit logic would let free users bypass paywall or lock out paying users
+- Risk: incorrect credit logic lets free users bypass paywall or locks out paying users
 
 **Health score engine:**
 - `src/utils/healthStatus.js` — 655 lines of pure calculation logic
-- Functions: `computeHealthScore`, `computeVaccineMap`, `computeWeightTrend`, `computeStatusPills`, `computeNextAction`, `computeNotebookSummary`
+- Functions: `computeHealthScore`, `computeVaccineMap`, `computeWeightTrend`, `computeStatusPills`, `computeNextAction`, `computeNotebookSummary`, `dogAgeMonths`
 - CGC complexity: `buildHealthSummaryHTML` scores 28 (highest in codebase)
 - Risk: silent regressions in WSAVA vaccine schedule logic, BCS bonus/malus calculations
 
 **Date and formatting utilities:**
 - `src/utils/dateHelpers.js` — `getWeekStart`, `getAge`, `fmtDate`, `fmtDateLong`, `getDaysLeft`
-- Note: `getWeekStart` is duplicated in `src/utils/recommendations.js:12` — divergence risk
+- `getWeekStart` is duplicated in `src/utils/recommendations.js:12` — divergence risk if either is changed
 
 **Streak logic:**
 - `src/components/streakHelper.jsx` — `updateStreakSilently`
-- Risk: streak corruption on edge cases (timezone, midnight boundary)
+- Risk: streak corruption on edge cases (timezone, midnight boundary, cap at 2000)
+
+**`latestRealWeight` merge logic:**
+- `src/components/nutrition/NutritionMealPlan.jsx:63` — merges HealthRecord + DailyLog weight data
+- Applied in AI prompt for nutrition plans — wrong weight = wrong plan
 
 **Backend Deno functions (zero test coverage):**
 - All 22 functions in `base44/functions/*/entry.ts`
 - Critical: `stripeWebhook/entry.ts` — payment processing, no tests
 - Critical: `dailyCheckinProcess/entry.ts` — quota enforcement, no tests
-- Critical: `pawcoachChat/entry.ts` — server-side message quota, AI call, no tests
-- Critical: `deleteUser/entry.ts` — irreversible data deletion, no tests
+- Critical: `pawcoachChat/entry.ts` — server-side message quota + OpenAI call, no tests
+- Critical: `deleteUser/entry.ts` — irreversible cascading delete, no tests
 
 **Authentication flows:**
 - `src/lib/AuthContext.jsx` — auth state machine (`auth_required`, `user_not_registered`, token expiry)
 - Risk: auth edge cases (expired trial, revoked token) are untested
+
+**Tab navigation / sessionStorage persistence:**
+- Pattern used in `Activite.jsx`, `Sante.jsx`, `Nutri.jsx`
+- Risk: URL priority logic or `sessionStorage` fallback could break navigation history
 
 **Ownership checks:**
 - Backend: `dog.owner !== user.email` pattern in 10+ functions
@@ -107,7 +115,7 @@ Neither is set up.
 
 ## Complexity Hotspots (CGC)
 
-Functions exceeding cyclomatic complexity 10 that are at highest regression risk:
+Functions exceeding cyclomatic complexity 10 at highest regression risk:
 
 | Function | Complexity | Location | Risk |
 |----------|-----------|----------|------|
@@ -116,7 +124,7 @@ Functions exceeding cyclomatic complexity 10 that are at highest regression risk
 | `getAge` | 17 | `base44/functions/weeklyInsightGenerate/entry.ts:205` | Weekly insight generation |
 | `formatDateFr` | 11 | `base44/functions/pawcoachChat/entry.ts:129` | Date display in AI prompt |
 
-These functions have no unit tests and are modified only in backend Deno files.
+These have no unit tests and can be modified blindly.
 
 ## Manual QA Process
 
@@ -125,6 +133,7 @@ No formal QA process exists. The project relies on:
 2. Ismail manually testing flows in the browser after each milestone
 3. ESLint + typecheck running locally before commit (not enforced by CI)
 4. CGC analysis run ad-hoc during development sprints
+5. `/static-flow-analysis` skill used after milestones to trace end-to-end user flows in code
 
 ## Test Coverage Gaps — Priority Order
 
@@ -138,10 +147,11 @@ No formal QA process exists. The project relies on:
 5. `src/hooks/useActionCredits.js` — anti-double-call guard
 6. `src/lib/AuthContext.jsx` — auth state transitions
 7. `src/lib/HomeCacheContext.jsx` — TTL and dog-ID invalidation
+8. `latestRealWeight` merge logic in `src/components/nutrition/NutritionMealPlan.jsx:63`
 
 **Low priority (infrastructure/platform-dependent):**
-8. Backend Deno functions — require mock SDK or integration environment
-9. E2E flows — require Playwright or similar browser automation setup
+9. Backend Deno functions — require mock SDK or integration environment
+10. E2E flows — require Playwright or similar browser automation setup
 
 ## Recommended Test Setup (if implemented)
 
@@ -156,14 +166,15 @@ npm install --save-dev vitest @vitest/ui jsdom
 "test:coverage": "vitest run --coverage"
 ```
 
-Test file placement would follow co-location pattern:
+Test file placement: co-location next to the source file:
 ```
-src/utils/premium.test.js       # next to premium.js
-src/utils/healthStatus.test.js  # next to healthStatus.js
-src/utils/dateHelpers.test.js   # next to dateHelpers.js
+src/utils/premium.test.js
+src/utils/healthStatus.test.js
+src/utils/dateHelpers.test.js
+src/utils/ai-credits.test.js
 ```
 
-Example test pattern for existing pure functions:
+Example test pattern for pure functions:
 ```javascript
 // src/utils/premium.test.js
 import { describe, it, expect } from "vitest";
@@ -183,6 +194,24 @@ describe("isUserPremium", () => {
   it("returns false when trial_expires_at is in the past", () => {
     const past = new Date(Date.now() - 86400000).toISOString();
     expect(isUserPremium({ trial_expires_at: past })).toBe(false);
+  });
+});
+```
+
+Example pattern for `getWeekStart` (tests both implementations for divergence):
+```javascript
+// src/utils/dateHelpers.test.js
+import { describe, it, expect } from "vitest";
+import { getWeekStart } from "./dateHelpers";
+
+describe("getWeekStart", () => {
+  it("returns a Monday (day 1)", () => {
+    const result = getWeekStart();
+    const day = new Date(result + "T00:00:00").getDay();
+    expect(day).toBe(1); // Monday = 1
+  });
+  it("returns YYYY-MM-DD format", () => {
+    expect(getWeekStart()).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 });
 ```
