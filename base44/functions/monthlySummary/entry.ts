@@ -10,11 +10,9 @@ Deno.serve(async (req) => {
     const monthName = lastMonth.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
     const monthStr = lastMonth.toISOString().slice(0, 7); // "YYYY-MM"
 
-    // Fetch all data upfront to avoid N+1 queries
+    // Fetch dogs and users upfront for iteration — records loaded per-dog inside loop
     const dogs = await base44.asServiceRole.entities.Dog.list();
     const allUsers = await base44.asServiceRole.entities.User.list();
-    const allRecords = await base44.asServiceRole.entities.HealthRecord.list();
-    const allCheckins = await base44.asServiceRole.entities.DailyCheckin.list().catch(() => []);
 
     const userMap = new Map((allUsers || []).map(u => [u.email, u]));
 
@@ -24,6 +22,14 @@ Deno.serve(async (req) => {
       if (!user) continue;
       const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
       if (!isPremium) continue;
+
+      // Load records filtered per dog — avoids loading entire DB
+      const [dogHealthRecords, dogCheckins] = await Promise.all([
+        base44.asServiceRole.entities.HealthRecord.filter({ dog_id: dog.id }),
+        base44.asServiceRole.entities.DailyCheckin.filter({ dog_id: dog.id }).catch(() => []),
+      ]);
+      const allRecords = dogHealthRecords || [];
+      const allCheckins = dogCheckins || [];
 
       // Filter health records in memory for this dog
       const dogRecords = (allRecords || []).filter(r => r.dog_id === dog.id);
@@ -51,7 +57,7 @@ Deno.serve(async (req) => {
         ? `• Variation de poids : ${weightChange > 0 ? "+" : ""}${weightChange} kg`
         : "• Poids : pas de nouvelle mesure ce mois-ci";
 
-      // Filter DailyCheckins in memory for this dog this month (loaded upfront to avoid N+1)
+      // Filter DailyCheckins for this dog this month (already filtered by dog_id above)
       const monthCheckins = (allCheckins || []).filter(c => c.dog_id === dog.id && c.date && c.date.startsWith(monthStr));
 
       const checkinCount = monthCheckins.length;
