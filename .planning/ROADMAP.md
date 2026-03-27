@@ -99,9 +99,9 @@
 **Goal**: L'app est legalement conforme (RGPD, CGU) et securisee contre les attaques courantes
 **Depends on**: Phase 5
 **Requirements**: FIX-01, FIX-02, FIX-03, FIX-04, FIX-05, FIX-06, FIX-07, FIX-08, FIX-09, FIX-10
-**Plans**: 4 plans
-**Plan list**:
-- [ ] 06-01-PLAN.md — Privacy.jsx + Terms.jsx + routes + liens SettingsSection (FIX-01, FIX-02)
+**Plans:** 4 plans
+Plans:
+- [ ] 06-01-PLAN.md — Privacy Policy + Terms of Service pages (FIX-01, FIX-02)
 - [ ] 06-02-PLAN.md — Consentement RGPD Onboarding + gate analytics (FIX-03, FIX-04, FIX-08)
 - [ ] 06-03-PLAN.md — Export donnees + disclosure renouvellement + disclaimer medical (FIX-05, FIX-06, FIX-07)
 - [ ] 06-04-PLAN.md — CSP index.html + validation input backend (FIX-09, FIX-10)
@@ -116,6 +116,12 @@
 **Goal**: Zero rupture runtime — chaque action utilisateur aboutit ou affiche une erreur claire
 **Depends on**: Phase 5
 **Requirements**: FIX-15, FIX-16, FIX-17, FIX-18, FIX-19, FIX-20, FIX-21, FIX-22, FIX-23, FIX-24, FIX-25, FIX-26, FIX-27
+**Plans:** 4 plans
+Plans:
+- [ ] 07-01-PLAN.md — VetNoteForm invoke fix + Library handleActivateTraining (FIX-15, FIX-19)
+- [ ] 07-02-PLAN.md — WalkReminderSettings rollback + NotebookContent ge-guard + Activite try/catch (FIX-16, FIX-17, FIX-18)
+- [ ] 07-03-PLAN.md — LabelScanMode resetLabel + Chat/Nutri suggestions disable + Sante weight sync (FIX-20, FIX-25, FIX-26)
+- [ ] 07-04-PLAN.md — Dashboard Promise.all + Home stale indicator + checkin guard + Nutri 429 toast + DogProfile revokeObjectURL (FIX-21, FIX-22, FIX-23, FIX-24, FIX-27)
 **Success Criteria** (what must be TRUE):
   1. VetNoteForm soumet correctement via invoke("vetAccess", {...})
   2. Dashboard affiche meme si un fetch echoue (pas d'ecran blanc)
@@ -162,7 +168,7 @@
 | 4. Qualite Percue | 1/1 | Complete | 2026-03-27 |
 | 5. Synthese | 1/1 | Complete | 2026-03-27 |
 | 6. Legal & Security | 0/4 | Not started | - |
-| 7. Flow Fixes | 0/? | Not started | - |
+| 7. Flow Fixes | 0/4 | Not started | - |
 | 8. UX & Activation | 0/? | Not started | - |
 | 9. Visual Polish | 0/? | Not started | - |
 | 10. Performance | 0/? | Not started | - |
