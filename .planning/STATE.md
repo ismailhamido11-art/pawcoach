@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 ## Current Position
 
 Phase: 4
-Plan: 03 complete
+Plan: 04-01 complete
 Status: Plan complete — ready for next plan
 Last activity: 2026-03-27
 
@@ -83,6 +83,9 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 04-ux-navigation]: GPS toast { id: "gps-warn" } applique codes 1/2/3 — deduplification toast si erreur GPS persiste
 - [Phase 04-ux-navigation]: translateError() identity fallback — messages non mappes passent tels quels sans perte d'info
 - [Phase 04-ux-navigation]: ErrorBoundary createPageUrl module-level import — class component compatible, routeur Base44 respecte
+- [Phase 04-01]: Logout dialog styled sans rouge — logout reversible, contrairement a la suppression de compte
+- [Phase 04-01]: HealthRecord create isole en try/catch — echec secondaire ne bloque jamais le save DailyLog principal
+- [Phase 04-01]: refreshDietPrefs re-fetch depuis API (pas depuis l'etat interne de DietPreferencesPanel) — state Nutri.jsx reste canonique
 
 ### Pending Todos
 
@@ -94,6 +97,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T00:00:00Z
-Stopped at: Completed 04-ux-navigation-03-PLAN.md
+Last session: 2026-03-27T02:59:41Z
+Stopped at: Completed 04-01-PLAN.md
 Resume file: None
