@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: "Deep Clean & PWA"
-status: completed
-stopped_at: Completed 06-perf-01-PLAN.md (2/2 tasks — PERF done, Phase 7 CLEAN next)
-last_updated: "2026-03-27T14:04:39.804Z"
+status: archived
+stopped_at: Milestone v6.0 archived
+last_updated: "2026-03-27"
 last_activity: 2026-03-27
 progress:
-  total_phases: 9
-  completed_phases: 5
-  total_plans: 6
+  total_phases: 7
+  completed_phases: 7
+  total_plans: 7
   completed_plans: 7
-  percent: 86
+  percent: 100
 ---
 
 # Project State
