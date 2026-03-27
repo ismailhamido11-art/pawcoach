@@ -524,7 +524,7 @@ export default function DownloadHealthPDF({ dogId, dogName: _dogName }) {
           v.title || "\u2014",
           (v.details || "").substring(0, 60) || "\u2014",
         ]);
-        y = drawTable(doc, y, ["Date", "Motif", "Details"], rows, [0.22, 0.35, 0.43]);
+        y = drawTable(doc, y, ["Date", "Motif", "Détails"], rows, [0.22, 0.35, 0.43]);
         y += 6;
         if (dog.next_vet_appointment) {
           checkPage(10);

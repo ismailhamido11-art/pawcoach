@@ -577,11 +577,13 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                       </a>
                       {level === "urgent" ? (
                         <a
-                          href="tel:3115"
+                          href="https://www.google.com/search?q=urgences+v%C3%A9t%C3%A9rinaires+%C3%A0+proximit%C3%A9"
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="flex items-center justify-center gap-2 p-2.5 bg-white border border-border rounded-lg hover:bg-muted transition-colors"
                         >
                           <Phone className="w-4 h-4 text-red-600" />
-                          <span className="text-xs font-semibold text-foreground">Urgences (3115)</span>
+                          <span className="text-xs font-semibold text-foreground">Urgences véto</span>
                         </a>
                       ) : (
                         <a
