@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
     const localHourStr = String(localHour).padStart(2, "0") + ":00";
     const today = now.toISOString().slice(0, 10);
 
-    console.log(`walkReminder running for hour slot: ${localHourStr} (today: ${today})`);
+    console.info(`walkReminder running for hour slot: ${localHourStr} (today: ${today})`);
 
     // Get all users with reminders enabled at this hour
     const users = await base44.asServiceRole.entities.User.filter({
@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
     for (const { user, dog, logs } of dailyLogResults) {
       const hasWalk = logs?.some((l: any) => l.walk_minutes > 0);
       if (hasWalk) {
-        console.log(`${user.email}: already walked today, skipping`);
+        console.info(`${user.email}: already walked today, skipping`);
         continue;
       }
 
@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
         body: `Salut ${firstName} !\n\nIl est ${localHourStr} et ${dog.name} n'a pas encore eu sa balade aujourd'hui.\n\nUne petite sortie, même de 10 minutes, fait toute la différence pour sa santé physique et mentale. 🌿\n\nOuvre PawCoach, appuie sur "Démarrer" et partez ensemble ! 🏃‍♀️🐕\n\n— PawCoach 🐾\n\n(Pour désactiver ce rappel, rendez-vous dans Profil > Rappel balade)`
       });
 
-      console.log(`Reminder sent to ${user.email} for ${dog.name}`);
+      console.info(`Reminder sent to ${user.email} for ${dog.name}`);
       sent++;
     }
 

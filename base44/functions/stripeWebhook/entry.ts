@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
       const session = event.data.object;
 
       if (session.payment_status !== "paid") {
-        console.log(`Skipping session with payment_status: ${session.payment_status}`);
+        console.info(`Skipping session with payment_status: ${session.payment_status}`);
         return Response.json({ received: true });
       }
 
@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
         const user = users[0];
         // Idempotency check: skip if already premium with same subscription
         if (user.is_premium && user.stripe_subscription_id === session.subscription) {
-          console.log(`Idempotent skip: premium already active for ${userEmail} (event ${event.id})`);
+          console.info(`Idempotent skip: premium already active for ${userEmail} (event ${event.id})`);
           return Response.json({ received: true });
         }
         await base44.asServiceRole.entities.User.update(user.id, {
@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
           stripe_customer_id: session.customer,
           stripe_subscription_id: session.subscription,
         });
-        console.log(`Premium activated for: ${userEmail}`);
+        console.info(`Premium activated for: ${userEmail}`);
       } else {
         console.error(`User not found: ${userEmail}`);
       }
@@ -73,14 +73,14 @@ Deno.serve(async (req) => {
         const user = users[0];
         // Idempotency check: skip if already not premium
         if (!user.is_premium && user.stripe_subscription_id === null) {
-          console.log(`Idempotent skip: premium already inactive for customer ${customerId} (event ${event.id})`);
+          console.info(`Idempotent skip: premium already inactive for customer ${customerId} (event ${event.id})`);
           return Response.json({ received: true });
         }
         await base44.asServiceRole.entities.User.update(user.id, {
           is_premium: false,
           stripe_subscription_id: null,
         });
-        console.log(`Premium cancelled for customer: ${customerId}`);
+        console.info(`Premium cancelled for customer: ${customerId}`);
       } else {
         console.error(`No user found for customer: ${customerId}`);
       }
@@ -98,7 +98,7 @@ Deno.serve(async (req) => {
           stripe_subscription_id: subscription.id,
           stripe_subscription_status: subscription.status,
         });
-        console.log(`Subscription updated for customer ${customerId}: status=${subscription.status}, premium=${isActive}`);
+        console.info(`Subscription updated for customer ${customerId}: status=${subscription.status}, premium=${isActive}`);
       } else {
         console.error(`No user found for subscription update customer: ${customerId}`);
       }
@@ -116,12 +116,12 @@ Deno.serve(async (req) => {
             is_premium: false,
             stripe_subscription_status: "past_due",
           });
-          console.log(`Premium revoked (${attemptCount} failed payments) for customer: ${customerId}`);
+          console.info(`Premium revoked (${attemptCount} failed payments) for customer: ${customerId}`);
         } else {
           await base44.asServiceRole.entities.User.update(users[0].id, {
             stripe_subscription_status: "past_due",
           });
-          console.log(`Payment failed (attempt ${attemptCount}/3) for customer: ${customerId}, keeping premium access`);
+          console.info(`Payment failed (attempt ${attemptCount}/3) for customer: ${customerId}, keeping premium access`);
         }
       } else {
         console.error(`No user found for failed payment customer: ${customerId}`);

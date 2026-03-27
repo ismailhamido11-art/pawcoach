@@ -99,7 +99,7 @@ Deno.serve(async (req) => {
           subject,
           body
         });
-        console.log(`Trial reminder (${daysLeft}d) sent to ${user.email} for ${dogName}`);
+        console.info(`Trial reminder (${daysLeft}d) sent to ${user.email} for ${dogName}`);
         sent++;
       } catch (emailErr) {
         console.error(`Failed to send to ${user.email}:`, emailErr?.message || String(emailErr));
