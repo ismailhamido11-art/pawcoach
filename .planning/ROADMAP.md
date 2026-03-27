@@ -132,6 +132,12 @@ Plans:
 **Goal**: L'onboarding active les utilisateurs en <2min et l'IA est visible des la premiere visite
 **Depends on**: Phase 6, Phase 7
 **Requirements**: FIX-31, FIX-32, FIX-33, FIX-34, FIX-35, FIX-36, FIX-37, FIX-38, FIX-39, FIX-40, FIX-41
+**Plans:** 4 plans
+Plans:
+- [ ] 08-01-PLAN.md — Onboarding 5 groupes + quick-start + WelcomeScreen personnalisee (FIX-31, FIX-32, FIX-37)
+- [ ] 08-02-PLAN.md — AI card Home + Vet shortcut + Dashboard prominence (FIX-33, FIX-35, FIX-36)
+- [ ] 08-03-PLAN.md — Gradient edge sub-tabs + compteur messages Chat (FIX-34, FIX-38)
+- [ ] 08-04-PLAN.md — Offline banner + SW update prompt + Stripe loading (FIX-39, FIX-40, FIX-41)
 **Success Criteria** (what must be TRUE):
   1. Onboarding en 5-6 etapes max (pas 10)
   2. Un element IA (card ou FAB) est visible sur Home
@@ -169,6 +175,6 @@ Plans:
 | 5. Synthese | 1/1 | Complete | 2026-03-27 |
 | 6. Legal & Security | 0/4 | Not started | - |
 | 7. Flow Fixes | 3/4 | In Progress|  |
-| 8. UX & Activation | 0/? | Not started | - |
+| 8. UX & Activation | 0/4 | Not started | - |
 | 9. Visual Polish | 0/? | Not started | - |
 | 10. Performance | 0/? | Not started | - |
