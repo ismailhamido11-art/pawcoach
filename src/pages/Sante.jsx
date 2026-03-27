@@ -273,7 +273,12 @@ export default function Sante() {
                 user={user}
                 healthRecords={records}
                 dailyLogs={dailyLogs}
-                onGrowthAdded={(entry) => setGrowthEntries(prev => [...prev, entry])}
+                onGrowthAdded={(entry) => {
+                  setGrowthEntries(prev => [...prev, entry]);
+                  if (entry.weight_kg) {
+                    setDog(prev => prev ? { ...prev, weight: entry.weight_kg } : prev);
+                  }
+                }}
               />
             )}
             {activeTab === "findvet" && (
