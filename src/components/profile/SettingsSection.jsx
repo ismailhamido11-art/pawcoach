@@ -4,11 +4,12 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import {
   Settings, ChevronDown, ChevronUp, ChevronRight,
-  BookMarked, ShieldCheck, Info, LogOut, Trash2, Mail, Loader2, PawPrint
+  BookMarked, ShieldCheck, Info, LogOut, Trash2, Mail, Loader2, PawPrint, Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { Dog, DailyLog, HealthRecord, DailyCheckin, FoodScan } from "@/api/entities";
 
 export default function SettingsSection() {
   const navigate = useNavigate();
@@ -16,6 +17,42 @@ export default function SettingsSection() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const [dogs, logs, records, checkins, scans] = await Promise.all([
+        Dog.filter({}),
+        DailyLog.filter({}),
+        HealthRecord.filter({}),
+        DailyCheckin.filter({}),
+        FoodScan.filter({}),
+      ]);
+      const exportData = {
+        exported_at: new Date().toISOString(),
+        dogs,
+        daily_logs: logs,
+        health_records: records,
+        daily_checkins: checkins,
+        food_scans: scans,
+      };
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `pawcoach-export-${new Date().toISOString().split("T")[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      toast.success("Export téléchargé");
+    } catch {
+      toast.error("Erreur lors de l'export. Réessaie.");
+    } finally {
+      setExporting(false);
+    }
+  };
 
   return (
     <div className="bg-white rounded-2xl border border-border overflow-hidden">
@@ -62,6 +99,17 @@ export default function SettingsSection() {
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   Supprimer mon compte
+                </button>
+                <button
+                  onClick={handleExport}
+                  disabled={exporting}
+                  className="flex items-center gap-2 text-sm text-primary py-1"
+                >
+                  {exporting
+                    ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    : <Download className="w-3.5 h-3.5" />
+                  }
+                  {exporting ? "Export en cours..." : "Exporter mes données"}
                 </button>
               </div>
 
