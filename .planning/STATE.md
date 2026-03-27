@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: "Deep Clean & PWA"
-status: verifying
-stopped_at: Completed 02-cron-01-PLAN.md (2/2 tasks — already done)
-last_updated: "2026-03-27T14:00:00.000Z"
+status: completed
+stopped_at: Completed 06-perf-01-PLAN.md (2/2 tasks — PERF done, Phase 7 CLEAN next)
+last_updated: "2026-03-27T13:48:26.118Z"
 last_activity: 2026-03-27
 progress:
-  total_phases: 7
-  completed_phases: 3
-  total_plans: 3
-  completed_plans: 5
-  percent: 21
+  total_phases: 9
+  completed_phases: 5
+  total_plans: 6
+  completed_plans: 7
+  percent: 86
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Corriger les 21 issues restantes post-v5.0 (2 CRITICAL + 5 HIGH + 7 MEDIUM + 7 LOW) — PWA fonctionnelle, CRONs scalables, securite backend, monolithes decoupes. Git direct, 0 credit.
-**Current focus:** Phase 05 — A11Y (terminee)
+**Current focus:** Phase 06 — PERF (terminee)
 
 ## Current Position
 
-Phase: 02-cron
-Plan: 01 complete
-Status: Phase complete — ready for Phase 3 (SEC)
+Phase: 03
+Plan: Not started
+Status: Phase complete — ready for Phase 7 (CLEAN)
 Last activity: 2026-03-27
 
-Progress: [█░░░░░░░░░] 14%
+Progress: [████████░░] 86%
 
 ## Performance Metrics
 
@@ -70,11 +70,11 @@ None.
 
 ### Blockers/Concerns
 
-- PERF-01 (react-leaflet lazy): verifier si FindVetContent et WalkMap sont montes immediatement ou sur demande avant d'implementer
+- PERF-01 (react-leaflet lazy): RESOLU — deja implemente (FindVetContent lazy dans Sante.jsx, WalkMap+NearbyParks lazy dans WalkMode.jsx)
 - CLEAN-01 (deps npm): RESOLU — verifie que cmdk/vaul/input-otp viennent de composants ui/ (shadcn), seuls @hello-pangea/dnd et @stripe/react-stripe-js supprimes
 
 ## Session Continuity
 
-Last session: 2026-03-27T14:00:00.000Z
-Stopped at: Completed 02-cron-01-PLAN.md (2/2 tasks — already done)
+Last session: 2026-03-27T13:45:00.000Z
+Stopped at: Completed 06-perf-01-PLAN.md (2/2 tasks — PERF done, Phase 7 CLEAN next)
 Resume file: None
