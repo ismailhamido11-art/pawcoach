@@ -36,7 +36,10 @@
   3. L'email du proprietaire n'est pas visible sur le profil public du chien
   4. Le quota scan ne peut pas etre contourne en vidant le localStorage
   5. isUserPremium() est utilise de facon coherente — plus d'acces direct a user.is_premium dans le code metier
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 01-01-PLAN.md — SEC-01 (deleteUser), SEC-02 (VetNote acces), SEC-03 (email public)
+- [x] 01-02-PLAN.md — SEC-04 (quota scan frais), SEC-05 (isUserPremium coherent)
 
 ### Phase 2: Bugs Fonctionnels
 **Goal**: Les flows diagnostics, navigation et auth fonctionnent correctement sans perte de donnees
@@ -104,7 +107,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Security & Legal | 0/TBD | Not started | - |
+| 1. Security & Legal | 0/2 | Planned | - |
 | 2. Bugs Fonctionnels | 0/TBD | Not started | - |
 | 3. Scalabilite & Premium | 0/TBD | Not started | - |
 | 4. UX & Navigation | 0/TBD | Not started | - |
