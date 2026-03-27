@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -44,36 +44,12 @@ const MILESTONES = [
   { days: 100, message: "100 jours !",             sub: "Légende absolue" },
 ];
 
-async function fetchDogData(dogId) {
-  const today = getTodayString();
-  const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks] = await Promise.all([
-    DailyCheckin.filter({ dog_id: dogId, date: today }).catch(() => []),
-    Streak.filter({ dog_id: dogId }).catch(() => []),
-    DailyCheckin.filter({ dog_id: dogId }, "-date", 30).catch(() => []),
-    HealthRecord.filter({ dog_id: dogId }, "-date", 100).catch(() => []),
-    UserProgress.filter({ dog_id: dogId }).catch(() => []),
-    FoodScan.filter({ dog_id: dogId }, "-timestamp", 20).catch(() => []),
-    DailyLog.filter({ dog_id: dogId }, "-date", 30).catch(() => []),
-    DiagnosisReport.filter({ dog_id: dogId }, "-report_date", 5).catch(() => []),
-    NutritionPlan.filter({ dog_id: dogId }, "-generated_at", 3).catch(() => []),
-    Bookmark.filter({ dog_id: dogId, source: "training" }, "-created_at", 10).catch(() => []),
-    Bookmark.filter({ dog_id: dogId, source: "behavior_program" }, "-created_at", 10).catch(() => []),
-  ]);
-  return { checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks };
-}
+// ---------------------------------------------------------------------------
+// useHomeData — extracts dog-data fetching logic out of Home component
+// ---------------------------------------------------------------------------
+function useHomeData() {
+  const { getCachedHome, setCachedHome } = useHomeCache();
 
-export default function Home() {
-  const navigate = useNavigate();
-  const prefersReducedMotion = useReducedMotion();
-  const { getCachedHome, setCachedHome, invalidateHome } = useHomeCache();
-  const { checkAppState } = useAuth();
-  const dailyBriefingRef = useRef(null);
-  const premiumSuccessHandledRef = useRef(false);
-  const [user, setUser] = useState(null);
-  const [dog, setDog] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // Dog data group — all fetched entity data for the active dog
   const [dogData, setDogData] = useState({
     todayCheckin: null,
     streak: null,
@@ -88,28 +64,33 @@ export default function Home() {
     behaviorBookmarks: [],
   });
 
-  // Checkin UI state
-  const [submitting, setSubmitting] = useState(false);
-
-  // Insights group — weekly AI insights data
   const [insights, setInsights] = useState({
     weeklyInsight: null,
     previousInsight: null,
     pastInsights: [],
   });
-  const [insightExpanded, setInsightExpanded] = useState(false);
-  const [markingRead, setMarkingRead] = useState(false);
 
-  // Destructure for easy consumption in render
-  const { todayCheckin, streak, recentCheckins, records, exercises, scans, dailyLogs, diagnosisReports, nutritionPlans, trainingBookmarks, behaviorBookmarks } = dogData;
-  const { weeklyInsight, previousInsight, pastInsights } = insights;
-
-  const [milestone, setMilestone] = useState(null);
-  const [showPremiumNudge, setShowPremiumNudge] = useState(false);
-  const [showPostTrial, setShowPostTrial] = useState(false);
   const [isDataStale, setIsDataStale] = useState(false);
 
-  const applyDogData = ({ checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks }) => {
+  const fetchDogData = useCallback(async (dogId) => {
+    const today = getTodayString();
+    const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks] = await Promise.all([
+      DailyCheckin.filter({ dog_id: dogId, date: today }).catch(() => []),
+      Streak.filter({ dog_id: dogId }).catch(() => []),
+      DailyCheckin.filter({ dog_id: dogId }, "-date", 30).catch(() => []),
+      HealthRecord.filter({ dog_id: dogId }, "-date", 100).catch(() => []),
+      UserProgress.filter({ dog_id: dogId }).catch(() => []),
+      FoodScan.filter({ dog_id: dogId }, "-timestamp", 20).catch(() => []),
+      DailyLog.filter({ dog_id: dogId }, "-date", 30).catch(() => []),
+      DiagnosisReport.filter({ dog_id: dogId }, "-report_date", 5).catch(() => []),
+      NutritionPlan.filter({ dog_id: dogId }, "-generated_at", 3).catch(() => []),
+      Bookmark.filter({ dog_id: dogId, source: "training" }, "-created_at", 10).catch(() => []),
+      Bookmark.filter({ dog_id: dogId, source: "behavior_program" }, "-created_at", 10).catch(() => []),
+    ]);
+    return { checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks };
+  }, []);
+
+  const applyDogData = useCallback(({ checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks }) => {
     setDogData({
       todayCheckin: checkins?.length > 0 ? checkins[0] : null,
       streak: streaks?.length > 0 ? streaks[0] : null,
@@ -123,35 +104,76 @@ export default function Home() {
       trainingBookmarks: tBks || [],
       behaviorBookmarks: bBks || [],
     });
-  };
+  }, []);
 
-  const applyInsights = (insightsData) => {
+  const applyInsights = useCallback((insightsData) => {
     if (!insightsData) return;
     setInsights({
       weeklyInsight: insightsData.weeklyInsight ?? null,
       previousInsight: insightsData.previousInsight ?? null,
       pastInsights: insightsData.pastInsights ?? [],
     });
-  };
+  }, []);
 
-  const loadInsights = async (u, dogId) => {
+  const loadInsights = useCallback(async (u, dogId) => {
     if (!isUserPremium(u)) return null;
     try {
       const allInsights = await WeeklyInsight.filter({ dog_id: dogId }, "-week_start", 10);
       if (allInsights?.length > 0) {
         const unread = allInsights.find(i => !i.is_read);
         const read = allInsights.filter(i => i.is_read);
-        const insights = {
+        const result = {
           weeklyInsight: unread || null,
           previousInsight: allInsights[1] || null,
           pastInsights: read.slice(0, 5),
         };
-        applyInsights(insights);
-        return insights;
+        applyInsights(result);
+        return result;
       }
       return null;
     } catch (e) { console.warn("Weekly insights load failed:", e); return null; }
-  };
+  }, [applyInsights]);
+
+  // refreshHome: fetch all dog data for given user+dog, apply to state, update cache
+  const refreshHome = useCallback(async (u, d) => {
+    if (!u || !d) return null;
+    const fetchedDogData = await fetchDogData(d.id);
+    applyDogData(fetchedDogData);
+    const fetchedInsights = await loadInsights(u, d.id);
+    setCachedHome({ user: u, dog: d, dogData: fetchedDogData, insights: fetchedInsights });
+    setIsDataStale(false);
+    return { dogData: fetchedDogData, insights: fetchedInsights };
+  }, [fetchDogData, applyDogData, loadInsights, setCachedHome]);
+
+  return { dogData, setDogData, insights, setInsights, isDataStale, setIsDataStale, refreshHome, applyDogData, applyInsights, getCachedHome };
+}
+
+export default function Home() {
+  const navigate = useNavigate();
+  const prefersReducedMotion = useReducedMotion();
+  const { invalidateHome } = useHomeCache();
+  const { checkAppState } = useAuth();
+  const dailyBriefingRef = useRef(null);
+  const premiumSuccessHandledRef = useRef(false);
+  const [user, setUser] = useState(null);
+  const [dog, setDog] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const { dogData, setDogData, insights, setInsights, isDataStale, setIsDataStale, refreshHome, applyDogData, applyInsights, getCachedHome } = useHomeData();
+
+  // Checkin UI state
+  const [submitting, setSubmitting] = useState(false);
+
+  const [insightExpanded, setInsightExpanded] = useState(false);
+  const [markingRead, setMarkingRead] = useState(false);
+
+  // Destructure for easy consumption in render
+  const { todayCheckin, streak, recentCheckins, records, exercises, scans, dailyLogs, diagnosisReports, nutritionPlans, trainingBookmarks, behaviorBookmarks } = dogData;
+  const { weeklyInsight, previousInsight, pastInsights } = insights;
+
+  const [milestone, setMilestone] = useState(null);
+  const [showPremiumNudge, setShowPremiumNudge] = useState(false);
+  const [showPostTrial, setShowPostTrial] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -178,7 +200,7 @@ export default function Home() {
       }
     };
 
-    // Full fetch: fetch everything, update state, update cache
+    // Full fetch: resolve user+dog, then delegate dog-data fetching to refreshHome
     const fetchAndCache = async (skipLoadingState = false) => {
       try {
         const u = await base44.auth.me();
@@ -189,14 +211,8 @@ export default function Home() {
         if (dogs && dogs.length > 0) {
           const d = getActiveDog(dogs);
           setDog(d);
-          const fetchedDogData = await fetchDogData(d.id);
+          await refreshHome(u, d);
           if (!mounted) return;
-          applyDogData(fetchedDogData);
-          const fetchedInsights = await loadInsights(u, d.id);
-          if (!mounted) return;
-          // Update cache with fresh data
-          setCachedHome({ user: u, dog: d, dogData: fetchedDogData, insights: fetchedInsights });
-          setIsDataStale(false);
           applyPremiumLogic(u);
         } else {
           navigate(createPageUrl("Onboarding"));
@@ -354,11 +370,7 @@ export default function Home() {
         const d = getActiveDog(dogs);
         setUser(u);
         setDog(d);
-        const fetchedDogData = await fetchDogData(d.id);
-        applyDogData(fetchedDogData);
-        const fetchedInsights = await loadInsights(u, d.id);
-        // Re-cache fresh data after manual refresh
-        setCachedHome({ user: u, dog: d, dogData: fetchedDogData, insights: fetchedInsights });
+        await refreshHome(u, d);
       }
     } catch (e) { console.error(e); toast.error("Impossible de rafraîchir les données. Vérifie ta connexion."); }
   };
