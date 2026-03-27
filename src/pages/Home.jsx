@@ -18,7 +18,7 @@ import CalendarStrip from "../components/home/CalendarStrip";
 import DailyBriefing from "../components/home/DailyBriefing";
 import DailyProgress from "../components/home/DailyProgress";
 import EmotionalTip from "../components/home/EmotionalTip";
-import ContentArticles from "../components/home/ContentArticles";
+// ContentArticles removed — hardcoded placeholder content, will be replaced with real content later
 
 import { Flame, ScanLine, Footprints, Stethoscope, BookOpen, Lock } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
@@ -551,8 +551,7 @@ export default function Home() {
           {/* Emotional Tip — "Le savais-tu ?" */}
           <EmotionalTip dog={dog} />
 
-          {/* Content Articles — "Pour Rex" */}
-          <ContentArticles dog={dog} />
+          {/* Content Articles removed — was hardcoded placeholder content */}
 
           {/* Weekly Insight */}
           {(weeklyInsight || pastInsights.length > 0) ? (
