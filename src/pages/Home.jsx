@@ -540,6 +540,22 @@ export default function Home() {
             dog={dog}
           />
 
+          {/* Dashboard access — SmartAlerts */}
+          <button
+            onClick={() => navigate(createPageUrl("Dashboard"))}
+            className="w-full bg-gradient-to-r from-blue-50 to-indigo-50/50 rounded-3xl p-4 border border-blue-100/50 shadow-sm flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
+            aria-label="Voir le tableau de bord et les alertes santé"
+          >
+            <StorysetIllustration name="vet-checkup" className="w-20 h-20 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-bold text-foreground">Tableau de bord</p>
+              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Vaccins, alertes poids, tendances humeur — tout en un coup d'oeil.</p>
+              <span className="inline-block mt-2 text-[12px] font-bold text-blue-700 bg-blue-100 px-3 py-1.5 rounded-full">
+                Voir les alertes
+              </span>
+            </div>
+          </button>
+
           {/* Quick Actions */}
           <div className="flex justify-between px-2">
             {quickActions.map((qa, i) => (
