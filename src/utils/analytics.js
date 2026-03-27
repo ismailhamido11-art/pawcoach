@@ -10,6 +10,7 @@
 
 const STORAGE_KEY = "pawcoach_analytics_events";
 const MAX_EVENTS = 100;
+const TTL_DAYS = 30;
 
 /**
  * Track a business-critical event.
@@ -27,7 +28,13 @@ export function trackEvent(eventName, properties = {}) {
 
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    const events = raw ? JSON.parse(raw) : [];
+    const cutoff = Date.now() - TTL_DAYS * 24 * 60 * 60 * 1000;
+    let events = raw ? JSON.parse(raw) : [];
+    // Purge events older than TTL
+    events = events.filter(e => {
+      const ts = e.ts ? new Date(e.ts).getTime() : 0;
+      return ts >= cutoff;
+    });
     events.push(event);
     // Keep only the last MAX_EVENTS entries
     if (events.length > MAX_EVENTS) events.splice(0, events.length - MAX_EVENTS);
@@ -44,7 +51,12 @@ export function trackEvent(eventName, properties = {}) {
 export function getEvents() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) return [];
+    const cutoff = Date.now() - TTL_DAYS * 24 * 60 * 60 * 1000;
+    return JSON.parse(raw).filter(e => {
+      const ts = e.ts ? new Date(e.ts).getTime() : 0;
+      return ts >= cutoff;
+    });
   } catch {
     return [];
   }
