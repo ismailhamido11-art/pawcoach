@@ -4,182 +4,196 @@
 
 ## Pattern Overview
 
-**Overall:** Feature-based SPA with page-level data ownership and server-backed business logic
+**Overall:** Feature-sliced SPA (Single Page Application) — PWA with mobile-first design
 
 **Key Characteristics:**
-- Each page owns its own data fetching — no global store, no React Query used in practice (QueryClient instantiated but unused in pages)
-- State is local to the page component; shared state flows via Context (auth, home cache) or sessionStorage (tab persistence, scroll position)
-- Business logic lives in Deno backend functions invoked via `base44.functions.invoke()` — never inline in frontend
-- Premium/free gating is enforced both client-side (UX gates) and server-side (quota check in each function)
+- React SPA rendered inside Base44 platform; routing is client-side via react-router-dom
+- Hard split between public routes (no auth) and authenticated routes (wrapped in AuthProvider)
+- State is local-first: each page owns its own `useState` with no global store (Redux/Zustand absent)
+- HomeCacheContext provides a single 2-minute in-memory cache to avoid redundant API calls on Home re-visits
+- All backend logic runs as Deno functions on Base44 (`base44/functions/`); the frontend calls them via `base44.functions.invoke()`
 
 ## Layers
 
-**Router (App.jsx):**
-- Purpose: Split public vs. authenticated routes before any rendering
+**Entry / Bootstrap:**
+- Purpose: Mount React app, register PWA service worker
+- Location: `src/main.jsx`
+- Contains: ReactDOM.createRoot, SW registration
+- Depends on: `src/App.jsx`, `src/index.css`
+
+**Router / Auth Shell:**
+- Purpose: Separate public routes from authenticated routes at the outermost level
 - Location: `src/App.jsx`
-- Contains: Two-tier routing — public routes rendered directly, all others wrapped in `AuthProvider` + `HomeCacheProvider`
-- Public routes: `/DogPublicProfile`, `/VetDogView` — lazy-loaded, no auth check
-- Auth routes: everything else, guarded by `AuthenticatedApp` component
-- Depends on: `pagesConfig`, `AuthContext`, `HomeCacheContext`
+- Contains: BrowserRouter, public route declarations (DogPublicProfile, VetDogView), AuthProvider + HomeCacheProvider wrapping all other routes
+- Key decision: public pages are lazy-loaded OUTSIDE AuthProvider — no auth check can block them
 
-**Layout (Layout.jsx):**
-- Purpose: Page transition wrapper — applies Framer Motion fade between pages
+**Auth Context:**
+- Purpose: Holds auth state (user, isAuthenticated, errors), exposes `useAuth()`
+- Location: `src/lib/AuthContext.jsx`
+- Flow: checks app public settings → then `base44.auth.me()` → sets user or sets `authError`
+- Error types handled: `auth_required` (redirect to login), `user_not_registered` (show error UI), `unknown` (generic)
+
+**Home Cache Context:**
+- Purpose: Ref-based 2-minute TTL cache for Home page data; invalidated on active dog change
+- Location: `src/lib/HomeCacheContext.jsx`
+- API: `getCachedHome()`, `setCachedHome(data)`, `invalidateHome()`
+- Cache key includes `dogId` from `localStorage.activeDogId`
+
+**Layout:**
+- Purpose: Wraps all authenticated pages with AnimatePresence page transition and bottom-nav padding
 - Location: `src/Layout.jsx`
-- Contains: `AnimatePresence` with `fadeIn` variant, bottom-nav padding via inline style
-- Key rule: Layout adds `paddingBottom: calc(6rem + env(safe-area-inset-bottom, 0px))` — pages must NOT add their own `pb-*` on the main wrapper
-- Respects `prefers-reduced-motion` (disables animation when requested)
+- Key rule: pages MUST NOT add their own `pb-*` — Layout already sets `paddingBottom: calc(6rem + env(safe-area-inset-bottom, 0px))`
+- Respects `prefers-reduced-motion` via Framer Motion `useReducedMotion()`
 
-**Pages:**
-- Purpose: Orchestrate data fetching, manage local state, compose components
+**Pages (Route-level components):**
+- Purpose: Orchestrate data fetching, local state, and compose feature components
 - Location: `src/pages/`
-- 5 core tabs (eagerly loaded in `pages.config.js`): `Home`, `Sante`, `Activite`, `Nutri`, `Profile`
-- 11 secondary pages (lazy): `Chat`, `Dashboard`, `DogProfile`, `DogPublicProfile`, `Library`, `Onboarding`, `Premium`, `Scan`, `Training`, `VetDogView`, `VetPortal`
-- Most pages call `base44.auth.me()` directly; Sante/Activite/Nutri read `authUser` from `useAuth()` context to avoid a second auth call
+- Pattern: page fetches its own data on mount, passes props down to feature components
+- No page imports another page directly
+
+**Feature Components:**
+- Purpose: Domain-specific UI, scoped to a feature area
+- Location: `src/components/{feature}/` (e.g., `home/`, `tracker/`, `training/`, `sante/`, `nutrition/`)
+- Pattern: receive data via props from their parent page, emit callbacks upward
+- Do not fetch data directly (exception: some components fetch their own supplemental data)
+
+**Shared UI Components:**
+- Purpose: Design-system primitives (shadcn/ui) and PawCoach-specific reusable UI
+- Location: `src/components/ui/` (shadcn — never modify) + root of `src/components/` (PawCoach shared)
+- PawCoach shared: `BottomNav.jsx`, `PawLoader.jsx`, `PawMascot.jsx`, `ChatFAB.jsx`, `CombinedFAB.jsx`, `WellnessBanner.jsx`, `PullToRefresh.jsx`, `ErrorBoundary.jsx`
 
 **API Layer:**
-- Purpose: Centralized entity access with consistent error wrapper
-- Location: `src/api/entities.js`, `src/api/base44Client.js`
-- Pattern: `wrapEntity()` wraps each entity exposing `filter`, `create`, `update`, `delete`
-- Backend functions invoked via: `base44.functions.invoke("functionName", payload)`
-- Client config: `src/lib/app-params.js` reads `appId`, `token`, `functionsVersion` from URL params then localStorage fallback
+- Purpose: Typed entity access and Base44 client initialization
+- Location: `src/api/base44Client.js` (client init), `src/api/entities.js` (entity wrappers)
+- Pattern: `entities.js` wraps `base44.entities.*` with a `wrapEntity()` helper. All entity calls go through named exports (`Dog`, `HealthRecord`, etc.) not through `base44.entities` directly.
 
 **Backend Functions (Deno):**
-- Purpose: AI calls, Stripe operations, scheduled reminders, server-side quota enforcement
+- Purpose: Server-side AI processing, Stripe, reminders, and data computation
 - Location: `base44/functions/{functionName}/entry.ts`
-- Pattern: `Deno.serve(async (req) => {...})` with `createClientFromRequest(req)` for auth context
-- Service role operations: `base44.asServiceRole.entities.X.update()` — used for cross-user writes (webhook handler, reminder functions)
+- Called from frontend via `base44.functions.invoke("functionName", payload)`
 
-**Context Layer:**
-- `AuthContext` (`src/lib/AuthContext.jsx`): user object, `isAuthenticated`, `logout()`, `navigateToLogin()`, `checkAppState()`
-- `HomeCacheContext` (`src/lib/HomeCacheContext.jsx`): in-memory ref cache for Home page data, 2-minute TTL, invalidated on active dog change
+**Utilities:**
+- Purpose: Pure functions shared across pages and components
+- Location: `src/utils/` and `src/lib/`
+- Key modules: `dateHelpers.js`, `programHelpers.js`, `chartHelpers.jsx`, `premium.js`, `ai-credits.js`, `recommendations.js`, `utils/index.ts`
 
 ## Data Flow
 
-**Authenticated Page Load:**
-1. `AuthProvider.checkAppState()` fetches app public settings via `/api/apps/public`
-2. If token present, calls `base44.auth.me()` to load user
-3. `AuthenticatedApp` renders routes — error states handled (`auth_required` → redirect, `user_not_registered` → error screen)
-4. Page component mounts, calls `base44.auth.me()` + entity filters in parallel via `Promise.all()`
-5. Data stored in local `useState` hooks within the page
+**Standard Page Load:**
 
-**Home Page Cache Strategy (stale-while-revalidate):**
-1. On mount, check `getCachedHome()` (in-memory ref, 2-minute TTL, dog-ID validated)
-2. If cache hit: apply immediately (instant render, no loading state), then trigger silent background refresh
-3. If cache miss: show `SkeletonPage`, fetch everything, cache result
-4. Manual pull-to-refresh: `invalidateHome()` then full refetch and re-cache
+1. Page mounts → `useEffect` runs
+2. Calls `base44.auth.me()` for current user (or reads from `useAuth()` context)
+3. Calls `Dog.filter({ owner: user.email })` to get dogs
+4. Calls `getActiveDog(dogs)` → reads `localStorage.activeDogId` → returns matching dog
+5. Fetches domain entities for that dog (via `src/api/entities.js`)
+6. Sets local `useState` with results → triggers re-render
+
+**Home Page (optimistic / cached):**
+
+1. `loadData()` checks `getCachedHome()` first
+2. Cache hit: apply cached state immediately (skip loading screen), then `fetchAndCache(skipLoadingState=true)` in background
+3. Cache miss: `fetchAndCache(false)` — show SkeletonPage, fetch all data, then call `setCachedHome()`
+4. After Stripe redirect (`?premium=success`): poll `base44.auth.me()` every 2s up to 10s until `is_premium=true`
 
 **Check-in Flow (optimistic update):**
-1. User submits check-in form
-2. Optimistic state applied immediately (`_syncing: true` flag on the new record)
-3. `base44.functions.invoke("dailyCheckinProcess", ...)` called
-4. On success: replace optimistic record with server response
-5. On error: roll back optimistic state, show `toast.error()`
 
-**Premium Conversion Flow:**
-1. User taps upgrade → `base44.functions.invoke("stripeCheckout", ...)` creates Stripe Checkout session
-2. Redirect to Stripe-hosted checkout
-3. Stripe redirects back to `/?premium=success`
-4. Home page polls `base44.auth.me()` every 2s for up to 10s until `is_premium=true`
-5. `stripeWebhook` function handles `checkout.session.completed` → sets `is_premium: true` on user via service role
-
-**AI Quota System:**
-- Free users: 10 messages/day (`messages_remaining`), 3 AI actions/day (`actions_remaining`)
-- Client side: `src/utils/ai-credits.js` — `initCredits()` initializes/daily-resets via `base44.auth.updateMe()`
-- Server side: `pawcoachChat` function re-checks quota and decrements atomically — prevents multi-tab bypass
-- Premium check: `isUserPremium(user)` in `src/utils/premium.js` — returns `true` if `user.is_premium` OR `trial_expires_at > now`
+1. User submits → set optimistic `{ _syncing: true }` checkin immediately in state
+2. Invoke `base44.functions.invoke("dailyCheckinProcess", ...)`
+3. On success: replace `_syncing` entry with real checkin from response
+4. On error: remove `_syncing` entry, restore `todayCheckin: null`, show toast
 
 **State Management:**
-- No global state library (no Redux, no Zustand)
-- `AuthContext`: auth user object available app-wide via `useAuth()`
-- `HomeCacheContext`: Home page data cache (in-memory ref, does not trigger re-renders)
-- Local `useState` per page for all page-specific data
-- `sessionStorage`: tab state (`tab_Sante`, `tab_Activite`, `tab_Nutri`), scroll position (`scroll_{Page}`)
-- `localStorage`: active dog ID (`activeDogId`), notification read state (`pawcoach_read_notifs`), analytics events (`pawcoach_analytics_events`), post-trial dismissed flag (`pawcoach_post_trial_dismissed`), auth token (`base44_access_token` — managed by SDK)
+- No global state library. Each page manages its own `useState`.
+- `AuthContext` (via `useAuth()`) is the only globally shared reactive state.
+- `HomeCacheContext` is ref-based (not reactive — does not trigger re-renders).
+- Active dog selection persists via `localStorage.activeDogId`; session tab/scroll state via `sessionStorage`.
 
 ## Key Abstractions
 
-**Tab Navigation Pattern (Sante, Activite, Nutri):**
-- Purpose: URL-driven tab state with sessionStorage fallback and native-like horizontal slide
-- Files: `src/pages/Sante.jsx`, `src/pages/Activite.jsx`, `src/pages/Nutri.jsx`
-- Pattern: `useSearchParams()` for URL sync, `sessionStorage.setItem("tab_X", id)` for persistence, direction ref for slide animation direction
-- Priority chain: deep link URL param > URL param > sessionStorage > default tab
-- Double-tap on active BottomNav tab: clears sessionStorage tab state, navigates to clean URL
+**Entity Wrappers (`src/api/entities.js`):**
+- Purpose: Centralized, named access to all 19 Base44 entities
+- Pattern: `export const Dog = wrapEntity(base44.entities.Dog, "Dog")`
+- Usage: always import named entity (e.g., `import { Dog } from "@/api/entities"`)
+- Never call `base44.entities.*` directly in page/component code
 
-**Premium Gate:**
-- Purpose: Unified premium/trial check in one function
-- File: `src/utils/premium.js`
-- Functions: `isUserPremium(user)`, `isUserOnTrial(user)`, `getTrialDaysLeft(user)`
-- UI components: `src/components/ui/AICreditsGate.jsx` (`CreditBadge`, `UpgradePrompt`), `src/components/premium/PremiumNudgeSheet.jsx`, `src/components/premium/PostTrialSheet.jsx`, `src/components/home/TrialExpiryBanner.jsx`
-- Nudge logic in Home page: shown after day 2 if free, `premium_onboarding_nudge_shown` flag prevents repeat
+**`isUserPremium(user)` (`src/utils/premium.js`):**
+- Purpose: Single source of truth for premium gating
+- Returns `true` if `user.is_premium === true` OR if `user.trial_expires_at` is in the future
+- Import from `@/utils/premium` — never inline this logic
 
-**Entity Access:**
-- Purpose: Uniform CRUD wrapper over Base44 entities
-- File: `src/api/entities.js`
-- 19 entities exported: `Dog`, `HealthRecord`, `DailyCheckin`, `DailyLog`, `Streak`, `FoodScan`, `UserProgress`, `DiagnosisReport`, `NutritionPlan`, `Bookmark`, `WeeklyInsight`, `SharedVetAccess`, `DogAchievement`, `DietPreferences`, `GrowthEntry`, `ParkReview`, `PlaceFavorite`, `ChatMessage`, `VetNote`
+**AI Credits System (`src/utils/ai-credits.js` + `src/hooks/useActionCredits.js`):**
+- Free users: 3 AI actions/day (`ACTION_DAILY_LIMIT = 3`), 10 chat messages/day (`MSG_DAILY_LIMIT = 10`)
+- Resets daily (compared against `getTodayString()`)
+- Premium users: skip credit check entirely (`setCredits(Infinity)`)
+- Gate UI: `src/components/ui/AICreditsGate.jsx` exports `<CreditBadge>` and `<UpgradePrompt>`
 
-**Streak Helper:**
-- Purpose: Shared streak increment logic with 1-day grace period — called fire-and-forget
-- File: `src/components/streakHelper.jsx`
-- Used by: `Sante`, `Activite`, `Chat`, `Scan` pages after any user activity
-- Dedup guard: skips update if `last_activity_date === today`
+**`createPageUrl(pageName)` (`src/utils/index.ts`):**
+- Converts page name to route: `createPageUrl("Home")` → `"/Home"`
+- Use everywhere — never hardcode route strings
 
-**Notification Center:**
-- Purpose: Module-level singleton for health/vaccine/medication reminders (not React state)
-- File: `src/components/notifications/NotificationCenter.jsx`
-- Pattern: Module-level `_notifications`, `_loadedAt`, `_listeners` — subscribe from any component, `clearNotifications()` called on logout to prevent cross-session leaks
+**`getActiveDog(dogs)` (`src/utils/index.ts`):**
+- Reads `localStorage.activeDogId`, returns matching dog or falls back to `dogs[0]`
+- Always use this to resolve the active dog — never read `localStorage.activeDogId` directly in components
 
-**Animation System:**
-- File: `src/lib/animations.js`
-- Exports: `spring` (stiffness 360, damping 28), `springGentle`, `springSnappy`, `tapScale`, `pressIn`, `hoverGlow`, `fadeInUp`, `staggerContainer`, `staggerItem`
-- All pages use `useReducedMotion()` and conditionally skip animations
+**Tab Navigation with sessionStorage:**
+- Pages with sub-tabs (Sante, Activite, Nutri) persist active tab as `sessionStorage.tab_{Page}`
+- BottomNav saves scroll as `sessionStorage.scroll_{Page}` before navigating away
+- Double-tap on active BottomNav tab clears sessionStorage keys and resets to default
 
 ## Entry Points
 
 **App Root:**
-- Location: `src/App.jsx`
-- Triggers: Vite dev server / production build entry via `src/main.jsx`
-- Responsibilities: Router setup, split public/authenticated routes, lazy-load public pages
+- Location: `src/main.jsx`
+- Triggers: browser load
+- Responsibilities: mount React, register PWA SW
 
-**Auth Gate:**
-- Location: `src/App.jsx` → `AuthenticatedApp` component
-- Triggers: All routes under `/*`
-- Responsibilities: Check Base44 app public settings + user auth, redirect to login if needed, show typed error screens
+**Authenticated App:**
+- Location: `src/App.jsx` → `<AuthenticatedApp>`
+- Triggers: any route not matching `/DogPublicProfile` or `/VetDogView`
+- Responsibilities: read `pagesConfig.Pages` → render `<Route>` for each page wrapped in `<LayoutWrapper>` + `<ErrorBoundary>`
 
-**Home Page (mainPage):**
-- Location: `src/pages/Home.jsx`
-- Triggers: Route `/` (mainPage) and `/Home`
-- Responsibilities: Primary dashboard, daily check-in, streak display, premium nudges, Stripe success polling
+**Public Routes (no auth):**
+- `/DogPublicProfile` → `src/pages/DogPublicProfile.jsx`
+- `/VetDogView` → `src/pages/VetDogView.jsx`
 
-**Onboarding:**
-- Location: `src/pages/Onboarding.jsx`
-- Triggers: Home page navigates here when `Dog.filter({ owner: email })` returns empty array
-- Uses sessionStorage to persist multi-step form state across interruptions
+**Main Page (landing):**
+- Configured by `mainPage: "Home"` in `src/pages.config.js`
+- Route `/` maps to `src/pages/Home.jsx`
+
+## Lazy Loading Strategy
+
+**Always eager (in initial bundle — the 5 BottomNav tabs):**
+- `src/pages/Activite.jsx`, `src/pages/Home.jsx`, `src/pages/Nutri.jsx`, `src/pages/Profile.jsx`, `src/pages/Sante.jsx`
+
+**Always lazy (loaded on demand):**
+- `Chat`, `Dashboard`, `DogProfile`, `DogPublicProfile`, `Library`, `Onboarding`, `Premium`, `Scan`, `Training`, `VetDogView`, `VetPortal`
+- `AITrainingProgram` — large component, lazy-loaded with `lazy()` inside `Activite.jsx`
+- `FindVetContent` — contains Leaflet (~150KB gzipped), lazy inside `Sante.jsx`
+
+**Fallback during lazy load:**
+- `<SkeletonPage variant="list|stats|detail" currentPage={name} />` from `src/components/ui/SkeletonPage.jsx`
 
 ## Error Handling
 
-**Strategy:** Layered — `ErrorBoundary` per page catches React crashes; try/catch with toast for async operations; auth errors handled at app root
+**Strategy:** Isolated per-page via ErrorBoundary; sonner toasts for async errors
 
 **Patterns:**
-- `ErrorBoundary` class component (`src/components/ErrorBoundary.jsx`) wraps every page via `App.jsx` — shows retry/reload/home buttons with max 2 soft retries before forcing reload
-- Async fetch: `try/catch` with `toast.error()` — never silently swallows errors in user-visible flows
-- Background operations (streak updates, badge checks, nudge flag writes): `console.warn()` only, never blocking the user flow
-- Optimistic updates: explicit rollback on catch (restore previous state, show toast)
-- Backend functions: return `Response.json({ error: "..." }, { status: 4xx })` for client errors; `429` for quota exceeded with `{ error: "quota_exceeded", messages_remaining: 0 }`
-- Auth errors in `AuthContext`: typed `authError.type` field (`auth_required`, `user_not_registered`, `unknown`)
+- Every page route wrapped in `<ErrorBoundary>` in `App.jsx` — crash in one page does not affect others
+- Up to 2 soft retries (re-render) before showing hard reload / go-home buttons (`src/components/ErrorBoundary.jsx`)
+- Async errors (entity fetches, function invocations): caught in try/catch → `toast.error(...)` from sonner
+- Parallel fetches use `.catch(() => [])` pattern to degrade gracefully when one entity fails
 
 ## Cross-Cutting Concerns
 
-**Logging:** `console.debug("[Analytics]", ...)` for events; `console.error()` for caught errors in pages; `console.warn()` for non-blocking failures (streak, badge, credit writes)
+**Logging:** `console.error` / `console.warn` only — no external error tracking service
 
-**Analytics:** `src/utils/analytics.js` — localStorage-based event store (last 100 events, `pawcoach_analytics_events`); `trackEvent(name, props)` called for business events (onboarding complete, premium conversion, daily limit reached). No external service yet — inspect via `getEvents()` in browser console.
+**Premium Gating:** Always via `isUserPremium(user)` from `@/utils/premium`. Components use `<AICreditsGate>` or `useActionCredits()` hook.
 
-**Validation:** Client-side form guards (inline conditions). Server-side in functions: input sanitization via `sanitize(s, max)` helper (truncates + strips `<>`), SSRF protection on image URLs (allowlist: `base44.app`, `amazonaws.com`), server-side quota checks for AI endpoints.
+**Authentication:** `base44.auth` SDK handles token storage, login redirect, and logout. `AuthContext` exposes the result.
 
-**Authentication:** Base44 SDK handles tokens. `AuthContext` orchestrates boot sequence (public settings → user auth). Token stored as `base44_access_token` in localStorage via SDK. Logout calls `base44.auth.logout()` which cleans token, then `clearNotifications()` to prevent cross-session data leaks.
+**Animations:** All motion via Framer Motion. Spring presets in `src/lib/animations.js` (`spring`, `springGentle`, `springSnappy`, `tapScale`, `pressIn`, `hoverGlow`, `fadeInUp`, `staggerContainer`, `staggerItem`). All animated components check `useReducedMotion()`.
 
-**Accessibility:** `prefers-reduced-motion` respected in `Layout.jsx`, all pages with animations; WCAG minimum 44px tap targets in `ErrorBoundary` buttons; `aria-label` on bottom nav; `pointer-events: none` + `-webkit-user-drag: none` on decorative images.
-
-**PWA / Mobile:** `env(safe-area-inset-bottom)` in bottom nav padding; haptic feedback via `navigator.vibrate()` on check-in and streak actions; pull-to-refresh via `src/components/PullToRefresh.jsx`.
+**Active Dog:** Always resolved via `getActiveDog(dogs)` from `@/utils/index.ts`.
 
 ---
 

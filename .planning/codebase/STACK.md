@@ -5,22 +5,17 @@
 ## Languages
 
 **Primary:**
-- JavaScript (JSX) — all frontend pages (`src/pages/`) and components (`src/components/`)
-- TypeScript — all 22 Deno backend functions in `base44/functions/*/entry.ts`
+- JavaScript (JSX) - All frontend pages and components: `src/pages/`, `src/components/`
+- TypeScript - Backend Deno functions `base44/functions/*/entry.ts`, utils barrel `src/utils/index.ts`
 
 **Secondary:**
-- CSS (custom properties + Tailwind utilities) — design tokens defined in `src/index.css`
-
-**Module System:** ESM (`"type": "module"` in `package.json`). Path alias `@/*` → `./src/*` via `jsconfig.json`.
+- CSS (custom properties + Tailwind) - `src/index.css` (design tokens), `tailwind.config.js`
 
 ## Runtime
 
 **Environment:**
-- Browser — React SPA PWA, iOS Safari primary target, service worker registered in `src/main.jsx`
-- Deno — backend functions hosted by Base44 platform; each is a standalone `Deno.serve()` in `base44/functions/*/entry.ts`
-
-**Node.js (dev only):**
-- v24.13.0 (tested environment; no `.nvmrc` present)
+- Browser (PWA with service worker) — registered in `src/main.jsx` via `/sw.js`
+- Deno (backend functions) — all `base44/functions/*/entry.ts` run on Base44-managed Deno runtime
 
 **Package Manager:**
 - npm
@@ -29,117 +24,156 @@
 ## Frameworks
 
 **Core:**
-- React 18.2.0 — UI rendering, root at `src/App.jsx`
-- React Router DOM 6.26.0 — client-side routing, `BrowserRouter`, config in `src/pages.config.js`
-- Framer Motion 11.16.4 — animations throughout; spring presets in `src/lib/animations.js` (stiffness 300-400, damping 25-30)
+- React 18.2.0 — UI framework; entry point `src/main.jsx`, root component `src/App.jsx`
+- React Router DOM 6.26.0 — client-side routing; route config in `src/pages.config.js`
+- Tailwind CSS 3.4.17 — utility-first styling; design tokens in `tailwind.config.js`
 
-**Styling:**
-- Tailwind CSS 3.4.17 — utility-first, config in `tailwind.config.js`
-  - Dark mode: `media` strategy (responds to `prefers-color-scheme`)
-  - Custom tokens: `safe`, `caution`, `toxic` colors; `fade-in`, `slide-up`, `bounce-soft`, `pulse-soft` keyframes
-- tailwindcss-animate 1.0.7 — Tailwind animation utilities
-- PostCSS 8.5.3 + autoprefixer 10.4.20 — CSS processing, config in `postcss.config.js`
-- class-variance-authority 0.7.1 — variant-based component styling (shadcn pattern)
-- clsx 2.1.1 + tailwind-merge 3.0.2 — conditional class merging (`cn()` utility)
+**UI Component Library:**
+- shadcn/ui (Radix UI primitives) — `src/components/ui/` — DO NOT MODIFY this directory
+  - Full Radix suite: accordion, alert-dialog, avatar, checkbox, collapsible, context-menu, dialog, dropdown-menu, hover-card, label, menubar, navigation-menu, popover, progress, radio-group, scroll-area, select, separator, slider, slot, switch, tabs, toast, toggle, toggle-group, tooltip
 
-**UI Components:**
-- Radix UI (22 primitives, all versions ^1.x-2.x) — headless accessible components
-  - Wrapped by shadcn/ui in `src/components/ui/` — **never modify this directory**
-  - shadcn config: `components.json` (style: new-york, cssVariables: true, iconLibrary: lucide)
-- lucide-react 0.475.0 — icon library
-- next-themes 0.4.4 — dark mode theme provider
+**Animation:**
+- Framer Motion 11.16.4 — motion primitives used throughout UI
+  - Presets centralized in `src/lib/animations.js`: `spring` (stiffness 360, damping 28), `springGentle` (120/20), `springSnappy` (300/25), `fadeIn`, `fadeInUp`
+  - Respects `prefers-reduced-motion`
+
+**Charts:**
+- Recharts 2.15.4 — all data visualization
+  - Custom tooltip shared component: `src/utils/chartHelpers.jsx`
+  - Used in: `src/pages/Dashboard.jsx`, `src/pages/Profile.jsx`, `src/components/sante/GrowthTrackerContent.jsx`, `src/components/tracker/TrackerHistory.jsx`, `src/components/nutrition/FoodComparator.jsx`, `src/components/notebook/SectionPoids.jsx`
+
+**Maps:**
+- React Leaflet 4.2.1 — interactive walk map and vet finder
+  - Used in: `src/components/tracker/WalkMap.jsx`, `src/components/tracker/NearbyParks.jsx`, `src/components/sante/FindVetContent.jsx`, `src/pages/Sante.jsx`
+- Browser Geolocation API (native) — walk tracking and park search
+  - Used in: `src/components/tracker/WalkMode.jsx`, `src/components/tracker/NearbyParks.jsx`, `src/components/sante/FindVetContent.jsx`
 
 **Forms:**
-- react-hook-form 7.54.2 — form state management
-- @hookform/resolvers 4.1.2 — schema resolver bridge
-- zod 3.24.2 — schema validation
+- React Hook Form 7.54.2 + Zod 3.24.2 + @hookform/resolvers 4.1.2
+  - Form UI wrapper at `src/components/ui/form.jsx`
+  - Primarily used internally by shadcn components; direct use in pages is rare
 
-**Data Visualization:**
-- recharts 2.15.4 — charts on Dashboard and Activite pages
-- react-day-picker 8.10.1 — calendar date picker
+**Payments:**
+- @stripe/react-stripe-js 3.0.0 + @stripe/stripe-js 5.2.0
+  - Frontend usage: `src/pages/Premium.jsx`, `src/pages/Home.jsx`, `src/components/profile/SubscriptionSection.jsx`
+  - Backend: `base44/functions/stripeCheckout/entry.ts`, `base44/functions/stripePortal/entry.ts`, `base44/functions/stripeWebhook/entry.ts`
 
-**Testing:**
-- None — no test runner configured, no test files present
+**Markdown Rendering:**
+- react-markdown 9.0.1 — renders AI chat responses
+  - Shared component config: `src/lib/markdown.js` (exports `mdComponents`)
 
-**Build/Dev:**
-- Vite 6.1.0 — bundler and dev server, config in `vite.config.js`
-- @vitejs/plugin-react 4.3.4 — React HMR and JSX transform
-- @base44/vite-plugin 1.0.6 — Base44 platform integration (HMR notifier, analytics tracker, visual edit agent, navigation notifier)
-- TypeScript 5.8.2 — type checking only (no emit), via `jsconfig.json` with `checkJs: true`
-  - Scope: `src/components/**/*.js` and `src/pages/**/*.jsx` only (excludes `src/lib/`, `src/components/ui/`)
+**PDF Generation:**
+- jspdf 4.0.0 — client-side PDF export; used in `src/components/vet/DownloadHealthPDF.jsx`
+  - Also used server-side in `base44/functions/generateDiagnosisPDF/entry.ts` via `npm:jspdf@4.0.0`
+- html2canvas 1.4.1 — screenshot-to-canvas for share cards
+  - Used in: `src/components/scan/ShareCard.jsx`, `src/components/tracker/WalkShareCard.jsx`
+
+**Lottie Animations:**
+- @lottiefiles/dotlottie-react 0.18.7 — Lottie player
+  - Wrapper component: `src/components/ui/LottieAnimation.jsx`
+  - Animation URL catalog (CDN): `src/lib/lottieLibrary.js` (~70 animations)
+
+**Drag and Drop:**
+- @hello-pangea/dnd 17.0.0 — installed in `package.json`; no active usage found in source scan (may be unused post-v5 cleanup)
+
+**Toast / Notifications:**
+- sonner 2.0.1 — toast notifications; dark mode integration in `src/components/ui/sonner.jsx`
+- vaul 1.1.2 — drawer/sheet component (mobile-first bottom sheets)
+
+**Date Utilities:**
+- date-fns 3.6.0 — date operations; custom helpers in `src/utils/dateHelpers.js`
+- react-day-picker 8.10.1 — calendar date picker (shadcn calendar component)
+
+**Other Input Components:**
+- input-otp 1.4.2 — OTP input field (shadcn)
+- cmdk 1.0.0 — command palette (shadcn)
+
+**Confetti:**
+- canvas-confetti 1.9.4 — celebration effects
+  - Used in: `src/components/activite/CompletionCard.jsx`, `src/components/training/CelebrationScreen.jsx`, `src/components/training/FreeExercisesGate.jsx`, `src/components/training/MilestoneScreen.jsx`, `src/pages/Home.jsx`, `src/pages/Premium.jsx`
+
+**Theming:**
+- next-themes 0.4.4 — used only in `src/components/ui/sonner.jsx` for toast dark mode; main dark mode via Tailwind `darkMode: "media"`
+
+**Utility:**
+- clsx 2.1.1 + tailwind-merge 3.0.2 — class merging (shadcn `cn()` pattern)
+- class-variance-authority 0.7.1 — variant API for shadcn components
+- lucide-react 0.475.0 — icon library used throughout
+
+**State / Data Fetching:**
+- Direct async calls to Base44 SDK — primary data access pattern
+- @tanstack/react-query — QueryClient in `src/lib/query-client.js` but NOT wired with QueryClientProvider; effectively unused for data fetching
+- Custom in-memory cache: `src/lib/HomeCacheContext.jsx` — 2-minute TTL, dog-ID-aware, used on Home page
+
+## Build / Dev Tools
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| Vite | 6.1.0 | Dev server + production bundler |
+| @vitejs/plugin-react | 4.3.4 | React fast refresh |
+| @base44/vite-plugin | 1.0.6 | HMR notifier, analytics tracker, visual edit agent, legacy SDK import compat |
+| TypeScript | 5.8.2 | Type checking via `jsconfig.json` for JS files |
+| ESLint | 9.19.0 | Linting; config in `eslint.config.js` |
+| eslint-plugin-react | 7.37.4 | React-specific rules |
+| eslint-plugin-react-hooks | 5.0.0 | Hook rules |
+| eslint-plugin-unused-imports | 4.3.0 | Detects unused imports |
+| PostCSS + Autoprefixer | 8.5.3 / 10.4.20 | CSS processing |
+| tailwindcss-animate | 1.0.7 | Tailwind animation utilities plugin |
+
+**Run commands:**
+```bash
+npm run dev        # Start dev server (Vite)
+npm run build      # Production build
+npm run lint       # ESLint (quiet mode — errors only)
+npm run lint:fix   # ESLint with auto-fix
+npm run typecheck  # TypeScript check via jsconfig.json
+npm run preview    # Preview production build
+```
 
 ## Key Dependencies
 
-**Critical:**
-- @base44/sdk 0.8.23 (package.json) / 0.8.20 pinned in backend — platform SDK for auth, entity CRUD, function invocation, LLM proxy, file upload
-  - Frontend client: `src/api/base44Client.js`
-  - Backend: `npm:@base44/sdk@0.8.20` in every `entry.ts`
-- stripe 17.3.1 (Deno) — Stripe server SDK in `base44/functions/stripeCheckout/entry.ts`, `stripeWebhook/entry.ts`, `stripePortal/entry.ts`
-- @stripe/react-stripe-js 3.0.0 + @stripe/stripe-js 5.2.0 — frontend Stripe SDK (imported in package; checkout is redirect-based via backend, no embedded Elements rendered)
+**Critical (app breaks without):**
+- `@base44/sdk` 0.8.23 — entity CRUD, auth, function invocation; client in `src/api/base44Client.js`
+- `react-router-dom` 6.26.0 — all page navigation
+- `framer-motion` 11.16.4 — animations throughout UI
+- `recharts` 2.15.4 — all dashboard and progress charts
 
-**Animation/Media:**
-- @lottiefiles/dotlottie-react 0.18.7 — Lottie animations loaded from LottieFiles CDN; URL registry in `src/lib/lottieLibrary.js` (~70 `.lottie` URLs)
-- canvas-confetti 1.9.4 — confetti on premium activation in `src/pages/Premium.jsx`
-- three 0.171.0 — Three.js present in package.json; no active import found in `src/` (likely legacy/unused)
-
-**Maps:**
-- react-leaflet 4.2.1 — interactive maps in `src/components/tracker/WalkMap.jsx` and `src/components/tracker/NearbyParks.jsx`
-
-**Document Generation:**
-- html2canvas 1.4.1 — screenshot-to-image for share cards (`src/components/scan/ShareCard.jsx`, `src/components/tracker/WalkShareCard.jsx`)
-- jspdf 4.0.0 — PDF export frontend (`src/components/vet/DownloadHealthPDF.jsx`) and backend (`base44/functions/generateDiagnosisPDF/entry.ts` via `npm:jspdf@4.0.0`)
-
-**Rich Content:**
-- react-markdown 9.0.1 — render AI chat responses as Markdown
-- react-quill 2.0.0 — rich text editor (vet notes)
-- date-fns 3.6.0 — date formatting and arithmetic throughout
-- @hello-pangea/dnd 17.0.0 — drag-and-drop (training exercise reordering)
-- embla-carousel-react 8.5.2 — horizontal carousels
-- sonner 2.0.1 — toast notifications
-- vaul 1.1.2 — bottom sheet / drawer
-- input-otp 1.4.2 — OTP input component
-- cmdk 1.0.0 — command palette component
-
-**Dead Code:**
-- `src/lib/query-client.js` imports `@tanstack/react-query` but the package is not in `package.json` and is absent from `node_modules` — file is dead code, do not rely on it
+**Infrastructure:**
+- `@lottiefiles/dotlottie-react` 0.18.7 — mascot and celebration animations
+- `react-leaflet` 4.2.1 — walk tracking map and vet finder
+- `@stripe/react-stripe-js` + `@stripe/stripe-js` — subscription payment flow
 
 ## Configuration
 
-**Environment (frontend):**
-- App ID: `VITE_BASE44_APP_ID` env var → resolved via `src/lib/app-params.js`
-- Auth token: passed via `?access_token=` URL param or stored in `localStorage` as `base44_access_token`
-- `VITE_BASE44_FUNCTIONS_VERSION` — function version routing
-- `VITE_BASE44_APP_BASE_URL` — base URL override
+**Environment variables (VITE_ prefix for browser access):**
+- `VITE_BASE44_APP_ID` — Base44 app identifier; read via `src/lib/app-params.js`
+- `VITE_BASE44_FUNCTIONS_VERSION` — backend functions version
+- `VITE_BASE44_APP_BASE_URL` — app base URL override
 
-**Environment (backend — set in Base44 platform dashboard, never in repo):**
-- `STRIPE_SECRET_KEY` — Stripe secret key
-- `STRIPE_WEBHOOK_SECRET` — Stripe webhook signing secret
-- `OPENROUTER_API_KEY` — OpenRouter for chat, checkin, and weekly insight AI
-- `BASE44_APP_ID` — injected by Base44 runtime for service role operations
-
-**Build config files:**
-- `vite.config.js` — Vite with Base44 plugin
-- `tailwind.config.js` — Tailwind design system tokens
-- `postcss.config.js` — tailwindcss + autoprefixer
-- `jsconfig.json` — path alias + TypeScript check config
+**Config files:**
+- `vite.config.js` — build config with Base44 and React plugins
+- `tailwind.config.js` — design tokens (colors, radius, fonts, animations) mapped to CSS custom properties
+- `jsconfig.json` — path alias `@/*` → `./src/*`; covers `src/components/**/*.js`, `src/pages/**/*.jsx`, `src/Layout.jsx`
+- `postcss.config.js` — PostCSS with autoprefixer
 - `eslint.config.js` — ESLint flat config
-- `components.json` — shadcn/ui component config
+
+**Path alias:**
+- `@/` resolves to `src/` — use for all cross-directory imports
 
 ## Platform Requirements
 
 **Development:**
-- Node.js 20+ (tested on 24.13.0)
-- `npm install` from `pawcoach/` directory
-- Base44 platform account with Mode Developer active
-- GitHub 2-way sync connected on account `ismailhamido11-art`, branch `main`
+- Node.js + npm
+- Git + GitHub (`ismailhamido11-art/pawcoach`, branch `main`)
+- Push to `main` → Base44 auto-syncs → click "Publish" in Base44 dashboard to deploy
 
 **Production:**
-- Platform: Base44 managed hosting → `https://paw-coach-care.base44.app`
-- Backend runtime: Deno, managed by Base44 (no separate deployment needed)
-- Deploy flow: `git push origin main` → Base44 syncs automatically → Ismail clicks "Publish" in Base44 dashboard
-- PWA: service worker at `/sw.js`, manifest at `/manifest.json`, theme color `#1A4D3E`
-- iOS PWA: `apple-mobile-web-app-capable`, `apple-mobile-web-app-status-bar-style: black-translucent`, `viewport-fit=cover`
+- Hosted: Base44 platform at `https://paw-coach-care.base44.app`
+- App ID: `699f971349f7fa56a125f672`
+- PWA: `manifest.json` + `/sw.js` service worker; iOS PWA meta tags in `index.html`
+- Backend: Deno runtime managed by Base44 (22 functions)
+- Stripe webhook must be configured pointing to `stripeWebhook` function endpoint
 
 ---
 
-*Stack analysis: 2026-03-27*
+*Stack analysis: 2026-03-27 — v5.0 state. Removed deps: three.js, react-quill, react-resizable-panels, embla-carousel-react. Added: React.lazy() for 11 secondary pages.*

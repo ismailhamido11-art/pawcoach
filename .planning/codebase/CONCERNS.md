@@ -1,211 +1,249 @@
-# Codebase Concerns — Post v4.0
+# Codebase Concerns
 
 **Analysis Date:** 2026-03-27
-**Context:** v4.0 shipped with 35 fixes. This audit covers what REMAINS and NEW issues found.
+**Scope:** Post v4.0 + v5.0. Items verified as present in current code. No manufactured issues.
 
 ---
 
 ## CRITICAL
 
-### C1 — `generateTrainingProgram` and `analyzeGrowthPhoto` missing dog ownership check
+### PWA: manifest.json and sw.js do not exist
 
-- **Issue:** Both backend functions authenticate the user (401 gate) but never verify that the `dogId` in the request belongs to that user. A user can pass any other user's `dogId` and the function proceeds.
-- **Files:** `base44/functions/generateTrainingProgram/entry.ts:39-41`, `base44/functions/analyzeGrowthPhoto/entry.ts:9-34`
-- **Impact:** User A can generate a training program or analyze growth photos using User B's dog profile data (breed, health history, weight). Credits are consumed from the caller, but data leakage occurs.
-- **Contrast:** `pawcoachChat/entry.ts:65` and `dailyCheckinProcess/entry.ts:23` both do `if (dog.owner !== user.email)` correctly.
-- **Fix:** After `const dog = dogs?.[0]`, add: `if (!dog || dog.owner !== user.email) return Response.json({ error: 'Forbidden' }, { status: 403 });`
+- Files: `index.html` references `/manifest.json` and `src/main.jsx` registers `/sw.js`
+- Problem: Neither file exists in `public/` or anywhere in the repo. The `@base44/vite-plugin` does not generate them. The `vite-plugin-pwa` package is not installed.
+- Impact: Browser install-as-app prompt is broken on all platforms. iOS "Add to Home Screen" metadata is set in HTML but there is no manifest to back it up. The service worker registration silently fails (caught by `console.warn` only in `src/main.jsx:12`).
+- Fix approach: Create `public/manifest.json` (name, icons, start_url, display: standalone, theme_color) and `public/sw.js` (at minimum a passthrough fetch handler). Add `vite-plugin-pwa` or write a minimal sw.js manually.
 
-### C2 — `DogPublicProfile` exposes ALL health records without consent gate
+---
 
-- **Issue:** `DogPublicProfile.jsx` is a public unauthenticated page that loads ALL `HealthRecord` entries for any dog by ID. No privacy toggle exists on the Dog entity to opt out of public exposure.
-- **Files:** `src/pages/DogPublicProfile.jsx:84-89`
-- **Impact:** Anyone who obtains a `dogId` (shared via QR code) can view the full medical history (vaccines, medications, vet visits, weights, notes) of any dog without the owner's explicit per-share consent.
-- **Fix approach:** Add an `is_public_profile` boolean to the Dog entity (default false). Gate `DogPublicProfile` on this field. `QRCodeCard` should reflect the opted-in state.
+### Backend: `monthlySummary` loads entire Dog + User tables without filter
 
-### C3 — `pawcoachChat` backend loads unbounded entity history per user
+- Files: `base44/functions/monthlySummary/entry.ts` lines 14-15
+- Problem: `Dog.list()` and `User.list()` fetch all records across all tenants, then filter in-memory by premium status. Was not fixed in v4.0/v5.0.
+- Impact: Grows linearly with user count. At ~500 users it becomes slow; at ~5000 it will likely timeout. The function is CRON-triggered monthly.
+- Fix approach: Replace with `User.filter({ is_premium: true })` then derive dog IDs from those users. Avoids loading every Dog and every User.
 
-- **Issue:** The "Dog Brain" context fetch in `pawcoachChat/entry.ts:84-96` calls `.filter()` without any limit or date range on `DailyCheckin`, `HealthRecord`, `FoodScan`, `DailyLog`, `WeeklyInsight`, `NutritionPlan`, `DiagnosisReport`, `GrowthEntry`, and `Bookmark`. For active users with months of history, this fetches thousands of rows on every single chat message.
-- **Files:** `base44/functions/pawcoachChat/entry.ts:84-96`
-- **Impact:** Increasing latency and memory pressure per request as user data grows. Will become a bottleneck once users accumulate 6+ months of daily check-ins.
-- **Fix approach:** Add recency limits: `DailyCheckin` last 90 days, `DailyLog` last 60 days, `FoodScan` last 30, others last 20 records. The function already filters for recency in-memory at lines 119-122 — push that filter to the query.
+---
+
+### Backend: `streakReminder` loads entire Streak table without filter
+
+- Files: `base44/functions/streakReminder/entry.ts` line 9
+- Problem: `Streak.list()` fetches every streak across all users. Comment says "1 per dog — small table, safe to load" but this assumption fails as the app scales.
+- Impact: Same linear growth issue as `monthlySummary`. CRON-triggered daily.
+- Fix approach: Filter at query level — if SDK supports comparison operators, use `Streak.filter({ current_streak_gte: 3 })`. Otherwise add a hard cap with a log warning when count exceeds a threshold.
 
 ---
 
 ## HIGH
 
-### H1 — Six cron functions load entire Dog and User tables with no limit
+### Large component files above 700 lines (6 files)
 
-- **Issue:** `weeklyInsightGenerate/entry.ts:20-33` calls `Dog.list()` and `User.list()` (no filters, no limits). Same pattern in `vaccineReminders`, `medicationReminders`, `vetVisitReminders`, `monthlySummary`, and `streakReminder` — 6 cron functions total iterate the full user/dog table.
-- **Files:** `base44/functions/weeklyInsightGenerate/entry.ts:20,33`, `base44/functions/vaccineReminders/entry.ts:40-41`, `base44/functions/medicationReminders/entry.ts:13-14`, `base44/functions/monthlySummary/entry.ts:14-15`, `base44/functions/streakReminder/entry.ts:10-12`, `base44/functions/vetVisitReminders/entry.ts:13-14`
-- **Impact:** Cron jobs load the entire user base in memory. At scale (1000+ users) these will time out or OOM. `weeklyInsightGenerate` then fetches full per-dog history inside the loop.
-- **Fix approach:** Filter by relevant criteria before the loop: `User.filter({ is_premium: true })` for insight generation, add date-range filters for reminder functions.
+These files are complex enough that any modification risks regressions. None were split in v5.0.
 
-### H2 — `Home.jsx` loads 11 entity queries in parallel on every mount, one unbounded
+| File | Lines | Primary concern |
+|------|-------|----------------|
+| `src/pages/Training.jsx` | 814 | Contains `DayCard` sub-component inline + full page logic |
+| `src/components/activite/AITrainingProgram.jsx` | 739 | ~4 distinct UI sections with independent state |
+| `src/components/vet/DownloadHealthPDF.jsx` | 734 | PDF layout logic mixed with React render tree |
+| `src/components/nutrition/NutritionMealPlan.jsx` | 726 | Data fetching + AI call + plan display + saved plans in one file |
+| `src/components/notebook/SmartHealthAssistant.jsx` | 715 | Chat + file upload + credits + record creation all in one |
+| `src/pages/Nutri.jsx` | 713 | 20 useState/useEffect hooks, 5 tabs — orchestrator but very large |
 
-- **Issue:** `fetchDogData` in `src/pages/Home.jsx:47-61` fires 11 parallel entity queries each time Home mounts. `FoodScan.filter({ dog_id: dogId })` has no limit — could return hundreds of scans for power users.
-- **Files:** `src/pages/Home.jsx:47-61`
-- **Impact:** Slow initial load for active users.
-- **Fix:** Add `FoodScan.filter({ dog_id: dogId }, "-timestamp", 20)` limit. Consider whether the 2 `Bookmark.filter` calls are needed on Home or could be lazy-loaded.
+- Fix approach: Extract sub-components. For `Training.jsx`, `DayCard` (line 42) is self-contained — move to `src/components/activite/DayCard.jsx`. For `Nutri.jsx`, each tab (scan, mealplan, coach, compare, prefs) can become its own component. For `SmartHealthAssistant.jsx`, the voice recording section and the record-creation review panel are independently extractable.
 
-### H3 — `HealthRecord.filter` without limits in 5 frontend locations
+---
 
-- **Issue:** Five components call `HealthRecord.filter({ dog_id })` without a result limit. For a user with years of records this returns unbounded data to the client.
-- **Files:**
-  - `src/components/notebook/SmartHealthAssistant.jsx:338` — dedup check on save
-  - `src/components/notifications/NotificationCenter.jsx:78` — reminder generation
-  - `src/pages/Dashboard.jsx:85` — statistics computation
-  - `src/pages/Home.jsx:51` — health status chip
-  - `src/pages/Sante.jsx:99` — full notebook display
-- **Impact:** Increasing payload and client-side computation as health records accumulate.
-- **Fix:** Add limits appropriate to each use case: Dashboard and Home last 50, SmartHealthAssistant dedup filter by type before loading, Sante 200-record cap.
+### `Nutri.jsx` has 20 useState declarations — state not grouped
 
-### H4 — Duplicate utility functions across training components
+- Files: `src/pages/Nutri.jsx` lines 55-105
+- Problem: 20 individual `useState` calls for data that logically belongs in 2-3 groups (page loading state, coach conversation state, meal plan state). Finding and tracing state mutations requires reading 700+ lines.
+- Impact: High risk of stale state bugs and missed resets when switching tabs. Already has `useEffect` dep-array suppressions suggesting dep tracking issues.
+- Fix approach: Group related state into named objects like v5.0 did for `Home.jsx` (dogData group, insights group). Or use `useReducer` for the conversation state.
 
-- **Issue:** `addDaysToDate`, `formatDateFr`, `getElapsedDays`, `JOURS_COURTS`, `MOIS_FR`, and `ACTIVITY_ICONS` are copy-pasted identically across `src/components/activite/AITrainingProgram.jsx` and `src/components/home/ActiveProgramCards.jsx`. `getAge` is duplicated across `src/components/nutrition/NutritionMealPlan.jsx:16` and `src/pages/DogPublicProfile.jsx:13`. `fmtDate` exists in both `src/components/notebook/SectionVaccins.jsx:228` and `src/components/vet/DownloadHealthPDF.jsx:19`. `CustomTooltip` duplicated in `src/components/sante/GrowthTrackerContent.jsx:46` and `src/pages/Dashboard.jsx:45`.
-- **Impact:** A bug fix or format change requires updating N files. Already diverged: `ACTIVITY_ICONS` in `ActiveProgramCards.jsx:40` has a `"repos actif"` entry that is missing from `AITrainingProgram.jsx:17`.
-- **Fix:** Extract into `src/utils/dateHelpers.js` (partially exists — add `addDaysToDate`, `formatDateFr`), `src/utils/chartHelpers.jsx` (CustomTooltip), `src/utils/programHelpers.js` (training-specific functions).
+---
 
-### H5 — Large monolithic files without component extraction
+### Backend: `finalDiagnosis` and `generateDiagnosisPDF` have no dog ownership check
 
-- **Issue:** Several files exceed 700 lines with mixed concerns:
-  - `src/pages/Scan.jsx` — 918 lines: two full scan modes (food + label), history, share flow, all in one file
-  - `src/components/activite/AITrainingProgram.jsx` — 1024 lines: program generation, day tracking, bilan modal, past programs, all inlined
-  - `src/components/nutrition/NutritionMealPlan.jsx` — 891 lines: generation, week view, history, note editing, inline
-  - `src/components/vet/DownloadHealthPDF.jsx` — 743 lines: entire PDF generation logic inline with ~50-char French sanitization table
-  - `src/components/tracker/WalkMode.jsx` — 760 lines: timer, GPS, map, parks, share, mood — 7 distinct features
-- **Impact:** Files this large are slow to navigate, hard to review, and increase merge conflict risk. Adding any feature to `Scan.jsx` risks breaking the other mode.
-- **Fix approach (incremental):** Extract `LabelScanMode` from `Scan.jsx` as a separate component, extract `ProgramBilanModal` from `AITrainingProgram.jsx`, extract `WalkTimer` and `WalkSummary` from `WalkMode.jsx`.
+- Files: `base44/functions/finalDiagnosis/entry.ts`, `base44/functions/generateDiagnosisPDF/entry.ts`
+- Problem: Both functions authenticate the user (`auth.me()`) but never verify that the submitted dog data belongs to the authenticated user. They accept dog_name/breed/symptoms as free strings with no dog_id.
+- Impact: Any authenticated user can call these with arbitrary content. The `sanitize()` call mitigates prompt injection risk but ownership is semantically unenforced.
+- Fix approach: Accept a `dog_id` parameter and perform `Dog.filter({ id: dogId })` + `dog.owner !== user.email` check, same as `pawcoachChat` and `analyzeGrowthPhoto`.
 
-### H6 — `window.confirm()` used for destructive actions (breaks PWA UX)
+---
 
-- **Issue:** Native `window.confirm()` dialogs are used for 6 destructive confirmations across the app.
-- **Files:**
-  - `src/components/activite/AITrainingProgram.jsx:643` — abandon program
-  - `src/components/nutrition/NutritionMealPlan.jsx:96` — delete plan
-  - `src/components/nutrition/NutritionMealPlan.jsx:108` — replace active plan
-  - `src/pages/Library.jsx:79` — delete bookmark
-  - `src/pages/Library.jsx:103` — delete nutrition plan
-  - `src/pages/Library.jsx:115` — delete food scan
-- **Impact:** On iOS PWA in standalone mode `window.confirm` shows the base44.app URL as the dialog title, which looks unprofessional. Cannot be tested in automated UI tests.
-- **Fix:** Replace with Radix `AlertDialog` already available at `src/components/ui/alert-dialog.jsx`.
+### Backend: `finalDiagnosis` bypasses quota — callable independently without preDiagnosis
+
+- Files: `base44/functions/finalDiagnosis/entry.ts` lines 13-14
+- Problem: Comment says "preDiagnosis already decremented" and assumes finalDiagnosis is always called as step 2 of a flow. Nothing prevents a free user from calling `finalDiagnosis` directly to bypass the 3 actions/day limit.
+- Impact: Free users can make unlimited AI diagnosis calls by hitting `finalDiagnosis` directly.
+- Fix approach: Add quota check to `finalDiagnosis` that skips decrement if a `pre_diagnosis_token` (short-lived, issued by preDiagnosis) is present. Or add the standard quota check with a `no_decrement: true` path when the token is valid.
+
+---
+
+### `ParkReview` data not deleted on account deletion — RGPD gap
+
+- Files: `base44/functions/deleteUser/entry.ts`
+- Problem: The deletion cascade covers 16 entity types but does not include `ParkReview`. Reviews are written by users and contain `owner_email`.
+- Impact: After account deletion, user-authored park reviews persist in the database. Minor RGPD non-compliance (right to erasure).
+- Fix approach: Add `base44.asServiceRole.entities.ParkReview.deleteMany({ owner_email: user.email }).catch(() => {})` to Step 3 in `deleteUser/entry.ts`.
+
+---
+
+### `SmartHealthAssistant` uses client-side credit decrement that can silently fail
+
+- Files: `src/components/notebook/SmartHealthAssistant.jsx` lines 138-141, 281-283
+- Problem: `initCredits()` is called at mount and used to display remaining credits, but the `catch` block at line 141 swallows all errors silently. If `updateMe` fails, the UI shows the old/wrong credit count while the server has the correct value.
+- Impact: UI displays incorrect remaining credits after a failed sync. Not a security issue (server enforces independently) but confusing UX that may block valid uses or allow invalid ones in the UI.
+- Fix approach: On `initCredits` failure, fall back to displaying "?" credits and disable the send button until a successful sync. Or remove client-side credit tracking entirely from SmartHealthAssistant and trust the server response.
 
 ---
 
 ## MEDIUM
 
-### M1 — Unused heavy dependencies in the bundle
+### `index-as-key` anti-pattern widespread in list renders
 
-- **Issue:** Three packages are installed but have zero imports in `src/`:
-  - `three` (^0.171.0) — WebGL 3D library (~600KB minified). No imports found anywhere in `src/`.
-  - `react-quill` (^2.0.0) — Rich text editor (~300KB). No imports found anywhere in `src/`.
-  - `react-resizable-panels` — Only in `src/components/ui/resizable.jsx` (shadcn scaffold), never imported by app code.
-  - `embla-carousel-react` — Only in `src/components/ui/carousel.jsx`, never imported by app code.
-- **Files:** `package.json:74,67,68,57`
-- **Impact:** `three` and `react-quill` inflate `npm install` time and dependency audit surface.
-- **Fix:** Remove `three` and `react-quill` from `package.json`. If `carousel` and `resizable` shadcn components are truly unused, delete their files from `src/components/ui/`.
+- Files: `src/components/activite/AITrainingProgram.jsx` (multiple), `src/components/activite/CompletionCard.jsx`, `src/components/home/ActiveProgramCards.jsx`, `src/components/home/CalendarStrip.jsx`, `src/components/nutrition/NutritionMealPlan.jsx`, `src/components/nutrition/FoodComparator.jsx`, and ~10 more
+- Problem: `key={i}` or `key={idx}` used on dynamic list items throughout the codebase. Most of these lists (program days, food results, checkin history) can change between renders.
+- Impact: React reconciliation bugs when lists update — wrong animation targets, stale input values inside mapped items.
+- Fix approach: Use stable IDs where available (`key={day.id}`, `key={item.osm_id}`). Reserve `key={i}` only for static, never-reordered lists (skeleton placeholders, static config arrays).
 
-### M2 — No lazy loading for heavy components inside primary BottomNav pages
+---
 
-- **Issue:** `src/pages.config.js:53-57` imports the 5 primary BottomNav pages statically (correct). However `Activite.jsx` imports `AITrainingProgram.jsx` (1024 lines) and `WalkMode.jsx` (760 lines) eagerly — they load even when the user only visits the walk history tab.
-- **Files:** `src/pages.config.js:53-57`, `src/pages/Activite.jsx`
-- **Impact:** The initial JS bundle includes AITrainingProgram, WalkMode, and NearbyParks even for a user who only uses Home and Chat. Leaflet and WalkMap are already lazy-loaded — the pattern exists.
-- **Fix:** Lazy-load `AITrainingProgram` within `Activite.jsx` using `const AITrainingProgram = lazy(() => import(...))`. Keep `WalkMode` eager since it is the default Activite view.
+### Empty `catch {}` blocks swallowing silent failures on data mutations
 
-### M3 — ParkReview comments stored and displayed without length enforcement
+- Files: Found in 20+ locations. Critical instances that affect data integrity:
+  - `src/components/notebook/SectionPoids.jsx:32` — dog weight update silently fails
+  - `src/components/notebook/WeightCard.jsx:34` — dog weight update silently fails
+  - `src/components/sante/HealthImportContent.jsx:150` — weight sync silently fails
+  - `src/components/home/ActiveProgramCards.jsx:569` — badge check silently fails
+  - `src/components/tracker/WalkMode.jsx` — 5 catch blocks swallowing walk state errors
+- Impact: User performs an action (save weight, complete walk), gets no feedback that it failed, thinks data was saved.
+- Fix approach: Add at minimum `console.warn` in critical data-mutation catches. Reserve empty `catch {}` for truly non-essential cleanup (e.g., `localStorage.removeItem`, `recognition.abort()`).
 
-- **Issue:** `ParkReviews.jsx:104-115` creates `ParkReview` records with a raw `comment` string. No `maxLength` is enforced on the textarea.
-- **Files:** `src/components/tracker/ParkReviews.jsx:100-116`, `src/components/tracker/ParkReviews.jsx:38-60`
-- **Impact:** No input length limit means arbitrarily long comments can be stored. React's default escaping prevents injection in the current plain-text render, but the comment field has no validation.
-- **Fix:** Add `maxLength={300}` to the comment textarea. Add a trim-and-reject-empty check in `handleSubmit`.
+---
 
-### M4 — `setTimeout` in `NotebookContent.jsx` without cleanup on unmount
+### Accessibility: low aria-label coverage on icon-only buttons
 
-- **Issue:** `NotebookContent.jsx` uses 5 `setTimeout` calls for scroll-into-view operations at lines 80, 94, 201, 209, and 219. None have corresponding `clearTimeout` in a cleanup function.
-- **Files:** `src/components/sante/NotebookContent.jsx:80,94,201,209,219`
-- **Impact:** If the component unmounts before the timeout fires, `setState` is called on an unmounted component. React will log warnings in development.
-- **Fix:** Wrap each scroll timeout in a `useEffect` with a cleanup: `return () => clearTimeout(t)`.
+- Files: All major pages and components
+- Problem: Aria attributes appear only 38 times total across all components (excluding `src/components/ui/`). Many icon-only buttons (BottomNav items, checkin mood/energy options, walk controls, program day toggles, DayCard expand buttons) have no `aria-label`.
+- Impact: Screen reader users cannot understand or navigate interactive controls. iOS VoiceOver and Android TalkBack will only read "button" with no context.
+- Fix approach: Priority targets: BottomNav items in `src/components/BottomNav.jsx`, checkin buttons in `src/components/home/InlineCheckin.jsx`, walk start/stop/pause buttons in `src/components/tracker/WalkMode.jsx`, expand/collapse buttons in `src/components/activite/AITrainingProgram.jsx`.
 
-### M5 — `Home.jsx` has 24 `useState` declarations — state coordination risk
+---
 
-- **Issue:** `Home.jsx:69-95` manages 24 independent state variables. Related states can drift: `weeklyInsight`, `previousInsight`, `pastInsights` should be one object; `trainingBookmarks` and `behaviorBookmarks` are always loaded together.
-- **Files:** `src/pages/Home.jsx:69-95`
-- **Impact:** Adding a new data source requires touching `fetchDogData`, `applyDogData`, AND the render — three places. Risk of partial update if any setter is forgotten.
-- **Fix (when touching Home for other reasons):** Consolidate dog data into a single `dogData` state object. Consolidate insight states into a single `insights` state object.
+### `react-leaflet` loaded eagerly — always in bundle even when map not displayed
 
-### M6 — Lottie animations load from external CDN without error fallback
+- Files: `src/components/tracker/NearbyParks.jsx`, `src/components/sante/FindVetContent.jsx`
+- Problem: `react-leaflet` (~180KB) is statically imported in these components. The components are mounted as soon as the Activite or Sante tabs are rendered, even when the user is on a different sub-tab.
+- Impact: Initial bundle heavier than necessary. Map tiles also load on mobile data unnecessarily.
+- Fix approach: Wrap the actual `<MapContainer>` render in `React.lazy` + dynamic import, shown only when the user explicitly navigates to the map sub-tab.
 
-- **Issue:** `src/lib/lottieLibrary.js` references ~70 Lottie URLs on `assets-v2.lottiefiles.com`. If the CDN is slow or unreachable, animations fail silently leaving empty containers.
-- **Files:** `src/lib/lottieLibrary.js`, `src/components/ui/LottieAnimation.jsx`
-- **Impact:** Degraded experience on slow connections or during a CDN outage.
-- **Fix:** Add an `onError` handler to `LottieAnimation` that renders a fallback illustration or simple icon. `@lottiefiles/dotlottie-react` supports an `onError` callback.
+---
 
-### M7 — `DogAchievement.filter` without limit called on every badge event
+### `walkReminder` CRON uses sequential per-user DB queries for DailyLog
 
-- **Issue:** `src/components/achievements/badgeUtils.jsx:26` calls `DogAchievement.filter({ dog_id: dogId })` without a limit. The duplicate-check at line 37 re-fetches all badges to check for one specific badge.
-- **Files:** `src/components/achievements/badgeUtils.jsx:26,37,85`
-- **Impact:** O(N) on every badge award event. Low now (max 15 badge types per dog), no issue at current scale.
-- **Fix:** For duplicate checks, use `DogAchievement.filter({ dog_id: dogId, badge_id: badgeId })` directly instead of fetching all and filtering in-memory.
+- Files: `base44/functions/walkReminder/entry.ts` lines 48-51
+- Problem: For each user with walk reminders enabled at a given hour, the function runs a separate `DailyLog.filter({ dog_id, date })` query inside a sequential `for` loop. `Promise.all` is used for the dog-loading step but not for log checking.
+- Impact: At 100+ users with reminders at the same hour, 100 sequential DB queries in a CRON. Currently acceptable but does not scale.
+- Fix approach: Collect all dog IDs first, then use a single query or `Promise.all` across all DailyLog checks.
+
+---
+
+### `useReducedMotion` hook duplicated — custom version and Framer version coexist
+
+- Files: `src/hooks/useReducedMotion.js` and direct Framer Motion `useReducedMotion` imports in 10+ components
+- Problem: A custom hook at `src/hooks/useReducedMotion.js` reads `window.matchMedia` synchronously (non-reactive). Most components import `useReducedMotion` directly from `framer-motion` (reactive). Two implementations in use simultaneously.
+- Impact: The custom hook won't re-render if system preference changes at runtime. Minor inconsistency.
+- Fix approach: Remove `src/hooks/useReducedMotion.js` and standardize on `import { useReducedMotion } from "framer-motion"` everywhere.
+
+---
+
+### `eslint-disable` suppressions for `react-hooks/exhaustive-deps` in 3 files
+
+- Files:
+  - `src/components/notebook/SmartHealthAssistant.jsx:91`
+  - `src/components/sante/FindVetContent.jsx:87` and `:108`
+  - `src/components/sante/NotebookContent.jsx:111`
+- Problem: Effects with intentionally empty or incomplete dep arrays. Suppressed rather than refactored. Future changes to the dependencies of these effects may introduce stale-closure bugs without any warning.
+- Fix approach: Replace with `useRef`-guarded mount effects (pattern already used in `FindVetContent.jsx:82-88`). The suppressions in `SmartHealthAssistant.jsx` and `NotebookContent.jsx` can likely be removed by extracting stable function references into `useCallback`.
 
 ---
 
 ## LOW
 
-### L1 — Three silent `catch {}` blocks in `AITrainingProgram.jsx`
+### Unused npm packages: `@hello-pangea/dnd`, `cmdk`, `input-otp`, `vaul`
 
-- **Issue:** Lines 540, 652, 714, and 716 use empty catch blocks that swallow errors silently.
-- **Files:** `src/components/activite/AITrainingProgram.jsx:540,652,714,716`
-- **Impact:** Bookmark failures are invisible. If the `past` array is corrupted, the anti-redundancy feature silently stops working.
-- **Fix:** Replace silent catches with `console.warn` at minimum. Add inline comment on the JSON parse catches.
-
-### L2 — One silent `catch {}` in `CombinedFAB.jsx` swallows streak failure
-
-- **Issue:** `catch {}` at line 90 silently swallows a streak update failure after logging a walk via the FAB.
-- **Files:** `src/components/CombinedFAB.jsx:90`
-- **Fix:** `catch (e) { console.warn("FAB streak update failed:", e?.message); }`
-
-### L3 — `Library.jsx` loads Bookmark and NutritionPlan without pagination
-
-- **Issue:** `src/pages/Library.jsx:59-60` loads all bookmarks and all nutrition plans for a user with no limit.
-- **Files:** `src/pages/Library.jsx:59-60`
-- **Fix:** Add `, "-created_at", 100` limit to both queries.
-
-### L4 — `analytics.js` localStorage events have no TTL
-
-- **Issue:** `src/utils/analytics.js` stores the last 100 analytics events in localStorage with no time-based expiry. Events from months ago stay in storage.
-- **Files:** `src/utils/analytics.js`
-- **Fix:** Add a 30-day TTL check when reading events; prune old entries on write.
-
-### L5 — `PawIllustrations.jsx` is 1055 lines of inline SVG
-
-- **Issue:** `src/components/ui/PawIllustrations.jsx` contains all custom SVG illustrations as inline JSX in a single 1055-line file.
-- **Files:** `src/components/ui/PawIllustrations.jsx`
-- **Impact:** No functional issue. Tree-shaking works for named exports. Navigation is slow.
-- **Fix (low priority):** Split into per-illustration files under a dedicated directory.
-
-### L6 — `getWeekStart` date utility defined locally in 4+ places
-
-- **Issue:** At least 4 independent `getWeekStart`-style functions exist locally across the codebase, one of which uses Sunday-start (`Dashboard.jsx:142`) while others use Monday-start.
-- **Files:** `src/pages/Dashboard.jsx:142`, `src/pages/Scan.jsx:105`, `src/components/home/ActiveProgramCards.jsx:33`, `src/components/activite/AITrainingProgram.jsx`
-- **Impact:** Risk of subtle "this week" calculation inconsistencies between Dashboard and other views.
-- **Fix:** Create `getWeekStartMonday()` in `src/utils/dateHelpers.js` and replace all local implementations. Verify whether `Dashboard.jsx` Sunday-start is intentional.
-
-### L7 — `preDiagnosis` and `finalDiagnosis` accept dog profile from request body without server validation
-
-- **Issue:** Both functions accept all dog attributes (breed, weight, health issues) entirely from the client request body. No `dogId` is passed and no server-side validation against the actual Dog entity occurs.
-- **Files:** `base44/functions/preDiagnosis/entry.ts:9`, `base44/functions/finalDiagnosis/entry.ts:9`
-- **Impact:** A user can fabricate dog data to get arbitrary diagnoses. Quota enforcement is server-side (correct). This is the intended stateless design.
-- **Note:** Low risk as the output is AI-generated advice, not data mutations. Document the assumption in both files.
+- Files: `package.json`
+- Problem: All four packages are in `dependencies` but none are imported outside `src/components/ui/` shadcn boilerplate wrappers (`drawer.jsx`, `command.jsx`, `input-otp.jsx`). Those wrappers are never imported by any app component.
+- Impact: ~60-90KB of unused bundle weight depending on tree-shaking effectiveness.
+- Fix approach: Run `vite-bundle-analyzer` to confirm. If unused, remove from `package.json` and delete the unused wrapper components (do not remove `src/components/ui/` files used elsewhere).
 
 ---
 
-## Resolved in v4.0 (confirmed, do not re-open)
+### `@stripe/react-stripe-js` and `@stripe/stripe-js` unused on frontend
 
-- `deleteUser` RGPD: now deletes all 15+ entity types including `ParkReview`
-- VetNote access: now filtered by `dog_id` (owner-scoped)
-- Email exposure in error messages: sanitized
-- `Dog.list()` on frontend: replaced with `Dog.filter({ owner: u.email })`
-- Double credit decrement: fixed in `dailyCheckinProcess` and `processHealthInput`
-- SmartHealthAssistant localStorage backup: implemented
+- Files: `package.json`
+- Problem: Both Stripe frontend SDKs are in `dependencies` but are never imported in any frontend file. Stripe is handled entirely server-side via backend functions that return redirect URLs.
+- Impact: ~40KB unused bundle weight.
+- Fix approach: Remove both from `package.json` after confirming no imports exist (confirmed: zero `from.*stripe` imports in `src/`).
+
+---
+
+### `next-themes` in dependencies but ThemeProvider never mounted
+
+- Files: `package.json`, `src/App.jsx`
+- Problem: `next-themes` is installed but `ThemeProvider` is absent from `App.jsx`. Dark mode is handled via Tailwind's `class` strategy in `src/index.css`.
+- Impact: Unused dependency. Not tree-shakeable at the entry level.
+- Fix approach: Remove from `package.json` unless a ThemeToggle component is planned imminently.
+
+---
+
+### `LabelScanMode.jsx` is in `pages/` but is a component
+
+- Files: `src/pages/LabelScanMode.jsx`
+- Problem: The file exports a component that accepts props (no routing), used as a child of `Scan.jsx`. It lives in `pages/` by convention reserved for routed page roots.
+- Fix approach: Move to `src/components/scan/LabelScanMode.jsx`.
+
+---
+
+### Overpass API called without key — shared IP rate limiting risk
+
+- Files: `src/utils/overpass.js`, `src/components/tracker/NearbyParks.jsx`
+- Problem: The app calls `overpass-api.de` without an API key. The public endpoint enforces a ~1 req/2s rate limit per IP. Multiple simultaneous users from Base44's shared infrastructure could share an IP and trigger rate limits.
+- Impact: NearbyParks and FindVet map searches may fail with 429 for some users during peak times. Session-level `localStorage` cache provides some mitigation.
+- Fix approach: Implement a cross-session cache (e.g., cache results in a backend entity by geohash + date). Or proxy the request through a backend function.
+
+---
+
+### `stripeWebhook` has no idempotency guard
+
+- Files: `base44/functions/stripeWebhook/entry.ts`
+- Problem: Stripe retries webhook delivery on timeout/5xx. The handler has no event deduplication — `User.update` will run again for each retry of the same event.
+- Impact: Currently benign (`is_premium: true` is idempotent). Becomes a real bug if credit grants or email sends are ever added to this handler.
+- Fix approach: Store processed `event.id` values in a DB entity and skip if already processed. Or use Stripe's `event.id` as an idempotency key on the update call.
+
+---
+
+### `ContentArticles` section intentionally removed — placeholder gap in Home
+
+- Files: `src/pages/Home.jsx` lines 21 and 593
+- Problem: Two comments mark a removed feature: "will be replaced with real content later". The Home page has no tips/articles section.
+- Impact: Not a bug. Signals a planned content gap with no implementation path yet.
+- Fix approach: Either implement (requires content source) or remove the comments permanently to avoid confusion.
+
+---
+
+## ITEMS CONFIRMED FIXED (do not re-report)
+
+Verified absent in current codebase after v4.0 and v5.0:
+
+- `window.confirm` / `window.alert` — zero instances in frontend
+- `TODO`/`FIXME` comments — none in either frontend or backend
+- Double-credit bug — server enforces independently; client is supplementary display only
+- `Dog.list()` in most CRONs — replaced with filtered queries (exceptions: monthlySummary, streakReminder — still present, reported above)
+- Ownership checks on all user-facing AI functions — confirmed present in `pawcoachChat`, `analyzeGrowthPhoto`, `generateTrainingProgram`, `dailyCheckinProcess`, `processHealthInput`, `vetAccess`
+- `Home.jsx` useState explosion — resolved with dogData + insights group objects
+- `AlertDialog` replacing `window.confirm` — confirmed, zero window dialogs remain
 
 ---
 

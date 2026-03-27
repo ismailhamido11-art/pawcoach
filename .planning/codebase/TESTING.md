@@ -4,195 +4,125 @@
 
 ## Test Framework
 
-**Runner:** None
-- No test runner configured (no `jest.config.*`, no `vitest.config.*` in `pawcoach/`)
-- No test files exist in `src/` — only third-party test files in `node_modules/`
-- `package.json` scripts: `dev`, `build`, `lint`, `lint:fix`, `typecheck`, `preview` — no `test` script
+**Runner:**
+- None installed. No Vitest, Jest, or any test runner in `package.json` dependencies or devDependencies.
+- Config: No `vitest.config.*`, `jest.config.*` found.
 
-**Quality tools that DO exist:**
+**Assertion Library:**
+- None.
+
+**Run Commands:**
 ```bash
-npm run lint          # ESLint — catches unused imports + hooks violations
-npm run lint:fix      # Auto-fix ESLint issues
-npm run typecheck     # TypeScript check via jsconfig.json (JS files with JSDoc)
-npm run build         # Vite build — catches import errors, dead code
+npm run lint          # ESLint — only automated quality check available
+npm run typecheck     # tsc type-check via jsconfig.json
 ```
 
 ## Test File Organization
 
-**Location:** No test files exist in the project source.
+**Location:**
+- No test files exist in `src/`. Zero `.test.*` or `.spec.*` files in the application source.
+- Test files in `node_modules/` belong to third-party libraries only (e.g., `@radix-ui`, `@stripe`).
 
-**Test files found:** Zero `*.test.*` or `*.spec.*` files in `src/`, `base44/functions/`, or project root.
+**Naming:**
+- Not applicable.
 
 ## What Is Tested
 
-**Nothing is formally tested.** Verification happens through:
+**Automated tests: None.**
 
-1. **ESLint** (`eslint.config.js`) — enforces:
-   - No unused imports (error)
-   - No unused variables (warn, `^_` pattern exempted)
-   - React hooks rules (error)
-   - Known JSX property names
+The codebase has no automated test suite at any level:
+- No unit tests for utility functions (`src/utils/dateHelpers.js`, `src/utils/premium.js`, `src/utils/healthStatus.js`)
+- No integration tests for API entity flows
+- No component tests for UI behavior
+- No E2E tests
 
-2. **TypeScript type checking** (`npm run typecheck`) — loose JS type checking via `jsconfig.json`
+## What Is Used Instead
 
-3. **Vite build** — catches missing imports, circular deps, syntax errors
+**ESLint** (`eslint.config.js`):
+- Unused import detection (`eslint-plugin-unused-imports`)
+- React hooks rules enforcement (`eslint-plugin-react-hooks`)
+- Scope: `src/components/**`, `src/pages/**`
+- Run: `npm run lint`
 
-4. **Manual testing** — developer tests in the browser
+**TypeScript type-checking** (`jsconfig.json`):
+- `checkJs: true` for JS files
+- Scope: `src/components/**`, `src/pages/**`, `src/Layout.jsx`
+- Excludes: `src/lib/`, `src/components/ui/`, `src/api/`, `src/vite-plugins/`
+- Run: `npm run typecheck`
 
-## What Is NOT Tested
+**Manual QA** (primary quality gate):
+- Developer deploys via `git push` → Base44 auto-sync → manual verification in browser
+- PullToRefresh, error states, and toast messages provide visible runtime feedback
 
-Every critical business logic path is untested:
+## ErrorBoundary (Runtime Safety Net)
 
-**High-value untested areas:**
+Every page route is wrapped in `<ErrorBoundary>` in `src/App.jsx`. Catches React render errors per-page without crashing the full app. See `src/components/ErrorBoundary.jsx` for implementation.
 
-- `src/utils/healthStatus.js` — `computeHealthScore`, `computeVaccineMap`, `computeWeightTrend`, `computeNextAction`, `computeStatusPills` are pure functions with complex branching logic. Prime candidates for unit tests.
+This is the only formal safety mechanism beyond linting.
 
-- `src/utils/premium.js` — `isUserPremium`, `isUserOnTrial`, `getTrialDaysLeft` — gate premium features. Bugs here block or wrongly grant access.
+## Key Areas With Zero Test Coverage
 
-- `src/utils/ai-credits.js` — `initCredits`, `consumeMessageCredit`, `consumeActionCredit` — credit daily reset logic; bugs cause users to lose credits or over-consume.
+**High business logic risk (no tests):**
 
-- `src/utils/recommendations.js` — `buildRecommendations` — 12 recommendation rules, priority ordering; easy to regress silently.
+| File | What it does | Risk if broken |
+|------|-------------|----------------|
+| `src/utils/premium.js` | `isUserPremium()`, `isUserOnTrial()`, `getTrialDaysLeft()` | Premium gating fails silently |
+| `src/utils/ai-credits.js` | Credit init, consumption | Users charged wrong amounts |
+| `src/hooks/useActionCredits.js` | consumingRef guard, credit state | Duplicate AI credit consumption |
+| `src/utils/healthStatus.js` | Vaccine status, health score | Wrong health alerts shown |
+| `src/utils/recommendations.js` | Daily recommendations engine | Recommendations always empty or wrong |
+| `src/utils/dateHelpers.js` | French date formatting, age calc | Wrong dates shown throughout app |
+| `src/lib/HomeCacheContext.jsx` | 2-min cache TTL, dog-switch invalidation | Stale data after dog switch |
+| `src/components/streakHelper.jsx` | Streak silent update | Streaks not incremented |
+| `src/components/achievements/badgeUtils.jsx` | Badge unlock logic | Badges never or always awarded |
 
-- `src/utils/dateHelpers.js` — `getDaysLeft`, `getDateLabel`, `shouldShowDateSeparator` — date edge cases are classically bug-prone.
+**Medium risk (UI correctness, no tests):**
 
-- `src/components/streakHelper.jsx` — `updateStreakSilently` — grace day logic, dedup guard; streak reset bugs are user-facing.
+| File | Risk |
+|------|------|
+| `src/components/notebook/SectionVaccins.jsx` | Vaccine reminder date auto-calculation |
+| `src/components/activite/AITrainingProgram.jsx` | Program day completion toggle |
+| `src/pages/Library.jsx` | AlertDialog delete flows |
 
-- `src/hooks/useActionCredits.js` — `consumingRef` double-click guard; concurrency behavior untestable without tests.
+## If Tests Are Added
 
-- `src/pages/VetDogView.jsx` — `translateError` map — static, easy to test.
+**Recommended framework:** Vitest (already uses Vite; zero-config integration)
+
+**Highest-value tests to write first:**
+
+1. **Unit: `src/utils/premium.js`**
+   - `isUserPremium({ is_premium: true })` returns true
+   - `isUserPremium({ trial_expires_at: future })` returns true
+   - `isUserPremium({ trial_expires_at: past })` returns false
+   - `isUserPremium(null)` returns false
+
+2. **Unit: `src/utils/dateHelpers.js`**
+   - `getAge()` returns correct string for < 12 months and > 12 months
+   - `fmtDate()` returns "" for null/undefined
+   - `addDaysToDate()` handles month boundaries without DST shift
+
+3. **Unit: `src/utils/ai-credits.js`**
+   - Credit consumption decrements correctly
+   - consumingRef guard prevents double call
+
+4. **Integration: `src/lib/HomeCacheContext.jsx`**
+   - Cache invalidates when `activeDogId` changes
+   - Cache expires after 2 minutes
+
+**Setup needed:**
+```bash
+npm install -D vitest @testing-library/react @testing-library/user-event jsdom
+```
+Add to `vite.config.js`:
+```js
+test: { environment: "jsdom", globals: true }
+```
 
 ## Coverage
 
-**Requirement:** None enforced.
+**Requirements:** None enforced.
 
-**Actual:** 0% — no tests exist.
-
-## Test Types
-
-**Unit Tests:** Not used.
-
-**Integration Tests:** Not used.
-
-**E2E Tests:** Not used.
-
-## If You Add Tests
-
-If tests are introduced, recommended setup for this codebase:
-
-**Recommended stack:**
-- **Vitest** (preferred over Jest — native Vite integration, ESM-compatible, no config friction)
-- **@testing-library/react** for component tests
-- No need for jsdom for pure utility functions
-
-**Suggested `vitest.config.js`:**
-```js
-import { defineConfig } from "vitest/config";
-import react from "@vitejs/plugin-react";
-import { resolve } from "path";
-
-export default defineConfig({
-  plugins: [react()],
-  test: {
-    environment: "jsdom",
-    globals: true,
-  },
-  resolve: {
-    alias: { "@": resolve(__dirname, "src") },
-  },
-});
-```
-
-**Suggested `package.json` additions:**
-```json
-"test": "vitest",
-"test:coverage": "vitest run --coverage"
-```
-
-**Where to place test files:**
-- Co-located with source: `src/utils/healthStatus.test.js`
-- Or separate: `src/__tests__/utils/healthStatus.test.js`
-
-## High Priority Tests to Write First
-
-Priority order based on business impact and bug risk:
-
-1. **`src/utils/healthStatus.js`** — all exported functions are pure (no API, no React), easy to unit test:
-   ```js
-   // Example
-   import { computeHealthScore, computeVaccineMap, isValidDate } from "@/utils/healthStatus";
-
-   describe("computeHealthScore", () => {
-     it("returns 0 when no records", () => {
-       expect(computeHealthScore([], {})).toBe(0);
-     });
-     it("caps at 100", () => {
-       // ...feed perfect records
-     });
-   });
-   ```
-
-2. **`src/utils/premium.js`** — pure functions, 3 functions to cover in ~10 tests:
-   ```js
-   import { isUserPremium, isUserOnTrial, getTrialDaysLeft } from "@/utils/premium";
-
-   it("returns true when is_premium flag is set", () => {
-     expect(isUserPremium({ is_premium: true })).toBe(true);
-   });
-   it("returns false when trial_expires_at is in the past", () => {
-     expect(isUserPremium({ trial_expires_at: "2020-01-01" })).toBe(false);
-   });
-   ```
-
-3. **`src/utils/recommendations.js`** — `buildRecommendations` pure function, test each of 12 rules:
-   - Priority ordering (vaccine_overdue = priority 1 must appear first)
-   - Slice limit (returns at most 3 recommendations)
-
-4. **`src/utils/dateHelpers.js`** — date edge cases:
-   - `getDateLabel` for today, yesterday, older dates
-   - `getDaysLeft` with past/future dates
-
-5. **`src/utils/ai-credits.js`** — requires mocking `base44.auth.updateMe`:
-   - Daily reset logic when `messages_daily_reset !== today`
-   - Credit floor at 0 (`Math.max(0, ...)`)
-
-## Mocking Needs
-
-**For utils tests:** No mocking needed (all pure functions).
-
-**For hook tests:**
-```js
-// Mock base44 client
-vi.mock("@/api/base44Client", () => ({
-  base44: {
-    auth: {
-      me: vi.fn().mockResolvedValue({ email: "test@test.com", is_premium: false }),
-      updateMe: vi.fn().mockResolvedValue({}),
-    },
-  },
-}));
-```
-
-**For component tests:**
-```js
-// Mock entities
-vi.mock("@/api/entities", () => ({
-  Dog: { filter: vi.fn().mockResolvedValue([{ id: "dog1", name: "Rex" }]) },
-}));
-```
-
-## Linting as Quality Gate
-
-ESLint currently serves as the only automated quality gate. Run before every commit:
-
-```bash
-npm run lint        # Check — exits non-zero on errors
-npm run lint:fix    # Auto-fix
-```
-
-Key catches:
-- `unused-imports/no-unused-imports` — prevents dead import accumulation
-- `react-hooks/rules-of-hooks` — prevents conditional hook calls
-- Build (`npm run build`) — catches missing module resolutions and circular imports
+**Current coverage:** 0% (no test runner installed).
 
 ---
 
