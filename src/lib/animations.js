@@ -94,3 +94,15 @@ export const staggerItem = {
     transition: { type: "spring", stiffness: 300, damping: 24 },
   },
 };
+
+/**
+ * springTab — spring rapide pour les indicateurs de navigation (BottomNav, tab switches).
+ * Valeurs originales : stiffness 500, damping 35.
+ */
+export const springTab = { type: "spring", stiffness: 500, damping: 35 };
+
+/**
+ * staggerDelay — delai de base pour les animations en cascade.
+ * Usage : transition={{ delay: i * staggerDelay }}
+ */
+export const staggerDelay = 0.05;

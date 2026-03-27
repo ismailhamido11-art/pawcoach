@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Home, Heart, Activity, Utensils, User } from "lucide-react";
 import { motion } from "framer-motion";
+import { springTab } from "@/lib/animations";
 import { useEffect } from "react";
 
 const tabs = [
@@ -100,7 +101,7 @@ export default function BottomNav({ currentPage }) {
                 <motion.div
                   layoutId="bottomNavIndicator"
                   className="absolute -bottom-1.5 w-6 h-1 rounded-full bg-gradient-to-r from-primary to-accent"
-                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                  transition={springTab}
                 />
               )}
             </Link>

@@ -287,7 +287,7 @@ export default function Dashboard() {
               key={card.label}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.07, duration: 0.28, ease: "easeOut" }}
+              transition={{ delay: i * 0.06, duration: 0.28, ease: "easeOut" }}
             >
               <StatCard
                 icon={card.icon}
