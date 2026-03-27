@@ -26,7 +26,7 @@
 ## Phases
 
 - [x] **Phase 1: Crashs & Features Mortes** - Eliminer les 4 ruptures qui bloquent l'acces aux features
-- [ ] **Phase 2: Donnees Stale** - Corriger les 6 sources de donnees fausses ou perdues
+- [x] **Phase 2: Donnees Stale** - Corriger les 6 sources de donnees fausses ou perdues (completed 2026-03-27)
 - [ ] **Phase 3: Cache, UX & Securite** - Propager les invalidations manquantes + corriger les 5 failles UX/securite
 
 ## Phase Details
@@ -60,7 +60,7 @@ Plans:
 **Plans**: 3 plans
 Plans:
 - [x] 02-01-PLAN.md — STALE-01 + STALE-03: SmartAlerts weight comparison + computeStatusPills GrowthEntries
-- [ ] 02-02-PLAN.md — STALE-02 + STALE-04 + STALE-05: dog state refresh + real weight in NutriCoach + score alignment
+- [x] 02-02-PLAN.md — STALE-02 + STALE-04 + STALE-05: dog state refresh + real weight in NutriCoach + score alignment
 - [x] 02-03-PLAN.md — STALE-06: FoodScan.create saves summary + allergen_alerts
 
 ### Phase 3: Cache, UX & Securite
@@ -82,5 +82,5 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Crashs & Features Mortes | 4/4 | Complete | 2026-03-27 |
-| 2. Donnees Stale | 2/3 | In Progress|  |
+| 2. Donnees Stale | 3/3 | Complete   | 2026-03-27 |
 | 3. Cache, UX & Securite | 0/? | Not started | - |

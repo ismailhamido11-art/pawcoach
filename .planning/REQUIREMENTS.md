@@ -15,9 +15,9 @@
 
 ### Donnees Stale / Fausses (STALE)
 
-- [ ] **STALE-01**: SmartAlerts compare les 2 dernieres pesees (pas latest vs dog.weight stale) — l'alerte poids rouge est correcte
+- [x] **STALE-01**: SmartAlerts compare les 2 dernieres pesees (pas latest vs dog.weight stale) — l'alerte poids rouge est correcte
 - [ ] **STALE-02**: Apres Dog.update(weight), le state `dog` est rafraichi dans Sante.jsx (pas seulement en DB)
-- [ ] **STALE-03**: computeStatusPills inclut les GrowthEntries — "Poids: Non suivi" n'est plus affiche a tort
+- [x] **STALE-03**: computeStatusPills inclut les GrowthEntries — "Poids: Non suivi" n'est plus affiche a tort
 - [ ] **STALE-04**: NutriCoach utilise le dernier poids reel (GrowthEntry ou DailyLog), pas dog.weight potentiellement stale
 - [ ] **STALE-05**: Score wellness identique entre Dashboard, DogRadarHero, et NotebookContent (memes sources)
 - [x] **STALE-06**: FoodScan.create sauvegarde summary + allergen_alerts (plus de perte de donnees)
@@ -63,9 +63,9 @@
 | CRASH-02 | Phase 1 | Pending |
 | CRASH-03 | Phase 1 | Complete |
 | CRASH-04 | Phase 1 | Pending |
-| STALE-01 | Phase 2 | Pending |
+| STALE-01 | Phase 2 | Complete |
 | STALE-02 | Phase 2 | Pending |
-| STALE-03 | Phase 2 | Pending |
+| STALE-03 | Phase 2 | Complete |
 | STALE-04 | Phase 2 | Pending |
 | STALE-05 | Phase 2 | Pending |
 | STALE-06 | Phase 2 | Complete |

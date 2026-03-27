@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v8.0
 milestone_name: "SFA Fixes" — Active
-status: Ready to execute
-stopped_at: Phase 02 plan 03 complete (02-03-PLAN.md)
-last_updated: "2026-03-27T19:57:28.180Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 02-donnees-stale 02-01-PLAN.md
+last_updated: "2026-03-27T19:58:33.926Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 7
-  completed_plans: 6
+  completed_plans: 7
 ---
 
 # Project State
@@ -45,6 +45,8 @@ Last activity: 2026-03-27
 | Coverage | 19/19 (100%) |
 | Phase 01-crashs-features-mortes P03 | 2 | 1 tasks | 1 files |
 | Phase 02-donnees-stale P03 | 5 | 2 tasks | 2 files |
+| Phase 02-donnees-stale P01 | 10 | 2 tasks | 2 files |
+| Phase 02-donnees-stale P02 | 10 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -58,6 +60,8 @@ Last activity: 2026-03-27
 - CGC obligatoire dans chaque phase (blast radius avant chaque modif)
 - [Phase 01-crashs-features-mortes]: Fix minimal : 2 imports lucide-react ajoutes dans DogPublicProfile.jsx, TYPE_CONFIG inchange
 - [Phase 02-donnees-stale]: Label mode FoodScan.create: allergen_alerts defaults to [] and summary uses fallback string (label AI schema has no summary field)
+- [Phase 02-donnees-stale]: SmartAlerts weight drift now compares 2 real measured weights, not latest vs stale dog.weight profile
+- [Phase 02-donnees-stale]: computeStatusPills extraWeightSources param (default=[]) keeps DownloadHealthPDF.jsx backward-compatible
 
 ### Pending Todos
 
@@ -69,7 +73,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T19:57:07.649Z
-Stopped at: Phase 02 plan 03 complete (02-03-PLAN.md)
+Last session: 2026-03-27T19:58:07.659Z
+Stopped at: Completed 02-donnees-stale 02-01-PLAN.md
 Resume file: None
 Next action: /gsd:plan-phase 2
