@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v8.0
 milestone_name: "SFA Fixes" — Active
 status: Phase complete — ready for verification
-stopped_at: Completed 03-cache-ux-securite-03-03-PLAN.md
-last_updated: "2026-03-27T20:21:32.085Z"
+stopped_at: Completed 03-cache-ux-securite-03-01-PLAN.md
+last_updated: "2026-03-27T20:21:50.952Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 4
@@ -71,6 +71,8 @@ Last activity: 2026-03-27
 - [Phase 03-cache-ux-securite]: Owner email entirely removed from DogPublicProfile — GDPR/privacy fix on no-auth public page
 - [Phase 03-cache-ux-securite]: UX-04: refreshLogs kept pure (data reload only) — checkWalkBadges removed, side effects stay at event source (WalkMode/CombinedFAB)
 - [Phase 03-cache-ux-securite]: UX-05: inner try/catch wraps updateMe in Training — on failure: UserProgress.delete rollback then re-throw to outer catch for UI state reset
+- [Phase 03-cache-ux-securite]: invalidateHome called after setDog in handleSaveDog and before navigate in handleDeleteDog
+- [Phase 03-cache-ux-securite]: visibilitychange + window focus dual-listener in Nutri for robust mobile SPA recentScans refresh
 
 ### Pending Todos
 
@@ -82,7 +84,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T20:21:30.153Z
-Stopped at: Completed 03-cache-ux-securite-03-03-PLAN.md
+Last session: 2026-03-27T20:21:50.947Z
+Stopped at: Completed 03-cache-ux-securite-03-01-PLAN.md
 Resume file: None
 Next action: /gsd:plan-phase 2

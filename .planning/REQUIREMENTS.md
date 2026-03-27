@@ -31,11 +31,11 @@
 
 ### UX & Securite (UX)
 
-- [ ] **UX-01**: Card "Passe a Premium" masquee pour les utilisateurs deja premium
-- [ ] **UX-02**: Email proprietaire non expose sur DogPublicProfile
-- [ ] **UX-03**: handleSaveUser entoure d'un try/catch avec feedback erreur
-- [ ] **UX-04**: checkWalkBadges appele une seule fois par fin de balade (pas de doublon)
-- [ ] **UX-05**: Training points rollback si updateMe echoue apres UserProgress.create
+- [x] **UX-01**: Card "Passe a Premium" masquee pour les utilisateurs deja premium
+- [x] **UX-02**: Email proprietaire non expose sur DogPublicProfile
+- [x] **UX-03**: handleSaveUser entoure d'un try/catch avec feedback erreur
+- [x] **UX-04**: checkWalkBadges appele une seule fois par fin de balade (pas de doublon)
+- [x] **UX-05**: Training points rollback si updateMe echoue apres UserProgress.create
 
 ## Future Requirements (v9.0+)
 
@@ -73,11 +73,11 @@
 | CACHE-02 | Phase 3 | Pending |
 | CACHE-03 | Phase 3 | Pending |
 | CACHE-04 | Phase 3 | Pending |
-| UX-01 | Phase 3 | Pending |
-| UX-02 | Phase 3 | Pending |
-| UX-03 | Phase 3 | Pending |
-| UX-04 | Phase 3 | Pending |
-| UX-05 | Phase 3 | Pending |
+| UX-01 | Phase 3 | Complete |
+| UX-02 | Phase 3 | Complete |
+| UX-03 | Phase 3 | Complete |
+| UX-04 | Phase 3 | Complete |
+| UX-05 | Phase 3 | Complete |
 
 **Coverage:**
 - v8.0 requirements: 19 total
