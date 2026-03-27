@@ -19,6 +19,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Footprints, History, Dumbbell, Sparkles, ExternalLink, Lightbulb, Timer, Target, Bone, CalendarDays } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { spring } from "@/lib/animations";
+import { toast } from "sonner";
 const tabVariants = {
   enter: (d) => ({ opacity: 0, x: d * 60 }),
   center: { opacity: 1, x: 0 },
@@ -88,11 +89,15 @@ export default function Activite() {
 
   const refreshLogs = async () => {
     if (!dog || !user) return;
-    const l = await DailyLog.filter({ dog_id: dog.id }, "-date", 30);
-    setLogs(l || []);
-    // UX-04: checkWalkBadges removed — already called by WalkMode/CombinedFAB after walk save
-    // Invalidate Home cache so DailyProgress reflects the new walk immediately
-    invalidateHome();
+    try {
+      const l = await DailyLog.filter({ dog_id: dog.id }, "-date", 30);
+      setLogs(l || []);
+      // UX-04: checkWalkBadges removed — already called by WalkMode/CombinedFAB after walk save
+      // Invalidate Home cache so DailyProgress reflects the new walk immediately
+      invalidateHome();
+    } catch {
+      toast.error("Impossible de rafraîchir les activités. Vérifie ta connexion.");
+    }
   };
 
   if (loading) {
