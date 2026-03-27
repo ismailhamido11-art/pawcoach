@@ -27,13 +27,14 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 
 ## Current State (v5.0 shipped — 27 mars 2026)
 - v5.0 "Hardening & Refactoring": 26 requirements, 7 phases, ~40 commits
-- Securite ownership (403 sur dog etranger, DogPublicProfile filtre, chat borne)
-- Scalabilite (6 CRONs filtres, queries frontend bornees)
-- Utils centralises (dateHelpers, programHelpers, chartHelpers — 0 duplication)
-- Monolithes decoupes (4 composants extraits: LabelScanMode, CompletionCard, WalkSummary, MealPlanGenerator)
-- UX PWA (6 AlertDialog, plus de window.confirm)
-- Bundle allege (~900KB deps retirees, lazy loading, timeouts cleanup)
-- Code propre (Home 11 useState, Lottie fallback, analytics TTL)
+- Securite ownership, scalabilite, utils centralises, monolithes decoupes
+- UX PWA (AlertDialog), bundle allege (~900KB), code propre
+
+## Current Milestone: v6.0 Deep Clean & PWA
+
+**Goal:** Corriger les 21 issues restantes (2 CRITICAL + 5 HIGH + 7 MEDIUM + 7 LOW) du scan post-v5.0 — PWA fonctionnelle, derniers CRONs scalables, fichiers monolithes restants decoupes, accessibilite, RGPD complet.
+
+**Source:** .planning/codebase/CONCERNS.md (27 mars 2026, post-v5.0)
 
 ## Evolution
 
