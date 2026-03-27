@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v9.0
 milestone_name: "Production Ready" — Active
 status: executing
-stopped_at: "Completed 06-04-PLAN.md"
-last_updated: "2026-03-27T23:45:00Z"
+stopped_at: "Completed 06-03-PLAN.md"
+last_updated: "2026-03-27T23:05:00Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -30,8 +30,8 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 HERE
 ```
 
-Phase: 06-legal-security — Plan 4/4 complete
-Last activity: 2026-03-27 — 06-04 executed (FIX-09 CSP + FIX-10 input validation)
+Phase: 06-legal-security — Plans 3/4 + 4/4 complete (all plans done)
+Last activity: 2026-03-27 — 06-03 executed (FIX-05 export RGPD + FIX-06 disclosure + FIX-07 disclaimer)
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Last activity: 2026-03-27 — 06-04 executed (FIX-09 CSP + FIX-10 input validati
 - Reference pipeline : memory/reference_rouleau_compresseur.md
 - CSP via meta tag (Base44 ne permet pas la config des headers HTTP response)
 - Input validation avant sanitize() pour reject avant tout appel LLM
+- FIX-05/06/07: export RGPD Blob JSON sans serveur, disclosure EUR dynamique dans Premium, banner amber avant hero card DiagnosisContent
 
 ### Pending Todos
 
