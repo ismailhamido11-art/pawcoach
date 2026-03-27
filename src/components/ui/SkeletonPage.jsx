@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import useReducedMotion from "@/hooks/useReducedMotion";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 
 function Bone({ className }) {
@@ -103,7 +102,7 @@ function SkeletonChat() {
 }
 
 export default function SkeletonPage({ variant = "list", className = "", currentPage }) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const motionProps = reduceMotion
     ? {}
     : {

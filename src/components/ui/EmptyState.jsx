@@ -4,7 +4,7 @@
  * Animation : Framer Motion fadeIn + slight scale
  */
 import { motion } from "framer-motion";
-import * as LucideIcons from "lucide-react";
+import { HelpCircle } from "lucide-react";
 import {
   DogWave,
   DogDetective,
@@ -29,7 +29,6 @@ import {
 } from "./PawIllustrations";
 import StorysetIllustration from "./StorysetIllustration";
 import LottieAnimation from "./LottieAnimation";
-import useReducedMotion from "@/hooks/useReducedMotion";
 
 const MASCOTS = {
   wave: DogWave,
@@ -65,12 +64,12 @@ export default function EmptyState({
   lottieSrc,
   className = "",
 }) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const MascotComponent = mascot ? MASCOTS[mascot] : null;
 
   let LucideIcon = null;
   if (icon && !MascotComponent && !illustration && !lottieSrc) {
-    LucideIcon = LucideIcons[icon] || LucideIcons.HelpCircle;
+    LucideIcon = HelpCircle;
   }
 
   return (
