@@ -90,7 +90,7 @@ export default function PostTrialSheet({ visible, onClose, dogName }) {
                 onClick={handleUpgrade}
                 className="w-full h-14 rounded-2xl gradient-warm text-white font-black text-base flex items-center justify-center gap-2 shadow-lg border-0"
               >
-                S'abonner — à partir de 5 EUR/mois
+                S'abonner — 7,99 €/mois ou 59,99 €/an
                 <ChevronRight className="w-5 h-5" />
               </motion.button>
 

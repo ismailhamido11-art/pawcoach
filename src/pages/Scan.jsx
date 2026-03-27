@@ -396,7 +396,7 @@ export default function Scan() {
               <p className="text-sm text-muted-foreground">(Aliment et Étiquette partagent le même quota)</p>
               <p className="text-sm text-muted-foreground">Passe en Premium pour scanner sans limite.</p>
               <Button onClick={() => navigate(createPageUrl("Premium") + "?from=scan")} className="w-full h-14 rounded-2xl gradient-warm border-0 text-white font-bold">
-                Passer Premium · dès 5 €/mois
+                Passer Premium · à partir de 7,99 €/mois
               </Button>
               <button onClick={() => setScanLimitReached(false)} className="text-xs text-muted-foreground underline">
                 Retour
