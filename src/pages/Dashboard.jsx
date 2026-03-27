@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useCountUp } from "@/hooks/useCountUp";
 import { base44 } from "@/api/base44Client";
-import { Dog, HealthRecord, DailyCheckin, Streak, UserProgress, DailyLog, FoodScan } from "@/api/entities";
+import { Dog, HealthRecord, DailyCheckin, Streak, UserProgress, DailyLog, FoodScan, GrowthEntry } from "@/api/entities";
 import { motion } from "framer-motion";
 import { computeVaccineMap, computeHealthScore } from "@/utils/healthStatus";
 import { getWeekStart } from "@/utils/dateHelpers";
@@ -55,6 +55,7 @@ export default function Dashboard() {
   const [streak, setStreak] = useState(null);
   const [progress, setProgress] = useState([]);
   const [dailyLogs, setDailyLogs] = useState([]);
+  const [growthEntries, setGrowthEntries] = useState([]);
   const [scans, setScans] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -71,13 +72,14 @@ export default function Dashboard() {
         const d = getActiveDog(dogs);
         setDog(d);
 
-        const [recs, cks, stk, prog, logs, foodScans] = await Promise.all([
+        const [recs, cks, stk, prog, logs, foodScans, growthData] = await Promise.all([
           HealthRecord.filter({ dog_id: d.id }, "-date", 100),
           DailyCheckin.filter({ dog_id: d.id }, "-date", 90),
           Streak.filter({ dog_id: d.id }),
           UserProgress.filter({ dog_id: d.id }),
           DailyLog.filter({ dog_id: d.id }, "-date", 90),
           FoodScan.filter({ dog_id: d.id }, "-timestamp", 20).catch(() => []),
+          GrowthEntry.filter({ dog_id: d.id }, "-date", 50).catch(() => []),
         ]);
         setRecords(recs || []);
         setCheckins((cks || []).sort((a, b) => a.date > b.date ? 1 : -1));
@@ -85,6 +87,7 @@ export default function Dashboard() {
         setProgress(prog || []);
         setDailyLogs(logs || []);
         setScans(foodScans || []);
+        setGrowthEntries(growthData || []);
       } catch (err) {
         console.error("Dashboard load error:", err);
         toast.error("Impossible de charger le tableau de bord. Vérifie ta connexion.");
@@ -167,12 +170,12 @@ export default function Dashboard() {
   }
 
   // Health score — unified via computeHealthScore (same as Santé page)
-  const score = computeHealthScore(records, dog, dailyLogs);
+  const score = computeHealthScore(records, dog, [...growthEntries, ...dailyLogs]);
   const scoreColor = score >= 75 ? "#10b981" : score >= 50 ? "#d97706" : "#ef4444";
   const scoreLabel = score >= 75 ? "Bon état" : score >= 50 ? "À surveiller" : "À améliorer";
 
   return { weightData, weightTrend, walkData, checkinChart, avgMood, alerts, score, scoreColor, scoreLabel };
-  }, [records, dailyLogs, checkins, dog]);
+  }, [records, dailyLogs, checkins, dog, growthEntries]);
 
   // --- Count-up values for stat cards ---
   const lastWeightRaw = weightData.length ? weightData[weightData.length - 1].poids : 0;
