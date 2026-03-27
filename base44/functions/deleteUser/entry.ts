@@ -12,10 +12,13 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    let userEntityId: string | null = null;
+
     // Step 0: Cancel Stripe subscription if any (best-effort — never blocks deletion)
     try {
       const users = await base44.asServiceRole.entities.User.filter({ email: user.email });
       const subscriptionId = users[0]?.stripe_subscription_id;
+      if (users[0]?.id) userEntityId = users[0].id;
       if (subscriptionId) {
         await stripe.subscriptions.cancel(subscriptionId);
         console.log(`Stripe subscription cancelled: ${subscriptionId}`);
@@ -57,6 +60,13 @@ Deno.serve(async (req) => {
       base44.asServiceRole.entities.SharedVetAccess.deleteMany({ owner_email: user.email }).catch(() => {}),
       base44.asServiceRole.entities.VetNote.deleteMany({ vet_email: user.email }).catch(() => {}),
     ]);
+
+    // Step 4: Delete the User entity itself (RGPD — right to erasure)
+    if (userEntityId) {
+      await base44.asServiceRole.entities.User.delete(userEntityId).catch((err: unknown) => {
+        console.error('User entity deletion failed:', err);
+      });
+    }
 
     return Response.json({ success: true, message: 'User account deleted successfully' });
   } catch (err) {
