@@ -97,8 +97,10 @@ Plans:
   2. La page tarification affiche 7.99 EUR/mois comme prix mensuel explicite — le prix annuel ramene au mois (5 EUR) est clairement labelise "en abonnement annuel" et non presente comme le prix principal
   3. Le champ code parrain est invisible ou grise avec un message "bientot disponible" — l'utilisateur ne peut pas saisir un code qui sera ignore par le backend
   4. Les SmartAlerts (vaccins, poids) du Dashboard sont accessibles depuis la Home ou la navigation principale — l'utilisateur n'a pas a deviner qu'un Dashboard existe
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 2 plans
+Plans:
+- [ ] 04-01-PLAN.md — Corriger CTAs prix trompeurs (UX-02) + Supprimer champ code parrain (UX-03)
+- [ ] 04-02-PLAN.md — Reaction symptomes check-in (UX-01) + Carte Dashboard depuis Home (UX-04)
 
 ---
 
