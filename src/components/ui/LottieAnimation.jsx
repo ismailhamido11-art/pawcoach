@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { PawPrint } from "lucide-react";
 export default function LottieAnimation({
   src,
   size = 120,
@@ -26,7 +27,18 @@ export default function LottieAnimation({
     return { width: resolvedSize, height: resolvedSize };
   }, [size]);
 
-  if (!src || failed) return null;
+  if (!src || failed) {
+    return (
+      <div
+        className="inline-flex items-center justify-center"
+        style={style}
+        aria-label={ariaLabel}
+        aria-hidden="true"
+      >
+        <PawPrint className="w-8 h-8 text-muted-foreground/30" />
+      </div>
+    );
+  }
 
   return (
     <motion.div
