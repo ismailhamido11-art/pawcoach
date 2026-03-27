@@ -131,34 +131,43 @@ export default function Activite() {
         </div>
 
         {/* Tabs — pill cards */}
-        <div className="grid grid-cols-4 gap-1.5 mt-1">
-          {TABS.map(({ id, label, icon: TabIcon, bg }) => {
-            const active = activeTab === id;
-            return (
-              <motion.button
-                key={id}
-                whileTap={{ scale: 0.93 }}
-                transition={spring}
-                onClick={() => changeTab(id)}
-                className={`relative flex flex-col items-center gap-1 py-3 rounded-2xl text-center overflow-hidden transition-all ${
-                  active ? "shadow-lg" : "bg-white/10"
-                }`}
-              >
-                {active && (
-                  <div className={`absolute inset-0 bg-gradient-to-br ${bg} opacity-100`} />
-                )}
-                <span className="relative text-xl leading-none"><TabIcon className="w-4 h-4" /></span>
-                <span className={`relative text-[11px] font-bold leading-tight ${active ? "text-white" : "text-white/75"}`}>{label}</span>
-                {active && (
-                  <motion.div
-                    layoutId="activiteTabIndicator"
-                    className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 rounded-full bg-white/60"
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
-                )}
-              </motion.button>
-            );
-          })}
+        <div className="relative">
+          <div className="grid grid-cols-4 gap-1.5 mt-1">
+            {TABS.map(({ id, label, icon: TabIcon, bg }) => {
+              const active = activeTab === id;
+              return (
+                <motion.button
+                  key={id}
+                  whileTap={{ scale: 0.93 }}
+                  transition={spring}
+                  onClick={() => changeTab(id)}
+                  className={`relative flex flex-col items-center gap-1 py-3 rounded-2xl text-center overflow-hidden transition-all ${
+                    active ? "shadow-lg" : "bg-white/10"
+                  }`}
+                >
+                  {active && (
+                    <div className={`absolute inset-0 bg-gradient-to-br ${bg} opacity-100`} />
+                  )}
+                  <span className="relative text-xl leading-none"><TabIcon className="w-4 h-4" /></span>
+                  <span className={`relative text-[11px] font-bold leading-tight ${active ? "text-white" : "text-white/75"}`}>{label}</span>
+                  {active && (
+                    <motion.div
+                      layoutId="activiteTabIndicator"
+                      className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 rounded-full bg-white/60"
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    />
+                  )}
+                </motion.button>
+              );
+            })}
+          </div>
+          {/* Gradient edge — scroll hint on small screens when last tab is not active */}
+          {activeTab !== TABS[TABS.length - 1].id && (
+            <div
+              className="absolute top-0 right-0 h-full w-8 pointer-events-none"
+              style={{ background: "linear-gradient(to right, transparent, rgba(26,77,62,0.4))" }}
+            />
+          )}
         </div>
 
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
