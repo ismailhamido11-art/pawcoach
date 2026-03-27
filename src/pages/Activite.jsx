@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Dog, DailyLog } from "@/api/entities";
 import { getActiveDog, createPageUrl } from "@/utils";
 import { useAuth } from "@/lib/AuthContext";
+import { useHomeCache } from "@/lib/HomeCacheContext";
 import BottomNav from "@/components/BottomNav";
 import ChatFAB from "@/components/ChatFAB";
 import WellnessBanner from "@/components/WellnessBanner";
@@ -34,6 +35,7 @@ const TABS = [
 
 export default function Activite() {
   const { user: authUser, isLoadingAuth } = useAuth();
+  const { invalidateHome } = useHomeCache();
   const prefersReducedMotion = useReducedMotion();
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
@@ -91,6 +93,8 @@ export default function Activite() {
     setLogs(l || []);
     // Check walk badges after refresh
     checkWalkBadges(dog.id, user.email, l || []).catch(() => {});
+    // Invalidate Home cache so DailyProgress reflects the new walk immediately
+    invalidateHome();
   };
 
   if (loading) {
