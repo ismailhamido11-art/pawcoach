@@ -35,15 +35,15 @@ function generateBriefing({ dog, recentCheckins, dailyLogs, streak, todayCheckin
   // Generate contextual message based on real data
   if (!todayCheckin && !lastCheckin) {
     // New user, no data yet
-    message = `Bienvenue ! C'est le debut de l'aventure avec ${name}. Commence par me dire comment il va.`;
+    message = `Bienvenue ! C'est le début de l'aventure avec ${name}. Commence par me dire comment il va.`;
     mission = { type: "checkin", label: "Premier check-in", sub: `Comment va ${name} ?` };
   } else if (!todayCheckin && lastCheckin) {
     // Returning user, no check-in today
     const lastMood = lastCheckin.mood || 3;
     if (lastMood >= 4) {
-      message = `${name} etait en forme hier. Voyons comment se passe ce ${time}.`;
+      message = `${name} était en forme hier. Voyons comment se passe ce ${time}.`;
     } else if (lastMood <= 2) {
-      message = `${name} n'etait pas au top hier. J'espere que ca va mieux aujourd'hui.`;
+      message = `${name} n'était pas au top hier. J'espère que ca va mieux aujourd'hui.`;
     } else {
       message = `Bon ${time} ! Comment va ${name} aujourd'hui ?`;
     }
@@ -53,27 +53,27 @@ function generateBriefing({ dog, recentCheckins, dailyLogs, streak, todayCheckin
     const mood = todayCheckin.mood || 3;
     if (mood >= 4 && !walkDone) {
       message = `${name} est en forme ! Parfait pour une balade.`;
-      mission = { type: "walk", label: "Lancer une balade", sub: `${name} a de l'energie a revendre` };
+      mission = { type: "walk", label: "Lancer une balade", sub: `${name} a de l'énergie à revendre` };
     } else if (mood >= 4 && walkDone) {
       message = `Belle journee pour ${name} — check-in fait, balade faite. Continue comme ca !`;
       mission = { type: "chat", label: "Parler au coach", sub: "Pose-moi une question sur " + name };
     } else if (mood <= 2) {
       message = `${name} n'est pas au top aujourd'hui. Garde un oeil sur lui et note tout changement.`;
-      mission = { type: "health", label: "Verifier sa sante", sub: "Diagnostic rapide" };
+      mission = { type: "health", label: "Vérifier sa santé", sub: "Diagnostic rapide" };
     } else {
       if (!walkDone) {
         message = `Check-in fait ! Une petite balade ferait du bien a ${name}.`;
-        mission = { type: "walk", label: "Lancer une balade", sub: "20 min recommandees" };
+        mission = { type: "walk", label: "Lancer une balade", sub: "20 min recommandées" };
       } else {
         message = `Tout roule pour ${name} aujourd'hui.`;
-        mission = { type: "scan", label: "Scanner un aliment", sub: `Verifie ce que ${name} peut manger` };
+        mission = { type: "scan", label: "Scanner un aliment", sub: `Vérifie ce que ${name} peut manger` };
       }
     }
   }
 
   // Streak context
   if (streakDays >= 3 && streakDays <= 7) {
-    message += ` ${streakDays} jours de suite — le debut d'une habitude.`;
+    message += ` ${streakDays} jours de suite — le début d'une habitude.`;
   } else if (streakDays > 7) {
     message += ` ${streakDays} jours de suite — impressionnant.`;
   }
