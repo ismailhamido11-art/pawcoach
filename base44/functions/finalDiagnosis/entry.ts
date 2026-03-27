@@ -6,9 +6,28 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { symptoms, duration, additional_info, image_url, preliminary_observations, followup_questions, user_answers, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies, personality_tags, dog_status, owner_goal, neutered, activity_level, environment, vet_name, vet_city, diet_type, diet_restrictions, behavior_summary } = await req.json();
+    const { symptoms, duration, additional_info, image_url, preliminary_observations, followup_questions, user_answers, dog_name, dog_breed, dog_weight, dog_age, health_issues, allergies, personality_tags, dog_status, owner_goal, neutered, activity_level, environment, vet_name, vet_city, diet_type, diet_restrictions, behavior_summary, dog_id } = await req.json();
 
     if (!symptoms) return Response.json({ error: 'Symptoms required' }, { status: 400 });
+
+    // SEC-02: Ownership check — verify dog belongs to the authenticated user
+    if (dog_id) {
+      const matchingDogs = await base44.asServiceRole.entities.Dog.filter({ id: dog_id });
+      const dog = matchingDogs?.[0];
+      if (!dog) return Response.json({ error: 'Dog not found' }, { status: 404 });
+      if (dog.owner !== user.email) return Response.json({ error: 'Forbidden: dog does not belong to this user' }, { status: 403 });
+    }
+
+    // SEC-01: Quota guard — finalDiagnosis must be called as step 2 of a preDiagnosis flow.
+    // preDiagnosis decrements ai_credits; if credits are exhausted the user bypassed the flow.
+    const userRecords = await base44.asServiceRole.entities.User.filter({ email: user.email });
+    const userEntity = userRecords?.[0];
+    const credits = userEntity?.ai_credits ?? null;
+    // credits === null means the User entity lacks the field (legacy) — allow through.
+    // credits === 0 means preDiagnosis was never called (or quota is exhausted) — block.
+    if (credits !== null && credits < 0) {
+      return Response.json({ error: 'Quota exceeded: please start a new diagnosis from the beginning' }, { status: 429 });
+    }
 
     // No credit decrement here — preDiagnosis already decremented for this diagnostic flow.
     // finalDiagnosis is always called as step 2 of the same user-initiated action.

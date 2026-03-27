@@ -32,8 +32,16 @@ Deno.serve(async (req) => {
   const user = await base44.auth.me();
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { report, dog_name, dog_breed, dog_weight, symptoms, duration, report_date, followup_questions, user_answers } = await req.json();
+  const { report, dog_name, dog_breed, dog_weight, symptoms, duration, report_date, followup_questions, user_answers, dog_id } = await req.json();
   if (!report) return Response.json({ error: 'Report data required' }, { status: 400 });
+
+  // SEC-02: Ownership check — verify dog belongs to the authenticated user before generating PDF
+  if (dog_id) {
+    const matchingDogs = await base44.asServiceRole.entities.Dog.filter({ id: dog_id });
+    const dog = matchingDogs?.[0];
+    if (!dog) return Response.json({ error: 'Dog not found' }, { status: 404 });
+    if (dog.owner !== user.email) return Response.json({ error: 'Forbidden: dog does not belong to this user' }, { status: 403 });
+  }
 
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();

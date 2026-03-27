@@ -49,6 +49,7 @@ Deno.serve(async (req) => {
         base44.asServiceRole.entities.DietPreferences.deleteMany({ dog_id: dogId }).catch(() => {}),
         base44.asServiceRole.entities.SharedVetAccess.deleteMany({ dog_id: dogId }).catch(() => {}),
         base44.asServiceRole.entities.VetNote.deleteMany({ dog_id: dogId }).catch(() => {}),
+        base44.asServiceRole.entities.ParkReview.deleteMany({ dog_id: dogId }).catch(() => {}),
       ]));
     }
 
