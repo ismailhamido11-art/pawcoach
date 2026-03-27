@@ -189,7 +189,7 @@ export default function Dashboard() {
   const scoreLabel = score >= 75 ? "Bon état" : score >= 50 ? "À surveiller" : "À améliorer";
 
   return { weightData, weightTrend, walkData, checkinChart, avgMood, alerts, score, scoreColor, scoreLabel };
-  }, [records, dailyLogs, checkins]);
+  }, [records, dailyLogs, checkins, dog]);
 
   // --- Count-up values for stat cards ---
   const lastWeightRaw = weightData.length ? weightData[weightData.length - 1].poids : 0;
