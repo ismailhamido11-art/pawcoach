@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v7.0
 milestone_name: "User-Ready" — Phases
-status: executing
-stopped_at: Completed 02-donnees-fausses/02-03-PLAN.md
-last_updated: "2026-03-27T16:53:58.565Z"
+status: verifying
+stopped_at: Completed 02-donnees-fausses/02-01-PLAN.md
+last_updated: "2026-03-27T16:57:06.813Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 
 Phase: 02 (Donnees Fausses) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-27
 
 ## Progress Bar
@@ -59,6 +59,7 @@ Phase 4: UX Trompeuse        [ ] Not started
 - [Phase 02-donnees-fausses]: Dog.update wrapped in try/catch so GrowthEntry.create flow never breaks if sync fails
 - [Phase 02-donnees-fausses]: handleMoodTap sends only { mood } — energy/appetite remain null until user explicitly inputs them
 - [Phase 02-donnees-fausses]: Dashboard passe [...growthEntries, ...dailyLogs] a computeHealthScore — elimine divergence score visible avec Sante (DATA-05)
+- [Phase 02-donnees-fausses]: DailyLog has no meals_count field — CombinedFAB only tracks water_bowls; renamed Repas card to Eau (semantically correct)
 
 ### Pending Todos
 
@@ -70,6 +71,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T16:53:58.560Z
-Stopped at: Completed 02-donnees-fausses/02-03-PLAN.md
+Last session: 2026-03-27T16:57:06.808Z
+Stopped at: Completed 02-donnees-fausses/02-01-PLAN.md
 Resume with: `/gsd:plan-phase 1`

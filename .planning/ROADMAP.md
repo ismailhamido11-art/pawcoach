@@ -28,7 +28,7 @@
 ### Summary
 
 - [x] **Phase 1: Backend Critique** — Securite, quota, cleanup backend (TECH-01 a TECH-06) (completed 2026-03-27)
-- [ ] **Phase 2: Donnees Fausses** — Corriger toutes les donnees incorrectes affichees (DATA-01 a DATA-06)
+- [x] **Phase 2: Donnees Fausses** — Corriger toutes les donnees incorrectes affichees (DATA-01 a DATA-06) (completed 2026-03-27)
 - [ ] **Phase 3: Flux Deconnectes** — Invalider les caches et reconnecter les propagations (FLOW-01 a FLOW-04)
 - [ ] **Phase 4: UX Trompeuse** — Corriger les interfaces qui induisent l'utilisateur en erreur (UX-01 a UX-04)
 
@@ -68,7 +68,7 @@ Plans:
   6. Les textes de DailyBriefing et EmotionalTip s'affichent avec les accents corrects (debut, hydrate, regularite — sans caracteres manquants)
 **Plans**: 3 plans
 Plans:
-- [ ] 02-01-PLAN.md — Hero mood conditionnel (DATA-01) + Repas vs eau (DATA-02) + Accents DailyBriefing (DATA-06)
+- [x] 02-01-PLAN.md — Hero mood conditionnel (DATA-01) + Repas vs eau (DATA-02) + Accents DailyBriefing (DATA-06)
 - [x] 02-02-PLAN.md — GrowthTracker sync Dog.weight (DATA-03) + Supprimer fabrication energy/appetite (DATA-04)
 - [x] 02-03-PLAN.md — Unifier source score wellness Dashboard = Sante (DATA-05)
 
@@ -105,6 +105,6 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Backend Critique | 3/3 | Complete   | 2026-03-27 |
-| 2. Donnees Fausses | 2/3 | In Progress|  |
+| 2. Donnees Fausses | 3/3 | Complete   | 2026-03-27 |
 | 3. Flux Deconnectes | 0/? | Not started | - |
 | 4. UX Trompeuse | 0/? | Not started | - |
