@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { HomeCacheProvider } from '@/lib/HomeCacheContext';
+import { DogProvider } from '@/lib/DogContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import PawLoader from '@/components/PawLoader';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -98,9 +99,11 @@ function App() {
         {/* All other routes go through auth */}
         <Route path="/*" element={
           <AuthProvider>
-            <HomeCacheProvider>
-              <AuthenticatedApp />
-            </HomeCacheProvider>
+            <DogProvider>
+              <HomeCacheProvider>
+                <AuthenticatedApp />
+              </HomeCacheProvider>
+            </DogProvider>
           </AuthProvider>
         } />
       </Routes>
