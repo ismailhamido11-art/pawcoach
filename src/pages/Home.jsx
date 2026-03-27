@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { Dog, DailyCheckin, Streak, HealthRecord, UserProgress, FoodScan, DailyLog, DiagnosisReport, NutritionPlan, Bookmark, WeeklyInsight } from "@/api/entities";
 import { isUserPremium } from "@/utils/premium";
 import { useHomeCache } from "@/lib/HomeCacheContext";
+import { useAuth } from "@/lib/AuthContext";
 import BottomNav from "../components/BottomNav";
 import PullToRefresh from "../components/PullToRefresh";
 import ActiveProgramCards from "../components/home/ActiveProgramCards";
@@ -64,6 +65,7 @@ export default function Home() {
   const navigate = useNavigate();
   const prefersReducedMotion = useReducedMotion();
   const { getCachedHome, setCachedHome, invalidateHome } = useHomeCache();
+  const { checkAppState } = useAuth();
   const dailyBriefingRef = useRef(null);
   const premiumSuccessHandledRef = useRef(false);
   const [user, setUser] = useState(null);
@@ -247,6 +249,7 @@ export default function Home() {
           if (freshUser?.is_premium) {
             clearInterval(interval);
             setUser(freshUser);
+            checkAppState(); // Propage le nouveau statut premium a toutes les pages via AuthContext
             toast.success("Bienvenue en Premium ! Profite de toutes les fonctionnalités.");
             return;
           }
