@@ -74,4 +74,38 @@ None — all fixes scoped to this milestone.
 ## Traceability
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (filled by roadmapper) | | |
+| SEC-01 | Phase 1 | Pending |
+| SEC-02 | Phase 1 | Pending |
+| SEC-03 | Phase 1 | Pending |
+| SEC-04 | Phase 1 | Pending |
+| SEC-05 | Phase 1 | Pending |
+| BUG-01 | Phase 2 | Pending |
+| BUG-02 | Phase 2 | Pending |
+| BUG-03 | Phase 2 | Pending |
+| BUG-04 | Phase 2 | Pending |
+| BUG-05 | Phase 2 | Pending |
+| BUG-06 | Phase 2 | Pending |
+| SCALE-01 | Phase 3 | Pending |
+| SCALE-02 | Phase 3 | Pending |
+| SCALE-03 | Phase 3 | Pending |
+| PREM-01 | Phase 3 | Pending |
+| PREM-02 | Phase 3 | Pending |
+| PREM-03 | Phase 3 | Pending |
+| PREM-04 | Phase 3 | Pending |
+| UX-01 | Phase 4 | Pending |
+| UX-02 | Phase 4 | Pending |
+| UX-03 | Phase 4 | Pending |
+| UX-04 | Phase 4 | Pending |
+| UX-05 | Phase 4 | Pending |
+| UX-06 | Phase 4 | Pending |
+| NAV-01 | Phase 4 | Pending |
+| NAV-02 | Phase 4 | Pending |
+| NAV-03 | Phase 4 | Pending |
+| NAV-04 | Phase 4 | Pending |
+| EDGE-01 | Phase 5 | Pending |
+| EDGE-02 | Phase 5 | Pending |
+| EDGE-03 | Phase 5 | Pending |
+| EDGE-04 | Phase 5 | Pending |
+| EDGE-05 | Phase 5 | Pending |
+| EDGE-06 | Phase 5 | Pending |
+| EDGE-07 | Phase 5 | Pending |

@@ -1,31 +1,59 @@
-# State
+# Project State
 
-## Current Phase
-No active phase — defining requirements for v4.0.
+## Project Reference
+
+See: .planning/PROJECT.md (updated 2026-03-27)
+
+**Core value:** Corriger les 78 problemes E2E identifies par l'audit (8 CASSES + 70 FRAGILES) via Git direct
+**Current focus:** Phase 1 — Security & Legal
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-27 — Milestone v4.0 started
+Phase: 1 of 5 (Security & Legal)
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-03-27 — Roadmap v4.0 cree, 35 requirements mappes sur 5 phases
 
-## Progress
-- v3.0 "Consolidation": COMPLETED (92/125 fixes, 27 mars 2026)
-- Emoji replacement: 245 unicode emojis replaced with Lucide icons across 48 files
-- E2E Audit: 165 flows audited, 8 CASSES + 70 FRAGILES identified
+Progress: [░░░░░░░░░░] 0%
 
-## Blockers
-None
+## Performance Metrics
 
-## Decisions
-- Branch: main
-- All fixes via Git direct (0 credit Build)
-- Source: .planning/phases/1-audit/E2E-AUDIT-REPORT.md
+**Velocity:**
+- Total plans completed: 0
+- Average duration: —
+- Total execution time: 0h
+
+**By Phase:**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| - | - | - | - |
+
+**Recent Trend:**
+- Last 5 plans: —
+- Trend: —
+
+*Updated after each plan completion*
 
 ## Accumulated Context
-- v1.0: Data flow integrity (4 phases)
-- v1.1: Quality audit (4 phases)
-- v2.0: Cleanup technique (6 phases)
-- v3.0: Consolidation (92 fixes)
-- v4.0: E2E Fixes (78 items — 8 CASSES + 70 FRAGILES)
+
+### Decisions
+
+- v4.0: Toutes les corrections via Git direct (0 credit Build prompt)
+- v4.0: Securite/Legal en premier (RGPD deleteUser, VetNote acces, email expose, quota server-side)
+- v4.0: BUG-01 (double credit diag) et BUG-03 (lien 404) sont des CASSES confirmees
+- v3.0: Chat/NutriCoach non-persistance = decision produit intentionnelle (hors scope v4.0)
+
+### Pending Todos
+
+None yet.
+
+### Blockers/Concerns
+
+None.
+
+## Session Continuity
+
+Last session: 2026-03-27
+Stopped at: Roadmap cree — pret pour /gsd:plan-phase 1
+Resume file: None
