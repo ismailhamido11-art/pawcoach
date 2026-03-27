@@ -243,6 +243,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
             </DialogTitle>
             <button
               onClick={resetAndClose}
+              aria-label="Fermer"
               className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-muted transition-colors"
             >
               <X className="w-5 h-5 text-muted-foreground" />
