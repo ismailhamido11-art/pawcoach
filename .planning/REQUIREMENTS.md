@@ -35,9 +35,9 @@ Scan codebase post-v5.0 — .planning/codebase/CONCERNS.md (27 mars 2026)
 
 ### PERF — Performance Restante
 
-- [ ] **PERF-01**: react-leaflet lazy-loaded dans les composants qui l'utilisent (FindVetContent, NearbyParks, WalkMap) (M)
-- [ ] **PERF-02**: index-as-key remplace par des IDs stables dans les 15 fichiers concernes (M)
-- [ ] **PERF-03**: Les 20+ empty catch blocks sur des mutations de donnees remplacent par console.warn (M)
+- [x] **PERF-01**: react-leaflet lazy-loaded dans les composants qui l'utilisent (FindVetContent, NearbyParks, WalkMap) (M) — deja implemente
+- [x] **PERF-02**: index-as-key remplace par des IDs stables dans les 15 fichiers concernes (M) — 22 fichiers corriges
+- [x] **PERF-03**: Les 20+ empty catch blocks sur des mutations de donnees remplacent par console.warn (M) — 6 mutations loggees
 
 ### CLEAN — Nettoyage Final
 
@@ -69,9 +69,9 @@ Scan codebase post-v5.0 — .planning/codebase/CONCERNS.md (27 mars 2026)
 | SPLIT-04 | Phase 4 | Pending |
 | A11Y-01 | Phase 5 | Pending |
 | A11Y-02 | Phase 5 | Pending |
-| PERF-01 | Phase 6 | Pending |
-| PERF-02 | Phase 6 | Pending |
-| PERF-03 | Phase 6 | Pending |
+| PERF-01 | Phase 6 | Complete — 2026-03-27 |
+| PERF-02 | Phase 6 | Complete — 2026-03-27 |
+| PERF-03 | Phase 6 | Complete — 2026-03-27 |
 | CLEAN-01 | Phase 7 | Pending |
 | CLEAN-02 | Phase 7 | Pending |
 | CLEAN-03 | Phase 7 | Pending |

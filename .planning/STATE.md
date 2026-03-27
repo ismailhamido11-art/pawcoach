@@ -63,6 +63,9 @@ Progress: [████████░░] 86%
 - CLEAN-05: DailyLog parallelise, SendEmail sequentiel (eviter saturation quota Base44)
 - [Phase 01-pwa]: PWA-01: icones reutilisent /mascot/paw-happy.jpg — pas de nouveaux assets generes
 - [Phase 01-pwa]: PWA-02: SW passthrough (pas cache-first) — Base44 requiert auth live
+- [Phase 06-perf]: PERF-01 deja implemente — FindVetContent lazy dans Sante.jsx, WalkMap+NearbyParks lazy dans WalkMode.jsx
+- [Phase 06-perf]: Cles stables : item.id/label si dispo, sinon prefix-i pour strings
+- [Phase 06-perf]: Catches non-critiques laisses vides : localStorage, JSON.parse, audio, wakeLock
 
 ### Pending Todos
 
