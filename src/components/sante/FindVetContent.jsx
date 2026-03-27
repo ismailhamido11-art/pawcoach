@@ -249,7 +249,7 @@ export default function FindVetContent({ dog, user }) {
           {displayedPlaces.filter(p => p.lat && p.lng).map((place, i) => {
             const typeInfo = PLACE_TYPES.find(t => t.id === place.type) || PLACE_TYPES[0];
             return (
-              <Marker key={i} position={[place.lat, place.lng]} icon={createColoredIcon(typeInfo.color)}>
+              <Marker key={`${place.lat}-${place.lng}`} position={[place.lat, place.lng]} icon={createColoredIcon(typeInfo.color)}>
                 <Popup>
                   <div className="text-xs">
                     <p className="font-bold">{place.name}</p>
@@ -289,7 +289,7 @@ export default function FindVetContent({ dog, user }) {
               const fav = getFavoriteForPlace(place);
               return (
                 <motion.div
-                  key={i}
+                  key={`${place.lat}-${place.lng}-${i}`}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05, duration: 0.25 }}

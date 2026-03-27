@@ -275,7 +275,7 @@ export default function TrackerHistory({ logs, dog }) {
         <p className="text-xs font-bold text-muted-foreground mb-3">Moyenne par jour</p>
         <div className="grid grid-cols-7 gap-1.5">
           {dayAvgs.map((d, i) => (
-            <div key={i} className="flex flex-col items-center gap-1">
+            <div key={d.label || i} className="flex flex-col items-center gap-1">
               <div className="w-full h-14 flex items-end justify-center">
                 <div
                   className={`w-full rounded-t-md ${d.avg > 0 ? "bg-primary/80" : "bg-secondary/30"}`}
@@ -306,7 +306,7 @@ export default function TrackerHistory({ logs, dog }) {
               />
               <Bar dataKey="minutes" radius={[4, 4, 0, 0]}>
                 {chartData.map((entry, i) => (
-                  <Cell key={i} fill={entry.minutes >= 30 ? "#10b981" : entry.minutes > 0 ? "#3b82f6" : "#e5e7eb"} />
+                  <Cell key={entry.day || i} fill={entry.minutes >= 30 ? "#10b981" : entry.minutes > 0 ? "#3b82f6" : "#e5e7eb"} />
                 ))}
               </Bar>
             </BarChart>

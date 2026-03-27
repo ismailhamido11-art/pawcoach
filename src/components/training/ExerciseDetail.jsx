@@ -83,7 +83,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
           <div className="space-y-3">
             <p className="text-sm font-semibold text-foreground">Étapes :</p>
             {exercise.steps.map((step, i) => (
-              <div key={i} className="flex gap-3 items-start bg-white rounded-2xl p-4 border border-border shadow-sm">
+              <div key={`step-${i}`} className="flex gap-3 items-start bg-white rounded-2xl p-4 border border-border shadow-sm">
                 <div className="w-7 h-7 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow shadow-primary/30">
                   {i + 1}
                 </div>

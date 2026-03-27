@@ -120,7 +120,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                       <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Points clés</p>
                       <div className="space-y-1.5">
                         {highlights.map((h, i) => (
-                          <div key={i} className="flex items-start gap-2 text-sm text-foreground">
+                          <div key={`hl-${i}`} className="flex items-start gap-2 text-sm text-foreground">
                             <span className="text-primary mt-0.5 flex-shrink-0 text-xs">●</span>
                             <span>{h}</span>
                           </div>
@@ -134,7 +134,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
                       <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Recommandations</p>
                       <div className="space-y-1.5">
                         {recommendations.map((r, i) => (
-                          <div key={i} className="flex items-start gap-2 text-sm text-foreground">
+                          <div key={`rec-${i}`} className="flex items-start gap-2 text-sm text-foreground">
                             <span className="text-emerald-500 mt-0.5 flex-shrink-0">•</span>
                             <span>{r}</span>
                           </div>

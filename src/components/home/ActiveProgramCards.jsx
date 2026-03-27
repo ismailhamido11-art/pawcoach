@@ -456,7 +456,7 @@ function BehaviorProgramCard({ program }) {
                 <div className="bg-white/80 rounded-xl p-3 border border-blue-100/60">
                   <p className="text-xs font-bold text-foreground mb-2">{day.day_name} — {day.theme}</p>
                   {day.exercises?.map((ex, i) => (
-                    <div key={i} className="flex items-start gap-2 mt-2">
+                    <div key={ex.name || i} className="flex items-start gap-2 mt-2">
                       <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
                         <span className="text-[11px] font-bold text-blue-600">{i + 1}</span>
                       </div>
@@ -482,13 +482,13 @@ function BehaviorProgramCard({ program }) {
                     {day.do?.length > 0 && (
                       <div className="bg-emerald-50 rounded-lg px-2.5 py-2 border border-emerald-100">
                         <p className="text-[11px] font-bold text-emerald-700 uppercase mb-0.5">À faire</p>
-                        {day.do.slice(0, 2).map((d, i) => <p key={i} className="text-[11px] text-emerald-800 truncate flex items-center gap-1"><Check className="w-3 h-3 flex-shrink-0" /> {d}</p>)}
+                        {day.do.slice(0, 2).map((d, i) => <p key={`do-${i}`} className="text-[11px] text-emerald-800 truncate flex items-center gap-1"><Check className="w-3 h-3 flex-shrink-0" /> {d}</p>)}
                       </div>
                     )}
                     {day.dont?.length > 0 && (
                       <div className="bg-red-50 rounded-lg px-2.5 py-2 border border-red-100">
                         <p className="text-[11px] font-bold text-red-700 uppercase mb-0.5">À éviter</p>
-                        {day.dont.slice(0, 2).map((d, i) => <p key={i} className="text-[11px] text-red-800 truncate flex items-center gap-1"><X className="w-3 h-3 flex-shrink-0" /> {d}</p>)}
+                        {day.dont.slice(0, 2).map((d, i) => <p key={`dont-${i}`} className="text-[11px] text-red-800 truncate flex items-center gap-1"><X className="w-3 h-3 flex-shrink-0" /> {d}</p>)}
                       </div>
                     )}
                   </div>

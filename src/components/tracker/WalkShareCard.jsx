@@ -119,7 +119,7 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
               {/* Stats row */}
               <div style={{ display: "flex", gap: 20, justifyContent: "center", alignItems: "flex-start", marginBottom: 20 }}>
                 {stats.map((s, i) => (
-                  <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <div key={s.label || i} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <div style={{
                       width: stats.length <= 2 ? 100 : 88,
                       height: stats.length <= 2 ? 100 : 88,

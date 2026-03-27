@@ -154,7 +154,7 @@ export default function MealPlanGenerator({
           {/* Days */}
           <div className="space-y-2">
             {plan.days?.map((d, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-border shadow-sm p-4">
+              <div key={d.day || i} className="bg-white rounded-2xl border border-border shadow-sm p-4">
                 <p className="text-xs font-bold text-foreground mb-2">{d.day}</p>
                 <div className="space-y-1.5">
                   {d.morning && (
@@ -195,7 +195,7 @@ export default function MealPlanGenerator({
               <p className="text-xs font-bold text-foreground mb-2">Complements</p>
               <div className="flex flex-wrap gap-1.5">
                 {plan.supplements.map((s, i) => (
-                  <span key={i} className="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
+                  <span key={`supp-${i}`} className="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
                 ))}
               </div>
             </div>
@@ -206,7 +206,7 @@ export default function MealPlanGenerator({
               <p className="text-xs font-bold text-red-700 mb-2">A eviter</p>
               <div className="flex flex-wrap gap-1.5">
                 {plan.avoid.map((a, i) => (
-                  <span key={i} className="text-[11px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
+                  <span key={`avoid-${i}`} className="text-[11px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
                 ))}
               </div>
             </div>
@@ -224,7 +224,7 @@ export default function MealPlanGenerator({
               <p className="text-xs font-bold text-primary mb-2">Pourquoi ce plan pour {dog.name} ?</p>
               <div className="space-y-1.5">
                 {plan.rationale.map((r, i) => (
-                  <div key={i} className="flex items-start gap-2">
+                  <div key={`rat-${i}`} className="flex items-start gap-2">
                     <span className="text-[11px] text-primary mt-0.5 font-bold">{i + 1}.</span>
                     <p className="text-xs text-foreground/80">{r}</p>
                   </div>

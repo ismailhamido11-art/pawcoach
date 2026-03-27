@@ -521,7 +521,7 @@ export default function Home() {
           <div className="flex justify-between px-2">
             {quickActions.map((qa, i) => (
               <motion.button
-                key={i}
+                key={qa.page || i}
                 onClick={() => navigate(createPageUrl(qa.page))}
                 className="flex flex-col items-center gap-2 w-[72px] active:scale-95 transition-transform"
                 initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}

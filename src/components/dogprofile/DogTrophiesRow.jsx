@@ -66,7 +66,7 @@ export default function DogTrophiesRow({ streak, progress, scansCount, dailyLogs
       </div>
       <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
         {trophies.map((t, i) => (
-          <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+          <motion.div key={t.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
             <TrophyItem {...t} />
           </motion.div>
         ))}

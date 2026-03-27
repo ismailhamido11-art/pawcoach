@@ -161,7 +161,7 @@ export default function DietPreferencesPanel({ dog, user, onPreferencesSaved }) 
         {preferredBrands.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {preferredBrands.map((b, i) => (
-              <motion.span key={i} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+              <motion.span key={b} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
                 className="flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-semibold px-3 py-1.5 rounded-full">
                 {b}
                 <button onClick={() => setPreferredBrands(prev => prev.filter((_, idx) => idx !== i))}>

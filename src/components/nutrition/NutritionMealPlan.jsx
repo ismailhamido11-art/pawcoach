@@ -444,7 +444,7 @@ RÈGLES :
                   {activeData.days?.map((d, i) => {
                     const isToday = d.day === todayName;
                     return (
-                      <div key={i} className={`rounded-xl p-3 ${isToday ? "bg-emerald-50 border border-emerald-200" : "bg-muted/30"}`}>
+                      <div key={d.day || i} className={`rounded-xl p-3 ${isToday ? "bg-emerald-50 border border-emerald-200" : "bg-muted/30"}`}>
                         <p className={`text-xs font-bold mb-1.5 ${isToday ? "text-emerald-700" : "text-foreground"}`}>
                           {d.day} {isToday && "(Aujourd'hui)"}
                         </p>
@@ -492,7 +492,7 @@ RÈGLES :
             <p className="text-xs font-bold text-foreground mb-2">Compléments</p>
             <div className="flex flex-wrap gap-1.5">
               {activeData.supplements.map((s, i) => (
-                <span key={i} className="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
+                <span key={`supp-${i}`} className="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">{s}</span>
               ))}
             </div>
           </div>
@@ -503,7 +503,7 @@ RÈGLES :
             <p className="text-xs font-bold text-red-700 mb-2">À éviter</p>
             <div className="flex flex-wrap gap-1.5">
               {activeData.avoid.map((a, i) => (
-                <span key={i} className="text-[11px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
+                <span key={`avoid-${i}`} className="text-[11px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{a}</span>
               ))}
             </div>
           </div>
@@ -521,7 +521,7 @@ RÈGLES :
             <p className="text-xs font-bold text-primary mb-2">Pourquoi ce plan ?</p>
             <div className="space-y-1.5">
               {activeData.rationale.map((r, i) => (
-                <div key={i} className="flex items-start gap-2">
+                <div key={`rat-${i}`} className="flex items-start gap-2">
                   <span className="text-[11px] text-primary mt-0.5 font-bold">{i + 1}.</span>
                   <p className="text-xs text-foreground/80">{r}</p>
                 </div>
@@ -634,7 +634,7 @@ RÈGLES :
                         <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden border-t border-border/40">
                           <div className="p-3 bg-muted/20 space-y-2 max-h-64 overflow-y-auto">
                             {pData.days?.map((d, i) => (
-                              <div key={i} className="bg-white rounded-lg p-2">
+                              <div key={d.day || i} className="bg-white rounded-lg p-2">
                                 <p className="text-[11px] font-bold text-foreground mb-1">{d.day}</p>
                                 {d.morning && <p className="text-[11px] text-foreground/70">Matin : {d.morning.food} ({d.morning.quantity})</p>}
                                 {d.noon && <p className="text-[11px] text-foreground/70">Midi : {d.noon.food} ({d.noon.quantity})</p>}

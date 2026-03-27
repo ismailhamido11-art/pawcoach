@@ -118,7 +118,7 @@ export default function CompletionCard({ program, dog, totalMinutes, bilanState,
         <p className="font-bold text-sm mb-2">Ce que tu as travaillé</p>
         <div className="space-y-1.5">
           {program.days?.map((d, i) => (
-            <div key={i} className="flex items-center gap-2">
+            <div key={d.theme || d.title || i} className="flex items-center gap-2">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
               <p className="text-xs text-foreground/80">{d.theme || d.title}</p>
             </div>
@@ -144,7 +144,7 @@ export default function CompletionCard({ program, dog, totalMinutes, bilanState,
                 const checked = observed.includes(i);
                 return (
                   <button
-                    key={i}
+                    key={`ind-${i}`}
                     onClick={() => !bilanSaved && setObserved(prev => checked ? prev.filter(x => x !== i) : [...prev, i])}
                     className={`w-full flex items-center gap-2.5 text-left px-3 py-2 rounded-xl border transition-colors ${
                       checked ? "bg-blue-100 border-blue-300" : "bg-white border-border hover:border-blue-200"

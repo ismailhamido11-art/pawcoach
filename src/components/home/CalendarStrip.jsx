@@ -31,7 +31,7 @@ export default function CalendarStrip({ dailyLogs = [] }) {
     <div className="flex justify-between items-center px-1 mt-4">
       {week.map((day, i) => (
         <div
-          key={i}
+          key={`${day.label}-${day.date}`}
           className={`flex flex-col items-center gap-1 w-10 py-2 rounded-xl transition-colors ${
             day.isToday
               ? "bg-[#1A4D3E]"

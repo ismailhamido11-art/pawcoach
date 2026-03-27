@@ -41,7 +41,7 @@ export default function DiagnosisReportView({ report, dogName, reportDate }) {
         <Section title="Pistes diagnostiques">
           <ol className="space-y-1">
             {report.possible_causes.map((cause, i) => (
-              <li key={i} className="text-xs text-muted-foreground flex gap-2">
+              <li key={`cause-${i}`} className="text-xs text-muted-foreground flex gap-2">
                 <Badge variant="outline" className="text-[11px] px-1.5 flex-shrink-0">{i + 1}</Badge>
                 {cause}
               </li>
@@ -54,7 +54,7 @@ export default function DiagnosisReportView({ report, dogName, reportDate }) {
         <Section title="Conseils immédiats">
           <ul className="space-y-1">
             {report.immediate_advice.map((advice, i) => (
-              <li key={i} className="text-xs text-muted-foreground">• {advice}</li>
+              <li key={`advice-${i}`} className="text-xs text-muted-foreground">• {advice}</li>
             ))}
           </ul>
         </Section>
