@@ -29,7 +29,7 @@ export default function SectionPoids({ records = [], dogId, onDelete, onRecordAd
         value: w,
       });
       // Auto-update Dog.weight with latest value
-      try { await Dog.update(dogId, { weight: w }); } catch {}
+      try { await Dog.update(dogId, { weight: w }); } catch (e) { console.warn("SectionPoids: Dog.weight sync failed", e?.message); }
       if (onRecordAdded) onRecordAdded(record);
       toast.success("Poids enregistré !");
       setShowAddForm(false);

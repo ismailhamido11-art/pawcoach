@@ -362,7 +362,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
           const created = result.value;
           // Auto-update Dog.weight when a weight record is saved
           if (toCreate[i].type === "weight" && toCreate[i].value) {
-            try { Dog.update(dogId, { weight: toCreate[i].value }); } catch {}
+            try { Dog.update(dogId, { weight: toCreate[i].value }); } catch (e) { console.warn("SmartHealthAssistant: Dog.weight sync failed", e?.message); }
           }
           onRecordAdded(created);
         } else {

@@ -147,7 +147,7 @@ export default function HealthImportContent({ dog, onImported }) {
         });
         // Auto-update Dog.weight when importing weight records
         if (record.type === "weight" && record.value) {
-          try { await Dog.update(dog.id, { weight: record.value }); } catch {}
+          try { await Dog.update(dog.id, { weight: record.value }); } catch (e) { console.warn("HealthImportContent: Dog.weight sync failed", e?.message); }
         }
         created.push(r);
       } catch {

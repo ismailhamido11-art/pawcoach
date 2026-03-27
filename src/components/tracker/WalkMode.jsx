@@ -135,7 +135,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
           toast.success(`${synced.length} balade(s) synchronisée(s)`);
           if (onLogged) onLogged();
         }
-      } catch {}
+      } catch (e) { console.warn("WalkMode: offline walks sync failed", e?.message); }
     })();
   }, []);
 
@@ -359,7 +359,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
         }).catch(() => {}); // Silently fail if schema not yet updated
       }
       setMoodSaved(true);
-    } catch {}
+    } catch (e) { console.warn("WalkMode: mood save failed", e?.message); }
   };
 
   const handleReset = () => {

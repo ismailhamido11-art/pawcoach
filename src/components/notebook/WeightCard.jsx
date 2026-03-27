@@ -31,7 +31,7 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
         value: w,
       });
       // Auto-update Dog.weight with latest value
-      try { await Dog.update(dogId, { weight: w }); } catch {}
+      try { await Dog.update(dogId, { weight: w }); } catch (e) { console.warn("WeightCard: Dog.weight sync failed", e?.message); }
       if (onRecordAdded) onRecordAdded(record);
       toast.success("Poids enregistré !");
       onClose();
