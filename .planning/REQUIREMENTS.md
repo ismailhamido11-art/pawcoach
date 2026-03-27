@@ -16,11 +16,11 @@ Audit E2E exhaustif de 165 flows (27 mars 2026) — .planning/phases/1-audit/E2E
 ### BUG — Bugs fonctionnels
 
 - [x] **BUG-01**: Flow diagnostic complet consomme 1 seul action credit, pas 2 (F30)
-- [ ] **BUG-02**: Historique des DiagnosisReport visible et consultable dans DiagnosisContent (F32)
+- [x] **BUG-02**: Historique des DiagnosisReport visible et consultable dans DiagnosisContent (F32)
 - [x] **BUG-03**: buildRecommendations() ne genere que des liens vers des pages existantes (F13)
 - [x] **BUG-04**: UserNotRegisteredError affiche en francais avec bouton de deconnexion fonctionnel (F2)
 - [x] **BUG-05**: Email trial J-1 affiche la bonne limite (10 messages/jour, pas 5) (F107)
-- [ ] **BUG-06**: Onboarding persiste answers[] et step dans sessionStorage, restaure au rechargement (F6)
+- [x] **BUG-06**: Onboarding persiste answers[] et step dans sessionStorage, restaure au rechargement (F6)
 
 ### SCALE — Scalabilite backend
 
@@ -80,11 +80,11 @@ None — all fixes scoped to this milestone.
 | SEC-04 | Phase 1 | Complete |
 | SEC-05 | Phase 1 | Complete |
 | BUG-01 | Phase 2 | Complete |
-| BUG-02 | Phase 2 | Pending |
+| BUG-02 | Phase 2 | Complete |
 | BUG-03 | Phase 2 | Complete |
 | BUG-04 | Phase 2 | Complete |
 | BUG-05 | Phase 2 | Complete |
-| BUG-06 | Phase 2 | Pending |
+| BUG-06 | Phase 2 | Complete |
 | SCALE-01 | Phase 3 | Pending |
 | SCALE-02 | Phase 3 | Pending |
 | SCALE-03 | Phase 3 | Pending |

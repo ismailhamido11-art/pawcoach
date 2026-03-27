@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: "E2E Fixes"
-status: verifying
-stopped_at: Completed 02-bugs-fonctionnels-02-01-PLAN.md
-last_updated: "2026-03-27T02:28:00Z"
+status: completed
+stopped_at: Completed 02-bugs-fonctionnels-02-PLAN.md
+last_updated: "2026-03-27T02:30:56.901Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 5
-  completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  completed_phases: 2
+  total_plans: 4
+  completed_plans: 4
   percent: 0
 ---
 
@@ -73,6 +73,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 02-bugs-fonctionnels]: BUG-03: FindVet page inexistante — diagnosis_followup route vers Sante avec tab=findvet
 - [Phase 02-bugs-fonctionnels]: BUG-04: UserNotRegisteredError francise + base44.auth.logout() branche sur bouton deconnexion
 - [Phase 02-bugs-fonctionnels]: BUG-05: Limite chat IA corrigee a 10/jour dans email trial J-1
+- [Phase 02-bugs-fonctionnels]: Reused DiagnosisReportView for history accordion — zero duplication
+- [Phase 02-bugs-fonctionnels]: Single sessionStorage key onboarding_state holds both step and answers — single parse per mount
 
 ### Pending Todos
 
@@ -84,6 +86,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T02:28:00Z
-Stopped at: Completed 02-bugs-fonctionnels-02-01-PLAN.md
+Last session: 2026-03-27T02:30:56.895Z
+Stopped at: Completed 02-bugs-fonctionnels-02-PLAN.md
 Resume file: None

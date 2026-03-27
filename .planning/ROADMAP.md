@@ -55,7 +55,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 02-01-PLAN.md — BUG-01 (finalDiagnosis decrement), BUG-03 (lien FindVet), BUG-04 (UserNotRegisteredError), BUG-05 (email limit)
-- [ ] 02-02-PLAN.md — BUG-02 (historique DiagnosisContent), BUG-06 (onboarding sessionStorage)
+- [x] 02-02-PLAN.md — BUG-02 (historique DiagnosisContent), BUG-06 (onboarding sessionStorage)
 
 ### Phase 3: Scalabilite & Premium
 **Goal**: Le backend tient la charge sans charger toute la base, et le paiement Stripe s'active sans race condition
