@@ -96,6 +96,28 @@ Deno.serve(async (req) => {
     ]);
 
     // ═══════════════════════════════════════════════════════════
+    // SEC-03 — Cap entity queries to prevent context abuse
+    // checkins: 90 days | dailyLogs: 60 days | foodScans: 30 max | healthRecords: 20 max
+    // ═══════════════════════════════════════════════════════════
+    const _now = Date.now();
+    const _90dMs = 90 * 24 * 60 * 60 * 1000;
+    const _60dMs = 60 * 24 * 60 * 60 * 1000;
+    const cappedCheckins = (checkins || []).filter((c: any) => {
+      const d = c.date || c.created_date;
+      return d && (_now - new Date(d).getTime()) <= _90dMs;
+    });
+    const cappedDailyLogs = (dailyLogs || []).filter((l: any) => {
+      const d = l.date || l.created_date;
+      return d && (_now - new Date(d).getTime()) <= _60dMs;
+    });
+    const cappedFoodScans = (foodScans || [])
+      .sort((a: any, b: any) => new Date(b.timestamp || b.created_date).getTime() - new Date(a.timestamp || a.created_date).getTime())
+      .slice(0, 30);
+    const cappedHealthRecords = (healthRecords || [])
+      .sort((a: any, b: any) => new Date(b.date || b.created_date).getTime() - new Date(a.date || a.created_date).getTime())
+      .slice(0, 20);
+
+    // ═══════════════════════════════════════════════════════════
     // Build DOG MEMORY — smart summaries of all data
     // ═══════════════════════════════════════════════════════════
     const today = new Date();
@@ -116,9 +138,9 @@ Deno.serve(async (req) => {
 
     // --- Well-being trends (last 7 days) ---
     let wellbeingMemory = "";
-    const recentCheckins = (checkins || [])
-      .filter(c => daysAgo(c.date) <= 7)
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const recentCheckins = cappedCheckins
+      .filter((c: any) => daysAgo(c.date) <= 7)
+      .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
     if (recentCheckins.length > 0) {
       const moodMap = { great: "excellent", good: "bon", neutral: "neutre", bad: "mauvais", terrible: "tres mauvais" };
       const energyMap = { high: "haute", medium: "moyenne", low: "basse" };
@@ -145,8 +167,8 @@ Deno.serve(async (req) => {
 
     // --- Health records (recent) ---
     let healthMemory = "";
-    const sortedRecords = (healthRecords || [])
-      .sort((a, b) => new Date(b.date || b.created_date).getTime() - new Date(a.date || a.created_date).getTime());
+    const sortedRecords = cappedHealthRecords
+      .sort((a: any, b: any) => new Date(b.date || b.created_date).getTime() - new Date(a.date || a.created_date).getTime());
     const recentVaccines = sortedRecords.filter(r => r.type === "vaccine").slice(0, 5);
     const recentVetVisits = sortedRecords.filter(r => r.type === "vet_visit").slice(0, 3);
     const weightRecords = sortedRecords.filter(r => r.type === "weight").slice(0, 5);
@@ -183,8 +205,8 @@ Deno.serve(async (req) => {
 
     // --- Food scans (recent) ---
     let nutritionMemory = "";
-    const recentScans = (foodScans || [])
-      .sort((a, b) => new Date(b.timestamp || b.created_date).getTime() - new Date(a.timestamp || a.created_date).getTime())
+    const recentScans = cappedFoodScans
+      .sort((a: any, b: any) => new Date(b.timestamp || b.created_date).getTime() - new Date(a.timestamp || a.created_date).getTime())
       .slice(0, 5);
     if (recentScans.length > 0) {
       const verdictFr = (v: string) => v === "safe" ? "sur" : v === "caution" ? "a surveiller" : "TOXIQUE";
@@ -222,9 +244,9 @@ Deno.serve(async (req) => {
 
     // --- Activity (walks, last 7 days) ---
     let activityMemory = "";
-    const recentLogs = (dailyLogs || [])
-      .filter(l => daysAgo(l.date) <= 7)
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const recentLogs = cappedDailyLogs
+      .filter((l: any) => daysAgo(l.date) <= 7)
+      .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
     if (recentLogs.length > 0) {
       const totalMinutes = recentLogs.reduce((sum, l) => sum + (l.walk_minutes || 0), 0);
       const totalDistance = recentLogs.reduce((sum, l) => sum + (l.walk_distance_km || 0), 0);
