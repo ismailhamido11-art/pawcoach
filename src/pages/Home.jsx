@@ -22,7 +22,7 @@ import DailyProgress from "../components/home/DailyProgress";
 import EmotionalTip from "../components/home/EmotionalTip";
 // ContentArticles removed — hardcoded placeholder content, will be replaced with real content later
 
-import { Flame, ScanLine, Footprints, Stethoscope, BookOpen, Lock } from "lucide-react";
+import { Flame, ScanLine, Footprints, Stethoscope, BookOpen, Lock, Sparkles, ChevronRight } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
@@ -456,6 +456,18 @@ export default function Home() {
         </svg>
       ),
     },
+    {
+      label: "Véto",
+      bgClass: "bg-gradient-to-br from-rose-400 to-rose-600 shadow-lg shadow-rose-200/50",
+      page: null,
+      onClick: () => navigate(createPageUrl("Sante") + "?tab=findvet"),
+      svg: (
+        <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none">
+          <path d="M16 8a6 6 0 016 6c0 4-3 7-6 10-3-3-6-6-6-10a6 6 0 016-6z" fill="white" fillOpacity="0.9"/>
+          <path d="M13 14h6M16 11v6" stroke="#9f1239" strokeWidth="2.5" strokeLinecap="round"/>
+        </svg>
+      ),
+    },
   ];
 
   const streakDays = streak?.current_streak || 0;
@@ -500,6 +512,24 @@ export default function Home() {
         />
         </div>
 
+        {/* AI Coach Card — differentiator visible at first visit */}
+        <div className="px-5 pt-4">
+          <motion.button
+            onClick={() => navigate(createPageUrl("Chat"))}
+            whileTap={{ scale: 0.98 }}
+            className="w-full gradient-primary rounded-3xl p-4 flex items-center gap-4 shadow-md text-left"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-6 h-6 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-white font-bold text-[14px]">Parle au coach IA</p>
+              <p className="text-white/70 text-[11px] mt-0.5">Pose une question sur {dog?.name || "ton chien"}</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-white/60 flex-shrink-0" />
+          </motion.button>
+        </div>
+
         {/* === Below the fold — scroll to discover === */}
         <motion.div
           className="px-5 space-y-6"
@@ -519,6 +549,22 @@ export default function Home() {
             dailyLogs={dailyLogs}
             onScrollToCheckin={() => dailyBriefingRef.current?.scrollIntoView({ behavior: "smooth" })}
           />
+
+          {/* Dashboard access — SmartAlerts — repositioned above hero for prominence */}
+          <button
+            onClick={() => navigate(createPageUrl("Dashboard"))}
+            className="w-full bg-gradient-to-r from-blue-50 to-indigo-50/50 rounded-3xl p-4 border border-blue-100/50 shadow-sm flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
+            aria-label="Voir le tableau de bord et les alertes santé"
+          >
+            <StorysetIllustration name="vet-checkup" className="w-20 h-20 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-bold text-foreground">Tableau de bord</p>
+              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Vaccins, alertes poids, tendances humeur — tout en un coup d'oeil.</p>
+              <span className="inline-block mt-2 text-[12px] font-bold text-blue-700 bg-blue-100 px-3 py-1.5 rounded-full">
+                Voir les alertes
+              </span>
+            </div>
+          </button>
 
           {/* Hero Illustration — always visible, premium feel */}
           <motion.div
@@ -566,29 +612,13 @@ export default function Home() {
             dog={dog}
           />
 
-          {/* Dashboard access — SmartAlerts */}
-          <button
-            onClick={() => navigate(createPageUrl("Dashboard"))}
-            className="w-full bg-gradient-to-r from-blue-50 to-indigo-50/50 rounded-3xl p-4 border border-blue-100/50 shadow-sm flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
-            aria-label="Voir le tableau de bord et les alertes santé"
-          >
-            <StorysetIllustration name="vet-checkup" className="w-20 h-20 flex-shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-bold text-foreground">Tableau de bord</p>
-              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Vaccins, alertes poids, tendances humeur — tout en un coup d'oeil.</p>
-              <span className="inline-block mt-2 text-[12px] font-bold text-blue-700 bg-blue-100 px-3 py-1.5 rounded-full">
-                Voir les alertes
-              </span>
-            </div>
-          </button>
-
           {/* Quick Actions */}
-          <div className="flex justify-between px-2">
+          <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-1">
             {quickActions.map((qa, i) => (
               <motion.button
-                key={qa.page || i}
-                onClick={() => navigate(createPageUrl(qa.page))}
-                className="flex flex-col items-center gap-2 w-[72px] active:scale-95 transition-transform"
+                key={qa.page || qa.label || i}
+                onClick={() => qa.onClick ? qa.onClick() : navigate(createPageUrl(qa.page))}
+                className="flex flex-col items-center gap-2 min-w-[64px] active:scale-95 transition-transform flex-shrink-0"
                 initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05, duration: 0.25 }}
