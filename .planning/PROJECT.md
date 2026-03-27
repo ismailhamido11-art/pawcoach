@@ -9,12 +9,13 @@ Backend: Base44 platform (22 fonctions Deno)
 AI: OpenRouter (DeepSeek + GPT-4o vision)
 Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 
-## Current State (v2.0 shipped)
+## Current State (v3.0 shipped — 27 mars 2026)
 - 16 pages, ~102 composants custom, 22 fonctions backend, 19 entites Base44
 - Centralized data layer (src/api/entities.js)
-- Home cache with stale-while-revalidate
-- Error feedback on all critical paths
-- Leaflet lazy-loaded
+- Home cache with stale-while-revalidate + dog-switch invalidation
+- 92 UX issues fixed (error handling, dead-ends, empty states, premium flow, navigation)
+- Public pages (QR code, vet view) accessible without login
+- All unicode emojis replaced with Lucide icons
 - Codebase docs: .planning/codebase/ (7 documents, 26 mars 2026)
 
 ## Constraints
