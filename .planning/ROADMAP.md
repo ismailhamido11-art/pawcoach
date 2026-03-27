@@ -52,7 +52,10 @@ Plans:
   4. L'ecran d'erreur UserNotRegistered s'affiche en francais avec un bouton de deconnexion fonctionnel
   5. L'email trial J-1 annonce correctement "10 messages/jour" et non "5 messages/jour"
   6. Recharger le navigateur en plein onboarding restaure l'etape et les reponses deja saisies
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [x] 02-01-PLAN.md — BUG-01 (finalDiagnosis decrement), BUG-03 (lien FindVet), BUG-04 (UserNotRegisteredError), BUG-05 (email limit)
+- [ ] 02-02-PLAN.md — BUG-02 (historique DiagnosisContent), BUG-06 (onboarding sessionStorage)
 
 ### Phase 3: Scalabilite & Premium
 **Goal**: Le backend tient la charge sans charger toute la base, et le paiement Stripe s'active sans race condition
@@ -108,7 +111,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Security & Legal | 2/2 | Complete   | 2026-03-27 |
-| 2. Bugs Fonctionnels | 0/TBD | Not started | - |
+| 2. Bugs Fonctionnels | 0/2 | Not started | - |
 | 3. Scalabilite & Premium | 0/TBD | Not started | - |
 | 4. UX & Navigation | 0/TBD | Not started | - |
 | 5. Edge Cases & Polish | 0/TBD | Not started | - |

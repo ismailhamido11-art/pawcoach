@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: "E2E Fixes"
 status: verifying
-stopped_at: Completed 01-security-legal-01-01-PLAN.md
-last_updated: "2026-03-27T02:19:55.293Z"
+stopped_at: Completed 02-bugs-fonctionnels-02-01-PLAN.md
+last_updated: "2026-03-27T02:28:00Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 3
+  completed_plans: 3
   percent: 0
 ---
 
@@ -26,8 +26,8 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 ## Current Position
 
 Phase: 2
-Plan: Not started
-Status: Phase complete — ready for verification
+Plan: 01 complete
+Status: Plan complete — ready for next plan
 Last activity: 2026-03-27
 
 Progress: [░░░░░░░░░░] 0%
@@ -52,6 +52,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 02-bugs-fonctionnels P01 | 8 | 3 tasks | 4 files |
 | Phase 01-security-legal P02 | 10 | 2 tasks | 2 files |
 | Phase 01-security-legal P01 | 5 | 3 tasks | 4 files |
 
@@ -68,6 +69,10 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 01-security-legal]: SEC-01: userEntityId capture dans Step 0 pour rester disponible apres try/catch, User.delete appele en Step 4
 - [Phase 01-security-legal]: SEC-02: addVetNote implemente dans vetAccess backend avec check SharedVetAccess status=active (securite server-side incontournable)
 - [Phase 01-security-legal]: SEC-03: mailto href preserve mais email non affiche — privacy par design sur profil public
+- [Phase 02-bugs-fonctionnels]: BUG-01: finalDiagnosis ne decremente pas les credits — preDiagnosis est l'unique point de decrement du flow diagnostic
+- [Phase 02-bugs-fonctionnels]: BUG-03: FindVet page inexistante — diagnosis_followup route vers Sante avec tab=findvet
+- [Phase 02-bugs-fonctionnels]: BUG-04: UserNotRegisteredError francise + base44.auth.logout() branche sur bouton deconnexion
+- [Phase 02-bugs-fonctionnels]: BUG-05: Limite chat IA corrigee a 10/jour dans email trial J-1
 
 ### Pending Todos
 
@@ -79,6 +84,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T02:16:15.123Z
-Stopped at: Completed 01-security-legal-01-01-PLAN.md
+Last session: 2026-03-27T02:28:00Z
+Stopped at: Completed 02-bugs-fonctionnels-02-01-PLAN.md
 Resume file: None
