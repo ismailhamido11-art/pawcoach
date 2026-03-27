@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
-import { GrowthEntry } from "@/api/entities";
+import { GrowthEntry, Dog } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Camera, Plus, TrendingUp, Weight, Ruler, Sparkles, Trash2, Check, X } from "lucide-react";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
@@ -120,6 +120,10 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
         photo_url: analysisResult.photo_url,
         source: "photo_ai",
       });
+      // Sync Dog.weight so header and AI nutrition use the latest value
+      if (entry.weight_kg) {
+        try { await Dog.update(dog.id, { weight: entry.weight_kg }); } catch (e) { console.warn("Dog.weight sync failed:", e); }
+      }
       if (onGrowthAdded) onGrowthAdded(entry);
       setSavedAnalysis(true);
       toast.success("Mesure enregistrée !");
@@ -159,6 +163,8 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
         height_cm: parsedHeight,
         source: "manual",
       });
+      // Sync Dog.weight so header and AI nutrition use the latest value
+      try { await Dog.update(dog.id, { weight: parsedWeight }); } catch (e) { console.warn("Dog.weight sync failed:", e); }
       if (onGrowthAdded) onGrowthAdded(entry);
       toast.success("Mesure ajoutée !");
       setShowAddManual(false);
