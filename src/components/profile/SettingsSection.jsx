@@ -14,6 +14,7 @@ export default function SettingsSection() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   return (
@@ -82,7 +83,7 @@ export default function SettingsSection() {
               {/* Logout */}
               <div className="px-4 py-3">
                 <Button
-                  onClick={() => base44.auth.logout()}
+                  onClick={() => setShowLogoutConfirm(true)}
                   variant="outline"
                   className="w-full h-11 rounded-xl border-border text-foreground font-semibold gap-2"
                 >
@@ -94,6 +95,43 @@ export default function SettingsSection() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Logout confirm */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50 pb-8 px-5">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl p-6 w-full space-y-4"
+          >
+            <div className="text-center space-y-2">
+              <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mx-auto">
+                <LogOut className="w-7 h-7 text-foreground" />
+              </div>
+              <h2 className="text-lg font-bold text-foreground">Se déconnecter ?</h2>
+              <p className="text-sm text-muted-foreground">
+                Tu seras redirigé vers la page de connexion.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => setShowLogoutConfirm(false)}
+                variant="outline"
+                className="flex-1 h-12 rounded-xl"
+              >
+                Annuler
+              </Button>
+              <Button
+                onClick={() => base44.auth.logout()}
+                className="flex-1 h-12 rounded-xl font-semibold gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                Se déconnecter
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       {/* Delete confirm */}
       {showDeleteConfirm && (

@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
-import { Bookmark, NutritionPlan } from "@/api/entities";
+import { Bookmark, NutritionPlan, FoodScan, Dog } from "@/api/entities";
+import { getActiveDog } from "@/utils";
 import BottomNav from "../components/BottomNav";
-import { ArrowLeft, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarChart2, Clock, Target, Home, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarChart2, Clock, Target, Home, CheckCircle2, ScanLine } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ReactMarkdown from "react-markdown";
@@ -19,6 +20,7 @@ const SOURCE_LABELS = {
   training: { label: "Dressage", icon: Dumbbell, color: "#7c3aed", bg: "bg-purple-50" },
   video: { label: "Video", icon: Video, color: "#9333ea", bg: "bg-purple-50" },
   compare: { label: "Comparaison", icon: BarChart2, color: "#3b82f6", bg: "bg-blue-50" },
+  scan: { label: "Scan alimentaire", icon: ScanLine, color: "#f59e0b", bg: "bg-amber-50" },
 };
 
 const FILTERS = [
@@ -28,12 +30,20 @@ const FILTERS = [
   { id: "training", label: "Dressage" },
   { id: "video", label: "Video" },
   { id: "compare", label: "Comparaison" },
+  { id: "scan", label: "Scans" },
 ];
+
+const VERDICT_CONFIG = {
+  safe:    { label: "Sans danger", color: "#10b981", bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" },
+  caution: { label: "Avec précaution", color: "#f59e0b", bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
+  toxic:   { label: "Dangereux", color: "#ef4444", bg: "bg-red-50", text: "text-red-700", border: "border-red-200" },
+};
 
 export default function Library() {
   const navigate = useNavigate();
   const [bookmarks, setBookmarks] = useState([]);
   const [nutritionPlans, setNutritionPlans] = useState([]);
+  const [foodScans, setFoodScans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
@@ -43,12 +53,18 @@ export default function Library() {
     async function load() {
       try {
         const u = await base44.auth.me();
-        const [bks, plans] = await Promise.all([
+        const dogs = await Dog.filter({ owner: u.email }).catch(() => []);
+        const activeDog = dogs?.length > 0 ? getActiveDog(dogs) : null;
+        const [bks, plans, scans] = await Promise.all([
           Bookmark.filter({ owner: u.email }, "-created_at"),
           NutritionPlan.filter({ owner_email: u.email }, "-generated_at").catch(() => []),
+          activeDog
+            ? FoodScan.filter({ dog_id: activeDog.id }, "-timestamp").catch(() => [])
+            : Promise.resolve([]),
         ]);
         setBookmarks(bks || []);
         setNutritionPlans(plans || []);
+        setFoodScans(scans || []);
       } catch (e) {
         console.error(e);
         toast.error("Impossible de charger ta bibliothèque. Vérifie ta connexion.");
@@ -84,6 +100,7 @@ export default function Library() {
   };
 
   const handleDeleteNutritionPlan = async (id) => {
+    if (!window.confirm("Supprimer ce plan nutrition ?")) return;
     try {
       await NutritionPlan.delete(id);
       setNutritionPlans(prev => prev.filter(p => p.id !== id));
@@ -91,6 +108,17 @@ export default function Library() {
       toast.success("Plan nutrition supprimé");
     } catch {
       toast.error("Impossible de supprimer ce plan. Réessaie.");
+    }
+  };
+
+  const handleDeleteScan = async (id) => {
+    if (!window.confirm("Supprimer ce scan alimentaire ?")) return;
+    try {
+      await FoodScan.delete(id);
+      setFoodScans(prev => prev.filter(s => s.id !== id));
+      toast.success("Scan supprimé");
+    } catch {
+      toast.error("Impossible de supprimer ce scan. Réessaie.");
     }
   };
 
@@ -107,7 +135,7 @@ export default function Library() {
     }
   };
 
-  // Merge bookmarks + nutrition plans into unified list
+  // Merge bookmarks + nutrition plans + food scans into unified list
   const allItems = [
     ...bookmarks.map(b => ({ ...b, _type: "bookmark", _key: `bk-${b.id}` })),
     ...nutritionPlans.map(p => ({
@@ -120,6 +148,17 @@ export default function Library() {
       created_at: p.generated_at,
       is_active: p.is_active,
       dog_weight_at_generation: p.dog_weight_at_generation,
+    })),
+    ...foodScans.map(s => ({
+      _type: "food_scan",
+      _key: `scan-${s.id}`,
+      id: s.id,
+      source: "scan",
+      title: s.food_name || "Aliment scanné",
+      content: s.recommendation || s.details || "",
+      created_at: s.timestamp,
+      verdict: s.verdict,
+      score: s.score,
     })),
   ];
 
@@ -212,6 +251,7 @@ export default function Library() {
           <AnimatePresence>
             {filtered.map((b) => {
               const isNutriPlan = b._type === "nutrition_plan";
+              const isFoodScan = b._type === "food_scan";
               const src = isNutriPlan
                 ? SOURCE_LABELS.nutrition
                 : (SOURCE_LABELS[b.source] || SOURCE_LABELS.chat);
@@ -230,6 +270,8 @@ export default function Library() {
                 : isNutriPlan
                   ? (b.content || "").replace(/[#*_`]/g, "").split("\n").filter(l => l.trim()).slice(0, 1).join("").slice(0, 120)
                   : (b.content || "").replace(/[#*_`]/g, "").slice(0, 120);
+
+              const verdictCfg = isFoodScan && b.verdict ? (VERDICT_CONFIG[b.verdict] || VERDICT_CONFIG.caution) : null;
 
               return (
                 <motion.div
@@ -260,6 +302,15 @@ export default function Library() {
                       <div className="flex items-center gap-1.5 mb-2">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                         <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Plan actif — visible sur l'accueil</span>
+                      </div>
+                    )}
+                    {/* Food scan verdict badge */}
+                    {verdictCfg && (
+                      <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full ${verdictCfg.bg} mb-2`}>
+                        <span className={`text-[11px] font-bold ${verdictCfg.text}`}>{verdictCfg.label}</span>
+                        {b.score != null && (
+                          <span className={`text-[11px] font-bold ${verdictCfg.text} opacity-70`}>· {b.score}/10</span>
+                        )}
                       </div>
                     )}
                     <div className="flex items-start gap-3">
@@ -302,7 +353,9 @@ export default function Library() {
                         <button
                           onClick={e => {
                             e.stopPropagation();
-                            isNutriPlan ? handleDeleteNutritionPlan(b.id) : handleDelete(b.id);
+                            if (isFoodScan) handleDeleteScan(b.id);
+                            else if (isNutriPlan) handleDeleteNutritionPlan(b.id);
+                            else handleDelete(b.id);
                           }}
                           className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-red-50 transition-colors"
                         >
