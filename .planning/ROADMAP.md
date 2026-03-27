@@ -27,7 +27,7 @@
 
 ### Summary
 
-- [ ] **Phase 1: Backend Critique** — Securite, quota, cleanup backend (TECH-01 a TECH-06)
+- [x] **Phase 1: Backend Critique** — Securite, quota, cleanup backend (TECH-01 a TECH-06) (completed 2026-03-27)
 - [ ] **Phase 2: Donnees Fausses** — Corriger toutes les donnees incorrectes affichees (DATA-01 a DATA-06)
 - [ ] **Phase 3: Flux Deconnectes** — Invalider les caches et reconnecter les propagations (FLOW-01 a FLOW-04)
 - [ ] **Phase 4: UX Trompeuse** — Corriger les interfaces qui induisent l'utilisateur en erreur (UX-01 a UX-04)
@@ -50,9 +50,9 @@
   6. Aucun console.log ne s'affiche dans les logs du backend en production
 **Plans**: 3 plans
 Plans:
-- [ ] 01-01-PLAN.md — Token HMAC preDiagnosis→finalDiagnosis (TECH-01) + Streak.filter sans .list() global (TECH-02)
-- [ ] 01-02-PLAN.md — Resoudre conflit Git icon-192.svg (TECH-03) + Supprimer console.log debug (TECH-06)
-- [ ] 01-03-PLAN.md — Corriger is_trial inexistant dans monthlySummary (TECH-04) + ParkReview/PlaceFavorite dans cascade delete (TECH-05)
+- [x] 01-01-PLAN.md — Token HMAC preDiagnosis→finalDiagnosis (TECH-01) + Streak.filter sans .list() global (TECH-02)
+- [x] 01-02-PLAN.md — Resoudre conflit Git icon-192.svg (TECH-03) + Supprimer console.log debug (TECH-06)
+- [x] 01-03-PLAN.md — Corriger is_trial inexistant dans monthlySummary (TECH-04) + ParkReview/PlaceFavorite dans cascade delete (TECH-05)
 
 ### Phase 2: Donnees Fausses
 
@@ -101,7 +101,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Backend Critique | 0/3 | Planned | - |
+| 1. Backend Critique | 3/3 | Complete   | 2026-03-27 |
 | 2. Donnees Fausses | 0/? | Not started | - |
 | 3. Flux Deconnectes | 0/? | Not started | - |
 | 4. UX Trompeuse | 0/? | Not started | - |

@@ -33,10 +33,10 @@
 
 - [ ] **TECH-01**: finalDiagnosis verifie le quota cote serveur (free users ne peuvent pas bypasser)
 - [ ] **TECH-02**: streakReminder utilise une query filtree au lieu de Streak.list() global
-- [ ] **TECH-03**: Icone PWA (icon-192.svg) sans marqueurs de conflit Git — fichier valide
-- [ ] **TECH-04**: monthlySummary ne filtre plus sur is_trial (champ inexistant dans le schema User)
-- [ ] **TECH-05**: Suppression chien : deleteMany sur entites non-wrappees (ParkReview, PlaceFavorite) sans erreurs silencieuses
-- [ ] **TECH-06**: Supprimer les console.log restants dans le backend production
+- [x] **TECH-03**: Icone PWA (icon-192.svg) sans marqueurs de conflit Git — fichier valide
+- [x] **TECH-04**: monthlySummary ne filtre plus sur is_trial (champ inexistant dans le schema User)
+- [x] **TECH-05**: Suppression chien : deleteMany sur entites non-wrappees (ParkReview, PlaceFavorite) sans erreurs silencieuses
+- [x] **TECH-06**: Supprimer les console.log restants dans le backend production
 
 ## Future Requirements (v8.0+)
 
@@ -60,10 +60,10 @@
 |-------------|-------|--------|
 | TECH-01 | Phase 1 | Pending |
 | TECH-02 | Phase 1 | Pending |
-| TECH-03 | Phase 1 | Pending |
-| TECH-04 | Phase 1 | Pending |
-| TECH-05 | Phase 1 | Pending |
-| TECH-06 | Phase 1 | Pending |
+| TECH-03 | Phase 1 | Complete |
+| TECH-04 | Phase 1 | Complete |
+| TECH-05 | Phase 1 | Complete |
+| TECH-06 | Phase 1 | Complete |
 | DATA-01 | Phase 2 | Pending |
 | DATA-02 | Phase 2 | Pending |
 | DATA-03 | Phase 2 | Pending |
