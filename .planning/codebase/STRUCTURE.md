@@ -6,277 +6,323 @@
 
 ```
 pawcoach/
-├── src/                         # All frontend source code
-│   ├── main.jsx                 # App bootstrap + PWA SW registration
-│   ├── App.jsx                  # Router root + auth/public split
-│   ├── Layout.jsx               # Page transition wrapper + bottom-nav padding
-│   ├── pages.config.js          # Route registry (auto-generated, only change mainPage)
-│   ├── index.css                # Design tokens (colors, typography — DO NOT MODIFY)
-│   ├── pages/                   # One file per route (17 pages)
-│   ├── components/              # Feature components + shared UI
-│   │   ├── ui/                  # shadcn/ui primitives (NEVER modify)
-│   │   ├── achievements/        # Badge system
-│   │   ├── activite/            # Activity + walk program components
-│   │   ├── dashboard/           # SmartAlerts
-│   │   ├── dogprofile/          # Dog profile sections
-│   │   ├── home/                # Home page blocks
-│   │   ├── hooks/               # Component-scoped hooks (legacy — prefer src/hooks/)
-│   │   ├── illustrations/       # PawMascot SVG illustration system
-│   │   ├── lib/                 # Markdown renderer
-│   │   ├── notebook/            # Health notebook sub-components
-│   │   ├── notifications/       # NotificationCenter
-│   │   ├── nutrition/           # Nutrition plan components
-│   │   ├── onboarding/          # Welcome screen
-│   │   ├── premium/             # Premium nudge sheets
-│   │   ├── profile/             # Profile page sections
-│   │   ├── reminders/           # Reminder components
-│   │   ├── sante/               # Health page tab contents
-│   │   ├── scan/                # Food scan share card
-│   │   ├── tracker/             # Walk tracker components
-│   │   ├── training/            # Training exercise components
-│   │   └── vet/                 # Vet portal components
-│   ├── api/
-│   │   ├── base44Client.js      # Base44 SDK client (singleton)
-│   │   └── entities.js          # Named entity exports (19 entities)
-│   ├── hooks/                   # App-level custom hooks
-│   │   ├── use-mobile.jsx       # Breakpoint detection
-│   │   ├── useActionCredits.js  # AI action credit state + consume()
-│   │   ├── useBackClose.js      # Android back button handler
-│   │   ├── useCountUp.js        # Animated counter
-│   │   └── useReducedMotion.js  # Prefers-reduced-motion
-│   ├── lib/
-│   │   ├── AuthContext.jsx      # Auth state provider + useAuth()
-│   │   ├── HomeCacheContext.jsx # 2-min TTL home data cache
-│   │   ├── animations.js        # Framer Motion spring presets
-│   │   ├── app-params.js        # Runtime Base44 app parameters
-│   │   ├── lottieLibrary.js     # Lottie animation CDN registry
-│   │   ├── markdown.js          # Markdown parser
-│   │   ├── query-client.js      # (Present but unused — no React Query)
-│   │   └── utils.js             # cn() className helper (tailwind-merge)
-│   └── utils/
-│       ├── index.ts             # createPageUrl(), getActiveDog()
-│       ├── ai-credits.js        # Credit init/consume, daily limits
-│       ├── analytics.js         # trackEvent() wrapper
-│       ├── chartHelpers.jsx     # CustomTooltip for Recharts
-│       ├── dateHelpers.js       # Date formatting, age, JOURS_COURTS, MOIS_FR
-│       ├── healthStatus.js      # Health score computation, dogAgeMonths()
-│       ├── overpass.js          # Overpass API for nearby vets/parks
-│       ├── premium.js           # isUserPremium(), isUserOnTrial(), getTrialDaysLeft()
-│       ├── programHelpers.js    # ACTIVITY_ICONS map for training programs
-│       └── recommendations.js  # buildRecommendations(), getTodayString()
 ├── base44/
-│   └── functions/               # 22 Deno backend functions
-│       ├── dailyCheckinProcess/ # Process check-in, update streak
-│       ├── generateTrainingProgram/ # AI training program generation
-│       ├── pawcoachChat/        # Chat AI response
-│       ├── finalDiagnosis/      # AI symptom diagnosis
-│       ├── preDiagnosis/        # Pre-diagnosis questions
-│       ├── weeklyInsightGenerate/ # Weekly wellness insight
-│       ├── monthlySummary/      # Monthly wellness summary
-│       ├── parseHealthFile/     # Health document OCR/parsing
-│       ├── processHealthInput/  # Health record creation
-│       ├── analyzeGrowthPhoto/  # Growth photo analysis
-│       ├── generateDiagnosisPDF/ # PDF export
-│       ├── stripeCheckout/      # Stripe checkout session
-│       ├── stripePortal/        # Stripe customer portal
-│       ├── stripeWebhook/       # Stripe webhook (set is_premium)
-│       ├── vaccineReminders/    # Scheduled vaccine reminders
-│       ├── walkReminder/        # Scheduled walk reminders
-│       ├── vetVisitReminders/   # Scheduled vet visit reminders
-│       ├── medicationReminders/ # Scheduled medication reminders
-│       ├── streakReminder/      # Streak loss warning
-│       ├── trialExpiryReminder/ # Trial ending notification
-│       ├── vetAccess/           # Vet share link token
-│       └── deleteUser/          # GDPR user deletion
-├── .planning/
-│   └── codebase/                # GSD codebase analysis docs
-├── dist/                        # Build output (generated, not committed)
-└── pages.config.js              # Root alias (symlink/copy of src/pages.config.js)
+│   └── functions/          # 22 Deno serverless functions (backend)
+│       └── {name}/
+│           └── entry.ts    # One entry point per function
+├── public/                 # Static PWA assets
+│   ├── manifest.json       # PWA manifest
+│   ├── sw.js               # Service worker
+│   └── icons/              # App icons (various sizes)
+├── src/
+│   ├── App.jsx             # Root component — routing + providers
+│   ├── Layout.jsx          # Page transition wrapper (Framer Motion)
+│   ├── api/                # Base44 SDK client + entity wrappers
+│   ├── assets/             # Static images and illustrations
+│   ├── components/         # All React components (domain + shared)
+│   ├── hooks/              # Custom hooks
+│   ├── lib/                # Context providers, config, shared constants
+│   ├── pages/              # 16 route-level page components
+│   └── utils/              # Pure helper functions (no UI)
+├── .planning/              # GSD planning docs (not deployed)
+│   ├── codebase/           # Architecture docs (STACK, ARCH, STRUCTURE, etc.)
+│   ├── milestones/         # Archived milestone phases
+│   └── phases/             # Audit reports
+├── index.html              # Vite entry point
+├── vite.config.js          # Vite + Base44 plugin config
+├── tailwind.config.js      # Tailwind + design tokens
+├── jsconfig.json           # Path aliases (@/ → src/)
+├── components.json         # shadcn/ui component config
+├── package.json            # Node dependencies
+└── eslint.config.js        # ESLint rules
 ```
 
-## Pages — Complete List
+## Directory Purposes
 
-| Page file | Route | Bundle | Description |
-|---|---|---|---|
-| `Home.jsx` | `/` and `/Home` | Eager | Dashboard, check-in, daily briefing |
-| `Activite.jsx` | `/Activite` | Eager | Walk tracker, history, AI program, training |
-| `Sante.jsx` | `/Sante` | Eager | Health notebook, symptoms, growth, docs, find vet |
-| `Nutri.jsx` | `/Nutri` | Eager | Nutrition scan history, meal plans, diet prefs |
-| `Profile.jsx` | `/Profile` | Eager | Settings, subscription, achievements, referral |
-| `Chat.jsx` | `/Chat` | Lazy | AI chat with PawCoach |
-| `Dashboard.jsx` | `/Dashboard` | Lazy | Analytics dashboard (premium) |
-| `DogProfile.jsx` | `/DogProfile` | Lazy | Dog identity, health, personality cards |
-| `DogPublicProfile.jsx` | `/DogPublicProfile` | Lazy + Public | Public shareable dog profile |
-| `Library.jsx` | `/Library` | Lazy | Article library with bookmarks |
-| `LabelScanMode.jsx` | `/LabelScanMode` | — | Food label scanner (extracted from Scan) |
-| `Onboarding.jsx` | `/Onboarding` | Lazy | First-run dog setup wizard |
-| `Premium.jsx` | `/Premium` | Lazy | Paywall and Stripe checkout |
-| `Scan.jsx` | `/Scan` | Lazy | Food scan (camera + label mode) |
-| `Training.jsx` | `/Training` | Lazy | Exercise library + journey view |
-| `VetDogView.jsx` | `/VetDogView` | Lazy + Public | Vet-facing dog health summary |
-| `VetPortal.jsx` | `/VetPortal` | Lazy | Owner vet access management |
+**`base44/functions/`:**
+- Purpose: All backend logic — one subdirectory per serverless function
+- Each function: single `entry.ts` file, `Deno.serve()` handler, standalone with no shared code between functions
+- 22 functions total: AI chat, AI analysis, payment processing, cron reminders, GDPR
 
-Note: `LabelScanMode.jsx` is in `src/pages/` but is NOT registered in `pages.config.js` — it is used as a component imported directly by `Scan.jsx`.
+**`public/`:**
+- Purpose: Files served as-is by Vite, not processed by the bundler
+- `manifest.json` — PWA install manifest (name, icons, display mode, theme_color)
+- `sw.js` — Service worker for offline support and PWA installability
+- `icons/` — Multiple icon sizes (48px to 512px) for PWA install prompt
 
-## Backend Functions — Complete List (22)
+**`src/App.jsx`:**
+- Root component: sets up `BrowserRouter`, public routes (`/DogPublicProfile`, `/VetDogView`), and auth-gated routes wrapping `AuthProvider` + `HomeCacheProvider`
 
-All at `base44/functions/{name}/entry.ts`:
+**`src/Layout.jsx`:**
+- Wraps all authenticated page content with Framer Motion `AnimatePresence` (page transition)
+- Applies bottom padding for BottomNav + iOS safe area inset
+- Receives `currentPageName` prop to key the transition
 
-**AI / Data Processing:**
-- `dailyCheckinProcess` — processes daily check-in, updates streak, returns AI response
-- `generateTrainingProgram` — generates 7-day AI activity program
-- `pawcoachChat` — streaming AI chat response
-- `finalDiagnosis` — AI diagnosis from symptoms
-- `preDiagnosis` — follow-up questions for diagnosis
-- `weeklyInsightGenerate` — weekly wellness insight generation
-- `monthlySummary` — monthly summary report
-- `parseHealthFile` — OCR/parse uploaded health documents
-- `processHealthInput` — create health records from parsed data
-- `analyzeGrowthPhoto` — analyze growth photo for size estimation
-- `generateDiagnosisPDF` — export diagnosis as PDF
+**`src/api/`:**
+- `base44Client.js` — single Base44 SDK client instance exported as `base44`
+- `entities.js` — 19 named entity exports; use these everywhere, never `base44.entities.X` directly
 
-**Payments:**
-- `stripeCheckout` — create Stripe checkout session
-- `stripePortal` — open Stripe billing portal
-- `stripeWebhook` — handle Stripe events, set `is_premium` on user
+**`src/assets/`:**
+- `illustrations/storyset/` — Storyset SVG illustration files used by `StorysetIllustration` component
+- `images/` — other static images
 
-**Scheduled Reminders:**
-- `vaccineReminders` — upcoming vaccine due alerts
-- `walkReminder` — daily walk reminder
-- `vetVisitReminders` — upcoming vet visit alerts
-- `medicationReminders` — medication schedule alerts
-- `streakReminder` — warn user before streak breaks
-- `trialExpiryReminder` — notify trial ending soon
+**`src/components/`:**
+- Root-level files: shared components used across multiple pages (BottomNav, ErrorBoundary, PawLoader, WellnessBanner, ChatFAB, CombinedFAB, PullToRefresh, WellnessBanner, UserNotRegisteredError, PawMascot, streakHelper)
+- Domain subdirectories: each maps to a feature area (see Domain Component Directories below)
+- `ui/` — shadcn/ui library + custom design primitives (DO NOT MODIFY)
 
-**Misc:**
-- `vetAccess` — generate/validate vet share token
-- `deleteUser` — GDPR user account deletion
+**`src/hooks/`:**
+- `useActionCredits.js` — credit state hook (message/action remaining)
+- `useBackClose.js` — back-button close for modals
+- `useCountUp.js` — animated number counter
+- `use-mobile.jsx` — responsive breakpoint detection
 
-## Entities — Complete List (19)
+**`src/lib/`:**
+- Context providers and shared configuration
+- `AuthContext.jsx` — user auth state
+- `HomeCacheContext.jsx` — Home page data cache (2 min TTL)
+- `animations.js` — Framer Motion spring presets
+- `app-params.js` — reads Base44 runtime params from URL/localStorage
+- `query-client.js` — TanStack Query client instance
+- `lottieLibrary.js` — Lottie animation file registry
+- `markdown.js` — ReactMarkdown component config (used in Chat, Nutri)
+- `PageNotFound.jsx` — 404 fallback page
+- `utils.js` — shadcn/ui `cn()` utility (clsx + tailwind-merge)
 
-All accessed via `src/api/entities.js`:
+**`src/pages/`:**
+- 16 route-level components, one per page
+- Pages own their data fetching logic — no shared data layer
+- 5 eager (BottomNav tabs) + 11 lazy-loaded
 
-| Entity | Purpose |
-|---|---|
-| `Dog` | Core dog profile |
-| `HealthRecord` | Vet visits, vaccines, medications |
-| `DailyCheckin` | Daily mood/energy/appetite check-ins |
-| `DailyLog` | Walk minutes, activities logged per day |
-| `Streak` | Current + longest streak per dog |
-| `FoodScan` | Scanned food items with AI verdict |
-| `UserProgress` | Training exercise completion |
-| `DiagnosisReport` | AI diagnosis sessions |
-| `NutritionPlan` | Generated meal plans |
-| `Bookmark` | Saved training exercises + behavior programs |
-| `WeeklyInsight` | AI-generated weekly wellness insights |
-| `SharedVetAccess` | Vet share access tokens |
-| `DogAchievement` | Earned badges/achievements |
-| `DietPreferences` | Dog dietary preferences and restrictions |
-| `GrowthEntry` | Weight/size tracking entries |
-| `ParkReview` | User reviews for parks |
-| `PlaceFavorite` | Favorited parks/vets |
-| `ChatMessage` | Chat history |
-| `VetNote` | Notes added by vet via VetPortal |
+**`src/utils/`:**
+- Pure functions only — no React imports, no side effects beyond `localStorage`/`sessionStorage`
+- All cross-page business logic lives here
+
+## Domain Component Directories
+
+**`src/components/home/`** (17 components):
+- `CoachHomeHeader.jsx` — top header with user greeting and dog name
+- `CalendarStrip.jsx` — horizontal date strip for daily navigation
+- `DailyBriefing.jsx` — today's summary card
+- `DailyProgress.jsx` — progress rings / metrics
+- `StreakBar.jsx` — streak display
+- `QuickActions.jsx` — shortcut action buttons
+- `WeeklyInsightCard.jsx` — AI-generated weekly insight
+- `BentoGrid.jsx` — bento-style grid layout
+- `ActiveProgramCards.jsx` — active training program cards
+- `TodayCard.jsx` — main today summary card
+- `WellnessScore.jsx` — wellness score display
+- `InlineCheckin.jsx` — embedded daily check-in
+- `DailyCoaching.jsx` — AI coaching tip
+- `EmotionalTip.jsx` — emotional wellbeing tip
+- `DogRadarHero.jsx` — radar chart of dog metrics
+- `TrialExpiryBanner.jsx` — trial expiry countdown banner
+- `FirstDayGuide.jsx` — onboarding guide for new users
+
+**`src/components/sante/`** (8 components):
+- `NotebookContent.jsx` — health notebook (vaccines, weight, vet visits, medications, notes)
+- `DiagnosisContent.jsx` — symptom input and AI diagnosis display
+- `GrowthTrackerContent.jsx` — growth chart and entries
+- `HealthImportContent.jsx` — document upload and OCR
+- `FindVetContent.jsx` — map-based vet finder (lazy-loaded, contains Leaflet ~150KB)
+- `HealthAssistantBar.jsx` — floating assistant trigger bar
+- `HealthAssistantSheet.jsx` — bottom sheet AI health assistant
+- `PlaceCard.jsx` — vet/park place display card
+
+**`src/components/tracker/`** (7 components):
+- `WalkMode.jsx` — live walk tracking UI with map and timer
+- `WalkMap.jsx` — Leaflet map for walk route
+- `WalkSummary.jsx` — post-walk summary card
+- `TrackerHistory.jsx` — walk history list
+- `ActivityCalendar.jsx` — monthly activity calendar heatmap
+- `NearbyParks.jsx` — nearby parks search via Overpass API
+- `WalkShareCard.jsx` — shareable walk summary card
+- `ParkReviews.jsx` — park review list and form
+
+**`src/components/vet/`** (8 components):
+- `AIDiagnosisModal.jsx` — AI diagnosis multi-step modal
+- `DiagnosisReportView.jsx` — full diagnosis report display
+- `DiagnosisStep2Questions.jsx` — follow-up symptom questions
+- `DownloadHealthPDF.jsx` — PDF health report download trigger
+- `ShareVetModal.jsx` — generate vet access share link
+- `VetDogCard.jsx` — dog card shown in vet portal
+- `VetNoteForm.jsx` — vet note creation form
+- `VetNotesList.jsx` — vet notes list
+
+**`src/components/nutrition/`** (4 components):
+- `NutritionMealPlan.jsx` — AI meal plan display and generation
+- `FoodComparator.jsx` — side-by-side food product comparison
+- `MealPlanGenerator.jsx` — plan generation UI
+- `DietPreferencesPanel.jsx` — dietary preferences settings
+
+**`src/components/training/`** (7 components):
+- `JourneyView.jsx` — training journey (program) overview
+- `JourneyCard.jsx` — single journey card
+- `ExerciseDetail.jsx` — exercise instructions and video
+- `VideoCoaching.jsx` — video coaching player
+- `CelebrationScreen.jsx` — completion celebration animation
+- `MilestoneScreen.jsx` — milestone reached animation
+- `FreeExercisesGate.jsx` — paywall gate for premium exercises
+
+**`src/components/activite/`** (3 components):
+- `AITrainingProgram.jsx` — AI-generated training program (lazy-loaded)
+- `DayCard.jsx` — single training day card
+- `CompletionCard.jsx` — day completion display
+
+**`src/components/scan/`** (2 components):
+- `LabelScanMode.jsx` — camera capture and label text extraction
+- `ShareCard.jsx` — shareable scan result card
+
+**`src/components/dogprofile/`** (9 components):
+- `DogProfileHero.jsx` — hero card with dog photo and key info
+- `DogIdentityCards.jsx` — identity card grid
+- `DogHealthSection.jsx` — health overview section
+- `DogDietSection.jsx` — diet preferences section
+- `DogPersonalitySection.jsx` — personality and behavior traits
+- `DogEditModal.jsx` — dog profile edit modal
+- `DogTrophiesRow.jsx` — achievement trophies row
+- `InlineEditCard.jsx` — inline field edit card
+
+**`src/components/profile/`** (9 components):
+- `ProfileHeader.jsx` — user avatar and name header
+- `DogSwitcher.jsx` — multi-dog selector
+- `SubscriptionSection.jsx` — subscription status and upgrade CTA
+- `CoachSettings.jsx` — AI coach personality settings
+- `VetSection.jsx` — veterinarian access management
+- `ReferralSection.jsx` — referral link and stats
+- `SettingsSection.jsx` — app settings (language, notifications)
+- `WalkReminderSettings.jsx` — walk reminder schedule settings
+- `AchievementsSection.jsx` — user achievements overview
+
+**`src/components/achievements/`** (2 components):
+- `AchievementFeed.jsx` — scrollable achievement unlock feed
+- `badgeUtils.jsx` — badge check logic: `checkStreakBadges()`, `checkWalkBadges()`
+
+**`src/components/dashboard/`** (1 component):
+- `SmartAlerts.jsx` — intelligent health/activity alerts
+
+**`src/components/onboarding/`** (1 component):
+- `WelcomeScreen.jsx` — onboarding welcome animation
+
+**`src/components/premium/`** (2 components):
+- `PremiumNudgeSheet.jsx` — soft paywall bottom sheet for feature discovery
+- `PostTrialSheet.jsx` — post-trial conversion sheet
+
+**`src/components/notifications/`** (1 component):
+- `NotificationCenter.jsx` — notification bell + tray (singleton module state pattern)
+
+**`src/components/illustrations/`** (1 component):
+- `Illustration.jsx` — SVG illustration renderer
+
+**`src/components/lib/`** (1 component):
+- `markdown.jsx` — ReactMarkdown component map for chat message rendering
 
 ## Key File Locations
 
 **Entry Points:**
-- `src/main.jsx` — app bootstrap
-- `src/App.jsx` — router + auth split
-- `src/pages.config.js` — page registry (change `mainPage` here)
+- `src/App.jsx` — React app root, Router, Providers
+- `src/pages.config.js` — route registration and main page declaration
+- `index.html` — Vite HTML entry
 
-**Core Utilities:**
-- `src/utils/index.ts` — `createPageUrl()`, `getActiveDog()`
-- `src/utils/premium.js` — `isUserPremium()`, `isUserOnTrial()`, `getTrialDaysLeft()`
-- `src/utils/ai-credits.js` — credit limits and daily reset logic
-- `src/utils/dateHelpers.js` — French date formatting, `JOURS_COURTS`, `MOIS_FR`, `getAge()`
-- `src/utils/programHelpers.js` — `ACTIVITY_ICONS` map (used by AITrainingProgram + ActiveProgramCards)
-- `src/utils/chartHelpers.jsx` — `CustomTooltip` for Recharts charts
+**Configuration:**
+- `vite.config.js` — Vite plugins (Base44, React)
+- `tailwind.config.js` — design tokens (colors, fonts, animations)
+- `jsconfig.json` — TypeScript/JS config + `@/` path alias
+- `components.json` — shadcn/ui configuration
+- `eslint.config.js` — linting rules
+- `public/manifest.json` — PWA manifest
+- `public/sw.js` — Service worker
 
-**Contexts:**
-- `src/lib/AuthContext.jsx` — `useAuth()` hook
-- `src/lib/HomeCacheContext.jsx` — `useHomeCache()` hook
+**Core Logic:**
+- `src/api/entities.js` — entity access (all data reads/writes)
+- `src/api/base44Client.js` — SDK client (single instance)
+- `src/lib/AuthContext.jsx` — authentication state
+- `src/utils/premium.js` — premium check logic
+- `src/utils/ai-credits.js` — free-tier credit system
+- `src/components/streakHelper.jsx` — streak update logic
 
-**Animation:**
-- `src/lib/animations.js` — Framer Motion spring presets (`spring`, `tapScale`, `pressIn`, `hoverGlow`, `fadeInUp`, `staggerContainer`, `staggerItem`)
-
-**Design System:**
-- `src/index.css` — CSS custom properties (DO NOT MODIFY colors/tokens)
-- `src/lib/utils.js` — `cn()` className merger (tailwind-merge + clsx)
-
-**API:**
-- `src/api/base44Client.js` — Base44 SDK singleton
-- `src/api/entities.js` — all 19 entity exports
+**Backend:**
+- `base44/functions/pawcoachChat/entry.ts` — main AI chat endpoint
+- `base44/functions/stripeWebhook/entry.ts` — payment webhook (most critical)
+- `base44/functions/stripeCheckout/entry.ts` — checkout session creation
+- `base44/functions/deleteUser/entry.ts` — GDPR account deletion
 
 ## Naming Conventions
 
 **Files:**
-- Pages: PascalCase, no suffix — `Home.jsx`, `Activite.jsx`
-- Components: PascalCase, descriptive — `DailyBriefing.jsx`, `WalkSummary.jsx`
-- Hooks: camelCase with `use` prefix — `useActionCredits.js`, `useBackClose.js`
-- Utils: camelCase — `dateHelpers.js`, `programHelpers.js`, `chartHelpers.jsx`
-- Contexts: PascalCase with `Context` suffix — `AuthContext.jsx`, `HomeCacheContext.jsx`
+- Pages: PascalCase, `.jsx` — `Home.jsx`, `DogProfile.jsx`, `VetPortal.jsx`
+- Components: PascalCase, `.jsx` — `BottomNav.jsx`, `WalkMode.jsx`
+- Hooks: camelCase with `use` prefix, `.js` or `.jsx` — `useActionCredits.js`, `useBackClose.jsx`
+- Utils: camelCase, `.js` — `premium.js`, `dateHelpers.js`, `ai-credits.js`
+- Lib: PascalCase for context files, camelCase for configs — `AuthContext.jsx`, `animations.js`
+- Backend: all functions in camelCase directories, each with `entry.ts`
 
 **Directories:**
-- Feature component folders: lowercase, matches domain — `home/`, `tracker/`, `sante/`, `nutrition/`
-- Pages folder: lowercase `pages/`
+- Component domains: camelCase — `home/`, `sante/`, `dogprofile/`
+- Everything else: kebab-case or lowercase — `base44/functions/`
 
-**Components:**
-- React components: PascalCase function names
-- Named exports for constants/utilities, default export for the main component of a file
+**Component naming:**
+- Domain prefix for clarity — `DogProfileHero` not `Hero`, `WalkMode` not `Mode`
+- Content components suffixed with `Content` for tab panel components — `NotebookContent`, `DiagnosisContent`
+- Modal/Sheet components suffixed with `Modal` or `Sheet` — `DogEditModal`, `PremiumNudgeSheet`
 
 ## Where to Add New Code
 
 **New page:**
-- Create `src/pages/NewPage.jsx`
-- Base44 auto-registers it in `pages.config.js` on next sync (or add manually)
-- Change `mainPage` in `pages.config.js` only if it should be the new landing
+1. Create `src/pages/{PageName}.jsx` (PascalCase)
+2. Base44 auto-registers it in `src/pages.config.js` on next sync
+3. Add `import { lazy }` or eager import manually if needed
+4. Add to `SECONDARY_PAGE_PARENT` in `src/components/BottomNav.jsx` if it's a sub-page
 
 **New feature component:**
-- If domain-specific: `src/components/{domain}/ComponentName.jsx` (e.g., `src/components/sante/NewCard.jsx`)
-- If shared across 2+ domains: `src/components/ComponentName.jsx` (root of components)
-- If shared UI primitive (not shadcn): `src/components/ui/ComponentName.jsx`
+1. Identify the domain — pick the matching `src/components/{domain}/` directory
+2. Create `src/components/{domain}/{ComponentName}.jsx`
+3. Import in the relevant page
+
+**New shared component (used by multiple pages/domains):**
+- `src/components/{ComponentName}.jsx` (root level, not in a domain folder)
 
 **New utility function:**
-- Date/time: add to `src/utils/dateHelpers.js`
-- Training/activity display: add to `src/utils/programHelpers.js`
-- Chart/data viz: add to `src/utils/chartHelpers.jsx`
-- Premium checks: add to `src/utils/premium.js`
-- Generic: `src/utils/index.ts` or a new file with a descriptive name
-
-**New backend function:**
-- Create `base44/functions/{functionName}/entry.ts`
-- Call from frontend: `base44.functions.invoke("functionName", payload)`
+1. Check if it belongs in an existing util file (`premium.js`, `dateHelpers.js`, `healthStatus.js`, `recommendations.js`)
+2. If it fits, add to existing file
+3. If new domain, create `src/utils/{domain}.js`
 
 **New custom hook:**
-- App-level (used across pages): `src/hooks/useHookName.js`
-- Component-scoped: `src/components/hooks/useHookName.jsx` (legacy location — prefer `src/hooks/`)
+- `src/hooks/use{Name}.js` — follows `use` prefix convention
 
-**New entity:**
-- Schema change must go through Base44 Build prompt (uses 1 credit)
-- After schema change: add named export to `src/api/entities.js`
+**New backend function:**
+1. Create `base44/functions/{functionName}/entry.ts`
+2. Pattern: `Deno.serve(async (req) => { ... })` with `createClientFromRequest(req)` and `base44.auth.me()` first
+3. Always add server-side premium/quota check before AI calls
+
+**New entity (requires Build prompt — rare):**
+1. Add via Base44 Build prompt (`edit_base44_app()`)
+2. Add `wrapEntity(base44.entities.{NewEntity}, "{NewEntity}")` to `src/api/entities.js`
+3. Export the named constant
 
 ## Special Directories
 
-**`src/components/ui/`:**
-- Purpose: shadcn/ui component library
-- Generated: Yes (via shadcn CLI)
-- Committed: Yes
-- NEVER modify files in this directory
+**`.planning/`:**
+- Purpose: GSD workflow docs — milestones, phases, architecture docs, audit reports
+- Generated: Partially (by GSD commands and agents)
+- Committed: Yes (planning docs tracked in git)
+- NOT deployed: Vite ignores it
 
 **`dist/`:**
-- Purpose: Vite production build output
-- Generated: Yes
-- Committed: No (gitignored)
+- Purpose: Vite build output
+- Generated: Yes (`npm run build`)
+- Committed: No (in `.gitignore`)
 
-**`base44/functions/`:**
-- Purpose: Deno serverless functions deployed on Base44
-- Generated: No
-- Committed: Yes — synced to Base44 via GitHub 2-way sync
+**`node_modules/`:**
+- Generated: Yes (`npm install`)
+- Committed: No
 
-**`.planning/`:**
-- Purpose: GSD planning documents (milestones, phases, codebase analysis)
-- Generated: No
+**`.agents/`:**
+- Purpose: Claude Code skill definitions (base44-cli, base44-sdk, base44-troubleshooter)
+- Committed: Yes
+
+**`.orchids/`:**
+- Purpose: Orchids design tool config
 - Committed: Yes
 
 ---

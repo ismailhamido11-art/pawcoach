@@ -5,339 +5,276 @@
 ## Naming Patterns
 
 **Files:**
-- Pages: PascalCase, single word or compound (`Home.jsx`, `DogProfile.jsx`, `LabelScanMode.jsx`)
-- Components: PascalCase, grouped by feature subdirectory (`home/DailyBriefing.jsx`, `notebook/SectionVaccins.jsx`)
-- Hooks: camelCase with `use` prefix (`useActionCredits.js`, `useBackClose.js`, `useReducedMotion.js`)
-- Utils: camelCase (`dateHelpers.js`, `programHelpers.js`, `chartHelpers.jsx`)
-- Lib files: camelCase (`animations.js`, `utils.js`, `markdown.js`)
-- Extension rule: `.jsx` for files with JSX, `.js` for pure logic, `.ts` for typed utilities
+- React components: PascalCase `.jsx` — `ErrorBoundary.jsx`, `WeeklyInsightCard.jsx`
+- Pages: PascalCase `.jsx` — `Home.jsx`, `Chat.jsx`, `Training.jsx`
+- Utilities: camelCase `.js` — `dateHelpers.js`, `healthStatus.js`, `pdfHelpers.js`
+- Hooks: camelCase `.js` starting with `use` — `useActionCredits.js`, `useBackClose.js`
+- Backend functions: camelCase directory + `entry.ts` — `pawcoachChat/entry.ts`
+- TypeScript utils: `.ts` extension — `src/utils/index.ts`
+- Context providers: PascalCase + `Context` suffix — `HomeCacheContext.jsx`, `AuthContext.jsx`
 
-**Functions/Exports:**
-- Component functions: PascalCase, default export (`export default function Home()`)
-- Helper functions: camelCase, named exports (`export function fmtDate()`, `export function getAge()`)
-- Constants: UPPER_SNAKE_CASE (`MILESTONES`, `EXERCISES`, `JOURS_COURTS`, `MOIS_FR`)
-- Config objects: UPPER_SNAKE_CASE (`TABS`, `SOURCE_LABELS`, `VERDICT_CONFIG`, `ACTIVITY_ICONS`)
+**Functions:**
+- React components: PascalCase — `export default function WeeklyInsightCard`
+- Hooks: camelCase `use` prefix — `useActionCredits`, `useBackClose`, `useCountUp`
+- Utility functions: camelCase — `getActiveDog`, `formatDateFr`, `computeHealthScore`
+- Event handlers: `handle` prefix — `handleRetry`, `handleTabClick`, `handleSave`
+- Async fetch helpers: descriptive camelCase — `fetchDogData`, `checkAppState`, `checkUserAuth`
+- Backend Deno handlers: anonymous `Deno.serve(async (req) => {...})`
 
 **Variables:**
-- State variables: camelCase noun/noun-phrase (`loading`, `submitting`, `showPremiumNudge`)
-- Boolean state: prefixed with `show`, `is`, `has` (`showAddForm`, `saving`, `hasCredits`)
-- Refs: suffixed with `Ref` (`consumingRef`, `pushed`, `dailyBriefingRef`, `scrollTimeoutRef`)
-- Event handlers: prefixed with `handle` (`handleSave`, `handleDelete`, `handleCheckin`)
+- camelCase throughout — `dogId`, `isPremium`, `messagesRemaining`
+- Boolean flags: `is` or `has` prefix — `isPremium`, `hasCredits`, `isStreaming`
+- Constants: SCREAMING_SNAKE_CASE — `MSG_DAILY_LIMIT`, `ACTION_DAILY_LIMIT`, `CACHE_TTL`, `MILESTONES`
+- Ref variables: `Ref` suffix — `bottomRef`, `consumingRef`, `pushed`
+
+**Types / Interfaces:**
+- No explicit TypeScript types in `.jsx` files (JS project with checkJs)
+- Backend `.ts` files use inline `any` typing — `const sanitize = (s: any, max = 500) => ...`
 
 ## Code Style
 
 **Formatting:**
-- No Prettier config present — formatting not enforced tooling-side
-- 2-space indentation (consistent throughout codebase)
-- Trailing commas in objects and arrays
-- Single quotes for strings
+- No Prettier config detected — formatting is manual/editor-driven
+- 2-space indentation throughout
+- Arrow functions for callbacks, regular `function` declarations for named exports and hooks
 
-**Linting:**
-- ESLint with `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-unused-imports`
-- Config: `eslint.config.js`
-- Scope: `src/components/**`, `src/pages/**`, `src/Layout.jsx`
-- Excluded: `src/lib/**`, `src/components/ui/**` (shadcn)
-- Key rules: `unused-imports/no-unused-imports: error`, `react-hooks/rules-of-hooks: error`
-- PropTypes: disabled (`react/prop-types: off`)
-- Unused vars prefixed with `_` are allowed
+**Linting (`eslint.config.js`):**
+- ESLint v9 flat config
+- Plugins: `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-unused-imports`
+- `react/prop-types`: off (no prop-types enforcement)
+- `react/react-in-jsx-scope`: off (React 18 automatic JSX transform)
+- `react-hooks/rules-of-hooks`: error (hooks rules strictly enforced)
+- `unused-imports/no-unused-imports`: error (zero dead imports tolerated)
+- `unused-imports/no-unused-vars`: warn (underscore prefix `_` exempts intentionally unused vars)
+- Scope: only `src/components/`, `src/pages/`, `src/Layout.jsx`
+- Excluded: `src/lib/`, `src/components/ui/`
+
+**Scripts:**
+```bash
+npm run lint          # ESLint --quiet (errors only)
+npm run lint:fix      # ESLint --fix (auto-fix)
+npm run typecheck     # tsc -p ./jsconfig.json (type check JS files)
+```
 
 ## Import Organization
 
 **Order (observed pattern):**
-1. React core (`import { useState, useEffect, useRef } from "react"`)
-2. Router (`import { useNavigate } from "react-router-dom"`)
-3. Internal utils/lib (`import { createPageUrl, getActiveDog } from "@/utils"`)
-4. API/entities (`import { Dog, HealthRecord } from "@/api/entities"`)
-5. Shared hooks (`import { useActionCredits } from "@/hooks/useActionCredits"`)
-6. Shared utils (`import { fmtDate } from "@/utils/dateHelpers"`)
-7. Layout/navigation components (`import BottomNav from "../components/BottomNav"`)
-8. Feature components (grouped by section)
-9. UI primitives (`import { Button } from "@/components/ui/button"`)
-10. Icons (`import { Flame, Lock } from "lucide-react"`)
-11. Animation (`import { motion, AnimatePresence } from "framer-motion"`)
-12. Third-party misc (`import { toast } from "sonner"`)
+1. React/external libraries — `import { useState, useEffect } from "react"`
+2. Third-party packages — `import { motion } from "framer-motion"`, `import { toast } from "sonner"`
+3. Internal `@/` aliases — `import { base44 } from "@/api/base44Client"`, `import { isUserPremium } from "@/utils/premium"`
+4. Relative component imports — `import BottomNav from "../components/BottomNav"`
+5. Lucide icons at end of group — `import { Flame, ScanLine } from "lucide-react"`
 
 **Path Aliases:**
-- `@/*` maps to `./src/*` (defined in `jsconfig.json`)
-- Use `@/` for cross-directory imports, relative `../` only within same feature cluster
+- `@/` resolves to `./src/` (configured in `jsconfig.json` and Vite)
+- Always use `@/` for cross-directory imports; relative paths only for same-directory siblings
 
-## State Management
-
-**Consolidated state objects (v5.0 pattern):**
-Group related state into a single `useState` object rather than individual booleans. Example from `Home.jsx`:
-```jsx
-// GOOD — consolidated group
-const [dogData, setDogData] = useState({
-  todayCheckin: null,
-  streak: null,
-  recentCheckins: [],
-  records: [],
-  exercises: [],
-});
-
-// Then destructure for consumption in render:
-const { todayCheckin, streak, recentCheckins } = dogData;
-```
-
-**Form state:**
-Always use a single `form` state object:
-```jsx
-const [form, setForm] = useState({
-  name: dog.name || "",
-  breed: dog.breed || "",
-  birth_date: dog.birth_date || "",
-});
-// Update one field:
-setForm(f => ({ ...f, [field]: e.target.value }));
-```
-
-**Async operation state:**
-Use `saving`/`submitting`/`loading` boolean, always reset in `finally`:
-```jsx
-const [saving, setSaving] = useState(false);
-const handleSave = async () => {
-  setSaving(true);
-  try { ... }
-  catch (e) { toast.error("..."); }
-  finally { setSaving(false); }
-};
-```
-
-**Optimistic updates:**
-Apply state immediately before async call, roll back on error:
-```jsx
-// Apply optimistically
-setDogData(prev => ({ ...prev, todayCheckin: optimisticCheckin }));
-try {
-  const result = await api.call();
-  setDogData(prev => ({ ...prev, todayCheckin: result.checkin }));
-} catch {
-  setDogData(prev => ({ ...prev, todayCheckin: null })); // rollback
-}
-```
+**Backend (Deno):**
+- Single npm import: `import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20'`
+- No other imports — all logic is self-contained in each `entry.ts`
 
 ## Error Handling
 
-**Strategy:**
-- `try/catch/finally` for all async operations
-- Show `toast.error("Message in French. Réessaie.")` — always include a retry hint
-- Catch errors silently with `.catch(() => [])` when default fallback is safe (entity filters in parallel loads)
-- Class component `ErrorBoundary` wraps every page route in `App.jsx`
-- `mounted` flag pattern to prevent state updates after unmount:
-```jsx
-useEffect(() => {
-  let mounted = true;
-  async function load() {
-    const data = await fetch();
-    if (!mounted) return;
-    setState(data);
-  }
-  load();
-  return () => { mounted = false; };
-}, []);
+**Frontend patterns:**
+- `try/catch` in async `useEffect` — most common pattern across all pages
+- `.catch(() => [])` for non-critical parallel queries in `Promise.all` — used in `src/pages/Home.jsx` `fetchDogData`
+- `.catch(() => {})` for fire-and-forget side effects (badge checks, streak updates)
+- `toast.error("Message en français.")` for user-facing errors via `sonner`
+- `console.error` for unexpected errors, `console.warn` for recoverable/expected failures
+- `ErrorBoundary` class component wraps every page route in `src/App.jsx`
+
+**Error Boundary (`src/components/ErrorBoundary.jsx`):**
+- Class component with retry (max 2 attempts) + reload + home fallback
+- Logs to `console.error('[PawCoach] Erreur capturée par ErrorBoundary :', error)`
+- Custom `fallback` prop accepted for page-specific error UI
+- Every route in `src/App.jsx` is wrapped: `<ErrorBoundary><Page /></ErrorBoundary>`
+
+**Backend (Deno) patterns:**
+- Top-level `try/catch` wrapping all handler logic
+- Early returns with `Response.json({ error: '...' }, { status: NNN })` for validation failures
+- Auth check always first: `if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })`
+- Ownership check after entity fetch: `if (dog.owner !== user.email) return ... { status: 403 }`
+
+## Sanitization Patterns
+
+**Backend `sanitize` helper (defined inline in 10 backend files):**
+```typescript
+const sanitize = (s: any, max = 500) => String(s || '').substring(0, max).replace(/[<>]/g, '');
+```
+Present in: `base44/functions/pawcoachChat/entry.ts`, `base44/functions/dailyCheckinProcess/entry.ts`, `base44/functions/finalDiagnosis/entry.ts`, `base44/functions/generateDiagnosisPDF/entry.ts`, `base44/functions/generateTrainingProgram/entry.ts`, `base44/functions/parseHealthFile/entry.ts`, `base44/functions/preDiagnosis/entry.ts`, `base44/functions/processHealthInput/entry.ts`, `base44/functions/weeklyInsightGenerate/entry.ts`, `base44/functions/analyzeGrowthPhoto/entry.ts`.
+
+Note: CGC dead-code analysis flags these as "potentially unused" — they ARE used within the same function body. CGC cannot resolve internal call sites of inline-defined functions.
+
+**Frontend `sanitize` (PDF-specific, `src/utils/pdfHelpers.js:26`):**
+- Converts accented French characters to ASCII for jsPDF helvetica font compatibility
+
+**Frontend `sanitizeName` (`src/components/dogprofile/DogEditModal.jsx:18`):**
+- Strips special chars from dog names before save
+
+**`validateImageUrl` (duplicated in 4 backend files):**
+- Present in: `analyzeGrowthPhoto`, `finalDiagnosis`, `preDiagnosis`, `processHealthInput`
+- Validates URL hostname against allowlist `['base44.app', 'amazonaws.com', 's3.amazonaws.com']`
+- Prevents SSRF on AI image analysis endpoints
+
+## Data Fetching Patterns
+
+**Entity access (frontend):**
+- Always via `src/api/entities.js` wrappers, never `base44.entities.*` directly
+- Pattern: `Entity.filter({ field: value }, "-sort_field", limit).catch(() => [])`
+- Filtered queries only — never `.list()` global fetch
+- Parallel fetches with `Promise.all` in page-level async helper functions
+
+**Backend function calls (frontend):**
+```javascript
+const resp = await base44.functions.invoke("functionName", { payload });
+```
+Used for AI operations: `pawcoachChat`, `generateTrainingProgram`, `processHealthInput`, `preDiagnosis`, `finalDiagnosis`, `analyzeGrowthPhoto`, `parseHealthFile`, `vetAccess`, `stripePortal`, `deleteUser`.
+
+**Auth:**
+```javascript
+const user = await base44.auth.me();
+await base44.auth.updateMe({ field: value });
 ```
 
-**User feedback:**
-- Success: `toast.success("Message court en français !")`
-- Error: `toast.error("Impossible de [action]. Réessaie.")` — always includes "Réessaie" or similar
-- No `window.alert()` / `window.confirm()` — replaced by `AlertDialog` (v5.0)
-
-## AlertDialog Pattern (v5.0 — replaces window.confirm)
-
-Used for all destructive confirmations. Pattern from `Library.jsx` and `AITrainingProgram.jsx`:
-```jsx
-const [confirmDialog, setConfirmDialog] = useState(null);
-
-// Trigger:
-const handleDelete = (id) => {
-  setConfirmDialog({
-    title: "Supprimer ce conseil ?",
-    description: "Ce conseil sera retiré de ta bibliothèque définitivement.",
-    action: async () => {
-      await Entity.delete(id);
-      setState(prev => prev.filter(item => item.id !== id));
-      toast.success("Supprimé");
-    },
-  });
-};
-
-// Render:
-{confirmDialog && (
-  <AlertDialog open onOpenChange={() => setConfirmDialog(null)}>
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>{confirmDialog.title}</AlertDialogTitle>
-        <AlertDialogDescription>{confirmDialog.description}</AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel>Annuler</AlertDialogCancel>
-        <AlertDialogAction onClick={confirmDialog.action}>Supprimer</AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
-)}
-```
-Files using this pattern: `src/pages/Library.jsx`, `src/components/activite/AITrainingProgram.jsx`, `src/components/nutrition/NutritionMealPlan.jsx`
-
-## Double-click / Double-call Guard (consumingRef pattern)
-
-Prevents duplicate API calls from rapid taps. Implemented in `src/hooks/useActionCredits.js`:
-```js
-const consumingRef = useRef(false);
-
-const consume = async () => {
-  if (consumingRef.current) return false; // guard
-  consumingRef.current = true;
-  try {
-    const newRemaining = await consumeActionCredit(credits);
-    setCredits(newRemaining);
-    return true;
-  } finally {
-    consumingRef.current = false;
-  }
-};
-```
-Use this pattern whenever an action must fire exactly once per user intent, especially for AI credit operations.
-
-## clearTimeout Cleanup Pattern
-
-All `setTimeout` calls inside `useEffect` must return a cleanup:
-```jsx
-useEffect(() => {
-  const timer = setTimeout(() => setDismissed(true), 2800);
-  return () => clearTimeout(timer);
-}, [someCondition]);
-```
-Files demonstrating this: `src/components/home/FirstDayGuide.jsx`, `src/components/sante/NotebookContent.jsx`.
-Note: bare `setTimeout(() => setState(x), N)` without cleanup is tolerated only when the component is long-lived (e.g., one-shot milestone animations in `Home.jsx`).
-
-## Lazy Loading Pattern
-
-Heavy components loaded with `React.lazy` + `Suspense` with `SkeletonPage` fallback:
-```jsx
-const AITrainingProgram = lazy(() => import("@/components/activite/AITrainingProgram"));
-
-// In render:
-<Suspense fallback={<SkeletonPage variant="list" />}>
-  <AITrainingProgram ... />
-</Suspense>
-```
-Candidates: heavy map components (`WalkMap`, `NearbyParks`), AI-heavy tabs (`FindVetContent`), all pages in `pages.config.js`.
-Files: `src/pages.config.js` (all page-level lazy imports), `src/pages/Activite.jsx`, `src/pages/Sante.jsx`, `src/components/tracker/WalkMode.jsx`.
-
-## Animation Conventions
-
-**Source of truth:** `src/lib/animations.js`
-
-Use exported presets; do not define inline spring configs:
-```jsx
-import { spring, tapScale, fadeInUp, springSnappy, staggerContainer, staggerItem } from "@/lib/animations";
-
-// Tap feedback on cards:
-<motion.div {...tapScale}>
-
-// Spring for bottom sheets:
-transition={{ type: "spring", stiffness: 300, damping: 30 }}
-
-// Always respect prefers-reduced-motion:
-const prefersReducedMotion = useReducedMotion(); // from framer-motion
-initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-```
-
-Spring presets:
-- `spring` — stiffness 360, damping 28 — default for most UI transitions
-- `springGentle` — stiffness 120, damping 20 — message animations, slide-ins
-- `springSnappy` — stiffness 300, damping 25 — expand/collapse, form reveals
-- Bottom sheets: stiffness 300, damping 30 (inline)
-
-**Stagger pattern:**
-```jsx
-<motion.div {...staggerContainer} initial="hidden" animate="show">
-  {items.map(item => (
-    <motion.div key={item.id} variants={staggerItem}>...</motion.div>
-  ))}
-</motion.div>
-```
-
-## Component Design Patterns
-
-**Bottom sheet modals:**
-- Fixed inset-0, items-end, bg-black/50 backdrop-blur-sm overlay
-- Inner panel: `rounded-t-3xl`, spring transition `y: "100%" → 0`
-- Drag handle: `w-10 h-1 bg-muted rounded-full` centered at top
-- Max height: `max-h-[85vh] overflow-y-auto`
-- Click-outside to close: outer `onClick={onClose}`, inner `onClick={e => e.stopPropagation()}`
-
-**Loading spinners (inline):**
-```jsx
-<div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-```
-
-**Empty states:**
-Use `<EmptyState>` from `src/components/ui/EmptyState.jsx` — never inline empty state markup:
-```jsx
-<EmptyState
-  mascot="curious"         // one of 20 PawMascot variants
-  title="Titre court"
-  description="Description explicative."
-  actionLabel="CTA label"
-  onAction={() => setShowAddForm(true)}
-/>
-```
-
-**Skeleton loading:**
-Use `<SkeletonPage>` from `src/components/ui/SkeletonPage.jsx`:
-```jsx
-if (loading) return <SkeletonPage variant="stats" currentPage="Home" />;
-```
-Variants: `"stats"`, `"list"`, `"detail"`, `"chat"`.
-
-**Inline expand/collapse forms:**
-Pattern used in `SectionVaccins.jsx` and `SectionPoids.jsx`:
-```jsx
-<AnimatePresence>
-  {showAddForm && (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      className="overflow-hidden"
-    >
-      {/* form content */}
-    </motion.div>
-  )}
-</AnimatePresence>
-```
+**Home cache (2-minute TTL, `src/lib/HomeCacheContext.jsx`):**
+- In-memory `useRef` cache, invalidated on active dog change
+- Used only on `src/pages/Home.jsx` to avoid redundant full-page refetches
 
 ## Logging
 
-- `console.error(e)` for caught errors in handlers
-- `console.warn("message:", e)` for non-critical failures (e.g., background refreshes)
-- No custom logger — raw console only
-- Production errors visible in browser console only
+**Framework:** `console.debug` for analytics, `console.error` for errors, `console.warn` for recoverable failures
 
-## Comments
+**Analytics (`src/utils/analytics.js`):**
+- `trackEvent(eventName, properties)` — stores last 100 events in `localStorage` with 30-day TTL
+- Also calls `console.debug("[Analytics]", ...)` for dev inspection
+- No third-party service — explicitly marked as temporary implementation in the file header
 
-**When to add:**
-- File-level JSDoc comment with purpose (`/** dateHelpers.js — Shared date... */`)
-- JSDoc for exported utility functions (parameter types, return value, usage example)
-- Inline comments on non-obvious logic (e.g., DST handling, cache strategy)
-- Section separators with `// ─── Section Name ─────` style dashes for long files
+**When to use which:**
+- `console.error` — unexpected exceptions, unrecoverable states
+- `console.warn` — expected failures that are handled (e.g. schema field missing, badge check fails)
+- `trackEvent` — business events: `"onboarding_complete"`, `"daily_limit_reached"`
 
-**Do not comment:**
-- Obvious logic
-- Disabled code — delete it, do not comment it out
+## Component Design
+
+**Structure pattern (functional components):**
+```jsx
+// 1. Imports
+// 2. Constants/config outside component
+// 3. export default function ComponentName({ prop1, prop2 = defaultValue }) {
+// 4.   State declarations
+// 5.   Refs
+// 6.   useEffect hooks
+// 7.   Handler functions
+// 8.   return JSX
+// }
+```
+
+**Props defaults:** Destructured with defaults — `{ dogs = [], onSubmit, loading = false }`
+
+**Context pattern:**
+```jsx
+const MyContext = createContext(null);
+export function MyProvider({ children }) { ... }
+export function useMyHook() {
+  const ctx = useContext(MyContext);
+  if (!ctx) throw new Error("useMyHook must be used within MyProvider");
+  return ctx;
+}
+```
+
+**Pure utility modules (no React, no side effects):**
+- `src/utils/healthStatus.js` — health score calculations, WSAVA vaccine logic
+- `src/utils/dateHelpers.js` — date formatting and arithmetic
+- `src/utils/pdfHelpers.js` — PDF layout helpers
+- All exported functions have `/** JSDoc */` doc comments
+
+## Animation Conventions
+
+**Library:** Framer Motion v11 — `motion.div`, `motion.button`, `AnimatePresence`
+
+**Shared presets in `src/lib/animations.js`:**
+- `spring` — `{ type: "spring", stiffness: 360, damping: 28 }` — default for UI transitions
+- `springGentle` — `{ stiffness: 120, damping: 20 }` — messages, slide-ins
+- `springSnappy` — `{ stiffness: 300, damping: 25 }` — expand/collapse
+- `tapScale` — `{ whileTap: { scale: 0.97 } }` — card press feedback
+- `pressIn` — `{ whileTap: { scale: 0.95, opacity: 0.82 } }` — CTA buttons
+- `fadeInUp` — `{ initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } }` — entrances
+- `staggerContainer` / `staggerItem` — 80ms stagger for lists
+
+**Accessibility (always implement):**
+- Use `useReducedMotion()` from Framer Motion in pages that animate on mount
+- Or `window.matchMedia('(prefers-reduced-motion: reduce)').matches` check in non-React utils
+- `useCountUp` (in `src/hooks/useCountUp.js`) snaps to final value immediately when motion is reduced
+
+## CSS / Styling Conventions
+
+**Primary:** Tailwind CSS v3 utility classes with `cn()` helper from `src/lib/utils.js`
+
+```javascript
+import { cn } from "@/lib/utils";
+className={cn("base-class", condition && "conditional-class")}
+```
+
+**CSS variables (via `src/index.css`):**
+- `hsl(var(--background))` — cream `HSL(37,33%,95%)`
+- `hsl(var(--primary))` — forest `#1A4D3E`
+- `hsl(var(--ring))` — emerald `#2D9F82`
+- Custom tokens: `--safe`, `--caution`, `--toxic` for food safety indicators
+
+**Hard-coded brand colors (acceptable in ErrorBoundary and inline styles only):**
+- `#1A4D3E` — forest green (primary)
+- `#2D9F82` — emerald (CTA, success)
+- `hsl(37, 33%, 95%)` — cream background
+
+**Tailwind custom tokens (`tailwind.config.js`):**
+- `safe`, `caution`, `toxic` color tokens
+- `radius` variable-based: `lg`, `md`, `sm`, `xl`, `2xl`
+- Font: Inter → system font fallback stack
+
+**Color rules (never break these):**
+- No orange, no teal, no yellow
+- Amber (`text-amber-600`, `bg-amber-50`) is reserved for warnings only
+- Do not modify `src/index.css` color variables
 
 ## Module Design
 
 **Exports:**
-- One default export per component file (the component)
-- Named exports for utilities, constants, and sub-components when reused elsewhere (`export function RecordRow`, `export const ACTIVITY_ICONS`)
+- `export default function` for React components (one component per file)
+- Named exports for utilities — `export function getAge()`, `export const VACCINE_REFERENCE`
+- Context files export both: Provider component + hook — `AuthProvider` + `useAuth`
 
-**Barrel files:**
-- `src/utils/index.ts` — only `createPageUrl` and `getActiveDog`
-- No barrel for components — import directly from file path
-- No barrel for pages — `pages.config.js` handles the page registry
+**Barrel files:** Not used — always import from specific file path
+
+## CGC Complexity Hotspots
+
+Functions exceeding complexity threshold 10 (CGC `analyze complexity`):
+
+| Function | Complexity | File |
+|----------|-----------|------|
+| `buildHealthSummaryHTML` | 28 | `base44/functions/vetAccess/entry.ts:13` |
+| `getAge` | 17 | `base44/functions/pawcoachChat/entry.ts:438` |
+| `getAge` | 17 | `base44/functions/weeklyInsightGenerate/entry.ts:205` |
+| `formatDateFr` | 11 | `base44/functions/pawcoachChat/entry.ts:129` |
+
+Frontend large files (potential complexity hotspots by line count):
+- `src/pages/Training.jsx` — 817 lines
+- `src/pages/Nutri.jsx` — 743 lines
+- `src/components/nutrition/NutritionMealPlan.jsx` — 726 lines
+- `src/pages/Home.jsx` — 694 lines
+- `src/components/notebook/SmartHealthAssistant.jsx` — 670 lines
+- `src/utils/healthStatus.js` — 655 lines (acceptable — pure logic module)
+
+## Known Duplication (CGC dead-code + grep findings)
+
+**`getWeekStart` defined twice:**
+- Canonical: `src/utils/dateHelpers.js:29` (Monday-based, correct)
+- Duplicate: `src/utils/recommendations.js:12` (should import from `dateHelpers`)
+
+**`sanitize` inline in 10 backend files** — isolation constraint (Deno functions have no shared imports).
+
+**`validateImageUrl` in 4 backend files** — same isolation constraint.
+
+**`getAge` duplicated in 2 backend files** — `pawcoachChat/entry.ts:438` and `weeklyInsightGenerate/entry.ts:205`.
 
 ---
 

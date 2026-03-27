@@ -4,201 +4,184 @@
 
 ## APIs & External Services
 
-**AI / LLM (Base44 Core):**
-- Base44 `Core.InvokeLLM` — Base44-managed LLM (model not exposed to app code)
-  - Called via `base44.integrations.Core.InvokeLLM(params)` or `base44.asServiceRole.integrations.Core.InvokeLLM(params)`
-  - Used in 7 backend functions:
-    - `base44/functions/pawcoachChat/entry.ts` — AI chat with full dog memory context
-    - `base44/functions/analyzeGrowthPhoto/entry.ts` — vision analysis, body condition score
-    - `base44/functions/finalDiagnosis/entry.ts` — step-2 symptom diagnosis
-    - `base44/functions/preDiagnosis/entry.ts` — step-1 pre-diagnosis questions
-    - `base44/functions/generateTrainingProgram/entry.ts` — personalized training plan
-    - `base44/functions/parseHealthFile/entry.ts` — parse uploaded vet documents
-    - `base44/functions/processHealthInput/entry.ts` — process health data input
-  - Supports vision (image analysis) via `file_urls` param — images must come from allowlisted hosts: `base44.app`, `amazonaws.com`, `s3.amazonaws.com`
-  - Supports structured JSON output via `response_json_schema` param
+### Base44 Platform (primary)
+- **What:** App hosting, auth, entity storage, serverless function runtime
+- **SDK (frontend):** `@base44/sdk` 0.8.23, initialized in `src/api/base44Client.js`
+  ```js
+  export const base44 = createClient({ appId, token, functionsVersion, requiresAuth: true, appBaseUrl });
+  ```
+- **SDK (backend):** `npm:@base44/sdk@0.8.20`, used via `createClientFromRequest(req)` in every `base44/functions/*/entry.ts`
+- **Auth:** Token passed via URL param or localStorage (`base44_access_token`). Managed by `src/lib/AuthContext.jsx` via `base44.auth.me()` and `base44.auth.redirectToLogin()`
+- **Entity access:** Via `src/api/entities.js` wrapper — 19 entities (Dog, HealthRecord, DailyCheckin, DailyLog, Streak, FoodScan, UserProgress, DiagnosisReport, NutritionPlan, Bookmark, WeeklyInsight, SharedVetAccess, DogAchievement, DietPreferences, GrowthEntry, ParkReview, PlaceFavorite, ChatMessage, VetNote)
+- **Function invocation (frontend):** `base44.functions.invoke("functionName", payload)` — used in 20+ components and pages
+- **App config:** `src/lib/app-params.js` reads `VITE_BASE44_APP_ID`, `VITE_BASE44_FUNCTIONS_VERSION`, `VITE_BASE44_APP_BASE_URL` from Vite env or URL params
 
-**Email (Base44 Core):**
-- Base44 `Core.SendEmail` — Base44-managed transactional email
-  - Called via `base44.integrations.Core.SendEmail(params)` or `base44.asServiceRole.integrations.Core.SendEmail(params)`
-  - Used in 8 backend notification/reminder functions:
-    - `base44/functions/medicationReminders/entry.ts`
-    - `base44/functions/monthlySummary/entry.ts`
-    - `base44/functions/streakReminder/entry.ts`
-    - `base44/functions/trialExpiryReminder/entry.ts`
-    - `base44/functions/vaccineReminders/entry.ts`
-    - `base44/functions/vetAccess/entry.ts`
-    - `base44/functions/vetVisitReminders/entry.ts`
-    - `base44/functions/walkReminder/entry.ts`
+### OpenRouter AI API
+- **What:** LLM proxy used for chat, daily check-in, and weekly insights
+- **Endpoint:** `https://openrouter.ai/api/v1/chat/completions` (direct fetch, not SDK)
+- **Auth:** `Authorization: Bearer ${OPENROUTER_API_KEY}` (Deno secret)
+- **Default model:** `deepseek/deepseek-chat`
+- **Vision model:** `openai/gpt-4o` — triggered when image URL is present in chat
+- **Headers required:** `HTTP-Referer: https://pawcoach.app`, `X-Title: PawCoach`
+- **Functions using it:**
+  - `base44/functions/pawcoachChat/entry.ts` — user chat + nutrition mode + vision (image analysis)
+  - `base44/functions/dailyCheckinProcess/entry.ts` — daily AI wellness insight
+  - `base44/functions/weeklyInsightGenerate/entry.ts` — weekly summary generation
+- **Env var:** `OPENROUTER_API_KEY`
 
-**Maps / Geospatial:**
-- Overpass API (OpenStreetMap) — free, no auth required
-  - Endpoint: `https://overpass-api.de/api/interpreter`
-  - Purpose: fetch nearby dog parks and public parks
-  - Client: `src/utils/overpass.js` (`fetchNearbyParks`, `findNearestPark`)
-  - Cache: localStorage key `pawcoach_nearby_parks`, 4-hour TTL, drift-aware (1km threshold)
-  - Timeout: 12 seconds with AbortController
-  - No API key required
+### Base44 InvokeLLM (internal AI)
+- **What:** Base44-managed LLM calls, no external key needed — billed through Base44 credits
+- **Pattern:** `base44.integrations.Core.InvokeLLM({ prompt, ... })` or `base44.asServiceRole.integrations.Core.InvokeLLM(...)`
+- **Functions using it:**
+  - `base44/functions/preDiagnosis/entry.ts` — symptom intake AI
+  - `base44/functions/finalDiagnosis/entry.ts` — full AI diagnosis
+  - `base44/functions/parseHealthFile/entry.ts` — health file OCR/parsing
+  - `base44/functions/processHealthInput/entry.ts` — health data processing
+  - `base44/functions/generateTrainingProgram/entry.ts` — AI training program (2 LLM calls per request)
+  - `base44/functions/analyzeGrowthPhoto/entry.ts` — dog growth photo analysis
 
-**Lottie Animations CDN:**
-- LottieFiles CDN (`assets-v2.lottiefiles.com`) — no auth required
-  - ~70 animation URLs served as `.lottie` (dotLottie format)
-  - Catalog: `src/lib/lottieLibrary.js`
-  - Player: `src/components/ui/LottieAnimation.jsx` via `@lottiefiles/dotlottie-react`
+### Base44 SendEmail (internal email)
+- **What:** Base44-managed transactional email — no external email provider needed
+- **Pattern:** `base44.asServiceRole.integrations.Core.SendEmail({ to, subject, body })`
+- **Functions using it:**
+  - `base44/functions/vetAccess/entry.ts` — vet share invitation email
+  - `base44/functions/medicationReminders/entry.ts` — scheduled medication reminders
+  - `base44/functions/vaccineReminders/entry.ts` — scheduled vaccine reminders
+  - `base44/functions/vetVisitReminders/entry.ts` — scheduled vet visit reminders
+  - `base44/functions/walkReminder/entry.ts` — scheduled walk reminders (runs hourly)
+  - `base44/functions/streakReminder/entry.ts` — scheduled streak reminders
+  - `base44/functions/trialExpiryReminder/entry.ts` — trial expiry reminders (3 days / 1 day before)
+  - `base44/functions/monthlySummary/entry.ts` — monthly summary emails
+
+## Payments
+
+### Stripe
+- **What:** Subscription billing (monthly 7.99 EUR, annual 59.99 EUR)
+- **SDK (backend):** `npm:stripe@17.3.1` imported in 4 Deno functions
+- **SDK (frontend):** `@stripe/stripe-js` 5.2.0 — used for Stripe.js loading and checkout redirect
+- **Auth:** `STRIPE_SECRET_KEY` (Deno secret), `STRIPE_WEBHOOK_SECRET` (Deno secret)
+- **Allowed price IDs (hardcoded in `stripeCheckout`):**
+  - `price_1T4tkFDuhaIxY4PGpnhDTx5L` (monthly)
+  - `price_1T4tkFDuhaIxY4PGWLeWApDL` (annual)
+- **Functions:**
+  - `base44/functions/stripeCheckout/entry.ts` — creates Checkout Session, returns `url`
+  - `base44/functions/stripePortal/entry.ts` — creates Billing Portal session, redirects to `/Profile`
+  - `base44/functions/stripeWebhook/entry.ts` — handles webhook events (see below)
+  - `base44/functions/deleteUser/entry.ts` — cancels Stripe subscription on account deletion
+- **Frontend invocation:**
+  - `src/pages/Premium.jsx:115` — `base44.functions.invoke("stripeCheckout", { priceId })`
+  - `src/components/profile/SubscriptionSection.jsx:13` — `base44.functions.invoke("stripePortal")`
+- **User fields updated by Stripe webhooks:** `is_premium`, `premium_since`, `stripe_customer_id`, `stripe_subscription_id`, `stripe_subscription_status`
+
+## Webhooks
+
+### Incoming (handled by Stripe webhook function)
+- **Endpoint:** Base44 function URL for `stripeWebhook`
+- **Verification:** `stripe.webhooks.constructEventAsync(body, signature, webhookSecret)`
+- **Handled events:**
+
+| Event | Action |
+|---|---|
+| `checkout.session.completed` | Set `is_premium=true`, store `stripe_customer_id` + `stripe_subscription_id` |
+| `customer.subscription.deleted` | Set `is_premium=false`, clear `stripe_subscription_id` |
+| `customer.subscription.updated` | Sync `is_premium` based on subscription `status` (active/trialing = true) |
+| `invoice.payment_failed` | After 3 failed attempts: revoke premium. Before: set `stripe_subscription_status=past_due` |
+
+- **Idempotency:** All handlers check current user state before updating to prevent duplicate processing
+
+## Maps & Geolocation
+
+### OpenStreetMap / React-Leaflet
+- **What:** Interactive maps for vet finder and nearby parks
+- **Tile source:** OpenStreetMap tiles (no API key required)
+- **Files:** `src/components/sante/FindVetContent.jsx`, `src/components/tracker/NearbyParks.jsx`, `src/components/tracker/WalkMap.jsx`
+- **Marker icons:** Loaded from `https://unpkg.com/leaflet@1.9.4/dist/images/` (CDN)
+
+### Overpass API (OpenStreetMap)
+- **What:** Fetches nearby dog-friendly parks via OSM data
+- **Endpoint:** `https://overpass-api.de/api/interpreter` (no API key required)
+- **File:** `src/utils/overpass.js`
+- **Caching:** localStorage cache with 4-hour TTL, invalidated if user moves >1 km
+- **Query:** Fetches `leisure=dog_park`, `leisure=park` nodes and ways within configurable radius
+
+### Browser Geolocation API
+- **What:** User GPS position for walk tracking and nearby search
+- **Usage:** `navigator.geolocation.getCurrentPosition()` and `navigator.geolocation.watchPosition()`
+- **Files:** `src/components/tracker/WalkMode.jsx`, `src/components/tracker/NearbyParks.jsx`, `src/components/sante/FindVetContent.jsx`
+
+## Animations & Media
+
+### LottieFiles CDN
+- **What:** .lottie animation files streamed from LottieFiles CDN
+- **Endpoint:** `https://assets-v2.lottiefiles.com/...`
+- **No API key required**
+- **File:** `src/lib/lottieLibrary.js` (library of animation URLs)
+- **Component:** `src/components/ui/LottieAnimation.jsx` via `@lottiefiles/dotlottie-react`
 
 ## Data Storage
 
-**Primary Database:**
-- Base44 managed database — all entities via `@base44/sdk`
-  - Client setup: `src/api/base44Client.js`
-  - Entity access layer: `src/api/entities.js` (wrapped entities with consistent error logging)
-  - 19 entities: `Dog`, `HealthRecord`, `DailyCheckin`, `DailyLog`, `Streak`, `FoodScan`, `UserProgress`, `DiagnosisReport`, `NutritionPlan`, `Bookmark`, `WeeklyInsight`, `SharedVetAccess`, `DogAchievement`, `DietPreferences`, `GrowthEntry`, `ParkReview`, `PlaceFavorite`, `ChatMessage`, `VetNote`
-  - `User` entity accessed only via `base44.auth.me()` / `base44.auth.updateMe()` / `base44.asServiceRole.entities.User`
+**Databases:**
+- Base44 managed database — all entity data stored via Base44 SDK (`base44.entities.*`)
+- No direct DB connection string — fully abstracted by Base44 SDK
 
 **File Storage:**
-- Base44 managed file storage (AWS S3 behind Base44)
-  - Image uploads (dog photos, vet documents, growth photos) stored on `base44.app` or `amazonaws.com`
-  - Server-side validation: `base44.app`, `amazonaws.com`, `s3.amazonaws.com` are the allowlisted domains for image URLs
+- Base44 managed file storage — image uploads (dog photos, health files) stored as Base44 file URLs
+- Validated image URL domains in `pawcoachChat`: `base44.app`, `amazonaws.com`, `s3.amazonaws.com`
 
-**Client-Side Caching (localStorage):**
-- `activeDogId` — currently selected dog ID
-- `pawcoach_nearby_parks` — Overpass API results cache (4h TTL)
-- `pawcoach_analytics_events` — local analytics event buffer (last 100, 30-day TTL)
-- `base44_*` — Base44 SDK auth tokens and app params (managed by `src/lib/app-params.js`)
+**Client-side Storage:**
+- `localStorage` — auth token (`base44_access_token`), active dog ID (`activeDogId`), parks cache (`pawcoach_nearby_parks`), app params
+- In-memory React ref — Home page cache (`src/lib/HomeCacheContext.jsx`)
 
-**In-Memory Cache:**
-- `src/lib/HomeCacheContext.jsx` — Home page data cache (2-minute TTL, dog-ID-aware), prevents re-fetch on tab switch
+**Caching:**
+- No server-side cache layer. Client-side only (localStorage + React state)
 
 ## Authentication & Identity
 
 **Auth Provider:**
-- Base44 built-in auth — email/password managed by Base44 platform
-  - Client: `base44.auth.me()`, `base44.auth.updateMe()`
-  - Context: `src/lib/AuthContext.jsx` — wraps entire authenticated app
-  - Token storage: localStorage key `base44_access_token` (managed by SDK)
-  - App public settings checked at startup via Base44 public API
-
-**User Premium Status Fields (on User entity):**
-- `is_premium` — boolean flag set by Stripe webhook
-- `trial_expires_at` — ISO date string for trial expiry
-- `premium_since` — date premium was activated
-- `stripe_customer_id` — Stripe customer reference
-- `stripe_subscription_id` — active subscription ID
-- `stripe_subscription_status` — subscription status string
-
-**AI Credit Fields (on User entity):**
-- `messages_remaining` — daily AI chat messages (free: 10/day)
-- `messages_daily_reset` — YYYY-MM-DD string of last reset
-- `actions_remaining` — daily AI actions like photo analysis (free: 3/day)
-- `actions_daily_reset` — YYYY-MM-DD string of last reset
-- Credit logic: `src/utils/ai-credits.js`, enforced server-side in each function
-
-## Payments — Stripe
-
-**Integration:**
-- Stripe SDK (backend): `npm:stripe@17.3.1` in Deno functions
-- Stripe SDK (frontend): `@stripe/react-stripe-js` + `@stripe/stripe-js`
-- Environment var (backend Deno): `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`
-
-**Price IDs (hardcoded allowlist):**
-- Monthly: `price_1T4tkFDuhaIxY4PGpnhDTx5L` (7.99 EUR/month)
-- Annual: `price_1T4tkFDuhaIxY4PGWLeWApDL` (59.99 EUR/year)
-
-**Functions:**
-- `base44/functions/stripeCheckout/entry.ts` — creates Checkout Session, validates priceId against allowlist
-- `base44/functions/stripePortal/entry.ts` — creates Customer Portal session for subscription management
-- `base44/functions/stripeWebhook/entry.ts` — handles Stripe webhook events:
-  - `checkout.session.completed` → sets `is_premium: true`, stores `stripe_customer_id`, `stripe_subscription_id`
-  - `customer.subscription.deleted` → sets `is_premium: false`
-  - `customer.subscription.updated` → updates `is_premium` based on subscription status
-  - `invoice.payment_failed` → revokes premium after 3 failed attempts, sets `stripe_subscription_status: "past_due"`
-
-**Webhook security:**
-- Signature verification via `stripe.webhooks.constructEventAsync()` with `STRIPE_WEBHOOK_SECRET`
-- Origin validation in checkout: only `*.base44.app` or fallback to production URL
+- Base44 built-in auth — token-based, managed by Base44 platform
+- **Implementation:** `src/lib/AuthContext.jsx`
+  - `base44.auth.me()` — validate current token, fetch user object
+  - `base44.auth.redirectToLogin(returnUrl)` — redirect to Base44 login page
+  - `base44.auth.logout(returnUrl)` — clear token and redirect
+- **User object fields used:** `email`, `is_premium`, `trial_expires_at`, `stripe_customer_id`, `stripe_subscription_id`, `stripe_subscription_status`
+- **Service role:** Backend functions use `base44.asServiceRole.entities.*` for admin operations (user lookup by email, cross-user data)
 
 ## Monitoring & Observability
 
-**Error Tracking:**
-- None — no Sentry or equivalent integrated
+**Error Tracking:** Not detected (no Sentry, Datadog, or similar SDK)
 
-**Logging:**
-- Backend: `console.log` / `console.error` in Deno functions (visible in Base44 function logs)
-- Frontend: `console.debug` via analytics module; `console.warn` for non-critical failures
+**Logs:**
+- `console.error` / `console.log` in all Deno functions — visible in Base44 function logs
+- Frontend: `console.error` in API wrappers (`src/api/entities.js`)
 
 **Analytics:**
-- Local-only implementation in `src/utils/analytics.js`
-  - Events stored in localStorage (key: `pawcoach_analytics_events`, last 100, 30-day TTL)
-  - `trackEvent(name, properties)` — called on key user actions (limit reached, onboarding, etc.)
-  - `getEvents()` — browser console debugging utility
-  - No third-party analytics service — marked as temporary in code comments
+- `@base44/vite-plugin` has `analyticsTracker: true` — Base44 built-in analytics (page views, navigation)
 
 ## CI/CD & Deployment
 
-**Hosting:**
-- Base44 platform — `https://paw-coach-care.base44.app`
-- App ID: `699f971349f7fa56a125f672`
+**Hosting:** Base44 platform (`https://paw-coach-care.base44.app`)
 
-**Deploy Flow:**
-1. `git push` to `main` on `github.com/ismailhamido11-art/pawcoach`
-2. Base44 auto-syncs frontend and functions (0 credits)
-3. Manual "Publish" click in Base44 dashboard to promote to production
+**CI Pipeline:** None detected — no GitHub Actions, no test pipeline
 
-**CI Pipeline:**
-- None — no GitHub Actions or CI configured; deploy is git-push-triggered via Base44 sync
+**Deploy process:**
+1. `git push origin main` from `pawcoach/` directory
+2. Base44 auto-detects push via GitHub 2-way sync
+3. Manual "Publish" click in Base44 dashboard to push live
 
-## Webhooks & Callbacks
+## Environment Configuration
 
-**Incoming:**
-- Stripe webhook → `base44/functions/stripeWebhook/entry.ts` (POST, signature-verified)
-  - Events handled: `checkout.session.completed`, `customer.subscription.deleted`, `customer.subscription.updated`, `invoice.payment_failed`
+**Frontend env vars (Vite, set by Base44 platform):**
+- `VITE_BASE44_APP_ID`
+- `VITE_BASE44_FUNCTIONS_VERSION`
+- `VITE_BASE44_APP_BASE_URL`
 
-**Outgoing:**
-- Stripe Checkout redirect → `https://paw-coach-care.base44.app/?premium=success` (success)
-- Stripe Checkout redirect → `https://paw-coach-care.base44.app/Premium` (cancel)
+**Backend secrets (Deno, set in Base44 dashboard):**
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `OPENROUTER_API_KEY`
+- `BASE44_APP_ID`
 
-## Scheduled / Cron Functions
-
-All scheduled backend functions use Base44's cron trigger system (not HTTP-triggered):
-
-| Function | Purpose |
-|----------|---------|
-| `base44/functions/dailyCheckinProcess/entry.ts` | Daily check-in processing |
-| `base44/functions/medicationReminders/entry.ts` | Medication reminder emails |
-| `base44/functions/monthlySummary/entry.ts` | Monthly summary emails |
-| `base44/functions/streakReminder/entry.ts` | Streak reminder emails |
-| `base44/functions/trialExpiryReminder/entry.ts` | Trial expiry warning emails |
-| `base44/functions/vaccineReminders/entry.ts` | Vaccine due date reminder emails |
-| `base44/functions/vetVisitReminders/entry.ts` | Vet visit reminder emails |
-| `base44/functions/walkReminder/entry.ts` | Walk reminder emails |
-| `base44/functions/weeklyInsightGenerate/entry.ts` | Generate weekly AI insights |
-
-## HTTP-Triggered Functions (called from frontend)
-
-| Function | Caller | Purpose |
-|----------|--------|---------|
-| `base44/functions/pawcoachChat/entry.ts` | `src/pages/Chat.jsx` | AI chat with dog memory |
-| `base44/functions/analyzeGrowthPhoto/entry.ts` | `src/components/sante/GrowthTrackerContent.jsx` | Vision BCS analysis |
-| `base44/functions/finalDiagnosis/entry.ts` | Symptom checker flow | Step-2 AI diagnosis |
-| `base44/functions/preDiagnosis/entry.ts` | Symptom checker flow | Step-1 pre-diagnosis |
-| `base44/functions/generateTrainingProgram/entry.ts` | `src/pages/Training.jsx` | AI training plan generation |
-| `base44/functions/parseHealthFile/entry.ts` | Health file upload | Parse vet documents |
-| `base44/functions/processHealthInput/entry.ts` | Health input forms | Process health data |
-| `base44/functions/generateDiagnosisPDF/entry.ts` | Download flow | Generate diagnosis PDF |
-| `base44/functions/vetAccess/entry.ts` | `src/pages/VetPortal.jsx` | Vet access management |
-| `base44/functions/stripeCheckout/entry.ts` | `src/pages/Premium.jsx` | Create Stripe Checkout Session |
-| `base44/functions/stripePortal/entry.ts` | `src/components/profile/SubscriptionSection.jsx` | Open Stripe Customer Portal |
-| `base44/functions/deleteUser/entry.ts` | `src/pages/Profile.jsx` | Account deletion |
-
-## Security Patterns
-
-All backend functions enforce:
-- **Auth check**: `base44.auth.me()` → 401 if unauthenticated
-- **Ownership check**: `dog.owner !== user.email` → 403 Forbidden
-- **Input sanitization**: `sanitize(s, max)` helper strips `<>` and truncates
-- **SSRF prevention**: image URLs validated against allowlist (`base44.app`, `amazonaws.com`, `s3.amazonaws.com`)
-- **Server-side quota**: credit checks re-enforced in functions (prevents multi-tab bypass)
-- **Prompt injection protection**: message history filtered to `user`/`assistant` roles only, capped at 20 messages, 2000 chars each
+**Secrets location:** Base44 dashboard (not in code or `.env` files)
 
 ---
 
