@@ -318,29 +318,6 @@ export default function Home() {
     finally { setMarkingRead(false); }
   };
 
-  // Walk streak — calculated from dailyLogs (same logic as TrackerHistory)
-  const walkStreak = useMemo(() => {
-    const withWalks = (dailyLogs || [])
-      .filter(l => (l.walk_minutes || 0) > 0)
-      .sort((a, b) => b.date.localeCompare(a.date));
-    if (withWalks.length === 0) return 0;
-    const today = getTodayString();
-    const yesterday = (() => {
-      const d = new Date(); d.setDate(d.getDate() - 1);
-      return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-    })();
-    if (withWalks[0].date !== today && withWalks[0].date !== yesterday) return 0;
-    let current = 1;
-    for (let i = 0; i < withWalks.length - 1; i++) {
-      const d1 = new Date(withWalks[i].date + "T12:00:00");
-      const d2 = new Date(withWalks[i + 1].date + "T12:00:00");
-      const diff = Math.round((d1 - d2) / 86400000);
-      if (diff === 1) current++;
-      else break;
-    }
-    return current;
-  }, [dailyLogs]);
-
   // Centralized recommendations — computed once, shared by TodayCard + DailyCoaching (DASH-05)
   const recommendations = useMemo(() => {
     if (!dog) return [];

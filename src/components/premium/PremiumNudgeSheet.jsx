@@ -35,7 +35,7 @@ const GOAL_NUDGE = {
   },
 };
 
-export default function PremiumNudgeSheet({ visible, onClose, dogName, ownerGoal, context: _context = "default" }) {
+export default function PremiumNudgeSheet({ visible, onClose, dogName, ownerGoal }) {
   const navigate = useNavigate();
   useBackClose(visible, onClose);
 
