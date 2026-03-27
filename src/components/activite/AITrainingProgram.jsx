@@ -464,7 +464,7 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
 
 // ─── Main component ────────────────────────────────────────
 export default function AITrainingProgram({ dog, logs = [] }) {
-  const { credits, hasCredits, isPremium, consume } = useActionCredits();
+  const { credits, hasCredits, isPremium, consume, loading } = useActionCredits();
   const [program, setProgram] = useState(null);
   const [generating, setGenerating] = useState(false);
   const [loadingBookmarks, setLoadingBookmarks] = useState(true);
@@ -676,6 +676,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
   };
 
   async function generate() {
+    if (generating) return; // guard double-clic
     if (!isPremium && !hasCredits) return;
     setGenerating(true);
     setProgram(null);
@@ -882,12 +883,12 @@ export default function AITrainingProgram({ dog, logs = [] }) {
             </div>
           )}
 
-          {!isPremium && !hasCredits ? (
+          {!isPremium && !loading && !hasCredits ? (
             <UpgradePrompt type="action" from="training" />
           ) : (
             <>
               {!isPremium && credits != null && <CreditBadge remaining={credits} className="mb-2" />}
-              <Button onClick={generate} className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white">
+              <Button onClick={generate} disabled={generating} className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white">
                 <Sparkles className="w-4 h-4 mr-2" />
                 Générer mon programme 7 jours
               </Button>
