@@ -69,8 +69,8 @@ Plans:
 **Plans**: 3 plans
 Plans:
 - [ ] 02-01-PLAN.md — Hero mood conditionnel (DATA-01) + Repas vs eau (DATA-02) + Accents DailyBriefing (DATA-06)
-- [ ] 02-02-PLAN.md — GrowthTracker sync Dog.weight (DATA-03) + Supprimer fabrication energy/appetite (DATA-04)
-- [ ] 02-03-PLAN.md — Unifier source score wellness Dashboard = Sante (DATA-05)
+- [x] 02-02-PLAN.md — GrowthTracker sync Dog.weight (DATA-03) + Supprimer fabrication energy/appetite (DATA-04)
+- [x] 02-03-PLAN.md — Unifier source score wellness Dashboard = Sante (DATA-05)
 
 ### Phase 3: Flux Deconnectes
 
@@ -105,6 +105,6 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Backend Critique | 3/3 | Complete   | 2026-03-27 |
-| 2. Donnees Fausses | 0/3 | Planned | - |
+| 2. Donnees Fausses | 2/3 | In Progress|  |
 | 3. Flux Deconnectes | 0/? | Not started | - |
 | 4. UX Trompeuse | 0/? | Not started | - |

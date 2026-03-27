@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v7.0
 milestone_name: "User-Ready" — Phases
-status: verifying
-stopped_at: Completed 01-backend-critique/01-01-PLAN.md
-last_updated: "2026-03-27T16:36:37.862Z"
+status: executing
+stopped_at: Completed 02-donnees-fausses/02-02-PLAN.md
+last_updated: "2026-03-27T16:53:26.611Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 6
+  completed_plans: 5
 ---
 
 # Project State
@@ -20,13 +20,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Donnees fiables et coherentes qui refletent la realite du chien
-**Current focus:** Phase 01 — Backend Critique
+**Current focus:** Phase 02 — Donnees Fausses
 
 ## Current Position
 
-Phase: 01 (Backend Critique) — EXECUTING
+Phase: 02 (Donnees Fausses) — EXECUTING
 Plan: 3 of 3
-Status: Phase complete — ready for verification
+Status: Ready to execute
 Last activity: 2026-03-27
 
 ## Progress Bar
@@ -56,6 +56,8 @@ Phase 4: UX Trompeuse        [ ] Not started
 - [Phase 01]: No extra import needed in DogProfile for ParkReview/PlaceFavorite — base44.entities[name].deleteMany pattern covers all entityNames
 - [Phase 01-backend-critique]: TECH-01: HMAC-SHA256 token (5min expiry) blocks finalDiagnosis quota bypass — Web Crypto API, no external dep
 - [Phase 01-backend-critique]: TECH-02: streakReminder uses list() + slice(0, 2000) hard cap — Base44 SDK __gte operator undocumented
+- [Phase 02-donnees-fausses]: Dog.update wrapped in try/catch so GrowthEntry.create flow never breaks if sync fails
+- [Phase 02-donnees-fausses]: handleMoodTap sends only { mood } — energy/appetite remain null until user explicitly inputs them
 
 ### Pending Todos
 
@@ -67,6 +69,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T16:36:37.857Z
-Stopped at: Completed 01-backend-critique/01-01-PLAN.md
+Last session: 2026-03-27T16:53:06.674Z
+Stopped at: Completed 02-donnees-fausses/02-02-PLAN.md
 Resume with: `/gsd:plan-phase 1`
