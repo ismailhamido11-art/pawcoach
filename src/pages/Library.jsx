@@ -95,8 +95,14 @@ export default function Library() {
   };
 
   const handleActivateTraining = async (bk) => {
+    let data;
     try {
-      const data = JSON.parse(bk.content);
+      data = JSON.parse(bk.content);
+    } catch {
+      toast.error("Programme corrompu — impossible de l'activer.");
+      return;
+    }
+    try {
       data.start_date = new Date().toISOString().split("T")[0];
       await Bookmark.update(bk.id, { content: JSON.stringify(data) });
       setBookmarks(prev => prev.map(b => b.id === bk.id ? { ...b, content: JSON.stringify(data) } : b));

@@ -27,7 +27,7 @@ export default function VetNoteForm({ dogId, vetEmail, vetName, onNoteAdded }) {
     setLoading(true);
 
     try {
-      const { note } = await base44.functions.vetAccess({
+      const response = await base44.functions.invoke("vetAccess", {
         action: 'addVetNote',
         dogId,
         vetEmail,
@@ -43,7 +43,7 @@ export default function VetNoteForm({ dogId, vetEmail, vetName, onNoteAdded }) {
       setContent("");
       setCategory("observation");
       setIsUrgent(false);
-      if (onNoteAdded) onNoteAdded(note);
+      if (onNoteAdded) onNoteAdded(response?.note ?? response);
     } catch (e) {
       console.error("VetNoteForm submit error:", e);
       toast.error("Erreur lors de l'envoi de la note. Réessaie.");
