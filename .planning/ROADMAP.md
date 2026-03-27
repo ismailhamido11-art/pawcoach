@@ -100,7 +100,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [ ] 04-01-PLAN.md — Corriger CTAs prix trompeurs (UX-02) + Supprimer champ code parrain (UX-03)
-- [ ] 04-02-PLAN.md — Reaction symptomes check-in (UX-01) + Carte Dashboard depuis Home (UX-04)
+- [x] 04-02-PLAN.md — Reaction symptomes check-in (UX-01) + Carte Dashboard depuis Home (UX-04)
 
 ---
 
@@ -111,4 +111,4 @@ Plans:
 | 1. Backend Critique | 3/3 | Complete   | 2026-03-27 |
 | 2. Donnees Fausses | 3/3 | Complete   | 2026-03-27 |
 | 3. Flux Deconnectes | 2/2 | Complete   | 2026-03-27 |
-| 4. UX Trompeuse | 0/? | Not started | - |
+| 4. UX Trompeuse | 1/2 | In Progress|  |

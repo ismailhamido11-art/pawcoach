@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v7.0
 milestone_name: "User-Ready" — Phases
-status: verifying
-stopped_at: Completed 03-flux-deconnectes/03-02-PLAN.md
-last_updated: "2026-03-27T17:13:57.422Z"
+status: executing
+stopped_at: Completed 04-ux-trompeuse/04-02-PLAN.md
+last_updated: "2026-03-27T17:26:58.116Z"
 last_activity: 2026-03-27
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 10
+  completed_plans: 9
 ---
 
 # Project State
@@ -20,13 +20,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Donnees fiables et coherentes qui refletent la realite du chien
-**Current focus:** Phase 03 — Flux Deconnectes
+**Current focus:** Phase 04 — UX Trompeuse
 
 ## Current Position
 
-Phase: 03 (Flux Deconnectes) — EXECUTING
+Phase: 04 (UX Trompeuse) — EXECUTING
 Plan: 2 of 2
-Status: Phase complete — ready for verification
+Status: Ready to execute
 Last activity: 2026-03-27
 
 ## Progress Bar
@@ -64,6 +64,8 @@ Phase 4: UX Trompeuse        [ ] Not started
 - [Phase 03-flux-deconnectes]: invalidateHome() called after localStorage.setItem in handleSwitchDog — local state updated first, then cache invalidated
 - [Phase 03-flux-deconnectes]: Remove auto-save on unmount in SmartHealthAssistant — localStorage is sufficient; silent DB writes caused FLOW-03 (Sante not notified)
 - [Phase 03-flux-deconnectes]: checkAppState() called after Stripe premium confirmation in Home.jsx — propagates is_premium via AuthContext to all useAuth() subscribers (FLOW-04)
+- [Phase 04-ux-trompeuse]: Toast symptomes decale 800ms dans handleCheckin pour eviter chevauchement visuel avec premier toast
+- [Phase 04-ux-trompeuse]: Dashboard card insertee avant Quick Actions sur Home — premier emplacement visible, lien direct sans recalcul computeAlerts
 
 ### Pending Todos
 
@@ -75,6 +77,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T17:13:57.416Z
-Stopped at: Completed 03-flux-deconnectes/03-02-PLAN.md
+Last session: 2026-03-27T17:26:58.111Z
+Stopped at: Completed 04-ux-trompeuse/04-02-PLAN.md
 Resume with: `/gsd:plan-phase 1`
