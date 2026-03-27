@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Dog, HealthRecord } from "@/api/entities";
 import { motion } from "framer-motion";
-import { Syringe, Weight, AlertTriangle, Calendar, MapPin, PawPrint, ShieldCheck, FileText, Mail, Fingerprint, Stethoscope, Pill } from "lucide-react";
+import { Syringe, Weight, AlertTriangle, Calendar, MapPin, PawPrint, ShieldCheck, FileText, Fingerprint, Stethoscope, Pill } from "lucide-react";
 import { getVaccineDisplayName } from "@/utils/healthStatus";
 import { getAge } from "@/utils/dateHelpers";
 import EmptyState from "@/components/ui/EmptyState";
@@ -233,20 +233,6 @@ export default function DogPublicProfile() {
             )}
           </div>
         </div>
-
-        {/* Contacter le propriétaire */}
-        {dog.owner && (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4">
-            <h2 className="text-xs font-black text-emerald-700 uppercase tracking-widest mb-2">Contacter le propriétaire</h2>
-            <a
-              href={`mailto:${dog.owner}`}
-              className="flex items-center gap-2 text-emerald-700 hover:text-emerald-800 transition-colors"
-            >
-              <Mail className="w-4 h-4 flex-shrink-0" />
-              <span className="text-sm font-semibold">Envoyer un message au propriétaire</span>
-            </a>
-          </div>
-        )}
 
         {/* Identification */}
         {dog.chip_number && (
