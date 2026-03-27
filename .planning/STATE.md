@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v7.0
 milestone_name: "User-Ready" — Phases
 status: verifying
-stopped_at: Completed 01-03-PLAN.md — TECH-04 (is_trial) and TECH-05 (cascade delete) fixed
-last_updated: "2026-03-27T16:36:02.816Z"
+stopped_at: Completed 01-backend-critique/01-01-PLAN.md
+last_updated: "2026-03-27T16:36:37.862Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 4
@@ -54,6 +54,8 @@ Phase 4: UX Trompeuse        [ ] Not started
 - [Phase 01]: TECH-06: console.log Stripe → console.info (audit trail business) ; log parseHealthFile supprime (debug pur)
 - [Phase 01]: Use is_premium: false filter + in-memory trial_expires_at check — avoids User.list() global, stays scalable for non-premium users
 - [Phase 01]: No extra import needed in DogProfile for ParkReview/PlaceFavorite — base44.entities[name].deleteMany pattern covers all entityNames
+- [Phase 01-backend-critique]: TECH-01: HMAC-SHA256 token (5min expiry) blocks finalDiagnosis quota bypass — Web Crypto API, no external dep
+- [Phase 01-backend-critique]: TECH-02: streakReminder uses list() + slice(0, 2000) hard cap — Base44 SDK __gte operator undocumented
 
 ### Pending Todos
 
@@ -65,6 +67,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T16:35:20.596Z
-Stopped at: Completed 01-03-PLAN.md — TECH-04 (is_trial) and TECH-05 (cascade delete) fixed
+Last session: 2026-03-27T16:36:37.857Z
+Stopped at: Completed 01-backend-critique/01-01-PLAN.md
 Resume with: `/gsd:plan-phase 1`

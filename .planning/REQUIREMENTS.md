@@ -31,8 +31,8 @@
 
 ### Bugs Techniques (TECH)
 
-- [ ] **TECH-01**: finalDiagnosis verifie le quota cote serveur (free users ne peuvent pas bypasser)
-- [ ] **TECH-02**: streakReminder utilise une query filtree au lieu de Streak.list() global
+- [x] **TECH-01**: finalDiagnosis verifie le quota cote serveur (free users ne peuvent pas bypasser)
+- [x] **TECH-02**: streakReminder utilise une query filtree au lieu de Streak.list() global
 - [x] **TECH-03**: Icone PWA (icon-192.svg) sans marqueurs de conflit Git — fichier valide
 - [x] **TECH-04**: monthlySummary ne filtre plus sur is_trial (champ inexistant dans le schema User)
 - [x] **TECH-05**: Suppression chien : deleteMany sur entites non-wrappees (ParkReview, PlaceFavorite) sans erreurs silencieuses
@@ -58,8 +58,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TECH-01 | Phase 1 | Pending |
-| TECH-02 | Phase 1 | Pending |
+| TECH-01 | Phase 1 | Complete |
+| TECH-02 | Phase 1 | Complete |
 | TECH-03 | Phase 1 | Complete |
 | TECH-04 | Phase 1 | Complete |
 | TECH-05 | Phase 1 | Complete |
