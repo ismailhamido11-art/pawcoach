@@ -104,6 +104,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
   useEffect(() => {
     (async () => {
       try {
+        if (!user?.email) return; // Pas de recovery sans owner identifie
         const saved = JSON.parse(localStorage.getItem("pawcoach_walk_active"));
         if (saved && dog?.id === saved.dogId) {
           const elapsedSec = Math.round((Date.now() - saved.startTime - (saved.paused || 0)) / 1000);
@@ -139,7 +140,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
         }
       } catch {}
     })();
-  }, [dog?.id]);
+  }, [dog?.id, user?.email]);
 
   // Sync pending offline walks
   useEffect(() => {
