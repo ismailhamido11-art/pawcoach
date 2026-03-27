@@ -10,14 +10,27 @@ Deno.serve(async (req) => {
     const monthName = lastMonth.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
     const monthStr = lastMonth.toISOString().slice(0, 7); // "YYYY-MM"
 
-    // Fetch dogs and users upfront for iteration — records loaded per-dog inside loop
-    const dogs = await base44.asServiceRole.entities.Dog.list();
-    const allUsers = await base44.asServiceRole.entities.User.list();
+    // Fetch only premium users to avoid loading the entire user table
+    const premiumUsers = await base44.asServiceRole.entities.User.filter({ is_premium: true });
+    const trialUsers = await base44.asServiceRole.entities.User.filter({ is_trial: true }).catch(() => []);
+    // Merge and deduplicate: include active trial users even if not yet flagged is_premium
+    const allEligibleUsers = [...(premiumUsers || []), ...(trialUsers || [])].filter(
+      (u, i, arr) => u.email && arr.findIndex(x => x.email === u.email) === i
+    ).filter(u => {
+      const isPremium = u.is_premium;
+      const isActiveTrial = u.trial_expires_at && new Date(u.trial_expires_at) > new Date();
+      return isPremium || isActiveTrial;
+    });
 
-    const userMap = new Map((allUsers || []).map(u => [u.email, u]));
+    // Build a flat list of dogs from eligible users only — avoids Dog.list() global scan
+    const dogsByUser = await Promise.all(
+      allEligibleUsers.map(u => base44.asServiceRole.entities.Dog.filter({ owner: u.email }).catch(() => []))
+    );
+    const userMap = new Map(allEligibleUsers.map(u => [u.email, u]));
+    const dogs = dogsByUser.flat();
 
     for (const dog of (dogs || [])) {
-      // Get owner – premium only
+      // Get owner — already guaranteed premium/trial from query above
       const user = userMap.get(dog.owner);
       if (!user) continue;
       const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
@@ -107,7 +120,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    return Response.json({ ok: true, processed: (dogs || []).length });
+    return Response.json({ ok: true, processed: (dogs || []).length, eligible_users: allEligibleUsers.length });
   } catch (error) {
     console.error("monthlySummary error:", error);
     return Response.json({ error: error?.message || String(error) }, { status: 500 });

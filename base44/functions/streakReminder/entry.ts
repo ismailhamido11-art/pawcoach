@@ -5,8 +5,12 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const today = new Date().toISOString().slice(0, 10);
 
-    // Fetch all streaks (1 per dog — small table, safe to load)
+    // Fetch all streaks (1 per dog — small table, safe to load).
+    // Cap: if the table grows unexpectedly, log a warning so we know to switch to filtering.
     const streaks = await base44.asServiceRole.entities.Streak.list();
+    if ((streaks || []).length > 500) {
+      console.warn(`streakReminder: Streak table has ${streaks.length} rows — consider switching to filtered queries if this keeps growing.`);
+    }
 
     // Filter active streaks in-memory first, then fetch only relevant dogs/users
     const activeStreaks = (streaks || []).filter(s => s.current_streak >= 3 && s.last_activity_date !== today);
