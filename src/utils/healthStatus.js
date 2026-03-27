@@ -396,7 +396,7 @@ export function getScoreLevel(score) {
  * Returns array of { id, label, value, status, icon }
  * status: "good" | "warning" | "alert" | "empty"
  */
-export function computeStatusPills(records, dog) {
+export function computeStatusPills(records, dog, extraWeightSources = []) {
   const recs = records || [];
   const t = today();
   const pills = [];
@@ -419,7 +419,14 @@ export function computeStatusPills(records, dog) {
   }
 
   // --- Weight pill ---
-  const weightTrend = computeWeightTrend(recs);
+  // Merge extra weight sources (GrowthEntry, DailyLog) as pseudo-records
+  const extraWeights = (extraWeightSources || [])
+    .filter(s => s.weight_kg && s.date)
+    .map(s => ({ type: "weight", value: s.weight_kg, date: s.date, id: s.id }));
+  const hrDates = new Set(recs.filter(r => r.type === "weight").map(r => r.date));
+  const dedupedWeights = extraWeights.filter(w => !hrDates.has(w.date));
+  const enrichedForWeight = [...recs, ...dedupedWeights];
+  const weightTrend = computeWeightTrend(enrichedForWeight);
   if (weightTrend.current === null) {
     pills.push({ id: "weight", label: "Poids", value: "Non suivi", status: "empty" });
   } else if (weightTrend.direction === "stable") {
@@ -645,7 +652,7 @@ export function computeNotebookSummary(records, dog, growthEntries = []) {
   return {
     score,
     scoreLevel: getScoreLevel(score),
-    pills: computeStatusPills(recs, dog),
+    pills: computeStatusPills(recs, dog, growthEntries),
     nextAction: computeNextAction(recs, dog),
     vaccineMap: computeVaccineMap(recs),
     weightTrend: computeWeightTrend(recs),
