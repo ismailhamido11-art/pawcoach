@@ -278,7 +278,7 @@ export default function HealthImportContent({ dog, onImported }) {
                   const isSelected = selected.has(idx);
                   const suspicious = isSuspiciousRecord(record);
                   return (
-                    <motion.button key={idx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.04 }}
+                    <motion.button key={`${record.type}-${record.date}-${idx}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.04 }}
                       whileTap={{ scale: 0.98 }} onClick={() => toggleRecord(idx)}
                       className={`w-full flex items-center gap-3 p-4 rounded-2xl border text-left transition-all ${
                         suspicious ? "bg-red-50 border-red-300" : isSelected ? "bg-white border-primary/30 shadow-sm" : "bg-white/40 border-border/20 opacity-45"

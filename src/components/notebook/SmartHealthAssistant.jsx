@@ -485,7 +485,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
                     <div className="mt-2.5 flex flex-wrap gap-1.5">
                       {suggestedActions.map((action, idx) => (
                         <button
-                          key={idx}
+                          key={`action-${action}`}
                           onClick={() => handleSend(action)}
                           className="text-xs bg-white hover:bg-muted text-primary font-medium px-3 py-1.5 rounded-full shadow-sm border border-primary/20 transition-all active:scale-95"
                         >

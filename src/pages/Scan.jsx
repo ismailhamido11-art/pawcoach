@@ -496,7 +496,7 @@ export default function Scan() {
                         <p className="text-xs font-bold text-amber-700 mb-1.5 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Aliments indésirables détectés</p>
                         <div className="flex flex-wrap gap-1.5">
                           {result.allergen_alerts.map((alert, i) => (
-                            <span key={i} className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                            <span key={`alert-${alert}`} className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
                               {alert}
                             </span>
                           ))}

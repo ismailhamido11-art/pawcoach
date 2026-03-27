@@ -565,7 +565,7 @@ export default function Nutri() {
         <div className="flex-1 flex flex-col">
           <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3 pb-44">
             {messages.map((msg, i) => (
-              <div key={i}>
+              <div key={msg.timestamp || `msg-${i}`}>
                 {shouldShowDateSeparator(messages, i) && (
                   <div className="flex items-center gap-3 py-2 my-1">
                     <div className="flex-1 h-px bg-border" />
