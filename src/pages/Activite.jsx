@@ -15,7 +15,6 @@ import TrackerHistory from "@/components/tracker/TrackerHistory";
 const AITrainingProgram = lazy(() => import("@/components/activite/AITrainingProgram"));
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import EmptyState from "@/components/ui/EmptyState";
-import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Footprints, History, Dumbbell, Sparkles, ExternalLink, Lightbulb, Timer, Target, Bone, CalendarDays } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -91,8 +90,7 @@ export default function Activite() {
     if (!dog || !user) return;
     const l = await DailyLog.filter({ dog_id: dog.id }, "-date", 30);
     setLogs(l || []);
-    // Check walk badges after refresh
-    checkWalkBadges(dog.id, user.email, l || []).catch(() => {});
+    // UX-04: checkWalkBadges removed — already called by WalkMode/CombinedFAB after walk save
     // Invalidate Home cache so DailyProgress reflects the new walk immediately
     invalidateHome();
   };
