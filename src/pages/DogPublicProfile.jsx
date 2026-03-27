@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Dog, HealthRecord } from "@/api/entities";
 import { motion } from "framer-motion";
-import { Syringe, Weight, Stethoscope, Pill, AlertTriangle, Calendar, MapPin, PawPrint, ShieldCheck, FileText, Loader2, Mail, Fingerprint } from "lucide-react";
+import { Syringe, Weight, AlertTriangle, Calendar, MapPin, PawPrint, ShieldCheck, FileText, Mail, Fingerprint } from "lucide-react";
 import { getVaccineDisplayName } from "@/utils/healthStatus";
 import EmptyState from "@/components/ui/EmptyState";
 import SkeletonPage from "@/components/ui/SkeletonPage";
@@ -170,8 +170,8 @@ export default function DogPublicProfile() {
         <div className="grid grid-cols-3 gap-2">
           {[
             { icon: Syringe, value: vaccines.length, label: "Vaccins", color: "#2d9f82" },
-            { icon: Stethoscope, value: vetVisits.length, label: "Visites", color: "#8b5cf6" },
-            { icon: Pill, value: meds.length, label: "Médoc.", color: "#10b981" },
+            { icon: Weight, value: weights.length, label: "Pesées", color: "#3b82f6" },
+            { icon: ShieldCheck, value: vaccines.filter(v => v.next_date && new Date(v.next_date) > new Date()).length, label: "À jour", color: "#2d9f82" },
           ].map((pill, i) => (
             <motion.div
               key={pill.label}
