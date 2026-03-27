@@ -27,12 +27,17 @@
 
 ## Phases
 
-- [ ] **Phase 0: Socle** - CGC re-index + /gsd:map-codebase pour donnees fraiches
-- [ ] **Phase 1: Radiographie** - CGC dead-code/complexity + /production-checklist (300+ items)
-- [ ] **Phase 2: Architecture** - /app-blueprint + CGC hub analysis (vs meilleures apps)
-- [ ] **Phase 3: Flux** - /static-flow-analysis sur les 16 pages + CGC chains
-- [ ] **Phase 4: Qualite Percue** - /art-direction-mobile + /design-analyst (scoring visuel + UX)
-- [ ] **Phase 5: Synthese** - Agreger, prioriser, creer les phases de correction
+- [x] **Phase 0: Socle** - CGC re-index + /gsd:map-codebase (completed 2026-03-27)
+- [x] **Phase 1: Radiographie** - CGC analysis + production-checklist 73% (completed 2026-03-27)
+- [x] **Phase 2: Architecture** - app-blueprint vs Woofz/Noom/Duolingo (completed 2026-03-27)
+- [x] **Phase 3: Flux** - SFA 16 pages, 8 ruptures, ~28 suspects (completed 2026-03-27)
+- [x] **Phase 4: Qualite Percue** - art-direction 8.1/10 + UX 6.2/10 (completed 2026-03-27)
+- [x] **Phase 5: Synthese** - 76 findings → 58 requirements → 5 fix phases (completed 2026-03-27)
+- [ ] **Phase 6: Legal & Security** - Privacy Policy, Terms, GDPR consent, CSP, input validation (P0)
+- [ ] **Phase 7: Flow Fixes** - 6 ruptures + 7 suspects critiques (P0/P1)
+- [ ] **Phase 8: UX & Activation** - Onboarding 5 etapes, IA visible, paywall, offline banner (P1)
+- [ ] **Phase 9: Visual Polish** - Orange cleanup, padding, typography, animation presets (P2)
+- [ ] **Phase 10: Performance & Cleanup** - Complexity, dead code, shared context, backend batch (P2/P3)
 
 ## Phase Details
 
@@ -90,13 +95,68 @@
   2. Chaque finding classe Critical/Important/Nice-to-have
   3. Phases de correction creees dans ROADMAP.md via /gsd:add-phase
 
+### Phase 6: Legal & Security
+**Goal**: L'app est legalement conforme (RGPD, CGU) et securisee contre les attaques courantes
+**Depends on**: Phase 5
+**Requirements**: FIX-01, FIX-02, FIX-03, FIX-04, FIX-05, FIX-06, FIX-07, FIX-08, FIX-09, FIX-10
+**Success Criteria** (what must be TRUE):
+  1. Page /Privacy accessible avec contenu RGPD complet
+  2. Page /Terms accessible avec CGU/CGV
+  3. Checkbox consentement RGPD bloque la creation de profil si non coche
+  4. Disclosure renouvellement auto visible sur la page Premium
+  5. CSP meta tag present dans index.html
+
+### Phase 7: Flow Fixes
+**Goal**: Zero rupture runtime — chaque action utilisateur aboutit ou affiche une erreur claire
+**Depends on**: Phase 5
+**Requirements**: FIX-15, FIX-16, FIX-17, FIX-18, FIX-19, FIX-20, FIX-21, FIX-22, FIX-23, FIX-24, FIX-25, FIX-26, FIX-27
+**Success Criteria** (what must be TRUE):
+  1. VetNoteForm soumet correctement via invoke("vetAccess", {...})
+  2. Dashboard affiche meme si un fetch echoue (pas d'ecran blanc)
+  3. LabelScanMode "Nouvelle analyse" reaffiche le ModeSwitcher
+  4. Activite pull-to-refresh ne crash plus sur erreur reseau
+
+### Phase 8: UX & Activation
+**Goal**: L'onboarding active les utilisateurs en <2min et l'IA est visible des la premiere visite
+**Depends on**: Phase 6, Phase 7
+**Requirements**: FIX-31, FIX-32, FIX-33, FIX-34, FIX-35, FIX-36, FIX-37, FIX-38, FIX-39, FIX-40, FIX-41
+**Success Criteria** (what must be TRUE):
+  1. Onboarding en 5-6 etapes max (pas 10)
+  2. Un element IA (card ou FAB) est visible sur Home
+  3. Banner offline visible quand navigator.onLine === false
+  4. SW update prompt au lieu de skipWaiting() force
+**UI hint**: yes
+
+### Phase 9: Visual Polish
+**Goal**: L'app respecte la charte Nature Premium sans exception et le design est coherent
+**Depends on**: Phase 8
+**Requirements**: FIX-44, FIX-45, FIX-46, FIX-47, FIX-48, FIX-49, FIX-50, FIX-51, FIX-52, FIX-53, FIX-54, FIX-55, FIX-56, FIX-57
+**Success Criteria** (what must be TRUE):
+  1. grep "orange" dans src/ retourne 0 classes Tailwind orange
+  2. Toutes les pages utilisent px-5 pour le padding horizontal
+  3. Les spring values inline sont remplacees par des presets animations.js
+
+### Phase 10: Performance & Cleanup
+**Goal**: Code propre, performant, sans dette technique critique
+**Depends on**: Phase 9
+**Requirements**: FIX-59, FIX-60, FIX-61, FIX-62, FIX-63, FIX-64, FIX-65, FIX-66, FIX-67, FIX-68
+**Success Criteria** (what must be TRUE):
+  1. buildHealthSummaryHTML complexite < 15 (etait 28)
+  2. getAge en un seul exemplaire partage
+  3. Dead code confirme supprime
+
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Socle | 0/? | Not started | - |
-| 1. Radiographie | 0/? | Not started | - |
-| 2. Architecture | 0/? | Not started | - |
-| 3. Flux | 0/? | Not started | - |
-| 4. Qualite Percue | 0/? | Not started | - |
-| 5. Synthese | 0/? | Not started | - |
+| 0. Socle | 1/1 | Complete | 2026-03-27 |
+| 1. Radiographie | 1/1 | Complete | 2026-03-27 |
+| 2. Architecture | 1/1 | Complete | 2026-03-27 |
+| 3. Flux | 1/1 | Complete | 2026-03-27 |
+| 4. Qualite Percue | 1/1 | Complete | 2026-03-27 |
+| 5. Synthese | 1/1 | Complete | 2026-03-27 |
+| 6. Legal & Security | 0/? | Not started | - |
+| 7. Flow Fixes | 0/? | Not started | - |
+| 8. UX & Activation | 0/? | Not started | - |
+| 9. Visual Polish | 0/? | Not started | - |
+| 10. Performance | 0/? | Not started | - |
