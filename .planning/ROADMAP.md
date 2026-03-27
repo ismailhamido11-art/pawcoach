@@ -164,10 +164,17 @@ Plans:
 **Goal**: Code propre, performant, sans dette technique critique
 **Depends on**: Phase 9
 **Requirements**: FIX-59, FIX-60, FIX-61, FIX-62, FIX-63, FIX-64, FIX-65, FIX-66, FIX-67, FIX-68
+**Plans:** 4 plans
+Plans:
+- [ ] 10-01-PLAN.md — Backend complexity: buildHealthSummaryHTML + getAge sync + handleDownload audit (FIX-59, FIX-60, FIX-61)
+- [ ] 10-02-PLAN.md — Frontend architecture: DogContext + useHomeData hook (FIX-62, FIX-63)
+- [ ] 10-03-PLAN.md — Nutri useReducer migration (FIX-64)
+- [ ] 10-04-PLAN.md — VetPortal batch + dead code + analytics cleanup (FIX-65, FIX-66, FIX-67, FIX-68)
 **Success Criteria** (what must be TRUE):
   1. buildHealthSummaryHTML complexite < 15 (etait 28)
-  2. getAge en un seul exemplaire partage
-  3. Dead code confirme supprime
+  2. getAge annote avec commentaire de sync dans les 2 backends
+  3. analytics.js supprime, zero trackEvent dans src/
+  4. VetPortal charge patients en 1 roundtrip (listMyPatients)
 
 ## Progress
 
@@ -183,4 +190,4 @@ Plans:
 | 7. Flow Fixes | 4/4 | Complete | 2026-03-27 |
 | 8. UX & Activation | 3/4 | In Progress|  |
 | 9. Visual Polish | 4/4 | Complete   | 2026-03-27 |
-| 10. Performance | 0/? | Not started | - |
+| 10. Performance | 0/4 | Not started | - |
