@@ -25,7 +25,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: Crashs & Features Mortes** - Eliminer les 4 ruptures qui bloquent l'acces aux features
+- [x] **Phase 1: Crashs & Features Mortes** - Eliminer les 4 ruptures qui bloquent l'acces aux features
 - [ ] **Phase 2: Donnees Stale** - Corriger les 6 sources de donnees fausses ou perdues
 - [ ] **Phase 3: Cache, UX & Securite** - Propager les invalidations manquantes + corriger les 5 failles UX/securite
 
@@ -43,9 +43,9 @@
 **Plans**: 4 plans
 Plans:
 - [x] 01-01-PLAN.md — CRASH-01: handleQuickCheckin defaults energy=2 appetite=2 (Home.jsx)
-- [ ] 01-02-PLAN.md — CRASH-02: labelResult declare dans Scan.jsx (ReferenceError fix)
+- [x] 01-02-PLAN.md — CRASH-02: labelResult declare dans Scan.jsx (ReferenceError fix)
 - [x] 01-03-PLAN.md — CRASH-03: imports Stethoscope + Pill dans DogPublicProfile.jsx
-- [ ] 01-04-PLAN.md — CRASH-04: CombinedFAB monte dans Home.jsx avec invalidateHome
+- [x] 01-04-PLAN.md — CRASH-04: CombinedFAB monte dans Home.jsx avec invalidateHome
 
 ### Phase 2: Donnees Stale
 **Goal**: Chaque donnee affichee reflète la realite — aucune valeur perimee ou perdue en base
@@ -57,7 +57,11 @@ Plans:
   3. La pill "Poids: Non suivi" disparait des que le chien a au moins une GrowthEntry enregistree
   4. Le score wellness est identique sur Dashboard, DogRadarHero et NotebookContent (meme valeur, meme source)
   5. Apres un scan alimentaire, les champs summary et allergen_alerts sont retrouves intacts dans la bibliotheque
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [x] 02-01-PLAN.md — STALE-01 + STALE-03: SmartAlerts weight comparison + computeStatusPills GrowthEntries
+- [ ] 02-02-PLAN.md — STALE-02 + STALE-04 + STALE-05: dog state refresh + real weight in NutriCoach + score alignment
+- [x] 02-03-PLAN.md — STALE-06: FoodScan.create saves summary + allergen_alerts
 
 ### Phase 3: Cache, UX & Securite
 **Goal**: Les changements se propagent immediatement dans Home et les failles UX/securite identifiees par le SFA sont eliminées
@@ -77,6 +81,6 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Crashs & Features Mortes | 2/4 | In Progress|  |
-| 2. Donnees Stale | 0/? | Not started | - |
+| 1. Crashs & Features Mortes | 4/4 | Complete | 2026-03-27 |
+| 2. Donnees Stale | 2/3 | In Progress|  |
 | 3. Cache, UX & Securite | 0/? | Not started | - |

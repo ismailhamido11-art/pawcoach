@@ -20,7 +20,7 @@
 - [ ] **STALE-03**: computeStatusPills inclut les GrowthEntries — "Poids: Non suivi" n'est plus affiche a tort
 - [ ] **STALE-04**: NutriCoach utilise le dernier poids reel (GrowthEntry ou DailyLog), pas dog.weight potentiellement stale
 - [ ] **STALE-05**: Score wellness identique entre Dashboard, DogRadarHero, et NotebookContent (memes sources)
-- [ ] **STALE-06**: FoodScan.create sauvegarde summary + allergen_alerts (plus de perte de donnees)
+- [x] **STALE-06**: FoodScan.create sauvegarde summary + allergen_alerts (plus de perte de donnees)
 
 ### Cache & Propagation (CACHE)
 
@@ -68,7 +68,7 @@
 | STALE-03 | Phase 2 | Pending |
 | STALE-04 | Phase 2 | Pending |
 | STALE-05 | Phase 2 | Pending |
-| STALE-06 | Phase 2 | Pending |
+| STALE-06 | Phase 2 | Complete |
 | CACHE-01 | Phase 3 | Pending |
 | CACHE-02 | Phase 3 | Pending |
 | CACHE-03 | Phase 3 | Pending |

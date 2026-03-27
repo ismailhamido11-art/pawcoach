@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v8.0
 milestone_name: "SFA Fixes" — Active
-status: executing
-stopped_at: Completed 01-crashs-features-mortes 01-03-PLAN.md
-last_updated: "2026-03-27T19:00:45.235Z"
+status: Ready to execute
+stopped_at: Phase 02 plan 03 complete (02-03-PLAN.md)
+last_updated: "2026-03-27T19:57:28.180Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 3
-  completed_phases: 0
-  total_plans: 4
-  completed_plans: 2
+  completed_phases: 1
+  total_plans: 7
+  completed_plans: 6
 ---
 
 # Project State
@@ -20,19 +20,19 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Chaque action utilisateur fonctionne de bout en bout — zero crash, zero feature morte, zero donnee stale
-**Current focus:** Phase 01 — Crashs & Features Mortes
+**Current focus:** Phase 02 — donnees-stale
 
 ## Current Position
 
 ```
 [Phase 1: Crashs] → [Phase 2: Stale] → [Phase 3: Cache+UX]
-^
-HERE
+  ✅ DONE            ^
+                    HERE
 ```
 
-Phase: 01 (Crashs & Features Mortes) — EXECUTING
-Plan: 2 of 4
-Status: Ready to execute
+Phase: 02 (donnees-stale) — EXECUTING
+Plan: 3 of 3
+Phase: 02 (Donnees Stale) — READY TO PLAN
 Last activity: 2026-03-27
 
 ## Performance Metrics
@@ -44,6 +44,7 @@ Last activity: 2026-03-27
 | v8.0 phases | 3 |
 | Coverage | 19/19 (100%) |
 | Phase 01-crashs-features-mortes P03 | 2 | 1 tasks | 1 files |
+| Phase 02-donnees-stale P03 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -56,6 +57,7 @@ Last activity: 2026-03-27
 - Phases deriveees des categories SFA, pas d'une structure arbitraire
 - CGC obligatoire dans chaque phase (blast radius avant chaque modif)
 - [Phase 01-crashs-features-mortes]: Fix minimal : 2 imports lucide-react ajoutes dans DogPublicProfile.jsx, TYPE_CONFIG inchange
+- [Phase 02-donnees-stale]: Label mode FoodScan.create: allergen_alerts defaults to [] and summary uses fallback string (label AI schema has no summary field)
 
 ### Pending Todos
 
@@ -67,7 +69,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T19:00:45.228Z
-Stopped at: Completed 01-crashs-features-mortes 01-03-PLAN.md
+Last session: 2026-03-27T19:57:07.649Z
+Stopped at: Phase 02 plan 03 complete (02-03-PLAN.md)
 Resume file: None
-Next action: /gsd:plan-phase 1
+Next action: /gsd:plan-phase 2
