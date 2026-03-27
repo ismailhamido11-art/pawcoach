@@ -18,6 +18,8 @@ const SECONDARY_PAGE_PARENT = {
   Dashboard:       "Profile",
   DogProfile:      "Profile",
   Chat:            "Home",
+  VetPortal:       "Profile",
+  VetDogView:      "Profile",
 };
 
 // Pages with independent navigation stacks
@@ -27,8 +29,10 @@ const STACK_PAGES = ["Sante", "Activite", "Nutri"];
 function getNavUrl(page) {
   const base = createPageUrl(page);
   if (STACK_PAGES.includes(page)) {
-    const saved = sessionStorage.getItem(`tab_${page}`);
-    if (saved) return `${base}?tab=${saved}`;
+    try {
+      const saved = sessionStorage.getItem(`tab_${page}`);
+      if (saved) return `${base}?tab=${saved}`;
+    } catch { /* navigation privee — ignorer */ }
   }
   return base;
 }
@@ -38,23 +42,27 @@ export default function BottomNav({ currentPage }) {
 
   // Restore scroll position when the page mounts
   useEffect(() => {
-    const saved = sessionStorage.getItem(`scroll_${currentPage}`);
-    if (saved) {
-      requestAnimationFrame(() => window.scrollTo({ top: parseInt(saved, 10), behavior: "instant" }));
-    }
+    try {
+      const saved = sessionStorage.getItem(`scroll_${currentPage}`);
+      if (saved) {
+        requestAnimationFrame(() => window.scrollTo({ top: parseInt(saved, 10), behavior: "instant" }));
+      }
+    } catch { /* navigation privee — ignorer */ }
   }, [currentPage]);
 
   const handleTabClick = (e, page) => {
     // Save current scroll position before leaving
-    sessionStorage.setItem(`scroll_${currentPage}`, window.scrollY);
+    try { sessionStorage.setItem(`scroll_${currentPage}`, window.scrollY); } catch { /* navigation privee — ignorer */ }
 
     if (currentPage === page) {
       e.preventDefault();
       // Active tab double-tap: reset to root page and clear stack state
-      sessionStorage.removeItem(`scroll_${page}`);
-      sessionStorage.removeItem(`tab_${page}`);
-      sessionStorage.removeItem(`journey_${page}`);
-      sessionStorage.removeItem(`exercise_${page}`);
+      try {
+        sessionStorage.removeItem(`scroll_${page}`);
+        sessionStorage.removeItem(`tab_${page}`);
+        sessionStorage.removeItem(`journey_${page}`);
+        sessionStorage.removeItem(`exercise_${page}`);
+      } catch { /* navigation privee — ignorer */ }
       // Navigate to clean URL (removes ?tab query param, resets to default sub-tab)
       navigate(createPageUrl(page), { replace: true });
       window.scrollTo({ top: 0, behavior: "smooth" });
