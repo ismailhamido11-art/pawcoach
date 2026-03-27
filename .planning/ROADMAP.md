@@ -66,8 +66,11 @@ Plans:
   4. Le check-in rapide ne cree plus energy et appetite a partir du mood — les champs sont null/absents si non renseignes par l'utilisateur
   5. Dashboard et Sante affichent le meme score wellness pour le meme chien au meme moment — la source de calcul est unique
   6. Les textes de DailyBriefing et EmotionalTip s'affichent avec les accents corrects (debut, hydrate, regularite — sans caracteres manquants)
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 3 plans
+Plans:
+- [ ] 02-01-PLAN.md — Hero mood conditionnel (DATA-01) + Repas vs eau (DATA-02) + Accents DailyBriefing (DATA-06)
+- [ ] 02-02-PLAN.md — GrowthTracker sync Dog.weight (DATA-03) + Supprimer fabrication energy/appetite (DATA-04)
+- [ ] 02-03-PLAN.md — Unifier source score wellness Dashboard = Sante (DATA-05)
 
 ### Phase 3: Flux Deconnectes
 
@@ -102,6 +105,6 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Backend Critique | 3/3 | Complete   | 2026-03-27 |
-| 2. Donnees Fausses | 0/? | Not started | - |
+| 2. Donnees Fausses | 0/3 | Planned | - |
 | 3. Flux Deconnectes | 0/? | Not started | - |
 | 4. UX Trompeuse | 0/? | Not started | - |
