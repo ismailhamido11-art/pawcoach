@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v9.0
 milestone_name: "Production Ready" — Active
 status: executing
-stopped_at: Completed 08-04-PLAN.md
-last_updated: "2026-03-27T23:22:08.964Z"
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-03-27T23:35:00.000Z"
 last_activity: "2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + SettingsSection) | 06-02 executed (RGPD consent gate: analytics.js + Onboarding checkbox)"
 progress:
   total_phases: 11
@@ -46,6 +46,7 @@ Last activity: 2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + Set
 | Phase 08-ux-activation P02 | 8 | 1 tasks | 1 files |
 | Phase 08-ux-activation P03 | 8 | 2 tasks | 4 files |
 | Phase 08-ux-activation P04 | 15 | 2 tasks | 5 files |
+| Phase 08-ux-activation P01 | 20 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -68,6 +69,7 @@ Last activity: 2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + Set
 - [Phase 08-ux-activation]: Toaster ajouté dans App.jsx pour activer les toasts Sonner globalement
 - [Phase 08-ux-activation]: SW skipWaiting déplacé du install event vers message listener pour update non-destructif
 - [Phase 08-ux-activation]: FIX-34: gradient edge conditionnel (caché quand dernier tab actif) sur Sante/Nutri/Activite; FIX-38: badge amber <= 2 messages + wording "X messages restants aujourd'hui"
+- [Phase 08-ux-activation P01]: FIX-31/32/37: STEP_GROUPS regroupe 10 steps en 5 groupes visibles; quick-start "Remplir plus tard" crée Dog(onboarding_completed:false); WelcomeScreen personnalisée breed+age avec hints spécialisés
 
 ### Pending Todos
 
@@ -79,7 +81,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T23:22:08.949Z
-Stopped at: Completed 08-04-PLAN.md
+Last session: 2026-03-27T23:35:00.000Z
+Stopped at: Completed 08-01-PLAN.md
 Resume file: None
 Next action: Continue with next plan
