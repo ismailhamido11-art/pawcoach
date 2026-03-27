@@ -20,7 +20,8 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Sanitize helper — used throughout to prevent prompt injection
+    // sanitize v1 — injection guard — copie locale intentionnelle (Deno: pas d'import cross-function)
+    // Logique: substring + strip <> — si modifie, mettre a jour toutes les copies
     const sanitize = (s: any, max = 500) => String(s || '').substring(0, max).replace(/[<>]/g, '');
 
     // Validate imageUrl to prevent SSRF
@@ -219,6 +220,7 @@ Deno.serve(async (req) => {
       .sort((a: any, b: any) => new Date(b.timestamp || b.created_date).getTime() - new Date(a.timestamp || a.created_date).getTime())
       .slice(0, 5);
     if (recentScans.length > 0) {
+      // verdictFr: utilisee localement dans nutritionMemory — CGC false positive (scope local)
       const verdictFr = (v: string) => v === "safe" ? "sur" : v === "caution" ? "a surveiller" : "TOXIQUE";
       nutritionMemory = `\nNUTRITION :`;
       const latestScanDays = daysAgo(recentScans[0].timestamp || recentScans[0].created_date);

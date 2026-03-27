@@ -47,10 +47,12 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Sanitize user inputs to prevent prompt injection and limit length
+    // sanitize v1 — injection guard — copie locale intentionnelle (Deno: pas d'import cross-function)
+    // Logique: substring + strip <> — si modifie, mettre a jour toutes les copies
     const sanitize = (s, max = 2000) => String(s || '').substring(0, max).replace(/[<>]/g, '');
 
-    // Validate image URL against allowlist to prevent SSRF
+    // validateImageUrl v1 — SSRF guard — copie locale intentionnelle (Deno: pas d'import cross-function)
+    // Allowlist: ['base44.app', 'amazonaws.com', 's3.amazonaws.com'] — si modifie, mettre a jour toutes les copies
     const validateImageUrl = (url) => {
       if (!url) return null;
       try {
