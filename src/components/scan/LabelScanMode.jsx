@@ -154,6 +154,7 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
     setLabelResult(null);
     setShowIngredients(false);
     setLabelSaved(false);
+    onLabelResult?.(null); // Informe Scan.jsx parent → réaffiche ModeSwitcher
   };
 
   const labelCfg = labelResult ? LABEL_VERDICT_CONFIG[labelResult.compatibility_verdict] || LABEL_VERDICT_CONFIG.caution : null;
