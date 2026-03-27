@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { trackEvent, setAnalyticsConsent } from "@/utils/analytics";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { Dog } from "@/api/entities";
@@ -280,7 +279,6 @@ export default function Onboarding() {
         const name = answers[2]?.trim() || "Mon chien";
         const ownerGoal = answers[0] || null;
         const photoUrl = answers[1] || null;
-        setAnalyticsConsent(true);
         dog = await Dog.create({
           name,
           photo: photoUrl,
@@ -315,8 +313,6 @@ Extrais ces informations et renvoie un objet JSON.
           }
         });
         const extracted = typeof aiResponse === "string" ? JSON.parse(aiResponse) : aiResponse;
-        // Record analytics consent before creating dog
-        setAnalyticsConsent(true);
         dog = await Dog.create({
           name: extracted.name || "Mon chien", photo: photoUrl || null,
           breed: extracted.breed || null, birth_date: extracted.birth_date || null,
@@ -330,7 +326,6 @@ Extrais ces informations et renvoie un objet JSON.
       setDogData(dog);
       // Set new dog as active
       localStorage.setItem("activeDogId", dog.id);
-      trackEvent("onboarding_complete", { is_add_dog: isAddDog, owner_goal: answers[0] || null, quick_start: isQuickStartRef.current });
       if (!isAddDog) {
         try {
           await base44.integrations.Core.SendEmail({

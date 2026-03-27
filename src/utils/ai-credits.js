@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { isUserPremium } from "@/utils/premium";
 import { getTodayString } from "@/utils/recommendations";
-import { trackEvent } from "@/utils/analytics";
 
 export const MSG_DAILY_LIMIT = 10;
 export const ACTION_DAILY_LIMIT = 3;
@@ -60,7 +59,6 @@ export async function consumeMessageCredit(currentRemaining) {
     messages_remaining: newRemaining,
     messages_daily_reset: getTodayString(),
   });
-  if (newRemaining === 0) trackEvent("daily_limit_reached", { type: "message" });
   return newRemaining;
 }
 
@@ -77,7 +75,6 @@ export async function consumeActionCredit(currentRemaining) {
   } catch (e) {
     console.warn("ai-credits: consumeActionCredit failed", e);
   }
-  if (newRemaining === 0) trackEvent("daily_limit_reached", { type: "action" });
   return newRemaining;
 }
 

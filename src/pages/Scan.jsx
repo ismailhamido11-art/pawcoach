@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Dog, FoodScan, DietPreferences } from "@/api/entities";
-import { trackEvent } from "@/utils/analytics";
 import { getActiveDog, createPageUrl } from "@/utils";
 import { getWeekStart } from "@/utils/dateHelpers";
 import BottomNav from "../components/BottomNav";
@@ -233,7 +232,6 @@ export default function Scan() {
       setUser(updatedUser);
       const finalResult = { ...aiResult, photo_url: file_url, timestamp: new Date().toISOString() };
       setResult(finalResult);
-      trackEvent("scan_completed", { verdict: finalResult.verdict, mode: "food" });
       if (finalResult.verdict === "toxic" && navigator.vibrate) navigator.vibrate(200);
     } catch (e) {
       console.error(e);
