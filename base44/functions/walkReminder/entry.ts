@@ -40,17 +40,22 @@ Deno.serve(async (req) => {
 
     let sent = 0;
 
-    for (const user of users) {
-      const dog = dogsByOwner[user.email];
-      if (!dog) continue;
+    // Parallelize DailyLog queries for all users with a dog
+    const usersWithDogs = users.filter(u => dogsByOwner[u.email]);
+    const dailyLogResults = await Promise.all(
+      usersWithDogs.map(async (user) => {
+        const dog = dogsByOwner[user.email];
+        const logs = await base44.asServiceRole.entities.DailyLog.filter({
+          dog_id: dog.id,
+          date: today
+        });
+        return { user, dog, logs };
+      })
+    );
 
-      // Check if walk already logged today
-      const logs = await base44.asServiceRole.entities.DailyLog.filter({
-        dog_id: dog.id,
-        date: today
-      });
-
-      const hasWalk = logs?.some(l => l.walk_minutes > 0);
+    // Send reminders for users who haven't walked today
+    for (const { user, dog, logs } of dailyLogResults) {
+      const hasWalk = logs?.some((l: any) => l.walk_minutes > 0);
       if (hasWalk) {
         console.log(`${user.email}: already walked today, skipping`);
         continue;
