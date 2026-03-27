@@ -9,8 +9,37 @@
  */
 
 const STORAGE_KEY = "pawcoach_analytics_events";
+const CONSENT_KEY = "pawcoach_analytics_consent";
 const MAX_EVENTS = 100;
 const TTL_DAYS = 30;
+
+/**
+ * Store the user's analytics consent choice.
+ * @param {boolean} granted - true = opt-in, false = opt-out (removes key)
+ */
+export function setAnalyticsConsent(granted) {
+  try {
+    if (granted) {
+      localStorage.setItem(CONSENT_KEY, "true");
+    } else {
+      localStorage.removeItem(CONSENT_KEY);
+    }
+  } catch {
+    // localStorage unavailable
+  }
+}
+
+/**
+ * Returns true only when the user has explicitly opted in.
+ * @returns {boolean}
+ */
+export function hasAnalyticsConsent() {
+  try {
+    return localStorage.getItem(CONSENT_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Track a business-critical event.
@@ -18,6 +47,7 @@ const TTL_DAYS = 30;
  * @param {Object} properties - optional metadata
  */
 export function trackEvent(eventName, properties = {}) {
+  if (!hasAnalyticsConsent()) return;
   const event = {
     event: eventName,
     ts: new Date().toISOString(),
