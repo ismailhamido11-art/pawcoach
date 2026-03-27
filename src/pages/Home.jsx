@@ -45,13 +45,13 @@ const MILESTONES = [
 async function fetchDogData(dogId) {
   const today = getTodayString();
   const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks] = await Promise.all([
-    DailyCheckin.filter({ dog_id: dogId, date: today }),
-    Streak.filter({ dog_id: dogId }),
-    DailyCheckin.filter({ dog_id: dogId }, "-date", 30),
-    HealthRecord.filter({ dog_id: dogId }),
-    UserProgress.filter({ dog_id: dogId }),
-    FoodScan.filter({ dog_id: dogId }),
-    DailyLog.filter({ dog_id: dogId }, "-date", 30),
+    DailyCheckin.filter({ dog_id: dogId, date: today }).catch(() => []),
+    Streak.filter({ dog_id: dogId }).catch(() => []),
+    DailyCheckin.filter({ dog_id: dogId }, "-date", 30).catch(() => []),
+    HealthRecord.filter({ dog_id: dogId }).catch(() => []),
+    UserProgress.filter({ dog_id: dogId }).catch(() => []),
+    FoodScan.filter({ dog_id: dogId }).catch(() => []),
+    DailyLog.filter({ dog_id: dogId }, "-date", 30).catch(() => []),
     DiagnosisReport.filter({ dog_id: dogId }, "-report_date", 5).catch(() => []),
     NutritionPlan.filter({ dog_id: dogId }, "-generated_at", 3).catch(() => []),
     Bookmark.filter({ dog_id: dogId, source: "training" }, "-created_at", 10).catch(() => []),
@@ -65,6 +65,7 @@ export default function Home() {
   const prefersReducedMotion = useReducedMotion();
   const { getCachedHome, setCachedHome, invalidateHome } = useHomeCache();
   const dailyBriefingRef = useRef(null);
+  const premiumSuccessHandledRef = useRef(false);
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -211,7 +212,41 @@ export default function Home() {
       }
     }
 
-    loadData();
+    // Handle ?premium=success redirect from Stripe — poll base44.auth.me() until is_premium=true (max 10s)
+    const handlePremiumSuccess = () => {
+      if (premiumSuccessHandledRef.current) return;
+      const param = new URLSearchParams(window.location.search).get("premium");
+      if (param !== "success") return;
+
+      premiumSuccessHandledRef.current = true;
+      window.history.replaceState({}, "", "/");
+      confetti({ particleCount: 120, spread: 90, origin: { x: 0.5, y: 0.5 }, colors: ["#1A4D3E", "#2D9F82", "#10b981", "#34d399", "#f59e0b"] });
+
+      // Poll base44.auth.me() every 2s for up to 10s — webhook may not have fired yet
+      let attempts = 0;
+      const maxAttempts = 5; // 5 x 2s = 10s
+      const interval = setInterval(async () => {
+        attempts++;
+        try {
+          const freshUser = await base44.auth.me();
+          if (freshUser?.is_premium) {
+            clearInterval(interval);
+            setUser(freshUser);
+            toast.success("Bienvenue en Premium ! Profite de toutes les fonctionnalités.");
+            return;
+          }
+        } catch {
+          // ignore — retry next tick
+        }
+        if (attempts >= maxAttempts) {
+          clearInterval(interval);
+          // Webhook may be slow — show success anyway and let user refresh if needed
+          toast.success("Paiement reçu ! Active Premium visible dans quelques secondes.");
+        }
+      }, 2000);
+    };
+
+    loadData().then(handlePremiumSuccess);
     return () => { mounted = false; };
   }, [navigate]);
 

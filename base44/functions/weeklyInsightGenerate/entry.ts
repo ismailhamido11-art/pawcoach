@@ -23,6 +23,10 @@ Deno.serve(async (req) => {
     }
 
     const apiKey = Deno.env.get("OPENROUTER_API_KEY");
+    if (!apiKey) {
+      console.warn("weeklyInsightGenerate: OPENROUTER_API_KEY not set — skipping insight generation");
+      return Response.json({ ok: true, generated: 0, reason: "no_api_key" });
+    }
     let generated = 0;
 
     // Fetch all users upfront for premium check
