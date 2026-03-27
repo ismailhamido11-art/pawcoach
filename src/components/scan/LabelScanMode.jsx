@@ -133,8 +133,10 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
         food_name: labelResult.product_name || "Etiquette analysee",
         verdict: labelResult.compatibility_verdict === "excellent" || labelResult.compatibility_verdict === "good" ? "safe" : labelResult.compatibility_verdict === "avoid" ? "toxic" : "caution",
         score: labelResult.compatibility_score,
+        summary: labelResult.summary || `Analyse etiquette : ${labelResult.product_name || "produit"} — compatibilite ${labelResult.compatibility_verdict || "inconnue"}`,
         details: `${labelResult.recommendation || ""}\nProteines: ${labelResult.protein_pct ?? "?"}%, Graisses: ${labelResult.fat_pct ?? "?"}%, Fibres: ${labelResult.fiber_pct ?? "?"}%`,
         recommendation: labelResult.recommendation,
+        allergen_alerts: labelResult.allergen_alerts || [],
         timestamp: new Date().toISOString(),
       });
       setLabelSaved(true);
