@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Bookmark } from "@/api/entities";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Sparkles, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, Clock, RotateCcw, CheckCircle2, BookmarkCheck, Home, Check, CalendarDays, Lightbulb, Eye, Star, MessageSquare, ArrowRight, PawPrint, Gamepad2, Brain, Wind, Moon, BookOpen, Heart, Zap, Dumbbell, Medal, PartyPopper, Smile, ThumbsUp, Meh, Frown, Laugh, Compass } from "lucide-react";
 import { addDaysToDate, formatDateFr } from "@/utils/dateHelpers";
@@ -11,6 +12,7 @@ import { toast } from "sonner";
 import { checkTrainingBadges } from "@/components/achievements/badgeUtils";
 import { useActionCredits } from "@/hooks/useActionCredits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
+import CompletionCard from "./CompletionCard";
 
 const ACTIVITY_LABELS = {
   faible: "Faible", modere: "Modéré", eleve: "Élevé", tres_eleve: "Très élevé"
@@ -18,38 +20,8 @@ const ACTIVITY_LABELS = {
 
 // ACTIVITY_ICONS, JOURS_COURTS, MOIS_FR imported from shared utils above
 
-const GOAL_SUGGESTIONS = [
-  { label: "Renforcer le lien", Icon: Heart, color: "text-rose-500" },
-  { label: "Dépenser son énergie", Icon: Zap, color: "text-amber-500" },
-  { label: "Calme et relaxation", Icon: Wind, color: "text-blue-500" },
-  { label: "Perdre du poids", Icon: Dumbbell, color: "text-emerald-600" },
-  { label: "Stimulation mentale", Icon: Brain, color: "text-violet-600" },
-  { label: "Obéissance de base", Icon: Target, color: "text-emerald-700" },
-];
-
-const FEELING_OPTIONS = [
-  { Icon: Frown, iconColor: "text-slate-400", label: "Pas convaincu" },
-  { Icon: Meh, iconColor: "text-amber-400", label: "Correct" },
-  { Icon: Smile, iconColor: "text-emerald-500", label: "Bien" },
-  { Icon: ThumbsUp, iconColor: "text-emerald-600", label: "Super" },
-  { Icon: Laugh, iconColor: "text-emerald-700", label: "Incroyable" },
-];
-
-function getCoachInsight(feeling, observedCount, totalIndicators, dogName) {
-  const name = dogName || "ton chien";
-  if (feeling >= 4 && observedCount >= 2) {
-    return { Icon: Star, iconColor: "text-amber-500", title: "Progression remarquable", message: `${observedCount}/${totalIndicators} signes de progression observés — ${name} et toi formez une super équipe. Le prochain programme va consolider ces acquis.` };
-  }
-  if (feeling >= 3 || observedCount >= 1) {
-    return { Icon: Zap, iconColor: "text-emerald-600", title: "Beau parcours", message: `Les résultats commencent à se voir ! Continue sur cette lancée avec ${name} — la régularité est la clé.` };
-  }
-  if (feeling >= 1) {
-    return { Icon: Compass, iconColor: "text-emerald-500", title: "Les bases sont posées", message: `Chaque programme renforce ta relation avec ${name}. Les vrais résultats arrivent souvent au 2e ou 3e programme — persévère.` };
-  }
-  return { Icon: PawPrint, iconColor: "text-emerald-600", title: "Premier pas franchi", message: `Tu as pris le temps de t'investir pour ${name} — c'est déjà énorme. Le prochain programme s'adaptera à tes observations.` };
-}
-
 // addDaysToDate, formatDateFr imported from @/utils/dateHelpers
+// GOAL_SUGGESTIONS, FEELING_OPTIONS, getCoachInsight, CompletionCard moved to ./CompletionCard.jsx
 
 function getElapsedDays(startDate) {
   const start = new Date(startDate + "T00:00:00");
@@ -178,7 +150,7 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
 }
 
 // ─── CompletionCard ────────────────────────────────────────
-function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, onNewProgram, bilanJustSaved }) {
+function CompletionCard_DEAD({ program, dog, totalMinutes, bilanState, onSaveBilan, onNewProgram, bilanJustSaved }) {
   const { observed, setObserved, feeling, setFeeling, feedback, setFeedback, nextFocus, setNextFocus, bilanSaved } = bilanState;
   const CONFETTI_ICONS = [PartyPopper, Star, PawPrint, Zap, Medal];
   const confetti = Array.from({ length: 10 }, (_, i) => ({
@@ -433,19 +405,6 @@ function CompletionCard({ program, dog, totalMinutes, bilanState, onSaveBilan, o
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </motion.div>
-      ) : (
-        <Button
-          onClick={onNewProgram}
-          className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
-        >
-          <Sparkles className="w-4 h-4 mr-2" />
-          Nouveau programme 7 jours
-        </Button>
-      )}
-    </div>
-  );
-}
-
 // ─── Main component ────────────────────────────────────────
 export default function AITrainingProgram({ dog, logs = [] }) {
   const { credits, hasCredits, isPremium, consume, loading } = useActionCredits();
@@ -467,6 +426,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
   const [bilanNextFocus, setBilanNextFocus] = useState([]);
   const [bilanSaved, setBilanSaved] = useState(false);
   const [bilanJustSaved, setBilanJustSaved] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState(null);
 
   // Load saved program + past programs from Bookmarks
   useEffect(() => {
@@ -624,10 +584,20 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       const totalDays = program.duration_days || 7;
       const completedCount = completedDays.length;
       if (completedCount < totalDays) {
-        const ok = window.confirm(`Tu es au jour ${completedCount}/${totalDays}. Abandonner ce programme ?`);
-        if (!ok) return;
+        setConfirmDialog({
+          title: "Abandonner le programme ?",
+          description: `Tu es au jour ${completedCount}/${totalDays}. Le programme en cours sera archivé et tu pourras en démarrer un nouveau.`,
+          action: async () => {
+            await _doStartNewProgram();
+          },
+        });
+        return;
       }
     }
+    await _doStartNewProgram();
+  };
+
+  const _doStartNewProgram = async () => {
     // Archive old bookmark so it won't reload as active
     if (bookmarkId && program) {
       try {
@@ -1004,6 +974,21 @@ export default function AITrainingProgram({ dog, logs = [] }) {
           <RotateCcw className="w-4 h-4 mr-2" /> Nouveau
         </Button>
       </div>
+
+      <AlertDialog open={!!confirmDialog} onOpenChange={(open) => !open && setConfirmDialog(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{confirmDialog?.title}</AlertDialogTitle>
+            <AlertDialogDescription>{confirmDialog?.description}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => { confirmDialog?.action(); setConfirmDialog(null); }}>
+              Confirmer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
