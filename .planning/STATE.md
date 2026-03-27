@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: "E2E Fixes"
 status: completed
-stopped_at: Completed 03-scalabilite-premium-03-PLAN.md
-last_updated: "2026-03-27T02:49:20.597Z"
+stopped_at: Completed 04-ux-navigation-02-PLAN.md
+last_updated: "2026-03-27T00:00:00.000Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 5
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 ## Current Position
 
 Phase: 4
-Plan: Not started
+Plan: 02 complete
 Status: Plan complete — ready for next plan
 Last activity: 2026-03-27
 
@@ -80,6 +80,9 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 03-scalabilite-premium]: consumingRef (useRef) chosen over useState for double-click guard — avoids re-render, atomically safe in closure
 - [Phase 03-scalabilite-premium]: ReferralSection returns null (file kept) — no backend validation exists for referral codes (PREM-04)
 - [Phase 03-scalabilite-premium]: !loading added to UpgradePrompt condition in AITrainingProgram — prevents flash during credits initialization
+- [Phase 04-ux-navigation]: GPS toast { id: "gps-warn" } applique codes 1/2/3 — deduplification toast si erreur GPS persiste
+- [Phase 04-ux-navigation]: translateError() identity fallback — messages non mappes passent tels quels sans perte d'info
+- [Phase 04-ux-navigation]: ErrorBoundary createPageUrl module-level import — class component compatible, routeur Base44 respecte
 
 ### Pending Todos
 
@@ -91,6 +94,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T02:44:47Z
-Stopped at: Completed 03-scalabilite-premium-03-PLAN.md
+Last session: 2026-03-27T00:00:00Z
+Stopped at: Completed 04-ux-navigation-02-PLAN.md
 Resume file: None
