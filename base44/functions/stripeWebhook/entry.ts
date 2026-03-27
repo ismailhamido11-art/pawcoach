@@ -45,7 +45,13 @@ Deno.serve(async (req) => {
       // Find the user and update premium status
       const users = await base44.asServiceRole.entities.User.filter({ email: userEmail });
       if (users.length > 0) {
-        await base44.asServiceRole.entities.User.update(users[0].id, {
+        const user = users[0];
+        // Idempotency check: skip if already premium with same subscription
+        if (user.is_premium && user.stripe_subscription_id === session.subscription) {
+          console.log(`Idempotent skip: premium already active for ${userEmail} (event ${event.id})`);
+          return Response.json({ received: true });
+        }
+        await base44.asServiceRole.entities.User.update(user.id, {
           is_premium: true,
           premium_since: new Date().toISOString().split("T")[0],
           stripe_customer_id: session.customer,
@@ -64,7 +70,13 @@ Deno.serve(async (req) => {
       // Find user by stripe_customer_id
       const users = await base44.asServiceRole.entities.User.filter({ stripe_customer_id: customerId });
       if (users.length > 0) {
-        await base44.asServiceRole.entities.User.update(users[0].id, {
+        const user = users[0];
+        // Idempotency check: skip if already not premium
+        if (!user.is_premium && user.stripe_subscription_id === null) {
+          console.log(`Idempotent skip: premium already inactive for customer ${customerId} (event ${event.id})`);
+          return Response.json({ received: true });
+        }
+        await base44.asServiceRole.entities.User.update(user.id, {
           is_premium: false,
           stripe_subscription_id: null,
         });
