@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NutritionPlan } from "@/api/entities";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCw, Check, Home, AlertTriangle, ChevronDown, ChevronUp, Pencil, X, Trash2, Calendar, MessageCircle, Dog } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -55,6 +56,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
   const [tempNote, setTempNote] = useState("");
   const [showHistory, setShowHistory] = useState(false);
   const [expandedHistoryId, setExpandedHistoryId] = useState(null);
+  const [confirmDialog, setConfirmDialog] = useState(null);
 
   if (!dog) {
     return (
@@ -89,31 +91,44 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
     }
   };
 
-  const handleDeletePlan = async (planId) => {
-    if (!window.confirm("Supprimer ce plan nutritionnel ?")) return;
-    try {
-      await NutritionPlan.delete(planId);
-      onPlanSaved?.();
-      toast.success("Plan supprimé");
-    } catch {
-      toast.error("Impossible de supprimer le plan. Réessaie.");
-    }
+  const handleDeletePlan = (planId) => {
+    setConfirmDialog({
+      title: "Supprimer ce plan ?",
+      description: "Cette action est irréversible. Le plan nutritionnel sera définitivement supprimé.",
+      action: async () => {
+        try {
+          await NutritionPlan.delete(planId);
+          onPlanSaved?.();
+          toast.success("Plan supprimé");
+        } catch {
+          toast.error("Impossible de supprimer le plan. Réessaie.");
+        }
+      },
+    });
   };
 
-  const handleActivateOld = async (planId) => {
-    if (activePlan) {
-      const confirmed = window.confirm("Tu as un plan actif en cours. L'activer le remplacera. Continuer ?");
-      if (!confirmed) return;
-    }
-    try {
-      if (activePlan) {
-        await NutritionPlan.update(activePlan.id, { is_active: false });
+  const handleActivateOld = (planId) => {
+    const doActivate = async () => {
+      try {
+        if (activePlan) {
+          await NutritionPlan.update(activePlan.id, { is_active: false });
+        }
+        await NutritionPlan.update(planId, { is_active: true });
+        onPlanSaved?.();
+        toast.success("Plan activé !");
+      } catch {
+        toast.error("Impossible d'activer ce plan. Réessaie.");
       }
-      await NutritionPlan.update(planId, { is_active: true });
-      onPlanSaved?.();
-      toast.success("Plan activé !");
-    } catch {
-      toast.error("Impossible d'activer ce plan. Réessaie.");
+    };
+
+    if (activePlan) {
+      setConfirmDialog({
+        title: "Remplacer le plan actif ?",
+        description: "Un plan nutritionnel est déjà en cours. Il sera remplacé par celui-ci.",
+        action: doActivate,
+      });
+    } else {
+      doActivate();
     }
   };
 
@@ -884,6 +899,21 @@ RÈGLES :
 
       {/* History */}
       {renderHistory()}
+
+      <AlertDialog open={!!confirmDialog} onOpenChange={(open) => !open && setConfirmDialog(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{confirmDialog?.title}</AlertDialogTitle>
+            <AlertDialogDescription>{confirmDialog?.description}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => { confirmDialog?.action(); setConfirmDialog(null); }}>
+              Confirmer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
