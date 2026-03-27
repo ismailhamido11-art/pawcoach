@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { Dog, DogAchievement } from "@/api/entities";
 import { isUserPremium } from "@/utils/premium";
@@ -26,6 +26,7 @@ import EmptyState from "@/components/ui/EmptyState";
 
 export default function Profile() {
   const navigate = useNavigate();
+  const prefersReducedMotion = useReducedMotion();
   const { invalidateHome } = useHomeCache();
   const [user, setUser] = useState(null);
   const [dogs, setDogs] = useState([]);

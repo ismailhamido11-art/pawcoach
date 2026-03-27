@@ -6,7 +6,7 @@ import { createPageUrl, getActiveDog } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { Dog, DailyLog, UserProgress, Streak, FoodScan } from "@/api/entities";
 import { useHomeCache } from "@/lib/HomeCacheContext";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowLeft, Pencil, ChevronDown,
   QrCode, Share2, Download,
@@ -25,6 +25,7 @@ import SkeletonPage from "@/components/ui/SkeletonPage";
 
 export default function DogProfile() {
   const navigate = useNavigate();
+  const prefersReducedMotion = useReducedMotion();
   const { invalidateHome } = useHomeCache();
   const [dog, setDog] = useState(null);
   const [_user, setUser] = useState(null);

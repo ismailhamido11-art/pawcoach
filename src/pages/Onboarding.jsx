@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera as CameraIcon, PawPrint, Dog as DogIcon, Cake, Users, Scale, PersonStanding, Home as HomeIcon, Hospital, HeartPulse, GraduationCap, Salad, Smile, Handshake, Loader2, ArrowRight, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import WelcomeScreen from "../components/onboarding/WelcomeScreen";
 import Illustration from "../components/illustrations/Illustration";
 import { spring } from "@/lib/animations";
@@ -124,6 +124,7 @@ function OnboardingWelcome({ onStart }) {
 
 export default function Onboarding() {
   const navigate = useNavigate();
+  const prefersReducedMotion = useReducedMotion();
   const urlParams = new URLSearchParams(window.location.search);
   const isAddDog = urlParams.get("addDog") === "true";
   const [started, setStarted] = useState(isAddDog); // skip welcome splash when adding a dog

@@ -12,7 +12,7 @@ import { createPageUrl, getActiveDog } from "@/utils";
 import { getDogAgeSegment } from "@/utils/healthStatus";
 import BottomNav from "../components/BottomNav";
 import confetti from "canvas-confetti";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { DogTrophy } from "../components/ui/PawIllustrations";
 import Illustration from "../components/illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
@@ -57,6 +57,7 @@ const SEGMENT_HERO = {
 
 export default function Premium() {
   const navigate = useNavigate();
+  const prefersReducedMotion = useReducedMotion();
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
   const [plan, setPlan] = useState("annual");
