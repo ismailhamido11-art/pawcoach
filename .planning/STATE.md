@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v8.0
 milestone_name: "SFA Fixes" — Active
 status: Phase complete — ready for verification
-stopped_at: Completed 02-donnees-stale-02-02-PLAN.md
-last_updated: "2026-03-27T19:58:56.655Z"
+stopped_at: Completed 03-cache-ux-securite-03-03-PLAN.md
+last_updated: "2026-03-27T20:21:32.085Z"
 last_activity: 2026-03-27
 progress:
-  total_phases: 3
-  completed_phases: 2
-  total_plans: 7
-  completed_plans: 7
+  total_phases: 4
+  completed_phases: 3
+  total_plans: 10
+  completed_plans: 10
 ---
 
 # Project State
@@ -20,7 +20,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Chaque action utilisateur fonctionne de bout en bout — zero crash, zero feature morte, zero donnee stale
-**Current focus:** Phase 02 — donnees-stale
+**Current focus:** Phase 03 — cache-ux-securite
 
 ## Current Position
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-03-27)
                     HERE
 ```
 
-Phase: 02 (donnees-stale) — EXECUTING
+Phase: 03 (cache-ux-securite) — EXECUTING
 Plan: 3 of 3
 Phase: 02 (Donnees Stale) — READY TO PLAN
 Last activity: 2026-03-27
@@ -47,6 +47,9 @@ Last activity: 2026-03-27
 | Phase 02-donnees-stale P03 | 5 | 2 tasks | 2 files |
 | Phase 02-donnees-stale P01 | 10 | 2 tasks | 2 files |
 | Phase 02-donnees-stale P02 | 10 | 2 tasks | 2 files |
+| Phase 03-cache-ux-securite P02 | 5 | 2 tasks | 2 files |
+| Phase 03-cache-ux-securite P03 | 8 | 2 tasks | 2 files |
+| Phase 03-cache-ux-securite P01 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -64,6 +67,10 @@ Last activity: 2026-03-27
 - [Phase 02-donnees-stale]: computeStatusPills extraWeightSources param (default=[]) keeps DownloadHealthPDF.jsx backward-compatible
 - [Phase 02-donnees-stale]: STALE-05 confirmed dead code: DogRadarHero never rendered, Dashboard/NotebookContent already use correct computeHealthScore formula
 - [Phase 02-donnees-stale]: latestRealWeight in NutritionMealPlan falls back to dog?.weight when no measured data exists — safe backward compatibility
+- [Phase 03-cache-ux-securite]: Premium card hidden via !isUserPremium(user) guard in Profile.jsx
+- [Phase 03-cache-ux-securite]: Owner email entirely removed from DogPublicProfile — GDPR/privacy fix on no-auth public page
+- [Phase 03-cache-ux-securite]: UX-04: refreshLogs kept pure (data reload only) — checkWalkBadges removed, side effects stay at event source (WalkMode/CombinedFAB)
+- [Phase 03-cache-ux-securite]: UX-05: inner try/catch wraps updateMe in Training — on failure: UserProgress.delete rollback then re-throw to outer catch for UI state reset
 
 ### Pending Todos
 
@@ -75,7 +82,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T19:58:56.644Z
-Stopped at: Completed 02-donnees-stale-02-02-PLAN.md
+Last session: 2026-03-27T20:21:30.153Z
+Stopped at: Completed 03-cache-ux-securite-03-03-PLAN.md
 Resume file: None
 Next action: /gsd:plan-phase 2

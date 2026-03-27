@@ -27,7 +27,7 @@
 
 - [x] **Phase 1: Crashs & Features Mortes** - Eliminer les 4 ruptures qui bloquent l'acces aux features
 - [x] **Phase 2: Donnees Stale** - Corriger les 6 sources de donnees fausses ou perdues (completed 2026-03-27)
-- [ ] **Phase 3: Cache, UX & Securite** - Propager les invalidations manquantes + corriger les 5 failles UX/securite
+- [x] **Phase 3: Cache, UX & Securite** - Propager les invalidations manquantes + corriger les 5 failles UX/securite (completed 2026-03-27)
 
 ## Phase Details
 
@@ -76,9 +76,9 @@ Plans:
   6. Une erreur lors de la sauvegarde du profil utilisateur affiche un message d'erreur (pas de silence)
 **Plans**: 3 plans
 Plans:
-- [ ] 03-01-PLAN.md — CACHE-01+02+03+04: invalidateHome dans DogProfile + recentScans refresh dans Nutri
-- [ ] 03-02-PLAN.md — UX-01+02+03: card premium masquee + email retire + handleSaveUser try/catch
-- [ ] 03-03-PLAN.md — UX-04+05: checkWalkBadges doublon supprime + training points rollback
+- [x] 03-01-PLAN.md — CACHE-01+02+03+04: invalidateHome dans DogProfile + recentScans refresh dans Nutri
+- [x] 03-02-PLAN.md — UX-01+02+03: card premium masquee + email retire + handleSaveUser try/catch
+- [x] 03-03-PLAN.md — UX-04+05: checkWalkBadges doublon supprime + training points rollback
 
 ## Progress
 
@@ -86,4 +86,4 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Crashs & Features Mortes | 4/4 | Complete | 2026-03-27 |
 | 2. Donnees Stale | 3/3 | Complete   | 2026-03-27 |
-| 3. Cache, UX & Securite | 0/3 | In progress | - |
+| 3. Cache, UX & Securite | 3/3 | Complete   | 2026-03-27 |
