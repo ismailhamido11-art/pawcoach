@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { isUserPremium } from "@/utils/premium";
-import { initCredits, consumeMessageCredit } from "@/utils/ai-credits";
+import { initCredits } from "@/utils/ai-credits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 // Sound utility — reuse AudioContext to prevent memory leak
@@ -277,10 +277,12 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
     const history = [...messages, newMsg];
     await processConversation(history);
 
-    // Consume message credit after successful send
-    if (!isPremium && msgCredits != null) {
-      const newCredits = await consumeMessageCredit(msgCredits);
-      setMsgCredits(newCredits);
+    // Refresh credit count from server (backend already decremented)
+    if (!isPremium) {
+      try {
+        const updated = await initCredits();
+        setMsgCredits(updated);
+      } catch {}
     }
   };
 
