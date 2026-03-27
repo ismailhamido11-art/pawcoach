@@ -69,8 +69,11 @@ Plans:
   5. Double-cliquer sur "Generer" ou finir un walk/training rapidement ne consomme pas 2 credits
   6. Tenter une action IA sans credits affiche un UpgradePrompt visible (pas un echec silencieux)
   7. La section referral est soit retiree, soit reliee a un backend de validation reel
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 3 plans
+Plans:
+- [ ] 03-01-PLAN.md — SCALE-01 (walkReminder, monthlySummary, trialExpiryReminder filtres)
+- [ ] 03-02-PLAN.md — SCALE-02 (Home fetchDogData catches), SCALE-03 (weeklyInsight early return), PREM-01 (polling premium)
+- [ ] 03-03-PLAN.md — PREM-02 (guard double-clic credits), PREM-03 (UpgradePrompt loading flash), PREM-04 (ReferralSection retiree)
 
 ### Phase 4: UX & Navigation
 **Goal**: Les interactions quotidiennes (poids, preferences, GPS, erreurs, navigation) sont coherentes et claires
@@ -112,6 +115,6 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Security & Legal | 2/2 | Complete   | 2026-03-27 |
 | 2. Bugs Fonctionnels | 0/2 | Not started | - |
-| 3. Scalabilite & Premium | 0/TBD | Not started | - |
+| 3. Scalabilite & Premium | 0/3 | Not started | - |
 | 4. UX & Navigation | 0/TBD | Not started | - |
 | 5. Edge Cases & Polish | 0/TBD | Not started | - |
