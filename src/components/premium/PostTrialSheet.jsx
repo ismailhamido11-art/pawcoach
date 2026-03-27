@@ -52,7 +52,7 @@ export default function PostTrialSheet({ visible, onClose, dogName }) {
               <div className="w-10 h-1 rounded-full bg-muted" />
             </div>
 
-            <button onClick={handleContinueFree} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+            <button aria-label="Fermer" onClick={handleContinueFree} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
               <X className="w-4 h-4 text-muted-foreground" />
             </button>
 

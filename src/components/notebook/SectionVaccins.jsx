@@ -240,7 +240,7 @@ export function RecordRow({ record, onDelete, icon, accentClass, extra }) {
         {extra}
         {record.details && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{record.details}</p>}
       </div>
-      <button onClick={() => onDelete(record.id)} className="text-muted-foreground hover:text-destructive p-1 transition-colors">
+      <button aria-label="Supprimer" onClick={() => onDelete(record.id)} className="text-muted-foreground hover:text-destructive p-1 transition-colors">
         <X className="w-3.5 h-3.5" />
       </button>
     </div>

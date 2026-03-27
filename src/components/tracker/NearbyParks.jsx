@@ -333,7 +333,11 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                 {/* Compact row — always visible */}
                 <motion.div
                   whileTap={{ scale: 0.98 }}
+                  tabIndex={0}
+                  role="button"
+                  aria-expanded={isExpanded}
                   onClick={() => setExpandedId(isExpanded ? null : park.id)}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExpandedId(isExpanded ? null : park.id); } }}
                   className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer"
                 >
                   <div className={`w-9 h-9 rounded-xl ${typeInfo.bg} flex items-center justify-center flex-shrink-0`}>
@@ -347,7 +351,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                     <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
                       <span className={`text-[11px] font-semibold ${typeInfo.color}`}>{typeInfo.label}</span>
                       {badges.slice(0, 2).map((b, i) => (
-                        <span key={i} className="text-[11px] text-muted-foreground">• {b.label}</span>
+                        <span key={b.label || i} className="text-[11px] text-muted-foreground">• {b.label}</span>
                       ))}
                     </div>
                   </div>
@@ -367,7 +371,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                         {badges.length > 0 && (
                           <div className="flex flex-wrap gap-1.5">
                             {badges.map((b, i) => (
-                              <div key={i} className="flex items-center gap-1 bg-secondary/60 rounded-lg px-2 py-1">
+                              <div key={b.label || i} className="flex items-center gap-1 bg-secondary/60 rounded-lg px-2 py-1">
                                 <b.icon className={`w-3 h-3 ${b.color}`} />
                                 <span className="text-[11px] font-semibold text-foreground">{b.label}</span>
                               </div>

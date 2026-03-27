@@ -791,7 +791,10 @@ export default function Training() {
               animate={{ opacity: 1, y: 0 }}
               whileTap={{ scale: 0.98 }}
               transition={{ delay: 0.05 * idx }}
+              tabIndex={0}
+              role="button"
               onClick={() => locked ? navigate(createPageUrl("Premium") + "?from=training") : navigate(createPageUrl("Training") + `?behavior=${guide.id}`)}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); locked ? navigate(createPageUrl("Premium") + "?from=training") : navigate(createPageUrl("Training") + `?behavior=${guide.id}`); } }}
               className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 border border-border/30 shadow-sm cursor-pointer"
             >
               {guide.icon && <guide.icon className="w-6 h-6 text-muted-foreground shrink-0" />}

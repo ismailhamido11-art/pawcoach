@@ -72,7 +72,7 @@ export default function PremiumNudgeSheet({ visible, onClose, dogName, ownerGoal
             </div>
 
             {/* Close */}
-            <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+            <button aria-label="Fermer" onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
               <X className="w-4 h-4 text-muted-foreground" />
             </button>
 

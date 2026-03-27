@@ -65,7 +65,7 @@ function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
       <div className="mx-3.5 mb-3.5 bg-white rounded-xl border border-primary/20 p-3 space-y-2.5">
         <div className="flex items-center justify-between">
           <p className="text-xs font-bold text-foreground">{formTitle}</p>
-          <button onClick={onClose} className="p-1 hover:bg-muted rounded-lg transition-colors">
+          <button aria-label="Fermer" onClick={onClose} className="p-1 hover:bg-muted rounded-lg transition-colors">
             <X className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         </div>

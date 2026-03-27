@@ -43,6 +43,10 @@ export default function CelebrationScreen({ dogName, exerciseName, exerciseNumbe
       animate={{ opacity: 1 }}
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 backdrop-blur-sm"
       onClick={onContinue}
+      tabIndex={0}
+      role="button"
+      aria-label="Continuer"
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onContinue(); } }}
     >
       <motion.div
         initial={{ y: 300, opacity: 0 }}

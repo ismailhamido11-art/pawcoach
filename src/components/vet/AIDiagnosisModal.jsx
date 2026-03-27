@@ -313,6 +313,7 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
                 <div className="mt-2 relative inline-block">
                   <img src={imagePreview} alt="Symptômes" loading="lazy" className="w-full max-h-48 object-cover rounded-xl border" />
                   <button
+                    aria-label="Supprimer l'image"
                     onClick={removeImage}
                     className="absolute top-2 right-2 w-6 h-6 bg-black/60 rounded-full flex items-center justify-center"
                   >

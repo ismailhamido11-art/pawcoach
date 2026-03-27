@@ -53,6 +53,7 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
       <div className="flex items-start gap-3 p-4">
         {startDate && onToggleComplete && (
           <button
+            aria-label={isDone ? "Marquer comme non fait" : "Marquer comme fait"}
             onClick={(e) => { e.stopPropagation(); onToggleComplete(); }}
             className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
               isDone ? "bg-emerald-500 border-emerald-500" : "border-border/60 hover:border-violet-400"
@@ -84,7 +85,7 @@ function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDone, onToggleCom
           )}
         </button>
 
-        <button onClick={onToggle} className="flex-shrink-0 mt-1">
+        <button aria-label={isOpen ? "Réduire" : "Développer"} onClick={onToggle} className="flex-shrink-0 mt-1">
           {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
         </button>
       </div>

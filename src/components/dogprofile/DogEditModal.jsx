@@ -79,7 +79,7 @@ export default function DogEditModal({ dog, onClose, onSave }) {
 
         <div className="flex items-center justify-between px-5 py-3 border-b border-border">
           <h2 className="font-bold text-base text-foreground">Modifier le profil</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+          <button aria-label="Fermer" onClick={onClose} className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
             <X className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>

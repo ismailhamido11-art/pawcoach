@@ -172,6 +172,7 @@ export default function DogProfile() {
           <ArrowLeft className="w-5 h-5 text-white" />
         </button>
         <button
+          aria-label="Modifier le profil"
           onClick={() => setEditModal(true)}
           className="absolute right-4 w-9 h-9 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center z-40"
           style={{ top: "calc(env(safe-area-inset-top, 0px) + 3rem)" }}

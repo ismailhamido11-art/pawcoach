@@ -42,6 +42,7 @@ export default function CoachHomeHeader({ user, dog }) {
         {/* Main row: dog info + photo */}
         <div className="flex items-center gap-4 relative z-10">
           <motion.button
+            aria-label="Voir le profil du chien"
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate(createPageUrl("DogProfile"))}
             className="flex-shrink-0 relative group">
