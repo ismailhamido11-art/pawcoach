@@ -58,8 +58,8 @@ export default function Library() {
         const dogs = await Dog.filter({ owner: u.email }).catch(() => []);
         const activeDog = dogs?.length > 0 ? getActiveDog(dogs) : null;
         const [bks, plans, scans] = await Promise.all([
-          Bookmark.filter({ owner: u.email }, "-created_at"),
-          NutritionPlan.filter({ owner_email: u.email }, "-generated_at").catch(() => []),
+          Bookmark.filter({ owner: u.email }, "-created_at", 100),
+          NutritionPlan.filter({ owner_email: u.email }, "-generated_at", 50).catch(() => []),
           activeDog
             ? FoodScan.filter({ dog_id: activeDog.id }, "-timestamp").catch(() => [])
             : Promise.resolve([]),
