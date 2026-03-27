@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v9.0
 milestone_name: "Production Ready" — Active
 status: executing
-stopped_at: "Completed 06-03-PLAN.md"
-last_updated: "2026-03-27T23:05:00Z"
-last_activity: 2026-03-27
+stopped_at: Completed 07-flow-fixes-03-PLAN.md
+last_updated: "2026-03-27T23:03:42.249Z"
+last_activity: 2026-03-27 — 06-03 executed (FIX-05 export RGPD + FIX-06 disclosure + FIX-07 disclaimer)
 progress:
-  total_phases: 6
-  completed_phases: 0
-  total_plans: 4
-  completed_plans: 4
+  total_phases: 11
+  completed_phases: 1
+  total_plans: 9
+  completed_plans: 12
 ---
 
 # Project State
@@ -41,6 +41,7 @@ Last activity: 2026-03-27 — 06-03 executed (FIX-05 export RGPD + FIX-06 disclo
 | v9.0 requirements | 18 |
 | v9.0 phases | 6 (audit) + N (corrections TBD) |
 | Coverage | 18/18 (100%) |
+| Phase 07-flow-fixes P03 | 15 | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -54,6 +55,9 @@ Last activity: 2026-03-27 — 06-03 executed (FIX-05 export RGPD + FIX-06 disclo
 - CSP via meta tag (Base44 ne permet pas la config des headers HTTP response)
 - Input validation avant sanitize() pour reject avant tout appel LLM
 - FIX-05/06/07: export RGPD Blob JSON sans serveur, disclosure EUR dynamique dans Premium, banner amber avant hero card DiagnosisContent
+- [Phase 07-flow-fixes]: FIX-20: resetLabel appelle onLabelResult?.(null) pour notifier Scan.jsx parent
+- [Phase 07-flow-fixes]: FIX-25: showSuggestions/showQuickActions bloqués pendant loading+isStreaming dans Chat et Nutri
+- [Phase 07-flow-fixes]: FIX-26: onWeightAdded prop ajoutée à NotebookContent pour sync dog.weight en mémoire après SectionPoids
 
 ### Pending Todos
 
@@ -65,7 +69,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T23:45:00Z
-Stopped at: Completed 06-04-PLAN.md (FIX-09 + FIX-10)
+Last session: 2026-03-27T23:03:42.244Z
+Stopped at: Completed 07-flow-fixes-03-PLAN.md
 Resume file: None
 Next action: Continue with next plan
