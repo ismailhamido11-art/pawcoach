@@ -18,15 +18,21 @@ Deno.serve(async (req) => {
       if (dog.owner !== user.email) return Response.json({ error: 'Forbidden: dog does not belong to this user' }, { status: 403 });
     }
 
-    // SEC-01: Quota guard — finalDiagnosis must be called as step 2 of a preDiagnosis flow.
-    // preDiagnosis decrements ai_credits; if credits are exhausted the user bypassed the flow.
-    const userRecords = await base44.asServiceRole.entities.User.filter({ email: user.email });
-    const userEntity = userRecords?.[0];
-    const credits = userEntity?.ai_credits ?? null;
-    // credits === null means the User entity lacks the field (legacy) — allow through.
-    // credits === 0 means preDiagnosis was never called (or quota is exhausted) — block.
-    if (credits !== null && credits < 0) {
-      return Response.json({ error: 'Quota exceeded: please start a new diagnosis from the beginning' }, { status: 429 });
+    // SEC-01: Quota guard — prevent direct calls bypassing preDiagnosis quota.
+    // Uses actions_remaining (same field as preDiagnosis) — no decrement here (step 2).
+    const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
+    if (!isPremium) {
+      const ACTION_DAILY_LIMIT = 3;
+      const today = new Date().toISOString().split("T")[0];
+      let remaining = user.actions_remaining ?? ACTION_DAILY_LIMIT;
+      const lastReset = user.actions_daily_reset;
+      if (lastReset !== today) {
+        remaining = ACTION_DAILY_LIMIT;
+      }
+      if (remaining <= 0) {
+        return Response.json({ error: "daily_limit_reached", message: "Tu as atteint la limite du jour." }, { status: 429 });
+      }
+      // No decrement — preDiagnosis already decremented for this flow.
     }
 
     // No credit decrement here — preDiagnosis already decremented for this diagnostic flow.
