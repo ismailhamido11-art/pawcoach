@@ -372,9 +372,14 @@ export default function Chat() {
                 </motion.button>
               )}
               {!isUserPremium(user) && messagesRemaining !== null && (
-                <div className="bg-white/20 px-2.5 py-1 rounded-full">
+                <div className={`px-2.5 py-1 rounded-full flex items-center gap-1.5 ${
+                  messagesRemaining <= 2 ? "bg-amber-400/30 border border-amber-300/40" : "bg-white/20"
+                }`}>
                   <span className="text-white text-xs font-medium">
-                    {messagesRemaining} credit{messagesRemaining !== 1 ? "s" : ""} IA
+                    {messagesRemaining > 0
+                      ? `${messagesRemaining} message${messagesRemaining !== 1 ? "s" : ""} restant${messagesRemaining !== 1 ? "s" : ""} aujourd'hui`
+                      : "Limite atteinte · Réessaie demain"
+                    }
                   </span>
                 </div>
               )}
@@ -597,7 +602,7 @@ export default function Chat() {
             {!isUserPremium(user) && messagesRemaining !== null && (
               <div className="flex items-center gap-1.5 px-5 pt-2 pb-0">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                <span className="text-xs text-muted-foreground font-medium">{messagesRemaining} credit{messagesRemaining !== 1 ? "s" : ""} restant{messagesRemaining !== 1 ? "s" : ""}</span>
+                <span className="text-xs text-muted-foreground font-medium">{messagesRemaining} message{messagesRemaining !== 1 ? "s" : ""} restant{messagesRemaining !== 1 ? "s" : ""} aujourd'hui</span>
               </div>
             )}
             {pendingImage && (
