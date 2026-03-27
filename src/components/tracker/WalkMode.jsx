@@ -201,6 +201,10 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
       (err) => {
         if (err.code === 1) {
           toast.info("GPS désactivé — la distance ne sera pas mesurée", { id: "gps-warn" });
+        } else if (err.code === 2) {
+          toast.error("Signal GPS indisponible — la distance ne sera pas mesurée.", { id: "gps-warn" });
+        } else if (err.code === 3) {
+          toast.error("GPS trop lent à répondre — la distance ne sera pas mesurée.", { id: "gps-warn" });
         }
       },
       { enableHighAccuracy: true, maximumAge: 3000 }

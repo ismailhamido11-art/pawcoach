@@ -29,7 +29,16 @@ export default function VoiceInput({ onTranscript, className = "" }) {
       onTranscript(transcript);
       setListening(false);
     };
-    recognition.onerror = () => setListening(false);
+    recognition.onerror = (e) => {
+      setListening(false);
+      if (e.error === "not-allowed") {
+        toast.error("Accès au microphone refusé. Autorise-le dans les réglages de ton navigateur.");
+      } else if (e.error === "no-speech") {
+        toast.info("Aucune voix détectée. Réessaie.");
+      } else {
+        toast.error("Erreur de dictée vocale. Réessaie.");
+      }
+    };
     recognition.onend = () => setListening(false);
 
     recognitionRef.current = recognition;
