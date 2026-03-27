@@ -25,6 +25,21 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 - UX coherente (erreurs FR, confirmations, prefs refresh, sessionStorage safe)
 - Edge cases couverts (BCS, QR fallback, PDF erreur, dead code supprime)
 
+## Current Milestone: v5.0 Hardening & Refactoring
+
+**Goal:** Corriger les 23 issues restantes (3 CRITICAL + 6 HIGH + 7 MEDIUM + 7 LOW) identifiees par le scan codebase post-v4.0, et refactorer les monolithes.
+
+**Target features:**
+- Securite ownership (generateTrainingProgram, analyzeGrowthPhoto, DogPublicProfile privacy, chat bounded)
+- Scalabilite restante (6 CRONs .list(), HealthRecord limits, FoodScan unbounded)
+- Extraction utils dupliquees (dateHelpers, chartHelpers, ACTIVITY_ICONS, getWeekStart)
+- Split monolithes (Scan.jsx, AITrainingProgram, WalkMode, NutritionMealPlan)
+- window.confirm → AlertDialog (6 confirmations PWA-friendly)
+- Bundle performance (deps inutilisees, lazy loading, setTimeout cleanup)
+- Polish final (Home useState, Lottie fallback, silent catches, pagination, analytics TTL)
+
+**Source:** .planning/codebase/CONCERNS.md (27 mars 2026)
+
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.

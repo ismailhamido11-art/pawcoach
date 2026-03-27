@@ -1,139 +1,199 @@
-# PawCoach — Testing & Quality
-> Current state as observed in the codebase. Last updated: 2026-03-26.
+# Testing Patterns
 
----
+**Analysis Date:** 2026-03-27
 
-## 1. Test Framework
+## Test Framework
 
-**There is no test framework installed.**
+**Runner:** None
+- No test runner configured (no `jest.config.*`, no `vitest.config.*` in `pawcoach/`)
+- No test files exist in `src/` — only third-party test files in `node_modules/`
+- `package.json` scripts: `dev`, `build`, `lint`, `lint:fix`, `typecheck`, `preview` — no `test` script
 
-Neither Jest, Vitest, Playwright, Testing Library, Cypress, nor any equivalent is listed in `package.json` (checked both `dependencies` and `devDependencies`). No test runner is configured.
-
----
-
-## 2. Test Coverage
-
-**Zero test files in `src/`.**
-
-Glob search for `*.test.*` and `*.spec.*` in `pawcoach/src/` returned no results. No `__tests__` directories exist in the application source.
-
-Test files found in `node_modules/` belong entirely to third-party libraries (hookform/resolvers, stripe-js, html2canvas, etc.) — not authored by the project.
-
-**Coverage: 0%** — no unit tests, no integration tests, no e2e tests.
-
----
-
-## 3. QA Approach
-
-### Current state: fully manual
-All QA is done by running the dev server (`npm run dev`) and visually testing in the browser. There is no documented QA checklist or test plan in the repo.
-
-### Build validation
-The build script (`npm run build`) is the only automated quality gate:
+**Quality tools that DO exist:**
 ```bash
-npm run build  # vite build — must pass without errors
-```
-This was explicitly documented as a hard rule in `CLAUDE.md`: *"Si une erreur de build survient, la corriger IMMÉDIATEMENT avant de continuer"*.
-
-### Linting (ESLint)
-ESLint is configured and functional:
-```bash
-npm run lint      # eslint . --quiet
-npm run lint:fix  # eslint . --fix
+npm run lint          # ESLint — catches unused imports + hooks violations
+npm run lint:fix      # Auto-fix ESLint issues
+npm run typecheck     # TypeScript check via jsconfig.json (JS files with JSDoc)
+npm run build         # Vite build — catches import errors, dead code
 ```
 
-**ESLint config** (`eslint.config.js` — flat config format, ESLint v9):
-- Scope: `src/components/**/*.{js,mjs,cjs,jsx}`, `src/pages/**/*.{js,mjs,cjs,jsx}`, `src/Layout.jsx`
-- Excluded: `src/lib/**/*`, `src/components/ui/**/*` (shadcn — never touch)
-- Plugins active: `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-unused-imports`
+## Test File Organization
 
-**Active rules:**
-| Rule | Level | Effect |
-|------|-------|--------|
-| `unused-imports/no-unused-imports` | error | Fails on unused imports |
-| `unused-imports/no-unused-vars` | warn | Warns on unused vars (ignorant of `_` prefix) |
-| `react-hooks/rules-of-hooks` | error | Enforces hooks rules |
-| `react/jsx-uses-vars` | error | Prevents false "unused var" on JSX components |
-| `react/no-unknown-property` | error | Catches invalid DOM props |
-| `react/prop-types` | off | PropTypes not required |
-| `react/react-in-jsx-scope` | off | No `import React` needed (React 18) |
-| `no-unused-vars` | off | Replaced by unused-imports plugin |
+**Location:** No test files exist in the project source.
 
----
+**Test files found:** Zero `*.test.*` or `*.spec.*` files in `src/`, `base44/functions/`, or project root.
 
-## 4. Type Checking
+## What Is Tested
 
-### TypeScript (partial)
-TypeScript is installed (`typescript ^5.8.2`) and a `jsconfig.json` is configured with `"checkJs": true`. The `typecheck` script exists:
-```bash
-npm run typecheck  # tsc -p ./jsconfig.json
+**Nothing is formally tested.** Verification happens through:
+
+1. **ESLint** (`eslint.config.js`) — enforces:
+   - No unused imports (error)
+   - No unused variables (warn, `^_` pattern exempted)
+   - React hooks rules (error)
+   - Known JSX property names
+
+2. **TypeScript type checking** (`npm run typecheck`) — loose JS type checking via `jsconfig.json`
+
+3. **Vite build** — catches missing imports, circular deps, syntax errors
+
+4. **Manual testing** — developer tests in the browser
+
+## What Is NOT Tested
+
+Every critical business logic path is untested:
+
+**High-value untested areas:**
+
+- `src/utils/healthStatus.js` — `computeHealthScore`, `computeVaccineMap`, `computeWeightTrend`, `computeNextAction`, `computeStatusPills` are pure functions with complex branching logic. Prime candidates for unit tests.
+
+- `src/utils/premium.js` — `isUserPremium`, `isUserOnTrial`, `getTrialDaysLeft` — gate premium features. Bugs here block or wrongly grant access.
+
+- `src/utils/ai-credits.js` — `initCredits`, `consumeMessageCredit`, `consumeActionCredit` — credit daily reset logic; bugs cause users to lose credits or over-consume.
+
+- `src/utils/recommendations.js` — `buildRecommendations` — 12 recommendation rules, priority ordering; easy to regress silently.
+
+- `src/utils/dateHelpers.js` — `getDaysLeft`, `getDateLabel`, `shouldShowDateSeparator` — date edge cases are classically bug-prone.
+
+- `src/components/streakHelper.jsx` — `updateStreakSilently` — grace day logic, dedup guard; streak reset bugs are user-facing.
+
+- `src/hooks/useActionCredits.js` — `consumingRef` double-click guard; concurrency behavior untestable without tests.
+
+- `src/pages/VetDogView.jsx` — `translateError` map — static, easy to test.
+
+## Coverage
+
+**Requirement:** None enforced.
+
+**Actual:** 0% — no tests exist.
+
+## Test Types
+
+**Unit Tests:** Not used.
+
+**Integration Tests:** Not used.
+
+**E2E Tests:** Not used.
+
+## If You Add Tests
+
+If tests are introduced, recommended setup for this codebase:
+
+**Recommended stack:**
+- **Vitest** (preferred over Jest — native Vite integration, ESM-compatible, no config friction)
+- **@testing-library/react** for component tests
+- No need for jsdom for pure utility functions
+
+**Suggested `vitest.config.js`:**
+```js
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
+import { resolve } from "path";
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: "jsdom",
+    globals: true,
+  },
+  resolve: {
+    alias: { "@": resolve(__dirname, "src") },
+  },
+});
 ```
 
-**Scope of type checking:**
+**Suggested `package.json` additions:**
 ```json
-"include": ["src/components/**/*.js", "src/pages/**/*.jsx", "src/Layout.jsx"]
-"exclude": ["node_modules", "dist", "src/vite-plugins", "src/components/ui", "src/api", "src/lib"]
+"test": "vitest",
+"test:coverage": "vitest run --coverage"
 ```
 
-**Reality**: Most `.jsx` files have no JSDoc annotations and no type imports. The `checkJs` flag catches only the most obvious type errors. `src/utils/index.ts` is the only file with real TypeScript types. Backend functions (`entry.ts`) use TypeScript natively but with minimal annotations (most variables are typed as `any` implicitly).
+**Where to place test files:**
+- Co-located with source: `src/utils/healthStatus.test.js`
+- Or separate: `src/__tests__/utils/healthStatus.test.js`
 
-There is **no strict TypeScript enforcement** — the project is effectively untyped JavaScript with a light type-check pass on a subset of files.
+## High Priority Tests to Write First
+
+Priority order based on business impact and bug risk:
+
+1. **`src/utils/healthStatus.js`** — all exported functions are pure (no API, no React), easy to unit test:
+   ```js
+   // Example
+   import { computeHealthScore, computeVaccineMap, isValidDate } from "@/utils/healthStatus";
+
+   describe("computeHealthScore", () => {
+     it("returns 0 when no records", () => {
+       expect(computeHealthScore([], {})).toBe(0);
+     });
+     it("caps at 100", () => {
+       // ...feed perfect records
+     });
+   });
+   ```
+
+2. **`src/utils/premium.js`** — pure functions, 3 functions to cover in ~10 tests:
+   ```js
+   import { isUserPremium, isUserOnTrial, getTrialDaysLeft } from "@/utils/premium";
+
+   it("returns true when is_premium flag is set", () => {
+     expect(isUserPremium({ is_premium: true })).toBe(true);
+   });
+   it("returns false when trial_expires_at is in the past", () => {
+     expect(isUserPremium({ trial_expires_at: "2020-01-01" })).toBe(false);
+   });
+   ```
+
+3. **`src/utils/recommendations.js`** — `buildRecommendations` pure function, test each of 12 rules:
+   - Priority ordering (vaccine_overdue = priority 1 must appear first)
+   - Slice limit (returns at most 3 recommendations)
+
+4. **`src/utils/dateHelpers.js`** — date edge cases:
+   - `getDateLabel` for today, yesterday, older dates
+   - `getDaysLeft` with past/future dates
+
+5. **`src/utils/ai-credits.js`** — requires mocking `base44.auth.updateMe`:
+   - Daily reset logic when `messages_daily_reset !== today`
+   - Credit floor at 0 (`Math.max(0, ...)`)
+
+## Mocking Needs
+
+**For utils tests:** No mocking needed (all pure functions).
+
+**For hook tests:**
+```js
+// Mock base44 client
+vi.mock("@/api/base44Client", () => ({
+  base44: {
+    auth: {
+      me: vi.fn().mockResolvedValue({ email: "test@test.com", is_premium: false }),
+      updateMe: vi.fn().mockResolvedValue({}),
+    },
+  },
+}));
+```
+
+**For component tests:**
+```js
+// Mock entities
+vi.mock("@/api/entities", () => ({
+  Dog: { filter: vi.fn().mockResolvedValue([{ id: "dog1", name: "Rex" }]) },
+}));
+```
+
+## Linting as Quality Gate
+
+ESLint currently serves as the only automated quality gate. Run before every commit:
+
+```bash
+npm run lint        # Check — exits non-zero on errors
+npm run lint:fix    # Auto-fix
+```
+
+Key catches:
+- `unused-imports/no-unused-imports` — prevents dead import accumulation
+- `react-hooks/rules-of-hooks` — prevents conditional hook calls
+- Build (`npm run build`) — catches missing module resolutions and circular imports
 
 ---
 
-## 5. CI/CD
-
-### GitHub Actions
-**No `.github/workflows/` directory exists** in the project. There are no CI/CD pipelines.
-
-### Deployment pipeline
-The deployment flow is manual:
-1. Developer (or Claude) pushes to `main` branch on GitHub
-2. Base44 platform detects the push via 2-way sync and pulls the code
-3. Ismail clicks "Publish" in the Base44 dashboard to deploy to production
-
-There is no automated:
-- Build check on PR
-- Lint check on push
-- Test run
-- Preview deployment
-- Branch protection rules (as far as can be determined from repo structure)
-
----
-
-## 6. Quality Gaps — Summary
-
-### Critical gaps
-| Gap | Impact | Notes |
-|-----|--------|-------|
-| No unit tests | High | Business logic in `utils/` (premium checks, health status, recommendations) is completely untested |
-| No integration tests | High | Data flows (checkin → streak update → badge unlock) never verified automatically |
-| No e2e tests | High | User journeys (onboarding, payment, daily checkin) rely entirely on manual testing |
-| No CI pipeline | Medium | A bad push can break production with no safety net |
-| No TypeScript in components | Medium | No compile-time safety on prop shapes or API response shapes |
-
-### Moderate gaps
-| Gap | Impact | Notes |
-|-----|--------|-------|
-| No regression detection | Medium | Visual Polish work (current phase) can silently break existing functionality |
-| No Prettier | Low | Formatting inconsistencies accumulate over time (mix of `@/` vs relative imports, hardcoded vs token colors) |
-| `useReducedMotion` stub returns `false` always | Low | Accessibility: reduced motion preference not actually respected via this hook (Framer Motion's own import is used in critical components, so partially mitigated) |
-
-### What exists (strengths)
-- ESLint catches unused imports and hooks violations — prevents a common class of bugs
-- `npm run build` as a hard gate — at minimum, broken imports get caught before push
-- `ErrorBoundary` wraps pages — runtime errors don't crash the full app
-- Backend functions validate inputs and use try/catch throughout
-- Server-side quota checks for chat (not relying on client state)
-
----
-
-## 7. Recommended Next Steps (if testing is to be added)
-
-If automated testing were to be introduced, the logical order would be:
-
-1. **Vitest** (already using Vite — zero config overhead) for unit tests on `src/utils/` functions (`premium.js`, `healthStatus.js`, `recommendations.js`) — highest ROI, pure functions, no DOM needed.
-2. **GitHub Actions** — lint + build check on every push to `main`. Catches regressions before Base44 sync.
-3. **Playwright** — e2e for the 3 critical user paths: onboarding flow, daily checkin, premium upgrade. MCP server already available in the workspace.
-
-These are recommendations only — not the current state.
+*Testing analysis: 2026-03-27*

@@ -1,370 +1,368 @@
-# PawCoach — Code Conventions
-> Patterns observed in actual code (not guidelines). Last updated: 2026-03-26.
+# Coding Conventions
 
----
+**Analysis Date:** 2026-03-27
 
-## 1. Code Style
+## Naming Patterns
 
-### Formatting
-- **No Prettier config** — formatting is not enforced by a formatter. ESLint handles quality rules only.
-- **Indentation**: 2 spaces (JSX and JS).
-- **Quotes**: double quotes in JSX attributes (`className="..."`), single quotes are rare. String literals in JS use both, no consistent rule.
-- **Semicolons**: present in all files observed.
-- **Trailing commas**: present in object/array literals.
-- **Line length**: no enforced limit. Long lines are common in page files (inline logic, one-liners with `&&`).
+**Files:**
+- Pages: PascalCase matching route name — `Home.jsx`, `Sante.jsx`, `Activite.jsx`, `VetDogView.jsx`
+- Components: PascalCase by feature — `BentoGrid.jsx`, `TodayCard.jsx`, `WalkMode.jsx`
+- Hooks (`src/hooks/`): camelCase prefixed with `use` — `useActionCredits.js`, `useBackClose.js`, `useReducedMotion.js`
+- Hooks inside components: `src/components/hooks/useBackClose.jsx` (duplicates `src/hooks/` — prefer `src/hooks/`)
+- Utils: camelCase noun — `dateHelpers.js`, `healthStatus.js`, `ai-credits.js` (kebab for multi-word)
+- Lib: camelCase — `animations.js`, `query-client.js`, `app-params.js`
+- Mixed extensions: `.jsx` for components, `.js` for pure logic, `.ts` only for `src/utils/index.ts`
 
-### Language
-- **JavaScript (JSX)** for all frontend components and pages — no `.tsx` files.
-- **TypeScript** for backend Deno functions (`entry.ts`) and for `src/utils/index.ts`.
-- `jsconfig.json` is used for path aliases and light type checking (`checkJs: true`), but TypeScript is not enforced on `.jsx` files.
+**Functions:**
+- camelCase — `computeHealthScore`, `getActiveDog`, `buildRecommendations`
+- Private helpers (no export): underscore prefix `_formatTime` or plain camelCase
+- Event handlers: `handle` prefix — `handleStart`, `handleGeolocate`, `handleRetry`, `handleUpgrade`
+- Async data loaders: named `load` or `loadData` inside page components
+- Utility builders: verb+noun — `buildRecommendations`, `computeVaccineMap`, `getScoreLevel`
 
----
+**Variables:**
+- camelCase throughout — `todayCheckin`, `activeTab`, `loadError`
+- Boolean state: no required prefix, both forms used — `loading`, `saving`, `isPremium`, `isAssistantOpen`
+- Refs: `Ref` suffix — `consumingRef`, `watchRef`, `stoppingRef`, `initRef`, `prevTabIdx`
+- Module-level config constants: UPPER_SNAKE_CASE — `TABS`, `MILESTONES`, `WALK_TAGS`, `VACCINE_REFERENCE`, `MSG_DAILY_LIMIT`
 
-## 2. Naming Conventions
+**Types/Components:**
+- React components: PascalCase named function — `export default function Home()`
+- Context: `NounContext` + `NounProvider` + `useNoun` pattern — `AuthContext` / `AuthProvider` / `useAuth`, `HomeCacheContext` / `HomeCacheProvider` / `useHomeCache`
 
-### Files
-- **Pages**: `PascalCase.jsx` — `Home.jsx`, `Sante.jsx`, `DogProfile.jsx`
-- **Components**: `PascalCase.jsx` — `DailyBriefing.jsx`, `SkeletonPage.jsx`
-- **Hooks**: `camelCase.js/.jsx` — `useBackClose.jsx`, `useCountUp.js`, `useReducedMotion.js`
-- **Utils**: `camelCase.js/.ts` — `premium.js`, `healthStatus.js`, `dateHelpers.js`
-- **Backend functions**: directory named in `camelCase`, file always `entry.ts` — `pawcoachChat/entry.ts`, `stripeWebhook/entry.ts`
-- **Lib files**: `camelCase.js` — `animations.js`, `lottieLibrary.js`
+## Code Style
 
-### Components & Variables
-- **React components**: `PascalCase` function names, `default export`
-- **Local constants**: `SCREAMING_SNAKE_CASE` for config arrays and lookup objects at module level — `TABS`, `MILESTONES`, `MISSION_CONFIG`, `PREMIUM_CONFIGS`, `ACTIONS`
-- **State variables**: `camelCase` — `todayCheckin`, `showPremiumNudge`, `isAssistantOpen`
-- **Event handlers**: `handle` prefix — `handleSave`, `handleMoodTap`, `handleMissionTap`, `handleTabClick`
-- **Load functions**: typically named `load` (inline async in `useEffect`) or `fetchDogData` for module-level extractors
-- **Boolean state**: `is`/`show`/`has` prefixes — `isPremium`, `showShareModal`, `hasWalk`
-- **Unused params**: prefixed with `_` to suppress ESLint warnings — `_context`, `_user`, `_e`
+**Formatting:**
+- No Prettier config detected — formatting is manual/editor-driven
+- 2-space indentation dominant (some 4-space inconsistency between files)
+- Double quotes in JSX attributes, single quotes in JS strings (mixed, no enforced rule)
+- Template literals for dynamic strings
 
-### CSS Classes
-- Pure Tailwind utility classes — no CSS Modules, no styled-components.
-- Hardcoded color values still appear in older components (`bg-[#1A4D3E]`, `text-[#2D9F82]`) alongside design token classes (`text-primary`, `bg-accent`).
-- Class string construction with template literals for conditional logic: `` `text-${active ? "primary" : "muted-foreground"}` ``
-- `cn()` utility from `@/lib/utils` used when combining conditional classes (shadcn pattern).
+**Linting:**
+- ESLint 9 flat config at `eslint.config.js`
+- Scope: `src/components/**`, `src/pages/**`, `src/Layout.jsx` only
+- Ignored: `src/lib/**/*`, `src/components/ui/**/*` (shadcn)
+- Key rules enforced:
+  - `unused-imports/no-unused-imports: error` — zero dead imports
+  - `unused-imports/no-unused-vars: warn` — prefix intentionally unused with `_`
+  - `react/prop-types: off` — no PropTypes required
+  - `react/react-in-jsx-scope: off` — no `import React` needed
+  - `react-hooks/rules-of-hooks: error`
+- Run: `npm run lint` / `npm run lint:fix`
 
----
+## Import Organization
 
-## 3. Import Patterns
+**Observed order:**
+1. React core — `import { useState, useEffect, useRef } from "react"`
+2. Router — `import { useNavigate, Link, useSearchParams } from "react-router-dom"`
+3. Internal utils/lib — `import { createPageUrl, getActiveDog } from "@/utils"`
+4. API layer — `import { base44 } from "@/api/base44Client"` then `import { Dog, DailyLog } from "@/api/entities"`
+5. Context — `import { useAuth } from "@/lib/AuthContext"`
+6. Shared components — `import BottomNav from "@/components/BottomNav"`
+7. Feature components — `import WalkMode from "@/components/tracker/WalkMode"`
+8. shadcn UI — `import { Button } from "@/components/ui/button"`
+9. Icons — `import { Heart, Utensils } from "lucide-react"`
+10. Animation — `import { motion, AnimatePresence, useReducedMotion } from "framer-motion"`
+11. Toast — `import { toast } from "sonner"`
 
-### Order (observed pattern, not enforced)
-1. React hooks and built-ins
-2. React Router
-3. App utilities (`@/utils`, `@/api/base44Client`, `@/utils/premium`)
-4. Components (own-domain first, then cross-domain)
-5. Lucide icons
-6. Framer Motion
-7. Toaster (`sonner`)
-8. shadcn/ui components (rare in pages — mostly inside sub-components)
+**Path aliases:**
+- `@/` → `src/` (configured in `jsconfig.json` + Vite)
+- Use `@/components/...`, `@/utils/...`, `@/lib/...`, `@/api/...`
+- Some relative imports still appear for same-directory siblings: `import BottomNav from "../components/BottomNav"` — prefer `@/` alias
 
-### Aliases
-- `@/` maps to `./src/` (defined in `jsconfig.json` and Vite config via `@base44/vite-plugin`).
-- Both `@/` imports and relative imports (`../components/BottomNav`) are used — **no consistent standard**. Relative imports are more common in older/page-level code; `@/` is preferred in newer components.
+## State Management
 
----
-
-## 4. Component Patterns
-
-### Structure
-All components are **functional components** with `default export`. No class components except `ErrorBoundary.jsx` (required by React API for `componentDidCatch`).
-
+**Local State + loadData Pattern (universal across all pages):**
 ```jsx
-export default function ComponentName({ prop1, prop2, optionalProp = defaultValue }) {
-  // hooks
-  // derived state / memos
-  // handlers
-  // return JSX
+const [dog, setDog] = useState(null);
+const [loading, setLoading] = useState(true);
+const [loadError, setLoadError] = useState(false);
+
+const load = async (providedUser) => {
+  setLoading(true);
+  try {
+    const u = providedUser || await base44.auth.me();
+    // fetch data...
+  } catch (e) {
+    console.error(e);
+    setLoadError(true);
+  } finally {
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  if (!isLoadingAuth) load(authUser || undefined);
+}, [isLoadingAuth, authUser]);
+```
+
+**Auth Context (`src/lib/AuthContext.jsx`):**
+- `useAuth()` provides: `user`, `isAuthenticated`, `isLoadingAuth`, `authError`, `logout`, `navigateToLogin`
+- Always gate data fetching on `!isLoadingAuth`
+- Pass `authUser` from context to `load()` to skip redundant `base44.auth.me()` call
+
+**Home Cache (`src/lib/HomeCacheContext.jsx`):**
+- `useRef`-based in-memory cache, 2-minute TTL
+- Auto-invalidates when `activeDogId` changes in localStorage
+- API: `getCachedHome()` / `setCachedHome(data)` / `invalidateHome()`
+
+**Active Dog:**
+- Persisted in `localStorage("activeDogId")`
+- Always resolve via `getActiveDog(dogs)` from `src/utils/index.ts` — never read localStorage directly
+- `getActiveDog` falls back to `dogs[0]` and syncs localStorage when stored ID is stale
+
+**Tab State Persistence (pages with sub-tabs):**
+```jsx
+// Priority: URL param > sessionStorage > default
+const activeTab = (urlTab && TABS.some(t => t.id === urlTab)) ? urlTab
+  : (() => { const s = sessionStorage.getItem("tab_PageName"); return (s && TABS.some(t => t.id === s)) ? s : "default"; })();
+
+// On mount: sync URL if needed (replace=true, no history entry)
+const initRef = useRef(false);
+useEffect(() => {
+  if (!initRef.current) {
+    initRef.current = true;
+    if (!urlTab && activeTab !== "default") setSearchParams({ tab: activeTab }, { replace: true });
+  }
+}, []);
+
+// Persist on change
+useEffect(() => { sessionStorage.setItem("tab_PageName", activeTab); }, [activeTab]);
+const changeTab = (tabId) => { sessionStorage.setItem("tab_PageName", tabId); setSearchParams({ tab: tabId }); };
+```
+Pattern used in: `Sante.jsx`, `Activite.jsx`, `Nutri.jsx`
+
+**Scroll Persistence:**
+- `BottomNav` saves/restores `sessionStorage("scroll_PageName")` on navigation
+- Restore uses `requestAnimationFrame(() => window.scrollTo(...))` to avoid layout conflicts
+
+## Component Patterns
+
+**Page Component Structure:**
+```jsx
+export default function PageName() {
+  // 1. Context hooks
+  const { user: authUser, isLoadingAuth } = useAuth();
+  // 2. Local state (user, dog, data, loading)
+  const [dog, setDog] = useState(null);
+  const [loading, setLoading] = useState(true);
+  // 3. Refs
+  const initRef = useRef(false);
+  // 4. Tab / URL state
+  const [searchParams, setSearchParams] = useSearchParams();
+  // 5. Async data load
+  const load = async (...) => { ... };
+  useEffect(() => { if (!isLoadingAuth) load(authUser); }, [isLoadingAuth]);
+  // 6. Early returns (loading / error / no dog)
+  if (loading) return <SkeletonPage variant="stats" currentPage="PageName" />;
+  // 7. JSX
+  return (
+    <div className="pb-24 min-h-screen bg-background">
+      <WellnessBanner ... />
+      {/* content */}
+      <BottomNav currentPage="PageName" />
+    </div>
+  );
 }
 ```
 
-### Props
-- Props are **not typed** (PropTypes disabled via ESLint rule `"react/prop-types": "off"`).
-- Default values set directly in destructuring: `{ dog, user: _user, records = [], isPremium, loading }`.
-- No prop spreading (`{...props}`) pattern observed.
-
-### Constants above component
-Config arrays and lookup objects are defined at module level above the component:
+**Bottom Sheet / Modal Pattern:**
 ```jsx
-const TABS = [...];
-const MISSION_CONFIG = {...};
-
-export default function MyComponent(...) { ... }
-```
-
-### Named exports alongside default
-Some utility components export both:
-```jsx
-export default function MainComponent() { ... }
-export { ILLUSTRATIONS }; // named export for constants
-export { Bone, SkeletonCard }; // named exports for sub-components
-```
-
----
-
-## 5. Hook Patterns
-
-### Custom hooks
-- Naming: `use` prefix + `PascalCase` noun — `useBackClose`, `useCountUp`, `useReducedMotion`, `useActionCredits`
-- Location: `src/hooks/` for app-wide hooks; `src/components/hooks/` for component-local hooks (only `useBackClose.jsx` there)
-- Pattern: thin wrappers around browser APIs or state logic, return a single value or void
-
-### `useReducedMotion`
-The custom hook at `src/hooks/useReducedMotion.js` **always returns `false`** (stub). The Framer Motion `useReducedMotion()` import from `framer-motion` is used in more critical components (SkeletonPage, EmptyState, PawLoader, pages). Both coexist.
-
-### Data fetching
-Not a custom hook — data loading is done inside `useEffect` directly in page components:
-```jsx
-useEffect(() => {
-  const load = async () => {
-    try {
-      const u = await base44.auth.me();
-      setUser(u);
-      // ...
-    } catch (err) {
-      toast.error("...");
-    } finally {
-      setLoading(false);
-    }
-  };
-  load();
-}, []);
-```
-
-Parallel fetches use `Promise.all` via a top-level async function (`fetchDogData`) called inside `useEffect`.
-
----
-
-## 6. CSS / Styling Patterns
-
-### Stack
-- **Tailwind CSS v3** — utility classes only.
-- **CSS variables** in `src/index.css` for the design system (`--primary`, `--accent`, `--background`, `--card`, etc.).
-- **No CSS Modules**, no inline `<style>` tags.
-- **Tailwind config** extends colors with HSL variables, border radius with `var(--radius)`, and font with Inter.
-
-### Design tokens (preferred)
-```jsx
-className="bg-primary text-primary-foreground"
-className="bg-card border-border text-muted-foreground"
-className="bg-accent/10 text-accent"
-```
-
-### Hardcoded values (legacy, avoid)
-Some components use hardcoded hex values directly:
-```jsx
-style={{ background: "linear-gradient(135deg, #1A4D3E 0%, #2D9F82 100%)" }}
-className="bg-[#1A4D3E] text-[#2D9F82]"
-```
-
-### Safe area / mobile
-```jsx
-style={{ paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))" }}
-className="safe-pt-14"  // custom utility defined in index.css
-```
-
-### Common class combos
-- Cards: `rounded-3xl border border-border/50 bg-card p-4 shadow-sm`
-- Buttons (primary): `bg-accent text-white rounded-xl px-5 py-2.5 font-semibold`
-- Bottom sheets: `fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl shadow-2xl`
-- Gradients (header): `bg-gradient-to-br from-primary via-primary/95 to-emerald-700`
-
----
-
-## 7. Error Handling Patterns
-
-### Frontend
-- `try/catch` inside async `load` functions within `useEffect`.
-- Errors are surfaced via `toast.error("...")` from `sonner` (user-visible).
-- `console.error(...)` for internal logging.
-- Graceful `.catch(() => [])` on non-critical parallel fetches:
-  ```jsx
-  base44.entities.DiagnosisReport.filter(...).catch(() => []),
-  ```
-- `ErrorBoundary` component wraps pages in `Layout.jsx` to catch React render errors. Uses a PawCoach-styled fallback UI with "Réessayer" / "Retour à l'accueil" buttons.
-
-### Backend (Deno functions)
-- Outer `try/catch` wrapping the entire handler body.
-- Early return with `Response.json({ error: '...' }, { status: 4xx })` for validation failures.
-- `console.error(...)` for logging (visible in Base44 function logs).
-- Final catch returns `Response.json({ error: error?.message || String(error) }, { status: 500 })`.
-- Non-critical operations use `.catch(() => [])`.
-
----
-
-## 8. Animation Patterns
-
-### Library
-**Framer Motion v11** is the sole animation library. CSS `transition-*` classes are used only for simple color/opacity state changes (hover, active).
-
-### Central presets — `src/lib/animations.js`
-```js
-spring          // stiffness: 360, damping: 28 — default for most transitions
-springGentle    // stiffness: 120, damping: 20 — messages, slide-ins
-springSnappy    // stiffness: 300, damping: 25 — expand/collapse
-tapScale        // whileTap: scale 0.97 — cards and list items
-pressIn         // whileTap: scale 0.95, opacity 0.82 — CTA buttons
-hoverGlow       // whileHover: y -2, forest-green shadow — desktop hover
-fadeInUp        // opacity 0→1, y 20→0
-fadeIn          // opacity 0→1, duration 0.24
-staggerContainer + staggerItem  // stagger children by 0.08s
-```
-
-### `useReducedMotion` usage
-Both `useReducedMotion()` from Framer Motion (reliable) and the stub from `src/hooks/useReducedMotion.js` are used. Critical components use the Framer Motion import directly.
-
-### Timing guidelines (from CLAUDE.md)
-- Micro-interactions: 0.1–0.15s
-- Content entrances (fadeIn): 0.2–0.35s ease-out
-- Springs: stiffness 300–400, damping 25–30
-- Stagger between items: 0.04–0.08s
-- **Max 0.4s** for any animation (except looping Lottie)
-
-### Common patterns in JSX
-```jsx
-// Page entrance
-<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-  transition={{ type: "spring", stiffness: 400, damping: 30 }}>
-
-// Bottom sheet (Vaul alternative using Framer directly)
-<motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
-  transition={{ type: "spring", stiffness: 400, damping: 30 }}>
-
-// Staggered list items
-<motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-  transition={{ delay: 0.1 + i * 0.05 }}>
-
-// Conditional rendering with AnimatePresence
-<AnimatePresence>
-  {visible && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-```
-
-### Lottie
-`@lottiefiles/dotlottie-react` — used via `LottieAnimation` wrapper in `src/components/ui/LottieAnimation.jsx`. URLs stored in `src/lib/lottieLibrary.js` (CDN). Respects `prefers-reduced-motion` (loop/autoplay disabled).
-
----
-
-## 9. Common UI Patterns
-
-### Loading state
-1. `SkeletonPage` component with `variant` prop: `"list"`, `"stats"`, `"detail"`, `"chat"`.
-2. `PawLoader` component for full-screen loading (initial app load).
-3. Pattern: `if (loading) return <SkeletonPage variant="list" />;` at top of render.
-
-### Empty state
-`EmptyState` component from `@/components/ui/EmptyState`. Props:
-```jsx
-<EmptyState
-  mascot="curious"          // SVG mascot from PawIllustrations
-  illustration="walking"    // or Storyset SVG name
-  lottieSrc={url}           // or Lottie URL
-  title="Aucun résultat"
-  description="..."
-  actionLabel="Ajouter"
-  onAction={handler}
+// Backdrop
+<motion.div
+  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+  className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
+  onClick={onClose}
 />
+// Sheet
+<motion.div
+  initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+  className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl shadow-2xl"
+  style={{ paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))" }}
+>
+  <div className="flex justify-center pt-3 pb-1">
+    <div className="w-10 h-1 rounded-full bg-muted" /> {/* handle bar */}
+  </div>
+  <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 ..."> {/* close btn */}
 ```
-Hierarchy: Lottie > illustration (Storyset) > mascot (PawIllustrations) > Lucide icon.
+- Always use `useBackClose(visible, onClose)` from `src/hooks/useBackClose.js` for Android back button
 
-### Modals / bottom sheets
-Pattern: `visible` prop + `AnimatePresence` + Framer Motion slide from bottom.
+**Lazy Loading:**
+- Use `lazy(() => import(...))` + `<Suspense fallback={<Skeleton />}>` for heavy sub-components
+- Lazy-loaded: `FindVetContent` (Leaflet), `WalkMap`, `NearbyParks`
+- Pattern declared at module level, not inside component
+
+**Empty States:**
+- Use `<EmptyState>` from `src/components/ui/EmptyState.jsx`
+- Props: `mascot` (string key from MASCOTS map), `illustration` (Storyset name), `lottieSrc`, `title`, `description`, `actionLabel`, `onAction`
+
+**Loading States:**
+- Full page: `<SkeletonPage variant="stats|list|detail" currentPage="PageName" />`
+- App init: `<PawLoader text="..." />` from `src/components/PawLoader.jsx`
+
+**Inline Animations for list items:** define `stagger` and `item` variants at module top-level (outside component) for performance.
+
+## Animation Conventions
+
+**Always import from `src/lib/animations.js`** — do not define one-off spring configs inline when a preset fits:
 ```jsx
-<AnimatePresence>
-  {visible && (
-    <>
-      <motion.div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
-        className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl shadow-2xl"
-        style={{ paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))" }}>
-        {/* Handle bar */}
-        <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 rounded-full bg-muted" />
-        </div>
-      </motion.div>
-    </>
-  )}
-</AnimatePresence>
+import { spring, tapScale, hoverGlow, fadeInUp, springSnappy, staggerContainer, staggerItem } from "@/lib/animations";
 ```
-Back-button close via `useBackClose(visible, onClose)` hook (pushes history state on open, listens for popstate).
 
-### Tabs with URL persistence
-Standard pattern across Sante, Activite, Nutri:
-1. Read `urlTab` from `useSearchParams()`
-2. Priority: URL param > `sessionStorage` > default
-3. `changeTab` = write to sessionStorage + `setSearchParams`
-4. Track `prevTabIdx` ref for slide direction
-5. `tabVariants` with `custom` direction for `AnimatePresence`
+**Spring presets:**
+| Name | stiffness | damping | Use case |
+|------|-----------|---------|----------|
+| `spring` | 360 | 28 | Default UI (buttons, cards, tabs) |
+| `springGentle` | 120 | 20 | Message/slide-in animations |
+| `springSnappy` | 300 | 25 | Expand/collapse, form reveals |
+| `tapScale` | 400 | 30 | `whileTap: { scale: 0.97 }` cards |
+| `pressIn` | 400 | 30 | `whileTap: { scale: 0.95 }` CTA buttons |
 
-### Toast notifications
-`sonner` library: `toast.error("...")`, `toast.success("...")`. Called directly in event handlers and `catch` blocks.
-
-### Cards
+**Tab slide transitions:**
 ```jsx
-<div className="rounded-3xl border border-border/50 bg-card p-4 shadow-sm">
+const tabVariants = {
+  enter: (d) => ({ opacity: 0, x: d * 60 }),
+  center: { opacity: 1, x: 0 },
+  exit: (d) => ({ opacity: 0, x: d * -60 }),
+};
+// Used with: custom={tabDir} on AnimatePresence, track tabDir with prevTabIdx ref
 ```
-Elevation hierarchy: `shadow-sm` > `shadow-md` > `shadow-lg` > `shadow-2xl` (for modals).
+
+**Reduced motion:**
+```jsx
+const prefersReducedMotion = useReducedMotion(); // from framer-motion
+// OR inline for non-framer components:
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+// Apply: initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+```
+
+**Stagger pattern:**
+```jsx
+<motion.div variants={staggerContainer} initial="hidden" animate="show">
+  {items.map(item => (
+    <motion.div key={item.id} variants={staggerItem}>...</motion.div>
+  ))}
+</motion.div>
+```
+
+## Error Handling
+
+**Data Loading:**
+- Wrap in `try/catch/finally` — `finally` always sets `setLoading(false)`
+- `console.error(e)` for unexpected errors (full error object)
+- `toast.error("French user message")` via sonner for user-visible errors
+- `setLoadError(true)` for non-recoverable failures; render error UI in JSX
+
+**Silent / Background Operations:**
+- Streak updates, badge checks, analytics: `.catch(() => {})` or bare `try {} catch {}`
+- Pattern: `checkWalkBadges(dog.id, user.email, logs).catch(() => {})`
+- Never let background tasks surface errors to the user
+
+**localStorage / sessionStorage:**
+- Always wrap in `try {} catch {}` — private browsing throws `SecurityError`
+```jsx
+try {
+  sessionStorage.setItem(`tab_${page}`, tabId);
+} catch { /* navigation privee — ignorer */ }
+```
+
+**GPS Error Codes (`src/components/tracker/WalkMode.jsx` line 202):**
+```js
+(err) => {
+  if (err.code === 1) toast.info("GPS désactivé — ...", { id: "gps-warn" });      // PERMISSION_DENIED
+  else if (err.code === 2) toast.error("Signal GPS indisponible — ...", { id: "gps-warn" }); // POSITION_UNAVAILABLE
+  else if (err.code === 3) toast.error("GPS trop lent — ...", { id: "gps-warn" }); // TIMEOUT
+}
+```
+Use `{ id: "gps-warn" }` to deduplicate repeated toasts.
+
+**Error Translation Maps:**
+```js
+// src/pages/VetDogView.jsx
+const ERROR_MESSAGES = {
+  "Access denied": "Accès refusé. Tu n'es pas autorisé à consulter ce chien.",
+  "No active access": "Aucun accès actif...",
+  ...
+};
+const translateError = (msg) => ERROR_MESSAGES[msg] || msg;
+```
+Use this pattern when API returns English errors that need French UI display.
+
+**Double-click Guard (consumingRef pattern) from `src/hooks/useActionCredits.js`:**
+```jsx
+const consumingRef = useRef(false);
+const consume = async () => {
+  if (consumingRef.current) return false; // guard anti-double-appel
+  consumingRef.current = true;
+  try {
+    const result = await asyncOperation();
+    return result;
+  } finally {
+    consumingRef.current = false;
+  }
+};
+```
+Use whenever an async action must not fire concurrently.
+
+**ErrorBoundary (`src/components/ErrorBoundary.jsx`):**
+- Class component wrapping every route in `src/App.jsx`
+- Props: `fallback` (custom JSX), `onError(error, errorInfo)` callback
+- Retry up to 2 times; after 2 fails, "Recharger la page" becomes primary CTA
+- Default fallback uses inline styles (not Tailwind) — guarantees render even if CSS fails
+- Colors hardcoded: cream `hsl(37, 33%, 95%)`, forest `#1A4D3E`, emerald `#2D9F82`
+
+## Logging
+
+**No third-party logger.** Use:
+- `console.debug("[Analytics]", eventName, props)` — analytics events
+- `console.error('[PawCoach] ...', error, info)` — caught errors in ErrorBoundary
+- `console.error(e)` — data load failures in pages
+- `console.warn("X failed:", e?.message)` — non-critical failures (streaks, credits)
+
+**Analytics (`src/utils/analytics.js`):**
+- `trackEvent(eventName, properties)` — stores last 100 events in localStorage
+- Temporary implementation until real analytics service
+- Silent fail on localStorage unavailability
+
+## CSS / Tailwind Conventions
+
+**Design tokens — use Tailwind tokens, NOT raw hex in className:**
+- `text-primary` = forest green #1A4D3E
+- `text-accent` = emerald #2D9F82
+- `bg-secondary` = light sage
+- `text-muted-foreground` = subdued text
+- Raw hex only in `style={{}}` for icon colors, SVG fills, dynamic styles
+- ZERO orange, ZERO teal, ZERO yellow — amber only for warnings
+
+**Custom CSS utility classes (defined in `src/index.css`):**
+- `.gradient-primary` — forest green gradient for primary CTA buttons
+- `.gradient-warm` — lighter forest variant
+- `.gradient-card` — white-to-sage card backgrounds
+- `.card-hover` — `transition + hover:shadow-md + active:scale-[0.97]`
+- `.safe-pt-8` through `.safe-pt-24` — safe area + fixed padding for page headers
+- `.bottom-nav` — glass nav bar with `backdrop-filter: blur(16px)`
+
+**Border radius:**
+- Cards: `rounded-2xl` standard, `rounded-3xl` for bottom sheets
+- Pill buttons: `rounded-full`
+- Icon containers: `rounded-xl` (square), `rounded-full` (avatar)
+- Input fields: `rounded-xl`
+
+**Tap targets:**
+- Minimum 44px height (`minHeight: "44px"` or `h-11` = `44px`)
+- WCAG mobile accessibility requirement
+
+**Safe area handling:**
+- Bottom nav: `.bottom-nav` class (handles `env(safe-area-inset-bottom)`)
+- Bottom sheets: inline `paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))"`
+- Page top: use `.safe-pt-*` classes on header containers
+
+**Dark mode:**
+- `darkMode: "media"` in `tailwind.config.js` — automatic via OS preference
+- CSS vars defined for both `:root` and `.dark` in `src/index.css`
+- Test dark mode changes before committing
 
 ---
 
-## 10. Backend Function Patterns (Deno)
-
-### Structure
-Every function is a single file `entry.ts` in its own directory under `base44/functions/`.
-
-```ts
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
-
-Deno.serve(async (req) => {
-  try {
-    const base44 = createClientFromRequest(req);
-
-    // 1. Auth check (user-facing functions)
-    const user = await base44.auth.me();
-    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
-
-    // 2. Input validation / early returns
-    const { dogId } = await req.json();
-    if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
-
-    // 3. Business logic
-    // ...
-
-    // 4. Success response
-    return Response.json({ ok: true, data: result });
-
-  } catch (error) {
-    console.error("Function error:", error);
-    return Response.json({ error: error?.message || String(error) }, { status: 500 });
-  }
-});
-```
-
-### Auth patterns
-- User-facing: `base44.auth.me()` — authenticated as the calling user.
-- Service/admin operations: `base44.asServiceRole.entities.X` — bypasses row-level security.
-- Scheduled/cron functions use `asServiceRole` throughout (no user context).
-
-### External dependencies
-Third-party packages imported with `npm:` specifier:
-```ts
-import Stripe from 'npm:stripe@17.3.1';
-import { OpenAI } from 'npm:openai@4.x';
-```
-
-### Environment variables
-```ts
-const apiKey = Deno.env.get("OPENROUTER_API_KEY");
-const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
-```
-
-### Security patterns
-- Input sanitization via `sanitize(s, max)` helper for LLM prompts.
-- URL validation against allowlist before external fetch (SSRF prevention).
-- Message history sliced to last 20 messages, content truncated to 2000 chars.
-- Server-side quota checks (not relying on frontend state).
-
-### Response format
-- Success: `Response.json({ ok: true, ...data })`
-- Error: `Response.json({ error: 'message' }, { status: 4xx/5xx })`
-- Webhook receipt: `Response.json({ received: true })`
+*Convention analysis: 2026-03-27*

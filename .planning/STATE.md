@@ -1,9 +1,9 @@
 ---
 gsd_state_version: 1.0
-milestone: v4.0
-milestone_name: "E2E Fixes"
-status: archived
-stopped_at: Milestone v4.0 archived
+milestone: v5.0
+milestone_name: "Hardening & Refactoring"
+status: defining_requirements
+stopped_at: Milestone v5.0 started
 last_updated: "2026-03-27T03:17:17.284Z"
 last_activity: 2026-03-27
 progress:

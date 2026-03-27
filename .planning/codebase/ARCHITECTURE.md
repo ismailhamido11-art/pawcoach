@@ -1,312 +1,186 @@
-# PawCoach — Architecture
+# Architecture
 
-Generated: 2026-03-26
+**Analysis Date:** 2026-03-27
 
----
+## Pattern Overview
 
-## Overall Architecture Pattern
+**Overall:** Feature-based SPA with page-level data ownership and server-backed business logic
 
-PawCoach is a **React 18 SPA (Single Page Application)** built on the Base44 platform.
+**Key Characteristics:**
+- Each page owns its own data fetching — no global store, no React Query used in practice (QueryClient instantiated but unused in pages)
+- State is local to the page component; shared state flows via Context (auth, home cache) or sessionStorage (tab persistence, scroll position)
+- Business logic lives in Deno backend functions invoked via `base44.functions.invoke()` — never inline in frontend
+- Premium/free gating is enforced both client-side (UX gates) and server-side (quota check in each function)
 
-- **Frontend**: React 18 + Vite + Tailwind CSS + shadcn/ui
-- **Backend**: Base44 managed backend (Deno serverless functions, no self-hosted server)
-- **Data layer**: Base44 SDK (`@base44/sdk`) — entity CRUD + auth + function invocations
-- **Deployment**: PWA hosted on Base44 CDN, GitHub 2-way sync on branch `main`
-- **Pattern**: component-based, feature-organized, no Redux or Zustand — local `useState` + one global `AuthContext`
+## Layers
 
----
+**Router (App.jsx):**
+- Purpose: Split public vs. authenticated routes before any rendering
+- Location: `src/App.jsx`
+- Contains: Two-tier routing — public routes rendered directly, all others wrapped in `AuthProvider` + `HomeCacheProvider`
+- Public routes: `/DogPublicProfile`, `/VetDogView` — lazy-loaded, no auth check
+- Auth routes: everything else, guarded by `AuthenticatedApp` component
+- Depends on: `pagesConfig`, `AuthContext`, `HomeCacheContext`
 
-## Routing
+**Layout (Layout.jsx):**
+- Purpose: Page transition wrapper — applies Framer Motion fade between pages
+- Location: `src/Layout.jsx`
+- Contains: `AnimatePresence` with `fadeIn` variant, bottom-nav padding via inline style
+- Key rule: Layout adds `paddingBottom: calc(6rem + env(safe-area-inset-bottom, 0px))` — pages must NOT add their own `pb-*` on the main wrapper
+- Respects `prefers-reduced-motion` (disables animation when requested)
 
-File: `src/pages.config.js`
+**Pages:**
+- Purpose: Orchestrate data fetching, manage local state, compose components
+- Location: `src/pages/`
+- 5 core tabs (eagerly loaded in `pages.config.js`): `Home`, `Sante`, `Activite`, `Nutri`, `Profile`
+- 11 secondary pages (lazy): `Chat`, `Dashboard`, `DogProfile`, `DogPublicProfile`, `Library`, `Onboarding`, `Premium`, `Scan`, `Training`, `VetDogView`, `VetPortal`
+- Most pages call `base44.auth.me()` directly; Sante/Activite/Nutri read `authUser` from `useAuth()` context to avoid a second auth call
 
-Base44 uses a **file-based page registry** (not React Router file-system routing). Routes are manually registered in `pages.config.js` and wired into `App.jsx`.
+**API Layer:**
+- Purpose: Centralized entity access with consistent error wrapper
+- Location: `src/api/entities.js`, `src/api/base44Client.js`
+- Pattern: `wrapEntity()` wraps each entity exposing `filter`, `create`, `update`, `delete`
+- Backend functions invoked via: `base44.functions.invoke("functionName", payload)`
+- Client config: `src/lib/app-params.js` reads `appId`, `token`, `functionsVersion` from URL params then localStorage fallback
 
-### Route convention
-- Each page name becomes its URL path: `"Home"` → `/Home`, `"Activite"` → `/Activite`
-- Exception: the `mainPage` (`"Home"`) is also mounted at `/`
-- Query params (e.g. `?tab=carnet`) are used for sub-navigation within pages (Sante, Activite, Nutri)
-- Deep links: `?tab=vaccine`, `?tab=weight`, etc. for Sante sub-content
+**Backend Functions (Deno):**
+- Purpose: AI calls, Stripe operations, scheduled reminders, server-side quota enforcement
+- Location: `base44/functions/{functionName}/entry.ts`
+- Pattern: `Deno.serve(async (req) => {...})` with `createClientFromRequest(req)` for auth context
+- Service role operations: `base44.asServiceRole.entities.X.update()` — used for cross-user writes (webhook handler, reminder functions)
 
-### Loading strategy
-Pages are split into two groups:
-
-**Eagerly loaded** (in main bundle — always present for BottomNav):
-- `Home`, `Activite`, `Nutri`, `Profile`, `Sante`
-
-**Lazy loaded** (React.lazy — loaded on first navigation):
-- `Chat`, `Dashboard`, `DogProfile`, `DogPublicProfile`, `Library`, `Onboarding`, `Premium`, `Scan`, `Training`, `VetDogView`, `VetPortal`
-
-### Layout
-All pages are wrapped in `Layout.jsx`, which provides:
-- `AnimatePresence` with `motion.div` for page transitions (fade)
-- `paddingBottom` for BottomNav safe area (`calc(6rem + env(safe-area-inset-bottom, 0px))`)
-- `prefers-reduced-motion` support
-- Force light mode (dark mode disabled pending QA)
-
----
-
-## Page List
-
-| Page | URL | Description |
-|------|-----|-------------|
-| `Home` | `/` and `/Home` | Main dashboard — daily briefing, streak, wellness hero, quick actions, recommendations, active programs |
-| `Sante` | `/Sante` | Health hub — 5 sub-tabs: Carnet (notebook), Symptomes (diagnosis), Croissance (growth tracker), Documents (health import), Veto (find vet) |
-| `Activite` | `/Activite` | Activity hub — 4 sub-tabs: Balade (walk tracker), Historique (history), Programme (AI training), Dressage (training exercises) |
-| `Nutri` | `/Nutri` | Nutrition hub — 5 sub-tabs: Scanner, Plan repas (meal plan), Coach IA (chat), Comparer croquettes, Preferences |
-| `Profile` | `/Profile` | User profile — dog switcher, achievements, coach settings, subscription, vet section, walk reminder settings |
-| `Chat` | `/Chat` | AI chat assistant — full conversation with PawCoach AI, voice input, message bookmarking, credit system |
-| `Dashboard` | `/Dashboard` | Analytics dashboard — health score, weight/walk/scan stats, Recharts graphs, smart alerts |
-| `DogProfile` | `/DogProfile` | Dog detail page — identity, health, diet, personality sections, trophies, QR code, edit modal |
-| `DogPublicProfile` | `/DogPublicProfile?dogId=xxx` | **Public page (no auth required)** — read-only dog health card for sharing via QR code |
-| `Library` | `/Library` | Saved bookmarks — chat responses, nutrition plans, training content, filterable by source |
-| `Onboarding` | `/Onboarding` | Multi-step onboarding — goal selection, dog photo, interview steps (10 questions), creates Dog entity + starts trial |
-| `Premium` | `/Premium` | Paywall page — segment-personalized hero, feature comparison, Stripe checkout (monthly 7.99 EUR / annual 59.99 EUR) |
-| `Scan` | `/Scan` | Food scanner — camera-based ingredient analysis, safety verdict (safe/caution/danger), scan history |
-| `Training` | `/Training` | Training exercises — 10 exercises, journey-based progression, free/premium gating, celebration screens |
-| `VetDogView` | `/VetDogView?dogId=xxx` | Vet view — authenticated vet sees dog health records, can add notes, view weight/vaccine data |
-| `VetPortal` | `/VetPortal` | Vet portal — vet enters access code to link dog patients, manages their list |
-
----
-
-## Component Hierarchy
-
-### Global Shell
-```
-App.jsx
-  └── AuthProvider (AuthContext)
-       └── Router (BrowserRouter)
-            └── AuthenticatedApp
-                 └── Routes
-                      └── LayoutWrapper (Layout.jsx + Suspense)
-                           └── ErrorBoundary
-                                └── <Page />
-```
-
-### Layout Layer (present on every page)
-- `Layout.jsx` — page transition wrapper (AnimatePresence + motion.div)
-- `BottomNav.jsx` — 5-tab navigation fixed at bottom (Home, Sante, Activite, Nutri, Profil)
-- `WellnessBanner.jsx` — fixed top disclaimer banner ("PawCoach n'est pas un vétérinaire")
-- `ChatFAB.jsx` — floating action button linking to Chat page
-- `CombinedFAB.jsx` — floating quick-log sheet (weight, walk, water, notes)
-- `PullToRefresh.jsx` — touch gesture refresh wrapper
-
-### Shared UI Components (`src/components/ui/`)
-| Component | Purpose |
-|-----------|---------|
-| `EmptyState.jsx` | Reusable empty state with mascot/illustration/Lottie support |
-| `SkeletonPage.jsx` | Loading skeletons (hero variant, list variant, tabs variant) |
-| `LottieAnimation.jsx` | Dotlottie player with reduced-motion + error fallback |
-| `StorysetIllustration.jsx` | 23 bundled SVG illustrations from Storyset (recolored #1A4D3E) |
-| `PawIllustrations.jsx` | 20+ custom SVG dog mascots (DogWave, DogChat, DogDoctor, etc.) |
-| `AICreditsGate.jsx` | `CreditBadge` + `UpgradePrompt` for free tier limits |
-| `VoiceInput.jsx` | Web Speech API voice dictation button (fr-FR) |
-| `IconBadge.jsx` | Colored icon badge wrapper |
-| `MobileSelect.jsx` | Mobile-optimized select sheet |
-| `shadcn/ui/*` | 40+ base UI primitives (button, card, dialog, sheet, tabs, etc.) — DO NOT MODIFY |
-
-### Feature Component Groups
-Each feature has its own subdirectory in `src/components/`:
-
-| Directory | Feature | Key Components |
-|-----------|---------|----------------|
-| `home/` | Home page sections | `CoachHomeHeader`, `CalendarStrip`, `DailyBriefing`, `DailyProgress`, `HomeWellnessHero`, `WeeklyInsightCard`, `TrialExpiryBanner`, `FirstDayGuide`, `EmotionalTip`, `ContentArticles`, `ActiveProgramCards`, `StreakBar`, `QuickActions` |
-| `sante/` | Health sub-pages | `NotebookContent`, `DiagnosisContent`, `GrowthTrackerContent`, `HealthImportContent`, `FindVetContent`, `HealthAssistantBar`, `HealthAssistantSheet` |
-| `activite/` | Activity sections | `AITrainingProgram`, `SmartAlerts` |
-| `nutrition/` | Nutrition sections | `NutritionMealPlan`, `FoodComparator`, `DietPreferencesPanel` |
-| `dogprofile/` | Dog profile sections | `DogProfileHero`, `DogIdentityCards`, `DogHealthSection`, `DogDietSection`, `DogPersonalitySection`, `DogTrophiesRow`, `DogEditModal`, `InlineEditCard` |
-| `training/` | Training UI | `ExerciseDetail`, `JourneyCard`, `JourneyView`, `CelebrationScreen`, `MilestoneScreen`, `FreeExercisesGate`, `VideoCoaching` |
-| `tracker/` | Walk tracker | `WalkMode`, `WalkMap`, `TrackerHistory`, `ActivityCalendar`, `NearbyParks`, `ParkReviews`, `WalkShareCard` |
-| `premium/` | Paywall sheets | `PremiumNudgeSheet`, `PostTrialSheet` |
-| `profile/` | Profile sections | `ProfileHeader`, `DogSwitcher`, `CoachSettings`, `VetSection`, `SubscriptionSection`, `ReferralSection`, `SettingsSection`, `WalkReminderSettings`, `AchievementsSection` |
-| `vet/` | Vet features | `AIDiagnosisModal`, `DiagnosisReportView`, `DiagnosisStep2Questions`, `DownloadHealthPDF`, `ShareVetModal`, `VetDogCard`, `VetNoteForm`, `VetNotesList` |
-| `scan/` | Food scan UI | `ShareCard` |
-| `achievements/` | Badges system | `AchievementFeed`, `badgeUtils.jsx` |
-| `onboarding/` | Onboarding step | `WelcomeScreen` |
-| `notifications/` | In-app alerts | `NotificationCenter` |
-| `notebook/` | Health records | `HealthScoreCard`, `NextActionCard`, `PremiumSection`, `QRCodeCard`, `SectionPoids`, `SectionVaccins`, `SmartHealthAssistant`, `StatusPills`, `UpcomingReminders`, `VaccineCard`, `WeightCard` |
-| `dashboard/` | Dashboard widgets | `BentoGrid`, `DailyCoaching`, `DogRadarHero`, `WellnessScore`, `InlineCheckin`, `TodayCard` |
-| `reminders/` | Reminder UI | (reminder-related components) |
-| `illustrations/` | CDN illustrations | `Illustration.jsx` (GitHub CDN SVGs) |
-| `lib/` | Component-level utils | `markdown.jsx` (React Markdown renderer) |
-| `hooks/` | Component-level hooks | `useBackClose.jsx` (back-gesture modal close) |
-
-### Standalone Components
-| Component | Purpose |
-|-----------|---------|
-| `BottomNav.jsx` | Main 5-tab navigation |
-| `ChatFAB.jsx` | Floating chat button |
-| `CombinedFAB.jsx` | Quick-log floating action |
-| `ErrorBoundary.jsx` | React error boundary |
-| `PawLoader.jsx` | Full-screen app loader (animated paw prints) |
-| `PawMascot.jsx` | JPG-based mascot (10 moods: happy, curious, sleepy, etc.) |
-| `PullToRefresh.jsx` | Touch pull-to-refresh gesture |
-| `UserNotRegisteredError.jsx` | Error for unregistered users |
-| `WellnessBanner.jsx` | Top disclaimer banner |
-| `streakHelper.jsx` | Streak update logic (not a React component — utility function) |
-
----
-
-## State Management
-
-PawCoach uses **no global state library**. State management is:
-
-### 1. AuthContext (single global context)
-File: `src/lib/AuthContext.jsx`
-- Provides: `user`, `isAuthenticated`, `isLoadingAuth`, `isLoadingPublicSettings`, `authError`, `appPublicSettings`, `logout()`, `navigateToLogin()`, `checkAppState()`
-- Used in pages via `useAuth()` hook
-- Handles: auth check on mount, error states (user_not_registered, auth_required)
-
-### 2. Page-level local state
-Each page manages its own state with `useState` and `useEffect`.
-Pattern:
-```jsx
-const [user, setUser] = useState(null);
-const [dog, setDog] = useState(null);
-const [loading, setLoading] = useState(true);
-// Load on mount
-useEffect(() => { load(); }, []);
-const load = async () => { ... }
-```
-
-### 3. URL state (sub-tab navigation)
-Pages with sub-tabs (Sante, Activite, Nutri) use `useSearchParams` to persist active tab in the URL:
-- `?tab=carnet` / `?tab=malade` / etc.
-- Tab state is also saved to `sessionStorage` (`tab_Sante`, `tab_Activite`, `tab_Nutri`) to survive page switches
-
-### 4. localStorage (persistent cross-session)
-- `activeDogId` — which dog is currently active (set by DogSwitcher, read everywhere)
-- `pawcoach_analytics_events` — analytics event log
-- `pawcoach_read_notifs` — read notification IDs
-- `base44_*` — Base44 SDK app params (token, app_id, etc.)
-
-### 5. sessionStorage (within-session navigation)
-- `scroll_<PageName>` — saved scroll position per page
-- `tab_<PageName>` — saved active sub-tab per page (Sante/Activite/Nutri)
-- `journey_<PageName>` / `exercise_<PageName>` — Training navigation stack
-
-### 6. TanStack Query (QueryClient)
-File: `src/lib/query-client.js`
-- Configured with `refetchOnWindowFocus: false`, `retry: 1`
-- Used sparingly — most data fetching is done with plain async/await in `useEffect`
-
----
+**Context Layer:**
+- `AuthContext` (`src/lib/AuthContext.jsx`): user object, `isAuthenticated`, `logout()`, `navigateToLogin()`, `checkAppState()`
+- `HomeCacheContext` (`src/lib/HomeCacheContext.jsx`): in-memory ref cache for Home page data, 2-minute TTL, invalidated on active dog change
 
 ## Data Flow
 
-```
-Base44 Platform (managed backend)
-    │
-    ▼
-@base44/sdk (base44Client.js)
-    │
-    ├─ base44.auth.me()           → current user object
-    ├─ base44.auth.updateMe()     → update user fields (credits, etc.)
-    ├─ base44.entities.<Entity>   → CRUD on data entities
-    │   ├─ .filter(query, sort, limit)
-    │   ├─ .create(data)
-    │   ├─ .update(id, data)
-    │   └─ .delete(id)
-    └─ base44.functions.invoke()  → call Deno backend functions
+**Authenticated Page Load:**
+1. `AuthProvider.checkAppState()` fetches app public settings via `/api/apps/public`
+2. If token present, calls `base44.auth.me()` to load user
+3. `AuthenticatedApp` renders routes — error states handled (`auth_required` → redirect, `user_not_registered` → error screen)
+4. Page component mounts, calls `base44.auth.me()` + entity filters in parallel via `Promise.all()`
+5. Data stored in local `useState` hooks within the page
 
-    ▼
-Page component (useState + useEffect)
-    │
-    ├─ user state
-    ├─ dog state  (from getActiveDog(dogs) utility)
-    ├─ domain data states
-    └─ loading/error states
+**Home Page Cache Strategy (stale-while-revalidate):**
+1. On mount, check `getCachedHome()` (in-memory ref, 2-minute TTL, dog-ID validated)
+2. If cache hit: apply immediately (instant render, no loading state), then trigger silent background refresh
+3. If cache miss: show `SkeletonPage`, fetch everything, cache result
+4. Manual pull-to-refresh: `invalidateHome()` then full refetch and re-cache
 
-    ▼
-Feature components (receive props)
-    │
-    └─ Render UI with Tailwind + shadcn/ui + Framer Motion
-```
+**Check-in Flow (optimistic update):**
+1. User submits check-in form
+2. Optimistic state applied immediately (`_syncing: true` flag on the new record)
+3. `base44.functions.invoke("dailyCheckinProcess", ...)` called
+4. On success: replace optimistic record with server response
+5. On error: roll back optimistic state, show `toast.error()`
 
-### Key data entities (used across pages):
-- `Dog` — dog profile (owner, name, breed, age, weight, etc.)
-- `DailyCheckin` — daily wellness check-in
-- `DailyLog` — quick log (walk, weight, water, notes)
-- `Streak` — current/longest streak tracking
-- `HealthRecord` — vaccine, vet visit, medication, weight, notes
-- `FoodScan` — food scan history
-- `UserProgress` — training exercise progress
-- `DiagnosisReport` — AI diagnosis reports
-- `NutritionPlan` — AI-generated meal plans
-- `Bookmark` — saved AI responses
-- `DogAchievement` — unlocked badges
-- `GrowthEntry` — growth/weight measurements over time
+**Premium Conversion Flow:**
+1. User taps upgrade → `base44.functions.invoke("stripeCheckout", ...)` creates Stripe Checkout session
+2. Redirect to Stripe-hosted checkout
+3. Stripe redirects back to `/?premium=success`
+4. Home page polls `base44.auth.me()` every 2s for up to 10s until `is_premium=true`
+5. `stripeWebhook` function handles `checkout.session.completed` → sets `is_premium: true` on user via service role
+
+**AI Quota System:**
+- Free users: 10 messages/day (`messages_remaining`), 3 AI actions/day (`actions_remaining`)
+- Client side: `src/utils/ai-credits.js` — `initCredits()` initializes/daily-resets via `base44.auth.updateMe()`
+- Server side: `pawcoachChat` function re-checks quota and decrements atomically — prevents multi-tab bypass
+- Premium check: `isUserPremium(user)` in `src/utils/premium.js` — returns `true` if `user.is_premium` OR `trial_expires_at > now`
+
+**State Management:**
+- No global state library (no Redux, no Zustand)
+- `AuthContext`: auth user object available app-wide via `useAuth()`
+- `HomeCacheContext`: Home page data cache (in-memory ref, does not trigger re-renders)
+- Local `useState` per page for all page-specific data
+- `sessionStorage`: tab state (`tab_Sante`, `tab_Activite`, `tab_Nutri`), scroll position (`scroll_{Page}`)
+- `localStorage`: active dog ID (`activeDogId`), notification read state (`pawcoach_read_notifs`), analytics events (`pawcoach_analytics_events`), post-trial dismissed flag (`pawcoach_post_trial_dismissed`), auth token (`base44_access_token` — managed by SDK)
+
+## Key Abstractions
+
+**Tab Navigation Pattern (Sante, Activite, Nutri):**
+- Purpose: URL-driven tab state with sessionStorage fallback and native-like horizontal slide
+- Files: `src/pages/Sante.jsx`, `src/pages/Activite.jsx`, `src/pages/Nutri.jsx`
+- Pattern: `useSearchParams()` for URL sync, `sessionStorage.setItem("tab_X", id)` for persistence, direction ref for slide animation direction
+- Priority chain: deep link URL param > URL param > sessionStorage > default tab
+- Double-tap on active BottomNav tab: clears sessionStorage tab state, navigates to clean URL
+
+**Premium Gate:**
+- Purpose: Unified premium/trial check in one function
+- File: `src/utils/premium.js`
+- Functions: `isUserPremium(user)`, `isUserOnTrial(user)`, `getTrialDaysLeft(user)`
+- UI components: `src/components/ui/AICreditsGate.jsx` (`CreditBadge`, `UpgradePrompt`), `src/components/premium/PremiumNudgeSheet.jsx`, `src/components/premium/PostTrialSheet.jsx`, `src/components/home/TrialExpiryBanner.jsx`
+- Nudge logic in Home page: shown after day 2 if free, `premium_onboarding_nudge_shown` flag prevents repeat
+
+**Entity Access:**
+- Purpose: Uniform CRUD wrapper over Base44 entities
+- File: `src/api/entities.js`
+- 19 entities exported: `Dog`, `HealthRecord`, `DailyCheckin`, `DailyLog`, `Streak`, `FoodScan`, `UserProgress`, `DiagnosisReport`, `NutritionPlan`, `Bookmark`, `WeeklyInsight`, `SharedVetAccess`, `DogAchievement`, `DietPreferences`, `GrowthEntry`, `ParkReview`, `PlaceFavorite`, `ChatMessage`, `VetNote`
+
+**Streak Helper:**
+- Purpose: Shared streak increment logic with 1-day grace period — called fire-and-forget
+- File: `src/components/streakHelper.jsx`
+- Used by: `Sante`, `Activite`, `Chat`, `Scan` pages after any user activity
+- Dedup guard: skips update if `last_activity_date === today`
+
+**Notification Center:**
+- Purpose: Module-level singleton for health/vaccine/medication reminders (not React state)
+- File: `src/components/notifications/NotificationCenter.jsx`
+- Pattern: Module-level `_notifications`, `_loadedAt`, `_listeners` — subscribe from any component, `clearNotifications()` called on logout to prevent cross-session leaks
+
+**Animation System:**
+- File: `src/lib/animations.js`
+- Exports: `spring` (stiffness 360, damping 28), `springGentle`, `springSnappy`, `tapScale`, `pressIn`, `hoverGlow`, `fadeInUp`, `staggerContainer`, `staggerItem`
+- All pages use `useReducedMotion()` and conditionally skip animations
+
+## Entry Points
+
+**App Root:**
+- Location: `src/App.jsx`
+- Triggers: Vite dev server / production build entry via `src/main.jsx`
+- Responsibilities: Router setup, split public/authenticated routes, lazy-load public pages
+
+**Auth Gate:**
+- Location: `src/App.jsx` → `AuthenticatedApp` component
+- Triggers: All routes under `/*`
+- Responsibilities: Check Base44 app public settings + user auth, redirect to login if needed, show typed error screens
+
+**Home Page (mainPage):**
+- Location: `src/pages/Home.jsx`
+- Triggers: Route `/` (mainPage) and `/Home`
+- Responsibilities: Primary dashboard, daily check-in, streak display, premium nudges, Stripe success polling
+
+**Onboarding:**
+- Location: `src/pages/Onboarding.jsx`
+- Triggers: Home page navigates here when `Dog.filter({ owner: email })` returns empty array
+- Uses sessionStorage to persist multi-step form state across interruptions
+
+## Error Handling
+
+**Strategy:** Layered — `ErrorBoundary` per page catches React crashes; try/catch with toast for async operations; auth errors handled at app root
+
+**Patterns:**
+- `ErrorBoundary` class component (`src/components/ErrorBoundary.jsx`) wraps every page via `App.jsx` — shows retry/reload/home buttons with max 2 soft retries before forcing reload
+- Async fetch: `try/catch` with `toast.error()` — never silently swallows errors in user-visible flows
+- Background operations (streak updates, badge checks, nudge flag writes): `console.warn()` only, never blocking the user flow
+- Optimistic updates: explicit rollback on catch (restore previous state, show toast)
+- Backend functions: return `Response.json({ error: "..." }, { status: 4xx })` for client errors; `429` for quota exceeded with `{ error: "quota_exceeded", messages_remaining: 0 }`
+- Auth errors in `AuthContext`: typed `authError.type` field (`auth_required`, `user_not_registered`, `unknown`)
+
+## Cross-Cutting Concerns
+
+**Logging:** `console.debug("[Analytics]", ...)` for events; `console.error()` for caught errors in pages; `console.warn()` for non-blocking failures (streak, badge, credit writes)
+
+**Analytics:** `src/utils/analytics.js` — localStorage-based event store (last 100 events, `pawcoach_analytics_events`); `trackEvent(name, props)` called for business events (onboarding complete, premium conversion, daily limit reached). No external service yet — inspect via `getEvents()` in browser console.
+
+**Validation:** Client-side form guards (inline conditions). Server-side in functions: input sanitization via `sanitize(s, max)` helper (truncates + strips `<>`), SSRF protection on image URLs (allowlist: `base44.app`, `amazonaws.com`), server-side quota checks for AI endpoints.
+
+**Authentication:** Base44 SDK handles tokens. `AuthContext` orchestrates boot sequence (public settings → user auth). Token stored as `base44_access_token` in localStorage via SDK. Logout calls `base44.auth.logout()` which cleans token, then `clearNotifications()` to prevent cross-session data leaks.
+
+**Accessibility:** `prefers-reduced-motion` respected in `Layout.jsx`, all pages with animations; WCAG minimum 44px tap targets in `ErrorBoundary` buttons; `aria-label` on bottom nav; `pointer-events: none` + `-webkit-user-drag: none` on decorative images.
+
+**PWA / Mobile:** `env(safe-area-inset-bottom)` in bottom nav padding; haptic feedback via `navigator.vibrate()` on check-in and streak actions; pull-to-refresh via `src/components/PullToRefresh.jsx`.
 
 ---
 
-## Layout System
-
-### Page structure pattern (most pages):
-```jsx
-<>
-  <WellnessBanner />          {/* fixed top disclaimer */}
-  <BottomNav currentPage="..." />  {/* fixed bottom nav */}
-
-  <PullToRefresh onRefresh={load}>
-    <div className="min-h-screen pt-[safe-area + banner] pb-24">
-      {/* Hero header (gradient-primary) */}
-      {/* Tab bar (horizontal scroll) */}
-      {/* Content panels (AnimatePresence tab transitions) */}
-    </div>
-  </PullToRefresh>
-
-  {/* FABs */}
-  <ChatFAB />
-  {/* or */}
-  <CombinedFAB />
-</>
-```
-
-### CSS variables (from `src/index.css`):
-- `--primary`: forest green HSL(160 50% 22%) = #1A4D3E
-- `--accent`: emerald HSL(162 55% 42%) = #2D9F82
-- `--background`: cream HSL(37 33% 95%)
-- `--foreground`, `--muted`, `--card`, `--border`, etc.
-- Custom classes: `gradient-primary` (linear from --primary to --accent), `safe-pt-14` (safe area top)
-
-### Safe area handling:
-- Top padding: `env(safe-area-inset-top)` via CSS utilities
-- Bottom padding: `calc(6rem + env(safe-area-inset-bottom, 0px))` for BottomNav
-
----
-
-## Key Architectural Decisions
-
-### 1. Base44 platform dependency
-All auth, data storage, and serverless execution goes through the Base44 SDK. No custom server. Entity schema changes require Build prompts (cost 1 credit each), code changes are free via Git.
-
-### 2. Split loading strategy
-5 main-tab pages are eagerly loaded for instant BottomNav response. All secondary pages are lazy-loaded.
-
-### 3. URL-based sub-tab navigation
-Sante, Activite, and Nutri store active tab in URL params (`?tab=...`). This enables deep linking, browser back button between sub-tabs, and sessionStorage persistence for cross-tab return.
-
-### 4. Credit system (free tier gating)
-- Free users: 10 messages/day, 3 AI actions/day
-- Premium: unlimited
-- Credits stored on the user entity: `messages_remaining`, `actions_remaining`, `messages_daily_reset`, `actions_daily_reset`
-- `isUserPremium()` checks `user.is_premium || (trial_expires_at && trial not expired)`
-- `AICreditsGate` components wrap gated features
-
-### 5. No Redux/Zustand
-State is kept local to pages. Cross-page state uses: URL params (tab state), localStorage (active dog, analytics), sessionStorage (scroll + tab positions), and the single AuthContext.
-
-### 6. Streak system with grace days
-Logic in `streakHelper.jsx` — 1 grace day allowed (misses 1 day without breaking streak). Streak entity stored in Base44 with `current_streak`, `longest_streak`, `last_activity_date`, `grace_days_remaining`.
-
-### 7. Badge/achievement system
-`badgeUtils.jsx` — client-side badge check after user actions. Badges stored as `DogAchievement` entities. Points threshold badges auto-checked when points change.
-
-### 8. Analytics (localStorage-based)
-`trackEvent()` stores last 100 events in localStorage. No third-party analytics service yet.
-
-### 9. Public pages (no auth)
-`DogPublicProfile` — accessible without login. Loads via `base44.entities` directly with a `dogId` query param. Designed for QR code sharing.
-
-### 10. Vet access system
-Vets get access via invite codes. `VetPortal` lets vets enter codes. `vetAccess` Deno function validates and manages permissions. `VetDogView` shows dog data to authorized vets only.
+*Architecture analysis: 2026-03-27*
