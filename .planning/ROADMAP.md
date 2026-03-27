@@ -18,7 +18,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: Security & Legal** - Corriger les failles RGPD et les acces non autorises
+- [x] **Phase 1: Security & Legal** - Corriger les failles RGPD et les acces non autorises (completed 2026-03-27)
 - [ ] **Phase 2: Bugs Fonctionnels** - Eliminer les bugs qui cassent des flows utilisateurs reels
 - [ ] **Phase 3: Scalabilite & Premium** - Fixer le backend pour la croissance et le flux paiement
 - [ ] **Phase 4: UX & Navigation** - Corriger les experiences utilisateur cassees ou confuses
@@ -38,7 +38,7 @@
   5. isUserPremium() est utilise de facon coherente — plus d'acces direct a user.is_premium dans le code metier
 **Plans**: 2 plans
 Plans:
-- [ ] 01-01-PLAN.md — SEC-01 (deleteUser), SEC-02 (VetNote acces), SEC-03 (email public)
+- [x] 01-01-PLAN.md — SEC-01 (deleteUser), SEC-02 (VetNote acces), SEC-03 (email public)
 - [x] 01-02-PLAN.md — SEC-04 (quota scan frais), SEC-05 (isUserPremium coherent)
 
 ### Phase 2: Bugs Fonctionnels
@@ -107,7 +107,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Security & Legal | 0/2 | Planned | - |
+| 1. Security & Legal | 2/2 | Complete   | 2026-03-27 |
 | 2. Bugs Fonctionnels | 0/TBD | Not started | - |
 | 3. Scalabilite & Premium | 0/TBD | Not started | - |
 | 4. UX & Navigation | 0/TBD | Not started | - |

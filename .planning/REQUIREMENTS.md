@@ -7,11 +7,11 @@ Audit E2E exhaustif de 165 flows (27 mars 2026) — .planning/phases/1-audit/E2E
 
 ### SEC — Securite & Legal
 
-- [ ] **SEC-01**: deleteUser backend supprime l'entite User elle-meme apres avoir supprime les donnees liees (F120)
-- [ ] **SEC-02**: VetNote.create passe par une action vetAccess backend qui verifie l'acces actif avant creation (F131)
-- [ ] **SEC-03**: DogPublicProfile masque l'email du proprietaire ou le rend opt-in (F125)
-- [ ] **SEC-04**: Quota scan verifie cote serveur avant analyse (pas uniquement client-side) (F76/F101)
-- [ ] **SEC-05**: isUserPremium() utilise de maniere coherente partout au lieu de user.is_premium direct (F110/F29/F105)
+- [x] **SEC-01**: deleteUser backend supprime l'entite User elle-meme apres avoir supprime les donnees liees (F120)
+- [x] **SEC-02**: VetNote.create passe par une action vetAccess backend qui verifie l'acces actif avant creation (F131)
+- [x] **SEC-03**: DogPublicProfile masque l'email du proprietaire ou le rend opt-in (F125)
+- [x] **SEC-04**: Quota scan verifie cote serveur avant analyse (pas uniquement client-side) (F76/F101)
+- [x] **SEC-05**: isUserPremium() utilise de maniere coherente partout au lieu de user.is_premium direct (F110/F29/F105)
 
 ### BUG — Bugs fonctionnels
 
@@ -74,11 +74,11 @@ None — all fixes scoped to this milestone.
 ## Traceability
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SEC-01 | Phase 1 | Pending |
-| SEC-02 | Phase 1 | Pending |
-| SEC-03 | Phase 1 | Pending |
-| SEC-04 | Phase 1 | Pending |
-| SEC-05 | Phase 1 | Pending |
+| SEC-01 | Phase 1 | Complete |
+| SEC-02 | Phase 1 | Complete |
+| SEC-03 | Phase 1 | Complete |
+| SEC-04 | Phase 1 | Complete |
+| SEC-05 | Phase 1 | Complete |
 | BUG-01 | Phase 2 | Pending |
 | BUG-02 | Phase 2 | Pending |
 | BUG-03 | Phase 2 | Pending |

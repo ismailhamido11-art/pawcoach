@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: "E2E Fixes"
-status: executing
-stopped_at: Completed 01-02 PLAN.md
-last_updated: "2026-03-27T02:14:54.581Z"
+status: verifying
+stopped_at: Completed 01-security-legal-01-01-PLAN.md
+last_updated: "2026-03-27T02:16:15.128Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 
 Phase: 01 (Security & Legal) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-27
 
 Progress: [░░░░░░░░░░] 0%
@@ -53,6 +53,7 @@ Progress: [░░░░░░░░░░] 0%
 
 *Updated after each plan completion*
 | Phase 01-security-legal P02 | 10 | 2 tasks | 2 files |
+| Phase 01-security-legal P01 | 5 | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -64,6 +65,9 @@ Progress: [░░░░░░░░░░] 0%
 - v3.0: Chat/NutriCoach non-persistance = decision produit intentionnelle (hors scope v4.0)
 - [Phase 01-security-legal]: SEC-04: Re-fetch base44.auth.me() dans analyzeFood/analyzeLabel avant checkScanLimit — quota verifie depuis la base a chaque analyse
 - [Phase 01-security-legal]: SEC-05: isUserPremium(user) dans SubscriptionSection.jsx pour coherence trial+premium — ProfileHeader.jsx conserve user?.is_premium (badge visuel uniquement)
+- [Phase 01-security-legal]: SEC-01: userEntityId capture dans Step 0 pour rester disponible apres try/catch, User.delete appele en Step 4
+- [Phase 01-security-legal]: SEC-02: addVetNote implemente dans vetAccess backend avec check SharedVetAccess status=active (securite server-side incontournable)
+- [Phase 01-security-legal]: SEC-03: mailto href preserve mais email non affiche — privacy par design sur profil public
 
 ### Pending Todos
 
@@ -75,6 +79,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T02:14:54.576Z
-Stopped at: Completed 01-02 PLAN.md
+Last session: 2026-03-27T02:16:15.123Z
+Stopped at: Completed 01-security-legal-01-01-PLAN.md
 Resume file: None
