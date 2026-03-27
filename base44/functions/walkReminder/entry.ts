@@ -26,11 +26,17 @@ Deno.serve(async (req) => {
       return Response.json({ ok: true, sent: 0, message: "No users scheduled for this hour" });
     }
 
-    const dogs = await base44.asServiceRole.entities.Dog.list();
-    const dogsByOwner = {};
-    for (const d of dogs || []) {
-      if (!dogsByOwner[d.owner]) dogsByOwner[d.owner] = d;
-    }
+    // Build owner email set from matched users
+    const ownerEmails = (users || []).map(u => u.email).filter(Boolean);
+
+    // Load only dogs owned by these users (one query per user via filter)
+    const dogsByOwner: Record<string, any> = {};
+    await Promise.all(
+      ownerEmails.map(async (email) => {
+        const userDogs = await base44.asServiceRole.entities.Dog.filter({ owner: email });
+        if (userDogs?.length > 0) dogsByOwner[email] = userDogs[0];
+      })
+    );
 
     let sent = 0;
 
