@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v9.0
 milestone_name: "Production Ready" — Active
 status: executing
-stopped_at: Completed 06-02-PLAN.md
-last_updated: "2026-03-27T23:05:00Z"
-last_activity: 2026-03-27 — 06-02 executed (RGPD consent gate: analytics.js + Onboarding checkbox)
+stopped_at: Completed 06-01-PLAN.md and 06-02-PLAN.md
+last_updated: "2026-03-27T23:10:00Z"
+last_activity: 2026-03-27 — 06-01 executed (Privacy.jsx + Terms.jsx RGPD/CGU pages + routes + SettingsSection links)
 progress:
   total_phases: 11
   completed_phases: 1
@@ -30,8 +30,8 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 HERE
 ```
 
-Phase: 06-legal-security — Plan 02 complete (analytics gate + RGPD consent screen in Onboarding)
-Last activity: 2026-03-27 — 06-02 executed (RGPD consent gate: analytics.js + Onboarding checkbox)
+Phase: 06-legal-security — Plans 01 + 02 complete
+Last activity: 2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + SettingsSection) | 06-02 executed (RGPD consent gate: analytics.js + Onboarding checkbox)
 
 ## Performance Metrics
 
