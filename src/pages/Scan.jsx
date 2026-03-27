@@ -24,7 +24,7 @@ import { spring } from "@/lib/animations";
 import EmptyState from "@/components/ui/EmptyState";
 import LottieAnimation from "@/components/ui/LottieAnimation";
 import { LOTTIE } from "@/lib/lottieLibrary";
-import LabelScanMode from "./LabelScanMode";
+import LabelScanMode from "../components/scan/LabelScanMode";
 const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
 const listItem = {
   hidden: { opacity: 0, y: 12 },
