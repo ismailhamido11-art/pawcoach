@@ -70,6 +70,7 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
   const recordsSectionRef = useRef(null);
   const vaccineCardRef = useRef(null);
   const weightCardRef = useRef(null);
+  const scrollTimeoutRef = useRef(null);
   const [autoExpandVaccineKey, setAutoExpandVaccineKey] = useState(initialVaccineKey || null);
   const [autoOpenWeightForm, setAutoOpenWeightForm] = useState(false);
 
@@ -77,9 +78,10 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
   useEffect(() => {
     if (initialVaccineKey) {
       setAutoExpandVaccineKey(initialVaccineKey);
-      setTimeout(() => {
+      const tid = setTimeout(() => {
         vaccineCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 350);
+      return () => clearTimeout(tid);
     }
   }, [initialVaccineKey]);
 
@@ -91,10 +93,11 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
   // Scroll to QR if deep-linked
   useEffect(() => {
     if (scrollToQR) {
-      setTimeout(() => {
+      const tid = setTimeout(() => {
         const qrEl = document.getElementById("qr-code-section");
         if (qrEl) qrEl.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 600);
+      return () => clearTimeout(tid);
     }
   }, [scrollToQR]);
 
@@ -189,6 +192,11 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
     [allRecords, dog, growthEntries]
   );
 
+  // Cleanup any pending scroll timeouts on unmount
+  useEffect(() => {
+    return () => { if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current); };
+  }, []);
+
   // Navigate to a tab from NextActionCard, StatusPills, or smart cards
   const handleNavigateToTab = (tabId, targetKey) => {
     if (!tabId) return;
@@ -198,7 +206,8 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
     // Vaccine deep-link: scroll to VaccineCard and auto-expand the specific row
     if (tabId === "vaccine") {
       if (targetKey) setAutoExpandVaccineKey(targetKey);
-      setTimeout(() => {
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = setTimeout(() => {
         vaccineCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 350);
       return;
@@ -206,7 +215,8 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
     // Weight deep-link: scroll to WeightCard and auto-open form
     if (tabId === "weight") {
       setAutoOpenWeightForm(true);
-      setTimeout(() => {
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = setTimeout(() => {
         weightCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 350);
       return;
@@ -216,7 +226,8 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
     setActiveTab(tabId);
     ensureVetNotes();
     // Scroll to the records section so user sees the result
-    setTimeout(() => {
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    scrollTimeoutRef.current = setTimeout(() => {
       recordsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 150);
   };
