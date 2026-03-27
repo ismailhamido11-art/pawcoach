@@ -10,29 +10,8 @@ Deno.serve(async (req) => {
 
     if (!symptoms) return Response.json({ error: 'Symptoms required' }, { status: 400 });
 
-    // Server-side quota check — prevents client-side bypass
-    const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
-    if (!isPremium) {
-      const ACTION_DAILY_LIMIT = 3;
-      const today = new Date().toISOString().split("T")[0];
-      let remaining = user.actions_remaining ?? ACTION_DAILY_LIMIT;
-      const lastReset = user.actions_daily_reset;
-
-      // Daily reset: restore full quota if date has changed
-      if (lastReset !== today) {
-        remaining = ACTION_DAILY_LIMIT;
-      }
-
-      if (remaining <= 0) {
-        return Response.json({ error: "daily_limit_reached", message: "Tu as atteint la limite du jour. Réessaie demain ou passe en Premium." }, { status: 429 });
-      }
-
-      // Decrement server-side
-      await base44.asServiceRole.entities.User.update(user.id, {
-        actions_remaining: remaining - 1,
-        actions_daily_reset: today,
-      });
-    }
+    // No credit decrement here — preDiagnosis already decremented for this diagnostic flow.
+    // finalDiagnosis is always called as step 2 of the same user-initiated action.
 
     // Sanitize user inputs to prevent prompt injection and limit length
     const sanitize = (s, max = 2000) => String(s || '').substring(0, max).replace(/[<>]/g, '');
