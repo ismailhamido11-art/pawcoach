@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { base44 } from "@/api/base44Client";
 import { Dog, DailyLog } from "@/api/entities";
 import { getActiveDog, createPageUrl } from "@/utils";
@@ -11,7 +11,7 @@ import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import WalkMode from "@/components/tracker/WalkMode";
 import PullToRefresh from "@/components/PullToRefresh";
 import TrackerHistory from "@/components/tracker/TrackerHistory";
-import AITrainingProgram from "@/components/activite/AITrainingProgram";
+const AITrainingProgram = lazy(() => import("@/components/activite/AITrainingProgram"));
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import EmptyState from "@/components/ui/EmptyState";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
@@ -217,7 +217,9 @@ export default function Activite() {
               <TrackerHistory logs={logs} dog={dog} />
             )}
             {activeTab === "programme" && (
-              <AITrainingProgram dog={dog} logs={logs} />
+              <Suspense fallback={<SkeletonPage variant="list" />}>
+                <AITrainingProgram dog={dog} logs={logs} />
+              </Suspense>
             )}
             {activeTab === "dressage" && (
               <DressageContent dog={dog} />
