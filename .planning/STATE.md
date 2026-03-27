@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: "E2E Fixes"
 status: completed
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-27T03:11:44Z"
+stopped_at: Completed 05-edge-cases-polish 05-02-PLAN.md
+last_updated: "2026-03-27T03:14:18.223Z"
 last_activity: 2026-03-27
 progress:
-  total_phases: 5
-  completed_phases: 4
-  total_plans: 10
-  completed_plans: 10
+  total_phases: 6
+  completed_phases: 5
+  total_plans: 12
+  completed_plans: 12
   percent: 0
 ---
 
@@ -55,6 +55,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-bugs-fonctionnels P01 | 8 | 3 tasks | 4 files |
 | Phase 01-security-legal P02 | 10 | 2 tasks | 2 files |
 | Phase 01-security-legal P01 | 5 | 3 tasks | 4 files |
+| Phase 05-edge-cases-polish P02 | 10 | 4 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 05-01]: Backend est la seule autorite pour le decrement credit — frontend re-fetch via initCredits() apres appel IA
 - [Phase 05-01]: BCS des GrowthEntry inclus dans computeHealthScore via growthEntries transmis a computeNotebookSummary
 - [Phase 05-01]: SVG fallback QR code encode en data URI percent-encoded avec onerror=null pour eviter boucle infinie
+- [Phase 05-edge-cases-polish]: Filter weight records before .sort() in VetDogView chrono list to eliminate duplication when SectionPoids is visible
+- [Phase 05-edge-cases-polish]: Add user?.email to WalkMode recovery useEffect deps to prevent orphan DailyLog on async auth
 
 ### Pending Todos
 
@@ -100,6 +103,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T03:11:44Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-03-27T03:14:07.304Z
+Stopped at: Completed 05-edge-cases-polish 05-02-PLAN.md
 Resume file: None

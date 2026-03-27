@@ -56,10 +56,10 @@ Audit E2E exhaustif de 165 flows (27 mars 2026) — .planning/phases/1-audit/E2E
 - [ ] **EDGE-01**: computeNotebookSummary passe growthEntries a computeHealthScore pour inclure BCS (F25)
 - [ ] **EDGE-02**: QR code image onError montre un fallback SVG valide (F26)
 - [ ] **EDGE-03**: SmartHealthAssistant ne double-decremente pas les credits (frontend + backend) (F28)
-- [ ] **EDGE-04**: VetDogView filtre les records weight de la liste chrono quand SectionPoids est visible (F130)
-- [ ] **EDGE-05**: Walk recovery useEffect guard sur user?.email avant DailyLog.create (F48)
-- [ ] **EDGE-06**: AIDiagnosisModal detecte response JSON erreur avant de creer un Blob PDF (F31)
-- [ ] **EDGE-07**: Dead code supprime : walkStreak dans Home.jsx (F11), context prop inutilise dans PremiumNudgeSheet (F108)
+- [x] **EDGE-04**: VetDogView filtre les records weight de la liste chrono quand SectionPoids est visible (F130)
+- [x] **EDGE-05**: Walk recovery useEffect guard sur user?.email avant DailyLog.create (F48)
+- [x] **EDGE-06**: AIDiagnosisModal detecte response JSON erreur avant de creer un Blob PDF (F31)
+- [x] **EDGE-07**: Dead code supprime : walkStreak dans Home.jsx (F11), context prop inutilise dans PremiumNudgeSheet (F108)
 
 ## Future Requirements
 None — all fixes scoped to this milestone.
@@ -105,7 +105,7 @@ None — all fixes scoped to this milestone.
 | EDGE-01 | Phase 5 | Pending |
 | EDGE-02 | Phase 5 | Pending |
 | EDGE-03 | Phase 5 | Pending |
-| EDGE-04 | Phase 5 | Pending |
-| EDGE-05 | Phase 5 | Pending |
-| EDGE-06 | Phase 5 | Pending |
-| EDGE-07 | Phase 5 | Pending |
+| EDGE-04 | Phase 5 | Complete |
+| EDGE-05 | Phase 5 | Complete |
+| EDGE-06 | Phase 5 | Complete |
+| EDGE-07 | Phase 5 | Complete |

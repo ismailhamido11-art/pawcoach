@@ -22,7 +22,7 @@
 - [ ] **Phase 2: Bugs Fonctionnels** - Eliminer les bugs qui cassent des flows utilisateurs reels
 - [ ] **Phase 3: Scalabilite & Premium** - Fixer le backend pour la croissance et le flux paiement
 - [ ] **Phase 4: UX & Navigation** - Corriger les experiences utilisateur cassees ou confuses
-- [ ] **Phase 5: Edge Cases & Polish** - Eliminer les cas limites et le dead code
+- [x] **Phase 5: Edge Cases & Polish** - Eliminer les cas limites et le dead code (completed 2026-03-27)
 
 ## Phase Details
 
@@ -108,7 +108,10 @@ Plans:
   5. Finir une marche ne cree pas de DailyLog si user.email est absent
   6. AIDiagnosisModal detecte une reponse JSON d'erreur avant de tenter de creer un PDF
   7. Le dead code (walkStreak dans Home.jsx, prop inutile dans PremiumNudgeSheet) est supprime
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [x] 05-01-PLAN.md — EDGE-01 (BCS dans score), EDGE-02 (QR SVG fallback), EDGE-03 (SmartHealth credit unique)
+- [x] 05-02-PLAN.md — EDGE-04 (VetDogView poids double), EDGE-05 (WalkMode user.email guard), EDGE-06 (PDF blob erreur), EDGE-07 (dead code)
 
 ---
 
@@ -120,4 +123,4 @@ Plans:
 | 2. Bugs Fonctionnels | 0/2 | Not started | - |
 | 3. Scalabilite & Premium | 0/3 | Not started | - |
 | 4. UX & Navigation | 0/3 | Not started | - |
-| 5. Edge Cases & Polish | 0/TBD | Not started | - |
+| 5. Edge Cases & Polish | 2/2 | Complete   | 2026-03-27 |
