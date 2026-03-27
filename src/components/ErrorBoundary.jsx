@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { createPageUrl } from '@/utils';
 
 /**
  * ErrorBoundary — isole les crashs React par page.
@@ -137,7 +138,7 @@ class ErrorBoundary extends Component {
 
           {/* Bouton retour accueil — toujours présent en secondaire */}
           <button
-            onClick={() => { window.location.href = '/'; }}
+            onClick={() => { window.location.href = createPageUrl('Home'); }}
             style={{
               backgroundColor: 'transparent',
               color: '#1A4D3E',

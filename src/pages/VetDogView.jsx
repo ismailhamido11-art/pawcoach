@@ -15,6 +15,16 @@ import SkeletonPage from "@/components/ui/SkeletonPage";
 import EmptyState from "@/components/ui/EmptyState";
 import { motion } from "framer-motion";
 
+const ERROR_MESSAGES = {
+  "Access denied": "Accès refusé. Tu n'es pas autorisé à consulter ce chien.",
+  "No active access": "Aucun accès actif pour ce chien. Demande au propriétaire de te partager un lien valide.",
+  "Access expired": "Ton accès à ce chien a expiré. Demande un nouveau lien.",
+  "Dog not found": "Chien introuvable.",
+  "No dog specified": "Aucun chien spécifié.",
+  "Aucun chien spécifié": "Aucun chien spécifié.",
+};
+const translateError = (msg) => ERROR_MESSAGES[msg] || msg;
+
 export default function VetDogView() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -38,10 +48,10 @@ export default function VetDogView() {
         // Not authenticated — vet identity unavailable, continue anyway
       }
       const res = await base44.functions.invoke("vetAccess", { action: "getDogData", dogId });
-      if (res.data.error) { setError(res.data.error); }
+      if (res.data.error) { setError(translateError(res.data.error)); }
       else { setDogData(res.data); }
     } catch (e) {
-      setError(e?.message || String(e));
+      setError(translateError(e?.message || String(e)));
     }
     setLoading(false);
   };
