@@ -121,7 +121,7 @@ Plans:
 - [x] 07-01-PLAN.md — VetNoteForm invoke fix + Library handleActivateTraining (FIX-15, FIX-19)
 - [x] 07-02-PLAN.md — WalkReminderSettings rollback + NotebookContent ge-guard + Activite try/catch (FIX-16, FIX-17, FIX-18)
 - [x] 07-03-PLAN.md — LabelScanMode resetLabel + Chat/Nutri suggestions disable + Sante weight sync (FIX-20, FIX-25, FIX-26)
-- [ ] 07-04-PLAN.md — Dashboard Promise.all + Home stale indicator + checkin guard + Nutri 429 toast + DogProfile revokeObjectURL (FIX-21, FIX-22, FIX-23, FIX-24, FIX-27)
+- [x] 07-04-PLAN.md — Dashboard Promise.all + Home stale indicator + checkin guard + Nutri 429 toast + DogProfile revokeObjectURL (FIX-21, FIX-22, FIX-23, FIX-24, FIX-27)
 **Success Criteria** (what must be TRUE):
   1. VetNoteForm soumet correctement via invoke("vetAccess", {...})
   2. Dashboard affiche meme si un fetch echoue (pas d'ecran blanc)

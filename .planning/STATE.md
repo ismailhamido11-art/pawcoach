@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v9.0
 milestone_name: "Production Ready" — Active
 status: executing
-stopped_at: Completed 06-01-PLAN.md and 06-02-PLAN.md
-last_updated: "2026-03-27T23:10:00Z"
-last_activity: 2026-03-27 — 06-01 executed (Privacy.jsx + Terms.jsx RGPD/CGU pages + routes + SettingsSection links)
+stopped_at: Completed 07-flow-fixes-04-PLAN.md
+last_updated: "2026-03-27T23:06:15.384Z"
+last_activity: "2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + SettingsSection) | 06-02 executed (RGPD consent gate: analytics.js + Onboarding checkbox)"
 progress:
   total_phases: 11
-  completed_phases: 1
+  completed_phases: 3
   total_plans: 9
-  completed_plans: 12
+  completed_plans: 14
 ---
 
 # Project State
@@ -42,6 +42,7 @@ Last activity: 2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + Set
 | v9.0 phases | 6 (audit) + N (corrections TBD) |
 | Coverage | 18/18 (100%) |
 | Phase 07-flow-fixes P03 | 15 | 3 tasks | 5 files |
+| Phase 07-flow-fixes P04 | 15 | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -58,6 +59,8 @@ Last activity: 2026-03-27 — 06-01 executed (Privacy/Terms pages + routes + Set
 - [Phase 07-flow-fixes]: FIX-20: resetLabel appelle onLabelResult?.(null) pour notifier Scan.jsx parent
 - [Phase 07-flow-fixes]: FIX-25: showSuggestions/showQuickActions bloqués pendant loading+isStreaming dans Chat et Nutri
 - [Phase 07-flow-fixes]: FIX-26: onWeightAdded prop ajoutée à NotebookContent pour sync dog.weight en mémoire après SectionPoids
+- [Phase 07-flow-fixes]: FIX-23: silent re-fetch fallback instead of id-less checkin object avoids silent failures on todayCheckin operations
+- [Phase 07-flow-fixes]: FIX-22: amber badge preferred over toast for stale-data UX to avoid interrupting active sessions
 
 ### Pending Todos
 
@@ -69,7 +72,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-27T23:05:00Z
-Stopped at: Completed 06-02-PLAN.md
+Last session: 2026-03-27T23:06:15.377Z
+Stopped at: Completed 07-flow-fixes-04-PLAN.md
 Resume file: None
 Next action: Continue with next plan
