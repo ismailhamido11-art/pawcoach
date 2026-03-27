@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
           `C'est le dernier jour de ton essai Premium PawCoach.`,
           "",
           `Demain, tu perdras l'accès à :`,
-          `• Le chat IA illimité (retour à 5 messages/jour)`,
+          `• Le chat IA illimité (retour à 10 messages/jour)`,
           `• Les scans alimentaires illimités (retour à 3/semaine)`,
           `• Les exercices avancés de dressage`,
           `• Les rappels santé automatiques`,
