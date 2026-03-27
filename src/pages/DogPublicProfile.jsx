@@ -4,23 +4,14 @@ import { Dog, HealthRecord } from "@/api/entities";
 import { motion } from "framer-motion";
 import { Syringe, Weight, AlertTriangle, Calendar, MapPin, PawPrint, ShieldCheck, FileText, Mail, Fingerprint } from "lucide-react";
 import { getVaccineDisplayName } from "@/utils/healthStatus";
+import { getAge } from "@/utils/dateHelpers";
 import EmptyState from "@/components/ui/EmptyState";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 
 // Public page — no login required
 // URL: /DogPublicProfile?dogId=xxx
 
-function getAge(birth_date) {
-  if (!birth_date) return null;
-  const birth = new Date(birth_date);
-  const now = new Date();
-  const years = now.getFullYear() - birth.getFullYear();
-  const months = now.getMonth() - birth.getMonth();
-  const totalMonths = years * 12 + months;
-  if (totalMonths < 12) return `${totalMonths} mois`;
-  if (years === 1) return `1 an`;
-  return `${years} ans`;
-}
+// getAge imported from @/utils/dateHelpers
 
 const TYPE_CONFIG = {
   vaccine:    { icon: Syringe,    label: "Vaccin",      color: "#2d9f82", bg: "#2d9f8215" },

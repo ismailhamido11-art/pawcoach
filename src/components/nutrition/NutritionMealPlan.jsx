@@ -9,15 +9,12 @@ import { UpgradePrompt } from "@/components/ui/AICreditsGate";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import EmptyState from "@/components/ui/EmptyState";
+import { getAge } from "@/utils/dateHelpers";
 
 const MONTHLY_FREE_LIMIT = 2;
 const DAYS_FR = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
-function getAge(birthDate) {
-  if (!birthDate) return null;
-  const months = Math.floor((Date.now() - new Date(birthDate)) / (1000 * 60 * 60 * 24 * 30));
-  return months < 12 ? `${months} mois` : `${Math.floor(months / 12)} ans`;
-}
+// getAge imported from @/utils/dateHelpers
 
 function parsePlanJSON(text) {
   if (!text) return null;

@@ -2,33 +2,17 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, Target, Brain, CheckCircle2, PawPrint, Gamepad2, Moon, Wind, BookOpen, Lightbulb, Check, X } from "lucide-react";
+import { Dumbbell, Clock, Utensils, ChevronRight, ChevronDown, ChevronUp, CheckCircle2, BookOpen, Lightbulb, Check, X } from "lucide-react";
 import { Bookmark } from "@/api/entities";
 import { toast } from "sonner";
 import EmptyState from "@/components/ui/EmptyState";
-
-const SESSION_ICONS = {
-  balade: { Icon: PawPrint, color: "text-emerald-600" },
-  jeu: { Icon: Gamepad2, color: "text-emerald-600" },
-  "exercice mental": { Icon: Brain, color: "text-violet-600" },
-  repos: { Icon: Moon, color: "text-indigo-500" },
-  entraînement: { Icon: Target, color: "text-emerald-700" },
-};
+import { addDaysToDate, formatDateFr } from "@/utils/dateHelpers";
+import { ACTIVITY_ICONS } from "@/utils/programHelpers";
 
 const DAY_NAMES = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 const _WEEK_DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-const JOURS_COURTS = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
-const MOIS_FR = ["jan.", "fév.", "mars", "avr.", "mai", "juin", "juil.", "août", "sep.", "oct.", "nov.", "déc."];
 
-function addDaysToDate(dateStr, days) {
-  const d = new Date(dateStr + "T00:00:00");
-  d.setDate(d.getDate() + days);
-  return d;
-}
-
-function formatDateFr(date) {
-  return `${JOURS_COURTS[date.getDay()]} ${date.getDate()} ${MOIS_FR[date.getMonth()]}`;
-}
+// SESSION_ICONS merged into ACTIVITY_ICONS (imported above)
 
 function getElapsedDays(startDate) {
   const start = new Date(startDate + "T00:00:00");
@@ -36,15 +20,6 @@ function getElapsedDays(startDate) {
   now.setHours(0, 0, 0, 0);
   return Math.floor((now - start) / (1000 * 60 * 60 * 24));
 }
-
-const ACTIVITY_ICONS = {
-  balade: { Icon: PawPrint, color: "text-emerald-600" },
-  jeu: { Icon: Gamepad2, color: "text-emerald-600" },
-  "exercice mental": { Icon: Brain, color: "text-violet-600" },
-  "repos actif": { Icon: Wind, color: "text-blue-500" },
-  repos: { Icon: Moon, color: "text-indigo-500" },
-  entraînement: { Icon: Target, color: "text-emerald-700" },
-};
 
 function TrainingCard({ program }) {
   const elapsed = getElapsedDays(program.start_date);
@@ -58,7 +33,7 @@ function TrainingCard({ program }) {
 
   const realDate = addDaysToDate(program.start_date, elapsed);
   const actType = today.activity?.type || "balade";
-  const actIconObj = ACTIVITY_ICONS[actType] || SESSION_ICONS[actType] || ACTIVITY_ICONS["balade"];
+  const actIconObj = ACTIVITY_ICONS[actType] || ACTIVITY_ICONS["balade"];
   const ActIcon = actIconObj.Icon;
 
   // Completion tracking

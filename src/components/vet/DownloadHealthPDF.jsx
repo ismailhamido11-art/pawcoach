@@ -11,23 +11,14 @@ import {
   getScoreLevel,
   computeStatusPills,
 } from "@/utils/healthStatus";
+import { fmtDateLong } from "@/utils/dateHelpers";
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-function fmtDate(d) {
-  if (!d) return "\u2014";
-  try {
-    return new Date(d).toLocaleDateString("fr-FR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  } catch {
-    return d;
-  }
-}
+// fmtDate (long format) imported as fmtDateLong from @/utils/dateHelpers
+const fmtDate = fmtDateLong;
 
 function fmtShortDate(d) {
   if (!d) return "\u2014";

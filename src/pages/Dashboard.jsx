@@ -4,6 +4,8 @@ import { base44 } from "@/api/base44Client";
 import { Dog, HealthRecord, DailyCheckin, Streak, UserProgress, DailyLog, FoodScan } from "@/api/entities";
 import { motion } from "framer-motion";
 import { computeVaccineMap, computeHealthScore } from "@/utils/healthStatus";
+import { getWeekStart } from "@/utils/dateHelpers";
+import { CustomTooltip } from "@/utils/chartHelpers";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Area, AreaChart
 } from "recharts";
@@ -42,19 +44,7 @@ function StatCard({ icon: Icon, color, label, value, sub, trend }) {
   );
 }
 
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload?.length) {
-    return (
-      <div className="bg-white border border-border rounded-xl px-3 py-2 shadow-lg text-xs">
-        <p className="text-muted-foreground mb-1">{label}</p>
-        {payload.map((p, i) => (
-          <p key={i} style={{ color: p.color }} className="font-semibold">{p.name}: {p.value}{p.unit}</p>
-        ))}
-      </div>
-    );
-  }
-  return null;
-};
+// CustomTooltip imported from @/utils/chartHelpers
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -139,14 +129,7 @@ export default function Dashboard() {
   }));
 
   // Mood calculation — unified with DailySnapshot (Monday-based week)
-  const getWeekStartDash = () => {
-    const d = new Date();
-    const day = d.getDay();
-    const diff = d.getDate() - (day === 0 ? 6 : day - 1);
-    d.setDate(diff);
-    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-  };
-  const weekStartMood = getWeekStartDash();
+  const weekStartMood = getWeekStart();
   const weekCheckins = checkins.filter(c => c.date >= weekStartMood && c.mood);
   const avgMood = weekCheckins.length > 0
     ? (weekCheckins.reduce((s, c) => s + c.mood, 0) / weekCheckins.length).toFixed(1)

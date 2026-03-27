@@ -3,6 +3,8 @@ import { base44 } from "@/api/base44Client";
 import { Bookmark } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Sparkles, ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, Clock, RotateCcw, CheckCircle2, BookmarkCheck, Home, Check, CalendarDays, Lightbulb, Eye, Star, MessageSquare, ArrowRight, PawPrint, Gamepad2, Brain, Wind, Moon, BookOpen, Heart, Zap, Dumbbell, Medal, PartyPopper, Smile, ThumbsUp, Meh, Frown, Laugh, Compass } from "lucide-react";
+import { addDaysToDate, formatDateFr } from "@/utils/dateHelpers";
+import { ACTIVITY_ICONS } from "@/utils/programHelpers";
 import { motion, AnimatePresence } from "framer-motion";
 import { differenceInMonths } from "date-fns";
 import { toast } from "sonner";
@@ -14,17 +16,7 @@ const ACTIVITY_LABELS = {
   faible: "Faible", modere: "Modéré", eleve: "Élevé", tres_eleve: "Très élevé"
 };
 
-const ACTIVITY_ICONS = {
-  balade: { Icon: PawPrint, color: "text-emerald-600" },
-  jeu: { Icon: Gamepad2, color: "text-emerald-600" },
-  "exercice mental": { Icon: Brain, color: "text-violet-600" },
-  "repos actif": { Icon: Wind, color: "text-blue-500" },
-  repos: { Icon: Moon, color: "text-indigo-500" },
-  entraînement: { Icon: Target, color: "text-emerald-700" },
-};
-
-const JOURS_COURTS = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
-const MOIS_FR = ["jan.", "fév.", "mars", "avr.", "mai", "juin", "juil.", "août", "sep.", "oct.", "nov.", "déc."];
+// ACTIVITY_ICONS, JOURS_COURTS, MOIS_FR imported from shared utils above
 
 const GOAL_SUGGESTIONS = [
   { label: "Renforcer le lien", Icon: Heart, color: "text-rose-500" },
@@ -57,15 +49,7 @@ function getCoachInsight(feeling, observedCount, totalIndicators, dogName) {
   return { Icon: PawPrint, iconColor: "text-emerald-600", title: "Premier pas franchi", message: `Tu as pris le temps de t'investir pour ${name} — c'est déjà énorme. Le prochain programme s'adaptera à tes observations.` };
 }
 
-function addDaysToDate(dateStr, days) {
-  const d = new Date(dateStr + "T00:00:00");
-  d.setDate(d.getDate() + days);
-  return d;
-}
-
-function formatDateFr(date) {
-  return `${JOURS_COURTS[date.getDay()]} ${date.getDate()} ${MOIS_FR[date.getMonth()]}`;
-}
+// addDaysToDate, formatDateFr imported from @/utils/dateHelpers
 
 function getElapsedDays(startDate) {
   const start = new Date(startDate + "T00:00:00");

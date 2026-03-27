@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Dog, FoodScan, DietPreferences } from "@/api/entities";
 import { trackEvent } from "@/utils/analytics";
 import { getActiveDog, createPageUrl } from "@/utils";
+import { getWeekStart } from "@/utils/dateHelpers";
 import BottomNav from "../components/BottomNav";
 import ShareCard from "../components/scan/ShareCard";
 import { Button } from "@/components/ui/button";
@@ -102,12 +103,7 @@ function ScoreBar({ label, value, colorClass }) {
   );
 }
 
-function getWeekStart() {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() - d.getDay() + 1);
-  return d.toISOString().slice(0, 10);
-}
+// getWeekStart imported from @/utils/dateHelpers (Monday-based, consistent)
 
 // ─── MODE SWITCHER ───────────────────────────────────────────────────────────
 function ModeSwitcher({ mode, onChange }) {

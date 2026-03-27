@@ -6,6 +6,7 @@ import { Syringe, Plus, X, Calendar, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { VACCINE_REFERENCE, getVaccineDisplayName, isValidDate } from "@/utils/healthStatus";
+import { fmtDate } from "@/utils/dateHelpers";
 import { spring } from "@/lib/animations";
 import EmptyState from "@/components/ui/EmptyState";
 
@@ -225,10 +226,7 @@ export default function SectionVaccins({ records = [], dogId, dogName, onDelete,
   );
 }
 
-function fmtDate(d) {
-  if (!isValidDate(d)) return "";
-  return new Date(d).toLocaleDateString("fr-FR");
-}
+// fmtDate imported from @/utils/dateHelpers
 
 export function RecordRow({ record, onDelete, icon, accentClass, extra }) {
   return (

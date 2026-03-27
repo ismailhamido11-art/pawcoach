@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useActionCredits } from "@/hooks/useActionCredits";
 import EmptyState from "@/components/ui/EmptyState";
+import { CustomTooltip } from "@/utils/chartHelpers";
 
 // Breed reference curves (weight in kg by age in months)
 const BREED_REFERENCES = {
@@ -43,17 +44,7 @@ function getBcsLabel(score) {
   return { label: "Obèse", color: "text-red-500" };
 }
 
-const CustomTooltip = ({ active, payload, label }) => {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="bg-white border border-border rounded-xl p-3 shadow-lg text-xs">
-      <p className="font-bold text-foreground mb-1">{label}</p>
-      {payload.map((p, i) => (
-        <p key={i} style={{ color: p.color }}>{p.name}: {p.value?.toFixed(1)} {p.name.includes("kg") || p.name.includes("Poids") ? "kg" : "cm"}</p>
-      ))}
-    </div>
-  );
-};
+// CustomTooltip imported from @/utils/chartHelpers
 
 export default function GrowthTrackerContent({ dog, user, healthRecords = [], dailyLogs = [], onGrowthAdded }) {
   const { credits: _credits, hasCredits, isPremium, consume } = useActionCredits();
