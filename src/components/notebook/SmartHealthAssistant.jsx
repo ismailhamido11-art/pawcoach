@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { HealthRecord, Dog } from "@/api/entities";
 import ReactMarkdown from "react-markdown";
 import {
-  Mic, Camera, Check, Sparkles, ExternalLink, MapPin, Phone, AlertCircle, Send, Copy
+  Camera, Check, Sparkles, ExternalLink, MapPin, Phone, AlertCircle, Send, Copy
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import { isUserPremium } from "@/utils/premium";
 import { initCredits } from "@/utils/ai-credits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
+import VoiceButton from "./VoiceButton";
+import RecordReviewPanel from "./RecordReviewPanel";
 
 // Sound utility — reuse AudioContext to prevent memory leak
 let _audioCtx = null;
@@ -48,7 +50,6 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   const [inputValue, setInputValue] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
-  const [isListening, setIsListening] = useState(false);
   const [pendingRecords, setPendingRecords] = useState([]);
   const [isFinished, setIsFinished] = useState(false);
   const [suggestedActions, setSuggestedActions] = useState([]);
@@ -59,7 +60,6 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   const [streamingText, setStreamingText] = useState("");
   const streamingRef = useRef({ fullText: "", words: [], wordIndex: 0, timer: null, meta: {} });
 
-  const recognitionRef = useRef(null);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -156,15 +156,6 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
       container.scrollTop = container.scrollHeight;
     }
   }, [messages, isProcessing, streamingText]);
-
-  // Cleanup SpeechRecognition on unmount
-  useEffect(() => {
-    return () => {
-      if (recognitionRef.current) {
-        try { recognitionRef.current.abort(); } catch {}
-      }
-    };
-  }, []);
 
   // Cleanup streaming timer on unmount
   useEffect(() => {
@@ -284,25 +275,6 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
         setMsgCredits(updated);
       } catch {}
     }
-  };
-
-  // --- Voice ---
-  const startListening = () => {
-    if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
-      toast.error("Dictée non supportée sur ce navigateur.");
-      return;
-    }
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.lang = "fr-FR";
-    recognition.onstart = () => setIsListening(true);
-    recognition.onend = () => setIsListening(false);
-    recognition.onresult = (e) => {
-      const transcript = e.results[0][0].transcript;
-      handleSend(transcript);
-    };
-    recognitionRef.current = recognition;
-    recognition.start();
   };
 
   // --- Upload Image ---
@@ -425,11 +397,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
           {!isPremium && msgCredits != null && (
             <CreditBadge remaining={msgCredits} type="message" />
           )}
-          {pendingRecords.length > 0 && !hasSaved && (
-            <Button size="sm" onClick={saveAllRecords} className="rounded-full bg-safe hover:bg-safe/90 text-white text-xs h-8 shadow-md">
-              <Check className="w-3.5 h-3.5 mr-1" /> Sauver ({pendingRecords.length})
-            </Button>
-          )}
+          <RecordReviewPanel variant="badge" pendingRecords={pendingRecords} hasSaved={hasSaved} onSave={saveAllRecords} />
           {messages.length > 2 && !isProcessing && !isStreaming && !isFinished && (
             <button onClick={startNewConversation} className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-2 rounded-lg hover:bg-muted">
               Nouveau
@@ -657,12 +625,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
         {isLimitReached ? (
           <UpgradePrompt type="message" from="health-assistant" className="!p-3 !rounded-xl" />
         ) : isFinished && pendingRecords.length > 0 ? (
-          <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
-            <Button onClick={saveAllRecords} className="w-full rounded-full bg-safe hover:bg-safe/90 text-white h-11 text-sm font-medium shadow-md">
-              <Check className="w-4 h-4 mr-2" />
-              Enregistrer {pendingRecords.length} entr&eacute;e{pendingRecords.length > 1 ? 's' : ''} dans le carnet
-            </Button>
-          </motion.div>
+          <RecordReviewPanel variant="action" pendingRecords={pendingRecords} onSave={saveAllRecords} />
         ) : (
           <div className="flex items-center gap-2">
             {/* Hidden File Input */}
@@ -680,15 +643,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
             </button>
 
             {/* Mic Button */}
-            <button
-              onClick={startListening}
-              className={`
-                w-10 h-10 rounded-full flex items-center justify-center transition-all flex-shrink-0
-                ${isListening ? "bg-red-500 text-white animate-pulse" : "bg-muted hover:bg-border text-muted-foreground"}
-              `}
-            >
-              <Mic className="w-4.5 h-4.5" />
-            </button>
+            <VoiceButton onTranscript={handleSend} disabled={isProcessing || isStreaming} />
 
             {/* Text Input */}
             <div className="flex-1 relative">
