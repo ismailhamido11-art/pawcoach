@@ -45,7 +45,9 @@
   2. public/manifest.json existe avec name, icons, start_url, display:standalone, theme_color
   3. public/sw.js existe et le service worker s'enregistre sans erreur dans la console
   4. L'app charge en mode standalone (sans barre URL du navigateur) apres installation
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 01-pwa-01-PLAN.md — Creer public/manifest.json et public/sw.js
 **UI hint**: yes
 
 ### Phase 2: CRON
@@ -111,7 +113,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. PWA | 0/TBD | Not started | - |
+| 1. PWA | 0/1 | Planned | - |
 | 2. CRON | 0/TBD | Not started | - |
 | 3. SEC | 0/TBD | Not started | - |
 | 4. SPLIT | 0/TBD | Not started | - |
