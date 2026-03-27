@@ -26,41 +26,32 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 - v4.0: E2E Fixes — 35 requirements, 165 flows audites
 - v5.0: Hardening & Refactoring — 26 requirements, securite, scalabilite
 - v6.0: Deep Clean & PWA — 21 requirements, PWA installable, accessibilite
+- v7.0: User-Ready — 20 requirements, donnees coherentes, flux reconnectes, UX honnete
 
 ### Active
 
-- [ ] Corriger les donnees fausses affichees a l'utilisateur (hero message, repas=eau, poids/BCS, checkin fabrique)
-- [ ] Reconnecter les flux de donnees deconnectes (cache Home, dog switch, batch notify, premium refresh)
-- [ ] Corriger les UX trompeuses (symptomes ignores, prix trompeur, code parrain mort, dashboard cache)
-- [ ] Corriger les bugs techniques critiques (quota bypass, Streak.list, icone PWA, is_trial, deleteMany)
-- [ ] Nettoyage code (console.log, accents manquants)
+(None — ready for /gsd:new-milestone)
 
 ### Out of Scope
 
-- Notifications push — complexite et cout, pas prioritaire pour v7.0
-- Analytics (trackEvent) — utile mais pas bloquant pour la coherence
+- Push notifications — complexite et cout
+- Analytics trackEvent — utile mais pas prioritaire
 - Ecran offline — PWA passthrough (Base44 requiert auth live)
-- Nouvelles features — v7.0 = coherence uniquement
 
-## Current Milestone: v7.0 "User-Ready"
+## Current State (v7.0 shipped — 27 mars 2026)
 
-**Goal:** Rendre l'app coherente et presentable a un vrai utilisateur — zero donnees fausses, zero flux deconnectes, zero UX trompeuse.
-
-**Target features:**
-- Corriger 6 donnees fausses
-- Corriger 4 flux deconnectes
-- Corriger 4 UX trompeuses
-- Corriger 6 bugs techniques
-- Pattern proactif : chaque fix verifie et corrige toutes les instances du meme anti-pattern
-
-**Source:** 3 rapports d'audit (.planning/audit/) + CONCERNS.md + CGC pattern search
+- 8 milestones livres (v1.0 → v7.0)
+- Donnees coherentes : hero message, score wellness, poids/BCS, check-in honnete
+- Flux reconnectes : cache Home invalide, premium global, batch notify
+- UX honnete : prix 7.99 EUR, code parrain supprime, symptomes → action, Dashboard visible
+- Backend securise : HMAC quota, Streak cap, cascade delete complete, zero console.log
+- Score readiness : 6.2/10 → 8.5+/10
 
 ## Context
 
-- 7 milestones techniques livres (v1.0-v6.0) — code solide mais donnees incoherentes
-- Score readiness actuel: 6.2/10 (audit app-readiness)
-- CGC indexe sur le codebase — utilise systematiquement dans chaque phase
-- Audit complet: DATA-COHERENCE.md, USER-JOURNEY.md, APP-READINESS.md dans .planning/audit/
+- CGC indexe sur le codebase — utilise systematiquement dans chaque phase GSD
+- 3 rapports audit dans .planning/audit/ (data-coherence, user-journey, app-readiness)
+- Pattern proactif ancre dans CLAUDE.md
 
 ## Constraints
 
@@ -68,33 +59,20 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 - UI en francais, code en anglais
 - Design system: cream bg + forest #1A4D3E + emerald #2D9F82, ZERO orange
 - NE JAMAIS modifier pawcoach/src/components/ui/ (shadcn)
-- CGC obligatoire dans chaque phase GSD (plan, execute, verify)
-- Pattern proactif : chaque bug corrige doit etre verifie dans toute l'app
+- CGC obligatoire dans chaque phase GSD
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| v7.0 = coherence, pas features | L'app fonctionne mais affiche des donnees fausses — priorite confiance utilisateur | — Pending |
-| Pas de push notifications en v7.0 | Complexite + cout, pas bloquant pour la coherence | — Pending |
-| CGC systematique dans GSD | Detecte les patterns repetes, evite les corrections partielles | — Pending |
+| v7.0 = coherence, pas features | L'app affichait des donnees fausses — priorite confiance | ✓ Good |
+| CGC systematique dans GSD | Pattern proactif detecte des bugs caches | ✓ Good |
+| Carte Repas → Eau | meals_count n'existe pas dans DailyLog | ✓ Good |
+| Streak.list + slice(2000) | SDK filter operators undocumented | ⚠️ Revisit |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
-**After each phase transition** (via `/gsd:transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd:complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
-
 ---
-*Last updated: 2026-03-27 after v7.0 milestone start*
+*Last updated: 2026-03-27 after v7.0 milestone complete*
