@@ -52,12 +52,57 @@ export default function Nutri() {
    const navigate = useNavigate();
    const { user: authUser, isLoadingAuth } = useAuth();
    const prefersReducedMotion = useReducedMotion();
-   const [dog, setDog] = useState(null);
-   const [user, setUser] = useState(null);
-   const [recentScans, setRecentScans] = useState([]);
-   const [messages, setMessages] = useState([]);
-   const [input, setInput] = useState("");
-   const [loading, setLoading] = useState(false);
+
+   // ── Dog data state (chien + données liées) ────────────────
+   const [dogDataState, setDogDataState] = useState({
+     dog: null,
+     user: null,
+     recentScans: [],
+     dietPrefs: null,
+     checkins: [],
+     healthRecords: [],
+     dailyLogs: [],
+     activePlan: null,
+     monthlyPlanCount: 0,
+     allPlans: [],
+   });
+   // Shorthand setters for backward compatibility with existing code
+   const { dog, user, recentScans, dietPrefs, checkins, healthRecords, dailyLogs, activePlan, monthlyPlanCount, allPlans } = dogDataState;
+   const setDog = (v) => setDogDataState(p => ({ ...p, dog: typeof v === "function" ? v(p.dog) : v }));
+   const setUser = (v) => setDogDataState(p => ({ ...p, user: typeof v === "function" ? v(p.user) : v }));
+   const setRecentScans = (v) => setDogDataState(p => ({ ...p, recentScans: typeof v === "function" ? v(p.recentScans) : v }));
+   const setDietPrefs = (v) => setDogDataState(p => ({ ...p, dietPrefs: typeof v === "function" ? v(p.dietPrefs) : v }));
+   const setCheckins = (v) => setDogDataState(p => ({ ...p, checkins: typeof v === "function" ? v(p.checkins) : v }));
+   const setHealthRecords = (v) => setDogDataState(p => ({ ...p, healthRecords: typeof v === "function" ? v(p.healthRecords) : v }));
+   const setDailyLogs = (v) => setDogDataState(p => ({ ...p, dailyLogs: typeof v === "function" ? v(p.dailyLogs) : v }));
+   const setActivePlan = (v) => setDogDataState(p => ({ ...p, activePlan: typeof v === "function" ? v(p.activePlan) : v }));
+   const setMonthlyPlanCount = (v) => setDogDataState(p => ({ ...p, monthlyPlanCount: typeof v === "function" ? v(p.monthlyPlanCount) : v }));
+   const setAllPlans = (v) => setDogDataState(p => ({ ...p, allPlans: typeof v === "function" ? v(p.allPlans) : v }));
+
+   // ── Coach state (conversation IA) ─────────────────────────
+   const [coachState, setCoachState] = useState({
+     messages: [],
+     input: "",
+     loading: false,
+     messagesRemaining: null,
+     bookmarked: {},
+     isStreaming: false,
+     streamingText: "",
+     showScrollBtn: false,
+     lastFailedInput: null,
+   });
+   // Shorthand setters for backward compatibility with existing code
+   const { messages, input, loading, messagesRemaining, bookmarked, isStreaming, streamingText, showScrollBtn, lastFailedInput } = coachState;
+   const setMessages = (v) => setCoachState(p => ({ ...p, messages: typeof v === "function" ? v(p.messages) : v }));
+   const setInput = (v) => setCoachState(p => ({ ...p, input: typeof v === "function" ? v(p.input) : v }));
+   const setLoading = (v) => setCoachState(p => ({ ...p, loading: typeof v === "function" ? v(p.loading) : v }));
+   const setMessagesRemaining = (v) => setCoachState(p => ({ ...p, messagesRemaining: typeof v === "function" ? v(p.messagesRemaining) : v }));
+   const setBookmarked = (v) => setCoachState(p => ({ ...p, bookmarked: typeof v === "function" ? v(p.bookmarked) : v }));
+   const setIsStreaming = (v) => setCoachState(p => ({ ...p, isStreaming: typeof v === "function" ? v(p.isStreaming) : v }));
+   const setStreamingText = (v) => setCoachState(p => ({ ...p, streamingText: typeof v === "function" ? v(p.streamingText) : v }));
+   const setShowScrollBtn = (v) => setCoachState(p => ({ ...p, showScrollBtn: typeof v === "function" ? v(p.showScrollBtn) : v }));
+   const setLastFailedInput = (v) => setCoachState(p => ({ ...p, lastFailedInput: typeof v === "function" ? v(p.lastFailedInput) : v }));
+
    const [initializing, setInitializing] = useState(true);
 
    // URL-based tab navigation (enables back button between sub-tabs)
@@ -80,29 +125,14 @@ export default function Nutri() {
   const tabDir = tabIndex >= prevTabIdx.current ? 1 : -1;
   useEffect(() => { prevTabIdx.current = tabIndex; }, [tabIndex]);
 
-  const [messagesRemaining, setMessagesRemaining] = useState(null);
-  const [bookmarked, setBookmarked] = useState({});
-  const [dietPrefs, setDietPrefs] = useState(null);
-  const [checkins, setCheckins] = useState([]);
-  const [healthRecords, setHealthRecords] = useState([]);
-  const [dailyLogs, setDailyLogs] = useState([]);
-  const [activePlan, setActivePlan] = useState(null);
-  const [monthlyPlanCount, setMonthlyPlanCount] = useState(0);
-  const [allPlans, setAllPlans] = useState([]);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
 
-  // Typewriter streaming
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [streamingText, setStreamingText] = useState("");
+  // Typewriter streaming ref (mutable, not state)
   const streamingRef = useRef({ fullText: "", words: [], wordIndex: 0, timer: null, timestamp: "" });
 
-  // Scroll-to-bottom
+  // Scroll-to-bottom container ref
   const scrollContainerRef = useRef(null);
-  const [showScrollBtn, setShowScrollBtn] = useState(false);
-
-  // Retry
-  const [lastFailedInput, setLastFailedInput] = useState(null);
 
   // --- Typewriter ---
   const startStreaming = useCallback((fullText, timestamp) => {
