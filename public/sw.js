@@ -13,8 +13,7 @@ self.addEventListener('install', (event) => {
       return cache.addAll(STATIC_ASSETS);
     })
   );
-  // Take control immediately without waiting for reload
-  self.skipWaiting();
+  // Ne pas appeler self.skipWaiting() ici — l'update est declenchee par consentement utilisateur via postMessage
 });
 
 // Activate: clean up old caches
@@ -30,6 +29,13 @@ self.addEventListener('activate', (event) => {
   );
   // Claim all open clients immediately
   self.clients.claim();
+});
+
+// Message listener — permet a main.jsx de declencher le skipWaiting via postMessage
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Fetch: cache-first for static assets, network passthrough for API/dynamic

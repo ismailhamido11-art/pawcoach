@@ -8,6 +8,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import PawLoader from '@/components/PawLoader';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import SkeletonPage from '@/components/ui/SkeletonPage';
+import { Toaster } from 'sonner';
 
 // Public pages — loaded outside auth wrapper
 const DogPublicProfile = lazy(() => import('./pages/DogPublicProfile'));
@@ -75,6 +76,8 @@ const AuthenticatedApp = () => {
 
 function App() {
   return (
+    <>
+    <Toaster position="bottom-center" richColors />
     <Router>
       <Routes>
         {/* Public routes — no auth required */}
@@ -102,6 +105,7 @@ function App() {
         } />
       </Routes>
     </Router>
+    </>
   )
 }
 

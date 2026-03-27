@@ -1,14 +1,18 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
-import { Crown, ChevronRight, Zap } from "lucide-react";
+import { Crown, ChevronRight, Zap, Loader2 } from "lucide-react";
 import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
 
 export default function SubscriptionSection({ user }) {
   const navigate = useNavigate();
+  const [isLoadingPortal, setIsLoadingPortal] = useState(false);
 
   const handlePortal = async () => {
+    if (isLoadingPortal) return;
+    setIsLoadingPortal(true);
     try {
       const res = await base44.functions.invoke("stripePortal");
       const { url } = res.data;
@@ -16,6 +20,8 @@ export default function SubscriptionSection({ user }) {
     } catch (err) {
       console.error(err);
       toast.error("Impossible d'accéder au portail de paiement. Réessaie.");
+    } finally {
+      setIsLoadingPortal(false);
     }
   };
 
@@ -57,10 +63,20 @@ export default function SubscriptionSection({ user }) {
             {isUserPremium(user) ? (
               <button
                 onClick={handlePortal}
-                className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-muted/30 transition-all"
+                disabled={isLoadingPortal}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-muted/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Gérer mon abonnement
-                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                {isLoadingPortal ? (
+                  <div className="flex items-center gap-2 w-full justify-center">
+                    <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                    <span>Chargement...</span>
+                  </div>
+                ) : (
+                  <>
+                    Gérer mon abonnement
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  </>
+                )}
               </button>
             ) : (
               <button
