@@ -9,7 +9,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { Dog, DailyLog, HealthRecord, DailyCheckin, FoodScan } from "@/api/entities";
+import {
+  Dog, DailyLog, HealthRecord, DailyCheckin, FoodScan,
+  Streak, UserProgress, WeeklyInsight, ChatMessage, DogAchievement,
+  GrowthEntry, NutritionPlan, DietPreferences, Bookmark,
+  SharedVetAccess, VetNote, DiagnosisReport, ParkReview, PlaceFavorite
+} from "@/api/entities";
 
 export default function SettingsSection() {
   const navigate = useNavigate();
@@ -22,12 +27,31 @@ export default function SettingsSection() {
   const handleExport = async () => {
     setExporting(true);
     try {
-      const [dogs, logs, records, checkins, scans] = await Promise.all([
+      const [
+        dogs, logs, records, checkins, scans,
+        streaks, progress, insights, chatMessages, achievements,
+        growthEntries, nutritionPlans, dietPrefs, bookmarks,
+        vetAccess, vetNotes, diagnosisReports, parkReviews, placeFavorites
+      ] = await Promise.all([
         Dog.filter({}),
         DailyLog.filter({}),
         HealthRecord.filter({}),
         DailyCheckin.filter({}),
         FoodScan.filter({}),
+        Streak.filter({}),
+        UserProgress.filter({}),
+        WeeklyInsight.filter({}),
+        ChatMessage.filter({}),
+        DogAchievement.filter({}),
+        GrowthEntry.filter({}),
+        NutritionPlan.filter({}),
+        DietPreferences.filter({}),
+        Bookmark.filter({}),
+        SharedVetAccess.filter({}),
+        VetNote.filter({}),
+        DiagnosisReport.filter({}),
+        ParkReview.filter({}),
+        PlaceFavorite.filter({}),
       ]);
       const exportData = {
         exported_at: new Date().toISOString(),
@@ -36,6 +60,20 @@ export default function SettingsSection() {
         health_records: records,
         daily_checkins: checkins,
         food_scans: scans,
+        streaks,
+        user_progress: progress,
+        weekly_insights: insights,
+        chat_messages: chatMessages,
+        dog_achievements: achievements,
+        growth_entries: growthEntries,
+        nutrition_plans: nutritionPlans,
+        diet_preferences: dietPrefs,
+        bookmarks,
+        shared_vet_access: vetAccess,
+        vet_notes: vetNotes,
+        diagnosis_reports: diagnosisReports,
+        park_reviews: parkReviews,
+        place_favorites: placeFavorites,
       };
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);

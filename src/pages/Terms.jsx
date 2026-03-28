@@ -55,7 +55,7 @@ export default function Terms() {
         <section className="space-y-2">
           <h2 className="text-base font-bold text-foreground">5. Essai gratuit</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Un essai gratuit de 7 jours est offert aux nouveaux utilisateurs. À l'issue de la période d'essai, l'abonnement est automatiquement converti en abonnement payant si vous ne l'avez pas résilié avant la fin de la période d'essai.
+            Un essai gratuit de 7 jours est offert aux nouveaux utilisateurs. À la fin de la période d'essai, l'accès Premium expire et le compte revient en mode gratuit. Pour continuer à bénéficier de Premium, un abonnement doit être souscrit.
           </p>
         </section>
 

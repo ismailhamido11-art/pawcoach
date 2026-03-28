@@ -181,7 +181,15 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
     const previousEntries = entries;
     try {
       await GrowthEntry.delete(id);
-      setEntries(prev => prev.filter(e => e.id !== id));
+      const remaining = entries.filter(e => e.id !== id);
+      setEntries(remaining);
+      // Recalculate Dog.weight from most recent remaining entry
+      const latest = remaining
+        .filter(e => e.weight_kg)
+        .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+      if (latest) {
+        try { await Dog.update(dog.id, { weight: latest.weight_kg }); } catch (e) { console.warn("Dog.weight sync after delete failed:", e); }
+      }
     } catch (e) {
       console.error("GrowthTrackerContent delete error:", e);
       setEntries(previousEntries);

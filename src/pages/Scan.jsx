@@ -596,6 +596,20 @@ export default function Scan() {
             incrementScanCount={incrementScanCount}
             setScanLimitReached={setScanLimitReached}
             onLabelResult={setLabelResult}
+            onLabelSaved={async () => {
+              // Mirror food-mode saveResult: history + streak + points
+              try {
+                const newPoints = (user?.points || 0) + 10;
+                await base44.auth.updateMe({ points: newPoints });
+                setUser(prev => ({ ...prev, points: newPoints }));
+                await updateStreakSilently(dog.id, user?.email);
+                // Refresh history so the new label scan appears
+                const scans = await FoodScan.filter({ dog_id: dog.id }, "-timestamp", 50).catch(() => []);
+                setHistory((scans || []).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
+              } catch (e) {
+                console.warn("Scan: onLabelSaved side-effects failed", e);
+              }
+            }}
           />
         )}
 

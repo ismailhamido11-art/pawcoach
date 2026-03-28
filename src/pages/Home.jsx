@@ -821,7 +821,10 @@ export default function Home() {
       <CombinedFAB
         dog={dog}
         user={user}
-        onLogSaved={invalidateHome}
+        onLogSaved={() => {
+          invalidateHome();
+          refreshHome(user, dog);
+        }}
       />
 
       <PremiumNudgeSheet

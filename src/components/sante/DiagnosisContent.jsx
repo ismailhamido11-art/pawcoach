@@ -25,6 +25,7 @@ export default function DiagnosisContent({ dog }) {
   const [reports, setReports] = useState([]);
   const [loadingReports, setLoadingReports] = useState(false);
   const [expandedReport, setExpandedReport] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     if (!dog?.id) return;
@@ -33,7 +34,7 @@ export default function DiagnosisContent({ dog }) {
       .then(data => setReports(data || []))
       .catch(() => setReports([]))
       .finally(() => setLoadingReports(false));
-  }, [dog?.id]);
+  }, [dog?.id, refreshKey]);
 
   const openWithSymptom = (symptom) => {
     setPreSelectedSymptom(symptom);
@@ -199,7 +200,10 @@ export default function DiagnosisContent({ dog }) {
       {dog && (
         <AIDiagnosisModal
           open={showModal}
-          onOpenChange={setShowModal}
+          onOpenChange={(open) => {
+            setShowModal(open);
+            if (!open) setRefreshKey(k => k + 1);
+          }}
           dog={dog}
           preSelectedSymptom={preSelectedSymptom}
         />

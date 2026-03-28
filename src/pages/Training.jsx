@@ -154,7 +154,7 @@ const MILESTONES = [3, 5, 10];
 
 export default function Training() {
    const navigate = useNavigate();
-   const { user, isLoadingAuth } = useAuth();
+   const { user, isLoadingAuth, checkAppState } = useAuth();
    const { dog, loadingDog } = useDog();
    const [loading, setLoading] = useState(true);
    const [progresses, setProgresses] = useState([]);
@@ -273,7 +273,8 @@ export default function Training() {
         const newPoints = (user.points || 0) + 50;
         try {
           await base44.auth.updateMe({ points: newPoints });
-          setUser(prev => ({ ...prev, points: newPoints }));
+          // Points persisted server-side, re-fetch user to propagate
+          if (checkAppState) checkAppState();
         } catch (pointsErr) {
           // UX-05: Rollback UserProgress if points update fails
           console.error("Training points update failed, rolling back UserProgress:", pointsErr);
