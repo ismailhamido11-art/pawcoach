@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Dog, UserProgress, Bookmark } from "@/api/entities";
+import { UserProgress, Bookmark } from "@/api/entities";
+import { useAuth } from "@/lib/AuthContext";
+import { useDog } from "@/lib/DogContext";
 import WellnessBanner from "../components/WellnessBanner";
 import BottomNav from "../components/BottomNav";
 import ExerciseDetail from "../components/training/ExerciseDetail";
@@ -14,7 +16,7 @@ import Illustration from "../components/illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { isUserPremium } from "@/utils/premium";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
-import { createPageUrl, getActiveDog } from "@/utils";
+import { createPageUrl } from "@/utils";
 import { dogAgeMonths } from "@/utils/healthStatus";
 import { updateStreakSilently } from "../components/streakHelper";
 import { checkStreakBadges } from "@/components/achievements/badgeUtils";
@@ -152,8 +154,8 @@ const MILESTONES = [3, 5, 10];
 
 export default function Training() {
    const navigate = useNavigate();
-   const [dog, setDog] = useState(null);
-   const [user, setUser] = useState(null);
+   const { user, isLoadingAuth } = useAuth();
+   const { dog, loadingDog } = useDog();
    const [loading, setLoading] = useState(true);
    const [progresses, setProgresses] = useState([]);
    const [celebration, setCelebration] = useState(null);
@@ -169,23 +171,20 @@ export default function Training() {
    const exerciseId = searchParams.get("exercise");
    const behaviorId = searchParams.get("behavior");
 
-   useEffect(() => { loadData(); }, []);
+   useEffect(() => {
+     if (isLoadingAuth || loadingDog) return;
+     if (!user || !dog) { setLoading(false); return; }
+     loadData();
+   }, [isLoadingAuth, loadingDog, user, dog]);
 
   const loadData = async () => {
     try {
-      const u = await base44.auth.me();
-      setUser(u);
-      const dogs = await Dog.filter({ owner: u.email });
-      if (dogs?.length > 0) {
-        const activeDog = getActiveDog(dogs);
-        setDog(activeDog);
-        const [progs, bBks] = await Promise.all([
-          UserProgress.filter({ user_email: u.email, dog_id: activeDog.id }),
-          Bookmark.filter({ dog_id: activeDog.id, source: "behavior_program" }, "-created_at", 5).catch(() => []),
-        ]);
-        setProgresses(progs || []);
-        setBehaviorBookmarks(bBks || []);
-      }
+      const [progs, bBks] = await Promise.all([
+        UserProgress.filter({ user_email: user.email, dog_id: dog.id }),
+        Bookmark.filter({ dog_id: dog.id, source: "behavior_program" }, "-created_at", 5).catch(() => []),
+      ]);
+      setProgresses(progs || []);
+      setBehaviorBookmarks(bBks || []);
     } catch (err) {
       console.error("Training load error:", err);
       toast.error("Impossible de charger les exercices. Vérifie ta connexion.");

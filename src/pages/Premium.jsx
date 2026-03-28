@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
-import { Dog } from "@/api/entities";
 import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
+import { useAuth } from "@/lib/AuthContext";
+import { useDog } from "@/lib/DogContext";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Check, Zap, Lock, ChevronRight, MessageCircle, ScanLine, Dumbbell, BookHeart, Salad, Search, Target, ClipboardList, Bell, BarChart3, Dog as DogIcon, Star, Crown } from "lucide-react";
 import IconBadge from "@/components/ui/IconBadge";
 import { useNavigate, Link } from "react-router-dom";
-import { createPageUrl, getActiveDog } from "@/utils";
+import { createPageUrl } from "@/utils";
 import { getDogAgeSegment } from "@/utils/healthStatus";
 import BottomNav from "../components/BottomNav";
 import confetti from "canvas-confetti";
@@ -57,8 +58,8 @@ const SEGMENT_HERO = {
 export default function Premium() {
   const navigate = useNavigate();
   const prefersReducedMotion = useReducedMotion();
-  const [user, setUser] = useState(null);
-  const [dog, setDog] = useState(null);
+  const { user, isLoadingAuth } = useAuth();
+  const { dog, loadingDog } = useDog();
   const [plan, setPlan] = useState("annual");
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
@@ -66,14 +67,12 @@ export default function Premium() {
   const [isFirstVisit, setIsFirstVisit] = useState(false);
 
   useEffect(() => {
+    if (isLoadingAuth || loadingDog) return;
+    if (!user) { setPageLoading(false); return; }
+
     const init = async () => {
       try {
-        const u = await base44.auth.me();
-        setUser(u);
-        const dogs = await Dog.filter({ owner: u.email });
-        if (dogs?.length > 0) setDog(getActiveDog(dogs));
-
-        if (isUserPremium(u) && !u.premium_welcome_seen) {
+        if (isUserPremium(user) && !user.premium_welcome_seen) {
           setIsFirstVisit(true);
           await base44.auth.updateMe({ premium_welcome_seen: true });
         }
@@ -85,7 +84,7 @@ export default function Premium() {
       }
     };
     init();
-  }, []);
+  }, [isLoadingAuth, loadingDog, user]);
 
   useEffect(() => {
     if (isFirstVisit && !confettiFired.current) {

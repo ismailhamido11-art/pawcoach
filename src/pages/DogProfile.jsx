@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import useBackClose from "@/hooks/useBackClose";
-import { createPageUrl, getActiveDog } from "@/utils";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { Dog, DailyLog, UserProgress, Streak, FoodScan } from "@/api/entities";
 import { useHomeCache } from "@/lib/HomeCacheContext";
+import { useAuth } from "@/lib/AuthContext";
+import { useDog } from "@/lib/DogContext";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowLeft, Pencil, ChevronDown,
@@ -27,8 +29,9 @@ export default function DogProfile() {
   const navigate = useNavigate();
   const prefersReducedMotion = useReducedMotion();
   const { invalidateHome } = useHomeCache();
+  const { user, isLoadingAuth } = useAuth();
+  const { dog: contextDog, loadingDog } = useDog();
   const [dog, setDog] = useState(null);
-  const [_user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dailyLogs, setDailyLogs] = useState([]);
   const [progress, setProgress] = useState([]);
@@ -36,7 +39,7 @@ export default function DogProfile() {
   const [scansCount, setScansCount] = useState(0);
   const [editModal, setEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  
+
   useBackClose(editModal, () => setEditModal(false));
   useBackClose(showDeleteConfirm, () => setShowDeleteConfirm(false));
 
@@ -46,22 +49,23 @@ export default function DogProfile() {
   const dogId = urlParams.get("dogId");
 
   useEffect(() => {
+    if (isLoadingAuth || loadingDog) return;
+    if (!user) { setLoading(false); return; }
+
     const load = async () => {
       try {
-        const u = await base44.auth.me();
-        setUser(u);
-
         let d;
         if (dogId) {
+          // URL param: fetch specific dog by ID
           const results = await Dog.filter({ id: dogId });
           d = (results || [])[0];
         } else {
-          const dogs = await Dog.filter({ owner: u.email });
-          d = getActiveDog(dogs);
+          // Default: use active dog from context
+          d = contextDog;
         }
 
         if (!d) { navigate(createPageUrl("Profile")); return; }
-        if (d.owner !== u.email) { navigate(createPageUrl("Profile")); return; }
+        if (d.owner !== user.email) { navigate(createPageUrl("Profile")); return; }
 
         setDog(d);
 
@@ -83,7 +87,7 @@ export default function DogProfile() {
       }
     };
     load();
-  }, [dogId]);
+  }, [dogId, isLoadingAuth, loadingDog, user, contextDog]);
 
   const handleSaveDog = async (updates) => {
     try {

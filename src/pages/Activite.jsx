@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
-import { base44 } from "@/api/base44Client";
-import { Dog, DailyLog } from "@/api/entities";
-import { getActiveDog, createPageUrl } from "@/utils";
+import { DailyLog } from "@/api/entities";
+import { createPageUrl } from "@/utils";
 import { useAuth } from "@/lib/AuthContext";
+import { useDog } from "@/lib/DogContext";
 import { useHomeCache } from "@/lib/HomeCacheContext";
 import BottomNav from "@/components/BottomNav";
 import ChatFAB from "@/components/ChatFAB";
@@ -34,11 +34,10 @@ const TABS = [
 ];
 
 export default function Activite() {
-  const { user: authUser, isLoadingAuth } = useAuth();
+  const { user, isLoadingAuth } = useAuth();
+  const { dog, loadingDog } = useDog();
   const { invalidateHome } = useHomeCache();
   const prefersReducedMotion = useReducedMotion();
-  const [user, setUser] = useState(null);
-  const [dog, setDog] = useState(null);
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -61,18 +60,12 @@ export default function Activite() {
   const tabDir = tabIndex >= prevTabIdx.current ? 1 : -1;
   useEffect(() => { prevTabIdx.current = tabIndex; }, [tabIndex]);
 
-  const load = async (providedUser) => {
+  const load = async () => {
+    if (!dog) { setLoading(false); return; }
     setLoading(true);
     try {
-      const u = providedUser || await base44.auth.me();
-      setUser(u);
-      const dogs = await Dog.filter({ owner: u.email });
-      if (dogs?.length > 0) {
-        const d = getActiveDog(dogs);
-        setDog(d);
-        const l = await DailyLog.filter({ dog_id: d.id }, "-date", 30);
-        setLogs(l || []);
-      }
+      const l = await DailyLog.filter({ dog_id: dog.id }, "-date", 30);
+      setLogs(l || []);
     } catch (e) {
       console.error(e);
       setLoadError(true);
@@ -82,10 +75,10 @@ export default function Activite() {
   };
 
   useEffect(() => {
-    if (!isLoadingAuth) {
-      load(authUser || undefined);
-    }
-  }, [isLoadingAuth, authUser]);
+    if (isLoadingAuth || loadingDog) return;
+    if (!user || !dog) { setLoading(false); return; }
+    load();
+  }, [isLoadingAuth, loadingDog, user, dog]);
 
   const refreshLogs = async () => {
     if (!dog || !user) return;

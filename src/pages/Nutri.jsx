@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback, useReducer } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Dog, Bookmark as BookmarkEntity, NutritionPlan, FoodScan, DietPreferences, DailyCheckin, HealthRecord, DailyLog } from "@/api/entities";
-import { getActiveDog, createPageUrl } from "@/utils";
+import { Bookmark as BookmarkEntity, NutritionPlan, FoodScan, DietPreferences, DailyCheckin, HealthRecord, DailyLog } from "@/api/entities";
+import { createPageUrl } from "@/utils";
 import { useAuth } from "@/lib/AuthContext";
+import { useDog } from "@/lib/DogContext";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
 import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
@@ -78,7 +79,8 @@ function coachReducer(state, action) {
 
 export default function Nutri() {
    const navigate = useNavigate();
-   const { user: authUser, isLoadingAuth } = useAuth();
+   const { user, isLoadingAuth } = useAuth();
+   const { dog: contextDog, loadingDog } = useDog();
    const prefersReducedMotion = useReducedMotion();
 
    // ── Dog data state (chien + données liées) ────────────────
@@ -232,10 +234,10 @@ export default function Nutri() {
   };
 
   useEffect(() => {
-    if (!isLoadingAuth) {
-      init(authUser || undefined);
-    }
-  }, [isLoadingAuth, authUser]);
+    if (isLoadingAuth || loadingDog) return;
+    if (!user || !contextDog) { setInitializing(false); return; }
+    init();
+  }, [isLoadingAuth, loadingDog, user, contextDog]);
 
   // CACHE-04: Refresh recentScans when returning to this page (after Scan)
   useEffect(() => {
@@ -264,56 +266,52 @@ export default function Nutri() {
     ta.style.height = Math.min(ta.scrollHeight, 120) + "px";
   }, [input]);
 
-  const init = async (providedUser) => {
+  const init = async () => {
+    const u = user;
+    const d = contextDog;
     try {
-      const u = providedUser || await base44.auth.me();
-      setDogDataState(p => ({ ...p, user: u }));
+      setDogDataState(p => ({ ...p, user: u, dog: d }));
 
       if (!isUserPremium(u)) {
         const { msgCredits } = await initCredits(u);
         dispatchCoach({ type: "SET_MESSAGES_REMAINING", payload: msgCredits });
       }
 
-      const dogs = await Dog.filter({ owner: u.email });
-      if (dogs?.length > 0) {
-        const d = getActiveDog(dogs);
-        setDogDataState(p => ({ ...p, dog: d }));
-        const [scans, prefs, ckns, hrecs, dlogs, nplans] = await Promise.all([
-          FoodScan.filter({ dog_id: d.id }, "-timestamp", 5).catch(() => []),
-          DietPreferences.filter({ dog_id: d.id, owner_email: u.email }).catch(() => []),
-          DailyCheckin.filter({ dog_id: d.id }, "-date", 7).catch(() => []),
-          HealthRecord.filter({ dog_id: d.id }, "-date", 10).catch(() => []),
-          DailyLog.filter({ dog_id: d.id }, "-date", 7).catch(() => []),
-          NutritionPlan.filter({ dog_id: d.id, owner_email: u.email }, "-generated_at", 10).catch(() => []),
-        ]);
-        setDogDataState(p => ({ ...p, recentScans: scans || [] }));
-        if (prefs?.length > 0) setDogDataState(p => ({ ...p, dietPrefs: prefs[0] }));
-        setDogDataState(p => ({ ...p, checkins: ckns || [] }));
-        setDogDataState(p => ({ ...p, healthRecords: hrecs || [] }));
-        setDogDataState(p => ({ ...p, dailyLogs: dlogs || [] }));
-        const allP = nplans || [];
-        setDogDataState(p => ({ ...p, allPlans: allP }));
-        const active = allP.find(p => p.is_active);
-        setDogDataState(p => ({ ...p, activePlan: active || null }));
-        const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
-        setDogDataState(p => ({ ...p, monthlyPlanCount: allP.filter(p => p.generated_at >= monthStart).length }));
-        const planInfo = active ? (() => {
-          try {
-            const pd = JSON.parse(active.plan_text);
-            const elapsed = pd.start_date ? Math.floor((Date.now() - new Date(pd.start_date + "T00:00:00").getTime()) / 86400000) : null;
-            const dayNum = elapsed !== null && elapsed >= 0 ? Math.min(elapsed + 1, 7) : null;
-            const expired = elapsed !== null && elapsed >= 7;
-            if (expired) return "\n\nTon plan repas est terminé ! Tu peux en générer un nouveau dans l'onglet **Plan repas**.";
-            if (dayNum) return `\n\nTu as un **plan repas actif** (Jour ${dayNum}/7, ${pd.calories_per_day || "?"} kcal/jour). Je peux t'aider à l'ajuster ou répondre à tes questions dessus !`;
-            return "";
-          } catch { return ""; }
-        })() : "";
-        dispatchCoach({ type: "SET_MESSAGES", payload: [{
-          role: "assistant",
-          content: `Bonjour ! \u{1F957} Je suis ton **Coach IA Nutrition** pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies && d.allergies.toLowerCase() !== "non" ? ` avec des allergies à ${d.allergies}` : ""}, ses check-ins, son historique santé et ses préférences alimentaires.${planInfo}\n\nPose-moi une question, génère un **plan de repas personnalisé**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
-          timestamp: new Date().toISOString(),
-        }] });
-      }
+      const [scans, prefs, ckns, hrecs, dlogs, nplans] = await Promise.all([
+        FoodScan.filter({ dog_id: d.id }, "-timestamp", 5).catch(() => []),
+        DietPreferences.filter({ dog_id: d.id, owner_email: u.email }).catch(() => []),
+        DailyCheckin.filter({ dog_id: d.id }, "-date", 7).catch(() => []),
+        HealthRecord.filter({ dog_id: d.id }, "-date", 10).catch(() => []),
+        DailyLog.filter({ dog_id: d.id }, "-date", 7).catch(() => []),
+        NutritionPlan.filter({ dog_id: d.id, owner_email: u.email }, "-generated_at", 10).catch(() => []),
+      ]);
+      setDogDataState(p => ({ ...p, recentScans: scans || [] }));
+      if (prefs?.length > 0) setDogDataState(p => ({ ...p, dietPrefs: prefs[0] }));
+      setDogDataState(p => ({ ...p, checkins: ckns || [] }));
+      setDogDataState(p => ({ ...p, healthRecords: hrecs || [] }));
+      setDogDataState(p => ({ ...p, dailyLogs: dlogs || [] }));
+      const allP = nplans || [];
+      setDogDataState(p => ({ ...p, allPlans: allP }));
+      const active = allP.find(p => p.is_active);
+      setDogDataState(p => ({ ...p, activePlan: active || null }));
+      const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+      setDogDataState(p => ({ ...p, monthlyPlanCount: allP.filter(p => p.generated_at >= monthStart).length }));
+      const planInfo = active ? (() => {
+        try {
+          const pd = JSON.parse(active.plan_text);
+          const elapsed = pd.start_date ? Math.floor((Date.now() - new Date(pd.start_date + "T00:00:00").getTime()) / 86400000) : null;
+          const dayNum = elapsed !== null && elapsed >= 0 ? Math.min(elapsed + 1, 7) : null;
+          const expired = elapsed !== null && elapsed >= 7;
+          if (expired) return "\n\nTon plan repas est terminé ! Tu peux en générer un nouveau dans l'onglet **Plan repas**.";
+          if (dayNum) return `\n\nTu as un **plan repas actif** (Jour ${dayNum}/7, ${pd.calories_per_day || "?"} kcal/jour). Je peux t'aider à l'ajuster ou répondre à tes questions dessus !`;
+          return "";
+        } catch { return ""; }
+      })() : "";
+      dispatchCoach({ type: "SET_MESSAGES", payload: [{
+        role: "assistant",
+        content: `Bonjour ! \u{1F957} Je suis ton **Coach IA Nutrition** pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies && d.allergies.toLowerCase() !== "non" ? ` avec des allergies à ${d.allergies}` : ""}, ses check-ins, son historique santé et ses préférences alimentaires.${planInfo}\n\nPose-moi une question, génère un **plan de repas personnalisé**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
+        timestamp: new Date().toISOString(),
+      }] });
     } catch (err) {
       console.error("Nutri init error:", err);
       toast.error("Impossible de démarrer le NutriCoach. Vérifie ta connexion.");

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -26,8 +27,8 @@ const ERROR_MESSAGES = {
 const translateError = (msg) => ERROR_MESSAGES[msg] || msg;
 
 export default function VetDogView() {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
   const [dogData, setDogData] = useState(null);
   const [error, setError] = useState(null);
   const [localRecords, setLocalRecords] = useState(null);
@@ -40,13 +41,6 @@ export default function VetDogView() {
   const loadData = async () => {
     if (!dogId) { setError("Aucun chien spécifié"); setLoading(false); return; }
     try {
-      // Try to get vet identity — optional, page works without it
-      try {
-        const u = await base44.auth.me();
-        setUser(u);
-      } catch {
-        // Not authenticated — vet identity unavailable, continue anyway
-      }
       const res = await base44.functions.invoke("vetAccess", { action: "getDogData", dogId });
       if (res.data.error) { setError(translateError(res.data.error)); }
       else { setDogData(res.data); }

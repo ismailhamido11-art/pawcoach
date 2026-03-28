@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { base44 } from "@/api/base44Client";
-import { Bookmark, NutritionPlan, FoodScan, Dog } from "@/api/entities";
+import { Bookmark, NutritionPlan, FoodScan } from "@/api/entities";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { getActiveDog } from "@/utils";
+import { useAuth } from "@/lib/AuthContext";
+import { useDog } from "@/lib/DogContext";
 import BottomNav from "../components/BottomNav";
 import { ArrowLeft, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarChart2, Clock, Target, Home, CheckCircle2, ScanLine } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -42,6 +42,8 @@ const VERDICT_CONFIG = {
 
 export default function Library() {
   const navigate = useNavigate();
+  const { user, isLoadingAuth } = useAuth();
+  const { dog, loadingDog } = useDog();
   const [bookmarks, setBookmarks] = useState([]);
   const [nutritionPlans, setNutritionPlans] = useState([]);
   const [foodScans, setFoodScans] = useState([]);
@@ -52,16 +54,15 @@ export default function Library() {
   const [confirmDialog, setConfirmDialog] = useState(null);
 
   useEffect(() => {
+    if (isLoadingAuth || loadingDog) return;
+    if (!user) { setLoading(false); return; }
     async function load() {
       try {
-        const u = await base44.auth.me();
-        const dogs = await Dog.filter({ owner: u.email }).catch(() => []);
-        const activeDog = dogs?.length > 0 ? getActiveDog(dogs) : null;
         const [bks, plans, scans] = await Promise.all([
-          Bookmark.filter({ owner: u.email }, "-created_at", 100),
-          NutritionPlan.filter({ owner_email: u.email }, "-generated_at", 50).catch(() => []),
-          activeDog
-            ? FoodScan.filter({ dog_id: activeDog.id }, "-timestamp").catch(() => [])
+          Bookmark.filter({ owner: user.email }, "-created_at", 100),
+          NutritionPlan.filter({ owner_email: user.email }, "-generated_at", 50).catch(() => []),
+          dog
+            ? FoodScan.filter({ dog_id: dog.id }, "-timestamp").catch(() => [])
             : Promise.resolve([]),
         ]);
         setBookmarks(bks || []);
@@ -75,7 +76,7 @@ export default function Library() {
       }
     }
     load();
-  }, []);
+  }, [isLoadingAuth, loadingDog, user, dog]);
 
   const handleDelete = (id) => {
     setConfirmDialog({

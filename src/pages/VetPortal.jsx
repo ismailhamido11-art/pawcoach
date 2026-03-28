@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, Stethoscope, KeyRound, LogOut, ArrowLeft, FileText, Users, BarChart3 } from "lucide-react";
@@ -13,24 +14,25 @@ import EmptyState from "@/components/ui/EmptyState";
 
 export default function VetPortal() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user, isLoadingAuth, isAuthenticated, navigateToLogin } = useAuth();
   const [loading, setLoading] = useState(true);
   const [accesses, setAccesses] = useState([]);
   const [dogs, setDogs] = useState([]);
   const [inviteCode, setInviteCode] = useState("");
   const [accepting, setAccepting] = useState(false);
 
-  useEffect(() => { init(); }, []);
+  useEffect(() => {
+    if (isLoadingAuth) return;
+    if (!isAuthenticated) {
+      navigateToLogin();
+      return;
+    }
+    if (!user) { setLoading(false); return; }
+    init();
+  }, [isLoadingAuth, isAuthenticated, user]);
 
   const init = async () => {
     try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) {
-        base44.auth.redirectToLogin(window.location.href);
-        return;
-      }
-      const u = await base44.auth.me();
-      setUser(u);
       await loadAccesses();
     } catch (e) {
       console.error("VetPortal init error:", e);

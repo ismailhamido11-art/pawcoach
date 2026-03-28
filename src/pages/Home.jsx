@@ -1,11 +1,12 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { createPageUrl, getActiveDog } from "@/utils";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { Dog, DailyCheckin, Streak, HealthRecord, UserProgress, FoodScan, DailyLog, DiagnosisReport, NutritionPlan, Bookmark, WeeklyInsight } from "@/api/entities";
+import { DailyCheckin, Streak, HealthRecord, UserProgress, FoodScan, DailyLog, DiagnosisReport, NutritionPlan, Bookmark, WeeklyInsight } from "@/api/entities";
 import { isUserPremium } from "@/utils/premium";
 import { useHomeCache } from "@/lib/HomeCacheContext";
 import { useAuth } from "@/lib/AuthContext";
+import { useDog } from "@/lib/DogContext";
 import BottomNav from "../components/BottomNav";
 import PullToRefresh from "../components/PullToRefresh";
 import ActiveProgramCards from "../components/home/ActiveProgramCards";
@@ -152,9 +153,11 @@ export default function Home() {
   const navigate = useNavigate();
   const prefersReducedMotion = useReducedMotion();
   const { invalidateHome } = useHomeCache();
-  const { checkAppState } = useAuth();
+  const { user: authUser, isLoadingAuth, checkAppState } = useAuth();
+  const { dog: contextDog, loadingDog, refreshDogs } = useDog();
   const dailyBriefingRef = useRef(null);
   const premiumSuccessHandledRef = useRef(false);
+  // Local state — initialized from context, updated by Stripe polling / cache
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -175,7 +178,16 @@ export default function Home() {
   const [showPremiumNudge, setShowPremiumNudge] = useState(false);
   const [showPostTrial, setShowPostTrial] = useState(false);
 
+  // Sync local state from context
   useEffect(() => {
+    if (authUser) setUser(authUser);
+  }, [authUser]);
+  useEffect(() => {
+    if (contextDog) setDog(contextDog);
+  }, [contextDog]);
+
+  useEffect(() => {
+    if (isLoadingAuth || loadingDog) return;
     let mounted = true;
 
     // Apply premium nudge/post-trial logic (shared between first load and bg refresh)
@@ -200,53 +212,44 @@ export default function Home() {
       }
     };
 
-    // Full fetch: resolve user+dog, then delegate dog-data fetching to refreshHome
-    const fetchAndCache = async (skipLoadingState = false) => {
+    // Fetch dog data using context user+dog, then delegate to refreshHome
+    const fetchAndCache = async (u, d, skipLoadingState = false) => {
       try {
-        const u = await base44.auth.me();
+        await refreshHome(u, d);
         if (!mounted) return;
-        setUser(u);
-        const dogs = await Dog.filter({ owner: u.email });
-        if (!mounted) return;
-        if (dogs && dogs.length > 0) {
-          const d = getActiveDog(dogs);
-          setDog(d);
-          await refreshHome(u, d);
-          if (!mounted) return;
-          applyPremiumLogic(u);
-        } else {
-          navigate(createPageUrl("Onboarding"));
-        }
+        applyPremiumLogic(u);
       } catch (err) {
         console.error(err);
-        // Only show error toast on first load (not background refresh)
         if (!skipLoadingState) {
           toast.error("Impossible de charger les données. Vérifie ta connexion.");
         } else {
-          setIsDataStale(true); // background refresh failed — cached data may be stale
+          setIsDataStale(true);
         }
       } finally {
-        // Only update loading state on first load (background refresh doesn't touch it)
         if (mounted && !skipLoadingState) setLoading(false);
       }
     };
 
     async function loadData() {
+      if (!authUser) { setLoading(false); return; }
+      if (!contextDog) {
+        navigate(createPageUrl("Onboarding"));
+        return;
+      }
+
       const cached = getCachedHome();
 
       if (cached) {
-        // Cache exists (fresh or stale): apply immediately, skip loading screen
         setUser(cached.user);
         setDog(cached.dog);
         applyDogData(cached.dogData);
         applyInsights(cached.insights);
         setLoading(false);
 
-        // Always refresh in background (fresh cache = silent update, stale = revalidate)
-        fetchAndCache(true);
+        // Always refresh in background
+        fetchAndCache(authUser, contextDog, true);
       } else {
-        // No cache: first visit — show loading, fetch, cache result
-        await fetchAndCache(false);
+        await fetchAndCache(authUser, contextDog, false);
       }
     }
 
@@ -279,7 +282,6 @@ export default function Home() {
         }
         if (attempts >= maxAttempts) {
           clearInterval(interval);
-          // Webhook may be slow — show success anyway and let user refresh if needed
           toast.success("Paiement reçu ! Active Premium visible dans quelques secondes.");
         }
       }, 2000);
@@ -287,7 +289,7 @@ export default function Home() {
 
     loadData().then(handlePremiumSuccess);
     return () => { mounted = false; };
-  }, [navigate]);
+  }, [isLoadingAuth, loadingDog, authUser, contextDog, navigate]);
 
   const handleCheckin = async ({ mood, energy, appetite, notes, symptoms, behaviorNotes }) => {
     if (!mood || !energy || !appetite || submitting) return;
@@ -364,13 +366,11 @@ export default function Home() {
     // Invalidate cache so next visit fetches fresh data
     invalidateHome();
     try {
-      const u = await base44.auth.me();
-      const dogs = await Dog.filter({ owner: u.email });
-      if (dogs?.length > 0) {
-        const d = getActiveDog(dogs);
-        setUser(u);
-        setDog(d);
-        await refreshHome(u, d);
+      // Refresh dogs from context (re-fetches Dog.filter from API)
+      await refreshDogs();
+      // Use current context values (updated by refreshDogs)
+      if (user && dog) {
+        await refreshHome(user, dog);
       }
     } catch (e) { console.error(e); toast.error("Impossible de rafraîchir les données. Vérifie ta connexion."); }
   };

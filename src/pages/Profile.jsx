@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
-import { Dog, DogAchievement } from "@/api/entities";
+import { DogAchievement } from "@/api/entities";
 import { isUserPremium } from "@/utils/premium";
 import { useHomeCache } from "@/lib/HomeCacheContext";
+import { useAuth } from "@/lib/AuthContext";
+import { useDog } from "@/lib/DogContext";
 import BottomNav from "../components/BottomNav";
 import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -27,26 +29,32 @@ export default function Profile() {
   const navigate = useNavigate();
   const prefersReducedMotion = useReducedMotion();
   const { invalidateHome } = useHomeCache();
+  const { user: authUser, isLoadingAuth } = useAuth();
+  const { dogs, loadingDog } = useDog();
+  // Local user state for optimistic updates after save
   const [user, setUser] = useState(null);
-  const [dogs, setDogs] = useState([]);
   const [activeDogId, setActiveDogId] = useState(() => localStorage.getItem("activeDogId") || null);
   const [loading, setLoading] = useState(true);
   const [achievementPoints, setAchievementPoints] = useState(null);
 
   const activeDog = dogs.find(d => d.id === activeDogId) || dogs[0];
 
+  // Sync local user from auth context
   useEffect(() => {
+    if (authUser) setUser(authUser);
+  }, [authUser]);
+
+  useEffect(() => {
+    if (isLoadingAuth || loadingDog) return;
+    if (!authUser) { setLoading(false); return; }
+
     const load = async () => {
       try {
-        const u = await base44.auth.me();
-        setUser(u);
-        const d = await Dog.filter({ owner: u.email });
-        setDogs(d || []);
         // Set active dog if not already set
-        const firstDogId = activeDogId || d?.[0]?.id;
-        if (!activeDogId && d?.length > 0) {
-          setActiveDogId(d[0].id);
-          localStorage.setItem("activeDogId", d[0].id);
+        const firstDogId = activeDogId || dogs?.[0]?.id;
+        if (!activeDogId && dogs?.length > 0) {
+          setActiveDogId(dogs[0].id);
+          localStorage.setItem("activeDogId", dogs[0].id);
         }
         // Load real achievement points from DogAchievement for the header
         if (firstDogId) {
@@ -66,7 +74,7 @@ export default function Profile() {
       }
     };
     load();
-  }, []);
+  }, [isLoadingAuth, loadingDog, authUser, dogs]);
 
   // Reload points when active dog changes
   useEffect(() => {

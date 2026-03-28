@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useCountUp } from "@/hooks/useCountUp";
-import { base44 } from "@/api/base44Client";
-import { Dog, HealthRecord, DailyCheckin, Streak, UserProgress, DailyLog, FoodScan, GrowthEntry } from "@/api/entities";
+import { HealthRecord, DailyCheckin, Streak, UserProgress, DailyLog, FoodScan, GrowthEntry } from "@/api/entities";
+import { useAuth } from "@/lib/AuthContext";
+import { useDog } from "@/lib/DogContext";
 import { motion } from "framer-motion";
 import { computeVaccineMap, computeHealthScore } from "@/utils/healthStatus";
 import { getWeekStart } from "@/utils/dateHelpers";
@@ -16,7 +17,7 @@ import { Weight, Stethoscope, Dumbbell, Salad,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { createPageUrl, getActiveDog } from "@/utils";
+import { createPageUrl } from "@/utils";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
 import Illustration from "../components/illustrations/Illustration";
@@ -48,8 +49,8 @@ function StatCard({ icon: Icon, color, label, value, sub, trend }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [dog, setDog] = useState(null);
-  const [_user, setUser] = useState(null);
+  const { user, isLoadingAuth } = useAuth();
+  const { dog, loadingDog } = useDog();
   const [records, setRecords] = useState([]);
   const [checkins, setCheckins] = useState([]);
   const [streak, setStreak] = useState(null);
@@ -60,26 +61,22 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (isLoadingAuth || loadingDog) return;
+    if (!user || !dog) {
+      if (!user) { setLoading(false); return; }
+      navigate(createPageUrl("Onboarding"));
+      return;
+    }
     (async () => {
       try {
-        const u = await base44.auth.me();
-        setUser(u);
-        const dogs = await Dog.filter({ owner: u.email });
-        if (!dogs?.length) {
-          navigate(createPageUrl("Onboarding"));
-          return;
-        }
-        const d = getActiveDog(dogs);
-        setDog(d);
-
         const [recs, cks, stk, prog, logs, foodScans, growthData] = await Promise.all([
-          HealthRecord.filter({ dog_id: d.id }, "-date", 100).catch(() => []),
-          DailyCheckin.filter({ dog_id: d.id }, "-date", 90).catch(() => []),
-          Streak.filter({ dog_id: d.id }).catch(() => []),
-          UserProgress.filter({ dog_id: d.id }).catch(() => []),
-          DailyLog.filter({ dog_id: d.id }, "-date", 90).catch(() => []),
-          FoodScan.filter({ dog_id: d.id }, "-timestamp", 20).catch(() => []),
-          GrowthEntry.filter({ dog_id: d.id }, "-date", 50).catch(() => []),
+          HealthRecord.filter({ dog_id: dog.id }, "-date", 100).catch(() => []),
+          DailyCheckin.filter({ dog_id: dog.id }, "-date", 90).catch(() => []),
+          Streak.filter({ dog_id: dog.id }).catch(() => []),
+          UserProgress.filter({ dog_id: dog.id }).catch(() => []),
+          DailyLog.filter({ dog_id: dog.id }, "-date", 90).catch(() => []),
+          FoodScan.filter({ dog_id: dog.id }, "-timestamp", 20).catch(() => []),
+          GrowthEntry.filter({ dog_id: dog.id }, "-date", 50).catch(() => []),
         ]);
         setRecords(recs || []);
         setCheckins((cks || []).sort((a, b) => a.date > b.date ? 1 : -1));
@@ -95,7 +92,7 @@ export default function Dashboard() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [isLoadingAuth, loadingDog, user, dog]);
 
   // --- Computed data (memoized) ---
 

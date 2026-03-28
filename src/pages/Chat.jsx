@@ -2,7 +2,9 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Dog, Bookmark as BookmarkEntity, ChatMessage } from "@/api/entities";
+import { Bookmark as BookmarkEntity, ChatMessage } from "@/api/entities";
+import { useAuth } from "@/lib/AuthContext";
+import { useDog } from "@/lib/DogContext";
 import BottomNav from "../components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +17,7 @@ import { initCredits } from "@/utils/ai-credits";
 import VoiceInput from "@/components/ui/VoiceInput";
 import ReactMarkdown from "react-markdown";
 import { updateStreakSilently } from "../components/streakHelper";
-import { createPageUrl, getActiveDog } from "@/utils";
+import { createPageUrl } from "@/utils";
 import { getDogAgeLabel } from "@/utils/healthStatus";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
@@ -30,8 +32,8 @@ const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 },
 
 export default function Chat() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [dog, setDog] = useState(null);
+  const { user, isLoadingAuth } = useAuth();
+  const { dog, loadingDog } = useDog();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -163,29 +165,25 @@ export default function Chat() {
   }, [initializing, dog]);
 
   // --- Init ---
-  useEffect(() => { initChat(); }, []);
+  useEffect(() => {
+    if (isLoadingAuth || loadingDog) return;
+    if (!user || !dog) { setInitializing(false); return; }
+    initChat();
+  }, [isLoadingAuth, loadingDog, user, dog]);
 
   const initChat = async () => {
     try {
-      const u = await base44.auth.me();
-      setUser(u);
-
-      if (!isUserPremium(u)) {
-        const { msgCredits } = await initCredits(u);
+      if (!isUserPremium(user)) {
+        const { msgCredits } = await initCredits(user);
         setMessagesRemaining(msgCredits);
       }
 
-      const dogs = await Dog.filter({ owner: u.email });
-      if (dogs?.length > 0) {
-        const d = getActiveDog(dogs);
-        setDog(d);
-        // Always start fresh — history stays in DB but each visit = new conversation
-        setMessages([{
-          role: "assistant",
-          content: `Bonjour ! Je suis PawCoach, ton coach bien-être pour **${d.name}**.\n\nJe connais tout son historique : santé, nutrition, activité, humeur. Pose-moi n'importe quelle question !`,
-          timestamp: new Date().toISOString(),
-        }]);
-      }
+      // Always start fresh — history stays in DB but each visit = new conversation
+      setMessages([{
+        role: "assistant",
+        content: `Bonjour ! Je suis PawCoach, ton coach bien-être pour **${dog.name}**.\n\nJe connais tout son historique : santé, nutrition, activité, humeur. Pose-moi n'importe quelle question !`,
+        timestamp: new Date().toISOString(),
+      }]);
     } catch (err) {
       console.error("Chat init error:", err);
       toast.error("Impossible de démarrer le chat. Vérifie ta connexion.");

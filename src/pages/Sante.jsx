@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
-import { Dog, HealthRecord, DailyLog, GrowthEntry } from "@/api/entities";
-import { getActiveDog } from "@/utils";
+import { HealthRecord, DailyLog, GrowthEntry } from "@/api/entities";
 import { useAuth } from "@/lib/AuthContext";
+import { useDog } from "@/lib/DogContext";
 import BottomNav from "../components/BottomNav";
 import WellnessBanner from "../components/WellnessBanner";
 import HealthAssistantBar from "@/components/sante/HealthAssistantBar";
@@ -44,9 +43,8 @@ const TABS = [
 
 export default function Sante() {
 
-   const { user: authUser, isLoadingAuth } = useAuth();
-   const [dog, setDog] = useState(null);
-   const [user, setUser] = useState(null);
+   const { user, isLoadingAuth } = useAuth();
+   const { dog, setDog, loadingDog } = useDog();
    const [records, setRecords] = useState([]);
    const [dailyLogs, setDailyLogs] = useState([]);
    const [growthEntries, setGrowthEntries] = useState([]);
@@ -87,23 +85,17 @@ export default function Sante() {
    // Keep showShareModal in sync when urlTab changes (e.g. navigating to/from ?tab=vet)
    useEffect(() => { setShowShareModal(urlTab === "vet"); }, [urlTab]);
 
-   const loadData = async (providedUser) => {
+   const loadData = async () => {
+     if (!dog) { setLoading(false); return; }
      try {
-       const u = providedUser || await base44.auth.me();
-       setUser(u);
-       const dogs = await Dog.filter({ owner: u.email });
-       if (dogs?.length > 0) {
-         const d = getActiveDog(dogs);
-         setDog(d);
-         const [recs, logs, growths] = await Promise.all([
-           HealthRecord.filter({ dog_id: d.id }, "-date", 200),
-           DailyLog.filter({ dog_id: d.id }),
-           GrowthEntry.filter({ dog_id: d.id }),
-         ]);
-         setRecords(recs || []);
-         setDailyLogs(logs || []);
-         setGrowthEntries(growths || []);
-       }
+       const [recs, logs, growths] = await Promise.all([
+         HealthRecord.filter({ dog_id: dog.id }, "-date", 200),
+         DailyLog.filter({ dog_id: dog.id }),
+         GrowthEntry.filter({ dog_id: dog.id }),
+       ]);
+       setRecords(recs || []);
+       setDailyLogs(logs || []);
+       setGrowthEntries(growths || []);
      } catch (e) {
        console.error(e);
        toast.error("Impossible de charger les données de santé. Vérifie ta connexion.");
@@ -113,12 +105,10 @@ export default function Sante() {
    };
 
    useEffect(() => {
-     // Wait for auth to finish loading before fetching data.
-     // If authUser is already in context, pass it directly to skip a second auth.me() call.
-     if (!isLoadingAuth) {
-       loadData(authUser || undefined);
-     }
-   }, [isLoadingAuth, authUser]);
+     if (isLoadingAuth || loadingDog) return;
+     if (!user || !dog) { setLoading(false); return; }
+     loadData();
+   }, [isLoadingAuth, loadingDog, user, dog]);
 
    const handleAddFromSheet = async (record) => {
      setRecords(prev => [...prev, record]);

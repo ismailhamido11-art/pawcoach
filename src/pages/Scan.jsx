@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Dog, FoodScan, DietPreferences } from "@/api/entities";
-import { getActiveDog, createPageUrl } from "@/utils";
+import { FoodScan, DietPreferences } from "@/api/entities";
+import { createPageUrl } from "@/utils";
+import { useAuth } from "@/lib/AuthContext";
+import { useDog } from "@/lib/DogContext";
 import { getWeekStart } from "@/utils/dateHelpers";
 import BottomNav from "../components/BottomNav";
 import ShareCard from "../components/scan/ShareCard";
@@ -112,8 +114,10 @@ function ModeSwitcher({ mode, onChange }) {
 
 export default function Scan() {
   const navigate = useNavigate();
+  const { user: authUser, isLoadingAuth } = useAuth();
+  const { dog, loadingDog } = useDog();
+  // Local user state — updated by analyzeFood's fresh auth.me() for quota check
   const [user, setUser] = useState(null);
-  const [dog, setDog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState("food"); // "food" | "label"
 
@@ -138,23 +142,25 @@ export default function Scan() {
   // CRASH-02: labelResult leve depuis LabelScanMode pour controler le mode switcher
   const [labelResult, setLabelResult] = useState(null);
 
-  useEffect(() => { loadData(); }, []);
+  // Sync local user from auth context
+  useEffect(() => {
+    if (authUser) setUser(authUser);
+  }, [authUser]);
+
+  useEffect(() => {
+    if (isLoadingAuth || loadingDog) return;
+    if (!authUser || !dog) { setLoading(false); return; }
+    loadData();
+  }, [isLoadingAuth, loadingDog, authUser, dog]);
 
   const loadData = async () => {
     try {
-      const u = await base44.auth.me();
-      setUser(u);
-      const dogs = await Dog.filter({ owner: u.email });
-      if (dogs?.length > 0) {
-        const activeDog = getActiveDog(dogs);
-        setDog(activeDog);
-        const [scans, dietPrefs] = await Promise.all([
-          FoodScan.filter({ dog_id: activeDog.id }),
-          DietPreferences.filter({ dog_id: activeDog.id }).catch(() => []),
-        ]);
-        setHistory((scans || []).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
-        setDietPreferences(dietPrefs?.[0] || null);
-      }
+      const [scans, dietPrefs] = await Promise.all([
+        FoodScan.filter({ dog_id: dog.id }),
+        DietPreferences.filter({ dog_id: dog.id }).catch(() => []),
+      ]);
+      setHistory((scans || []).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
+      setDietPreferences(dietPrefs?.[0] || null);
     } catch (e) {
       console.error(e);
       setError("Impossible de charger les données. Vérifie ta connexion.");
