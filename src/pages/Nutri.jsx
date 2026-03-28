@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useReducer } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Dog, Bookmark as BookmarkEntity, NutritionPlan, FoodScan, DietPreferences, DailyCheckin, HealthRecord, DailyLog } from "@/api/entities";
@@ -48,6 +48,34 @@ const TABS = [
   { id: "prefs",    label: "Préférences",        Icon: Settings, bg: "from-slate-500 to-slate-700" },
 ];
 
+const COACH_INITIAL_STATE = {
+  messages: [],
+  input: "",
+  loading: false,
+  messagesRemaining: null,
+  bookmarked: {},
+  isStreaming: false,
+  streamingText: "",
+  showScrollBtn: false,
+  lastFailedInput: null,
+};
+
+function coachReducer(state, action) {
+  switch (action.type) {
+    case "SET_MESSAGES": return { ...state, messages: typeof action.payload === "function" ? action.payload(state.messages) : action.payload };
+    case "SET_INPUT": return { ...state, input: action.payload };
+    case "SET_LOADING": return { ...state, loading: action.payload };
+    case "SET_MESSAGES_REMAINING": return { ...state, messagesRemaining: action.payload };
+    case "SET_BOOKMARKED": return { ...state, bookmarked: typeof action.payload === "function" ? action.payload(state.bookmarked) : action.payload };
+    case "SET_STREAMING": return { ...state, isStreaming: action.payload };
+    case "SET_STREAMING_TEXT": return { ...state, streamingText: action.payload };
+    case "SET_SHOW_SCROLL_BTN": return { ...state, showScrollBtn: action.payload };
+    case "SET_LAST_FAILED_INPUT": return { ...state, lastFailedInput: action.payload };
+    case "RESET_COACH": return { ...COACH_INITIAL_STATE };
+    default: return state;
+  }
+}
+
 export default function Nutri() {
    const navigate = useNavigate();
    const { user: authUser, isLoadingAuth } = useAuth();
@@ -66,42 +94,11 @@ export default function Nutri() {
      monthlyPlanCount: 0,
      allPlans: [],
    });
-   // Shorthand setters for backward compatibility with existing code
    const { dog, user, recentScans, dietPrefs, checkins, healthRecords, dailyLogs, activePlan, monthlyPlanCount, allPlans } = dogDataState;
-   const setDog = (v) => setDogDataState(p => ({ ...p, dog: typeof v === "function" ? v(p.dog) : v }));
-   const setUser = (v) => setDogDataState(p => ({ ...p, user: typeof v === "function" ? v(p.user) : v }));
-   const setRecentScans = (v) => setDogDataState(p => ({ ...p, recentScans: typeof v === "function" ? v(p.recentScans) : v }));
-   const setDietPrefs = (v) => setDogDataState(p => ({ ...p, dietPrefs: typeof v === "function" ? v(p.dietPrefs) : v }));
-   const setCheckins = (v) => setDogDataState(p => ({ ...p, checkins: typeof v === "function" ? v(p.checkins) : v }));
-   const setHealthRecords = (v) => setDogDataState(p => ({ ...p, healthRecords: typeof v === "function" ? v(p.healthRecords) : v }));
-   const setDailyLogs = (v) => setDogDataState(p => ({ ...p, dailyLogs: typeof v === "function" ? v(p.dailyLogs) : v }));
-   const setActivePlan = (v) => setDogDataState(p => ({ ...p, activePlan: typeof v === "function" ? v(p.activePlan) : v }));
-   const setMonthlyPlanCount = (v) => setDogDataState(p => ({ ...p, monthlyPlanCount: typeof v === "function" ? v(p.monthlyPlanCount) : v }));
-   const setAllPlans = (v) => setDogDataState(p => ({ ...p, allPlans: typeof v === "function" ? v(p.allPlans) : v }));
 
    // ── Coach state (conversation IA) ─────────────────────────
-   const [coachState, setCoachState] = useState({
-     messages: [],
-     input: "",
-     loading: false,
-     messagesRemaining: null,
-     bookmarked: {},
-     isStreaming: false,
-     streamingText: "",
-     showScrollBtn: false,
-     lastFailedInput: null,
-   });
-   // Shorthand setters for backward compatibility with existing code
+   const [coachState, dispatchCoach] = useReducer(coachReducer, COACH_INITIAL_STATE);
    const { messages, input, loading, messagesRemaining, bookmarked, isStreaming, streamingText, showScrollBtn, lastFailedInput } = coachState;
-   const setMessages = (v) => setCoachState(p => ({ ...p, messages: typeof v === "function" ? v(p.messages) : v }));
-   const setInput = (v) => setCoachState(p => ({ ...p, input: typeof v === "function" ? v(p.input) : v }));
-   const setLoading = (v) => setCoachState(p => ({ ...p, loading: typeof v === "function" ? v(p.loading) : v }));
-   const setMessagesRemaining = (v) => setCoachState(p => ({ ...p, messagesRemaining: typeof v === "function" ? v(p.messagesRemaining) : v }));
-   const setBookmarked = (v) => setCoachState(p => ({ ...p, bookmarked: typeof v === "function" ? v(p.bookmarked) : v }));
-   const setIsStreaming = (v) => setCoachState(p => ({ ...p, isStreaming: typeof v === "function" ? v(p.isStreaming) : v }));
-   const setStreamingText = (v) => setCoachState(p => ({ ...p, streamingText: typeof v === "function" ? v(p.streamingText) : v }));
-   const setShowScrollBtn = (v) => setCoachState(p => ({ ...p, showScrollBtn: typeof v === "function" ? v(p.showScrollBtn) : v }));
-   const setLastFailedInput = (v) => setCoachState(p => ({ ...p, lastFailedInput: typeof v === "function" ? v(p.lastFailedInput) : v }));
 
    const [initializing, setInitializing] = useState(true);
 
@@ -138,8 +135,8 @@ export default function Nutri() {
   const startStreaming = useCallback((fullText, timestamp) => {
     const words = fullText.split(/(\s+)/);
     streamingRef.current = { fullText, words, wordIndex: 0, timer: null, timestamp };
-    setIsStreaming(true);
-    setStreamingText("");
+    dispatchCoach({ type: "SET_STREAMING", payload: true });
+    dispatchCoach({ type: "SET_STREAMING_TEXT", payload: "" });
     const timer = setInterval(() => {
       const data = streamingRef.current;
       data.wordIndex += 2;
@@ -148,12 +145,12 @@ export default function Nutri() {
         const finalText = data.fullText;
         const finalTs = data.timestamp;
         streamingRef.current = { fullText: "", words: [], wordIndex: 0, timer: null, timestamp: "" };
-        setIsStreaming(false);
-        setStreamingText("");
-        setMessages(prev => [...prev, { role: "assistant", content: finalText, timestamp: finalTs }]);
+        dispatchCoach({ type: "SET_STREAMING", payload: false });
+        dispatchCoach({ type: "SET_STREAMING_TEXT", payload: "" });
+        dispatchCoach({ type: "SET_MESSAGES", payload: prev => [...prev, { role: "assistant", content: finalText, timestamp: finalTs }] });
         return;
       }
-      setStreamingText(data.words.slice(0, data.wordIndex).join(""));
+      dispatchCoach({ type: "SET_STREAMING_TEXT", payload: data.words.slice(0, data.wordIndex).join("") });
     }, 30);
     streamingRef.current.timer = timer;
   }, []);
@@ -170,7 +167,7 @@ export default function Nutri() {
     if (!container) return;
     const handleScroll = () => {
       const dist = container.scrollHeight - container.scrollTop - container.clientHeight;
-      setShowScrollBtn(dist > 200);
+      dispatchCoach({ type: "SET_SHOW_SCROLL_BTN", payload: dist > 200 });
     };
     container.addEventListener("scroll", handleScroll, { passive: true });
     return () => container.removeEventListener("scroll", handleScroll);
@@ -184,7 +181,7 @@ export default function Nutri() {
 
   const scrollToBottom = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    setShowScrollBtn(false);
+    dispatchCoach({ type: "SET_SHOW_SCROLL_BTN", payload: false });
   };
 
   const handleBookmark = async (msg) => {
@@ -199,7 +196,7 @@ export default function Nutri() {
         title,
         created_at: new Date().toISOString(),
       });
-      setBookmarked(prev => ({ ...prev, [msg.timestamp]: true }));
+      dispatchCoach({ type: "SET_BOOKMARKED", payload: prev => ({ ...prev, [msg.timestamp]: true }) });
       toast.success("Sauvegardé !", { description: "Conseil ajouté à ta bibliothèque" });
     } catch {
       toast.error("Impossible de sauvegarder ce conseil. Réessaie.");
@@ -217,11 +214,11 @@ export default function Nutri() {
     try {
       const nplans = await NutritionPlan.filter({ dog_id: dog.id, owner_email: user.email }, "-generated_at", 10).catch(() => []);
       const allP = nplans || [];
-      setAllPlans(allP);
-      const active = allP.find(p => p.is_active);
-      setActivePlan(active || null);
+      setDogDataState(p => ({ ...p, allPlans: allP }));
+      const active = allP.find(pl => pl.is_active);
+      setDogDataState(p => ({ ...p, activePlan: active || null }));
       const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
-      setMonthlyPlanCount(allP.filter(p => p.generated_at >= monthStart).length);
+      setDogDataState(p => ({ ...p, monthlyPlanCount: allP.filter(pl => pl.generated_at >= monthStart).length }));
     } catch { /* ignore */ }
   };
 
@@ -229,8 +226,8 @@ export default function Nutri() {
     if (!dog || !user) return;
     try {
       const prefs = await DietPreferences.filter({ dog_id: dog.id, owner_email: user.email }).catch(() => []);
-      if (prefs?.length > 0) setDietPrefs(prefs[0]);
-      else setDietPrefs(null);
+      if (prefs?.length > 0) setDogDataState(p => ({ ...p, dietPrefs: prefs[0] }));
+      else setDogDataState(p => ({ ...p, dietPrefs: null }));
     } catch { /* ignore */ }
   };
 
@@ -245,7 +242,7 @@ export default function Nutri() {
     const refreshScans = () => {
       if (dog?.id) {
         FoodScan.filter({ dog_id: dog.id }, "-timestamp", 5)
-          .then(scans => setRecentScans(scans || []))
+          .then(scans => setDogDataState(p => ({ ...p, recentScans: scans || [] })))
           .catch(() => {});
       }
     };
@@ -270,17 +267,17 @@ export default function Nutri() {
   const init = async (providedUser) => {
     try {
       const u = providedUser || await base44.auth.me();
-      setUser(u);
+      setDogDataState(p => ({ ...p, user: u }));
 
       if (!isUserPremium(u)) {
         const { msgCredits } = await initCredits(u);
-        setMessagesRemaining(msgCredits);
+        dispatchCoach({ type: "SET_MESSAGES_REMAINING", payload: msgCredits });
       }
 
       const dogs = await Dog.filter({ owner: u.email });
       if (dogs?.length > 0) {
         const d = getActiveDog(dogs);
-        setDog(d);
+        setDogDataState(p => ({ ...p, dog: d }));
         const [scans, prefs, ckns, hrecs, dlogs, nplans] = await Promise.all([
           FoodScan.filter({ dog_id: d.id }, "-timestamp", 5).catch(() => []),
           DietPreferences.filter({ dog_id: d.id, owner_email: u.email }).catch(() => []),
@@ -289,17 +286,17 @@ export default function Nutri() {
           DailyLog.filter({ dog_id: d.id }, "-date", 7).catch(() => []),
           NutritionPlan.filter({ dog_id: d.id, owner_email: u.email }, "-generated_at", 10).catch(() => []),
         ]);
-        setRecentScans(scans || []);
-        if (prefs?.length > 0) setDietPrefs(prefs[0]);
-        setCheckins(ckns || []);
-        setHealthRecords(hrecs || []);
-        setDailyLogs(dlogs || []);
+        setDogDataState(p => ({ ...p, recentScans: scans || [] }));
+        if (prefs?.length > 0) setDogDataState(p => ({ ...p, dietPrefs: prefs[0] }));
+        setDogDataState(p => ({ ...p, checkins: ckns || [] }));
+        setDogDataState(p => ({ ...p, healthRecords: hrecs || [] }));
+        setDogDataState(p => ({ ...p, dailyLogs: dlogs || [] }));
         const allP = nplans || [];
-        setAllPlans(allP);
+        setDogDataState(p => ({ ...p, allPlans: allP }));
         const active = allP.find(p => p.is_active);
-        setActivePlan(active || null);
+        setDogDataState(p => ({ ...p, activePlan: active || null }));
         const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
-        setMonthlyPlanCount(allP.filter(p => p.generated_at >= monthStart).length);
+        setDogDataState(p => ({ ...p, monthlyPlanCount: allP.filter(p => p.generated_at >= monthStart).length }));
         const planInfo = active ? (() => {
           try {
             const pd = JSON.parse(active.plan_text);
@@ -311,11 +308,11 @@ export default function Nutri() {
             return "";
           } catch { return ""; }
         })() : "";
-        setMessages([{
+        dispatchCoach({ type: "SET_MESSAGES", payload: [{
           role: "assistant",
           content: `Bonjour ! \u{1F957} Je suis ton **Coach IA Nutrition** pour **${d.name}** !\n\nJe connais son profil ${d.breed || ""}${d.weight ? ` de ${d.weight} kg` : ""}${d.allergies && d.allergies.toLowerCase() !== "non" ? ` avec des allergies à ${d.allergies}` : ""}, ses check-ins, son historique santé et ses préférences alimentaires.${planInfo}\n\nPose-moi une question, génère un **plan de repas personnalisé**, ou demande une **recommandation de croquettes** ! \u{1F356}`,
           timestamp: new Date().toISOString(),
-        }]);
+        }] });
       }
     } catch (err) {
       console.error("Nutri init error:", err);
@@ -334,30 +331,30 @@ export default function Nutri() {
 
     if (navigator.vibrate) navigator.vibrate(10);
 
-    setInput("");
-    setLastFailedInput(null);
-    setMessages(prev => [...prev, { role: "user", content, timestamp: new Date().toISOString() }]);
-    setLoading(true);
+    dispatchCoach({ type: "SET_INPUT", payload: "" });
+    dispatchCoach({ type: "SET_LAST_FAILED_INPUT", payload: null });
+    dispatchCoach({ type: "SET_MESSAGES", payload: prev => [...prev, { role: "user", content, timestamp: new Date().toISOString() }] });
+    dispatchCoach({ type: "SET_LOADING", payload: true });
     try {
       const contextMsgs = messages.slice(-15).map(m => ({ role: m.role, content: m.content }));
       contextMsgs.push({ role: "user", content });
       const response = await base44.functions.invoke("pawcoachChat", { dogId: dog.id, mode: "nutrition", messages: contextMsgs });
-      if (response.data?.error === "quota_exceeded") { setMessagesRemaining(0); toast.error("Limite de messages atteinte pour aujourd'hui."); return; }
+      if (response.data?.error === "quota_exceeded") { dispatchCoach({ type: "SET_MESSAGES_REMAINING", payload: 0 }); toast.error("Limite de messages atteinte pour aujourd'hui."); return; }
       const assistantContent = response.data?.content || "Désolé, je n'ai pas pu répondre.";
       const assistantTs = new Date().toISOString();
 
       startStreaming(assistantContent, assistantTs);
 
       if (!isUserPremium(user) && response.data?.messages_remaining !== undefined) {
-        setMessagesRemaining(response.data.messages_remaining);
+        dispatchCoach({ type: "SET_MESSAGES_REMAINING", payload: response.data.messages_remaining });
       }
     } catch (err) {
       console.error("Nutri send error:", err);
-      if (err?.message?.includes?.("quota_exceeded") || err?.status === 429) { setMessagesRemaining(0); toast.error("Limite de messages atteinte pour aujourd'hui."); return; }
-      setLastFailedInput(content);
-      setMessages(prev => [...prev, { role: "assistant", content: "Oups, une erreur est survenue. Réessaie dans un instant.", timestamp: new Date().toISOString(), isError: true }]);
+      if (err?.message?.includes?.("quota_exceeded") || err?.status === 429) { dispatchCoach({ type: "SET_MESSAGES_REMAINING", payload: 0 }); toast.error("Limite de messages atteinte pour aujourd'hui."); return; }
+      dispatchCoach({ type: "SET_LAST_FAILED_INPUT", payload: content });
+      dispatchCoach({ type: "SET_MESSAGES", payload: prev => [...prev, { role: "assistant", content: "Oups, une erreur est survenue. Réessaie dans un instant.", timestamp: new Date().toISOString(), isError: true }] });
     } finally {
-      setLoading(false);
+      dispatchCoach({ type: "SET_LOADING", payload: false });
     }
   };
 
@@ -566,7 +563,7 @@ export default function Nutri() {
       {/* Tab: Plan repas */}
       {activeTab === "mealplan" && (
         <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
-          <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={isUserPremium(user)} user={user} dietPrefs={dietPrefs} checkins={checkins} healthRecords={healthRecords} dailyLogs={dailyLogs} activePlan={activePlan} monthlyPlanCount={monthlyPlanCount} allPlans={allPlans} onPlanSaved={refreshPlans} onSwitchToCoach={(msg) => { changeTab("coach"); if (msg) setTimeout(() => setInput(msg), 300); }} />
+          <NutritionMealPlan dog={dog} recentScans={recentScans} isPremium={isUserPremium(user)} user={user} dietPrefs={dietPrefs} checkins={checkins} healthRecords={healthRecords} dailyLogs={dailyLogs} activePlan={activePlan} monthlyPlanCount={monthlyPlanCount} allPlans={allPlans} onPlanSaved={refreshPlans} onSwitchToCoach={(msg) => { changeTab("coach"); if (msg) setTimeout(() => dispatchCoach({ type: "SET_INPUT", payload: msg }), 300); }} />
         </div>
       )}
 
@@ -743,7 +740,7 @@ export default function Nutri() {
                     aria-label="Votre message"
                     ref={textareaRef}
                     value={input}
-                    onChange={e => setInput(e.target.value)}
+                    onChange={e => dispatchCoach({ type: "SET_INPUT", payload: e.target.value })}
                     maxLength={2000}
                     onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())}
                     placeholder={dog ? `Question nutrition pour ${dog.name}...` : "Pose ta question..."}
