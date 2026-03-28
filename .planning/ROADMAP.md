@@ -37,7 +37,7 @@
 - [ ] **Phase 7: Flow Fixes** - 6 ruptures + 7 suspects critiques (P0/P1)
 - [ ] **Phase 8: UX & Activation** - Onboarding 5 etapes, IA visible, paywall, offline banner (P1)
 - [x] **Phase 9: Visual Polish** - Orange cleanup, padding, typography, animation presets (P2) (completed 2026-03-27)
-- [ ] **Phase 10: Performance & Cleanup** - Complexity, dead code, shared context, backend batch (P2/P3)
+- [x] **Phase 10: Performance & Cleanup** - Complexity, dead code, shared context, backend batch (P2/P3) (completed 2026-03-28)
 
 ## Phase Details
 
@@ -164,11 +164,11 @@ Plans:
 **Goal**: Code propre, performant, sans dette technique critique
 **Depends on**: Phase 9
 **Requirements**: FIX-59, FIX-60, FIX-61, FIX-62, FIX-63, FIX-64, FIX-65, FIX-66, FIX-67, FIX-68
-**Plans:** 2/4 plans executed
+**Plans:** 4/4 plans complete
 Plans:
 - [x] 10-01-PLAN.md — Backend complexity: buildHealthSummaryHTML + getAge sync + handleDownload audit (FIX-59, FIX-60, FIX-61)
-- [ ] 10-02-PLAN.md — Frontend architecture: DogContext + useHomeData hook (FIX-62, FIX-63)
-- [ ] 10-03-PLAN.md — Nutri useReducer migration (FIX-64)
+- [x] 10-02-PLAN.md — Frontend architecture: DogContext + useHomeData hook (FIX-62, FIX-63)
+- [x] 10-03-PLAN.md — Nutri useReducer migration (FIX-64)
 - [x] 10-04-PLAN.md — VetPortal batch + dead code + analytics cleanup (FIX-65, FIX-66, FIX-67, FIX-68)
 **Success Criteria** (what must be TRUE):
   1. buildHealthSummaryHTML complexite < 15 (etait 28)
@@ -190,4 +190,4 @@ Plans:
 | 7. Flow Fixes | 4/4 | Complete | 2026-03-27 |
 | 8. UX & Activation | 3/4 | In Progress|  |
 | 9. Visual Polish | 4/4 | Complete   | 2026-03-27 |
-| 10. Performance | 2/4 | In Progress|  |
+| 10. Performance | 4/4 | Complete   | 2026-03-28 |
