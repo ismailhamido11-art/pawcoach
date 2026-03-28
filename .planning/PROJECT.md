@@ -28,10 +28,11 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 - v6.0: Deep Clean & PWA — 21 requirements, PWA installable, accessibilite
 - v7.0: User-Ready — 20 requirements, donnees coherentes, flux reconnectes, UX honnete
 - v8.0: SFA Fixes — 19 requirements, zero crash, donnees reelles, cache propagation, securite UX
+- v9.0: Production Ready — 55 requirements, audit complet, legal RGPD, UX transformee, visual clean
 
 ### Active
 
-None — ready for v9.0
+None — ready for v10.0
 
 ### Out of Scope
 
@@ -39,26 +40,19 @@ None — ready for v9.0
 - Analytics trackEvent — utile mais pas prioritaire
 - Ecran offline — PWA passthrough (Base44 requiert auth live)
 
-## Current State (v8.0 shipped — 27 mars 2026)
+## Current State (v9.0 shipped — 28 mars 2026)
 
-- 9 milestones livres (v1.0 → v8.0)
-- Zero crash : quick checkin, scanner, DogPublicProfile, CombinedFAB tous fonctionnels
-- Donnees reelles : SmartAlerts compare pesees reelles, computeStatusPills enrichi, NutritionMealPlan latestRealWeight, FoodScan data preserved
-- Cache propagation : Home invalide apres chaque action (FAB log, dog delete, dog rename/photo), Nutri auto-refresh
-- Securite UX : email proprietaire retire, premium card masquee, handleSaveUser try/catch, checkWalkBadges idempotent, training rollback
-- Score readiness : 9.0+/10
+- 10 milestones livres (v1.0 → v9.0)
+- Conformite legale : Privacy Policy RGPD, Terms CGU, GDPR consent, data export, auto-renewal disclosure
+- Zero rupture runtime : 8 ruptures SFA corrigees, Dashboard resilient, error handling complet
+- UX transformee : Onboarding 5 groupes (etait 10), IA visible sur Home, offline banner, SW update toast
+- Charte visuelle respectee : 0 orange, padding/spacing uniformes, animations centralisees, PWA icons PNG
+- Architecture amelioree : DogContext, useHomeData, useReducer Nutri, VetPortal batch, buildHealthSummaryHTML decomposee
+- Score readiness : 9.5/10 (Production Ready)
 
-## Current Milestone: v9.0 "Production Ready"
+## No Active Milestone
 
-**Goal:** Passer PawCoach au rouleau compresseur — auditer chaque dimension par le code (completude, architecture, flux, qualite percue), puis corriger tout pour avoir une app presentable.
-
-**Pipeline :**
-- Phase 0: Socle (CGC re-index + map-codebase)
-- Phases 1-4: Audits (radiographie, architecture, flux, qualite percue)
-- Phase 5: Synthese (agreger, prioriser, creer les phases de fix)
-- Phases 6+: Corrections (ajoutees dynamiquement apres synthese)
-
-**Methode :** 100% code-based, zero Chrome. CGC en socle. GSD autonomous.
+Ready for v10.0. Run `/gsd:new-milestone` to start.
 
 ## Context
 
@@ -84,6 +78,7 @@ None — ready for v9.0
 | Carte Repas → Eau | meals_count n'existe pas dans DailyLog | ✓ Good |
 | Streak.list + slice(2000) | SDK filter operators undocumented | ⚠️ Revisit |
 | v8.0 = SFA fixes, pas features | SFA a trouve 32 ruptures dont 7 critiques | ✓ Good — 19/19 |
+| v9.0 = Rouleau Compresseur (audit + fix) | 76 findings, 14 P0 blockers, onboarding 10→5 | ✓ Good — 55/58 |
 | Static Flow Analysis obligatoire | Grep ne suffit pas, il faut tracer les chemins complets | ✓ Good |
 
 ## Evolution
@@ -91,4 +86,4 @@ None — ready for v9.0
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-27 after v8.0 milestone complete*
+*Last updated: 2026-03-28 after v9.0 milestone complete*
