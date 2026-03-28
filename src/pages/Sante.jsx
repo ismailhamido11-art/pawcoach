@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { HealthRecord, DailyLog, GrowthEntry } from "@/api/entities";
 import { useAuth } from "@/lib/AuthContext";
 import { useDog } from "@/lib/DogContext";
@@ -99,9 +99,17 @@ export default function Sante() {
      if (weightKg) setDog(prev => prev ? { ...prev, weight: weightKg } : prev);
    };
 
-  const vaccineCount = records.filter(r => r.type === "vaccine").length;
-  const vetCount = records.filter(r => r.type === "vet_visit").length;
-  const weightRecords = records.filter(r => r.type === "weight");
+  const { vaccineCount, vetCount, weightRecords } = useMemo(() => {
+    let vaccines = 0;
+    let vets = 0;
+    const weights = [];
+    for (const r of records) {
+      if (r.type === "vaccine") vaccines++;
+      else if (r.type === "vet_visit") vets++;
+      if (r.type === "weight") weights.push(r);
+    }
+    return { vaccineCount: vaccines, vetCount: vets, weightRecords: weights };
+  }, [records]);
 
   if (loading) {
     return <SkeletonPage variant="stats" currentPage="Sante" />;

@@ -176,7 +176,10 @@ export default function Dashboard() {
 
   // --- Count-up values for stat cards ---
   const lastWeightRaw = weightData.length ? weightData[weightData.length - 1].poids : 0;
-  const checkinCountRaw = checkins.filter(c => c.date >= new Date(Date.now() - 7 * 864e5).toISOString().split("T")[0]).length;
+  const checkinCountRaw = useMemo(() => {
+    const weekAgo = new Date(Date.now() - 7 * 864e5).toISOString().split("T")[0];
+    return checkins.filter(c => c.date >= weekAgo).length;
+  }, [checkins]);
   const avgMoodRaw = avgMood ? parseFloat(avgMood) : 0;
   const exerciceCountRaw = progress.length;
 
@@ -186,17 +189,20 @@ export default function Dashboard() {
   const animatedExercices = useCountUp(exerciceCountRaw, 600);
 
   // Next steps
-  const nextSteps = [];
-  if (checkins.filter(c => c.date >= new Date(Date.now() - 7 * 864e5).toISOString().split("T")[0]).length < 5) {
-    nextSteps.push({ icon: Heart, color: "#ec4899", label: "Check-in quotidien", desc: "Suis l'humeur et l'énergie de " + (dog?.name || "ton chien"), to: createPageUrl("Home") });
-  }
-  if (progress.length < 3) {
-    nextSteps.push({ icon: Dumbbell, color: "#8b5cf6", label: "Commencer le dressage", desc: "Des exercices adaptés à " + (dog?.name || "ton chien"), to: createPageUrl("Training") });
-  }
-  nextSteps.push({ icon: Salad, color: "#10b981", label: "Plan nutrition IA", desc: "Génère un plan repas personnalisé", to: createPageUrl("Nutri") });
-  if (alerts.some(a => a.type === "warning")) {
-    nextSteps.unshift({ icon: Stethoscope, color: "#3b82f6", label: "Mettre à jour le carnet", desc: "Des informations de santé manquent", to: createPageUrl("Sante") });
-  }
+  const nextSteps = useMemo(() => {
+    const steps = [];
+    if (checkinCountRaw < 5) {
+      steps.push({ icon: Heart, color: "#ec4899", label: "Check-in quotidien", desc: "Suis l'humeur et l'énergie de " + (dog?.name || "ton chien"), to: createPageUrl("Home") });
+    }
+    if (progress.length < 3) {
+      steps.push({ icon: Dumbbell, color: "#8b5cf6", label: "Commencer le dressage", desc: "Des exercices adaptés à " + (dog?.name || "ton chien"), to: createPageUrl("Training") });
+    }
+    steps.push({ icon: Salad, color: "#10b981", label: "Plan nutrition IA", desc: "Génère un plan repas personnalisé", to: createPageUrl("Nutri") });
+    if (alerts.some(a => a.type === "warning")) {
+      steps.unshift({ icon: Stethoscope, color: "#3b82f6", label: "Mettre à jour le carnet", desc: "Des informations de santé manquent", to: createPageUrl("Sante") });
+    }
+    return steps;
+  }, [checkinCountRaw, progress.length, alerts, dog?.name]);
 
   if (loading) {
     return <SkeletonPage variant="stats" currentPage="Dashboard" />;

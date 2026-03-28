@@ -91,7 +91,7 @@ export default function Nutri() {
      monthlyPlanCount: 0,
      allPlans: [],
    });
-   const { dog, user, recentScans, dietPrefs, checkins, healthRecords, dailyLogs, activePlan, monthlyPlanCount, allPlans } = dogDataState;
+   const { dog, recentScans, dietPrefs, checkins, healthRecords, dailyLogs, activePlan, monthlyPlanCount, allPlans } = dogDataState;
 
    // ── Coach state (conversation IA) ─────────────────────────
    const [coachState, dispatchCoach] = useReducer(coachReducer, COACH_INITIAL_STATE);

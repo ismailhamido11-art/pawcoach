@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { UserProgress, Bookmark } from "@/api/entities";
 import { useAuth } from "@/lib/AuthContext";
@@ -193,8 +193,16 @@ export default function Training() {
     }
   };
 
-  const isCompleted = (order) => progresses.some(p => p.exercise_id === String(order) && p.completed);
-  const completedCount = EXERCISES.filter(e => isCompleted(e.order_number)).length;
+  const completedSet = useMemo(() => {
+    const set = new Set();
+    for (const p of progresses) {
+      if (p.completed) set.add(p.exercise_id);
+    }
+    return set;
+  }, [progresses]);
+
+  const isCompleted = (order) => completedSet.has(String(order));
+  const completedCount = useMemo(() => EXERCISES.filter(e => completedSet.has(String(e.order_number))).length, [completedSet]);
   const isPremium = isUserPremium(user);
 
   // Puppy detection

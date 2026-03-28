@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { Bookmark, NutritionPlan, FoodScan } from "@/api/entities";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
@@ -156,7 +156,7 @@ export default function Library() {
   };
 
   // Merge bookmarks + nutrition plans + food scans into unified list
-  const allItems = [
+  const allItems = useMemo(() => [
     ...bookmarks.map(b => ({ ...b, _type: "bookmark", _key: `bk-${b.id}` })),
     ...nutritionPlans.map(p => ({
       _type: "nutrition_plan",
@@ -180,23 +180,25 @@ export default function Library() {
       verdict: s.verdict,
       score: s.score,
     })),
-  ];
+  ], [bookmarks, nutritionPlans, foodScans]);
 
   const totalCount = allItems.length;
 
   // Determine the single true active nutrition plan (most recent if multiple marked active)
-  const activeNutriPlans = nutritionPlans.filter(p => p.is_active);
-  const trueActiveNutriId = activeNutriPlans.length === 1
-    ? activeNutriPlans[0].id
-    : activeNutriPlans.length > 1
-      ? activeNutriPlans.sort((a, b) => (b.generated_at || "").localeCompare(a.generated_at || ""))[0]?.id
-      : null;
+  const trueActiveNutriId = useMemo(() => {
+    const activeNutriPlans = nutritionPlans.filter(p => p.is_active);
+    if (activeNutriPlans.length === 1) return activeNutriPlans[0].id;
+    if (activeNutriPlans.length > 1) {
+      return [...activeNutriPlans].sort((a, b) => (b.generated_at || "").localeCompare(a.generated_at || ""))[0]?.id;
+    }
+    return null;
+  }, [nutritionPlans]);
 
-  const filtered = allItems.filter(b => {
+  const filtered = useMemo(() => allItems.filter(b => {
     const matchFilter = filter === "all" || b.source === filter;
     const matchSearch = !search || (b.title || b.content || "").toLowerCase().includes(search.toLowerCase());
     return matchFilter && matchSearch;
-  });
+  }), [allItems, filter, search]);
 
   return (
     <div className="min-h-screen bg-background">

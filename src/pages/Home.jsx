@@ -73,13 +73,21 @@ function useHomeData() {
 
   const [isDataStale, setIsDataStale] = useState(false);
 
-  const fetchDogData = useCallback(async (dogId) => {
+  // Wave 1: above-fold data (checkin, streak, recent checkins, health records)
+  const fetchAboveFold = useCallback(async (dogId) => {
     const today = getTodayString();
-    const [checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks] = await Promise.all([
+    const [checkins, streaks, recent, recs] = await Promise.all([
       DailyCheckin.filter({ dog_id: dogId, date: today }).catch(() => []),
       Streak.filter({ dog_id: dogId }).catch(() => []),
       DailyCheckin.filter({ dog_id: dogId }, "-date", 30).catch(() => []),
       HealthRecord.filter({ dog_id: dogId }, "-date", 100).catch(() => []),
+    ]);
+    return { checkins, streaks, recent, recs };
+  }, []);
+
+  // Wave 2: below-fold data (exercises, scans, logs, diagnostics, plans, bookmarks)
+  const fetchBelowFold = useCallback(async (dogId) => {
+    const [exs, scs, logs, diags, plans, tBks, bBks] = await Promise.all([
       UserProgress.filter({ dog_id: dogId }).catch(() => []),
       FoodScan.filter({ dog_id: dogId }, "-timestamp", 20).catch(() => []),
       DailyLog.filter({ dog_id: dogId }, "-date", 30).catch(() => []),
@@ -88,8 +96,17 @@ function useHomeData() {
       Bookmark.filter({ dog_id: dogId, source: "training" }, "-created_at", 10).catch(() => []),
       Bookmark.filter({ dog_id: dogId, source: "behavior_program" }, "-created_at", 10).catch(() => []),
     ]);
-    return { checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks };
+    return { exs, scs, logs, diags, plans, tBks, bBks };
   }, []);
+
+  // Combined fetch — used for cache population and background refresh
+  const fetchDogData = useCallback(async (dogId) => {
+    const [above, below] = await Promise.all([
+      fetchAboveFold(dogId),
+      fetchBelowFold(dogId),
+    ]);
+    return { ...above, ...below };
+  }, [fetchAboveFold, fetchBelowFold]);
 
   const applyDogData = useCallback(({ checkins, streaks, recent, recs, exs, scs, logs, diags, plans, tBks, bBks }) => {
     setDogData({
@@ -135,6 +152,8 @@ function useHomeData() {
     } catch (e) { console.warn("Weekly insights load failed:", e); return null; }
   }, [applyInsights]);
 
+  const [loadingSecondary, setLoadingSecondary] = useState(false);
+
   // refreshHome: fetch all dog data for given user+dog, apply to state, update cache
   const refreshHome = useCallback(async (u, d) => {
     if (!u || !d) return null;
@@ -146,7 +165,42 @@ function useHomeData() {
     return { dogData: fetchedDogData, insights: fetchedInsights };
   }, [fetchDogData, applyDogData, loadInsights, setCachedHome]);
 
-  return { dogData, setDogData, insights, setInsights, isDataStale, setIsDataStale, refreshHome, applyDogData, applyInsights, getCachedHome };
+  // refreshHomeWaves: two-wave fetch — returns after wave 1 (above-fold), wave 2 continues in background
+  const refreshHomeWaves = useCallback(async (u, d) => {
+    if (!u || !d) return null;
+
+    // Wave 1: above-fold — fast path
+    const aboveData = await fetchAboveFold(d.id);
+    applyDogData({
+      ...aboveData,
+      // Provide empty defaults for below-fold fields so applyDogData doesn't break
+      exs: [], scs: [], logs: [], diags: [], plans: [], tBks: [], bBks: [],
+    });
+
+    // Wave 2: below-fold — runs in background, does NOT block loading
+    setLoadingSecondary(true);
+    const finishWave2 = async () => {
+      try {
+        const belowData = await fetchBelowFold(d.id);
+        // Merge wave 2 into existing state
+        applyDogData({ ...aboveData, ...belowData });
+        const fetchedInsights = await loadInsights(u, d.id);
+        setCachedHome({ user: u, dog: d, dogData: { ...aboveData, ...belowData }, insights: fetchedInsights });
+      } catch (e) {
+        console.warn("Home wave 2 fetch error:", e);
+        setIsDataStale(true);
+      } finally {
+        setLoadingSecondary(false);
+      }
+    };
+    // Fire wave 2 without awaiting — it runs in background
+    finishWave2();
+
+    setIsDataStale(false);
+    return { aboveData };
+  }, [fetchAboveFold, fetchBelowFold, applyDogData, loadInsights, setCachedHome]);
+
+  return { dogData, setDogData, insights, setInsights, isDataStale, setIsDataStale, loadingSecondary, refreshHome, refreshHomeWaves, applyDogData, applyInsights, getCachedHome };
 }
 
 export default function Home() {
@@ -162,7 +216,7 @@ export default function Home() {
   const [dog, setDog] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const { dogData, setDogData, insights, setInsights, isDataStale, setIsDataStale, refreshHome, applyDogData, applyInsights, getCachedHome } = useHomeData();
+  const { dogData, setDogData, insights, setInsights, isDataStale, setIsDataStale, loadingSecondary, refreshHome, refreshHomeWaves, applyDogData, applyInsights, getCachedHome } = useHomeData();
 
   // Checkin UI state
   const [submitting, setSubmitting] = useState(false);
@@ -212,21 +266,29 @@ export default function Home() {
       }
     };
 
-    // Fetch dog data using context user+dog, then delegate to refreshHome
-    const fetchAndCache = async (u, d, skipLoadingState = false) => {
+    // Background full refresh — used when cache is available or for background updates
+    const backgroundRefresh = async (u, d) => {
       try {
         await refreshHome(u, d);
         if (!mounted) return;
         applyPremiumLogic(u);
       } catch (err) {
         console.error(err);
-        if (!skipLoadingState) {
-          toast.error("Impossible de charger les données. Vérifie ta connexion.");
-        } else {
-          setIsDataStale(true);
-        }
+        setIsDataStale(true);
+      }
+    };
+
+    // Cold load with wave-based fetching — above-fold first, below-fold in background
+    const coldLoadWaves = async (u, d) => {
+      try {
+        await refreshHomeWaves(u, d);
+        if (!mounted) return;
+        applyPremiumLogic(u);
+      } catch (err) {
+        console.error(err);
+        toast.error("Impossible de charger les données. Vérifie ta connexion.");
       } finally {
-        if (mounted && !skipLoadingState) setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
 
@@ -240,6 +302,7 @@ export default function Home() {
       const cached = getCachedHome();
 
       if (cached) {
+        // Cache hit: show immediately, full refresh in background
         setUser(cached.user);
         setDog(cached.dog);
         applyDogData(cached.dogData);
@@ -247,9 +310,10 @@ export default function Home() {
         setLoading(false);
 
         // Always refresh in background
-        fetchAndCache(authUser, contextDog, true);
+        backgroundRefresh(authUser, contextDog);
       } else {
-        await fetchAndCache(authUser, contextDog, false);
+        // Cold start: wave-based — above-fold first, loading=false after wave 1
+        await coldLoadWaves(authUser, contextDog);
       }
     }
 
