@@ -29,10 +29,11 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 - v7.0: User-Ready — 20 requirements, donnees coherentes, flux reconnectes, UX honnete
 - v8.0: SFA Fixes — 19 requirements, zero crash, donnees reelles, cache propagation, securite UX
 - v9.0: Production Ready — 55 requirements, audit complet, legal RGPD, UX transformee, visual clean
+- v10.0: Hardening & Architecture — 12 requirements, securite HMAC, DogContext 14 pages, dedup, perf
 
 ### Active
 
-- v10.0: Hardening & Architecture — securite, gate premium, DogContext, dedup, performance
+None — ready for v11.0
 
 ### Out of Scope
 
@@ -50,18 +51,18 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 - Architecture amelioree : DogContext, useHomeData, useReducer Nutri, VetPortal batch, buildHealthSummaryHTML decomposee
 - Score readiness : 9.5/10 (Production Ready)
 
-## Current Milestone: v10.0 "Hardening & Architecture"
+## Current State (v10.0 shipped — 28 mars 2026)
 
-**Goal:** Corriger les failles de securite, proteger le business model premium, et migrer l'architecture vers DogContext/useAuth pour eliminer les appels API redondants.
+- 11 milestones livres (v1.0 → v10.0)
+- Securite : HMAC sans fallback, Privacy/Terms dans Premium
+- Architecture : DogContext + useAuth utilises par toutes les pages (14 migrees)
+- Qualite : useTabNavigation hook, verdictConfig centralise, 15 silent catches corriges
+- Performance : useMemo sur 4 pages, Home 2-wave loading
+- Score readiness : 9.5/10
 
-**Target features:**
-- Fixer le secret HMAC en dur (preDiagnosis + finalDiagnosis)
-- Gate multi-chiens (1 free / 3 premium)
-- Privacy/Terms links dans Premium.jsx
-- Migration DogContext (14 pages → useDog)
-- Migration useAuth (coherence authentification)
-- Dedup composants (tabs, verdicts, catch silencieux)
-- Performance (useMemo, Home above-fold)
+## No Active Milestone
+
+Ready for v11.0. Run `/gsd:new-milestone` to start.
 
 ## Context
 

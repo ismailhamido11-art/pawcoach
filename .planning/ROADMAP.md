@@ -12,6 +12,7 @@
 - ✅ **v7.0 "User-Ready"** — 4 phases, 20 requirements, coherence donnees + UX (shipped 27 mars). [Archive](milestones/v7.0-ROADMAP.md)
 - ✅ **v8.0 "SFA Fixes"** — 3 phases, 19 requirements, zero crash + donnees coherentes + cache + securite (shipped 27 mars). [Archive](milestones/v8.0-ROADMAP.md)
 - ✅ **v9.0 "Production Ready"** — 11 phases, 55/58 requirements, audit complet + legal + flow fixes + UX + visual + perf (shipped 28 mars). [Archive](milestones/v9.0-ROADMAP.md)
+- ✅ **v10.0 "Hardening & Architecture"** — 5 phases, 12/12 requirements, securite + DogContext migration + dedup + perf (shipped 28 mars). [Archive](milestones/v10.0-ROADMAP.md)
 
 ## Completed Work (archived)
 - v1.0: Data flow integrity (4 phases)
@@ -24,49 +25,8 @@
 - v7.0: User-Ready (20 requirements, donnees coherentes, flux reconnectes, UX honnete)
 - v8.0: SFA Fixes (19 requirements, zero crash, donnees reelles, cache propagation, securite UX)
 - v9.0: Production Ready (55 requirements, audit complet, legal RGPD, UX transformee, visual clean)
+- v10.0: Hardening & Architecture (12 requirements, securite HMAC, DogContext 14 pages, useTabNavigation, useMemo, Home 2-wave)
 
-## Active: v10.0 "Hardening & Architecture"
+## No Active Milestone
 
-**Goal:** Securite, gate premium, DogContext migration, dedup, performance.
-
-### Phase 1: Security Fixes
-- **Goal:** Eliminer les failles de securite identifiees par l'audit
-- **Requirements:** SEC-01, SEC-02
-- **Success criteria:**
-  1. preDiagnosis et finalDiagnosis echouent si PRE_DIAG_SECRET n'est pas defini (pas de fallback)
-  2. Premium.jsx affiche les liens Privacy Policy et Terms dans le footer
-  3. Aucun secret en dur dans le code source (verifie par grep)
-
-### Phase 2: Premium Multi-Dog Gate
-- **Goal:** Proteger le business model en gateant la creation de chiens selon le plan
-- **Requirements:** BIZ-01, BIZ-02
-- **Success criteria:**
-  1. Un utilisateur free ne peut creer qu'un seul chien
-  2. Un utilisateur premium peut creer jusqu'a 3 chiens
-  3. Un nudge Premium s'affiche quand un user free tente de creer un 2eme chien
-  4. L'Onboarding respecte la limite
-
-### Phase 3: DogContext & useAuth Migration
-- **Goal:** Eliminer les 14 appels API redondants en migrant vers les contextes partages
-- **Requirements:** ARCH-01, ARCH-02, ARCH-03
-- **Success criteria:**
-  1. Toutes les pages BottomNav utilisent useDog() (Home, Sante, Activite, Nutri, Profile)
-  2. Les pages secondaires utilisent useDog() (DogProfile, Chat, Scan, etc.)
-  3. Aucun appel Dog.filter({ owner }) direct dans les pages (sauf DogContext lui-meme)
-  4. useAuth() utilise partout au lieu de base44.auth.me()
-
-### Phase 4: Code Dedup & Error Handling
-- **Goal:** Eliminer la duplication de code et les erreurs silencieuses
-- **Requirements:** QUAL-01, QUAL-02, QUAL-03
-- **Success criteria:**
-  1. Hook useTabNavigation extrait, utilise par Activite, Nutri, Sante
-  2. verdictConfig.js centralise, importe par Scan, LabelScanMode, Library
-  3. Zero .catch(() => {}) dans le code (remplace par error handling visible)
-
-### Phase 5: Performance Optimization
-- **Goal:** Reduire les re-renders et optimiser le chargement initial
-- **Requirements:** PERF-01, PERF-02
-- **Success criteria:**
-  1. useMemo utilise pour les calculs derives dans Library, Training, Sante
-  2. Home charge les 4 donnees above-fold avant le reste (checkin, streak, reco, briefing)
-  3. Pas de regression fonctionnelle
+Ready for /gsd:new-milestone (v11.0).

@@ -1,43 +1,44 @@
 ---
 gsd_state_version: 1.0
 milestone: v10.0
-milestone_name: "Hardening & Architecture"
-status: in_progress
-stopped_at: null
-last_updated: "2026-03-28T19:00:00.000Z"
-last_activity: 2026-03-28
+milestone_name: "Hardening & Architecture" — Archived
+status: milestone_complete
+stopped_at: v10.0 archived
+last_updated: "2026-03-29T00:00:00.000Z"
+last_activity: 2026-03-29
 progress:
   total_phases: 5
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  completed_phases: 5
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-28)
+See: .planning/PROJECT.md (updated 2026-03-29)
 
 **Core value:** Une app presentable, complete, qui suit les conventions des meilleures apps
 
 ## Current Position
 
-v10.0 "Hardening & Architecture" started. 5 phases planned.
-Phase: Not started (ready for Phase 1)
+v10.0 "Hardening & Architecture" archived. 11 milestones shipped (v1.0 → v10.0).
+Ready for /gsd:new-milestone (v11.0).
 
 ## Performance Metrics
 
 | Metric | Value |
 |--------|-------|
-| Milestones shipped | 10 (v1.0 → v9.0) |
-| v10.0 requirements | 12 defined |
-| v10.0 phases | 5 planned |
-| Score readiness | 9.5/10 (v9.0) |
+| Milestones shipped | 11 (v1.0 → v10.0) |
+| v10.0 requirements | 12/12 satisfied |
+| v10.0 phases | 5/5 complete |
+| v10.0 commits | 9 |
+| Score readiness | 9.5/10 |
 
 ## Session Continuity
 
-Last session: 2026-03-28T19:00:00.000Z
-Stopped at: null
+Last session: 2026-03-29T00:00:00.000Z
+Stopped at: v10.0 archived
 Resume file: None
-Next action: Phase 1 — Security Fixes
+Next action: /gsd:new-milestone
