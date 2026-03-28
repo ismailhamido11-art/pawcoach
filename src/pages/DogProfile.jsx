@@ -9,7 +9,7 @@ import { useHomeCache } from "@/lib/HomeCacheContext";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowLeft, Pencil, ChevronDown,
-  QrCode, Share2, Download,
+  QrCode, Share2, Download, FileText,
   Trash2, AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -251,6 +251,19 @@ export default function DogProfile() {
               <div className="flex-1">
                 <p className="text-sm font-semibold text-foreground">QR Code d'urgence</p>
                 <p className="text-xs text-muted-foreground">Accès rapide aux infos vitales</p>
+              </div>
+              <ChevronDown className="w-4 h-4 text-muted-foreground rotate-[-90deg]" />
+            </button>
+            <button
+              onClick={() => toast.info("Export PDF bientôt disponible")}
+              className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-muted/30 transition-all active:scale-[0.97]"
+            >
+              <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+                <FileText className="w-4 h-4 text-amber-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-foreground">Exporter en PDF</p>
+                <p className="text-xs text-muted-foreground">Fiche complète de {dog.name}</p>
               </div>
               <ChevronDown className="w-4 h-4 text-muted-foreground rotate-[-90deg]" />
             </button>
