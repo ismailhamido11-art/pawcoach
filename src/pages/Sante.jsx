@@ -39,7 +39,7 @@ const TABS = [
 export default function Sante() {
 
    const { user, isLoadingAuth } = useAuth();
-   const { dog, setDog, loadingDog } = useDog();
+   const { dog, refreshDogs, loadingDog } = useDog();
    const [records, setRecords] = useState([]);
    const [dailyLogs, setDailyLogs] = useState([]);
    const [growthEntries, setGrowthEntries] = useState([]);
@@ -96,7 +96,7 @@ export default function Sante() {
    };
 
    const handleWeightAdded = (weightKg) => {
-     if (weightKg) setDog(prev => prev ? { ...prev, weight: weightKg } : prev);
+     if (weightKg) refreshDogs(); // re-fetch from DB instead of mutating shared context
    };
 
   const { vaccineCount, vetCount, weightRecords } = useMemo(() => {
@@ -266,10 +266,8 @@ export default function Sante() {
                 dailyLogs={dailyLogs}
                 onGrowthAdded={(entry) => {
                   setGrowthEntries(prev => [...prev, entry]);
-                  if (entry.weight_kg) {
-                    setDog(prev => prev ? { ...prev, weight: entry.weight_kg } : prev);
-                  }
-                }}
+                  if (entry.weight_kg) refreshDogs();
+                }
               />
             )}
             {activeTab === "findvet" && (

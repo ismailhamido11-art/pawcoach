@@ -165,12 +165,16 @@ function useHomeData() {
     return { dogData: fetchedDogData, insights: fetchedInsights };
   }, [fetchDogData, applyDogData, loadInsights, setCachedHome]);
 
+  // Mounted guard — prevents wave-2 background writes after unmount
+  const mountedRef = useRef(true);
+
   // refreshHomeWaves: two-wave fetch — returns after wave 1 (above-fold), wave 2 continues in background
   const refreshHomeWaves = useCallback(async (u, d) => {
     if (!u || !d) return null;
 
     // Wave 1: above-fold — fast path
     const aboveData = await fetchAboveFold(d.id);
+    if (!mountedRef.current) return null;
     applyDogData({
       ...aboveData,
       // Provide empty defaults for below-fold fields so applyDogData doesn't break
@@ -182,15 +186,17 @@ function useHomeData() {
     const finishWave2 = async () => {
       try {
         const belowData = await fetchBelowFold(d.id);
+        if (!mountedRef.current) return;
         // Merge wave 2 into existing state
         applyDogData({ ...aboveData, ...belowData });
         const fetchedInsights = await loadInsights(u, d.id);
+        if (!mountedRef.current) return;
         setCachedHome({ user: u, dog: d, dogData: { ...aboveData, ...belowData }, insights: fetchedInsights });
       } catch (e) {
         console.warn("Home wave 2 fetch error:", e);
-        setIsDataStale(true);
+        if (mountedRef.current) setIsDataStale(true);
       } finally {
-        setLoadingSecondary(false);
+        if (mountedRef.current) setLoadingSecondary(false);
       }
     };
     // Fire wave 2 without awaiting — it runs in background
@@ -199,6 +205,9 @@ function useHomeData() {
     setIsDataStale(false);
     return { aboveData };
   }, [fetchAboveFold, fetchBelowFold, applyDogData, loadInsights, setCachedHome]);
+
+  // Cleanup: prevent wave-2 writes after hook unmount
+  useEffect(() => { return () => { mountedRef.current = false; }; }, []);
 
   return { dogData, setDogData, insights, setInsights, isDataStale, setIsDataStale, loadingSecondary, refreshHome, refreshHomeWaves, applyDogData, applyInsights, getCachedHome };
 }
