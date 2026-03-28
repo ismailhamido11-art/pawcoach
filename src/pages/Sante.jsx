@@ -267,7 +267,7 @@ export default function Sante() {
                 onGrowthAdded={(entry) => {
                   setGrowthEntries(prev => [...prev, entry]);
                   if (entry.weight_kg) refreshDogs();
-                }
+                }}
               />
             )}
             {activeTab === "findvet" && (
