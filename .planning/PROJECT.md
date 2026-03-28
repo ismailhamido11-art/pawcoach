@@ -32,7 +32,7 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 
 ### Active
 
-None — ready for v10.0
+- v10.0: Hardening & Architecture — securite, gate premium, DogContext, dedup, performance
 
 ### Out of Scope
 
@@ -50,9 +50,18 @@ None — ready for v10.0
 - Architecture amelioree : DogContext, useHomeData, useReducer Nutri, VetPortal batch, buildHealthSummaryHTML decomposee
 - Score readiness : 9.5/10 (Production Ready)
 
-## No Active Milestone
+## Current Milestone: v10.0 "Hardening & Architecture"
 
-Ready for v10.0. Run `/gsd:new-milestone` to start.
+**Goal:** Corriger les failles de securite, proteger le business model premium, et migrer l'architecture vers DogContext/useAuth pour eliminer les appels API redondants.
+
+**Target features:**
+- Fixer le secret HMAC en dur (preDiagnosis + finalDiagnosis)
+- Gate multi-chiens (1 free / 3 premium)
+- Privacy/Terms links dans Premium.jsx
+- Migration DogContext (14 pages → useDog)
+- Migration useAuth (coherence authentification)
+- Dedup composants (tabs, verdicts, catch silencieux)
+- Performance (useMemo, Home above-fold)
 
 ## Context
 
@@ -87,4 +96,4 @@ Ready for v10.0. Run `/gsd:new-milestone` to start.
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-28 after v9.0 milestone complete*
+*Last updated: 2026-03-28 after v10.0 milestone start*
