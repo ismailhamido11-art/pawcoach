@@ -57,8 +57,9 @@ Ready for v10.0. Run `/gsd:new-milestone` to start.
 ## Context
 
 - CGC indexe sur le codebase — utilise systematiquement dans chaque phase GSD
-- 4 rapports SFA dans .planning/audit/ — traces de flux end-to-end
+- 4 rapports SFA v9.0 dans .planning/phases/03-flux/ (remplacent les anciens .planning/audit/)
 - Static Flow Analysis ancre comme process de verification obligatoire
+- Pipeline Rouleau Compresseur ancre en memoire (reference_rouleau_compresseur.md)
 - Pattern proactif ancre dans CLAUDE.md
 
 ## Constraints
