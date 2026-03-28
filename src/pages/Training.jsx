@@ -269,14 +269,14 @@ export default function Training() {
         } catch (pointsErr) {
           // UX-05: Rollback UserProgress if points update fails
           console.error("Training points update failed, rolling back UserProgress:", pointsErr);
-          await UserProgress.delete(newP.id).catch(() => {});
+          await UserProgress.delete(newP.id).catch(e => console.warn("Training: rollback UserProgress delete failed", e));
           throw pointsErr; // Re-throw to hit the outer catch for UI rollback
         }
       }
       setProgresses(newProgresses);
       if (!wasCompleted) {
-        updateStreakSilently(dog.id, user.email).catch(() => {});
-        checkStreakBadges(dog.id, user.email).catch(() => {});
+        updateStreakSilently(dog.id, user.email).catch(e => console.warn("Training: streak update failed", e));
+        checkStreakBadges(dog.id, user.email).catch(e => console.warn("Training: streak badge check failed", e));
       }
     } catch (err) {
       console.error("Training complete error:", err);

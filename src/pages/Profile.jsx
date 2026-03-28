@@ -85,7 +85,7 @@ export default function Profile() {
         const pts = (achvs || []).reduce((s, a) => s + (a.points_awarded || 0), 0);
         setAchievementPoints(pts);
       })
-      .catch(() => {});
+      .catch(e => console.warn("Profile: achievement points load failed", e));
   }, [activeDogId]);
 
   const handleSwitchDog = (dogId) => {

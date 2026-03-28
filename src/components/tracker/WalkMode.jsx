@@ -48,7 +48,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
 
   const releaseWakeLock = () => {
     if (wakeLockRef.current) {
-      wakeLockRef.current.release().catch(() => {});
+      wakeLockRef.current.release().catch(e => console.warn("WalkMode: wake lock release failed", e));
       wakeLockRef.current = null;
     }
   };
@@ -314,8 +314,8 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
       }
       // Check walk badges
       const allLogs = await DailyLog.filter({ dog_id: dog.id }, "-date", 60);
-      checkWalkBadges(dog.id, user?.email, allLogs || []).catch(() => {});
-      updateStreakSilently(dog.id, user?.email).catch(() => {});
+      checkWalkBadges(dog.id, user?.email, allLogs || []).catch(e => console.warn("WalkMode: walk badge check failed", e));
+      updateStreakSilently(dog.id, user?.email).catch(e => console.warn("WalkMode: streak update failed", e));
       onLogged?.();
     } catch {
       // Save to localStorage for later retry
@@ -356,7 +356,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
         await DailyLog.update(logs[0].id, {
           walk_mood: walkMood,
           walk_tags: JSON.stringify(selectedMoodTags),
-        }).catch(() => {}); // Silently fail if schema not yet updated
+        }).catch(e => console.warn("WalkMode: mood persist failed (schema may not support walk_mood yet)", e));
       }
       setMoodSaved(true);
     } catch (e) { console.warn("WalkMode: mood save failed", e?.message); }

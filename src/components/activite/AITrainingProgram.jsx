@@ -329,7 +329,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       toast.success("Programme généré !");
       if (!isPremium) await consume();
       if (dog?.id && dog?.owner) {
-        checkTrainingBadges(dog.id, dog.owner).catch(() => {});
+        checkTrainingBadges(dog.id, dog.owner).catch(e => console.warn("AITrainingProgram: badge check failed", e));
       }
     } catch (err) {
       console.error("Generate error:", err);

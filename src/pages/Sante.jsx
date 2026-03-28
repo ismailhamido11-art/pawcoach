@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef, lazy, Suspense } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { HealthRecord, DailyLog, GrowthEntry } from "@/api/entities";
 import { useAuth } from "@/lib/AuthContext";
 import { useDog } from "@/lib/DogContext";
@@ -27,11 +26,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 import DownloadHealthPDF from "@/components/vet/DownloadHealthPDF";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import { spring } from "@/lib/animations";
-const tabVariants = {
-  enter: (d) => ({ opacity: 0, x: d * 60 }),
-  center: { opacity: 1, x: 0 },
-  exit: (d) => ({ opacity: 0, x: d * -60 }),
-};
+import useTabNavigation, { tabVariants } from "@/hooks/useTabNavigation";
 
 const TABS = [
   { id: "carnet",  label: "Carnet",       Icon: BookHeart,    color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
@@ -51,32 +46,16 @@ export default function Sante() {
    const [loading, setLoading] = useState(true);
    const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
-   // URL-based tab navigation (enables back button between sub-tabs)
-   const [searchParams, setSearchParams] = useSearchParams();
-   const urlTab = searchParams.get("tab");
-
    // Deep link sub-tabs (within Carnet): ?tab=vaccine, ?tab=weight, etc.
    const validSubTabs = ["all", "vaccine", "vet_visit", "weight", "medication", "note"];
-   const isDeepLink = urlTab && (validSubTabs.includes(urlTab) || urlTab === "vet" || urlTab === "qr");
+   const resolveDeepLink = (tab) => {
+     if (tab && (validSubTabs.includes(tab) || tab === "vet" || tab === "qr")) return "carnet";
+     return null;
+   };
 
-   // Priority: deep link > URL param > sessionStorage > default
-   const activeTab = isDeepLink ? "carnet"
-     : (urlTab && TABS.some(t => t.id === urlTab)) ? urlTab
-     : (() => { const s = sessionStorage.getItem("tab_Sante"); return (s && TABS.some(t => t.id === s)) ? s : "carnet"; })();
-
-   // On mount without URL param, sync URL with preserved tab (replace, not push)
-   const initRef = useRef(false);
-   useEffect(() => {
-     if (!initRef.current) { initRef.current = true; if (!isDeepLink && !urlTab && activeTab !== "carnet") setSearchParams({ tab: activeTab }, { replace: true }); }
-   }, []);
-   useEffect(() => { sessionStorage.setItem("tab_Sante", activeTab); }, [activeTab]);
-   const changeTab = (tabId) => { sessionStorage.setItem("tab_Sante", tabId); setSearchParams({ tab: tabId }); };
-
-   // Track direction for native-like horizontal slide
-   const tabIndex = TABS.findIndex(t => t.id === activeTab);
-   const prevTabIdx = useRef(tabIndex);
-   const tabDir = tabIndex >= prevTabIdx.current ? 1 : -1;
-   useEffect(() => { prevTabIdx.current = tabIndex; }, [tabIndex]);
+   const { activeTab, tabDir, changeTab, searchParams } = useTabNavigation(TABS, "Sante", { resolveDeepLink });
+   const urlTab = searchParams.get("tab");
+   const isDeepLink = resolveDeepLink(urlTab) !== null;
 
    const [initialSubTab] = useState(isDeepLink && validSubTabs.includes(urlTab) ? urlTab : null);
    const vaccineKeyParam = searchParams.get("vaccineKey") || null;

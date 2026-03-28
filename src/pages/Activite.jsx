@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { DailyLog } from "@/api/entities";
 import { createPageUrl } from "@/utils";
 import { useAuth } from "@/lib/AuthContext";
@@ -17,14 +17,10 @@ import SkeletonPage from "@/components/ui/SkeletonPage";
 import EmptyState from "@/components/ui/EmptyState";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Footprints, History, Dumbbell, Sparkles, ExternalLink, Lightbulb, Timer, Target, Bone, CalendarDays } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { spring } from "@/lib/animations";
 import { toast } from "sonner";
-const tabVariants = {
-  enter: (d) => ({ opacity: 0, x: d * 60 }),
-  center: { opacity: 1, x: 0 },
-  exit: (d) => ({ opacity: 0, x: d * -60 }),
-};
+import useTabNavigation, { tabVariants } from "@/hooks/useTabNavigation";
 
 const TABS = [
   { id: "balade",     label: "Balade",     icon: Footprints, bg: "from-emerald-500 to-emerald-700" },
@@ -41,24 +37,7 @@ export default function Activite() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const urlTab = searchParams.get("tab");
-  // Priority: URL param > sessionStorage > default
-  const activeTab = (urlTab && TABS.some(t => t.id === urlTab)) ? urlTab
-    : (() => { const s = sessionStorage.getItem("tab_Activite"); return (s && TABS.some(t => t.id === s)) ? s : "balade"; })();
-  // On mount without URL param, sync URL with preserved tab (replace, not push)
-  const initRef = useRef(false);
-  useEffect(() => {
-    if (!initRef.current) { initRef.current = true; if (!urlTab && activeTab !== "balade") setSearchParams({ tab: activeTab }, { replace: true }); }
-  }, []);
-  useEffect(() => { sessionStorage.setItem("tab_Activite", activeTab); }, [activeTab]);
-  const changeTab = (tabId) => { sessionStorage.setItem("tab_Activite", tabId); setSearchParams({ tab: tabId }); };
-
-  // Track direction for native-like horizontal slide
-  const tabIndex = TABS.findIndex(t => t.id === activeTab);
-  const prevTabIdx = useRef(tabIndex);
-  const tabDir = tabIndex >= prevTabIdx.current ? 1 : -1;
-  useEffect(() => { prevTabIdx.current = tabIndex; }, [tabIndex]);
+  const { activeTab, tabDir, changeTab } = useTabNavigation(TABS, "Activite");
 
   const load = async () => {
     if (!dog) { setLoading(false); return; }

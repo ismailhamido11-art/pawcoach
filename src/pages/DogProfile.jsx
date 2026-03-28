@@ -143,7 +143,7 @@ export default function DogProfile() {
       ];
       await Promise.all(
         entityNames.map(name =>
-          base44.entities[name].deleteMany({ dog_id: dog.id }).catch(() => {})
+          base44.entities[name].deleteMany({ dog_id: dog.id }).catch(() => {}) // intentional: orphaned entities may not exist
         )
       );
 

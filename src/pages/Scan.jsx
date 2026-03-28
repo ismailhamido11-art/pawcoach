@@ -11,8 +11,8 @@ import ShareCard from "../components/scan/ShareCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Camera, ChevronDown, ChevronUp, CheckCircle, AlertTriangle,
-  AlertCircle, X, History, Share2, Phone, Crown, ScanLine, Tag, ArrowLeft,
+  Camera, ChevronDown, ChevronUp, AlertTriangle,
+  X, History, Share2, Phone, Crown, ScanLine, Tag, ArrowLeft,
   Lightbulb, Check
 } from "lucide-react";
 import { updateStreakSilently } from "../components/streakHelper";
@@ -26,40 +26,11 @@ import EmptyState from "@/components/ui/EmptyState";
 import LottieAnimation from "@/components/ui/LottieAnimation";
 import { LOTTIE } from "@/lib/lottieLibrary";
 import LabelScanMode from "../components/scan/LabelScanMode";
+import { VERDICT_CONFIG } from "@/lib/verdictConfig";
 const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
 const listItem = {
   hidden: { opacity: 0, y: 12 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 20 } }
-};
-
-const VERDICT_CONFIG = {
-  safe: {
-    label: "Sans danger",
-    badgeBg: "bg-emerald-100 text-emerald-700",
-    cardBg: "bg-emerald-50",
-    border: "border-emerald-200",
-    ring: "#10b981",
-    icon: CheckCircle,
-    iconColor: "text-emerald-500",
-  },
-  caution: {
-    label: "Avec précaution",
-    badgeBg: "bg-amber-100 text-amber-700",
-    cardBg: "bg-amber-50",
-    border: "border-amber-200",
-    ring: "#d97706",
-    icon: AlertTriangle,
-    iconColor: "text-amber-600",
-  },
-  toxic: {
-    label: "TOXIQUE",
-    badgeBg: "bg-red-100 text-red-700",
-    cardBg: "bg-red-50",
-    border: "border-red-200",
-    ring: "#ef4444",
-    icon: AlertCircle,
-    iconColor: "text-red-500",
-  },
 };
 
 const FREE_SCAN_LIMIT = 3;

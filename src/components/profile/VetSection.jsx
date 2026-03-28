@@ -19,7 +19,7 @@ export default function VetSection({ dogs: _dogs, activeDogId }) {
     if (!activeDogId) return;
     SharedVetAccess.filter({ dog_id: activeDogId })
       .then(data => setVetAccesses(data || []))
-      .catch(() => {});
+      .catch(e => console.warn("VetSection: vet access load failed", e));
   }, [activeDogId]);
 
   return (

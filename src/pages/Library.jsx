@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Illustration from "../components/illustrations/Illustration";
 import EmptyState from "@/components/ui/EmptyState";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import { VERDICT_CONFIG } from "@/lib/verdictConfig";
 
 
 const SOURCE_LABELS = {
@@ -34,11 +35,6 @@ const FILTERS = [
   { id: "scan", label: "Scans" },
 ];
 
-const VERDICT_CONFIG = {
-  safe:    { label: "Sans danger", color: "#10b981", bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" },
-  caution: { label: "Avec précaution", color: "#f59e0b", bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
-  toxic:   { label: "Dangereux", color: "#ef4444", bg: "bg-red-50", text: "text-red-700", border: "border-red-200" },
-};
 
 export default function Library() {
   const navigate = useNavigate();
@@ -330,7 +326,7 @@ export default function Library() {
                     )}
                     {/* Food scan verdict badge */}
                     {verdictCfg && (
-                      <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full ${verdictCfg.bg} mb-2`}>
+                      <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full ${verdictCfg.cardBg} mb-2`}>
                         <span className={`text-[11px] font-bold ${verdictCfg.text}`}>{verdictCfg.label}</span>
                         {b.score != null && (
                           <span className={`text-[11px] font-bold ${verdictCfg.text} opacity-70`}>· {b.score}/10</span>

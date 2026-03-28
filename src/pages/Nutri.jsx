@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useReducer } from "react";
-import { useNavigate, useSearchParams, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Bookmark as BookmarkEntity, NutritionPlan, FoodScan, DietPreferences, DailyCheckin, HealthRecord, DailyLog } from "@/api/entities";
 import { createPageUrl } from "@/utils";
@@ -29,12 +29,7 @@ import { spring, springGentle } from "@/lib/animations";
 import { mdComponents } from "@/components/lib/markdown";
 import LottieAnimation from "@/components/ui/LottieAnimation";
 import { LOTTIE } from "@/lib/lottieLibrary";
-
-const tabVariants = {
-  enter: (d) => ({ opacity: 0, x: d * 60 }),
-  center: { opacity: 1, x: 0 },
-  exit: (d) => ({ opacity: 0, x: d * -60 }),
-};
+import useTabNavigation, { tabVariants } from "@/hooks/useTabNavigation";
 const msgAnim = {
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
@@ -104,25 +99,7 @@ export default function Nutri() {
 
    const [initializing, setInitializing] = useState(true);
 
-   // URL-based tab navigation (enables back button between sub-tabs)
-   const [searchParams, setSearchParams] = useSearchParams();
-   const urlTab = searchParams.get("tab");
-   // Priority: URL param > sessionStorage > default
-   const activeTab = (urlTab && TABS.some(t => t.id === urlTab)) ? urlTab
-     : (() => { const s = sessionStorage.getItem("tab_Nutri"); return (s && TABS.some(t => t.id === s)) ? s : "coach"; })();
-   // On mount without URL param, sync URL with preserved tab (replace, not push)
-   const initRef = useRef(false);
-   useEffect(() => {
-     if (!initRef.current) { initRef.current = true; if (!urlTab && activeTab !== "coach") setSearchParams({ tab: activeTab }, { replace: true }); }
-   }, []);
-   useEffect(() => { sessionStorage.setItem("tab_Nutri", activeTab); }, [activeTab]);
-   const changeTab = (tabId) => { sessionStorage.setItem("tab_Nutri", tabId); setSearchParams({ tab: tabId }); };
-
-  // Track direction for native-like horizontal slide
-  const tabIndex = TABS.findIndex(t => t.id === activeTab);
-  const prevTabIdx = useRef(tabIndex);
-  const tabDir = tabIndex >= prevTabIdx.current ? 1 : -1;
-  useEffect(() => { prevTabIdx.current = tabIndex; }, [tabIndex]);
+   const { activeTab, tabDir, changeTab } = useTabNavigation(TABS, "Nutri", { defaultTab: "coach" });
 
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
@@ -208,7 +185,7 @@ export default function Nutri() {
   const handleCopy = (content) => {
     navigator.clipboard?.writeText(content).then(() => {
       toast.success("Copié !");
-    }).catch(() => {});
+    }).catch(e => console.warn("Nutri: clipboard copy failed", e));
   };
 
   const refreshPlans = async () => {
@@ -245,7 +222,7 @@ export default function Nutri() {
       if (dog?.id) {
         FoodScan.filter({ dog_id: dog.id }, "-timestamp", 5)
           .then(scans => setDogDataState(p => ({ ...p, recentScans: scans || [] })))
-          .catch(() => {});
+          .catch(e => console.warn("Nutri: scan refresh failed", e));
       }
     };
     const onVisibility = () => {

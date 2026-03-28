@@ -289,7 +289,7 @@ export default function Chat() {
         role: "assistant",
         content: assistantContent,
         timestamp: assistantTs,
-      }).catch(() => {});
+      }).catch(e => console.warn("Chat: failed to persist assistant message", e));
 
       if (!isUserPremium(user) && response.data?.messages_remaining !== undefined) {
         setMessagesRemaining(response.data.messages_remaining);

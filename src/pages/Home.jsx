@@ -348,7 +348,7 @@ export default function Home() {
           });
         }, 800);
       }
-      checkStreakBadges(dog.id, user.email).catch(() => {});
+      checkStreakBadges(dog.id, user.email).catch(e => console.warn("Home: streak badge check failed", e));
     } catch (err) {
       console.error("Check-in error:", err);
       setDogData(prev => ({

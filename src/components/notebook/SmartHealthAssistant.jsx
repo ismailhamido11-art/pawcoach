@@ -187,7 +187,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
   const handleCopy = (content) => {
     navigator.clipboard?.writeText(content).then(() => {
       toast.success("Copi\u00e9 !");
-    }).catch(() => {});
+    }).catch(e => console.warn("SmartHealthAssistant: clipboard copy failed", e));
   };
 
   const processConversation = async (newMessages) => {
