@@ -6,7 +6,7 @@ import { isUserPremium, getTrialDaysLeft } from "@/utils/premium";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Check, Zap, Lock, ChevronRight, MessageCircle, ScanLine, Dumbbell, BookHeart, Salad, Search, Target, ClipboardList, Bell, BarChart3, Dog as DogIcon, Star, Crown } from "lucide-react";
 import IconBadge from "@/components/ui/IconBadge";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl, getActiveDog } from "@/utils";
 import { getDogAgeSegment } from "@/utils/healthStatus";
 import BottomNav from "../components/BottomNav";
@@ -328,6 +328,16 @@ export default function Premium() {
               ? <>Renouvellement automatique à chaque période. Résiliation à tout moment depuis ton profil.{plan === "annual" ? " Facturation annuelle de 59,99 EUR." : " Facturation mensuelle de 7,99 EUR."}{" "}Paiement sécurisé via Stripe.</>
               : "Tu peux gérer ton abonnement à tout moment depuis ton Profil. Renouvellement automatique."}
           </motion.p>
+
+          <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground mt-3">
+            <Link to={createPageUrl("Privacy")} className="underline hover:text-foreground transition-colors">
+              Politique de confidentialité
+            </Link>
+            <span>·</span>
+            <Link to={createPageUrl("Terms")} className="underline hover:text-foreground transition-colors">
+              Conditions d'utilisation
+            </Link>
+          </div>
         </div>
 
         <BottomNav currentPage="Premium" />
@@ -508,6 +518,16 @@ export default function Premium() {
           {plan === "annual" ? "Facturation annuelle de 59,99 EUR." : "Facturation mensuelle de 7,99 EUR."}{" "}
           Paiement sécurisé via Stripe.
         </p>
+
+        <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
+          <Link to={createPageUrl("Privacy")} className="underline hover:text-foreground transition-colors">
+            Politique de confidentialité
+          </Link>
+          <span>·</span>
+          <Link to={createPageUrl("Terms")} className="underline hover:text-foreground transition-colors">
+            Conditions d'utilisation
+          </Link>
+        </div>
       </motion.div>
 
       <BottomNav currentPage="Premium" />

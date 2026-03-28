@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
     // Verify HMAC-SHA256 signature
     const keyMaterial = await crypto.subtle.importKey(
       "raw",
-      new TextEncoder().encode(Deno.env.get("PRE_DIAG_SECRET") || "pawcoach-diag-secret-v1"),
+      new TextEncoder().encode((() => { const s = Deno.env.get("PRE_DIAG_SECRET"); if (!s) throw new Error("PRE_DIAG_SECRET not configured"); return s; })()),
       { name: "HMAC", hash: "SHA-256" },
       false,
       ["verify"]
