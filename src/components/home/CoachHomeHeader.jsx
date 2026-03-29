@@ -24,7 +24,7 @@ export default function CoachHomeHeader({ user, dog }) {
             <p className="text-[14px] text-white/90 font-medium flex items-center gap-1">Bonjour {firstName} <Hand className="w-4 h-4 text-white/80" /></p>
             <div className="flex items-center gap-1.5 mt-1">
               <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
-              <p className="text-[12px] text-white/70 font-medium italic">Une belle journée avec {dog?.name || "ton chien"}</p>
+              <p className="text-[12px] text-white/80 font-medium italic">Une belle journée avec {dog?.name || "ton chien"}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">

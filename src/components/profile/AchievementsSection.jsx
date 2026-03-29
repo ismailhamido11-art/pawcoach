@@ -215,12 +215,12 @@ export default function AchievementsSection({ dog }) {
               <LevelIcon className={`w-6 h-6 ${level.color}`} />
               <div>
                 <p className="text-white font-black text-sm leading-none">{dog?.name}</p>
-                <p className="text-white/70 text-xs mt-0.5">Niveau {level.label}</p>
+                <p className="text-white/80 text-xs mt-0.5">Niveau {level.label}</p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-white font-black text-xl leading-none">{animatedUnlocked} <span className="text-white/50 font-semibold text-sm">/ {TOTAL_BADGES}</span></p>
-              <p className="text-white/60 text-[11px]">badges débloqués</p>
+              <p className="text-white/80 text-[11px]">badges débloqués</p>
             </div>
           </div>
 
@@ -229,12 +229,12 @@ export default function AchievementsSection({ dog }) {
             <div className="flex items-center gap-1.5 bg-white/15 rounded-full px-3 py-1.5">
               <Star className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
               <span className="text-white font-black text-sm">{animatedPoints}</span>
-              <span className="text-white/60 text-xs">points</span>
+              <span className="text-white/80 text-xs">points</span>
             </div>
             {nextLevel && (
               <div className="flex items-center gap-1 bg-white/10 rounded-full px-2.5 py-1.5">
-                <Zap className="w-3 h-3 text-white/60" />
-                <span className="text-white/70 text-[11px]">{nextLevel.min - totalPoints} pts → {nextLevel.label}</span>
+                <Zap className="w-3 h-3 text-white/80" />
+                <span className="text-white/80 text-[11px]">{nextLevel.min - totalPoints} pts → {nextLevel.label}</span>
               </div>
             )}
             {!nextLevel && (

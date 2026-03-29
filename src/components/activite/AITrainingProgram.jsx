@@ -514,7 +514,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
     <div className="space-y-4 pb-8">
       {/* Program header */}
       <div className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-5 text-white">
-        <p className="text-white/70 text-[11px] font-bold uppercase tracking-wider mb-1">Programme 7 jours</p>
+        <p className="text-white/80 text-[11px] font-bold uppercase tracking-wider mb-1">Programme 7 jours</p>
         <h3 className="font-black text-lg leading-tight">{program.program_title}</h3>
         <p className="text-white/80 text-xs mt-1.5 leading-relaxed">{program.summary}</p>
         <div className="flex gap-2 mt-3 flex-wrap">
@@ -525,7 +525,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         {saved && (
           <div className="mt-4">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-white/70 text-[11px] font-bold">Progression</span>
+              <span className="text-white/80 text-[11px] font-bold">Progression</span>
               <span className="text-white text-[11px] font-bold">{completedCount}/{totalDays} jours</span>
             </div>
             <div className="h-2 bg-white/20 rounded-full overflow-hidden">
@@ -536,7 +536,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
         {program.start_date && (
           <div className="mt-2 flex items-center gap-1.5">
             <CalendarDays className="w-3 h-3 text-white/50" />
-            <span className="text-white/60 text-[11px]">
+            <span className="text-white/80 text-[11px]">
               {formatDateFr(new Date(program.start_date + "T00:00:00"))} → {formatDateFr(addDaysToDate(program.start_date, totalDays - 1))}
             </span>
           </div>

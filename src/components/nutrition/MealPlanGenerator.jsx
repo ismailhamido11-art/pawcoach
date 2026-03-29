@@ -136,7 +136,7 @@ export default function MealPlanGenerator({
         <div className="space-y-4 animate-fade-in">
           {/* Summary */}
           <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-5 text-white">
-            <p className="text-white/70 text-[11px] font-bold uppercase tracking-wider mb-1">Nouveau plan pour {dog.name}</p>
+            <p className="text-white/80 text-[11px] font-bold uppercase tracking-wider mb-1">Nouveau plan pour {dog.name}</p>
             <div className="flex gap-3 mt-2">
               {plan.calories_per_day && (
                 <span className="bg-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">

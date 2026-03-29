@@ -302,14 +302,14 @@ export default function Scan() {
         <button
           aria-label="Retour"
           onClick={() => navigate(createPageUrl("Nutri"))}
-          className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-3 hover:bg-white/30 transition-colors"
+          className="relative z-20 w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center mb-3 hover:bg-white/30 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 text-white" />
         </button>
         <div className="relative z-10 flex items-start justify-between">
           <div className="pb-2">
             <h1 className="text-white font-black text-2xl leading-tight">Scan Aliment</h1>
-            <p className="text-white/70 text-sm mt-1">
+            <p className="text-white/80 text-sm mt-1">
               {dog ? `Analyse pour ${dog.name}` : "Chargement..."}
             </p>
           </div>

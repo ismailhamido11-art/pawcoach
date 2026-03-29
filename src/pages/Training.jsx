@@ -433,13 +433,13 @@ export default function Training() {
       <div className="min-h-screen bg-background" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom, 0px))" }}>
         <WellnessBanner />
         <div className="gradient-primary safe-pt-14 pb-6 px-5">
-          <button onClick={() => navigate(createPageUrl("Training"))} className="relative z-20 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center mb-2 hover:bg-white/30 transition-colors">
+          <button onClick={() => navigate(createPageUrl("Training"))} className="relative z-20 w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center mb-2 hover:bg-white/30 transition-colors">
             <ChevronRight className="w-5 h-5 text-white rotate-180" />
           </button>
           <div className="text-center">
             {guide.icon && <guide.icon className="w-10 h-10 text-white mx-auto mb-2" />}
             <h1 className="text-white font-black text-2xl">{guide.name}</h1>
-            <p className="text-white/70 text-sm mt-1">{guide.duration} de travail</p>
+            <p className="text-white/80 text-sm mt-1">{guide.duration} de travail</p>
           </div>
         </div>
 
@@ -507,7 +507,7 @@ export default function Training() {
               <div className="space-y-3 mt-2">
                 {/* Program header */}
                 <div className="gradient-primary rounded-2xl p-5 text-white">
-                  <p className="text-white/70 text-[11px] font-bold uppercase tracking-wider mb-1">Programme comportement</p>
+                  <p className="text-white/80 text-[11px] font-bold uppercase tracking-wider mb-1">Programme comportement</p>
                   <h3 className="font-black text-lg leading-tight">{activeProgram.program_title}</h3>
                   <p className="text-white/80 text-xs mt-1.5 leading-relaxed">{activeProgram.summary}</p>
                   <div className="mt-3 flex items-center gap-2">
@@ -678,9 +678,9 @@ export default function Training() {
       <div className="gradient-primary safe-pt-16 pb-0 px-5 overflow-hidden relative">
         <div className="relative z-10 flex items-start justify-between">
           <div className="pb-6 flex-1">
-            <p className="text-white/60 text-[11px] font-bold tracking-widest uppercase mb-2">PawCoach</p>
+            <p className="text-white/80 text-[11px] font-bold tracking-widest uppercase mb-2">PawCoach</p>
             <h1 className="text-white font-black text-2xl leading-tight">Dressage</h1>
-            <p className="text-white/70 text-sm mt-1 mb-4">
+            <p className="text-white/80 text-sm mt-1 mb-4">
               {dog ? `Parcours de ${dog.name}` : "Chargement..."}
             </p>
             <div className="bg-white/15 rounded-2xl p-4">
@@ -693,7 +693,7 @@ export default function Training() {
                       ? "Tous les exercices maitrisés !"
                       : `${completedCount} exercice${completedCount > 1 ? "s" : ""} maitrisé${completedCount > 1 ? "s" : ""}`}
                   </span>
-                  <p className="text-white/60 text-[11px] mt-0.5">{EXERCISES.length - completedCount > 0 ? `${EXERCISES.length - completedCount} restant${EXERCISES.length - completedCount > 1 ? "s" : ""}` : "Parcours complet"}</p>
+                  <p className="text-white/80 text-[11px] mt-0.5">{EXERCISES.length - completedCount > 0 ? `${EXERCISES.length - completedCount} restant${EXERCISES.length - completedCount > 1 ? "s" : ""}` : "Parcours complet"}</p>
                 </div>
                 <span className="text-white font-black text-lg">{Math.round((completedCount / EXERCISES.length) * 100)}%</span>
               </div>

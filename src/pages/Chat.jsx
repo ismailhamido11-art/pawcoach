@@ -355,9 +355,9 @@ export default function Chat() {
       <div className="gradient-primary safe-pt-14 pb-0 px-5 mt-8 overflow-hidden relative">
         <div className="relative z-10 flex items-end gap-3">
           <div className="flex-1 pb-4">
-            <p className="text-white/60 text-[11px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
+            <p className="text-white/80 text-[11px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
             <h1 className="text-white font-black text-2xl leading-tight">Assistant IA</h1>
-            {dog && <p className="text-white/70 text-xs mt-0.5">Personnalise pour {dog.name} · {dog.breed}</p>}
+            {dog && <p className="text-white/80 text-xs mt-0.5">Personnalise pour {dog.name} · {dog.breed}</p>}
             <div className="flex items-center gap-2 mt-2">
               {messages.length > 1 && (
                 <motion.button

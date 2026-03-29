@@ -367,7 +367,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
           <div className="flex flex-col items-center gap-2 bg-gradient-to-br from-primary to-accent rounded-2xl p-4 text-white text-center shadow-md">
             <Camera className="w-6 h-6" />
             <span className="text-xs font-bold">Analyser une photo</span>
-            <span className="text-[11px] text-white/70">IA morphologique</span>
+            <span className="text-[11px] text-white/80">IA morphologique</span>
           </div>
         </label>
         <button onClick={() => setShowAddManual(true)} className="flex flex-col items-center gap-2 bg-white border border-border rounded-2xl p-4 text-foreground text-center shadow-sm">

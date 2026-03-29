@@ -609,9 +609,9 @@ export default function Home() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-white font-bold text-[14px]">Parle au coach IA</p>
-              <p className="text-white/70 text-[11px] mt-0.5">Pose une question sur {dog?.name || "ton chien"}</p>
+              <p className="text-white/80 text-[11px] mt-0.5">Pose une question sur {dog?.name || "ton chien"}</p>
             </div>
-            <ChevronRight className="w-5 h-5 text-white/60 flex-shrink-0" />
+            <ChevronRight className="w-5 h-5 text-white/80 flex-shrink-0" />
           </motion.button>
         </div>
 

@@ -164,7 +164,7 @@ export default function DailyBriefing({ dog, user, recentCheckins, dailyLogs, st
               transition={{ duration: 0.4, delay: 0.3 }}
               className="mt-5"
             >
-              <p className="text-[12px] text-white/60 mb-3 font-medium">Comment va {dog?.name} ?</p>
+              <p className="text-[12px] text-white/80 mb-3 font-medium">Comment va {dog?.name} ?</p>
               <div className="flex gap-2">
                 {MOOD_OPTIONS.map((opt) => (
                   <button
@@ -174,7 +174,7 @@ export default function DailyBriefing({ dog, user, recentCheckins, dailyLogs, st
                     className="flex-1 flex flex-col items-center gap-1 py-2.5 rounded-xl bg-white/15 border border-white/20 active:scale-95 active:bg-white/25 transition-all disabled:opacity-50 backdrop-blur-sm"
                   >
                     {(() => { const MI = opt.Icon; return <MI className={`w-5 h-5 ${opt.color}`} />; })()}
-                    <span className="text-[10px] text-white/70 font-medium">{opt.label}</span>
+                    <span className="text-[10px] text-white/80 font-medium">{opt.label}</span>
                   </button>
                 ))}
               </div>

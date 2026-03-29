@@ -90,7 +90,7 @@ export default function QRCodeCard({ dog }) {
         </div>
         <div className="flex-1">
           <p className="text-white font-bold text-sm">QR Code d'urgence</p>
-          <p className="text-white/60 text-xs">Dossier médical accessible en 3 secondes</p>
+          <p className="text-white/80 text-xs">Dossier médical accessible en 3 secondes</p>
         </div>
         <div className="flex gap-1">
           <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import useBackClose from "@/hooks/useBackClose";
@@ -39,6 +39,7 @@ export default function DogProfile() {
   const [scansCount, setScansCount] = useState(0);
   const [editModal, setEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const deleteModalRef = useRef(null);
 
   useBackClose(editModal, () => setEditModal(false));
   useBackClose(showDeleteConfirm, () => setShowDeleteConfirm(false));
@@ -177,7 +178,7 @@ export default function DogProfile() {
         <button
           aria-label="Retour"
           onClick={() => navigate(createPageUrl("Profile"))}
-          className="absolute left-4 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center z-40"
+          className="absolute left-4 w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center z-40"
           style={{ top: "calc(env(safe-area-inset-top, 0px) + 3rem)" }}
         >
           <ArrowLeft className="w-5 h-5 text-white" />
@@ -185,7 +186,7 @@ export default function DogProfile() {
         <button
           aria-label="Modifier le profil"
           onClick={() => setEditModal(true)}
-          className="absolute right-4 w-9 h-9 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center z-40"
+          className="absolute right-4 w-11 h-11 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center z-40"
           style={{ top: "calc(env(safe-area-inset-top, 0px) + 3rem)" }}
         >
           <Pencil className="w-4 h-4 text-white" />
@@ -302,10 +303,22 @@ export default function DogProfile() {
 
       {/* Delete confirmation */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-6">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-6"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Confirmer la suppression"
+          tabIndex={-1}
+          ref={deleteModalRef}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setShowDeleteConfirm(false);
+          }}
+          onClick={(e) => { if (e.target === e.currentTarget) setShowDeleteConfirm(false); }}
+        >
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
+            onAnimationComplete={() => deleteModalRef.current?.focus()}
             className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl"
           >
             <div className="flex items-center gap-3 mb-4">

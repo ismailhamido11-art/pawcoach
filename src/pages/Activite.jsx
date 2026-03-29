@@ -89,9 +89,9 @@ export default function Activite() {
       >
         <div className="relative z-10 flex items-end gap-3 mb-3">
           <div className="flex-1 pb-1">
-            <p className="text-white/60 text-[11px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
+            <p className="text-white/80 text-[11px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
             <h1 className="text-white font-black text-2xl">Activité</h1>
-            {dog && <p className="text-white/70 text-xs mt-0.5">Suivi des balades de {dog.name}</p>}
+            {dog && <p className="text-white/80 text-xs mt-0.5">Suivi des balades de {dog.name}</p>}
           </div>
           <motion.div
             animate={{ scale: [1, 1.03, 1] }}

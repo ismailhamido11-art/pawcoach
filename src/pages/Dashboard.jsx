@@ -218,7 +218,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-white font-black text-2xl">Tableau de bord</h1>
-              <p className="text-white/70 text-sm">{dog ? `Bilan de santé de ${dog.name}` : "Aperçu général"}</p>
+              <p className="text-white/80 text-sm">{dog ? `Bilan de santé de ${dog.name}` : "Aperçu général"}</p>
             </div>
             {dog?.photo ? (
               <motion.div
@@ -256,7 +256,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <p className="text-white font-bold text-lg">{scoreLabel}</p>
-                <p className="text-white/70 text-xs">Score de santé global de {dog.name}</p>
+                <p className="text-white/80 text-xs">Score de santé global de {dog.name}</p>
                 {streak?.current_streak > 0 && (
                   <div className="flex items-center gap-1 mt-1">
                     <Flame className="w-3.5 h-3.5 text-emerald-300" />

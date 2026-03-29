@@ -83,21 +83,21 @@ function OnboardingWelcome({ onStart }) {
           <Illustration name="adoptAPet" alt="Adopte un compagnon" className="w-48 h-48 drop-shadow-2xl" />
         </motion.div>
 
-        <p className="text-white/60 text-xs font-bold tracking-widest uppercase mb-3">PawCoach</p>
+        <p className="text-white/80 text-xs font-bold tracking-widest uppercase mb-3">PawCoach</p>
         <h1 className="text-2xl font-black text-white leading-tight mb-4">
           Bienvenue dans<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-emerald-400">
             l'aventure
           </span>
         </h1>
-        <p className="text-white/60 text-base leading-relaxed max-w-xs mb-12">
+        <p className="text-white/80 text-base leading-relaxed max-w-xs mb-12">
           En 2 minutes, crée le profil de ton chien et commence à suivre son bien-être au quotidien.
         </p>
 
         {/* Feature pills */}
         <div className="flex flex-wrap gap-2 justify-center mb-12">
           {["IA personnalisée", "Suivi quotidien", "Carnet santé", "NutriCoach"].map(f => (
-            <span key={f} className="px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-white/70 text-xs font-medium">
+            <span key={f} className="px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-white/80 text-xs font-medium">
               {f}
             </span>
           ))}
@@ -394,7 +394,7 @@ Extrais ces informations et renvoie un objet JSON.
           <div className="flex-1 bg-white/20 backdrop-blur h-1.5 rounded-full overflow-hidden">
             <div className="h-full rounded-full bg-white w-full" />
           </div>
-          <span className="text-white/70 font-bold text-sm w-10 text-right">OK</span>
+          <span className="text-white/80 font-bold text-sm w-10 text-right">OK</span>
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center px-6 pb-12">
@@ -535,7 +535,7 @@ Extrais ces informations et renvoie un objet JSON.
             transition={{ duration: 0.4, ease: "easeOut" }}
           />
         </div>
-        <span className="text-white/70 font-bold text-sm w-10 text-right">{currentGroup.label}</span>
+        <span className="text-white/80 font-bold text-sm w-10 text-right">{currentGroup.label}</span>
       </div>
 
       {/* Content */}
@@ -630,6 +630,7 @@ Extrais ces informations et renvoie un objet JSON.
                       value={answers[2]}
                       onChange={(e) => setAnswerAtIndex(2, e.target.value)}
                       placeholder={INTERVIEW_STEPS[2].placeholder}
+                      maxLength={100}
                       className="h-12 text-center text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm flex-1"
                     />
                     <motion.button
@@ -659,6 +660,7 @@ Extrais ces informations et renvoie un objet JSON.
                     value={answers[3]}
                     onChange={(e) => setAnswerAtIndex(3, e.target.value)}
                     placeholder={INTERVIEW_STEPS[3].placeholder}
+                    maxLength={100}
                     className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
                   />
                 </div>
@@ -671,6 +673,7 @@ Extrais ces informations et renvoie un objet JSON.
                     value={answers[4]}
                     onChange={(e) => setAnswerAtIndex(4, e.target.value)}
                     placeholder={INTERVIEW_STEPS[4].placeholder}
+                    maxLength={100}
                     className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
                   />
                 </div>
@@ -689,6 +692,7 @@ Extrais ces informations et renvoie un objet JSON.
                       value={answers[idx]}
                       onChange={(e) => setAnswerAtIndex(idx, e.target.value)}
                       placeholder={INTERVIEW_STEPS[idx].placeholder}
+                      maxLength={100}
                       className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
                     />
                   </div>
@@ -708,6 +712,7 @@ Extrais ces informations et renvoie un objet JSON.
                     value={answers[8]}
                     onChange={(e) => setAnswerAtIndex(8, e.target.value)}
                     placeholder={INTERVIEW_STEPS[8].placeholder}
+                    maxLength={100}
                     className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
                   />
                 </div>
@@ -720,6 +725,7 @@ Extrais ces informations et renvoie un objet JSON.
                     value={answers[9]}
                     onChange={(e) => setAnswerAtIndex(9, e.target.value)}
                     placeholder={INTERVIEW_STEPS[9].placeholder}
+                    maxLength={200}
                     className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
                   />
                 </div>

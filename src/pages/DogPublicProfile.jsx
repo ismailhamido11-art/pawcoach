@@ -140,7 +140,7 @@ export default function DogPublicProfile() {
             />
           ) : (
             <div className="w-20 h-20 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
-              <PawPrint className="w-10 h-10 text-white/70" />
+              <PawPrint className="w-10 h-10 text-white/80" />
             </div>
           )}
           <div>
@@ -150,7 +150,7 @@ export default function DogPublicProfile() {
               {dog.sex ? ` · ${dog.sex === "male" ? "Mâle" : "Femelle"}` : ""}
             </p>
             {lastWeight && (
-              <p className="text-white/70 text-xs mt-1">{lastWeight.value} kg</p>
+              <p className="text-white/80 text-xs mt-1">{lastWeight.value} kg</p>
             )}
           </div>
         </motion.div>

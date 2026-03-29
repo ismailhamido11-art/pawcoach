@@ -475,7 +475,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                 <div className="font-black tabular-nums text-white" style={{ fontSize: "3.5rem", lineHeight: 1 }}>
                   {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
                 </div>
-                <div className="text-white/60 text-xs mt-1 font-medium">minutes : secondes</div>
+                <div className="text-white/80 text-xs mt-1 font-medium">minutes : secondes</div>
                 {status === "paused" && (
                   <div className="mt-1 bg-white/20 rounded-full px-3 py-0.5 text-white text-[11px] font-bold flex items-center gap-1">
                     <Pause className="w-3 h-3 inline" /> EN PAUSE

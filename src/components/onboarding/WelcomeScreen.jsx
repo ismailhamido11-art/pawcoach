@@ -66,7 +66,7 @@ export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium
       {/* Personalized lines (breed/age) or fallback generic */}
       <div className="mb-4">
         {personalizedLines.map((line, i) => (
-          <p key={i} className={`text-white/70 text-sm mb-1 ${i === 0 ? "font-semibold" : ""}`}>
+          <p key={i} className={`text-white/80 text-sm mb-1 ${i === 0 ? "font-semibold" : ""}`}>
             {line}
           </p>
         ))}
@@ -75,7 +75,7 @@ export default function WelcomeScreen({ dogName, dogPhoto, onDiscover, isPremium
       {/* Trial badge */}
       <div className="bg-white/15 border border-white/25 rounded-2xl px-4 py-3 mb-6 text-center max-w-xs">
         <p className="text-white font-bold text-sm">Ton essai Premium démarre maintenant</p>
-        <p className="text-white/70 text-xs mt-1">7 jours gratuits · Toutes les fonctionnalités débloquées</p>
+        <p className="text-white/80 text-xs mt-1">7 jours gratuits · Toutes les fonctionnalités débloquées</p>
       </div>
 
       {/* CTA */}

@@ -193,7 +193,7 @@ export default function Premium() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="text-white/70 text-sm mt-1"
+              className="text-white/80 text-sm mt-1"
             >
               {dog.name} a accès à tout, sans limite
             </motion.p>
@@ -364,7 +364,7 @@ export default function Premium() {
         <button
           aria-label="Retour"
           onClick={() => navigate(-1)}
-          className="absolute top-4 left-4 w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center z-20"
+          className="absolute top-4 left-4 w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center z-20"
         >
           <ArrowLeft className="w-5 h-5 text-white" />
         </button>
@@ -377,7 +377,7 @@ export default function Premium() {
             <DogTrophy color="#ffffff" accent="#a7f3d0" />
           </motion.div>
           <h1 className="text-white font-black text-2xl">PawCoach Premium</h1>
-          <p className="text-white/70 text-sm mt-1">{SEGMENT_HERO[segment].subtitle(dogName)}</p>
+          <p className="text-white/80 text-sm mt-1">{SEGMENT_HERO[segment].subtitle(dogName)}</p>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
@@ -430,7 +430,7 @@ export default function Premium() {
             </span>
             Annuel<br />
             <span className={`text-xs font-normal ${plan === "annual" ? "text-white/80" : "text-muted-foreground"}`}>59,99 €/an · 5 €/mois</span>
-            <span className={`block text-[11px] mt-0.5 font-medium ${plan === "annual" ? "text-white/60" : "text-muted-foreground/60"}`}>Tu économises 36 € par an</span>
+            <span className={`block text-[11px] mt-0.5 font-medium ${plan === "annual" ? "text-white/80" : "text-muted-foreground/60"}`}>Tu économises 36 € par an</span>
           </motion.button>
         </div>
 
@@ -527,6 +527,10 @@ export default function Premium() {
             Conditions d'utilisation
           </Link>
         </div>
+
+        <p className="text-center text-xs text-muted-foreground mt-2">
+          Déjà abonné ? <button onClick={() => navigate(createPageUrl("Profile"))} className="underline hover:text-foreground transition-colors">Gérer mon abonnement</button>
+        </p>
       </motion.div>
 
       <BottomNav currentPage="Premium" />

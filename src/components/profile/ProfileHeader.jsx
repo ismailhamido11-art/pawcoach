@@ -36,7 +36,7 @@ export default function ProfileHeader({ user, achievementPoints }) {
         {/* Name + email */}
         <div className="flex-1 min-w-0">
           <h1 className="text-white font-bold text-lg truncate">{user?.full_name || "Mon profil"}</h1>
-          <p className="text-white/60 text-xs truncate">{user?.email}</p>
+          <p className="text-white/80 text-xs truncate">{user?.email}</p>
 
           {/* Subscription badge */}
           <div className="flex items-center gap-2 mt-2">
@@ -49,7 +49,7 @@ export default function ProfileHeader({ user, achievementPoints }) {
                 <Crown className="w-3 h-3" /> Essai · {getTrialDaysLeft(user)}j
               </span>
             ) : (
-              <span className="flex items-center gap-1 bg-white/10 border border-white/20 px-2.5 py-1 rounded-full text-xs font-semibold text-white/70">
+              <span className="flex items-center gap-1 bg-white/10 border border-white/20 px-2.5 py-1 rounded-full text-xs font-semibold text-white/80">
                 Gratuit
               </span>
             )}

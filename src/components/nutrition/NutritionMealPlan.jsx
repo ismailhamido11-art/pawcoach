@@ -365,13 +365,13 @@ RÈGLES :
         <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-5 text-white">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="text-white/60 text-[11px] font-bold uppercase tracking-wider">Plan actif</p>
+              <p className="text-white/80 text-[11px] font-bold uppercase tracking-wider">Plan actif</p>
               <p className="text-white font-bold text-lg">
                 {progress.isExpired ? "Plan terminé" : `Jour ${progress.dayNumber}/7`}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-white/60 text-[11px]">
+              <p className="text-white/80 text-[11px]">
                 {format(progress.startDate, "d MMM", { locale: fr })} → {format(progress.endDate, "d MMM", { locale: fr })}
               </p>
               {activeData.calories_per_day && (
@@ -389,7 +389,7 @@ RÈGLES :
             />
           </div>
           {activeData.quantity_summary && (
-            <p className="text-white/70 text-xs mt-2">{activeData.quantity_summary}</p>
+            <p className="text-white/80 text-xs mt-2">{activeData.quantity_summary}</p>
           )}
         </div>
 

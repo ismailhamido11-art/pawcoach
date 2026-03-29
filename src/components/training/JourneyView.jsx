@@ -28,7 +28,7 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
         <button
           aria-label="Retour"
           onClick={onBack}
-          className="absolute top-14 left-4 w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center text-white"
+          className="absolute top-14 left-4 w-11 h-11 bg-white/20 rounded-xl flex items-center justify-center text-white"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
@@ -38,7 +38,7 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
             {journey.icon ? <journey.icon className="w-8 h-8 text-white" /> : <PawPrint className="w-8 h-8 text-white" />}
           </div>
           <h1 className="text-white font-black text-xl">{journey.name}</h1>
-          <p className="text-white/70 text-sm mt-1">{journey.description}</p>
+          <p className="text-white/80 text-sm mt-1">{journey.description}</p>
 
           {locked ? (
             <div className="mt-3 bg-white/15 rounded-2xl px-4 py-2 inline-flex items-center gap-2">
