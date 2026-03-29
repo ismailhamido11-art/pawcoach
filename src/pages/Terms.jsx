@@ -8,14 +8,14 @@ export default function Terms() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-background border-b border-border px-4 py-3 flex items-center gap-3">
-        <button onClick={() => navigate(-1)} className="p-2 -ml-2">
+        <button aria-label="Retour" onClick={() => navigate(-1)} className="p-2 -ml-2">
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
         <h1 className="text-base font-bold text-foreground">Conditions d'utilisation</h1>
       </div>
 
       {/* Content */}
-      <div className="px-5 py-6 max-w-prose mx-auto space-y-6">
+      <div className="px-5 py-6 max-w-prose mx-auto space-y-6" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
 
         <section className="space-y-2">
           <h2 className="text-base font-bold text-foreground">1. Acceptation des conditions</h2>

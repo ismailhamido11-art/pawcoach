@@ -129,14 +129,14 @@ export default function Onboarding() {
   const [started, setStarted] = useState(isAddDog); // skip welcome splash when adding a dog
   const [step, setStep] = useState(() => {
     try {
-      const saved = sessionStorage.getItem('onboarding_state');
+      const saved = localStorage.getItem('onboarding_state');
       if (saved) { const parsed = JSON.parse(saved); return typeof parsed.step === 'number' ? parsed.step : 0; }
     } catch {}
     return 0;
   });
   const [answers, setAnswers] = useState(() => {
     try {
-      const saved = sessionStorage.getItem('onboarding_state');
+      const saved = localStorage.getItem('onboarding_state');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed.answers) && parsed.answers.length === INTERVIEW_STEPS.length) return parsed.answers;
@@ -164,7 +164,7 @@ export default function Onboarding() {
   // Persist onboarding progress so page reload restores the user's position
   useEffect(() => {
     try {
-      sessionStorage.setItem('onboarding_state', JSON.stringify({ step, answers }));
+      localStorage.setItem('onboarding_state', JSON.stringify({ step, answers }));
     } catch {}
   }, [step, answers]);
 
@@ -350,7 +350,7 @@ Extrais ces informations et renvoie un objet JSON.
         }
       }
       setSaveError(false);
-      try { sessionStorage.removeItem('onboarding_state'); } catch {}
+      try { localStorage.removeItem('onboarding_state'); } catch {}
       setDone(true);
     } catch (e) {
       console.error(e);

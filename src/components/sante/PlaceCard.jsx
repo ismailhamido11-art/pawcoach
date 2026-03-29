@@ -93,6 +93,7 @@ export default function PlaceCard({ place, isFavorite, favoriteId, favoriteNotes
             )}
           </div>
           <button
+            aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
             onClick={handleToggleFavorite}
             disabled={saving}
             className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${

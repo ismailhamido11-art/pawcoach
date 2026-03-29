@@ -291,7 +291,12 @@ export default function Premium() {
                 disabled={loading}
                 className="w-full h-14 rounded-2xl gradient-primary border-0 text-white font-bold text-base gap-2 shadow-lg"
               >
-                {loading ? "Chargement..." : `S'abonner — ${plan === "annual" ? "59,99 €/an" : "7,99 €/mois"}`}
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    Chargement...
+                  </span>
+                ) : `S'abonner — ${plan === "annual" ? "59,99 €/an" : "7,99 €/mois"}`}
               </Button>
             ) : (
               <Button
@@ -491,6 +496,13 @@ export default function Premium() {
           </div>
         )}
 
+        {/* Auto-renewal disclosure — BEFORE CTA (CK-08) */}
+        <p className="text-center text-xs text-muted-foreground leading-relaxed">
+          Renouvellement automatique à chaque période. Résiliation à tout moment depuis ton profil.{" "}
+          {plan === "annual" ? "Facturation annuelle de 59,99 EUR." : "Facturation mensuelle de 7,99 EUR."}{" "}
+          Paiement sécurisé via Stripe.
+        </p>
+
         {/* CTA */}
         <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: 0.1 }}>
           <Button
@@ -511,12 +523,6 @@ export default function Premium() {
             )}
           </Button>
         </motion.div>
-
-        <p className="text-center text-xs text-muted-foreground leading-relaxed">
-          Renouvellement automatique à chaque période. Résiliation à tout moment depuis ton profil.{" "}
-          {plan === "annual" ? "Facturation annuelle de 59,99 EUR." : "Facturation mensuelle de 7,99 EUR."}{" "}
-          Paiement sécurisé via Stripe.
-        </p>
 
         <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
           <Link to={createPageUrl("Privacy")} className="underline hover:text-foreground transition-colors">

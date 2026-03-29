@@ -206,7 +206,7 @@ export default function FindVetContent({ dog, user }) {
               onKeyDown={e => e.key === "Enter" && handleSearch()}
             />
           </div>
-          <button onClick={handleGeolocate}
+          <button aria-label="Me géolocaliser" onClick={handleGeolocate}
             className="w-10 h-10 rounded-2xl bg-secondary border border-border flex items-center justify-center text-primary flex-shrink-0">
             <Navigation className="w-4 h-4" />
           </button>

@@ -66,6 +66,7 @@ export default function Layout({ children, currentPageName }) {
            Les pages NE doivent PAS ajouter leur propre pb-* sur le wrapper principal. */}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
+          id="main-content"
           key={currentPageName}
           {...transitionProps}
           className="layout-padding"

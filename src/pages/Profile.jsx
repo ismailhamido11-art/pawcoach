@@ -130,6 +130,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-background">
+      <h1 className="sr-only">Mon profil</h1>
       <ProfileHeader user={user} achievementPoints={achievementPoints} />
 
       <motion.div
