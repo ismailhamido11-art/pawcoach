@@ -23,7 +23,7 @@ import DailyProgress from "../components/home/DailyProgress";
 import EmotionalTip from "../components/home/EmotionalTip";
 // ContentArticles removed — hardcoded placeholder content, will be replaced with real content later
 
-import { Flame, ScanLine, Footprints, Stethoscope, BookOpen, Lock, Sparkles, ChevronRight } from "lucide-react";
+import { Flame, ScanLine, Footprints, Stethoscope, BookOpen, Lock, Sparkles, ChevronRight, BarChart3, UtensilsCrossed, Heart } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
@@ -598,27 +598,48 @@ export default function Home() {
         />
         </div>
 
-        {/* AI Coach Card — differentiator visible at first visit */}
-        <div className="px-5 pt-4">
+        {/* AI Coach Card — compact, differentiator visible at first visit */}
+        <div className="px-5 pt-3">
           <motion.button
             onClick={() => navigate(createPageUrl("Chat"))}
             whileTap={{ scale: 0.98 }}
-            className="w-full gradient-primary rounded-3xl p-4 flex items-center gap-4 shadow-md text-left"
+            className="w-full gradient-primary rounded-2xl p-3 flex items-center gap-3 shadow-md text-left"
           >
-            <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white font-bold text-[14px]">Parle au coach IA</p>
+              <p className="text-white font-bold text-[13px]">Parle au coach IA</p>
               <p className="text-white/80 text-[11px] mt-0.5">Pose une question sur {dog?.name || "ton chien"}</p>
             </div>
             <ChevronRight className="w-5 h-5 text-white/80 flex-shrink-0" />
           </motion.button>
         </div>
 
+        {/* === Transition fold — Quick Actions 2x2 grid === */}
+        <div className="px-5 pt-4">
+          <div className="grid grid-cols-2 gap-3">
+            {quickActions.slice(0, 4).map((qa, i) => (
+              <motion.button
+                key={qa.page || qa.label || i}
+                onClick={() => qa.onClick ? qa.onClick() : navigate(createPageUrl(qa.page))}
+                className="flex items-center gap-3 bg-white rounded-2xl p-3 border border-border shadow-sm text-left active:scale-[0.98] transition-transform"
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05, duration: 0.25 }}
+              >
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${qa.bgClass}`}>
+                  {qa.svg}
+                </div>
+                <span className="text-[13px] font-bold text-foreground">{qa.label}</span>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
         {/* === Below the fold — scroll to discover === */}
         <motion.div
-          className="px-5 space-y-5"
+          className="px-5 space-y-4 pt-4"
           initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
@@ -636,25 +657,18 @@ export default function Home() {
             onScrollToCheckin={() => dailyBriefingRef.current?.scrollIntoView({ behavior: "smooth" })}
           />
 
-          {/* Dashboard access — SmartAlerts — repositioned above hero for prominence */}
-          <button
-            onClick={() => navigate(createPageUrl("Dashboard"))}
-            className="w-full bg-white rounded-2xl p-4 border border-border shadow-sm flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
-            aria-label="Voir le tableau de bord et les alertes santé"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-              <StorysetIllustration name="vet-checkup" className="w-8 h-8" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-bold text-foreground">Tableau de bord</p>
-              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Vaccins, alertes poids, tendances humeur — tout en un coup d'oeil.</p>
-              <span className="inline-block mt-2 text-[12px] font-bold text-blue-700 bg-blue-100 px-3 py-1.5 rounded-full">
-                Voir les alertes
-              </span>
-            </div>
-          </button>
+          {/* Daily Progress — 3 mini cards */}
+          <DailyProgress
+            dailyLogs={dailyLogs}
+            todayCheckin={todayCheckin}
+            dog={dog}
+          />
 
-          {/* Hero Illustration — always visible, premium feel */}
+          {/* Calendar Strip */}
+          <CalendarStrip dailyLogs={dailyLogs} />
+
+          {/* REMOVED: Hero illustration — decoratif, remplace par hierarchie. Le DailyBriefing couvre deja le statut du chien. */}
+          {/*
           <motion.div
             initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -689,65 +703,65 @@ export default function Home() {
             <div className="absolute -top-8 -right-8 w-24 h-24 bg-emerald-200/20 rounded-full blur-2xl" />
             <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-amber-200/15 rounded-full blur-xl" />
           </motion.div>
+          */}
 
-          {/* Calendar Strip */}
-          <CalendarStrip dailyLogs={dailyLogs} />
-
-          {/* Daily Progress — 3 mini cards */}
-          <DailyProgress
-            dailyLogs={dailyLogs}
-            todayCheckin={todayCheckin}
-            dog={dog}
-          />
-
-          {/* Quick Actions */}
-          <div className="flex justify-between gap-1 overflow-x-auto px-2 pb-1">
-            {quickActions.map((qa, i) => (
-              <motion.button
-                key={qa.page || qa.label || i}
-                onClick={() => qa.onClick ? qa.onClick() : navigate(createPageUrl(qa.page))}
-                className="flex flex-col items-center gap-2 min-w-[64px] active:scale-95 transition-transform flex-shrink-0"
-                initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05, duration: 0.25 }}
+          {/* Section "Pour toi" — Dashboard + Nutrition en grille 2 cols, Sante full width */}
+          <div className="space-y-3">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Pour toi</p>
+            <div className="grid grid-cols-2 gap-3">
+              {/* Dashboard compact */}
+              <button
+                onClick={() => navigate(createPageUrl("Dashboard"))}
+                className="bg-white rounded-2xl p-3 border border-border shadow-sm text-left active:scale-[0.98] transition-transform"
+                aria-label="Voir le tableau de bord et les alertes sante"
               >
-                <div className={`w-[56px] h-[56px] rounded-2xl flex items-center justify-center ${qa.bgClass}`}>
-                  {qa.svg}
+                <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center mb-2">
+                  <BarChart3 className="w-4 h-4 text-blue-600" />
                 </div>
-                <span className="text-[11px] font-bold text-foreground">{qa.label}</span>
-              </motion.button>
-            ))}
+                <p className="text-[13px] font-bold text-foreground">Tableau de bord</p>
+                <span className="text-[11px] font-bold text-blue-700 bg-blue-100 px-2 py-1 rounded-full mt-1.5 inline-block">Alertes</span>
+              </button>
+              {/* Nutrition compact */}
+              <button
+                onClick={() => navigate(createPageUrl("Scan"))}
+                className="bg-white rounded-2xl p-3 border border-border shadow-sm text-left active:scale-[0.98] transition-transform"
+                aria-label="Scanner un aliment pour votre chien"
+              >
+                <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center mb-2">
+                  <UtensilsCrossed className="w-4 h-4 text-amber-600" />
+                </div>
+                <p className="text-[13px] font-bold text-foreground">Nutrition</p>
+                <span className="text-[11px] font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-full mt-1.5 inline-block">Scanner</span>
+              </button>
+            </div>
+            {/* Sante full width */}
+            <button
+              onClick={() => navigate(createPageUrl("Sante"))}
+              className="w-full bg-white rounded-2xl p-3 border border-border shadow-sm flex items-center gap-3 text-left active:scale-[0.98] transition-transform"
+              aria-label="Voir le carnet de sante"
+            >
+              <div className="w-9 h-9 rounded-xl bg-violet-50 flex items-center justify-center flex-shrink-0">
+                <Heart className="w-4 h-4 text-violet-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-[13px] font-bold text-foreground">Carnet de sante</p>
+              </div>
+              <span className="text-[11px] font-bold text-violet-700 bg-violet-100 px-2 py-1 rounded-full">Voir</span>
+            </button>
           </div>
-
-          {/* Nutrition tip card with illustration */}
-          <button
-            onClick={() => navigate(createPageUrl("Scan"))}
-            className="w-full bg-white rounded-2xl p-4 border border-border shadow-sm flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0">
-              <StorysetIllustration name="feeding" className="w-8 h-8" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-bold text-foreground">Nutrition de {dog?.name || "ton chien"}</p>
-              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Scanne un aliment pour savoir s'il est adapte.</p>
-              <span className="inline-block mt-2 text-[12px] font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-full">
-                Scanner un aliment
-              </span>
-            </div>
-          </button>
 
           {/* Active Programs */}
           <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} behaviorBookmarks={behaviorBookmarks} />
 
           {/* Streak Card */}
           {streakDays > 0 && (
-            <div className="flex items-center gap-4 bg-gradient-to-r from-amber-50 via-amber-100 to-amber-50 rounded-2xl border border-amber-200/60 p-[18px] card-hover shadow-sm">
+            <div className="flex items-center gap-4 bg-gradient-to-r from-amber-50 via-amber-100 to-amber-50 rounded-2xl border border-amber-200/60 p-4 card-hover shadow-sm">
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-amber-200/50">
                 <Flame className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[15px] font-bold text-foreground">{streakDays} jours de suite</p>
-                <p className="text-xs text-muted-foreground mt-0.5">La régularité paie — continue comme ça !</p>
+                <p className="text-xs text-muted-foreground mt-0.5">La regularite paie — continue comme ca !</p>
               </div>
               {streakLabel && (
                 <span className="text-[11px] font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-full flex-shrink-0">
@@ -757,25 +771,8 @@ export default function Home() {
             </div>
           )}
 
-          {/* Health card with illustration */}
-          <button
-            onClick={() => navigate(createPageUrl("Sante"))}
-            className="w-full bg-white rounded-2xl p-4 border border-border shadow-sm flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-violet-50 flex items-center justify-center flex-shrink-0">
-              <StorysetIllustration name="vet-checkup" className="w-8 h-8" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-bold text-foreground">Carnet de sante</p>
-              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Vaccins, visites, poids — tout est suivi automatiquement.</p>
-              <span className="inline-block mt-2 text-[12px] font-bold text-violet-700 bg-violet-100 px-3 py-1.5 rounded-full">
-                Voir le carnet
-              </span>
-            </div>
-          </button>
-
-          {/* Emotional Tip — "Le savais-tu ?" */}
-          <EmotionalTip dog={dog} />
+          {/* REMOVED: EmotionalTip — "Le savais-tu ?" est du contenu filler sans valeur directe, prend de la place sans action */}
+          {/* <EmotionalTip dog={dog} /> */}
 
           {/* Content Articles removed — was hardcoded placeholder content */}
 
@@ -811,7 +808,7 @@ export default function Home() {
 
           {/* Disclaimer */}
           <p className="text-center text-[11px] text-muted-foreground px-6 pb-2">
-            PawCoach est un outil de suivi. Consultez votre vétérinaire.
+            PawCoach est un outil de suivi. Consultez votre veterinaire.
           </p>
         </motion.div>
 
