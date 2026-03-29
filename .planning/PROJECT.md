@@ -33,7 +33,7 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 
 ### Active
 
-None — ready for v11.0
+- v11.0: Visual Excellence — polish visuel + Home redesign (7.4 → 9.0)
 
 ### Out of Scope
 
@@ -51,18 +51,24 @@ None — ready for v11.0
 - Architecture amelioree : DogContext, useHomeData, useReducer Nutri, VetPortal batch, buildHealthSummaryHTML decomposee
 - Score readiness : 9.5/10 (Production Ready)
 
-## Current State (v10.0 shipped — 28 mars 2026)
+## Current State (v10.0 shipped — 29 mars 2026)
 
 - 11 milestones livres (v1.0 → v10.0)
-- Securite : HMAC sans fallback, Privacy/Terms dans Premium
-- Architecture : DogContext + useAuth utilises par toutes les pages (14 migrees)
-- Qualite : useTabNavigation hook, verdictConfig centralise, 15 silent catches corriges
-- Performance : useMemo sur 4 pages, Home 2-wave loading
-- Score readiness : 9.5/10
+- Production readiness : 88% (300+ items checklist)
+- SFA : 120 flows traces, 8 issues corrigees
+- WCAG : contraste, touch targets, focus traps, aria-labels corriges
+- Score design : 7.4/10 (art-direction-mobile audit)
 
-## No Active Milestone
+## Current Milestone: v11.0 "Visual Excellence"
 
-Ready for v11.0. Run `/gsd:new-milestone` to start.
+**Goal:** Monter le score design de 7.4 a 9.0 — polish visuel + redesign Home.
+
+**Target features:**
+- Font weights reduits a 3 (400, 600, 700)
+- Headers gradient compacts (moins de vert dominant)
+- Cards Home unifiees (1 style au lieu de 6)
+- Home redesignee (1 focal point par viewport, progressive disclosure)
+- Score art-direction >= 9.0
 
 ## Context
 

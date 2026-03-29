@@ -27,6 +27,28 @@
 - v9.0: Production Ready (55 requirements, audit complet, legal RGPD, UX transformee, visual clean)
 - v10.0: Hardening & Architecture (12 requirements, securite HMAC, DogContext 14 pages, useTabNavigation, useMemo, Home 2-wave)
 
-## No Active Milestone
+## Active: v11.0 "Visual Excellence"
 
-Ready for /gsd:new-milestone (v11.0).
+**Goal:** Score design 7.4 → 9.0. Polish visuel + Home redesign.
+
+### Phase 1: Visual Polish
+- **Goal:** Corrections mecaniques pour monter a 8.5
+- **Requirements:** VIS-01, VIS-02, VIS-03, VIS-04
+- **Success criteria:**
+  1. Max 3 font-weights (400, 600, 700) — zero font-black, font-medium rationalize
+  2. Headers gradient pb max 5 (pas de pb-8/pb-10)
+  3. Profile nom lisible sur 375px
+  4. Cards Home unifiees (1 style sauf CTA principal)
+  5. Score art-direction >= 8.5
+
+### Phase 2: Home Redesign
+- **Goal:** Repenser la Home pour 1 focal point par viewport
+- **Requirements:** HOME-01, HOME-02, HOME-03, HOME-04, QUAL-01, QUAL-02, QUAL-03
+- **Success criteria:**
+  1. Above-fold = briefing + check-in uniquement
+  2. Recommendations en progressive disclosure (scroll)
+  3. 1 CTA dominant par viewport
+  4. Score art-direction Home >= 8.5
+  5. Score art-direction global >= 9.0
+  6. Premium Feel >= 18/20
+  7. AI Slop 0/15
