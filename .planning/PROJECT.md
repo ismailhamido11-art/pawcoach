@@ -33,7 +33,7 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 
 ### Active
 
-- v11.0: Visual Excellence — polish visuel + Home redesign (7.4 → 9.0)
+None — ready for v12.0
 
 ### Out of Scope
 
@@ -59,16 +59,17 @@ Payment: Stripe (mensuel 7.99 EUR, annuel 59.99 EUR)
 - WCAG : contraste, touch targets, focus traps, aria-labels corriges
 - Score design : 7.4/10 (art-direction-mobile audit)
 
-## Current Milestone: v11.0 "Visual Excellence"
+## Current State (v11.0 shipped — 29 mars 2026)
 
-**Goal:** Monter le score design de 7.4 a 9.0 — polish visuel + redesign Home.
+- 12 milestones livres (v1.0 → v11.0)
+- Design score : 8.3/10 (etait 7.4)
+- Home redesignee : 1 focal point, grille 2x2, section "Pour toi"
+- Production readiness : 88%
+- Premium Feel : 17/20
 
-**Target features:**
-- Font weights reduits a 3 (400, 600, 700)
-- Headers gradient compacts (moins de vert dominant)
-- Cards Home unifiees (1 style au lieu de 6)
-- Home redesignee (1 focal point par viewport, progressive disclosure)
-- Score art-direction >= 9.0
+## No Active Milestone
+
+Ready for v12.0. Run `/gsd:new-milestone` to start.
 
 ## Context
 

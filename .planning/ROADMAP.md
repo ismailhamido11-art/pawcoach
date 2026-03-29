@@ -13,6 +13,7 @@
 - ✅ **v8.0 "SFA Fixes"** — 3 phases, 19 requirements, zero crash + donnees coherentes + cache + securite (shipped 27 mars). [Archive](milestones/v8.0-ROADMAP.md)
 - ✅ **v9.0 "Production Ready"** — 11 phases, 55/58 requirements, audit complet + legal + flow fixes + UX + visual + perf (shipped 28 mars). [Archive](milestones/v9.0-ROADMAP.md)
 - ✅ **v10.0 "Hardening & Architecture"** — 5 phases, 12/12 requirements, securite + DogContext migration + dedup + perf (shipped 28 mars). [Archive](milestones/v10.0-ROADMAP.md)
+- ✅ **v11.0 "Visual Excellence"** — 2 phases, 8/11 requirements, design 7.4→8.3, Home redesign + visual polish (shipped 29 mars). [Archive](milestones/v11.0-ROADMAP.md)
 
 ## Completed Work (archived)
 - v1.0: Data flow integrity (4 phases)
@@ -26,29 +27,8 @@
 - v8.0: SFA Fixes (19 requirements, zero crash, donnees reelles, cache propagation, securite UX)
 - v9.0: Production Ready (55 requirements, audit complet, legal RGPD, UX transformee, visual clean)
 - v10.0: Hardening & Architecture (12 requirements, securite HMAC, DogContext 14 pages, useTabNavigation, useMemo, Home 2-wave)
+- v11.0: Visual Excellence (8/11 requirements, design 7.4→8.3, font weights, headers, Home redesign 2x2)
 
-## Active: v11.0 "Visual Excellence"
+## No Active Milestone
 
-**Goal:** Score design 7.4 → 9.0. Polish visuel + Home redesign.
-
-### Phase 1: Visual Polish
-- **Goal:** Corrections mecaniques pour monter a 8.5
-- **Requirements:** VIS-01, VIS-02, VIS-03, VIS-04
-- **Success criteria:**
-  1. Max 3 font-weights (400, 600, 700) — zero font-black, font-medium rationalize
-  2. Headers gradient pb max 5 (pas de pb-8/pb-10)
-  3. Profile nom lisible sur 375px
-  4. Cards Home unifiees (1 style sauf CTA principal)
-  5. Score art-direction >= 8.5
-
-### Phase 2: Home Redesign
-- **Goal:** Repenser la Home pour 1 focal point par viewport
-- **Requirements:** HOME-01, HOME-02, HOME-03, HOME-04, QUAL-01, QUAL-02, QUAL-03
-- **Success criteria:**
-  1. Above-fold = briefing + check-in uniquement
-  2. Recommendations en progressive disclosure (scroll)
-  3. 1 CTA dominant par viewport
-  4. Score art-direction Home >= 8.5
-  5. Score art-direction global >= 9.0
-  6. Premium Feel >= 18/20
-  7. AI Slop 0/15
+Ready for /gsd:new-milestone (v12.0).
