@@ -80,7 +80,7 @@ export default function DayCard({ day, dayIdx, isOpen, onToggle, startDate, isDo
                     {day.activity.steps.map((step, i) => (
                       <div key={`step-${i}`} className="flex items-start gap-2">
                         <div className="w-5 h-5 rounded-full bg-violet-200 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-[11px] font-black text-violet-700">{i + 1}</span>
+                          <span className="text-[11px] font-bold text-violet-700">{i + 1}</span>
                         </div>
                         <p className="text-xs text-foreground/80 leading-relaxed">{step}</p>
                       </div>

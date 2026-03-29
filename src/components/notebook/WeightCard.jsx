@@ -160,7 +160,7 @@ export default function WeightCard({ weightTrend, dogName, dogId, onRecordAdded,
             {/* Current weight + trend */}
             <div className="flex items-center gap-4">
               <div>
-                <p className="text-3xl font-black text-foreground">{weightTrend.current}</p>
+                <p className="text-3xl font-bold text-foreground">{weightTrend.current}</p>
                 <p className="text-xs text-muted-foreground font-medium">kg</p>
               </div>
               <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl ${config.bg}`}>

@@ -515,7 +515,7 @@ export default function AITrainingProgram({ dog, logs = [] }) {
       {/* Program header */}
       <div className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-5 text-white">
         <p className="text-white/80 text-[11px] font-bold uppercase tracking-wider mb-1">Programme 7 jours</p>
-        <h3 className="font-black text-lg leading-tight">{program.program_title}</h3>
+        <h3 className="font-bold text-lg leading-tight">{program.program_title}</h3>
         <p className="text-white/80 text-xs mt-1.5 leading-relaxed">{program.summary}</p>
         <div className="flex gap-2 mt-3 flex-wrap">
           {program.difficulty && <span className="bg-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-full capitalize">{program.difficulty}</span>}

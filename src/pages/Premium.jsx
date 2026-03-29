@@ -121,7 +121,7 @@ export default function Premium() {
   if (pageLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="gradient-primary safe-pt-14 pb-8 px-5">
+        <div className="gradient-primary safe-pt-14 pb-5 px-5">
           <div className="text-center">
             <div className="w-16 h-16 bg-white/20 rounded-3xl mx-auto mb-3 animate-pulse" />
             <div className="h-7 w-48 bg-white/20 rounded mx-auto animate-pulse" />
@@ -146,7 +146,7 @@ export default function Premium() {
   if (isUserPremium(user)) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="gradient-primary safe-pt-14 pb-10 px-5 text-center">
+        <div className="gradient-primary safe-pt-14 pb-5 px-5 text-center">
           {/* Avatar */}
           <motion.div
             initial={{ scale: 0 }}
@@ -172,7 +172,7 @@ export default function Premium() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-white font-black text-2xl"
+            className="text-white font-bold text-2xl"
           >
             {isOnTrial
               ? "Essai gratuit actif"
@@ -365,7 +365,7 @@ export default function Premium() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="gradient-primary safe-pt-14 pb-8 px-5 relative overflow-hidden">
+      <div className="gradient-primary safe-pt-14 pb-5 px-5 relative overflow-hidden">
         <button
           aria-label="Retour"
           onClick={() => navigate(-1)}
@@ -381,7 +381,7 @@ export default function Premium() {
           >
             <DogTrophy color="#ffffff" accent="#a7f3d0" />
           </motion.div>
-          <h1 className="text-white font-black text-2xl">PawCoach Premium</h1>
+          <h1 className="text-white font-bold text-2xl">PawCoach Premium</h1>
           <p className="text-white/80 text-sm mt-1">{SEGMENT_HERO[segment].subtitle(dogName)}</p>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />

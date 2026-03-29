@@ -80,7 +80,7 @@ export default function DogProfileHero({ dog, dailyLogs, onSave }) {
 
         {/* Name & breed */}
         <div>
-          <h1 className="text-white font-black text-2xl">{dog.name}</h1>
+          <h1 className="text-white font-bold text-2xl">{dog.name}</h1>
           <p className="text-white/80 text-sm mt-0.5">
             {dog.breed}{getDogAgeLabel(dog) ? ` · ${getDogAgeLabel(dog)}` : ""}
             {displayWeight ? ` · ${displayWeight} kg` : ""}

@@ -96,7 +96,7 @@ export default function DailyCoaching({ dog, recommendations = [] }) {
                   <HeroIcon className="w-6 h-6" style={{ color: hero.iconColor }} strokeWidth={2} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-black text-foreground text-[15px] leading-tight">{hero.label}</p>
+                  <p className="font-bold text-foreground text-[15px] leading-tight">{hero.label}</p>
                   <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{hero.sub}</p>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">

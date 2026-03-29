@@ -91,7 +91,7 @@ export default function CompletionCard({ program, dog, totalMinutes, bilanState,
         >
           <PartyPopper className="w-12 h-12 text-white" />
         </motion.div>
-        <h3 className="font-black text-xl relative">Programme terminé !</h3>
+        <h3 className="font-bold text-xl relative">Programme terminé !</h3>
         <p className="text-white/80 text-sm mt-2 relative">
           Bravo ! Tu as complété les 7 jours avec {dog?.name || "ton chien"}
         </p>
@@ -100,15 +100,15 @@ export default function CompletionCard({ program, dog, totalMinutes, bilanState,
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2">
         <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="bg-emerald-50 rounded-xl p-3 text-center border border-emerald-100">
-          <p className="font-black text-lg text-emerald-700">7/7</p>
+          <p className="font-bold text-lg text-emerald-700">7/7</p>
           <p className="text-[11px] text-emerald-600 font-bold">Jours</p>
         </motion.div>
         <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }} className="bg-violet-50 rounded-xl p-3 text-center border border-violet-100">
-          <p className="font-black text-lg text-violet-700">{totalMinutes}</p>
+          <p className="font-bold text-lg text-violet-700">{totalMinutes}</p>
           <p className="text-[11px] text-violet-600 font-bold">Minutes</p>
         </motion.div>
         <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.6 }} className="bg-amber-50 rounded-xl p-3 text-center border border-amber-100">
-          <p className="font-black text-lg text-amber-700">{program.days?.length || 7}</p>
+          <p className="font-bold text-lg text-amber-700">{program.days?.length || 7}</p>
           <p className="text-[11px] text-amber-600 font-bold">Activités</p>
         </motion.div>
       </div>
@@ -276,7 +276,7 @@ export default function CompletionCard({ program, dog, totalMinutes, bilanState,
         >
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-violet-200" />
-            <p className="font-black text-base">Ton prochain chapitre</p>
+            <p className="font-bold text-base">Ton prochain chapitre</p>
           </div>
           {nextFocus.length > 0 ? (
             <>

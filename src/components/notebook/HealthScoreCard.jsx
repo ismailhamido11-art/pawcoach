@@ -29,7 +29,7 @@ export default function HealthScoreCard({ score, scoreLevel, dogName }) {
               Bilan santé{dogName ? ` de ${dogName}` : ""}
             </p>
             <div className="flex items-baseline gap-2 mt-0.5">
-              <span className={`text-2xl font-black ${scoreLevel.color}`}>{score}</span>
+              <span className={`text-2xl font-bold ${scoreLevel.color}`}>{score}</span>
               <span className="text-sm text-muted-foreground font-medium">/100</span>
               <span className={`text-xs font-bold ml-1 ${scoreLevel.color}`}>{scoreLevel.label}</span>
             </div>

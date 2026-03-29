@@ -308,7 +308,7 @@ export default function Scan() {
         </button>
         <div className="relative z-10 flex items-start justify-between">
           <div className="pb-2">
-            <h1 className="text-white font-black text-2xl leading-tight">Scan Aliment</h1>
+            <h1 className="text-white font-bold text-2xl leading-tight">Scan Aliment</h1>
             <p className="text-white/80 text-sm mt-1">
               {dog ? `Analyse pour ${dog.name}` : "Chargement..."}
             </p>

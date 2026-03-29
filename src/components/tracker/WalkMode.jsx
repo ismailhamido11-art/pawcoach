@@ -397,7 +397,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
             className="flex flex-col items-center gap-6 w-full"
           >
             <div className="text-center space-y-1 mt-2">
-              <h2 className="text-2xl font-black text-foreground">Mode Balade</h2>
+              <h2 className="text-2xl font-bold text-foreground">Mode Balade</h2>
               <p className="text-muted-foreground text-sm">Lance le chrono et profite de ta balade</p>
             </div>
 
@@ -417,7 +417,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                 />
               ))}
               <Footprints className="w-14 h-14 text-white" strokeWidth={1.5} />
-              <span className="text-white font-black text-xl tracking-wide">DÉMARRER</span>
+              <span className="text-white font-bold text-xl tracking-wide">DÉMARRER</span>
             </motion.button>
 
             {dog && (
@@ -472,7 +472,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                 className="w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-2xl border border-white/10"
                 style={{ background: "linear-gradient(135deg, hsl(160,50%,18%), hsl(162,45%,30%))" }}
               >
-                <div className="font-black tabular-nums text-white" style={{ fontSize: "3.5rem", lineHeight: 1 }}>
+                <div className="font-bold tabular-nums text-white" style={{ fontSize: "3.5rem", lineHeight: 1 }}>
                   {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
                 </div>
                 <div className="text-white/80 text-xs mt-1 font-medium">minutes : secondes</div>
@@ -494,18 +494,18 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
               {km && (
                 <div className="flex-1 bg-white border border-border rounded-2xl p-3 text-center">
                   <MapPin className="w-4 h-4 text-accent mx-auto mb-1" />
-                  <div className="text-lg font-black text-foreground">{km}</div>
+                  <div className="text-lg font-bold text-foreground">{km}</div>
                   <div className="text-[11px] text-muted-foreground font-medium">km</div>
                 </div>
               )}
               <div className="flex-1 bg-white border border-border rounded-2xl p-3 text-center">
                 <Timer className="w-4 h-4 text-primary mx-auto mb-1" />
-                <div className="text-lg font-black text-foreground">{minutes}</div>
+                <div className="text-lg font-bold text-foreground">{minutes}</div>
                 <div className="text-[11px] text-muted-foreground font-medium">minutes</div>
               </div>
               <div className="flex-1 bg-white border border-border rounded-2xl p-3 text-center">
                 <Zap className="w-4 h-4 text-caution mx-auto mb-1" />
-                <div className="text-lg font-black text-foreground">{Math.round(elapsed / 60 * 5)}</div>
+                <div className="text-lg font-bold text-foreground">{Math.round(elapsed / 60 * 5)}</div>
                 <div className="text-[11px] text-muted-foreground font-medium">cal. est.</div>
               </div>
             </div>

@@ -175,7 +175,7 @@ export default function NotificationCenter({ transparent = false }) {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className="absolute -top-1.5 -right-1.5 min-w-[24px] h-6 px-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[11px] font-black rounded-full flex items-center justify-center shadow-2xl ring-2 ring-white"
+                className="absolute -top-1.5 -right-1.5 min-w-[24px] h-6 px-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-2xl ring-2 ring-white"
               >
                 {unreadCount > 9 ? "9+" : unreadCount}
               </motion.span>
@@ -207,7 +207,7 @@ export default function NotificationCenter({ transparent = false }) {
                 style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 16px)" }}>
                 <div className="flex items-center gap-2">
                   <Bell className="w-5 h-5 text-primary" />
-                  <h2 className="font-black text-foreground text-base">Notifications</h2>
+                  <h2 className="font-bold text-foreground text-base">Notifications</h2>
                   {unreadCount > 0 && (
                     <span className="px-2 py-0.5 bg-red-100 text-red-600 text-xs font-bold rounded-full">{unreadCount}</span>
                   )}
@@ -238,7 +238,7 @@ export default function NotificationCenter({ transparent = false }) {
                     {/* Urgent */}
                     {urgent.length > 0 && (
                       <div>
-                        <p className="px-5 pt-4 pb-2 text-[11px] font-black text-muted-foreground uppercase tracking-widest">Urgent · cette semaine</p>
+                        <p className="px-5 pt-4 pb-2 text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Urgent · cette semaine</p>
                         <div className="divide-y divide-border">
                           {urgent.map(n => <NotifRow key={n.id} n={n} isRead={readIds.includes(n.id)} onNavigate={() => handleNotifClick(n)} />)}
                         </div>
@@ -247,7 +247,7 @@ export default function NotificationCenter({ transparent = false }) {
                     {/* Upcoming */}
                     {notifications.filter(n => n.daysLeft > 7).length > 0 && (
                       <div>
-                        <p className="px-5 pt-4 pb-2 text-[11px] font-black text-muted-foreground uppercase tracking-widest">A venir · 30 jours</p>
+                        <p className="px-5 pt-4 pb-2 text-[11px] font-bold text-muted-foreground uppercase tracking-widest">A venir · 30 jours</p>
                         <div className="divide-y divide-border">
                           {notifications.filter(n => n.daysLeft > 7).map(n => <NotifRow key={n.id} n={n} isRead={readIds.includes(n.id)} onNavigate={() => handleNotifClick(n)} />)}
                         </div>
@@ -308,7 +308,7 @@ function NotifRow({ n, isRead, onNavigate }) {
       <motion.span
         animate={isUrgent && !isRead ? { scale: [1, 1.05, 1] } : {}}
         transition={{ duration: 1, repeat: Infinity }}
-        className={`text-xs font-black px-2.5 py-1 rounded-full flex-shrink-0 ${badge.cls}`}
+        className={`text-xs font-bold px-2.5 py-1 rounded-full flex-shrink-0 ${badge.cls}`}
       >
         {badge.label}
       </motion.span>

@@ -203,13 +203,13 @@ export default function Library() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="gradient-primary safe-pt-14 pb-6 px-5 relative overflow-hidden">
+      <div className="gradient-primary safe-pt-14 pb-4 px-5 relative overflow-hidden">
         <button aria-label="Retour" onClick={() => window.history.length > 1 ? navigate(-1) : navigate(createPageUrl("Home"))} className="relative z-20 w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center mb-3">
           <ArrowLeft className="w-4 h-4 text-white" />
         </button>
         <div className="relative z-10 flex items-end gap-3 mb-4">
           <div className="flex-1 pb-1">
-            <h1 className="text-white font-black text-2xl leading-tight">Ma Bibliothèque</h1>
+            <h1 className="text-white font-bold text-2xl leading-tight">Ma Bibliothèque</h1>
             <p className="text-white/80 text-xs mt-0.5">{totalCount} élément{totalCount !== 1 ? "s" : ""} sauvegardé{totalCount !== 1 ? "s" : ""}</p>
           </div>
           <motion.div

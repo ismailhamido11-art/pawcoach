@@ -105,23 +105,23 @@ export default function WalkSummary({
         <PawPrint className="w-16 h-16 text-emerald-600" />
       </motion.div>
       <div>
-        <h2 className="text-2xl font-black text-foreground">Balade terminee !</h2>
+        <h2 className="text-2xl font-bold text-foreground">Balade terminee !</h2>
         <p className="text-muted-foreground text-sm mt-1">Super balade avec {dog?.name}</p>
       </div>
       <div className="bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 rounded-3xl p-5 w-full space-y-3">
         <div className="flex justify-around">
           <div>
-            <div className="text-3xl font-black text-primary">{savedMinutes}</div>
+            <div className="text-3xl font-bold text-primary">{savedMinutes}</div>
             <div className="text-xs text-muted-foreground">minutes</div>
           </div>
           {km && (
             <div>
-              <div className="text-3xl font-black text-accent">{km}</div>
+              <div className="text-3xl font-bold text-accent">{km}</div>
               <div className="text-xs text-muted-foreground">km</div>
             </div>
           )}
           <div>
-            <div className="text-3xl font-black text-caution">{Math.round((savedMinutes || 0) * 5)}</div>
+            <div className="text-3xl font-bold text-caution">{Math.round((savedMinutes || 0) * 5)}</div>
             <div className="text-xs text-muted-foreground">cal. est.</div>
           </div>
         </div>

@@ -77,7 +77,7 @@ export default function StreakBar({ streak, walkStreak = 0, exercises, dailyLogs
                   <Flame className="w-4 h-4" style={{ color: level.color }} />
                 </motion.div>
               </div>
-              <span className="text-lg font-black" style={{ color: level.color }}>{current}</span>
+              <span className="text-lg font-bold" style={{ color: level.color }}>{current}</span>
               <span className="text-[11px] text-muted-foreground font-medium">jours</span>
             </div>
 

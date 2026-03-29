@@ -61,7 +61,7 @@ export default function PostTrialSheet({ visible, onClose, dogName }) {
                 <Illustration name="qualityTime" alt="Essai termine" className="w-full h-full drop-shadow-lg" />
               </div>
 
-              <h2 className="text-xl font-black text-center text-foreground mb-1">
+              <h2 className="text-xl font-bold text-center text-foreground mb-1">
                 L'essai de {name} est terminé
               </h2>
               <p className="text-sm text-center text-muted-foreground mb-5">
@@ -88,7 +88,7 @@ export default function PostTrialSheet({ visible, onClose, dogName }) {
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 onClick={handleUpgrade}
-                className="w-full h-14 rounded-2xl gradient-warm text-white font-black text-base flex items-center justify-center gap-2 shadow-lg border-0"
+                className="w-full h-14 rounded-2xl gradient-warm text-white font-bold text-base flex items-center justify-center gap-2 shadow-lg border-0"
               >
                 S'abonner — 7,99 €/mois ou 59,99 €/an
                 <ChevronRight className="w-5 h-5" />

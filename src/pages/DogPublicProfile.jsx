@@ -95,7 +95,7 @@ export default function DogPublicProfile() {
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <div className="text-center">
           <PawPrint className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h1 className="text-2xl font-black text-foreground">Dossier introuvable</h1>
+          <h1 className="text-2xl font-bold text-foreground">Dossier introuvable</h1>
           <p className="text-sm text-muted-foreground mt-2">Ce lien est invalide ou a expiré.</p>
           <Link
             to="/"
@@ -127,7 +127,7 @@ export default function DogPublicProfile() {
       </div>
 
       {/* Hero */}
-      <div className="gradient-primary px-5 safe-pt-14 pb-10 relative overflow-hidden">
+      <div className="gradient-primary px-5 safe-pt-14 pb-6 relative overflow-hidden">
         <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-white/10 rounded-full blur-3xl" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -144,7 +144,7 @@ export default function DogPublicProfile() {
             </div>
           )}
           <div>
-            <h1 className="text-white font-black text-2xl">{dog.name}</h1>
+            <h1 className="text-white font-bold text-2xl">{dog.name}</h1>
             <p className="text-white/80 text-sm font-medium mt-0.5">
               {dog.breed}{dog.birth_date ? ` · ${getAge(dog.birth_date)}` : ""}
               {dog.sex ? ` · ${dog.sex === "male" ? "Mâle" : "Femelle"}` : ""}
@@ -192,7 +192,7 @@ export default function DogPublicProfile() {
           >
             <div className="flex items-center gap-2 mb-3">
               <AlertTriangle className="w-5 h-5 text-red-600" />
-              <h2 className="text-sm font-black text-red-700 uppercase tracking-wide">Informations critiques</h2>
+              <h2 className="text-sm font-bold text-red-700 uppercase tracking-wide">Informations critiques</h2>
             </div>
             {hasAllergies && (
               <div className="mb-2">
@@ -211,7 +211,7 @@ export default function DogPublicProfile() {
 
         {/* Infos générales */}
         <div className="bg-white rounded-2xl border border-border shadow-sm p-4">
-          <h2 className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-3">Profil</h2>
+          <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Profil</h2>
           <div className="grid grid-cols-2 gap-2 text-sm">
             {dog.breed && (
               <div><p className="text-[11px] text-muted-foreground">Race</p><p className="font-semibold text-foreground">{dog.breed}</p></div>
@@ -237,7 +237,7 @@ export default function DogPublicProfile() {
         {/* Identification */}
         {dog.chip_number && (
           <div className="bg-white rounded-2xl border border-border shadow-sm p-4">
-            <h2 className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-2">Identification</h2>
+            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Identification</h2>
             <div className="flex items-center gap-2">
               <Fingerprint className="w-4 h-4 text-muted-foreground flex-shrink-0" />
               <span className="text-sm font-semibold text-foreground font-mono tracking-wider">{dog.chip_number}</span>
@@ -248,7 +248,7 @@ export default function DogPublicProfile() {
         {/* Vétérinaire */}
         {(dog.vet_name || dog.vet_city) && (
           <div className="bg-secondary border border-border rounded-2xl p-4">
-            <h2 className="text-xs font-black text-accent uppercase tracking-widest mb-2">Vétérinaire habituel</h2>
+            <h2 className="text-xs font-bold text-accent uppercase tracking-widest mb-2">Vétérinaire habituel</h2>
             {dog.vet_name && <p className="text-sm font-bold text-foreground">{dog.vet_name}</p>}
             {dog.vet_city && (
               <div className="flex items-center gap-1 mt-1">
@@ -263,7 +263,7 @@ export default function DogPublicProfile() {
         {records.length > 0 && (
           <div className="bg-white rounded-2xl border border-border shadow-sm">
             <div className="px-4 pt-4 pb-2 border-b border-border">
-              <h2 className="text-xs font-black text-muted-foreground uppercase tracking-widest">Historique médical</h2>
+              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Historique médical</h2>
             </div>
             <div className="px-4">
               {records.filter(r => r.type === 'vaccine' || r.type === 'weight').slice(0, 15).map(r => <RecordItem key={r.id} record={r} />)}
@@ -282,7 +282,7 @@ export default function DogPublicProfile() {
           <div className="inline-flex items-center gap-2 bg-white border border-border rounded-full px-4 py-2 shadow-sm">
             <PawPrint className="w-4 h-4 text-emerald-600" />
             <span className="text-xs font-bold text-muted-foreground">Dossier géré via</span>
-            <span className="text-xs font-black text-emerald-700">PawCoach</span>
+            <span className="text-xs font-bold text-emerald-700">PawCoach</span>
           </div>
           <p className="text-[11px] text-muted-foreground mt-2">Ce dossier est partagé par le propriétaire. PawCoach n'est pas un service vétérinaire.</p>
         </div>

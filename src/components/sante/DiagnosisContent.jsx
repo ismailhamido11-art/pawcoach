@@ -174,7 +174,7 @@ export default function DiagnosisContent({ dog }) {
           <Phone className="w-4 h-4 text-red-600 flex-shrink-0" />
           <div>
             <p className="text-xs font-bold text-red-700">Centre antipoison vétérinaire (CNITV)</p>
-            <p className="text-sm font-black text-red-600">01 40 05 06 70</p>
+            <p className="text-sm font-bold text-red-600">01 40 05 06 70</p>
           </div>
         </a>
         <a

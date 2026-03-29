@@ -122,7 +122,7 @@ export default function QRCodeCard({ dog }) {
               {/* Header */}
               <div className="flex items-start justify-between mb-5">
                 <div>
-                  <h2 className="text-xl font-black text-foreground">QR Code d'urgence</h2>
+                  <h2 className="text-xl font-bold text-foreground">QR Code d'urgence</h2>
                   <p className="text-sm text-muted-foreground mt-0.5">{dog.name} · Dossier médical complet</p>
                 </div>
                 <button aria-label="Fermer" onClick={() => setOpen(false)} className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">

@@ -156,7 +156,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
               transition={{ duration: 0.8, ease: "easeOut" }}
             />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-xs font-black text-foreground">
+          <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-foreground">
             {avgScore > 0 ? `${avgScore}%` : "—"}
           </span>
         </Link>
@@ -178,7 +178,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
             >
               <Icon className="w-3.5 h-3.5" style={{ color: arc.color }} />
               <span className="text-[11px] font-semibold text-muted-foreground">{arc.label}</span>
-              <span className="text-xs font-black" style={{ color: arc.hasData ? arc.color : "#94a3b8" }}>
+              <span className="text-xs font-bold" style={{ color: arc.hasData ? arc.color : "#94a3b8" }}>
                 {arc.hasData ? `${arc.score}%` : "—"}
               </span>
               {/* Mini barre de progression */}

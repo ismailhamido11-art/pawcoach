@@ -24,7 +24,7 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
   return (
     <div className="min-h-screen bg-background pb-28">
       {/* Header */}
-      <div className="gradient-primary safe-pt-14 pb-6 px-5 relative overflow-hidden">
+      <div className="gradient-primary safe-pt-14 pb-4 px-5 relative overflow-hidden">
         <button
           aria-label="Retour"
           onClick={onBack}
@@ -37,7 +37,7 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
           <div className="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-3">
             {journey.icon ? <journey.icon className="w-8 h-8 text-white" /> : <PawPrint className="w-8 h-8 text-white" />}
           </div>
-          <h1 className="text-white font-black text-xl">{journey.name}</h1>
+          <h1 className="text-white font-bold text-xl">{journey.name}</h1>
           <p className="text-white/80 text-sm mt-1">{journey.description}</p>
 
           {locked ? (

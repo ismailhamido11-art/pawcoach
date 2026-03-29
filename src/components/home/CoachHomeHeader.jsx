@@ -62,7 +62,7 @@ export default function CoachHomeHeader({ user, dog }) {
           </motion.button>
 
           <div className="flex-1 min-w-0">
-            <h1 className="text-[24px] font-black text-white leading-tight drop-shadow-md">
+            <h1 className="text-[24px] font-bold text-white leading-tight drop-shadow-md">
               {dog?.name || "Mon chien"}
             </h1>
             <div className="flex items-center gap-2 mt-2">

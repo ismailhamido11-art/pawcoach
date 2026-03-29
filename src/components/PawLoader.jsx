@@ -47,7 +47,7 @@ export default function PawLoader({ text = "Chargement..." }) {
       {/* Brand */}
       <div className="text-center">
         <motion.p
-          className="text-primary font-black text-xl tracking-tight"
+          className="text-primary font-bold text-xl tracking-tight"
           animate={{ opacity: [0.4, 1, 0.4] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
         >

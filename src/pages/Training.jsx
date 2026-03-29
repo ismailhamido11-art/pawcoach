@@ -438,7 +438,7 @@ export default function Training() {
           </button>
           <div className="text-center">
             {guide.icon && <guide.icon className="w-10 h-10 text-white mx-auto mb-2" />}
-            <h1 className="text-white font-black text-2xl">{guide.name}</h1>
+            <h1 className="text-white font-bold text-2xl">{guide.name}</h1>
             <p className="text-white/80 text-sm mt-1">{guide.duration} de travail</p>
           </div>
         </div>
@@ -466,7 +466,7 @@ export default function Training() {
                   className="flex gap-3 bg-white rounded-2xl p-4 border border-border/30 shadow-sm"
                 >
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-sm font-black text-primary">{i + 1}</span>
+                    <span className="text-sm font-bold text-primary">{i + 1}</span>
                   </div>
                   <p className="text-sm text-foreground leading-relaxed">{step}</p>
                 </motion.div>
@@ -508,7 +508,7 @@ export default function Training() {
                 {/* Program header */}
                 <div className="gradient-primary rounded-2xl p-5 text-white">
                   <p className="text-white/80 text-[11px] font-bold uppercase tracking-wider mb-1">Programme comportement</p>
-                  <h3 className="font-black text-lg leading-tight">{activeProgram.program_title}</h3>
+                  <h3 className="font-bold text-lg leading-tight">{activeProgram.program_title}</h3>
                   <p className="text-white/80 text-xs mt-1.5 leading-relaxed">{activeProgram.summary}</p>
                   <div className="mt-3 flex items-center gap-2">
                     <span className="bg-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">Jour {dayIndex + 1} / 7</span>
@@ -675,11 +675,11 @@ export default function Training() {
       <WellnessBanner />
 
       {/* Hero header */}
-      <div className="gradient-primary safe-pt-16 pb-0 px-5 overflow-hidden relative">
+      <div className="gradient-primary safe-pt-14 pb-0 px-5 overflow-hidden relative">
         <div className="relative z-10 flex items-start justify-between">
           <div className="pb-6 flex-1">
             <p className="text-white/80 text-[11px] font-bold tracking-widest uppercase mb-2">PawCoach</p>
-            <h1 className="text-white font-black text-2xl leading-tight">Dressage</h1>
+            <h1 className="text-white font-bold text-2xl leading-tight">Dressage</h1>
             <p className="text-white/80 text-sm mt-1 mb-4">
               {dog ? `Parcours de ${dog.name}` : "Chargement..."}
             </p>
@@ -695,7 +695,7 @@ export default function Training() {
                   </span>
                   <p className="text-white/80 text-[11px] mt-0.5">{EXERCISES.length - completedCount > 0 ? `${EXERCISES.length - completedCount} restant${EXERCISES.length - completedCount > 1 ? "s" : ""}` : "Parcours complet"}</p>
                 </div>
-                <span className="text-white font-black text-lg">{Math.round((completedCount / EXERCISES.length) * 100)}%</span>
+                <span className="text-white font-bold text-lg">{Math.round((completedCount / EXERCISES.length) * 100)}%</span>
               </div>
               <div className="bg-white/25 rounded-full h-2.5 overflow-hidden">
                 <motion.div

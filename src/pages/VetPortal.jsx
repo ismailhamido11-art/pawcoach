@@ -89,7 +89,7 @@ export default function VetPortal() {
               <ArrowLeft className="w-4 h-4 text-white" />
             </Link>
             <Stethoscope className="w-6 h-6 text-white" />
-            <h1 className="text-white font-black text-2xl">Portail Vétérinaire</h1>
+            <h1 className="text-white font-bold text-2xl">Portail Vétérinaire</h1>
           </div>
           <p className="text-white/80 text-xs ml-11">
             {user?.full_name || user?.email} · Vos patients PawCoach

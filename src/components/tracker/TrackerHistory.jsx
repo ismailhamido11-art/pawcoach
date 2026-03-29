@@ -150,7 +150,7 @@ export default function TrackerHistory({ logs, dog }) {
       <div className="bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/15 rounded-2xl p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-black text-foreground capitalize">
+            <p className="text-sm font-bold text-foreground capitalize">
               {format(new Date(), "EEEE d MMMM", { locale: fr })}
             </p>
             {todayLog?.walk_minutes ? (
@@ -184,7 +184,7 @@ export default function TrackerHistory({ logs, dog }) {
           className="flex items-center justify-center gap-2 bg-amber-50 border border-amber-200 rounded-2xl py-3"
         >
           <Flame className="w-5 h-5 text-amber-500" />
-          <span className="text-sm font-black text-amber-700">{streaks.current} jour{streaks.current > 1 ? "s" : ""} de suite</span>
+          <span className="text-sm font-bold text-amber-700">{streaks.current} jour{streaks.current > 1 ? "s" : ""} de suite</span>
           {streaks.current >= 7 && <Flame className="w-3 h-3 text-amber-500" />}
         </motion.div>
       )}
@@ -196,7 +196,7 @@ export default function TrackerHistory({ logs, dog }) {
             {weeklyWalks >= WEEKLY_GOAL ? <Trophy className="w-5 h-5 text-amber-500" /> : <Target className="w-5 h-5 text-emerald-600" />}
             <p className="font-bold text-sm text-foreground">Objectif semaine</p>
           </div>
-          <span className={`text-sm font-black ${weeklyWalks >= WEEKLY_GOAL ? "text-emerald-600" : "text-primary"}`}>
+          <span className={`text-sm font-bold ${weeklyWalks >= WEEKLY_GOAL ? "text-emerald-600" : "text-primary"}`}>
             {weeklyWalks}/{WEEKLY_GOAL}
           </span>
         </div>
@@ -226,7 +226,7 @@ export default function TrackerHistory({ logs, dog }) {
           { label: "Distance", value: totalKm, unit: "km est.", color: "text-blue-600" },
         ].map((stat, i) => (
           <div key={i} className="bg-white border border-border rounded-2xl p-2.5 text-center">
-            <p className={`text-lg font-black ${stat.color}`}>{stat.value}</p>
+            <p className={`text-lg font-bold ${stat.color}`}>{stat.value}</p>
             <p className="text-[11px] font-bold text-muted-foreground uppercase">{stat.unit}</p>
             <p className="text-[11px] text-muted-foreground">{stat.label}</p>
           </div>
@@ -243,14 +243,14 @@ export default function TrackerHistory({ logs, dog }) {
             <Trophy className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
             <div>
               <p className="text-[11px] font-bold text-amber-700">Meilleur streak</p>
-              <p className="text-xs font-black text-amber-800">{streaks.best} jours</p>
+              <p className="text-xs font-bold text-amber-800">{streaks.best} jours</p>
             </div>
           </div>
           <div className="flex-1 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 flex items-center gap-2">
             <Zap className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
             <div>
               <p className="text-[11px] font-bold text-emerald-700">Jours 30+ min</p>
-              <p className="text-xs font-black text-emerald-800">{daysOver30}</p>
+              <p className="text-xs font-bold text-emerald-800">{daysOver30}</p>
             </div>
           </div>
         </div>
@@ -282,7 +282,7 @@ export default function TrackerHistory({ logs, dog }) {
                   style={{ height: `${Math.max(4, (d.avg / maxDayAvg) * 100)}%` }}
                 />
               </div>
-              <span className="text-[11px] font-black text-foreground">{d.avg > 0 ? d.avg : "—"}</span>
+              <span className="text-[11px] font-bold text-foreground">{d.avg > 0 ? d.avg : "—"}</span>
               <span className="text-[11px] font-bold text-muted-foreground">{d.label}</span>
             </div>
           ))}
@@ -356,7 +356,7 @@ export default function TrackerHistory({ logs, dog }) {
                 {log.walk_minutes ? (
                   <>
                     <div className="flex items-center gap-1.5 justify-end">
-                      <span className={`text-sm font-black ${log.walk_minutes >= 30 ? "text-safe" : "text-amber-500"}`}>
+                      <span className={`text-sm font-bold ${log.walk_minutes >= 30 ? "text-safe" : "text-amber-500"}`}>
                         {log.walk_minutes} min
                       </span>
                       {log.date === recordDate && (

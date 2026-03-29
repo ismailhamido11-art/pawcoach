@@ -639,10 +639,12 @@ export default function Home() {
           {/* Dashboard access — SmartAlerts — repositioned above hero for prominence */}
           <button
             onClick={() => navigate(createPageUrl("Dashboard"))}
-            className="w-full bg-gradient-to-r from-blue-50 to-indigo-50/50 rounded-3xl p-4 border border-blue-100/50 shadow-sm flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
+            className="w-full bg-white rounded-2xl p-4 border border-border shadow-sm flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
             aria-label="Voir le tableau de bord et les alertes santé"
           >
-            <StorysetIllustration name="vet-checkup" className="w-20 h-20 flex-shrink-0" />
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+              <StorysetIllustration name="vet-checkup" className="w-8 h-8" />
+            </div>
             <div className="flex-1 min-w-0">
               <p className="text-[14px] font-bold text-foreground">Tableau de bord</p>
               <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Vaccins, alertes poids, tendances humeur — tout en un coup d'oeil.</p>
@@ -718,19 +720,21 @@ export default function Home() {
           </div>
 
           {/* Nutrition tip card with illustration */}
-          <div className="bg-gradient-to-r from-amber-50 to-amber-50/50 rounded-3xl p-4 border border-amber-100/50 shadow-sm flex items-center gap-4">
-            <StorysetIllustration name="feeding" className="w-24 h-24 flex-shrink-0" />
+          <button
+            onClick={() => navigate(createPageUrl("Scan"))}
+            className="w-full bg-white rounded-2xl p-4 border border-border shadow-sm flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+              <StorysetIllustration name="feeding" className="w-8 h-8" />
+            </div>
             <div className="flex-1 min-w-0">
               <p className="text-[14px] font-bold text-foreground">Nutrition de {dog?.name || "ton chien"}</p>
               <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Scanne un aliment pour savoir s'il est adapte.</p>
-              <button
-                onClick={() => navigate(createPageUrl("Scan"))}
-                className="mt-2 text-[12px] font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-full active:scale-95 transition-transform"
-              >
+              <span className="inline-block mt-2 text-[12px] font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-full">
                 Scanner un aliment
-              </button>
+              </span>
             </div>
-          </div>
+          </button>
 
           {/* Active Programs */}
           <ActiveProgramCards trainingBookmarks={trainingBookmarks} nutritionPlans={nutritionPlans} behaviorBookmarks={behaviorBookmarks} />
@@ -754,19 +758,21 @@ export default function Home() {
           )}
 
           {/* Health card with illustration */}
-          <div className="bg-gradient-to-r from-violet-50 to-fuchsia-50/50 rounded-3xl p-4 border border-violet-100/50 shadow-sm flex items-center gap-4">
+          <button
+            onClick={() => navigate(createPageUrl("Sante"))}
+            className="w-full bg-white rounded-2xl p-4 border border-border shadow-sm flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-violet-50 flex items-center justify-center flex-shrink-0">
+              <StorysetIllustration name="vet-checkup" className="w-8 h-8" />
+            </div>
             <div className="flex-1 min-w-0">
               <p className="text-[14px] font-bold text-foreground">Carnet de sante</p>
               <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">Vaccins, visites, poids — tout est suivi automatiquement.</p>
-              <button
-                onClick={() => navigate(createPageUrl("Sante"))}
-                className="mt-2 text-[12px] font-bold text-violet-700 bg-violet-100 px-3 py-1.5 rounded-full active:scale-95 transition-transform"
-              >
+              <span className="inline-block mt-2 text-[12px] font-bold text-violet-700 bg-violet-100 px-3 py-1.5 rounded-full">
                 Voir le carnet
-              </button>
+              </span>
             </div>
-            <StorysetIllustration name="vet-checkup" className="w-24 h-24 flex-shrink-0" />
-          </div>
+          </button>
 
           {/* Emotional Tip — "Le savais-tu ?" */}
           <EmotionalTip dog={dog} />
@@ -873,7 +879,7 @@ function MilestoneCelebration({ milestone, onClose }) {
         >
           <Illustration name="dogHighFive" alt="Bravo !" className="w-full h-full drop-shadow-lg" />
         </motion.div>
-        <p className="text-2xl font-black text-foreground">{milestone.message}</p>
+        <p className="text-2xl font-bold text-foreground">{milestone.message}</p>
         <p className="text-sm text-muted-foreground mt-1.5">{milestone.sub}</p>
         <div className="mt-4 flex items-center justify-center gap-2 bg-accent/10 rounded-2xl py-2.5">
           <Flame className="w-5 h-5 text-accent" />

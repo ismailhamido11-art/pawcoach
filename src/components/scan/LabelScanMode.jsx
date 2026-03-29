@@ -226,14 +226,14 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
           <div className={`rounded-2xl border-2 ${labelCfg.border} ${labelCfg.bg} p-4`}>
             <div className="flex items-center justify-between mb-3">
               <div className="flex-1">
-                <p className="font-black text-foreground text-base leading-tight">{labelResult.product_name || "Produit analysé"}</p>
+                <p className="font-bold text-foreground text-base leading-tight">{labelResult.product_name || "Produit analysé"}</p>
                 <div className={`inline-flex items-center gap-1 text-xs font-bold mt-1 ${labelCfg.color}`}>
                   <labelCfg.icon className={`w-3.5 h-3.5 ${labelCfg.iconColor}`} />
                   {labelCfg.label}
                 </div>
               </div>
               <div className="text-center bg-white rounded-xl px-3 py-2 shadow-sm ml-3">
-                <p className="text-2xl font-black text-foreground leading-none">{labelResult.compatibility_score}</p>
+                <p className="text-2xl font-bold text-foreground leading-none">{labelResult.compatibility_score}</p>
                 <p className="text-[11px] text-muted-foreground">/10</p>
               </div>
             </div>
@@ -253,11 +253,11 @@ Retourne uniquement un JSON valide avec : product_name, calories_per_100g, prote
             {/* Calories + portion */}
             <div className="grid grid-cols-2 gap-2 mb-3">
               <div className="bg-white rounded-xl p-3 text-center">
-                <p className="text-xl font-black text-foreground">{labelResult.calories_per_100g ?? "?"}</p>
+                <p className="text-xl font-bold text-foreground">{labelResult.calories_per_100g ?? "?"}</p>
                 <p className="text-[11px] text-muted-foreground">kcal / 100g</p>
               </div>
               <div className="bg-white rounded-xl p-3 text-center">
-                <p className="text-xl font-black text-violet-600">{labelResult.daily_portion_g ?? "?"}<span className="text-sm font-bold">g</span></p>
+                <p className="text-xl font-bold text-violet-600">{labelResult.daily_portion_g ?? "?"}<span className="text-sm font-bold">g</span></p>
                 <p className="text-[11px] text-muted-foreground">Portion/jour {dog?.name}</p>
               </div>
             </div>

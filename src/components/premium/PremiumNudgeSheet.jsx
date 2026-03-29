@@ -91,7 +91,7 @@ export default function PremiumNudgeSheet({ visible, onClose, dogName, ownerGoal
               </div>
 
               {/* Title — personnalise par objectif */}
-              <h2 className="text-xl font-black text-center text-foreground mb-1">
+              <h2 className="text-xl font-bold text-center text-foreground mb-1">
                 {ownerGoal && GOAL_NUDGE[ownerGoal]
                   ? GOAL_NUDGE[ownerGoal].title(dogName || "ton chien")
                   : dogName
@@ -126,7 +126,7 @@ export default function PremiumNudgeSheet({ visible, onClose, dogName, ownerGoal
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 onClick={handleUpgrade}
-                className="w-full h-14 rounded-2xl gradient-warm text-white font-black text-base flex items-center justify-center gap-2 shadow-lg border-0"
+                className="w-full h-14 rounded-2xl gradient-warm text-white font-bold text-base flex items-center justify-center gap-2 shadow-lg border-0"
               >
                 Commencer mon essai gratuit
                 <ChevronRight className="w-5 h-5" />

@@ -124,22 +124,22 @@ export default function Sante() {
         <div className="relative z-10 flex items-end gap-3 mb-3">
           <div className="flex-1 pb-1">
             <p className="text-white/80 text-[11px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
-            <h1 className="text-white font-black text-2xl">Santé</h1>
+            <h1 className="text-white font-bold text-2xl">Santé</h1>
             {dog && <p className="text-white/80 text-xs mt-0.5">Suivi complet de {dog.name}</p>}
 
             {/* Quick stats */}
             {!loading && records.length > 0 && (
               <div className="flex gap-2 mt-2 flex-wrap">
                 <div className="bg-white/15 rounded-xl px-3 py-1.5 text-center">
-                  <p className="text-white font-black text-base leading-none">{vaccineCount}</p>
+                  <p className="text-white font-bold text-base leading-none">{vaccineCount}</p>
                   <p className="text-white/80 text-[11px] mt-0.5">Vaccins</p>
                 </div>
                 <div className="bg-white/15 rounded-xl px-3 py-1.5 text-center">
-                  <p className="text-white font-black text-base leading-none">{vetCount}</p>
+                  <p className="text-white font-bold text-base leading-none">{vetCount}</p>
                   <p className="text-white/80 text-[11px] mt-0.5">Visites</p>
                 </div>
                 <div className="bg-white/15 rounded-xl px-3 py-1.5 text-center">
-                  <p className="text-white font-black text-base leading-none">{weightRecords.length}</p>
+                  <p className="text-white font-bold text-base leading-none">{weightRecords.length}</p>
                   <p className="text-white/80 text-[11px] mt-0.5">Pesées</p>
                 </div>
               </div>

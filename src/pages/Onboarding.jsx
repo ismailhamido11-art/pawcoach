@@ -84,7 +84,7 @@ function OnboardingWelcome({ onStart }) {
         </motion.div>
 
         <p className="text-white/80 text-xs font-bold tracking-widest uppercase mb-3">PawCoach</p>
-        <h1 className="text-2xl font-black text-white leading-tight mb-4">
+        <h1 className="text-2xl font-bold text-white leading-tight mb-4">
           Bienvenue dans<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-emerald-400">
             l'aventure
@@ -106,7 +106,7 @@ function OnboardingWelcome({ onStart }) {
         <motion.button
           whileTap={{ scale: 0.96 }}
           onClick={onStart}
-          className="w-full max-w-xs h-14 rounded-2xl font-black text-white flex items-center justify-center gap-2 shadow-2xl text-base gradient-primary"
+          className="w-full max-w-xs h-14 rounded-2xl font-bold text-white flex items-center justify-center gap-2 shadow-2xl text-base gradient-primary"
         >
           Créer le profil de mon chien
           <ArrowRight className="w-5 h-5" />
@@ -409,7 +409,7 @@ Extrais ces informations et renvoie un objet JSON.
               <div className="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-4">
                 <ShieldCheck className="w-7 h-7 text-emerald-600" />
               </div>
-              <h2 className="text-xl font-black text-foreground">Presque là !</h2>
+              <h2 className="text-xl font-bold text-foreground">Presque là !</h2>
               <p className="text-sm text-muted-foreground mt-2">
                 Quelques confirmations avant de créer le profil de ton chien.
               </p>
@@ -558,7 +558,7 @@ Extrais ces informations et renvoie un objet JSON.
             </div>
 
             {/* Group question / title */}
-            <h1 className="text-2xl font-black text-center text-foreground mb-8 leading-tight">
+            <h1 className="text-2xl font-bold text-center text-foreground mb-8 leading-tight">
               {primaryStepData.question}
             </h1>
 
@@ -738,7 +738,7 @@ Extrais ces informations et renvoie un objet JSON.
                 <Button
                   onClick={handleNext}
                   disabled={!canNext}
-                  className="w-full max-w-sm h-14 rounded-2xl font-black text-base gap-2 gradient-primary"
+                  className="w-full max-w-sm h-14 rounded-2xl font-bold text-base gap-2 gradient-primary"
                 >
                   {groupIndex === STEP_GROUPS.length - 1 ? (
                     <><Sparkles className="w-5 h-5" /> Continuer</>

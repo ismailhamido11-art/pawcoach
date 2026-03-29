@@ -274,21 +274,21 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
           {latest.weight_kg && (
             <div className="bg-white rounded-2xl p-3 text-center border border-border shadow-sm">
               <Weight className="w-4 h-4 text-primary mx-auto mb-1" />
-              <p className="text-lg font-black text-foreground">{latest.weight_kg} kg</p>
+              <p className="text-lg font-bold text-foreground">{latest.weight_kg} kg</p>
               <p className="text-[11px] text-muted-foreground">Poids actuel</p>
             </div>
           )}
           {latest.height_cm && (
             <div className="bg-white rounded-2xl p-3 text-center border border-border shadow-sm">
               <Ruler className="w-4 h-4 text-accent mx-auto mb-1" />
-              <p className="text-lg font-black text-foreground">{latest.height_cm} cm</p>
+              <p className="text-lg font-bold text-foreground">{latest.height_cm} cm</p>
               <p className="text-[11px] text-muted-foreground">Hauteur</p>
             </div>
           )}
           {bcsInfo && (
             <div className="bg-white rounded-2xl p-3 text-center border border-border shadow-sm">
               <TrendingUp className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-              <p className={`text-sm font-black ${bcsInfo.color}`}>{latest.body_condition_score}/9</p>
+              <p className={`text-sm font-bold ${bcsInfo.color}`}>{latest.body_condition_score}/9</p>
               <p className="text-[11px] text-muted-foreground">{bcsInfo.label}</p>
             </div>
           )}
@@ -410,19 +410,19 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
                 <div className="grid grid-cols-3 gap-2">
                   {analysisResult.weight_kg && (
                     <div className="bg-secondary rounded-xl p-2 text-center">
-                      <p className="text-base font-black text-primary">{analysisResult.weight_kg} kg</p>
+                      <p className="text-base font-bold text-primary">{analysisResult.weight_kg} kg</p>
                       <p className="text-[11px] text-muted-foreground">Poids estimé</p>
                     </div>
                   )}
                   {analysisResult.height_cm && (
                     <div className="bg-secondary rounded-xl p-2 text-center">
-                      <p className="text-base font-black text-accent">{analysisResult.height_cm} cm</p>
+                      <p className="text-base font-bold text-accent">{analysisResult.height_cm} cm</p>
                       <p className="text-[11px] text-muted-foreground">Hauteur</p>
                     </div>
                   )}
                   {analysisResult.body_condition_score && (
                     <div className="bg-secondary rounded-xl p-2 text-center">
-                      <p className={`text-base font-black ${getBcsLabel(analysisResult.body_condition_score).color}`}>{analysisResult.body_condition_score}/9</p>
+                      <p className={`text-base font-bold ${getBcsLabel(analysisResult.body_condition_score).color}`}>{analysisResult.body_condition_score}/9</p>
                       <p className="text-[11px] text-muted-foreground">Score BCS</p>
                     </div>
                   )}

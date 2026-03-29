@@ -24,18 +24,18 @@ export default function ProfileHeader({ user, achievementPoints }) {
   const initials = (user?.full_name || "?").split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <div className="gradient-primary safe-pt-16 pb-8 px-5 relative overflow-hidden">
+    <div className="gradient-primary safe-pt-14 pb-4 px-5 relative overflow-hidden">
       <div className="absolute top-[-20%] right-[-10%] w-44 h-44 bg-white/10 rounded-full blur-2xl pointer-events-none" />
 
       <div className="relative z-10 flex items-center gap-4">
         {/* Avatar */}
-        <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center flex-shrink-0 text-white font-black text-xl shadow-lg">
+        <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center flex-shrink-0 text-white font-bold text-xl shadow-lg">
           {initials}
         </div>
 
         {/* Name + email */}
         <div className="flex-1 min-w-0">
-          <h1 className="text-white font-bold text-lg truncate">{user?.full_name || "Mon profil"}</h1>
+          <h1 className="text-white font-bold text-base truncate break-all">{user?.full_name || "Mon profil"}</h1>
           <p className="text-white/80 text-xs truncate">{user?.email}</p>
 
           {/* Subscription badge */}
@@ -59,7 +59,7 @@ export default function ProfileHeader({ user, achievementPoints }) {
         {/* Gamification badge — now shows real achievement points */}
         <div className={`flex flex-col items-center gap-1 px-3 py-2 rounded-2xl ${badge.color} flex-shrink-0`}>
           <BadgeIcon className="w-5 h-5" />
-          <span className="text-[11px] font-black">{badge.label}</span>
+          <span className="text-[11px] font-bold">{badge.label}</span>
           <span className="text-[11px] font-bold opacity-70">
             {achievementPoints === null ? "..." : `${points} pts`}
           </span>

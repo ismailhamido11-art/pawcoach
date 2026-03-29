@@ -378,7 +378,7 @@ export default function Nutri() {
         <div className="relative z-10 flex items-end gap-3 mb-3">
           <div className="flex-1 pb-1">
             <p className="text-white/80 text-[11px] font-bold tracking-widest uppercase mb-1">PawCoach</p>
-            <h1 className="text-white font-black text-2xl leading-tight">Nutrition</h1>
+            <h1 className="text-white font-bold text-2xl leading-tight">Nutrition</h1>
             {dog && <p className="text-white/80 text-xs mt-0.5">Pour {dog.name} &middot; {dog.breed}</p>}
             <div className="flex items-center gap-2 mt-2 flex-wrap">
               {!isUserPremium(user) && messagesRemaining !== null && (
@@ -414,7 +414,7 @@ export default function Nutri() {
                   <div className="mt-3 bg-white/15 rounded-2xl px-3 py-2.5">
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-white text-xs font-bold">Plan repas en cours</span>
-                      <span className="text-white font-black text-sm">{dayNumber}/7 jours</span>
+                      <span className="text-white font-bold text-sm">{dayNumber}/7 jours</span>
                     </div>
                     <div className="bg-white/25 rounded-full h-2 overflow-hidden">
                       <motion.div

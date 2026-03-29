@@ -242,7 +242,7 @@ export default function FirstDayGuide({ dog, todayCheckin, scans, dailyLogs, onS
               border: "1.5px solid rgba(45,159,130,0.25)",
             }}
           >
-            <p className="text-lg font-black" style={{ color: "#1A4D3E" }}>
+            <p className="text-lg font-bold" style={{ color: "#1A4D3E" }}>
               Bravo, {dogName} est entre de bonnes mains !
             </p>
             <p className="text-xs text-muted-foreground mt-1">

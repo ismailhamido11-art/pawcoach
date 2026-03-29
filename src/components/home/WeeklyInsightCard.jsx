@@ -74,7 +74,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
             {insight.avg_mood != null && (
               <div className="flex-1 bg-white/70 rounded-2xl px-3 py-2.5 text-center">
                 <div className="flex items-center justify-center gap-1">
-                  <p className="text-xl font-black text-primary">{insight.avg_mood.toFixed(1)}</p>
+                  <p className="text-xl font-bold text-primary">{insight.avg_mood.toFixed(1)}</p>
                   <TrendBadge current={insight.avg_mood} previous={previousInsight?.avg_mood} />
                 </div>
                 <p className="text-[11px] text-muted-foreground font-medium">humeur moy.</p>
@@ -83,7 +83,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
             {insight.avg_energy != null && (
               <div className="flex-1 bg-white/70 rounded-2xl px-3 py-2.5 text-center">
                 <div className="flex items-center justify-center gap-1">
-                  <p className="text-xl font-black text-accent">{insight.avg_energy.toFixed(1)}</p>
+                  <p className="text-xl font-bold text-accent">{insight.avg_energy.toFixed(1)}</p>
                   <TrendBadge current={insight.avg_energy} previous={previousInsight?.avg_energy} />
                 </div>
                 <p className="text-[11px] text-muted-foreground font-medium">énergie moy.</p>
@@ -92,7 +92,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
             {insight.checkin_count > 0 && (
               <div className="flex-1 bg-white/70 rounded-2xl px-3 py-2.5 text-center">
                 <div className="flex items-center justify-center gap-1">
-                  <p className="text-xl font-black text-emerald-600">{insight.checkin_count}</p>
+                  <p className="text-xl font-bold text-emerald-600">{insight.checkin_count}</p>
                   <TrendBadge current={insight.checkin_count} previous={previousInsight?.checkin_count} />
                 </div>
                 <p className="text-[11px] text-muted-foreground font-medium">check-in{insight.checkin_count > 1 ? "s" : ""}</p>

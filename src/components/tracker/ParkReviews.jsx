@@ -156,7 +156,7 @@ export default function ParkReviews({ park, dog, user }) {
       ) : reviews.length > 0 ? (
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-black text-foreground">{avgRating}</span>
+            <span className="text-sm font-bold text-foreground">{avgRating}</span>
             <span className="flex items-center gap-0.5">{Array.from({length: Math.round(parseFloat(avgRating))}).map((_,i) => <PawPrint key={i} className="w-3 h-3 text-emerald-600" />)}</span>
             <span className="text-[11px] text-muted-foreground">({reviews.length} avis)</span>
           </div>
