@@ -156,6 +156,14 @@ export default function Scan() {
     await base44.auth.updateMe({ scans_this_week: newCount, scans_week_start: weekStart });
   };
 
+  const decrementScanCount = async (u) => {
+    // Rollback : remet le compteur a sa valeur AVANT l'increment (remboursement de slot)
+    const weekStart = getWeekStart();
+    const isSameWeek = u?.scans_week_start === weekStart;
+    const prevCount = isSameWeek ? (u?.scans_this_week || 0) : 0;
+    await base44.auth.updateMe({ scans_this_week: prevCount, scans_week_start: weekStart });
+  };
+
   // ── Food mode ──────────────────────────────────────────────────────────────
   const handleFile = (f) => {
     if (checkScanLimit(user)) { setScanLimitReached(true); return; }
@@ -172,10 +180,24 @@ export default function Scan() {
 
   const analyzeFood = async () => {
     if (!file || !dog) return;
-    // SEC-04 : Re-fetch user depuis la base pour verifier le quota cote serveur
+    // Anti-double-clic dans le meme onglet
+    if (scanningRef.current) return;
+    scanningRef.current = true;
+
+    // SEC-04 : Re-fetch user depuis la base pour verifier le quota
     const freshUser = await base44.auth.me();
     setUser(freshUser);
-    if (checkScanLimit(freshUser)) { setScanLimitReached(true); return; }
+    if (checkScanLimit(freshUser)) {
+      setScanLimitReached(true);
+      scanningRef.current = false;
+      return;
+    }
+
+    // Reserve-then-use : incrementer AVANT le LLM call pour fermer la fenetre TOCTOU
+    // (2 onglets simultanes ne peuvent plus passer le check au meme count)
+    await incrementScanCount(freshUser);
+    let scanConsumed = false;
+
     setScanning(true);
     setShowDetails(false);
     setDogAteIt(false);
@@ -205,7 +227,8 @@ export default function Scan() {
           },
         },
       });
-      await incrementScanCount(freshUser);
+      // LLM a repondu : le scan est consomme, pas de rollback
+      scanConsumed = true;
       const updatedUser = await base44.auth.me();
       setUser(updatedUser);
       const finalResult = { ...aiResult, photo_url: file_url, timestamp: new Date().toISOString() };
@@ -213,9 +236,14 @@ export default function Scan() {
       if (finalResult.verdict === "toxic" && navigator.vibrate) navigator.vibrate(200);
     } catch (e) {
       console.error(e);
+      if (!scanConsumed) {
+        // Rollback : echec avant reponse LLM — rembourser le slot
+        try { await decrementScanCount(freshUser); } catch (_) {}
+      }
       setError("L'analyse a échoué. Vérifie ta connexion et réessaie.");
     } finally {
       setScanning(false);
+      scanningRef.current = false;
     }
   };
 
