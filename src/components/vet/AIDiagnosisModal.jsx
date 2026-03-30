@@ -254,9 +254,9 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
         {/* ====== STEP 1: Symptom Form ====== */}
         {step === "form" && (
           <div className="space-y-4 mt-2">
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-              <span>Ce bilan t'aide à préparer ta visite vétérinaire. Présente-le à ton véto pour gagner du temps.</span>
+            <div className="p-3 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-900 flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-600" />
+              <span>Ce bilan est généré par une IA. Il ne constitue <strong>pas</strong> un avis vétérinaire professionnel et ne remplace <strong>pas</strong> une consultation. En cas d'urgence, contacte immédiatement ton vétérinaire.</span>
             </div>
 
             {/* Step indicator */}
@@ -404,6 +404,11 @@ export default function AIDiagnosisModal({ open, onOpenChange, dog, preSelectedS
                 <div className="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">3</div>
                 <span className="text-xs font-medium text-primary">Rapport</span>
               </div>
+            </div>
+
+            <div className="p-3 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-900 flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-600" />
+              <span>Ce bilan est généré par une IA. Il ne constitue <strong>pas</strong> un avis vétérinaire professionnel et ne remplace <strong>pas</strong> une consultation. En cas d'urgence, contacte immédiatement ton vétérinaire.</span>
             </div>
 
             <DiagnosisReportView report={report} dogName={dog?.name} reportDate={reportDate} />

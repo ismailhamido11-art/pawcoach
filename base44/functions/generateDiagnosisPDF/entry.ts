@@ -75,6 +75,20 @@ Deno.serve(async (req) => {
 
   y = 45;
 
+  // Disclaimer legal
+  doc.setFillColor(255, 243, 205);
+  doc.roundedRect(15, y, pageWidth - 30, 18, 2, 2, 'F');
+  doc.setDrawColor(217, 158, 0);
+  doc.roundedRect(15, y, pageWidth - 30, 18, 2, 2, 'S');
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(120, 80, 0);
+  doc.text(sanitize('AVERTISSEMENT : Ce bilan est genere par une IA.'), 20, y + 6);
+  doc.setFont('helvetica', 'normal');
+  doc.text(sanitize('Il ne constitue PAS un avis veterinaire professionnel et ne remplace PAS une consultation. En cas d\'urgence, contactez immediatement votre veterinaire.'), 20, y + 12);
+  doc.setTextColor(0, 0, 0);
+  y += 24;
+
   // Dog info
   addText('INFORMATIONS DU CHIEN', 15, 12, 'bold', [22, 128, 108]);
   addText(`Nom: ${dog_name || 'N/A'}  |  Race: ${dog_breed || 'N/A'}  |  Poids: ${dog_weight ? dog_weight + ' kg' : 'N/A'}`, 15, 10, 'normal', [60, 60, 60]);

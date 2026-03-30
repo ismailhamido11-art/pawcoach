@@ -1,6 +1,13 @@
 import { AlertTriangle, CheckCircle, AlertCircle, Siren } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+const VetDisclaimer = () => (
+  <div className="p-3 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-900 flex items-start gap-2">
+    <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-600" />
+    <span>Ce bilan est généré par une IA. Il ne constitue <strong>pas</strong> un avis vétérinaire professionnel et ne remplace <strong>pas</strong> une consultation. En cas d'urgence, contacte immédiatement ton vétérinaire.</span>
+  </div>
+);
+
 const URGENCY_CONFIG = {
   low: { label: "Faible", color: "bg-emerald-100 text-emerald-800", icon: CheckCircle },
   medium: { label: "Modéré", color: "bg-emerald-100 text-emerald-800", icon: AlertTriangle },
@@ -16,6 +23,8 @@ export default function DiagnosisReportView({ report, dogName, reportDate }) {
 
   return (
     <div className="space-y-3">
+      <VetDisclaimer />
+
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-sm">
           Rapport complet pour {dogName || "ton chien"}
