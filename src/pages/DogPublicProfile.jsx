@@ -234,30 +234,11 @@ export default function DogPublicProfile() {
           </div>
         </div>
 
-        {/* Identification */}
-        {dog.chip_number && (
-          <div className="bg-white rounded-2xl border border-border shadow-sm p-4">
-            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Identification</h2>
-            <div className="flex items-center gap-2">
-              <Fingerprint className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-              <span className="text-sm font-semibold text-foreground font-mono tracking-wider">{dog.chip_number}</span>
-            </div>
-          </div>
-        )}
-
-        {/* Vétérinaire */}
-        {(dog.vet_name || dog.vet_city) && (
-          <div className="bg-secondary border border-border rounded-2xl p-4">
-            <h2 className="text-xs font-bold text-accent uppercase tracking-widest mb-2">Vétérinaire habituel</h2>
-            {dog.vet_name && <p className="text-sm font-bold text-foreground">{dog.vet_name}</p>}
-            {dog.vet_city && (
-              <div className="flex items-center gap-1 mt-1">
-                <MapPin className="w-3 h-3 text-accent" />
-                <p className="text-xs text-accent">{dog.vet_city}</p>
-              </div>
-            )}
-          </div>
-        )}
+        {/* Bandeau données limitées */}
+        <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3">
+          <Lock className="w-4 h-4 text-amber-600 flex-shrink-0" />
+          <p className="text-xs text-amber-800 font-medium">Profil partagé — données limitées. Certaines informations sont masquées pour protéger la vie privée.</p>
+        </div>
 
         {/* Historique de santé */}
         {records.length > 0 && (
