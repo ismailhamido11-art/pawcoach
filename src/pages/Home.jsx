@@ -252,6 +252,7 @@ export default function Home() {
   useEffect(() => {
     if (isLoadingAuth || loadingDog) return;
     let mounted = true;
+    let pollInterval = null;
 
     // Apply premium nudge/post-trial logic (shared between first load and bg refresh)
     const applyPremiumLogic = (u) => {
@@ -339,12 +340,14 @@ export default function Home() {
       // Poll base44.auth.me() every 2s for up to 10s — webhook may not have fired yet
       let attempts = 0;
       const maxAttempts = 5; // 5 x 2s = 10s
-      const interval = setInterval(async () => {
+      pollInterval = setInterval(async () => {
+        if (!mounted) { clearInterval(pollInterval); pollInterval = null; return; }
         attempts++;
         try {
           const freshUser = await base44.auth.me();
-          if (freshUser?.is_premium) {
-            clearInterval(interval);
+          if (mounted && freshUser?.is_premium) {
+            clearInterval(pollInterval);
+            pollInterval = null;
             setUser(freshUser);
             checkAppState(); // Propage le nouveau statut premium a toutes les pages via AuthContext
             toast.success("Bienvenue en Premium ! Profite de toutes les fonctionnalités.");
@@ -354,14 +357,15 @@ export default function Home() {
           // ignore — retry next tick
         }
         if (attempts >= maxAttempts) {
-          clearInterval(interval);
-          toast.success("Paiement reçu ! Active Premium visible dans quelques secondes.");
+          clearInterval(pollInterval);
+          pollInterval = null;
+          if (mounted) toast.success("Paiement reçu ! Active Premium visible dans quelques secondes.");
         }
       }, 2000);
     };
 
     loadData().then(handlePremiumSuccess);
-    return () => { mounted = false; };
+    return () => { mounted = false; if (pollInterval) { clearInterval(pollInterval); pollInterval = null; } };
   }, [isLoadingAuth, loadingDog, authUser, contextDog, navigate]);
 
   const handleCheckin = async ({ mood, energy, appetite, notes, symptoms, behaviorNotes }) => {
