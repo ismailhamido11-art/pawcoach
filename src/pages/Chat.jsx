@@ -158,7 +158,7 @@ export default function Chat() {
       const helpMsg = params.get("help");
       if (helpMsg && helpMsg.length <= 300) {
         helpSent.current = true;
-        sendMessage(decodeURIComponent(helpMsg));
+        setInput(decodeURIComponent(helpMsg));
         window.history.replaceState({}, "", window.location.pathname);
       }
     }
