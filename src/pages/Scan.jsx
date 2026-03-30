@@ -107,6 +107,7 @@ export default function Scan() {
   const [scanLimitReached, setScanLimitReached] = useState(false);
   const [error, setError] = useState(null);
   const fileRef = useRef();
+  const scanningRef = useRef(false); // anti-double-clic / anti-double-onglet
 
   const [dietPreferences, setDietPreferences] = useState(null);
 
