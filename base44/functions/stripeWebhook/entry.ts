@@ -36,10 +36,10 @@ Deno.serve(async (req) => {
         return Response.json({ received: true });
       }
 
-      const userEmail = session.metadata?.user_email || session.customer_email;
+      const userEmail = session.metadata?.user_email;
       if (!userEmail) {
-        console.error("No user email in session metadata");
-        return Response.json({ received: true });
+        console.error('[stripeWebhook] CRITICAL: metadata.user_email missing for session', session.id);
+        return Response.json({ error: 'missing_user_email', status: 'rejected' }, { status: 400 });
       }
 
       // Find the user and update premium status
