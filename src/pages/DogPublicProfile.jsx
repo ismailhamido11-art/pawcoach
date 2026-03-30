@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Dog, HealthRecord } from "@/api/entities";
 import { motion } from "framer-motion";
-import { Syringe, Weight, AlertTriangle, Calendar, MapPin, PawPrint, ShieldCheck, FileText, Fingerprint, Stethoscope, Pill } from "lucide-react";
+import { Syringe, Weight, AlertTriangle, Calendar, PawPrint, ShieldCheck, Lock } from "lucide-react";
 import { getVaccineDisplayName } from "@/utils/healthStatus";
 import { getAge } from "@/utils/dateHelpers";
 import EmptyState from "@/components/ui/EmptyState";
