@@ -15,11 +15,11 @@ import { PALETTE } from "@/lib/colorPalette";
 // getAge imported from @/utils/dateHelpers
 
 const TYPE_CONFIG = {
-  vaccine:    { icon: Syringe,    label: "Vaccin",      color: "#2d9f82", bg: "#2d9f8215" },
-  weight:     { icon: Weight,     label: "Poids",       color: "#3b82f6", bg: "#3b82f615" },
-  vet_visit:  { icon: Stethoscope,label: "Visite véto", color: "#8b5cf6", bg: "#8b5cf615" },
-  medication: { icon: Pill,       label: "Médicament",  color: "#10b981", bg: "#10b98115" },
-  note:       { icon: FileText,   label: "Note",        color: "#6b7280", bg: "#6b728015" },
+  vaccine:    { icon: Syringe,    label: "Vaccin",      color: PALETTE.accent,  bg: `${PALETTE.accent}15` },
+  weight:     { icon: Weight,     label: "Poids",       color: PALETTE.blue,    bg: `${PALETTE.blue}15` },
+  vet_visit:  { icon: Stethoscope,label: "Visite véto", color: PALETTE.violet,  bg: `${PALETTE.violet}15` },
+  medication: { icon: Pill,       label: "Médicament",  color: PALETTE.emerald, bg: `${PALETTE.emerald}15` },
+  note:       { icon: FileText,   label: "Note",        color: PALETTE.gray500, bg: `${PALETTE.gray500}15` },
 };
 
 function RecordItem({ record }) {
@@ -161,9 +161,9 @@ export default function DogPublicProfile() {
       <div className="px-4 -mt-4 mb-4">
         <div className="grid grid-cols-3 gap-2">
           {[
-            { icon: Syringe, value: vaccines.length, label: "Vaccins", color: "#2d9f82" },
-            { icon: Weight, value: weights.length, label: "Pesées", color: "#3b82f6" },
-            { icon: ShieldCheck, value: vaccines.filter(v => v.next_date && new Date(v.next_date) > new Date()).length, label: "À jour", color: "#2d9f82" },
+            { icon: Syringe, value: vaccines.length, label: "Vaccins", color: PALETTE.accent },
+            { icon: Weight, value: weights.length, label: "Pesées", color: PALETTE.blue },
+            { icon: ShieldCheck, value: vaccines.filter(v => v.next_date && new Date(v.next_date) > new Date()).length, label: "À jour", color: PALETTE.accent },
           ].map((pill, i) => (
             <motion.div
               key={pill.label}

@@ -421,9 +421,9 @@ export default function Nutri() {
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
-                        transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.3 }}
+                        transition={{ ...springGentle, delay: 0.3 }}
                         className="h-2 rounded-full"
-                        style={{ backgroundColor: "#2D9F82" }}
+                        style={{ backgroundColor: PALETTE.accent }}
                       />
                     </div>
                   </div>
@@ -491,7 +491,7 @@ export default function Nutri() {
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{ type: "spring", stiffness: 500, damping: 35 }}
+          transition={springTab}
           className="flex-1 flex flex-col"
         >
 

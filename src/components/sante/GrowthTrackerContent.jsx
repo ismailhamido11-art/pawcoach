@@ -304,13 +304,13 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
             <div className="flex gap-1">
               <motion.button
                 whileTap={{ scale: 0.93 }}
-                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                transition={springUI}
                 onClick={() => setActiveChart("weight")}
                 className={`text-[11px] font-bold px-2 py-1 rounded-lg transition-all ${activeChart === "weight" ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}
               >Poids</motion.button>
               <motion.button
                 whileTap={{ scale: 0.93 }}
-                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                transition={springUI}
                 onClick={() => setActiveChart("height")}
                 className={`text-[11px] font-bold px-2 py-1 rounded-lg transition-all ${activeChart === "height" ? "bg-accent text-white" : "bg-muted text-muted-foreground"}`}
               >Taille</motion.button>

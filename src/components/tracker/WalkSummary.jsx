@@ -144,7 +144,7 @@ export default function WalkSummary({
           <motion.div
             initial={{ y: 16, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.5, type: "spring", stiffness: 400, damping: 30 }}
+            transition={{ ...springUI, delay: 0.5 }}
             className="bg-white border border-border rounded-2xl p-4 w-full space-y-2 text-left"
           >
             {walkInfo.trend && (
@@ -169,7 +169,7 @@ export default function WalkSummary({
             <motion.div
               initial={{ y: 16, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.7, type: "spring", stiffness: 400, damping: 30 }}
+              transition={{ ...springUI, delay: 0.7 }}
               className="bg-white border border-border rounded-2xl p-4 w-full space-y-3"
             >
               <p className="text-xs font-bold text-foreground">Comment s'est passee la balade ?</p>

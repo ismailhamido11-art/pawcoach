@@ -45,7 +45,7 @@ export default function PostTrialSheet({ visible, onClose, dogName }) {
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            transition={springUI}
             className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl shadow-2xl"
             style={{ paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))" }}
           >

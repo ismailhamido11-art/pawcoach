@@ -154,7 +154,7 @@ export default function FirstDayGuide({ dog, todayCheckin, scans, dailyLogs, onS
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            transition={springUI}
             className="flex items-center gap-2 mb-3"
           >
             <div
@@ -236,7 +236,7 @@ export default function FirstDayGuide({ dog, todayCheckin, scans, dailyLogs, onS
             initial={{ opacity: 0, scale: 0.9, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: -8 }}
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            transition={springUI}
             className="rounded-2xl p-4 text-center"
             style={{
               background: "linear-gradient(135deg, rgba(45,159,130,0.1) 0%, rgba(26,77,62,0.08) 100%)",

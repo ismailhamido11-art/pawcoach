@@ -6,7 +6,7 @@ import { createPageUrl } from "@/utils";
 const listContainer = { show: { transition: { staggerChildren: 0.07 } } };
 const listItem = {
   hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 20 } },
+  show: { opacity: 1, y: 0, transition: springGentle },
 };
 
 const LEVEL_CONFIG = {

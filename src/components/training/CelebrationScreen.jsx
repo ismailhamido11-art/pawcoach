@@ -53,7 +53,7 @@ export default function CelebrationScreen({ dogName, exerciseName, exerciseNumbe
         initial={{ y: 300, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 300, opacity: 0 }}
-        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        transition={springUI}
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-sm bg-card rounded-t-3xl px-6 pt-6 text-center shadow-2xl"
         style={{ paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))" }}

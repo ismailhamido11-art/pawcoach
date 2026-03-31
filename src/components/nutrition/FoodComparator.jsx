@@ -389,7 +389,7 @@ Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, 
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ type: "spring", stiffness: 120, damping: 20 }}
+            transition={springGentle}
           >
             <Card className="shadow-none border-2 border-primary/30 bg-gradient-to-b from-secondary/40 to-secondary/10">
               <CardContent className="p-4 space-y-4">

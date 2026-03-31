@@ -12,7 +12,7 @@ import { createPageUrl } from "@/utils";
 import { getDogAgeSegment } from "@/utils/healthStatus";
 import BottomNav from "../components/BottomNav";
 import confetti from "canvas-confetti";
-import { CONFETTI_COLORS } from "@/lib/colorPalette";
+import { CONFETTI_COLORS, PALETTE } from "@/lib/colorPalette";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { DogTrophy } from "../components/ui/PawIllustrations";
 import Illustration from "../components/illustrations/Illustration";
@@ -278,7 +278,7 @@ export default function Premium() {
             >
               <motion.button
                 whileTap={{ scale: 0.96 }}
-                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                transition={springUI}
                 onClick={() => setPlan("monthly")}
                 className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-colors ${
                   plan === "monthly" ? "gradient-primary text-white shadow" : "text-muted-foreground"
@@ -289,7 +289,7 @@ export default function Premium() {
               </motion.button>
               <motion.button
                 whileTap={{ scale: 0.96 }}
-                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                transition={springUI}
                 onClick={() => setPlan("annual")}
                 className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-colors relative ${
                   plan === "annual" ? "gradient-primary text-white shadow" : "text-muted-foreground"
@@ -439,7 +439,7 @@ export default function Premium() {
         <div className="bg-white rounded-2xl border border-border p-1.5 flex gap-1.5">
           <motion.button
             whileTap={{ scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            transition={springUI}
             onClick={() => setPlan("monthly")}
             className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-colors ${
               plan === "monthly" ? "gradient-primary text-white shadow" : "text-muted-foreground"
@@ -450,7 +450,7 @@ export default function Premium() {
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            transition={springUI}
             onClick={() => setPlan("annual")}
             className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-colors relative ${
               plan === "annual" ? "gradient-primary text-white shadow" : "text-muted-foreground"

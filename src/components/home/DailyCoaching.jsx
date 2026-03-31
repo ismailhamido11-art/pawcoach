@@ -57,7 +57,7 @@ export default function DailyCoaching({ dog, recommendations = [] }) {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.15 }}
+      transition={{ ...springUI, delay: 0.15 }}
       className="mx-4 space-y-3"
     >
       {/* Daily tip */}

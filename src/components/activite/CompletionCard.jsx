@@ -69,7 +69,7 @@ export default function CompletionCard({ program, dog, totalMinutes, bilanState,
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        transition={springSnappy}
         className="bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl p-6 text-white text-center relative overflow-hidden"
       >
         {confetti.map((c, i) => (
@@ -231,7 +231,7 @@ export default function CompletionCard({ program, dog, totalMinutes, bilanState,
           <motion.div
             initial={bilanJustSaved ? { scale: 0.9, opacity: 0 } : false}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            transition={springUI}
             className="flex items-center justify-center gap-2 py-2.5 text-blue-700 text-sm font-bold"
           >
             <motion.div animate={bilanJustSaved ? { scale: [0, 1.3, 1] } : {}} transition={{ duration: 0.4 }}>
@@ -247,7 +247,7 @@ export default function CompletionCard({ program, dog, totalMinutes, bilanState,
         <motion.div
           initial={bilanJustSaved ? { y: 24, opacity: 0 } : false}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: bilanJustSaved ? 0.3 : 0, type: "spring", stiffness: 400, damping: 30 }}
+          transition={{ ...springUI, delay: bilanJustSaved ? 0.3 : 0 }}
           className="bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 rounded-2xl p-4"
         >
           <div className="flex items-start gap-3">
@@ -271,7 +271,7 @@ export default function CompletionCard({ program, dog, totalMinutes, bilanState,
         <motion.div
           initial={bilanJustSaved ? { y: 24, opacity: 0 } : false}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: bilanJustSaved ? 0.7 : 0, type: "spring", stiffness: 400, damping: 30 }}
+          transition={{ ...springUI, delay: bilanJustSaved ? 0.7 : 0 }}
           className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-2xl p-5 text-white space-y-3"
         >
           <div className="flex items-center gap-2">

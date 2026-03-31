@@ -18,12 +18,12 @@ import { VERDICT_CONFIG } from "@/lib/verdictConfig";
 
 
 const SOURCE_LABELS = {
-  chat: { label: "Chat IA", icon: MessageCircle, color: "#8b5cf6", bg: "bg-violet-50" },
-  nutrition: { label: "NutriCoach", icon: Salad, color: "#10b981", bg: "bg-emerald-50" },
-  training: { label: "Dressage", icon: Dumbbell, color: "#7c3aed", bg: "bg-purple-50" },
-  video: { label: "Video", icon: Video, color: "#9333ea", bg: "bg-purple-50" },
-  compare: { label: "Comparaison", icon: BarChart2, color: "#3b82f6", bg: "bg-blue-50" },
-  scan: { label: "Scan alimentaire", icon: ScanLine, color: "#f59e0b", bg: "bg-amber-50" },
+  chat: { label: "Chat IA", icon: MessageCircle, color: PALETTE.violet, bg: "bg-violet-50" },
+  nutrition: { label: "NutriCoach", icon: Salad, color: PALETTE.emerald, bg: "bg-emerald-50" },
+  training: { label: "Dressage", icon: Dumbbell, color: PALETTE.violet, bg: "bg-purple-50" },
+  video: { label: "Video", icon: Video, color: PALETTE.violet, bg: "bg-purple-50" },
+  compare: { label: "Comparaison", icon: BarChart2, color: PALETTE.blue, bg: "bg-blue-50" },
+  scan: { label: "Scan alimentaire", icon: ScanLine, color: PALETTE.amber400, bg: "bg-amber-50" },
 };
 
 const FILTERS = [

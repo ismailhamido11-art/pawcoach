@@ -170,7 +170,7 @@ export default function Activite() {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ type: "spring", stiffness: 500, damping: 35 }}
+            transition={springTab}
             className="px-4 pt-4"
           >
             {activeTab === "balade" && (

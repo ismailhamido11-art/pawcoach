@@ -126,7 +126,7 @@ export default function DailyBriefing({ dog, user, recentCheckins, dailyLogs, st
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        transition={springUI}
         className="rounded-[1.5rem] overflow-hidden"
         style={{ background: GRADIENT_PRIMARY }}
       >

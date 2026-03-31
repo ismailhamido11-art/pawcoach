@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { PALETTE } from "@/lib/colorPalette";
 import { base44 } from "@/api/base44Client";
 import { FoodScan, DietPreferences } from "@/api/entities";
 import { createPageUrl } from "@/utils";
@@ -30,7 +31,7 @@ import { VERDICT_CONFIG } from "@/lib/verdictConfig";
 const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
 const listItem = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 20 } }
+  show: { opacity: 1, y: 0, transition: springGentle }
 };
 
 const FREE_SCAN_LIMIT = 3;

@@ -189,7 +189,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, type: "spring", stiffness: 400, damping: 30 }}
+        transition={{ ...springUI, delay: 0.2 }}
         className="w-full"
       >
         <div className="bg-white border border-border rounded-2xl p-4">
@@ -238,7 +238,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2, type: "spring", stiffness: 400, damping: 30 }}
+      transition={{ ...springUI, delay: 0.2 }}
       className="w-full space-y-3"
     >
       {/* Header */}

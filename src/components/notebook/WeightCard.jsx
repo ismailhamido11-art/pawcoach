@@ -47,7 +47,7 @@ function InlineWeightForm({ dogId, onRecordAdded, onClose }) {
       initial={{ height: 0, opacity: 0 }}
       animate={{ height: "auto", opacity: 1 }}
       exit={{ height: 0, opacity: 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      transition={springSnappy}
       className="overflow-hidden"
     >
       <div className="mx-4 mb-3.5 bg-white rounded-xl border border-primary/20 p-3 space-y-2.5">

@@ -50,7 +50,7 @@ export default function Layout({ children, currentPageName }) {
             initial={{ y: -48, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -48, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            transition={springUI}
             className="fixed top-0 left-0 right-0 z-[100] bg-slate-800 text-white flex items-center justify-center gap-2 px-4 py-2"
             style={{ paddingTop: "max(8px, env(safe-area-inset-top, 0px))" }}
             role="status"

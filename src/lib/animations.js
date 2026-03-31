@@ -96,6 +96,18 @@ export const staggerItem = {
 };
 
 /**
+ * springSoft — spring doux pour entrées de contenu et reveals (200/20).
+ * Couvre les animations légères/fluides (200/15, 200/18, 200/25, 180/12, 100/20).
+ */
+export const springSoft = { type: "spring", stiffness: 200, damping: 20 };
+
+/**
+ * springUI — spring UI standard pour boutons, cards, modals (400/30).
+ * Couvre 40+ occurrences inline stiffness:400, damping:30.
+ */
+export const springUI = { type: "spring", stiffness: 400, damping: 30 };
+
+/**
  * springTab — spring rapide pour les indicateurs de navigation (BottomNav, tab switches).
  * Valeurs originales : stiffness 500, damping 35.
  */

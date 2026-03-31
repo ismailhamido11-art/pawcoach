@@ -86,7 +86,7 @@ function BadgeCard({ badge, unlocked, achv, dogName, index }) {
     <motion.div
       initial={{ opacity: 0, y: 16, scale: 0.92 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ type: "spring", stiffness: 400, damping: 30, delay: index * 0.045 }}
+      transition={{ ...springUI, delay: index * 0.045 }}
       className={`relative rounded-2xl p-3 flex flex-col items-center gap-1.5 text-center border transition-all overflow-hidden ${
         unlocked
           ? `bg-white border-2 shadow-sm ${cat.border}`

@@ -25,7 +25,7 @@ export default function ExerciseDetail({ exercise, isCompleted, isPremiumLocked,
           aria-label="Retour"
           onClick={onBack}
           whileTap={{ scale: 0.96 }}
-          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+          transition={springUI}
           className="absolute top-4 left-4 w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center z-20"
         >
           <ArrowLeft className="w-5 h-5 text-white" />

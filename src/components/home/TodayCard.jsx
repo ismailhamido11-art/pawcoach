@@ -18,7 +18,7 @@ export default function TodayCard({ dog, user: _user, todayCheckin, streak: _str
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        transition={springUI}
         className="mx-4"
       >
         <Link to={createPageUrl(topRec.page) + (topRec.tab ? `?tab=${topRec.tab}` : "") + (topRec.vaccineKey ? `&vaccineKey=${topRec.vaccineKey}` : "")}>
@@ -45,7 +45,7 @@ export default function TodayCard({ dog, user: _user, todayCheckin, streak: _str
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        transition={springUI}
         className="mx-4 rounded-2xl border p-4 shadow-sm relative overflow-hidden"
         style={{
           background: "linear-gradient(135deg, hsl(var(--card)) 0%, rgba(45, 159, 130, 0.03) 100%)",
@@ -69,7 +69,7 @@ export default function TodayCard({ dog, user: _user, todayCheckin, streak: _str
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      transition={springUI}
       className="mx-4 rounded-2xl border p-4 shadow-sm relative overflow-hidden"
       style={{
         background: "linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--secondary)) 40%, hsl(var(--card)) 100%)",

@@ -702,7 +702,7 @@ export default function Training() {
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${(completedCount / EXERCISES.length) * 100}%` }}
-                  transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.2 }}
+                  transition={{ ...springGentle, delay: 0.2 }}
                   className="h-2.5 rounded-full"
                   style={{ backgroundColor: "#2D9F82" }}
                 />

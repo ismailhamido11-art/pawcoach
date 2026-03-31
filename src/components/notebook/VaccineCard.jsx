@@ -59,7 +59,7 @@ function InlineVaccineForm({ data, dogId, onRecordAdded, onClose }) {
       initial={{ height: 0, opacity: 0 }}
       animate={{ height: "auto", opacity: 1 }}
       exit={{ height: 0, opacity: 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      transition={springSnappy}
       className="overflow-hidden"
     >
       <div className="mx-3.5 mb-3.5 bg-white rounded-xl border border-primary/20 p-3 space-y-2.5">
@@ -144,7 +144,7 @@ function VaccineRow({ vaccineKey: _vaccineKey, data, expanded, onToggle, dogId, 
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            transition={springSnappy}
             className="overflow-hidden"
           >
             <div className="px-3.5 pb-3.5 pt-0 space-y-2">

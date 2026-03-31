@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { HealthRecord, DailyLog, GrowthEntry } from "@/api/entities";
+import { PALETTE } from "@/lib/colorPalette";
 import { useAuth } from "@/lib/AuthContext";
 import { useDog } from "@/lib/DogContext";
 import BottomNav from "../components/BottomNav";
@@ -220,7 +221,7 @@ export default function Sante() {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ type: "spring", stiffness: 500, damping: 35 }}
+            transition={springTab}
           >
             {activeTab === "carnet" && (
               <NotebookContent

@@ -322,7 +322,7 @@ export function PostWalkReviewPrompt({ park, dog, user, onDone }) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.8, type: "spring", stiffness: 400, damping: 30 }}
+      transition={{ ...springUI, delay: 0.8 }}
       className="bg-white border border-border rounded-2xl p-3.5 space-y-2 w-full"
     >
       <p className="text-xs font-bold text-foreground">Tu étais au {park.name}</p>
