@@ -33,6 +33,7 @@ import PostTrialSheet from "../components/premium/PostTrialSheet";
 import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
 import FirstDayGuide from "../components/home/FirstDayGuide";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import ErrorState from "@/components/ErrorState";
 
 
