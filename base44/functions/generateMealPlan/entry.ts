@@ -35,21 +35,55 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Call LLM server-side
-    const llmResponse = await base44.integrations.Core.InvokeLLM({ prompt });
+    // Call LLM server-side — response_json_schema guarantees structured JSON
+    const llmResponse = await base44.integrations.Core.InvokeLLM({
+      prompt,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          calories_per_day: { type: 'number' },
+          quantity_summary: { type: 'string' },
+          days: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                day: { type: 'string' },
+                morning: { type: 'object', properties: { food: { type: 'string' }, quantity: { type: 'string' } } },
+                noon: { type: 'object', properties: { food: { type: 'string' }, quantity: { type: 'string' } } },
+                evening: { type: 'object', properties: { food: { type: 'string' }, quantity: { type: 'string' } } },
+              },
+            },
+          },
+          supplements: { type: 'array', items: { type: 'string' } },
+          avoid: { type: 'array', items: { type: 'string' } },
+          tip: { type: 'string' },
+          rationale: { type: 'array', items: { type: 'string' } },
+        },
+      },
+    });
 
     // Track generation for quota enforcement — record created server-side,
     // independent of frontend save. This closes the bypass where a free user
     // could generate unlimited plans without saving.
-    const savedPlan = await base44.asServiceRole.entities.NutritionPlan.create({
-      owner_email: user.email,
-      dog_id: dogId,
-      generated_at: new Date().toISOString(),
-      plan_text: typeof llmResponse === 'string' ? llmResponse : JSON.stringify(llmResponse),
-      is_active: false,
-    });
+    // Non-fatal: if tracking fails, user still gets their plan. A broken
+    // feature is worse than a temporarily relaxed quota.
+    const planText = typeof llmResponse === 'string' ? llmResponse : JSON.stringify(llmResponse);
+    let planId: string | null = null;
+    try {
+      const savedPlan = await base44.asServiceRole.entities.NutritionPlan.create({
+        owner_email: user.email,
+        dog_id: dogId,
+        generated_at: new Date().toISOString(),
+        plan_text: planText,
+        is_active: false,
+      });
+      planId = savedPlan.id;
+    } catch (trackErr) {
+      console.error('generateMealPlan: quota tracking create failed:', trackErr);
+    }
 
-    return Response.json({ plan: llmResponse, planId: savedPlan.id });
+    return Response.json({ plan: llmResponse, planId });
   } catch (err) {
     console.error('generateMealPlan error:', err);
     return Response.json({ error: 'internal_error' }, { status: 500 });
