@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { WifiOff } from "lucide-react";
+import { springUI } from "@/lib/animations";
 
 const fadeIn = {
   initial: { opacity: 0 },

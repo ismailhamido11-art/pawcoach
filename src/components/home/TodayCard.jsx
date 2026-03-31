@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Sparkles, AlertTriangle, ChevronRight, CheckCircle2 } from "lucide-react";
 import InlineCheckin from "./InlineCheckin";
+import { springUI } from "@/lib/animations";
 
 export default function TodayCard({ dog, user: _user, todayCheckin, streak: _streak, recommendations = [], onCheckin, submitting }) {
   const hour = new Date().getHours();

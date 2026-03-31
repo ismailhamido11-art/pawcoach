@@ -5,6 +5,7 @@ import { createPageUrl } from "@/utils";
 import { X, ChevronRight, MessageCircle, ScanLine, Dumbbell, Bell, Lock } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
 import { PALETTE } from "@/lib/colorPalette";
+import { springUI } from "@/lib/animations";
 
 const LOST_FEATURES = [
   { icon: MessageCircle, label: "Chat IA illimité (retour à 10/jour)", color: PALETTE.blue },

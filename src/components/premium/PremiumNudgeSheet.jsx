@@ -5,6 +5,7 @@ import { createPageUrl } from "@/utils";
 import { MessageCircle, ScanLine, Dumbbell, Bell, X, ChevronRight, Star } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
 import { PALETTE } from "@/lib/colorPalette";
+import { springUI } from "@/lib/animations";
 
 const FEATURES = [
   { icon: MessageCircle, label: "Chat IA illimité avec PawCoach", color: PALETTE.blue },

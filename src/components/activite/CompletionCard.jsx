@@ -7,6 +7,7 @@ import {
   MessageSquare, Compass
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { springUI } from "@/lib/animations";
 
 export const GOAL_SUGGESTIONS = [
   { label: "Renforcer le lien", Icon: Heart, color: "text-rose-500" },

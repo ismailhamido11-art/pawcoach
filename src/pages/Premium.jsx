@@ -17,6 +17,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { DogTrophy } from "../components/ui/PawIllustrations";
 import Illustration from "../components/illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
+import { springUI } from "@/lib/animations";
 
 const MONTHLY_PRICE_ID = "price_1T4tkFDuhaIxY4PGpnhDTx5L";
 const ANNUAL_PRICE_ID = "price_1T4tkFDuhaIxY4PGWLeWApDL";

@@ -3,6 +3,7 @@ import { DogAchievement } from "@/api/entities";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Lock, ChevronRight, Zap, PawPrint, Footprints, Calendar, Medal, Sparkles, GraduationCap, Flame, Crown, Diamond, Dog, Target } from "lucide-react";
 import { PALETTE, GRADIENT_PRIMARY } from "@/lib/colorPalette";
+import { springUI } from "@/lib/animations";
 
 // All possible badges — source of truth for display
 const ALL_BADGES = [

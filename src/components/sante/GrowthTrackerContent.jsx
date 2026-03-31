@@ -13,6 +13,7 @@ import { useActionCredits } from "@/hooks/useActionCredits";
 import EmptyState from "@/components/ui/EmptyState";
 import { CustomTooltip } from "@/utils/chartHelpers";
 import { PALETTE } from "@/lib/colorPalette";
+import { springUI } from "@/lib/animations";
 
 // Breed reference curves (weight in kg by age in months)
 const BREED_REFERENCES = {

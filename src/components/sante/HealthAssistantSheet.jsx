@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkles } from "lucide-react";
 import useBackClose from "@/hooks/useBackClose";
 import SmartHealthAssistant from "@/components/notebook/SmartHealthAssistant";
+import { springUI } from "@/lib/animations";
 
 export default function HealthAssistantSheet({ visible, onClose, dogId, dog, onRecordAdded }) {
   useBackClose(visible, onClose);

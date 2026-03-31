@@ -7,6 +7,7 @@ import { PALETTE } from "@/lib/colorPalette";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { getTodayString } from "@/utils/recommendations";
 import { toast } from "sonner";
+import { springUI } from "@/lib/animations";
 
 const FIELDS = [
   { key: "weight_kg", icon: Scale, label: "Poids", unit: "kg", type: "number", placeholder: "Ex: 12.5", color: PALETTE.blue, bg: "bg-blue-50", min: 0.1, max: 200 },
