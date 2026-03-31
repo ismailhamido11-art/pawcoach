@@ -22,6 +22,7 @@ import { getDogAgeLabel } from "@/utils/healthStatus";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
 import { motion, AnimatePresence } from "framer-motion";
+import { PALETTE } from "@/lib/colorPalette";
 import { spring, springGentle } from "@/lib/animations";
 import { mdComponents } from "@/components/lib/markdown";
 import EmptyState from "@/components/ui/EmptyState";
@@ -427,7 +428,7 @@ export default function Chat() {
             <motion.div {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               {(msg.role === "assistant" || msg.role === "system") && (
                 <div className="w-8 h-8 flex-shrink-0 mt-1">
-                  <DogChat color="#2d9f82" />
+                  <DogChat color={PALETTE.accent} />
                 </div>
               )}
               <div className="flex flex-col gap-0.5 max-w-[82%]">
@@ -505,7 +506,7 @@ export default function Chat() {
         {isStreaming && streamingText && (
           <motion.div {...msgAnim} className="flex gap-2 justify-start">
             <div className="w-8 h-8 flex-shrink-0 mt-1">
-              <DogChat color="#2d9f82" />
+              <DogChat color={PALETTE.accent} />
             </div>
             <div className="flex flex-col gap-0.5 max-w-[82%]">
               <div className="chat-bubble-assistant px-4 py-3 rounded-2xl rounded-bl-sm text-sm leading-relaxed text-foreground">
@@ -521,7 +522,7 @@ export default function Chat() {
         {((loading && !isStreaming) || (isStreaming && !streamingText)) && (
           <div className="flex gap-2 justify-start">
             <div className="w-8 h-8 flex-shrink-0 mt-1">
-              <DogChat color="#2d9f82" />
+              <DogChat color={PALETTE.accent} />
             </div>
             <div className="chat-bubble-assistant px-2 py-1.5 rounded-2xl rounded-bl-sm">
               <LottieAnimation src={LOTTIE.loading.dots[0]} size={40} loop autoplay ariaLabel="Reflexion en cours" />
@@ -571,7 +572,7 @@ export default function Chat() {
           <div className="px-5 py-3 space-y-3">
             <div className="flex gap-2 justify-start">
               <div className="w-8 h-8 flex-shrink-0 mt-1">
-                <DogChat color="#2d9f82" />
+                <DogChat color={PALETTE.accent} />
               </div>
               <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
                 <p className="text-sm leading-relaxed">

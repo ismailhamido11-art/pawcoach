@@ -3,12 +3,13 @@ import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { X, Download, Share2, Trophy, Target, PawPrint, Dog, Bone } from "lucide-react";
+import { PALETTE } from "@/lib/colorPalette";
 
 function getWalkLevel(minutes) {
-  if (minutes >= 45) return { label: "SUPER BALADE", Icon: Trophy, iconColor: "#f59e0b", bg: "linear-gradient(135deg, #064e3b, #059669)", accent: "#34d399" };
-  if (minutes >= 30) return { label: "OBJECTIF ATTEINT", Icon: Target, iconColor: "#6ee7b7", bg: "linear-gradient(135deg, #1a4d3e, #2d9f82)", accent: "#6ee7b7" };
-  if (minutes >= 15) return { label: "BONNE BALADE", Icon: PawPrint, iconColor: "#93c5fd", bg: "linear-gradient(135deg, #1e3a5f, #3b82f6)", accent: "#93c5fd" };
-  return { label: "PETITE SORTIE", Icon: Dog, iconColor: "#d1d5db", bg: "linear-gradient(135deg, #374151, #6b7280)", accent: "#d1d5db" };
+  if (minutes >= 45) return { label: "SUPER BALADE", Icon: Trophy, iconColor: PALETTE.amber400, bg: `linear-gradient(135deg, #064e3b, ${PALETTE.emeraldDark})`, accent: PALETTE.emeraldLight };
+  if (minutes >= 30) return { label: "OBJECTIF ATTEINT", Icon: Target, iconColor: PALETTE.emeraldMedium, bg: `linear-gradient(135deg, ${PALETTE.primary}, ${PALETTE.accent})`, accent: PALETTE.emeraldMedium };
+  if (minutes >= 15) return { label: "BONNE BALADE", Icon: PawPrint, iconColor: PALETTE.blue300, bg: `linear-gradient(135deg, ${PALETTE.navy}, ${PALETTE.blue})`, accent: PALETTE.blue300 };
+  return { label: "PETITE SORTIE", Icon: Dog, iconColor: PALETTE.gray300, bg: `linear-gradient(135deg, ${PALETTE.slate700}, ${PALETTE.gray500})`, accent: PALETTE.gray300 };
 }
 
 export default function WalkShareCard({ minutes, km, calories, dogName, streak, kibbleEquiv, onClose }) {
@@ -161,7 +162,7 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
                   background: "rgba(255,255,255,0.08)",
                 }}>
                   <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
-                    <Bone style={{ width: 14, height: 14, color: "#fbbf24" }} /> {kibbleEquiv} croquettes brûlées
+                    <Bone style={{ width: 14, height: 14, color: PALETTE.cautionLight }} /> {kibbleEquiv} croquettes brûlées
                   </span>
                 </div>
               )}
@@ -175,7 +176,7 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
                 textAlign: "center",
               }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-                  <PawPrint style={{ width: 14, height: 14, color: "#34d399" }} />
+                  <PawPrint style={{ width: 14, height: 14, color: PALETTE.emeraldLight }} />
                   <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, fontWeight: 700, letterSpacing: 1 }}>
                     PawCoach
                   </span>

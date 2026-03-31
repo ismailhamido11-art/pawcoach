@@ -7,6 +7,7 @@ import { getVaccineDisplayName } from "@/utils/healthStatus";
 import { getAge } from "@/utils/dateHelpers";
 import EmptyState from "@/components/ui/EmptyState";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import { PALETTE } from "@/lib/colorPalette";
 
 // Public page — no login required
 // URL: /DogPublicProfile?dogId=xxx

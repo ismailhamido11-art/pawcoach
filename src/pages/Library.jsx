@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
+import { PALETTE } from "@/lib/colorPalette";
 import { Bookmark, NutritionPlan, FoodScan } from "@/api/entities";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/lib/AuthContext";

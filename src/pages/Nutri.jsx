@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useReducer } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { PALETTE } from "@/lib/colorPalette";
 import { base44 } from "@/api/base44Client";
 import { Bookmark as BookmarkEntity, NutritionPlan, FoodScan, DietPreferences, DailyCheckin, HealthRecord, DailyLog } from "@/api/entities";
 import { createPageUrl } from "@/utils";

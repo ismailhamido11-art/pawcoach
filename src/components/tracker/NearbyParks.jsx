@@ -7,6 +7,7 @@ import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap } from "re
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import EmptyState from "@/components/ui/EmptyState";
+import { PALETTE } from "@/lib/colorPalette";
 
 // Fix default Leaflet marker icons (same pattern as FindVetContent)
 delete L.Icon.Default.prototype._getIconUrl;
@@ -16,7 +17,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-const PARK_COLORS = { dog_park: "#10b981", park_dog_ok: "#3b82f6", park_leashed: "#f59e0b" };
+const PARK_COLORS = { dog_park: PALETTE.emerald, park_dog_ok: PALETTE.blue, park_leashed: PALETTE.amber400 };
 
 function createParkIcon(type) {
   const color = PARK_COLORS[type] || PARK_COLORS.park_dog_ok;
@@ -269,7 +270,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
             {/* Auto-zoom to fit all parks + user */}
             <FitBounds positions={[userPos, ...visibleParks.map(p => [p.lat, p.lng])]} />
             {/* User position — blue dot */}
-            <CircleMarker center={userPos} radius={8} fillColor="#3b82f6" fillOpacity={1} color="white" weight={3} />
+            <CircleMarker center={userPos} radius={8} fillColor={PALETTE.blue} fillOpacity={1} color="white" weight={3} />
             {/* Park markers — colored by type */}
             {visibleParks.map((park) => {
               const { paws } = computeParkInfo(park);
@@ -284,7 +285,7 @@ export default function NearbyParks({ dog, user, onNearPark }) {
                           href={`https://www.google.com/maps/dir/?api=1&destination=${park.lat},${park.lng}&travelmode=walking`}
                           target="_blank" rel="noopener noreferrer"
                           className="text-[11px] font-bold text-white px-2 py-1 rounded-md no-underline"
-                          style={{ background: "#1A4D3E" }}
+                          style={{ background: PALETTE.primary }}
                         >
                           Itinéraire
                         </a>

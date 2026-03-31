@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import ActivityCalendar from "./ActivityCalendar";
 import EmptyState from "@/components/ui/EmptyState";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
+import { PALETTE } from "@/lib/colorPalette";
 
 const WEEKLY_GOAL = 5;
 const MIN_WALK_MINUTES = 20;
@@ -306,7 +307,7 @@ export default function TrackerHistory({ logs, dog }) {
               />
               <Bar dataKey="minutes" radius={[4, 4, 0, 0]}>
                 {chartData.map((entry, i) => (
-                  <Cell key={entry.day || i} fill={entry.minutes >= 30 ? "#10b981" : entry.minutes > 0 ? "#3b82f6" : "#e5e7eb"} />
+                  <Cell key={entry.day || i} fill={entry.minutes >= 30 ? PALETTE.emerald : entry.minutes > 0 ? PALETTE.blue : PALETTE.gray200} />
                 ))}
               </Bar>
             </BarChart>

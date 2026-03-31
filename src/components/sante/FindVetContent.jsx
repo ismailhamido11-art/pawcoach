@@ -16,6 +16,7 @@ import { useActionCredits } from "@/hooks/useActionCredits";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { PALETTE } from "@/lib/colorPalette";
 
 // Fix default marker icons for Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -24,8 +25,6 @@ L.Icon.Default.mergeOptions({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
-
-import { PALETTE } from "@/lib/colorPalette";
 
 const PLACE_TYPES = [
   { id: "vet",     label: "Vétérinaires", icon: Stethoscope, color: PALETTE.red500, searchTerm: "clinique vétérinaire" },

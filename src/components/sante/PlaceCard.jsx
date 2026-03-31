@@ -3,11 +3,12 @@ import { Star, Phone, MapPin, Globe, Heart, Pencil, Check, X } from "lucide-reac
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { PlaceFavorite } from "@/api/entities";
+import { PALETTE } from "@/lib/colorPalette";
 
 const TYPE_LABELS = {
-  vet: { label: "Vétérinaire", color: "#ef4444", bg: "#ef444415" },
-  groomer: { label: "Toiletteur", color: "#8b5cf6", bg: "#8b5cf615" },
-  store: { label: "Animalerie", color: "#10b981", bg: "#10b98115" },
+  vet: { label: "Vétérinaire", color: PALETTE.red500, bg: `${PALETTE.red500}15` },
+  groomer: { label: "Toiletteur", color: PALETTE.violet, bg: `${PALETTE.violet}15` },
+  store: { label: "Animalerie", color: PALETTE.emerald, bg: `${PALETTE.emerald}15` },
 };
 
 export default function PlaceCard({ place, isFavorite, favoriteId, favoriteNotes, onFavoriteToggle, dog, user }) {
