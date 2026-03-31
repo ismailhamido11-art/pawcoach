@@ -69,7 +69,7 @@ getTrialDaysLeft(user) = max(0, floor(diff_ms / ms_per_day))
 | Rappels sante par email | Non | Oui | Backend filtre premium users | `base44/functions/vaccineReminders/entry.ts` |
 | Bilan hebdomadaire IA | Non | Oui | Backend filtre `is_premium` + trial | `base44/functions/weeklyInsightGenerate/entry.ts:27-38` |
 | Nombre de chiens | 1 | Jusqu'a 3 | [A VERIFIER] — pas de gate explicite dans le code frontend |
-| Plans nutrition IA | [A VERIFIER] limite mensuelle | Illimite | Logique dans Nutri.jsx `monthlyPlanCount` | `pages/Nutri.jsx:96` |
+| Plans nutrition IA | 2 plans/mois (gratuit) | Illimite | `MONTHLY_FREE_LIMIT = 2` enforced frontend + backend | `components/nutrition/NutritionMealPlan.jsx:17`, `components/nutrition/MealPlanGenerator.jsx:7`, `base44/functions/generateMealPlan/entry.ts:3` |
 
 #### Paiement Stripe
 
@@ -157,7 +157,7 @@ Chaque milestone declenche confetti + toast.
 **Coach Nutri** : utilise un `useReducer` (`coachReducer`) pour gerer l'etat de la conversation IA — `pages/Nutri.jsx:51-77`.
 - Actions : `SET_MESSAGES`, `SET_INPUT`, `SET_LOADING`, `SET_MESSAGES_REMAINING`, `SET_BOOKMARKED`, `SET_STREAMING`, `SET_STREAMING_TEXT`, `SET_SHOW_SCROLL_BTN`, `SET_LAST_FAILED_INPUT`, `RESET_COACH`
 
-**Plan repas** : stocke dans `NutritionPlan` entite, `monthlyPlanCount` pour limiter les plans [A VERIFIER — logique precise dans NutritionMealPlan composant].
+**Plan repas** : stocke dans `NutritionPlan` entite, `monthlyPlanCount` pour limiter les plans. Limite : 2/mois pour les gratuits (`MONTHLY_FREE_LIMIT = 2`). Enforcement double : frontend (`NutritionMealPlan.jsx:82`) bloque la generation, backend (`generateMealPlan/entry.ts:33`) retourne 429. Premium = illimite.
 
 **Scan alimentaire** (`pages/Scan.jsx:195-241`) :
 - Upload image via `base44.integrations.Core.UploadFile`
