@@ -94,13 +94,13 @@ export default function ShareCard({ result, dogName, onClose }) {
               border: `2px solid ${s.accent}`,
               marginBottom: 20,
             }}>
-              <span style={{ color: "#fff", fontWeight: 900, fontSize: 18, letterSpacing: 2, textTransform: "uppercase" }}>
+              <span style={{ color: "white", fontWeight: 900, fontSize: 18, letterSpacing: 2, textTransform: "uppercase" }}>
                 {s.label}
               </span>
             </div>
 
             {/* Food name */}
-            <div style={{ color: "#fff", fontWeight: 900, fontSize: 32, lineHeight: 1.2, marginBottom: 8 }}>
+            <div style={{ color: "white", fontWeight: 900, fontSize: 32, lineHeight: 1.2, marginBottom: 8 }}>
               {result.food_name}
             </div>
 
@@ -123,7 +123,7 @@ export default function ShareCard({ result, dogName, onClose }) {
                 justifyContent: "center",
                 marginBottom: 24,
               }}>
-                <span style={{ color: "#fff", fontWeight: 900, fontSize: 32, lineHeight: 1 }}>{result.score}</span>
+                <span style={{ color: "white", fontWeight: 900, fontSize: 32, lineHeight: 1 }}>{result.score}</span>
                 <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, fontWeight: 700 }}>/10</span>
               </div>
             )}

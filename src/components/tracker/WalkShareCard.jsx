@@ -107,7 +107,7 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
                 border: `2px solid ${level.accent}`,
                 marginBottom: 16,
               }}>
-                <span style={{ color: "#fff", fontWeight: 900, fontSize: 15, letterSpacing: 2, textTransform: "uppercase" }}>
+                <span style={{ color: "white", fontWeight: 900, fontSize: 15, letterSpacing: 2, textTransform: "uppercase" }}>
                   {level.label}
                 </span>
               </div>
@@ -132,7 +132,7 @@ export default function WalkShareCard({ minutes, km, calories, dogName, streak, 
                       alignItems: "center",
                       justifyContent: "center",
                     }}>
-                      <span style={{ color: "#fff", fontWeight: 900, fontSize: stats.length <= 2 ? 30 : 26, lineHeight: 1 }}>{s.value}</span>
+                      <span style={{ color: "white", fontWeight: 900, fontSize: stats.length <= 2 ? 30 : 26, lineHeight: 1 }}>{s.value}</span>
                       <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, fontWeight: 700, marginTop: 2 }}>{s.unit}</span>
                     </div>
                     <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, fontWeight: 600, marginTop: 6 }}>{s.label}</span>

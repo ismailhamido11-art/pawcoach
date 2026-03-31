@@ -444,7 +444,7 @@ export default function Nutri() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-24 h-24 flex-shrink-0"
           >
-            <DogChef color="#ffffff" accent={PALETTE.emeraldPale} />
+            <DogChef color="white" accent={PALETTE.emeraldPale} />
           </motion.div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />

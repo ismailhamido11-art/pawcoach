@@ -49,7 +49,7 @@ export default function WalkMap({ path, currentPos }) {
           <CircleMarker
             center={path[0]}
             radius={7}
-            pathOptions={{ color: "#ffffff", fillColor: PALETTE.greenMid, fillOpacity: 1, weight: 2 }}
+            pathOptions={{ color: "white", fillColor: PALETTE.greenMid, fillOpacity: 1, weight: 2 }}
           />
         )}
 
@@ -64,7 +64,7 @@ export default function WalkMap({ path, currentPos }) {
             <CircleMarker
               center={currentPos}
               radius={7}
-              pathOptions={{ color: "#ffffff", fillColor: PALETTE.accent, fillOpacity: 1, weight: 2 }}
+              pathOptions={{ color: "white", fillColor: PALETTE.accent, fillOpacity: 1, weight: 2 }}
             />
           </>
         )}

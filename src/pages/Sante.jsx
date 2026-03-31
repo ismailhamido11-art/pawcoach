@@ -160,7 +160,7 @@ export default function Sante() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-20 h-20 flex-shrink-0"
           >
-            <DogDoctor color="#ffffff" accent={PALETTE.emeraldPale} />
+            <DogDoctor color="white" accent={PALETTE.emeraldPale} />
           </motion.div>
         </div>
 

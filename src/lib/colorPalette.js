@@ -53,11 +53,18 @@ export const PALETTE = {
   // UI utility (charts, grids, maps — not design tokens)
   red500:         "#EF4444",  // Red-500 — data list destructive items
   amber400:       "#F59E0B",  // Amber-400 — chart caution / streak icon
+  amber800:       "#92400E",  // Amber-800 — SVG dog nose/ear fill (Scan icon)
   green400:       "#4ADE80",  // Green-400 — mood bar (lighter than emerald)
   gray200:        "#E5E7EB",  // Gray-200 — chart grid lines, subtle SVG rings
   gray300:        "#D1D5DB",  // Gray-300 — inactive icon (WalkShareCard)
   gray400:        "#9CA3AF",  // Gray-400 — axis ticks, inactive text
   gray500:        "#6B7280",  // Gray-500 — secondary text / notes
+  blue800:        "#1E40AF",  // Blue-800 — SVG Dressage dog fill (Training icon)
+  rose800:        "#9F1239",  // Rose-800 — SVG Véto icon stroke
+  tealMid:        "#2D8A70",  // Teal mid — PageNotFound accent
+  tealDark:       "#1A6B52",  // Teal dark — PageNotFound gradient end
+  slate200:       "#E2E8F0",  // Slate-200 — Onboarding border inactive
+  slate300:       "#CBD5E1",  // Slate-300 — Onboarding photo border inactive
   slate700:       "#374151",  // Slate-700 — dark gradient base (WalkShareCard)
   navy:           "#1E3A5F",  // Navy — dark blue gradient base (WalkShareCard)
   cyan:           "#06B6D4",  // Cyan-500 — water/hydration field (CombinedFAB)

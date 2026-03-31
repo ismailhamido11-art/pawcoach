@@ -405,7 +405,7 @@ export default function Premium() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-28 h-28 mx-auto mb-3"
           >
-            <DogTrophy color="#ffffff" accent={PALETTE.emeraldPale} />
+            <DogTrophy color="white" accent={PALETTE.emeraldPale} />
           </motion.div>
           <h1 className="text-white font-bold text-2xl">PawCoach Premium</h1>
           <p className="text-white/80 text-sm mt-1">{SEGMENT_HERO[segment].subtitle(dogName)}</p>

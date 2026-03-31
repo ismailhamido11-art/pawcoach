@@ -26,7 +26,7 @@ import EmotionalTip from "../components/home/EmotionalTip";
 import { Flame, ScanLine, Footprints, Stethoscope, BookOpen, Lock, Sparkles, ChevronRight, BarChart3, UtensilsCrossed, Heart } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
-import { CONFETTI_COLORS } from "@/lib/colorPalette";
+import { CONFETTI_COLORS, PALETTE } from "@/lib/colorPalette";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { toast } from "sonner";
 import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
@@ -496,9 +496,9 @@ export default function Home() {
       svg: (
         <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none">
           <ellipse cx="16" cy="12" rx="7" ry="6" fill="white" fillOpacity="0.9"/>
-          <circle cx="13" cy="11" r="1.2" fill="#92400e"/>
-          <circle cx="19" cy="11" r="1.2" fill="#92400e"/>
-          <ellipse cx="16" cy="14" rx="2.5" ry="1.8" fill="#92400e" fillOpacity="0.7"/>
+          <circle cx="13" cy="11" r="1.2" fill={PALETTE.amber800}/>
+          <circle cx="19" cy="11" r="1.2" fill={PALETTE.amber800}/>
+          <ellipse cx="16" cy="14" rx="2.5" ry="1.8" fill={PALETTE.amber800} fillOpacity="0.7"/>
           <path d="M9 8Q7 3 5 6" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.8"/>
           <path d="M23 8Q25 3 27 6" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.8"/>
           <rect x="6" y="22" width="20" height="6" rx="3" fill="white" fillOpacity="0.3"/>
@@ -519,7 +519,7 @@ export default function Home() {
           <circle cx="7" cy="18" r="3" fill="white" fillOpacity="0.85"/>
           <circle cx="25" cy="18" r="3" fill="white" fillOpacity="0.85"/>
           <ellipse cx="16" cy="24" rx="6" ry="4.5" fill="white" fillOpacity="0.9"/>
-          <path d="M13 22Q16 18 19 22" stroke="#065f46" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+          <path d="M13 22Q16 18 19 22" stroke={PALETTE.safeDeep} strokeWidth="1.5" fill="none" strokeLinecap="round"/>
         </svg>
       ),
     },
@@ -530,7 +530,7 @@ export default function Home() {
       svg: (
         <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none">
           <path d="M16 28C10 22 4 18 4 12a6 6 0 0112-1 6 6 0 0112 1c0 6-6 10-12 16z" fill="white" fillOpacity="0.85"/>
-          <path d="M13 14h6M16 11v6" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round"/>
+          <path d="M13 14h6M16 11v6" stroke={PALETTE.violet} strokeWidth="2" strokeLinecap="round"/>
         </svg>
       ),
     },
@@ -541,9 +541,9 @@ export default function Home() {
       svg: (
         <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none">
           <circle cx="16" cy="18" r="8" fill="white" fillOpacity="0.85"/>
-          <ellipse cx="16" cy="20" rx="3" ry="2" fill="#1e40af" fillOpacity="0.5"/>
-          <circle cx="13" cy="16" r="1.2" fill="#1e40af"/>
-          <circle cx="19" cy="16" r="1.2" fill="#1e40af"/>
+          <ellipse cx="16" cy="20" rx="3" ry="2" fill={PALETTE.blue800} fillOpacity="0.5"/>
+          <circle cx="13" cy="16" r="1.2" fill={PALETTE.blue800}/>
+          <circle cx="19" cy="16" r="1.2" fill={PALETTE.blue800}/>
           <path d="M10 12L8 5h16l-2 7" fill="white" fillOpacity="0.7"/>
           <rect x="11" y="4" width="10" height="2" rx="1" fill="white" fillOpacity="0.5"/>
           <circle cx="16" cy="3.5" r="1.5" fill="white" fillOpacity="0.7"/>
@@ -558,7 +558,7 @@ export default function Home() {
       svg: (
         <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none">
           <path d="M16 8a6 6 0 016 6c0 4-3 7-6 10-3-3-6-6-6-10a6 6 0 016-6z" fill="white" fillOpacity="0.9"/>
-          <path d="M13 14h6M16 11v6" stroke="#9f1239" strokeWidth="2.5" strokeLinecap="round"/>
+          <path d="M13 14h6M16 11v6" stroke={PALETTE.rose800} strokeWidth="2.5" strokeLinecap="round"/>
         </svg>
       ),
     },

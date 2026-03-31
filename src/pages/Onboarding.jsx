@@ -587,7 +587,7 @@ Extrais ces informations et renvoie un objet JSON.
                     className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all text-left"
                     style={{
                       background: answers[0] === opt.label ? opt.bg : "white",
-                      borderColor: answers[0] === opt.label ? opt.color : "#e2e8f0",
+                      borderColor: answers[0] === opt.label ? opt.color : PALETTE.slate200,
                       boxShadow: answers[0] === opt.label ? `0 4px 20px ${opt.color}25` : "none",
                     }}
                   >
@@ -613,7 +613,7 @@ Extrais ces informations et renvoie un objet JSON.
                     whileTap={{ scale: 0.96 }}
                     onClick={() => fileRef.current?.click()}
                     className="relative w-36 h-36 rounded-3xl border-2 border-dashed bg-white flex items-center justify-center overflow-hidden shadow-md mb-2 transition-all"
-                    style={{ borderColor: answers[1] ? PALETTE.emerald : "#cbd5e1" }}
+                    style={{ borderColor: answers[1] ? PALETTE.emerald : PALETTE.slate300 }}
                   >
                     {answers[1] ? (
                       <img src={answers[1]} alt="Chien" loading="lazy" className="w-full h-full object-cover" />
