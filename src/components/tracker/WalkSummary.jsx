@@ -94,7 +94,7 @@ export default function WalkSummary({
       key="done"
       initial={{ opacity: 0, scale: 0.85 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: "spring", stiffness: 200, damping: 18 }}
+      transition={springSoft}
       className="flex flex-col items-center gap-5 w-full text-center"
     >
       <motion.div

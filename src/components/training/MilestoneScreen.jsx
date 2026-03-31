@@ -44,7 +44,7 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
       <motion.div
         initial={{ scale: 0, y: -60, rotate: -30 }}
         animate={{ scale: 1, y: 0, rotate: 0 }}
-        transition={{ type: "spring", stiffness: 180, damping: 12 }}
+        transition={springSoft}
       >
         <motion.div
           animate={{ scale: [1, 1.08, 1] }}

@@ -174,7 +174,7 @@ export default function NotificationCenter({ transparent = false }) {
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                transition={springGentle}
                 className="absolute -top-1.5 -right-1.5 min-w-[24px] h-6 px-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-2xl ring-2 ring-white"
               >
                 {unreadCount > 9 ? "9+" : unreadCount}
@@ -198,7 +198,7 @@ export default function NotificationCenter({ transparent = false }) {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", stiffness: 320, damping: 32 }}
+              transition={spring}
               className="fixed right-0 top-0 bottom-0 w-[85vw] max-w-sm bg-white z-[80] flex flex-col shadow-2xl"
               style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
             >

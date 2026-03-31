@@ -57,7 +57,7 @@ export default function DogProfileHero({ dog, dailyLogs, onSave }) {
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 18 }}
+            transition={springSoft}
             className="w-28 h-28 rounded-full border-4 border-white/40 overflow-hidden shadow-2xl bg-white/20 flex items-center justify-center"
             style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1))" }}
           >

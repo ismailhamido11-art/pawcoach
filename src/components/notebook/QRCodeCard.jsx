@@ -113,7 +113,7 @@ export default function QRCodeCard({ dog }) {
               initial={{ y: "100%", opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              transition={springSnappy}
               className="bg-white rounded-t-3xl w-full max-w-md p-6 pb-10"
               onClick={e => e.stopPropagation()}
             >

@@ -5,6 +5,7 @@ import { Heart, Camera, MapPin, CheckCircle2, Star } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import confetti from "canvas-confetti";
 import { CONFETTI_COLORS, PALETTE } from "@/lib/colorPalette";
+import { springUI } from "@/lib/animations";
 
 const STEPS = [
   {

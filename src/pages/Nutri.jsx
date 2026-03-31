@@ -466,7 +466,7 @@ export default function Nutri() {
                     <motion.div
                       layoutId="nutriTabIndicator"
                       className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 rounded-full bg-white/60"
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                      transition={springTab}
                     />
                   )}
                 </motion.button>

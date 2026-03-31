@@ -54,7 +54,7 @@ export default function PullToRefresh({ onRefresh, children }) {
       {showIndicator && (
         <motion.div
           animate={{ height: refreshing ? THRESHOLD * 0.7 : pullDistance }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          transition={springSnappy}
           className="flex items-center justify-center overflow-hidden"
         >
           <motion.div

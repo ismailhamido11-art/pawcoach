@@ -412,7 +412,7 @@ Extrais ces informations et renvoie un objet JSON.
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 200, damping: 25 }}
+            transition={springSoft}
             className="w-full max-w-sm space-y-5"
           >
             {/* Header */}
@@ -557,7 +557,7 @@ Extrais ces informations et renvoie un objet JSON.
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -40 }}
-            transition={{ type: "spring", stiffness: 200, damping: 25 }}
+            transition={springSoft}
             className="flex flex-col items-center w-full"
           >
             {/* Group icon — use the first step's icon */}

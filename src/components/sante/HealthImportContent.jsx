@@ -317,7 +317,7 @@ export default function HealthImportContent({ dog, onImported }) {
         )}
 
         {step === STEPS.SUCCESS && (
-          <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 15 }}
+          <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={springSoft}
             className="flex flex-col items-center py-12 text-center">
             <div className="w-28 h-28 mb-4">
               <Illustration name="veterinary" alt="Import réussi" className="w-full h-full drop-shadow-lg" />

@@ -177,7 +177,7 @@ export default function Premium() {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.1 }}
+            transition={{ ...springSnappy, delay: 0.1 }}
             className="mx-auto mb-4"
           >
             {dog?.photo ? (

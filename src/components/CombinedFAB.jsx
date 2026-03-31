@@ -128,7 +128,7 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            transition={springSnappy}
             role="dialog"
             aria-label="Log rapide"
             className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl shadow-2xl"
@@ -211,7 +211,7 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
         onClick={() => setOpen(true)}
         whileTap={{ scale: 0.9 }}
         animate={{ scale: open ? 0 : 1, opacity: open ? 0 : 1 }}
-        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        transition={springUI}
         className="fixed right-5 z-[45] w-14 h-14 rounded-full shadow-2xl flex items-center justify-center gradient-primary"
         style={{ bottom: "calc(6rem + env(safe-area-inset-bottom, 0px))" }}
       >

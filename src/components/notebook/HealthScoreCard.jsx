@@ -41,7 +41,7 @@ export default function HealthScoreCard({ score, scoreLevel, dogName }) {
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${score}%` }}
-            transition={{ type: "spring", stiffness: 200, damping: 25, delay: 0.3 }}
+            transition={{ ...springSoft, delay: 0.3 }}
             className="h-full rounded-full"
             style={{ backgroundColor: scoreLevel.barColor }}
           />

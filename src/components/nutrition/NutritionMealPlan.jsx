@@ -390,7 +390,7 @@ RÈGLES :
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progress.isExpired ? 100 : (progress.dayNumber / 7) * 100}%` }}
-              transition={{ type: "spring", stiffness: 100, damping: 20 }}
+              transition={springSoft}
               className={`h-2 rounded-full ${progress.isExpired ? "bg-amber-300" : "bg-white"}`}
             />
           </div>

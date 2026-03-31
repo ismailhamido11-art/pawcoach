@@ -68,7 +68,7 @@ export default function DogEditModal({ dog, onClose, onSave }) {
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        transition={springSnappy}
         className="bg-white rounded-t-3xl w-full max-w-lg max-h-[85vh] overflow-y-auto pb-10"
         onClick={e => e.stopPropagation()}
       >
