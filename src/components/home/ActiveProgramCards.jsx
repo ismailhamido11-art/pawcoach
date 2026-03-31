@@ -429,7 +429,7 @@ function BehaviorProgramCard({ program }) {
             <div className="mt-2.5 flex items-center gap-2">
               <div className="flex-1 h-1.5 bg-blue-100 rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-blue-500 to-blue-500 rounded-full"
+                  className="h-full bg-blue-500 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
@@ -510,7 +510,7 @@ function BehaviorProgramCard({ program }) {
 
                 <div className="flex items-center gap-2 px-1">
                   <div className="flex-1 h-1.5 bg-blue-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" style={{ width: `${progress}%` }} />
+                    <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style={{ width: `${progress}%` }} />
                   </div>
                   <span className="text-[11px] font-bold text-blue-600">{completedCount}/7</span>
                 </div>
