@@ -51,6 +51,7 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
   const [saved, setSaved] = useState(false);
   const [showGenerator, setShowGenerator] = useState(false);
   const [generationNotes, setGenerationNotes] = useState("");
+  const [generatedPlanId, setGeneratedPlanId] = useState(null);
   const [showWeek, setShowWeek] = useState(false);
   const [editingNote, setEditingNote] = useState(false);
   const [tempNote, setTempNote] = useState("");
@@ -153,16 +154,21 @@ export default function NutritionMealPlan({ dog, recentScans, isPremium: _isPrem
           NutritionPlan.update(p.id, { is_active: false })
         )
       );
-      await NutritionPlan.create({
+      const planData = {
         dog_id: dog.id,
         owner_email: user.email,
         plan_text: JSON.stringify({ ...plan, start_date: new Date().toISOString().split("T")[0], dog_name: dog.name }),
-        generated_at: new Date().toISOString(),
         dog_weight_at_generation: latestRealWeight,
         is_active: true,
         notes: generationNotes || "",
-      });
+      };
+      if (generatedPlanId) {
+        await NutritionPlan.update(generatedPlanId, planData);
+      } else {
+        await NutritionPlan.create({ ...planData, generated_at: new Date().toISOString() });
+      }
       setSaved(true);
+      setGeneratedPlanId(null);
       onPlanSaved?.();
       toast.success("Programme activé !");
       setTimeout(() => { setSaved(false); setPlan(null); setShowGenerator(false); setGenerationNotes(""); }, 2000);
@@ -341,7 +347,9 @@ RÈGLES :
             }
           });
           setPlan(parsed);
+          setGeneratedPlanId(result?.planId || null);
           if (!isPremium) await consume();
+          onPlanSaved?.(); // refresh monthlyPlanCount from backend-created record
         } else {
           throw new Error("Invalid structure");
         }
@@ -351,6 +359,7 @@ RÈGLES :
     } catch (e) {
       console.error("Nutrition plan parse error:", e);
       setPlan(null);
+      setGeneratedPlanId(null);
       toast.error("La génération a échoué. Réessaie — ça marche en général au 2e essai.");
     }
 

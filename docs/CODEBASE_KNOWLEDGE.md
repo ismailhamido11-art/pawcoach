@@ -69,7 +69,7 @@ getTrialDaysLeft(user) = max(0, floor(diff_ms / ms_per_day))
 | Rappels sante par email | Non | Oui | Backend filtre premium users | `base44/functions/vaccineReminders/entry.ts` |
 | Bilan hebdomadaire IA | Non | Oui | Backend filtre `is_premium` + trial | `base44/functions/weeklyInsightGenerate/entry.ts:27-38` |
 | Nombre de chiens | 1 | 3 | `FREE_DOG_LIMIT=1 / PREMIUM_DOG_LIMIT=3` enforced backend + frontend | `base44/functions/createDog/entry.ts`, `pages/Onboarding.jsx:265`, `pages/Profile.jsx:99` |
-| Plans nutrition IA | 2 plans/mois (gratuit) | Illimite | `MONTHLY_FREE_LIMIT = 2` enforced frontend + backend | `components/nutrition/NutritionMealPlan.jsx:17`, `components/nutrition/MealPlanGenerator.jsx:7`, `base44/functions/generateMealPlan/entry.ts:3` |
+| Plans nutrition IA | 2 plans/mois (gratuit) | Illimite | `MONTHLY_FREE_LIMIT = 2` — backend cree un NutritionPlan a chaque generation LLM (entry.ts:44-50), frontend update au lieu de create a la sauvegarde | `components/nutrition/NutritionMealPlan.jsx:17,165`, `components/nutrition/MealPlanGenerator.jsx:7`, `base44/functions/generateMealPlan/entry.ts:3,44-50` |
 
 #### Paiement Stripe
 
@@ -157,7 +157,7 @@ Chaque milestone declenche confetti + toast.
 **Coach Nutri** : utilise un `useReducer` (`coachReducer`) pour gerer l'etat de la conversation IA — `pages/Nutri.jsx:51-77`.
 - Actions : `SET_MESSAGES`, `SET_INPUT`, `SET_LOADING`, `SET_MESSAGES_REMAINING`, `SET_BOOKMARKED`, `SET_STREAMING`, `SET_STREAMING_TEXT`, `SET_SHOW_SCROLL_BTN`, `SET_LAST_FAILED_INPUT`, `RESET_COACH`
 
-**Plan repas** : stocke dans `NutritionPlan` entite, `monthlyPlanCount` pour limiter les plans. Limite : 2/mois pour les gratuits (`MONTHLY_FREE_LIMIT = 2`). Enforcement double : frontend (`NutritionMealPlan.jsx:82`) bloque la generation, backend (`generateMealPlan/entry.ts:33`) retourne 429. Premium = illimite.
+**Plan repas** : stocke dans `NutritionPlan` entite. Limite : 2/mois pour les gratuits (`MONTHLY_FREE_LIMIT = 2`). Le backend cree un `NutritionPlan` (`is_active: false`) a chaque generation LLM (`entry.ts:44-50`) pour tracker les generations independamment de la sauvegarde frontend. Le frontend update ce record au lieu de creer un nouveau quand l'utilisateur active le plan (`NutritionMealPlan.jsx:165`). Quota check : backend (`entry.ts:33`) retourne 429, frontend affiche limite atteinte.
 
 **Scan alimentaire** (`pages/Scan.jsx:195-241`) :
 - Upload image via `base44.integrations.Core.UploadFile`

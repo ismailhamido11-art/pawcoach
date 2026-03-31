@@ -38,7 +38,18 @@ Deno.serve(async (req) => {
     // Call LLM server-side
     const llmResponse = await base44.integrations.Core.InvokeLLM({ prompt });
 
-    return Response.json({ plan: llmResponse });
+    // Track generation for quota enforcement — record created server-side,
+    // independent of frontend save. This closes the bypass where a free user
+    // could generate unlimited plans without saving.
+    const savedPlan = await base44.asServiceRole.entities.NutritionPlan.create({
+      owner_email: user.email,
+      dog_id: dogId,
+      generated_at: new Date().toISOString(),
+      plan_text: typeof llmResponse === 'string' ? llmResponse : JSON.stringify(llmResponse),
+      is_active: false,
+    });
+
+    return Response.json({ plan: llmResponse, planId: savedPlan.id });
   } catch (err) {
     console.error('generateMealPlan error:', err);
     return Response.json({ error: 'internal_error' }, { status: 500 });
