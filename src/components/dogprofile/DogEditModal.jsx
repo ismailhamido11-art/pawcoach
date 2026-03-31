@@ -90,7 +90,7 @@ export default function DogEditModal({ dog, onClose, onSave }) {
             <label className="relative cursor-pointer">
               <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-primary/30 bg-muted flex items-center justify-center">
                 {dog.photo ? (
-                  <img src={dog.photo} alt="" loading="lazy" className="w-full h-full object-cover" />
+                  <img src={dog.photo} alt={dog.name ? `Photo de ${dog.name}` : "Photo du chien"} loading="lazy" className="w-full h-full object-cover" />
                 ) : (
                   <Dog className="w-8 h-8 text-primary" />
                 )}

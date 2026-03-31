@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Dog, HealthRecord } from "@/api/entities";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Syringe, Weight, AlertTriangle, Calendar, PawPrint, ShieldCheck, Lock } from "lucide-react";
 import { getVaccineDisplayName } from "@/utils/healthStatus";
 import { getAge } from "@/utils/dateHelpers";
@@ -61,6 +61,7 @@ function StatPill({ icon: Icon, value, label, color }) {
 }
 
 export default function DogPublicProfile() {
+  const prefersReducedMotion = useReducedMotion();
   const params = new URLSearchParams(window.location.search);
   const dogId = params.get("dogId");
 
@@ -131,7 +132,7 @@ export default function DogPublicProfile() {
       <div className="gradient-primary px-5 safe-pt-14 pb-6 relative overflow-hidden">
         <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-white/10 rounded-full blur-3xl" />
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center gap-4 relative z-10"
         >

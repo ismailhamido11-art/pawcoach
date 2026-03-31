@@ -497,7 +497,7 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
               className="bg-white border border-border rounded-2xl p-3 flex items-center gap-3 shadow-sm"
             >
               {entry.photo_url ? (
-                <img src={entry.photo_url} alt="" loading="lazy" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
+                <img src={entry.photo_url} alt="Photo de l'entrée" loading="lazy" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
               ) : (
                 <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0">
                   <TrendingUp className="w-4 h-4 text-muted-foreground" />

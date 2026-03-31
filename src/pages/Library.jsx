@@ -10,7 +10,7 @@ import { ArrowLeft, Search, Trash2, MessageCircle, Salad, Dumbbell, Video, BarCh
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ReactMarkdown from "react-markdown";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Illustration from "../components/illustrations/Illustration";
 import EmptyState from "@/components/ui/EmptyState";
 import PullToRefresh from "../components/PullToRefresh";
@@ -40,6 +40,7 @@ const FILTERS = [
 
 
 export default function Library() {
+  const prefersReducedMotion = useReducedMotion();
   const navigate = useNavigate();
   const { user, isLoadingAuth } = useAuth();
   const { dog, loadingDog } = useDog();
@@ -310,7 +311,7 @@ export default function Library() {
                 <motion.div
                   key={itemKey}
                   layout
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.96 }}
                   className="bg-white rounded-2xl border border-border/40 shadow-sm overflow-hidden"

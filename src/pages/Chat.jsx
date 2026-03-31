@@ -22,7 +22,7 @@ import { getDogAgeLabel } from "@/utils/healthStatus";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import ErrorState from "@/components/ErrorState";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { PALETTE } from "@/lib/colorPalette";
 import { spring, springGentle } from "@/lib/animations";
 import { mdComponents } from "@/components/lib/markdown";
@@ -33,6 +33,7 @@ import { LOTTIE } from "@/lib/lottieLibrary";
 const msgAnim = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: springGentle };
 
 export default function Chat() {
+  const prefersReducedMotion = useReducedMotion();
   const navigate = useNavigate();
   const { user, isLoadingAuth } = useAuth();
   const { dog, loadingDog } = useDog();
@@ -544,7 +545,7 @@ export default function Chat() {
         {showScrollBtn && (
           <motion.button
             aria-label="Défiler vers le bas"
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToBottom}

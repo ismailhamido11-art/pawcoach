@@ -21,7 +21,7 @@ import { createPageUrl } from "@/utils";
 import { dogAgeMonths } from "@/utils/healthStatus";
 import { updateStreakSilently } from "../components/streakHelper";
 import { checkStreakBadges } from "@/components/achievements/badgeUtils";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { toast } from "sonner";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import PullToRefresh from "../components/PullToRefresh";
@@ -156,6 +156,7 @@ const BEHAVIOR_GUIDES = [
 const MILESTONES = [3, 5, 10];
 
 export default function Training() {
+   const prefersReducedMotion = useReducedMotion();
    const navigate = useNavigate();
    const { user, isLoadingAuth, checkAppState } = useAuth();
    const { dog, loadingDog } = useDog();
@@ -676,7 +677,7 @@ export default function Training() {
   // Main journey list
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
       className="min-h-screen bg-background flex flex-col"

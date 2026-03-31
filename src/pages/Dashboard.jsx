@@ -3,7 +3,7 @@ import { useCountUp } from "@/hooks/useCountUp";
 import { HealthRecord, DailyCheckin, Streak, UserProgress, DailyLog, FoodScan, GrowthEntry } from "@/api/entities";
 import { useAuth } from "@/lib/AuthContext";
 import { useDog } from "@/lib/DogContext";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { computeVaccineMap, computeHealthScore } from "@/utils/healthStatus";
 import { PALETTE } from "@/lib/colorPalette";
 import { getWeekStart } from "@/utils/dateHelpers";
@@ -13,7 +13,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
 import { Weight, Stethoscope, Dumbbell, Salad,
   ChevronRight, Flame,
-  TrendingUp, TrendingDown, Minus, Heart,
+  TrendingUp, TrendingDown, Minus, Heart, Zap,
   Sparkles, Activity, Star, Footprints
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -52,6 +52,7 @@ function StatCard({ icon: Icon, color, label, value, sub, trend }) {
 // CustomTooltip imported from @/utils/chartHelpers
 
 export default function Dashboard() {
+  const prefersReducedMotion = useReducedMotion();
   const navigate = useNavigate();
   const { user, isLoadingAuth } = useAuth();
   const { dog, loadingDog } = useDog();
@@ -286,7 +287,7 @@ export default function Dashboard() {
 
       <PullToRefresh onRefresh={loadDashboard}>
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
         className="px-5 pt-5 space-y-5 pb-24"
@@ -400,8 +401,8 @@ export default function Dashboard() {
                 <p className="text-xs text-muted-foreground">14 derniers jours</p>
               </div>
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-primary inline-block" />Humeur</span>
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />Énergie</span>
+                <span className="flex items-center gap-1"><Heart className="w-3 h-3 text-primary" />Humeur</span>
+                <span className="flex items-center gap-1"><Zap className="w-3 h-3 text-emerald-400" />Énergie</span>
               </div>
             </div>
             <ResponsiveContainer width="100%" height={140}>

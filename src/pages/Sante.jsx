@@ -9,7 +9,7 @@ import HealthAssistantBar from "@/components/sante/HealthAssistantBar";
 import HealthAssistantSheet from "@/components/sante/HealthAssistantSheet";
 import { updateStreakSilently } from "@/components/streakHelper";
 import { DogDoctor } from "../components/ui/PawIllustrations";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { isUserPremium } from "@/utils/premium";
 import { toast } from "sonner";
 
@@ -39,6 +39,7 @@ const TABS = [
 ];
 
 export default function Sante() {
+  const prefersReducedMotion = useReducedMotion();
 
    const { user, isLoadingAuth } = useAuth();
    const { dog, refreshDogs, loadingDog } = useDog();
@@ -155,7 +156,7 @@ export default function Sante() {
 
           </div>
           <motion.div
-            animate={{ scale: [1, 1.03, 1] }}
+            animate={prefersReducedMotion ? {} : { scale: [1, 1.03, 1] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-20 h-20 flex-shrink-0"
           >
