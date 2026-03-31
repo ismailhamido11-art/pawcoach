@@ -322,8 +322,13 @@ RÈGLES :
 - Retourne UNIQUEMENT le JSON, rien d'autre`;
 
     try {
-      const response = await base44.integrations.Core.InvokeLLM({ prompt });
-      const raw = typeof response === "string" ? response : JSON.stringify(response);
+      const result = await base44.functions.invoke("generateMealPlan", { prompt, dogId: dog.id });
+      if (result?.error === 'monthly_limit_reached') {
+        toast.error("Limite mensuelle atteinte. Passe à Premium pour des plans illimités.");
+        setLoading(false);
+        return;
+      }
+      const raw = typeof result?.plan === "string" ? result.plan : JSON.stringify(result?.plan ?? result);
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         let cleaned = jsonMatch[0];
