@@ -3,11 +3,15 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 const MONTHLY_FREE_LIMIT = 2;
 
 Deno.serve(async (req) => {
+  let step = 'init';
   try {
     const base44 = createClientFromRequest(req);
+
+    step = 'auth';
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
+    step = 'parse_body';
     const { prompt, dogId } = await req.json();
 
     if (!dogId) return Response.json({ error: 'dogId required' }, { status: 400 });
@@ -15,27 +19,35 @@ Deno.serve(async (req) => {
     if (prompt.length > 10000) return Response.json({ error: 'prompt too long' }, { status: 400 });
 
     // Verify dog ownership server-side
+    step = 'dog_check';
     const dogs = await base44.asServiceRole.entities.Dog.filter({ id: dogId });
     const dog = dogs?.[0];
     if (!dog) return Response.json({ error: 'Dog not found' }, { status: 400 });
     if (dog.owner !== user.email) return Response.json({ error: 'Forbidden' }, { status: 403 });
 
-    // Server-side quota check
+    // Server-side quota check — non-fatal: if check fails, allow generation
+    // (feature availability > strict quota enforcement on error)
+    step = 'quota_check';
     const isPremium = user.is_premium || (user.trial_expires_at && new Date(user.trial_expires_at) > new Date());
     if (!isPremium) {
-      const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
-      const allPlans = await base44.asServiceRole.entities.NutritionPlan.filter({
-        owner_email: user.email,
-      });
-      const plansThisMonth = (allPlans || []).filter(
-        (p: any) => p.generated_at && p.generated_at >= monthStart
-      );
-      if (plansThisMonth.length >= MONTHLY_FREE_LIMIT) {
-        return Response.json({ error: 'monthly_limit_reached', remaining: 0 }, { status: 429 });
+      try {
+        const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+        const allPlans = await base44.asServiceRole.entities.NutritionPlan.filter({
+          owner_email: user.email,
+        });
+        const plansThisMonth = (allPlans || []).filter(
+          (p: any) => p.generated_at && p.generated_at >= monthStart
+        );
+        if (plansThisMonth.length >= MONTHLY_FREE_LIMIT) {
+          return Response.json({ error: 'monthly_limit_reached', remaining: 0 }, { status: 429 });
+        }
+      } catch (quotaErr) {
+        console.error('generateMealPlan: quota check failed, allowing generation:', quotaErr);
       }
     }
 
     // Call LLM server-side — response_json_schema guarantees structured JSON
+    step = 'llm_call';
     const llmResponse = await base44.integrations.Core.InvokeLLM({
       prompt,
       response_json_schema: {
@@ -63,11 +75,8 @@ Deno.serve(async (req) => {
       },
     });
 
-    // Track generation for quota enforcement — record created server-side,
-    // independent of frontend save. This closes the bypass where a free user
-    // could generate unlimited plans without saving.
-    // Non-fatal: if tracking fails, user still gets their plan. A broken
-    // feature is worse than a temporarily relaxed quota.
+    // Track generation for quota enforcement — non-fatal
+    step = 'track';
     const planText = typeof llmResponse === 'string' ? llmResponse : JSON.stringify(llmResponse);
     let planId: string | null = null;
     try {
@@ -84,8 +93,11 @@ Deno.serve(async (req) => {
     }
 
     return Response.json({ plan: llmResponse, planId });
-  } catch (err) {
-    console.error('generateMealPlan error:', err);
-    return Response.json({ error: 'internal_error' }, { status: 500 });
+  } catch (err: any) {
+    console.error(`generateMealPlan FAILED at step=${step}:`, err?.message || err, err?.stack);
+    return Response.json(
+      { error: 'internal_error', _debug: { step, message: err?.message || 'unknown' } },
+      { status: 500 },
+    );
   }
 });
