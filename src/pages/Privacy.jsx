@@ -11,21 +11,21 @@ export default function Privacy() {
         <button aria-label="Retour" onClick={() => navigate(-1)} className="p-2 -ml-2">
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
-        <h1 className="text-base font-bold text-foreground">Politique de confidentialité</h1>
+        <h1 className="text-lg font-bold text-foreground">Politique de confidentialité</h1>
       </div>
 
       {/* Content */}
       <div className="px-5 py-6 max-w-prose mx-auto space-y-6" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
 
         <section className="space-y-2">
-          <h2 className="text-base font-bold text-foreground">1. Responsable du traitement</h2>
+          <h2 className="text-base font-semibold text-foreground">1. Responsable du traitement</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
             PawCoach est le responsable du traitement de vos données personnelles. Pour toute question relative à vos données, contactez-nous à : <span className="text-primary">support@pawcoach.app</span>
           </p>
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-base font-bold text-foreground">2. Données collectées</h2>
+          <h2 className="text-base font-semibold text-foreground">2. Données collectées</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Nous collectons les données suivantes :
           </p>
@@ -39,7 +39,7 @@ export default function Privacy() {
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-base font-bold text-foreground">3. Finalité du traitement</h2>
+          <h2 className="text-base font-semibold text-foreground">3. Finalité du traitement</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Vos données sont utilisées pour :
           </p>
@@ -52,14 +52,14 @@ export default function Privacy() {
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-base font-bold text-foreground">4. Durée de conservation</h2>
+          <h2 className="text-base font-semibold text-foreground">4. Durée de conservation</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Vos données sont conservées aussi longtemps que votre compte est actif. En cas de suppression de compte, toutes vos données sont effacées définitivement sous 30 jours. Vous pouvez demander la suppression à tout moment depuis Réglages ou en contactant <span className="text-primary">support@pawcoach.app</span>.
           </p>
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-base font-bold text-foreground">5. Vos droits</h2>
+          <h2 className="text-base font-semibold text-foreground">5. Vos droits</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Conformément au RGPD, vous disposez des droits suivants :
           </p>
@@ -76,21 +76,21 @@ export default function Privacy() {
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-base font-bold text-foreground">6. Cookies et analytics</h2>
+          <h2 className="text-base font-semibold text-foreground">6. Cookies et analytics</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
             PawCoach n'utilise pas de cookies tiers à des fins publicitaires ou de tracking. Les événements d'utilisation sont stockés localement sur votre appareil (localStorage) et ne sont pas transmis à des tiers.
           </p>
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-base font-bold text-foreground">7. Hébergement et sécurité</h2>
+          <h2 className="text-base font-semibold text-foreground">7. Hébergement et sécurité</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Vos données sont hébergées sur les serveurs Base44 (infrastructure Supabase/AWS). Toutes les données sont chiffrées en transit (HTTPS/TLS) et au repos. Nous appliquons des mesures de sécurité techniques et organisationnelles conformes aux standards du secteur.
           </p>
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-base font-bold text-foreground">8. Mise à jour</h2>
+          <h2 className="text-base font-semibold text-foreground">8. Mise à jour</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Dernière mise à jour : 27 mars 2026. En cas de modification substantielle, vous serez informé par email ou notification dans l'application.
           </p>

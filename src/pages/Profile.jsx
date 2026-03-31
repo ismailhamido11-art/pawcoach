@@ -36,6 +36,8 @@ export default function Profile() {
   const [user, setUser] = useState(null);
   const [activeDogId, setActiveDogId] = useState(() => localStorage.getItem("activeDogId") || null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
   const [achievementPoints, setAchievementPoints] = useState(null);
 
   const activeDog = dogs.find(d => d.id === activeDogId) || dogs[0];
@@ -69,13 +71,14 @@ export default function Profile() {
         }
       } catch (err) {
         console.error("Profile load error:", err);
+        setLoadError(true);
         toast.error("Impossible de charger le profil. Vérifie ta connexion.");
       } finally {
         setLoading(false);
       }
     };
     load();
-  }, [isLoadingAuth, loadingDog, authUser, dogs]);
+  }, [isLoadingAuth, loadingDog, authUser, dogs, retryKey]);
 
   // Reload points when active dog changes
   useEffect(() => {
@@ -118,6 +121,10 @@ export default function Profile() {
 
   if (loading) {
     return <SkeletonPage variant="detail" currentPage="Profile" />;
+  }
+
+  if (loadError) {
+    return <ErrorState message="Impossible de charger le profil. Vérifie ta connexion." onRetry={() => { setLoadError(false); setLoading(true); setRetryKey(k => k + 1); }} />;
   }
 
   const sectionVariants = {

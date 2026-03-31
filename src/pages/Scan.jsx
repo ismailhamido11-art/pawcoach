@@ -623,7 +623,7 @@ export default function Scan() {
                           const Icon = cfg.icon;
                           return (
                             <motion.div key={scan.id || i} variants={listItem} className={`flex items-center gap-3 p-3 rounded-2xl border ${cfg.border} ${cfg.cardBg}`}>
-                              {scan.photo_url && <img src={scan.photo_url} alt="" loading="lazy" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />}
+                              {scan.photo_url && <img src={scan.photo_url} alt={scan.food_name || "Aliment scanné"} loading="lazy" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />}
                               {!scan.photo_url && <Icon className={`w-5 h-5 ${cfg.iconColor} flex-shrink-0`} />}
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold truncate">{scan.food_name}</p>

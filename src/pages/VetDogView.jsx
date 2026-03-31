@@ -221,7 +221,7 @@ export default function VetDogView() {
                   transition={{ delay: i * 0.05, duration: 0.22, ease: "easeOut" }}
                   className="flex items-start gap-3 p-3 rounded-2xl bg-white border border-border"
                 >
-                  {s.photo_url && <img src={s.photo_url} alt="" loading="lazy" className="w-12 h-12 rounded-lg object-cover" />}
+                  {s.photo_url && <img src={s.photo_url} alt={s.food_name || "Aliment scanné"} loading="lazy" className="w-12 h-12 rounded-lg object-cover" />}
                   <div className="flex-1">
                     <p className="text-sm font-medium">{s.food_name || "Aliment scanné"}</p>
                     <Badge className={`text-[11px] mt-1 ${s.verdict === "safe" ? "bg-emerald-100 text-emerald-700" : s.verdict === "caution" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>

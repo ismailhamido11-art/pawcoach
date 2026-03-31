@@ -226,6 +226,8 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [dog, setDog] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
 
   const { dogData, setDogData, insights, setInsights, isDataStale, setIsDataStale, loadingSecondary, refreshHome, refreshHomeWaves, applyDogData, applyInsights, getCachedHome } = useHomeData();
 
@@ -298,6 +300,7 @@ export default function Home() {
         applyPremiumLogic(u);
       } catch (err) {
         console.error(err);
+        if (mounted) setLoadError(true);
         toast.error("Impossible de charger les données. Vérifie ta connexion.");
       } finally {
         if (mounted) setLoading(false);
@@ -368,7 +371,7 @@ export default function Home() {
 
     loadData().then(handlePremiumSuccess);
     return () => { mounted = false; if (pollInterval) { clearInterval(pollInterval); pollInterval = null; } };
-  }, [isLoadingAuth, loadingDog, authUser, contextDog, navigate]);
+  }, [isLoadingAuth, loadingDog, authUser, contextDog, navigate, retryKey]);
 
   const handleCheckin = async ({ mood, energy, appetite, notes, symptoms, behaviorNotes }) => {
     if (!mood || !energy || !appetite || submitting) return;
@@ -572,6 +575,10 @@ export default function Home() {
 
   if (loading) {
     return <SkeletonPage variant="stats" currentPage="Home" />;
+  }
+
+  if (loadError) {
+    return <ErrorState message="Impossible de charger les données. Vérifie ta connexion." onRetry={() => { setLoadError(false); setLoading(true); setRetryKey(k => k + 1); }} />;
   }
 
   return (

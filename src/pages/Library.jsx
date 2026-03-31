@@ -390,6 +390,7 @@ export default function Library() {
                             else if (isNutriPlan) handleDeleteNutritionPlan(b.id);
                             else handleDelete(b.id);
                           }}
+                          aria-label="Supprimer"
                           className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-red-50 transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />

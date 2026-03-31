@@ -34,6 +34,8 @@ export default function DogProfile() {
   const { dog: contextDog, loadingDog } = useDog();
   const [dog, setDog] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
   const [dailyLogs, setDailyLogs] = useState([]);
   const [progress, setProgress] = useState([]);
   const [streak, setStreak] = useState(null);
@@ -83,13 +85,14 @@ export default function DogProfile() {
         setScansCount((scans || []).length);
       } catch (err) {
         console.error("DogProfile load error:", err);
+        setLoadError(true);
         toast.error("Impossible de charger le profil. Vérifie ta connexion.");
       } finally {
         setLoading(false);
       }
     };
     load();
-  }, [dogId, isLoadingAuth, loadingDog, user, contextDog]);
+  }, [dogId, isLoadingAuth, loadingDog, user, contextDog, retryKey]);
 
   const handleSaveDog = async (updates) => {
     try {
@@ -166,6 +169,10 @@ export default function DogProfile() {
 
   if (loading) {
     return <SkeletonPage variant="detail" currentPage="DogProfile" />;
+  }
+
+  if (loadError) {
+    return <ErrorState message="Impossible de charger le profil. Vérifie ta connexion." onRetry={() => { setLoadError(false); setLoading(true); setRetryKey(k => k + 1); }} />;
   }
 
   if (!dog) return null;

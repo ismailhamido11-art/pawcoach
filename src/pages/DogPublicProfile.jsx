@@ -121,7 +121,7 @@ export default function DogPublicProfile() {
   return (
     <div className="min-h-screen bg-background">
       {/* Emergency Banner */}
-      <div className="bg-red-600 text-white text-center py-2 px-4">
+      <div role="alert" className="bg-red-600 text-white text-center py-2 px-4">
         <p className="text-xs font-bold tracking-wide uppercase">
           Dossier d'urgence — PawCoach
         </p>

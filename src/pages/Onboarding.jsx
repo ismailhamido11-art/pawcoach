@@ -641,6 +641,7 @@ Extrais ces informations et renvoie un objet JSON.
                       value={answers[2]}
                       onChange={(e) => setAnswerAtIndex(2, e.target.value)}
                       placeholder={INTERVIEW_STEPS[2].placeholder}
+                      aria-label={INTERVIEW_STEPS[2].question}
                       maxLength={100}
                       className="h-12 text-center text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm flex-1"
                     />
@@ -671,6 +672,7 @@ Extrais ces informations et renvoie un objet JSON.
                     value={answers[3]}
                     onChange={(e) => setAnswerAtIndex(3, e.target.value)}
                     placeholder={INTERVIEW_STEPS[3].placeholder}
+                    aria-label={INTERVIEW_STEPS[3].question}
                     maxLength={100}
                     className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
                   />
@@ -684,6 +686,7 @@ Extrais ces informations et renvoie un objet JSON.
                     value={answers[4]}
                     onChange={(e) => setAnswerAtIndex(4, e.target.value)}
                     placeholder={INTERVIEW_STEPS[4].placeholder}
+                    aria-label={INTERVIEW_STEPS[4].question}
                     maxLength={100}
                     className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
                   />
@@ -703,6 +706,7 @@ Extrais ces informations et renvoie un objet JSON.
                       value={answers[idx]}
                       onChange={(e) => setAnswerAtIndex(idx, e.target.value)}
                       placeholder={INTERVIEW_STEPS[idx].placeholder}
+                      aria-label={INTERVIEW_STEPS[idx].question}
                       maxLength={100}
                       className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
                     />
@@ -723,6 +727,7 @@ Extrais ces informations et renvoie un objet JSON.
                     value={answers[8]}
                     onChange={(e) => setAnswerAtIndex(8, e.target.value)}
                     placeholder={INTERVIEW_STEPS[8].placeholder}
+                    aria-label={INTERVIEW_STEPS[8].question}
                     maxLength={100}
                     className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
                   />
@@ -736,6 +741,7 @@ Extrais ces informations et renvoie un objet JSON.
                     value={answers[9]}
                     onChange={(e) => setAnswerAtIndex(9, e.target.value)}
                     placeholder={INTERVIEW_STEPS[9].placeholder}
+                    aria-label={INTERVIEW_STEPS[9].question}
                     maxLength={200}
                     className="h-12 text-base rounded-2xl border-2 focus-visible:ring-primary shadow-sm"
                   />
