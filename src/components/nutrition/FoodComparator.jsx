@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { useActionCredits } from "@/hooks/useActionCredits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
-import { spring } from "@/lib/animations";
+import { spring, springGentle } from "@/lib/animations";
 import { PALETTE } from "@/lib/colorPalette";
 
 const SCORE_COLOR = (s) => {

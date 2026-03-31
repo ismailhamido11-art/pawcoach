@@ -7,7 +7,7 @@ import { CheckCircle, Share2, PawPrint, ArrowRight, Trophy, Medal, Award } from 
 import { motion } from "framer-motion";
 import Illustration from "../illustrations/Illustration";
 
-import { staggerContainer as listContainer, springGentle, springUI } from "@/lib/animations";
+import { staggerContainer as listContainer, springGentle, springUI, springSoft } from "@/lib/animations";
 const listItem = {
   hidden: { opacity: 0, y: 12 },
   show: { opacity: 1, y: 0, transition: springGentle },

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { X, Check, Camera, Dog } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
+import { springSnappy } from "@/lib/animations";
 
 export default function DogEditModal({ dog, onClose, onSave }) {
   const [form, setForm] = useState({

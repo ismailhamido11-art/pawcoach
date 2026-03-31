@@ -16,7 +16,7 @@ import { CONFETTI_COLORS, PALETTE } from "@/lib/colorPalette";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { DogTrophy } from "../components/ui/PawIllustrations";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
-import { springUI } from "@/lib/animations";
+import { springUI, springSnappy } from "@/lib/animations";
 
 const MONTHLY_PRICE_ID = "price_1T4tkFDuhaIxY4PGpnhDTx5L";
 const ANNUAL_PRICE_ID = "price_1T4tkFDuhaIxY4PGWLeWApDL";

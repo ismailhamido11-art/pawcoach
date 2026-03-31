@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import Illustration from "../illustrations/Illustration";
 import { getDogAgeLabel } from "@/utils/healthStatus";
+import { springSoft } from "@/lib/animations";
 
 const STATUS_OPTIONS = [
   { value: "healthy", label: "En pleine forme", Icon: Heart, iconColor: "text-emerald-600", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },

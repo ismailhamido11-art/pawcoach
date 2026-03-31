@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { matchVaccineKey, getVaccineDisplayName } from "@/utils/healthStatus";
 import { getDaysLeft } from "@/utils/dateHelpers";
 import EmptyState from "@/components/ui/EmptyState";
+import { springGentle } from "@/lib/animations";
 
 const TYPE_CONFIG = {
   vaccine:    { icon: Syringe,     color: "text-safe",        bg: "bg-safe/10",    label: "Vaccin",      gradient: "from-safe to-green-500" },

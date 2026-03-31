@@ -28,7 +28,7 @@ import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { toast } from "sonner";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
-import { spring, springGentle } from "@/lib/animations";
+import { spring, springGentle, springTab } from "@/lib/animations";
 import { mdComponents } from "@/components/lib/markdown";
 import LottieAnimation from "@/components/ui/LottieAnimation";
 import { LOTTIE } from "@/lib/lottieLibrary";

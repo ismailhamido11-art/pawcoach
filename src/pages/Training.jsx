@@ -21,6 +21,7 @@ import { dogAgeMonths } from "@/utils/healthStatus";
 import { updateStreakSilently } from "../components/streakHelper";
 import { checkStreakBadges } from "@/components/achievements/badgeUtils";
 import { motion, useReducedMotion } from "framer-motion";
+import { springGentle } from "@/lib/animations";
 import { toast } from "sonner";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import PullToRefresh from "../components/PullToRefresh";

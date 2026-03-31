@@ -11,6 +11,7 @@ import { fr } from "date-fns/locale";
 import EmptyState from "@/components/ui/EmptyState";
 import { getAge } from "@/utils/dateHelpers";
 import MealPlanGenerator from "./MealPlanGenerator";
+import { springSoft } from "@/lib/animations";
 
 const MONTHLY_FREE_LIMIT = 2;
 const DAYS_FR = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];

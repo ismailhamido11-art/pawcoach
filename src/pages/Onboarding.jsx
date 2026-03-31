@@ -12,7 +12,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { PALETTE, GRADIENT_PRIMARY } from "@/lib/colorPalette";
 import WelcomeScreen from "../components/onboarding/WelcomeScreen";
 import Illustration from "../components/illustrations/Illustration";
-import { spring } from "@/lib/animations";
+import { spring, springSoft } from "@/lib/animations";
 
 const GOAL_OPTIONS = [
   { icon: HeartPulse, color: PALETTE.red500, label: "Qu'il soit en bonne santé", bg: `${PALETTE.red500}15` },

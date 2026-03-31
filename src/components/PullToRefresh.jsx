@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { springSnappy } from "@/lib/animations";
 import { RefreshCw } from "lucide-react";
 
 const THRESHOLD = 72;

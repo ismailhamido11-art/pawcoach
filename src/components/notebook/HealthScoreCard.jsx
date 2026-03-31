@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ShieldCheck, AlertTriangle, Shield } from "lucide-react";
-import { spring } from "@/lib/animations";
+import { spring, springSoft } from "@/lib/animations";
 
 const SCORE_ICONS = {
   Excellent: ShieldCheck,

@@ -27,7 +27,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 import DownloadHealthPDF from "@/components/vet/DownloadHealthPDF";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import ErrorState from "@/components/ErrorState";
-import { spring } from "@/lib/animations";
+import { spring, springTab } from "@/lib/animations";
 import useTabNavigation, { tabVariants } from "@/hooks/useTabNavigation";
 
 const TABS = [

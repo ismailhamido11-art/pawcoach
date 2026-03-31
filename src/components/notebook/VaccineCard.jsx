@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Syringe, ChevronDown, ChevronUp, Calendar, AlertTriangle, CheckCircle, Clock, HelpCircle, Check, X, MapPin } from "lucide-react";
 import { HealthRecord } from "@/api/entities";
 import { toast } from "sonner";
-import { spring } from "@/lib/animations";
+import { spring, springSnappy } from "@/lib/animations";
 
 const STATUS_CONFIG = {
   up_to_date: { label: "À jour", Icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200" },

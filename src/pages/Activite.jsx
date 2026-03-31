@@ -18,7 +18,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Footprints, History, Dumbbell, Sparkles, ExternalLink, Lightbulb, Timer, Target, Bone, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
-import { spring } from "@/lib/animations";
+import { spring, springTab } from "@/lib/animations";
 import { toast } from "sonner";
 import useTabNavigation, { tabVariants } from "@/hooks/useTabNavigation";
 

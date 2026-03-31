@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import Illustration from "../illustrations/Illustration";
 import { useActionCredits } from "@/hooks/useActionCredits";
+import { springSoft } from "@/lib/animations";
 import { UpgradePrompt } from "@/components/ui/AICreditsGate";
 
 const STEPS = { SELECT: "select", INPUT: "input", ANALYZING: "analyzing", REVIEW: "review", SUCCESS: "success" };

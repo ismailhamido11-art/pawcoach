@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { QrCode, Download, Share2, X, Smartphone, Shield, Zap } from "lucide-react";
 import { PALETTE } from "@/lib/colorPalette";
+import { springSnappy } from "@/lib/animations";
 
 // Generates a QR code using the Google Charts API (no npm needed)
 function buildQRUrl(text, size = 300) {
