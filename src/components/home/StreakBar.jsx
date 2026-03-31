@@ -2,14 +2,15 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Flame, Trophy, Footprints, Sparkles, Zap, Crown, GraduationCap, PawPrint, CalendarDays } from "lucide-react";
+import { PALETTE } from "@/lib/colorPalette";
 
 const LEVELS = [
-  { min: 1,  max: 2,  label: "Débutant",   color: "#94a3b8" },
-  { min: 3,  max: 6,  label: "Régulier",   color: "#10b981" },
-  { min: 7,  max: 13, label: "Assidu",     color: "#3b82f6" },
-  { min: 14, max: 29, label: "Champion",   color: "#8b5cf6" },
-  { min: 30, max: 99, label: "Légendaire", color: "#2d9f82" },
-  { min: 100, max: Infinity, label: "Mythique", color: "#ef4444" },
+  { min: 1,  max: 2,  label: "Débutant",   color: PALETTE.tierSlate },
+  { min: 3,  max: 6,  label: "Régulier",   color: PALETTE.emerald },
+  { min: 7,  max: 13, label: "Assidu",     color: PALETTE.blue },
+  { min: 14, max: 29, label: "Champion",   color: PALETTE.violet },
+  { min: 30, max: 99, label: "Légendaire", color: PALETTE.accent },
+  { min: 100, max: Infinity, label: "Mythique", color: PALETTE.destructive },
 ];
 
 function getNextBadge({ streak, exercises, dailyLogs }) {

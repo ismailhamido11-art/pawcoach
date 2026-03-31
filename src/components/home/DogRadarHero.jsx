@@ -10,6 +10,7 @@ import { createPageUrl } from "@/utils";
 import { Flame, UserCircle, Dumbbell, ScanLine, Heart } from "lucide-react";
 import { PawMascotInline } from "../PawMascot";
 import { computeHealthScore } from "@/utils/healthStatus";
+import { PALETTE } from "@/lib/colorPalette";
 
 // Calcule les 4 scores à partir des données réelles
 // Chaque arc retourne hasData + hint pour transparence
@@ -55,10 +56,10 @@ function computeArcs({ checkins = [], streak, records = [], exercises = [], scan
   }
 
   return [
-    { key: "health",    label: "Santé",     score: health,    hasData: healthData,    hint: healthHint,    color: "#2d9f82", Icon: Heart,     page: "Sante" },
-    { key: "activity",  label: "Activité",  score: activity,  hasData: activityData,  hint: activityHint,  color: "#3b82f6", Icon: Flame,     page: "Activite" },
-    { key: "training",  label: "Dressage",  score: training,  hasData: trainingData,  hint: trainingHint,  color: "#6366f1", Icon: Dumbbell,  page: "Activite", tab: "dressage" },
-    { key: "nutrition", label: "Nutrition", score: nutrition, hasData: nutritionData, hint: nutritionHint, color: "#059669", Icon: ScanLine,  page: "Nutri" },
+    { key: "health",    label: "Santé",     score: health,    hasData: healthData,    hint: healthHint,    color: PALETTE.accent,       Icon: Heart,     page: "Sante" },
+    { key: "activity",  label: "Activité",  score: activity,  hasData: activityData,  hint: activityHint,  color: PALETTE.blue,         Icon: Flame,     page: "Activite" },
+    { key: "training",  label: "Dressage",  score: training,  hasData: trainingData,  hint: trainingHint,  color: PALETTE.indigo,       Icon: Dumbbell,  page: "Activite", tab: "dressage" },
+    { key: "nutrition", label: "Nutrition", score: nutrition, hasData: nutritionData, hint: nutritionHint, color: PALETTE.emeraldDark,  Icon: ScanLine,  page: "Nutri" },
   ];
 }
 
