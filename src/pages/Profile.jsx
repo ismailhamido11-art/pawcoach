@@ -24,6 +24,7 @@ import ChatFAB from "../components/ChatFAB";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import EmptyState from "@/components/ui/EmptyState";
+import ErrorState from "@/components/ErrorState";
 
 export default function Profile() {
   const navigate = useNavigate();

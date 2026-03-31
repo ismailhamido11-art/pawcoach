@@ -20,6 +20,7 @@ import { updateStreakSilently } from "../components/streakHelper";
 import { createPageUrl } from "@/utils";
 import { getDogAgeLabel } from "@/utils/healthStatus";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import ErrorState from "@/components/ErrorState";
 import { getDateLabel, shouldShowDateSeparator, getTimeStr } from "@/utils/dateHelpers";
 import { motion, AnimatePresence } from "framer-motion";
 import { PALETTE } from "@/lib/colorPalette";
@@ -39,6 +40,7 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
+  const [initError, setInitError] = useState(false);
   const [messagesRemaining, setMessagesRemaining] = useState(null);
   const [pendingImage, setPendingImage] = useState(null);
   const bottomRef = useRef(null);
@@ -187,6 +189,7 @@ export default function Chat() {
       }]);
     } catch (err) {
       console.error("Chat init error:", err);
+      setInitError(true);
       toast.error("Impossible de démarrer le chat. Vérifie ta connexion.");
     } finally {
       setInitializing(false);
@@ -318,6 +321,10 @@ export default function Chat() {
   // --- Loading skeleton ---
   if (initializing) {
     return <SkeletonPage variant="chat" currentPage="Chat" />;
+  }
+
+  if (initError) {
+    return <ErrorState message="Impossible de démarrer le chat. Vérifie ta connexion." onRetry={() => { setInitError(false); setInitializing(true); initChat(); }} />;
   }
 
   const startNewChat = () => {

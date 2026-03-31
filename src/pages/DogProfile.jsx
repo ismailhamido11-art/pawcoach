@@ -24,6 +24,7 @@ import DogPersonalitySection from "../components/dogprofile/DogPersonalitySectio
 import DogTrophiesRow from "../components/dogprofile/DogTrophiesRow.jsx";
 import DogEditModal from "../components/dogprofile/DogEditModal.jsx";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import ErrorState from "@/components/ErrorState";
 
 export default function DogProfile() {
   const navigate = useNavigate();

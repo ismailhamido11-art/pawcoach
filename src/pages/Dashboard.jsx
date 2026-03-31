@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useCountUp } from "@/hooks/useCountUp";
 import { HealthRecord, DailyCheckin, Streak, UserProgress, DailyLog, FoodScan, GrowthEntry } from "@/api/entities";
 import { useAuth } from "@/lib/AuthContext";
@@ -25,6 +25,9 @@ import Illustration from "../components/illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import SmartAlerts from "../components/dashboard/SmartAlerts";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import PullToRefresh from "../components/PullToRefresh";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorState from "@/components/ErrorState";
 
 function StatCard({ icon: Icon, color, label, value, sub, trend }) {
   return (
@@ -60,6 +63,35 @@ export default function Dashboard() {
   const [growthEntries, setGrowthEntries] = useState([]);
   const [scans, setScans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+
+  const loadDashboard = useCallback(async () => {
+    if (!user || !dog) return;
+    try {
+      const [recs, cks, stk, prog, logs, foodScans, growthData] = await Promise.all([
+        HealthRecord.filter({ dog_id: dog.id }, "-date", 100).catch(() => []),
+        DailyCheckin.filter({ dog_id: dog.id }, "-date", 90).catch(() => []),
+        Streak.filter({ dog_id: dog.id }).catch(() => []),
+        UserProgress.filter({ dog_id: dog.id }).catch(() => []),
+        DailyLog.filter({ dog_id: dog.id }, "-date", 90).catch(() => []),
+        FoodScan.filter({ dog_id: dog.id }, "-timestamp", 20).catch(() => []),
+        GrowthEntry.filter({ dog_id: dog.id }, "-date", 50).catch(() => []),
+      ]);
+      setRecords(recs || []);
+      setCheckins((cks || []).sort((a, b) => a.date > b.date ? 1 : -1));
+      setStreak((stk || [])[0] || null);
+      setProgress(prog || []);
+      setDailyLogs(logs || []);
+      setScans(foodScans || []);
+      setGrowthEntries(growthData || []);
+    } catch (err) {
+      console.error("Dashboard load error:", err);
+      setLoadError(true);
+      toast.error("Impossible de charger le tableau de bord. Vérifie ta connexion.");
+    } finally {
+      setLoading(false);
+    }
+  }, [user, dog]);
 
   useEffect(() => {
     if (isLoadingAuth || loadingDog) return;
@@ -68,32 +100,8 @@ export default function Dashboard() {
       navigate(createPageUrl("Onboarding"));
       return;
     }
-    (async () => {
-      try {
-        const [recs, cks, stk, prog, logs, foodScans, growthData] = await Promise.all([
-          HealthRecord.filter({ dog_id: dog.id }, "-date", 100).catch(() => []),
-          DailyCheckin.filter({ dog_id: dog.id }, "-date", 90).catch(() => []),
-          Streak.filter({ dog_id: dog.id }).catch(() => []),
-          UserProgress.filter({ dog_id: dog.id }).catch(() => []),
-          DailyLog.filter({ dog_id: dog.id }, "-date", 90).catch(() => []),
-          FoodScan.filter({ dog_id: dog.id }, "-timestamp", 20).catch(() => []),
-          GrowthEntry.filter({ dog_id: dog.id }, "-date", 50).catch(() => []),
-        ]);
-        setRecords(recs || []);
-        setCheckins((cks || []).sort((a, b) => a.date > b.date ? 1 : -1));
-        setStreak((stk || [])[0] || null);
-        setProgress(prog || []);
-        setDailyLogs(logs || []);
-        setScans(foodScans || []);
-        setGrowthEntries(growthData || []);
-      } catch (err) {
-        console.error("Dashboard load error:", err);
-        toast.error("Impossible de charger le tableau de bord. Vérifie ta connexion.");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [isLoadingAuth, loadingDog, user, dog]);
+    loadDashboard();
+  }, [isLoadingAuth, loadingDog, user, dog, loadDashboard]);
 
   // --- Computed data (memoized) ---
 
@@ -209,8 +217,12 @@ export default function Dashboard() {
     return <SkeletonPage variant="stats" currentPage="Dashboard" />;
   }
 
+  if (loadError) {
+    return <ErrorState message="Impossible de charger le tableau de bord. Vérifie ta connexion." onRetry={() => { setLoadError(false); setLoading(true); loadDashboard(); }} />;
+  }
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <WellnessBanner />
 
       {/* Header */}
@@ -272,11 +284,12 @@ export default function Dashboard() {
         <div className="absolute bottom-[-30%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
+      <PullToRefresh onRefresh={loadDashboard}>
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
-        className="px-5 pt-5 space-y-5"
+        className="px-5 pt-5 space-y-5 pb-24"
       >
 
         {/* Stats row */}
@@ -420,6 +433,13 @@ export default function Dashboard() {
             <Sparkles className="w-4 h-4 text-primary" />
             Prochaines étapes recommandées
           </p>
+          {nextSteps.length === 0 ? (
+            <EmptyState
+              mascot="star"
+              title="Tout est à jour !"
+              description="Aucune étape recommandée pour l'instant. Reviens après avoir enregistré de nouvelles activités."
+            />
+          ) : (
           <div className="space-y-2.5">
             {nextSteps.slice(0, 4).map((step, i) => {
               const Icon = step.icon;
@@ -441,6 +461,7 @@ export default function Dashboard() {
               );
             })}
           </div>
+          )}
         </div>
 
         {/* Dog info summary card */}
@@ -466,6 +487,7 @@ export default function Dashboard() {
         )}
 
       </motion.div>
+      </PullToRefresh>
 
       <BottomNav currentPage="Dashboard" />
     </div>

@@ -12,8 +12,10 @@ import NutritionMealPlan from "../components/nutrition/NutritionMealPlan";
 import FoodComparator from "../components/nutrition/FoodComparator";
 import DietPreferencesPanel from "../components/nutrition/DietPreferencesPanel";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import ErrorState from "@/components/ErrorState";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import EmptyState from "@/components/ui/EmptyState";
+import PullToRefresh from "@/components/PullToRefresh";
 // SavedPlansPanel merged into NutritionMealPlan
 
 import { Button } from "@/components/ui/button";
@@ -99,6 +101,7 @@ export default function Nutri() {
    const { messages, input, loading, messagesRemaining, bookmarked, isStreaming, streamingText, showScrollBtn, lastFailedInput } = coachState;
 
    const [initializing, setInitializing] = useState(true);
+   const [initError, setInitError] = useState(false);
 
    const { activeTab, tabDir, changeTab } = useTabNavigation(TABS, "Nutri", { defaultTab: "coach" });
 
@@ -292,6 +295,7 @@ export default function Nutri() {
       }] });
     } catch (err) {
       console.error("Nutri init error:", err);
+      setInitError(true);
       toast.error("Impossible de démarrer le NutriCoach. Vérifie ta connexion.");
     } finally {
       setInitializing(false);
@@ -336,6 +340,10 @@ export default function Nutri() {
 
   if (initializing) {
     return <SkeletonPage variant="list" currentPage="Nutri" />;
+  }
+
+  if (initError) {
+    return <ErrorState message="Impossible de démarrer le NutriCoach. Vérifie ta connexion." onRetry={() => { setInitError(false); setInitializing(true); init(); }} />;
   }
 
   if (!dog) {
@@ -483,6 +491,7 @@ export default function Nutri() {
         </div>
       </motion.div>
 
+      <PullToRefresh onRefresh={async () => { await refreshPlans(); await refreshDietPrefs(); }}>
       <AnimatePresence mode="wait" custom={tabDir}>
         <motion.div
           key={activeTab}
@@ -546,6 +555,14 @@ export default function Nutri() {
       {/* Tab: Preferences */}
       {activeTab === "prefs" && (
         <div className="flex-1 overflow-y-auto px-5 py-4 pb-24">
+          {!dietPrefs && (
+            <EmptyState
+              mascot="eating"
+              title="Aucune préférence configurée"
+              description={`Configure les préférences alimentaires de ${dog?.name || "ton chien"} pour des recommandations personnalisées`}
+              className="py-6"
+            />
+          )}
           <DietPreferencesPanel dog={dog} user={user} onPreferencesSaved={refreshDietPrefs} />
         </div>
       )}
@@ -559,7 +576,15 @@ export default function Nutri() {
               Scanne 2 emballages et l'IA compare leur composition pour {dog?.name || "ton chien"}
             </p>
           </div>
-          <FoodComparator dog={dog} dietPreferences={dietPrefs} />
+          {recentScans.length === 0 ? (
+            <EmptyState
+              mascot="camera"
+              title="Aucun scan disponible"
+              description="Scanne un emballage depuis l'onglet Scan pour comparer les produits"
+            />
+          ) : (
+            <FoodComparator dog={dog} dietPreferences={dietPrefs} />
+          )}
         </div>
       )}
 
@@ -740,6 +765,7 @@ export default function Nutri() {
 
         </motion.div>
       </AnimatePresence>
+      </PullToRefresh>
 
       <BottomNav currentPage="Nutri" />
     </div>

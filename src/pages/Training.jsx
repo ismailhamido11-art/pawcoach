@@ -24,6 +24,8 @@ import { checkStreakBadges } from "@/components/achievements/badgeUtils";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import PullToRefresh from "../components/PullToRefresh";
+import ErrorState from "@/components/ErrorState";
 
 const EXERCISES = [
   { order_number: 1,  name: "Assis",               icon: DogIcon,    iconColor: PALETTE.emerald, level: "debutant",      duration: "3 min",  is_premium: false, description: "La base de tout dressage – indispensable pour la sécurité.", steps: ["Tiens une friandise devant le museau de ton chien.", "Remonte lentement la friandise au-dessus de sa tête.", "Quand il s'assoit naturellement, dis « Assis » et donne la friandise.", "Répète 5 fois, puis réduis progressivement la friandise.", "Pratique dans différents endroits et situations."] },
@@ -158,6 +160,7 @@ export default function Training() {
    const { user, isLoadingAuth, checkAppState } = useAuth();
    const { dog, loadingDog } = useDog();
    const [loading, setLoading] = useState(true);
+   const [loadError, setLoadError] = useState(false);
    const [progresses, setProgresses] = useState([]);
    const [celebration, setCelebration] = useState(null);
    const [milestone, setMilestone] = useState(null);
@@ -188,6 +191,7 @@ export default function Training() {
       setBehaviorBookmarks(bBks || []);
     } catch (err) {
       console.error("Training load error:", err);
+      setLoadError(true);
       toast.error("Impossible de charger les exercices. Vérifie ta connexion.");
     } finally {
       setLoading(false);
@@ -303,6 +307,10 @@ export default function Training() {
 
   if (loading) {
     return <SkeletonPage variant="list" currentPage="Training" />;
+  }
+
+  if (loadError) {
+    return <ErrorState message="Impossible de charger les exercices. Vérifie ta connexion." onRetry={() => { setLoadError(false); setLoading(true); loadData(); }} />;
   }
 
   // Overlay screens
@@ -671,7 +679,7 @@ export default function Training() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="min-h-screen bg-background"
+      className="min-h-screen bg-background flex flex-col"
     >
       <WellnessBanner />
 
@@ -721,6 +729,7 @@ export default function Training() {
         <div className="absolute bottom-[-10%] left-[-5%] w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
       </div>
 
+      <PullToRefresh onRefresh={loadData}>
       {/* Puppy program banner */}
       {isPuppy && (
         <div className="mx-4 mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
@@ -827,6 +836,7 @@ export default function Training() {
           );
         })}
       </div>
+      </PullToRefresh>
 
       <BottomNav currentPage="Training" />
     </motion.div>

@@ -26,6 +26,7 @@ import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import PullToRefresh from "@/components/PullToRefresh";
 import DownloadHealthPDF from "@/components/vet/DownloadHealthPDF";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import ErrorState from "@/components/ErrorState";
 import { spring } from "@/lib/animations";
 import useTabNavigation, { tabVariants } from "@/hooks/useTabNavigation";
 
@@ -45,6 +46,7 @@ export default function Sante() {
    const [dailyLogs, setDailyLogs] = useState([]);
    const [growthEntries, setGrowthEntries] = useState([]);
    const [loading, setLoading] = useState(true);
+   const [loadError, setLoadError] = useState(false);
    const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
    // Deep link sub-tabs (within Carnet): ?tab=vaccine, ?tab=weight, etc.
@@ -78,6 +80,7 @@ export default function Sante() {
        setGrowthEntries(growths || []);
      } catch (e) {
        console.error(e);
+       setLoadError(true);
        toast.error("Impossible de charger les données de santé. Vérifie ta connexion.");
      } finally {
        setLoading(false);
@@ -114,6 +117,10 @@ export default function Sante() {
 
   if (loading) {
     return <SkeletonPage variant="stats" currentPage="Sante" />;
+  }
+
+  if (loadError) {
+    return <ErrorState message="Impossible de charger les données de santé. Vérifie ta connexion." onRetry={() => { setLoadError(false); setLoading(true); loadData(); }} />;
   }
 
   return (

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { PALETTE } from "@/lib/colorPalette";
 import { Bookmark, NutritionPlan, FoodScan } from "@/api/entities";
@@ -13,7 +13,9 @@ import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import Illustration from "../components/illustrations/Illustration";
 import EmptyState from "@/components/ui/EmptyState";
+import PullToRefresh from "../components/PullToRefresh";
 import SkeletonPage from "@/components/ui/SkeletonPage";
+import ErrorState from "@/components/ErrorState";
 import { VERDICT_CONFIG } from "@/lib/verdictConfig";
 
 
@@ -45,35 +47,38 @@ export default function Library() {
   const [nutritionPlans, setNutritionPlans] = useState([]);
   const [foodScans, setFoodScans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState(null);
 
+  const loadLibrary = useCallback(async () => {
+    if (!user) { setLoading(false); return; }
+    try {
+      const [bks, plans, scans] = await Promise.all([
+        Bookmark.filter({ owner: user.email }, "-created_at", 100),
+        NutritionPlan.filter({ owner_email: user.email }, "-generated_at", 50).catch(() => []),
+        dog
+          ? FoodScan.filter({ dog_id: dog.id }, "-timestamp").catch(() => [])
+          : Promise.resolve([]),
+      ]);
+      setBookmarks(bks || []);
+      setNutritionPlans(plans || []);
+      setFoodScans(scans || []);
+    } catch (e) {
+      console.error(e);
+      setLoadError(true);
+      toast.error("Impossible de charger ta bibliothèque. Vérifie ta connexion.");
+    } finally {
+      setLoading(false);
+    }
+  }, [user, dog]);
+
   useEffect(() => {
     if (isLoadingAuth || loadingDog) return;
-    if (!user) { setLoading(false); return; }
-    async function load() {
-      try {
-        const [bks, plans, scans] = await Promise.all([
-          Bookmark.filter({ owner: user.email }, "-created_at", 100),
-          NutritionPlan.filter({ owner_email: user.email }, "-generated_at", 50).catch(() => []),
-          dog
-            ? FoodScan.filter({ dog_id: dog.id }, "-timestamp").catch(() => [])
-            : Promise.resolve([]),
-        ]);
-        setBookmarks(bks || []);
-        setNutritionPlans(plans || []);
-        setFoodScans(scans || []);
-      } catch (e) {
-        console.error(e);
-        toast.error("Impossible de charger ta bibliothèque. Vérifie ta connexion.");
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [isLoadingAuth, loadingDog, user, dog]);
+    loadLibrary();
+  }, [isLoadingAuth, loadingDog, user, dog, loadLibrary]);
 
   const handleDelete = (id) => {
     setConfirmDialog({
@@ -201,8 +206,12 @@ export default function Library() {
     return matchFilter && matchSearch;
   }), [allItems, filter, search]);
 
+  if (loadError) {
+    return <ErrorState message="Impossible de charger ta bibliothèque. Vérifie ta connexion." onRetry={() => { setLoadError(false); setLoading(true); loadLibrary(); }} />;
+  }
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="gradient-primary safe-pt-14 pb-4 px-5 relative overflow-hidden">
         <button aria-label="Retour" onClick={() => window.history.length > 1 ? navigate(-1) : navigate(createPageUrl("Home"))} className="relative z-20 w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center mb-3">
@@ -256,7 +265,8 @@ export default function Library() {
       </div>
 
       {/* Content */}
-      <div className="px-5 pt-2 space-y-3">
+      <PullToRefresh onRefresh={loadLibrary}>
+      <div className="px-5 pt-2 space-y-3 pb-24">
         {loading ? (
           <SkeletonPage variant="list" />
         ) : filtered.length === 0 ? (
@@ -456,6 +466,7 @@ export default function Library() {
           </AnimatePresence>
         )}
       </div>
+      </PullToRefresh>
 
       <BottomNav currentPage="Library" />
 
