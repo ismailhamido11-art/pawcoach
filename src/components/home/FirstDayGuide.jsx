@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Camera, MapPin, CheckCircle2, Star } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import confetti from "canvas-confetti";
-import { CONFETTI_COLORS } from "@/lib/colorPalette";
+import { CONFETTI_COLORS, PALETTE } from "@/lib/colorPalette";
 
 const STEPS = [
   {
@@ -161,7 +161,7 @@ export default function FirstDayGuide({ dog, todayCheckin, scans, dailyLogs, onS
               className="w-6 h-6 rounded-lg flex items-center justify-center"
               style={{ background: "rgba(45,159,130,0.12)" }}
             >
-              <Star className="w-3.5 h-3.5" style={{ color: "#2D9F82" }} />
+              <Star className="w-3.5 h-3.5" style={{ color: PALETTE.accent }} />
             </div>
             <p className="text-sm font-bold text-foreground">
               Par où commencer avec {dogName} ?
@@ -243,7 +243,7 @@ export default function FirstDayGuide({ dog, todayCheckin, scans, dailyLogs, onS
               border: "1.5px solid rgba(45,159,130,0.25)",
             }}
           >
-            <p className="text-lg font-bold" style={{ color: "#1A4D3E" }}>
+            <p className="text-lg font-bold" style={{ color: PALETTE.primary }}>
               Bravo, {dogName} est entre de bonnes mains !
             </p>
             <p className="text-xs text-muted-foreground mt-1">

@@ -3,15 +3,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import useBackClose from "@/components/hooks/useBackClose";
 import { Plus, X, Scale, Droplets, Footprints, FileText, Check, Loader2 } from "lucide-react";
 import { DailyLog, HealthRecord } from "@/api/entities";
+import { PALETTE } from "@/lib/colorPalette";
 import { checkWalkBadges } from "@/components/achievements/badgeUtils";
 import { getTodayString } from "@/utils/recommendations";
 import { toast } from "sonner";
 
 const FIELDS = [
-  { key: "weight_kg", icon: Scale, label: "Poids", unit: "kg", type: "number", placeholder: "Ex: 12.5", color: "#3b82f6", bg: "bg-blue-50", min: 0.1, max: 200 },
-  { key: "walk_minutes", icon: Footprints, label: "Balade", unit: "min", type: "number", placeholder: "Ex: 30", color: "#10b981", bg: "bg-emerald-50", min: 0, max: 1440 },
-  { key: "water_bowls", icon: Droplets, label: "Eau", unit: "bols", type: "number", placeholder: "Ex: 3", color: "#06b6d4", bg: "bg-cyan-50", min: 0, max: 20 },
-  { key: "notes", icon: FileText, label: "Note", unit: "", type: "text", placeholder: "Observation...", color: "#8b5cf6", bg: "bg-violet-50" },
+  { key: "weight_kg", icon: Scale, label: "Poids", unit: "kg", type: "number", placeholder: "Ex: 12.5", color: PALETTE.blue, bg: "bg-blue-50", min: 0.1, max: 200 },
+  { key: "walk_minutes", icon: Footprints, label: "Balade", unit: "min", type: "number", placeholder: "Ex: 30", color: PALETTE.emerald, bg: "bg-emerald-50", min: 0, max: 1440 },
+  { key: "water_bowls", icon: Droplets, label: "Eau", unit: "bols", type: "number", placeholder: "Ex: 3", color: PALETTE.cyan, bg: "bg-cyan-50", min: 0, max: 20 },
+  { key: "notes", icon: FileText, label: "Note", unit: "", type: "text", placeholder: "Observation...", color: PALETTE.violet, bg: "bg-violet-50" },
 ];
 
 export default function CombinedFAB({ dog, user, onLogSaved }) {
@@ -194,7 +195,7 @@ export default function CombinedFAB({ dog, user, onLogSaved }) {
                 onClick={handleSave}
                 disabled={saving || saved}
                 className={`w-full py-3 rounded-2xl font-bold text-white text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.97] ${saved ? "" : "gradient-primary"}`}
-                style={saved ? { background: "#10b981" } : {}}
+                style={saved ? { background: PALETTE.emerald } : {}}
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : null}
                 {saved ? "Enregistré !" : saving ? "Enregistrement..." : "Enregistrer"}

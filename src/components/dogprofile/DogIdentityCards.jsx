@@ -1,5 +1,6 @@
 import { Weight, Activity, Home } from "lucide-react";
 import InlineEditCard from "./InlineEditCard.jsx";
+import { PALETTE } from "@/lib/colorPalette";
 
 const ACTIVITY_LABELS = {
   faible: "Faible", modere: "Modéré", eleve: "Élevé", tres_eleve: "Très élevé"
@@ -26,7 +27,7 @@ export default function DogIdentityCards({ dog, dailyLogs, onSave }) {
       {/* Weight */}
       <InlineEditCard
         icon={Weight}
-        iconColor="#2d9f82"
+        iconColor={PALETTE.accent}
         label="Poids"
         value={latestWeight ? `${latestWeight} kg` : "—"}
         sub={trend !== 0 ? `${trend > 0 ? "+" : ""}${trend.toFixed(1)} kg récemment` : undefined}
@@ -57,7 +58,7 @@ export default function DogIdentityCards({ dog, dailyLogs, onSave }) {
       {/* Activity */}
       <InlineEditCard
         icon={Activity}
-        iconColor="#8b5cf6"
+        iconColor={PALETTE.violet}
         label="Activité"
         value={ACTIVITY_LABELS[dog.activity_level] || "—"}
         editField="activity_level"
@@ -76,7 +77,7 @@ export default function DogIdentityCards({ dog, dailyLogs, onSave }) {
       {/* Environment */}
       <InlineEditCard
         icon={Home}
-        iconColor="#10b981"
+        iconColor={PALETTE.emerald}
         label="Environnement"
         value={ENV_LABELS[dog.environment] || "—"}
         editField="environment"

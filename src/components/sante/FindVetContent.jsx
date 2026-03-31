@@ -25,10 +25,12 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
+import { PALETTE } from "@/lib/colorPalette";
+
 const PLACE_TYPES = [
-  { id: "vet",     label: "Vétérinaires", icon: Stethoscope, color: "#ef4444", searchTerm: "clinique vétérinaire" },
-  { id: "groomer", label: "Toiletteurs",  icon: Scissors,    color: "#8b5cf6", searchTerm: "toiletteur chien" },
-  { id: "store",   label: "Animaleries", icon: ShoppingBag,  color: "#2D9F82", searchTerm: "animalerie magasin animaux" },
+  { id: "vet",     label: "Vétérinaires", icon: Stethoscope, color: PALETTE.red500, searchTerm: "clinique vétérinaire" },
+  { id: "groomer", label: "Toiletteurs",  icon: Scissors,    color: PALETTE.violet, searchTerm: "toiletteur chien" },
+  { id: "store",   label: "Animaleries", icon: ShoppingBag,  color: PALETTE.accent, searchTerm: "animalerie magasin animaux" },
 ];
 
 function MapFlyTo({ center }) {

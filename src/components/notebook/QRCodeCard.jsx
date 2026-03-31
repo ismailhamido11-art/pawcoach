@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { QrCode, Download, Share2, X, Smartphone, Shield, Zap } from "lucide-react";
+import { PALETTE } from "@/lib/colorPalette";
 
 // Generates a QR code using the Google Charts API (no npm needed)
 function buildQRUrl(text, size = 300) {
@@ -133,9 +134,9 @@ export default function QRCodeCard({ dog }) {
               {/* Value props */}
               <div className="grid grid-cols-3 gap-2 mb-5">
                 {[
-                  { icon: Zap, label: "Instantané", sub: "Scan & accès direct", color: "#10b981" },
-                  { icon: Shield, label: "Sécurisé", sub: "Lecture seule", color: "#2d9f82" },
-                  { icon: Smartphone, label: "Universel", sub: "Tout smartphone", color: "#3b82f6" },
+                  { icon: Zap, label: "Instantané", sub: "Scan & accès direct", color: PALETTE.emerald },
+                  { icon: Shield, label: "Sécurisé", sub: "Lecture seule", color: PALETTE.accent },
+                  { icon: Smartphone, label: "Universel", sub: "Tout smartphone", color: PALETTE.blue },
                 ].map(({ icon: Icon, label, sub, color }) => (
                   <div key={label} className="flex flex-col items-center text-center bg-muted rounded-xl py-3 px-2">
                     <Icon style={{ color, width: 18, height: 18 }} className="mb-1" />

@@ -4,12 +4,13 @@ import useBackClose from "@/components/hooks/useBackClose";
 import { createPageUrl } from "@/utils";
 import { X, ChevronRight, MessageCircle, ScanLine, Dumbbell, Bell, Lock } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
+import { PALETTE } from "@/lib/colorPalette";
 
 const LOST_FEATURES = [
-  { icon: MessageCircle, label: "Chat IA illimité (retour à 10/jour)", color: "#3b82f6" },
-  { icon: ScanLine, label: "Scans illimités (retour à 3/semaine)", color: "#2d9f82" },
-  { icon: Dumbbell, label: "Exercices avancés de dressage", color: "#6366f1" },
-  { icon: Bell, label: "Rappels santé automatiques", color: "#ef4444" },
+  { icon: MessageCircle, label: "Chat IA illimité (retour à 10/jour)", color: PALETTE.blue },
+  { icon: ScanLine, label: "Scans illimités (retour à 3/semaine)", color: PALETTE.accent },
+  { icon: Dumbbell, label: "Exercices avancés de dressage", color: PALETTE.indigo },
+  { icon: Bell, label: "Rappels santé automatiques", color: PALETTE.red500 },
 ];
 
 export default function PostTrialSheet({ visible, onClose, dogName }) {

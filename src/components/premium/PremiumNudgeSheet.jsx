@@ -4,12 +4,13 @@ import useBackClose from "@/components/hooks/useBackClose";
 import { createPageUrl } from "@/utils";
 import { MessageCircle, ScanLine, Dumbbell, Bell, X, ChevronRight, Star } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
+import { PALETTE } from "@/lib/colorPalette";
 
 const FEATURES = [
-  { icon: MessageCircle, label: "Chat IA illimité avec PawCoach", color: "#3b82f6" },
-  { icon: ScanLine, label: "Scans alimentaires illimités", color: "#2d9f82" },
-  { icon: Dumbbell, label: "Tous les exercices de dressage", color: "#6366f1" },
-  { icon: Bell, label: "Rappels santé & résumés mensuels", color: "#ef4444" },
+  { icon: MessageCircle, label: "Chat IA illimité avec PawCoach", color: PALETTE.blue },
+  { icon: ScanLine, label: "Scans alimentaires illimités", color: PALETTE.accent },
+  { icon: Dumbbell, label: "Tous les exercices de dressage", color: PALETTE.indigo },
+  { icon: Bell, label: "Rappels santé & résumés mensuels", color: PALETTE.red500 },
 ];
 
 const GOAL_NUDGE = {

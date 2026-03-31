@@ -3,14 +3,15 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Heart, Utensils, Dumbbell, MessageCircle, ChevronRight } from "lucide-react";
 import { tapScale, hoverGlow } from "@/lib/animations";
+import { PALETTE } from "@/lib/colorPalette";
 /**
  * BentoGrid — Navigation grid premium light (fond blanc, ombres douces)
  */
 const NAV_TILES = [
-  { icon: Heart,         iconColor: "#2d9f82", label: "Santé",     sub: "Carnet, vaccins, poids",  page: "Sante" },
-  { icon: Utensils,      iconColor: "#059669", label: "Nutrition",  sub: "Scans, plans repas",      page: "Nutri" },
-  { icon: Dumbbell,      iconColor: "#6366f1", label: "Dressage",   sub: "Exercices, programmes",   page: "Activite", tab: "dressage" },
-  { icon: MessageCircle, iconColor: "#8b5cf6", label: "Chat IA",    sub: "Questions santé",         page: "Chat" },
+  { icon: Heart,         iconColor: PALETTE.accent, label: "Santé",     sub: "Carnet, vaccins, poids",  page: "Sante" },
+  { icon: Utensils,      iconColor: PALETTE.emeraldDark, label: "Nutrition",  sub: "Scans, plans repas",      page: "Nutri" },
+  { icon: Dumbbell,      iconColor: PALETTE.indigo, label: "Dressage",   sub: "Exercices, programmes",   page: "Activite", tab: "dressage" },
+  { icon: MessageCircle, iconColor: PALETTE.violet, label: "Chat IA",    sub: "Questions santé",         page: "Chat" },
 ];
 
 const stagger = {

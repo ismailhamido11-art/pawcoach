@@ -15,11 +15,11 @@ import Illustration from "../components/illustrations/Illustration";
 import { spring } from "@/lib/animations";
 
 const GOAL_OPTIONS = [
-  { icon: HeartPulse, color: "#ef4444", label: "Qu'il soit en bonne santé", bg: "#ef444415" },
-  { icon: GraduationCap, color: "#6366f1", label: "Bien l'éduquer", bg: "#6366f115" },
-  { icon: Salad, color: "#10b981", label: "Qu'il mange bien", bg: "#10b98115" },
-  { icon: Smile, color: "#ec4899", label: "Son bonheur au quotidien", bg: "#ec489915" },
-  { icon: Handshake, color: "#10b981", label: "Mieux le comprendre", bg: "#10b98115" },
+  { icon: HeartPulse, color: PALETTE.red500, label: "Qu'il soit en bonne santé", bg: `${PALETTE.red500}15` },
+  { icon: GraduationCap, color: PALETTE.indigo, label: "Bien l'éduquer", bg: `${PALETTE.indigo}15` },
+  { icon: Salad, color: PALETTE.emerald, label: "Qu'il mange bien", bg: `${PALETTE.emerald}15` },
+  { icon: Smile, color: PALETTE.pink, label: "Son bonheur au quotidien", bg: `${PALETTE.pink}15` },
+  { icon: Handshake, color: PALETTE.emerald, label: "Mieux le comprendre", bg: `${PALETTE.emerald}15` },
 ];
 
 const INTERVIEW_STEPS = [
