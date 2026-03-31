@@ -28,7 +28,7 @@ const CAT_ICONS = {
   "activite": { Icon: Footprints, color: "text-emerald-600" },
   "nutrition": { Icon: Carrot, color: "text-amber-500" },
   "sante": { Icon: Heart, color: "text-emerald-600" },
-  "bien-etre": { Icon: PawPrint, color: "text-[#1A4D3E]" },
+  "bien-etre": { Icon: PawPrint, color: "text-primary" },
 };
 
 export default function EmotionalTip({ dog, dailyLogs, recentCheckins }) {

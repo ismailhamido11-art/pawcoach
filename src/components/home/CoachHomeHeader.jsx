@@ -11,7 +11,7 @@ export default function CoachHomeHeader({ user, dog }) {
   return (
     <header className="relative overflow-hidden">
       {/* Premium Gradient background */}
-      <div className="bg-gradient-to-br from-primary via-primary/95 to-[#1A4D3E] px-5 safe-pt-12 pb-8">
+      <div className="bg-gradient-to-br from-primary via-primary/95 to-primary px-5 safe-pt-12 pb-8">
         {/* Decorative elements */}
         <div className="absolute top-2 right-8 opacity-10">
           <PawPrint className="w-16 h-16 text-white rotate-[-20deg]" />

@@ -4,6 +4,7 @@ import { createPageUrl } from "@/utils";
 import { getTodayString } from "@/utils/recommendations";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Footprints, PawPrint, ScanLine, Dumbbell, MessageCircle, Laugh, Smile, Meh, Frown } from "lucide-react";
+import { PALETTE, GRADIENT_PRIMARY } from "@/lib/colorPalette";
 
 const MOOD_OPTIONS = [
   { value: 5, Icon: Laugh, color: "text-emerald-300", label: "Super" },
@@ -115,10 +116,10 @@ export default function DailyBriefing({ dog, user, recentCheckins, dailyLogs, st
   };
 
   const statusBadge = todayCheckin
-    ? (todayCheckin.mood >= 4 ? { label: "En pleine forme", color: "#2D9F82" } :
-       todayCheckin.mood <= 2 ? { label: "A surveiller", color: "#D97706" } :
-       { label: "Journee tranquille", color: "#1A4D3E" })
-    : { label: "En attente du check-in", color: "#8A8A8A" };
+    ? (todayCheckin.mood >= 4 ? { label: "En pleine forme", color: PALETTE.accent } :
+       todayCheckin.mood <= 2 ? { label: "A surveiller", color: PALETTE.cautionAmber } :
+       { label: "Journee tranquille", color: PALETTE.primary })
+    : { label: "En attente du check-in", color: PALETTE.neutral };
 
   return (
     <div className="px-5 pt-2 pb-6">
@@ -127,7 +128,7 @@ export default function DailyBriefing({ dog, user, recentCheckins, dailyLogs, st
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 400, damping: 30 }}
         className="rounded-[1.5rem] overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1A4D3E 0%, #2D9F82 100%)" }}
+        style={{ background: GRADIENT_PRIMARY }}
       >
         <div className="p-6 relative">
           {/* Subtle decorative circle */}
@@ -135,7 +136,7 @@ export default function DailyBriefing({ dog, user, recentCheckins, dailyLogs, st
 
           {/* Status badge */}
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: statusBadge.color === "#8A8A8A" ? "#aaa" : "#6FFBBE" }} />
+            <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: statusBadge.color === PALETTE.neutral ? PALETTE.neutral : PALETTE.accentBright }} />
             <span className="text-[11px] font-bold text-white/80 uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full border border-white/15">
               {statusBadge.label}
             </span>

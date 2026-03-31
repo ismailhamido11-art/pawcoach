@@ -422,7 +422,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
 
             {dog && (
               <div className="flex items-center gap-2 bg-secondary/60 rounded-2xl px-4 py-2.5">
-                <Dog className="w-5 h-5 text-[#1A4D3E]" />
+                <Dog className="w-5 h-5 text-primary" />
                 <span className="text-sm font-semibold text-foreground">Balade avec {dog.name}</span>
               </div>
             )}

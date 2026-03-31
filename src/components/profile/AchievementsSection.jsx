@@ -279,7 +279,7 @@ export default function AchievementsSection({ dog }) {
                 active
                   ? col
                     ? `${col.bg} ${col.border} ${col.text}`
-                    : "bg-[#1A4D3E] border-[#1A4D3E] text-white"
+                    : "bg-primary border-primary text-white"
                   : "bg-white border-border text-muted-foreground"
               }`}
             >

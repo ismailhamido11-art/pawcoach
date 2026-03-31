@@ -32,7 +32,7 @@ export default function CalendarStrip({ dailyLogs = [] }) {
           key={`${day.label}-${day.date}`}
           className={`flex flex-col items-center gap-1 w-10 py-2 rounded-xl transition-colors ${
             day.isToday
-              ? "bg-[#1A4D3E]"
+              ? "bg-primary"
               : ""
           }`}
         >
@@ -53,7 +53,7 @@ export default function CalendarStrip({ dailyLogs = [] }) {
           {day.hasActivity && (
             <div
               className={`w-[5px] h-[5px] rounded-full ${
-                day.isToday ? "bg-white" : "bg-[#2D9F82]"
+                day.isToday ? "bg-white" : "bg-accent"
               }`}
             />
           )}
