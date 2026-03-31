@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { base44 } from "@/api/base44Client";
 import { NutritionPlan } from "@/api/entities";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
