@@ -106,9 +106,8 @@ function ProductSlot({ index, product, onAdd, onRemove }) {
   );
 }
 
-export default function FoodComparator({ dog, dietPreferences }) {
+export default function FoodComparator({ dog }) {
   const { credits, hasCredits, isPremium, consume } = useActionCredits();
-  const dislikedFoods = dietPreferences?.disliked_foods || "aucun";
   const [products, setProducts] = useState([null, null]);
   const [comparing, setComparing] = useState(false);
   const [comparison, setComparison] = useState(null);
@@ -155,37 +154,9 @@ export default function FoodComparator({ dog, dietPreferences }) {
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
 
-      const ageText = dog?.birth_date
-        ? (() => {
-            const months = Math.floor((Date.now() - new Date(dog.birth_date)) / (1000 * 60 * 60 * 24 * 30));
-            return months < 12 ? `${months} mois` : `${Math.floor(months / 12)} ans`;
-          })()
-        : "âge inconnu";
-
-      const prompt = `Tu es PawCoach, expert en nutrition canine. Analyse cette étiquette ou photo d'aliment pour chien.
-Chien : ${dog?.name || "chien"}, race : ${dog?.breed || "inconnue"}, âge : ${ageText}, poids : ${dog?.weight ? dog.weight + "kg" : "inconnu"}, allergies : ${dog?.allergies || "aucune"}, aliments indésirables : ${dislikedFoods}, régime : ${dog?.diet_type || "inconnu"}.
-Si un ingrédient correspond aux aliments indésirables, le signaler dans l'analyse.
-Si l'image ne montre pas clairement un produit ou une étiquette lisible, utilise food_name = 'Produit non identifié', score = 0, summary = 'Image non lisible — essayez avec une photo plus nette de l\'étiquette'.
-Fournis une analyse nutritionnelle détaillée en JSON. Réponds UNIQUEMENT en français. Sois précis sur la composition.`;
-
-      const aiResult = await base44.integrations.Core.InvokeLLM({
-        prompt,
-        file_urls: [file_url],
-        response_json_schema: {
-          type: "object",
-          properties: {
-            food_name: { type: "string" },
-            verdict: { type: "string" },
-            score: { type: "number" },
-            summary: { type: "string" },
-            pros: { type: "array", items: { type: "string" } },
-            cons: { type: "array", items: { type: "string" } },
-            details: { type: "string" },
-            recommendation: { type: "string" },
-            key_ingredients: { type: "array", items: { type: "string" } },
-            allergen_alert: { type: "boolean" },
-          },
-        },
+      const { result: aiResult } = await base44.functions.invoke("analyzeFood", {
+        dogId: dog?.id,
+        file_url,
       });
 
       setProducts(prev => {
@@ -219,37 +190,10 @@ Fournis une analyse nutritionnelle détaillée en JSON. Réponds UNIQUEMENT en f
     setComparing(true);
     setComparison(null);
     try {
-      const nameA = a.result.food_name || "Produit A";
-      const nameB = b.result.food_name || "Produit B";
-      const prompt = `Tu es PawCoach, expert nutrition canine. Compare ces deux produits pour le chien ${dog?.name || "ce chien"} (${dog?.breed || ""}, ${dog?.weight ? dog.weight + "kg" : ""}, allergies : ${dog?.allergies || "aucune"}, aliments indésirables : ${dislikedFoods}).
-
-Produit A — ${nameA} (score ${a.result.score}/10)
-- Points forts : ${(a.result.pros || []).join(", ")}
-- Points faibles : ${(a.result.cons || []).join(", ")}
-- Composition : ${a.result.details}
-
-Produit B — ${nameB} (score ${b.result.score}/10)
-- Points forts : ${(b.result.pros || []).join(", ")}
-- Points faibles : ${(b.result.cons || []).join(", ")}
-- Composition : ${b.result.details}
-
-Le champ winner doit valoir EXACTEMENT 'A' ou 'B', rien d'autre.
-Fournis une comparaison personnalisée avec un verdict clair. Réponds en JSON, en français, en tutoyant l'utilisateur.`;
-
-      const res = await base44.integrations.Core.InvokeLLM({
-        prompt,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            winner: { type: "string" },
-            winner_name: { type: "string" },
-            winner_reason: { type: "string" },
-            comparison_summary: { type: "string" },
-            product_a_analysis: { type: "string" },
-            product_b_analysis: { type: "string" },
-            recommendation: { type: "string" },
-          },
-        },
+      const { result: res } = await base44.functions.invoke("compareFoods", {
+        dogId: dog?.id,
+        productA: a.result,
+        productB: b.result,
       });
       setComparison(res);
     } catch {

@@ -583,7 +583,7 @@ export default function Nutri() {
               description="Scanne un emballage depuis l'onglet Scan pour comparer les produits"
             />
           ) : (
-            <FoodComparator dog={dog} dietPreferences={dietPrefs} />
+            <FoodComparator dog={dog} />
           )}
         </div>
       )}
