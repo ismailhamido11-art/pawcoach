@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, ArrowLeft, Syringe, Weight, Stethoscope, Pill, FileText, Activity, Camera, ClipboardList, PawPrint, AlertTriangle, Smile, Zap, UtensilsCrossed, CheckCircle, ShieldAlert, Ban } from "lucide-react";
+import { ArrowLeft, Syringe, Weight, Stethoscope, Pill, FileText, Activity, Camera, ClipboardList, PawPrint, AlertTriangle, Smile, Zap, UtensilsCrossed, CheckCircle, Ban } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { format } from "date-fns";

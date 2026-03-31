@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Bone, Check, Share2, TrendingUp, TrendingDown, Minus, Smile, ThumbsUp, Meh, Frown, PawPrint } from "lucide-react";
 import WalkShareCard from "./WalkShareCard";
 import { PostWalkReviewPrompt } from "./ParkReviews";
+import { springUI } from "@/lib/animations";
 
 const WALK_MOODS = [
   { id: "super", Icon: Smile,    iconColor: "text-emerald-500", label: "Super" },

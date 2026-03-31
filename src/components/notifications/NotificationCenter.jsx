@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { Dog, HealthRecord } from "@/api/entities";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, X, Syringe, Stethoscope, Pill, ChevronRight, CheckCheck } from "lucide-react";
+import { Bell, X, Syringe, Stethoscope, Pill, ChevronRight } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
 import { matchVaccineKey, getVaccineDisplayName } from "@/utils/healthStatus";

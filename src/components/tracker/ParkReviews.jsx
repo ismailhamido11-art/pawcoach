@@ -4,6 +4,7 @@ import { Star, Send, Loader2, MessageCircle, PawPrint } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { ParkReview } from "@/api/entities";
 import { toast } from "sonner";
+import { springUI } from "@/lib/animations";
 
 const REVIEW_TAGS = [
   { id: "propre", label: "Propre" },

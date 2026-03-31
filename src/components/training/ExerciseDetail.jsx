@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import Illustration from "../illustrations/Illustration";
+import { springUI } from "@/lib/animations";
 
 const LEVEL_CONFIG = {
   debutant: { label: "Débutant", color: "text-safe bg-safe/10 border-safe/20" },

@@ -4,6 +4,7 @@ import { CONFETTI_COLORS } from "@/lib/colorPalette";
 import { motion } from "framer-motion";
 import { Zap, Repeat2 } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
+import { springUI } from "@/lib/animations";
 
 const PRAISE_MESSAGES = [
   (dog) => `${dog} a tout compris. Continue comme ça !`,

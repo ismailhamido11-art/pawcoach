@@ -19,8 +19,8 @@ import PullToRefresh from "@/components/PullToRefresh";
 // SavedPlansPanel merged into NutritionMealPlan
 
 import { Button } from "@/components/ui/button";
-import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, ChevronDown, Copy, RotateCcw, Camera, Calendar, Scale, Settings } from "lucide-react";
-import { DogChef, DogCurious } from "../components/ui/PawIllustrations";
+import { Send, Salad, Bookmark, BookmarkCheck, ScanLine, ChevronDown, Copy, RotateCcw, Calendar, Scale, Settings } from "lucide-react";
+import { DogChef } from "../components/ui/PawIllustrations";
 import { isUserPremium } from "@/utils/premium";
 import { initCredits } from "@/utils/ai-credits";
 import IconBadge from "@/components/ui/IconBadge";

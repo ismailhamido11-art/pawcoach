@@ -8,6 +8,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import EmptyState from "@/components/ui/EmptyState";
 import { PALETTE } from "@/lib/colorPalette";
+import { springUI } from "@/lib/animations";
 
 // Fix default Leaflet marker icons (same pattern as FindVetContent)
 delete L.Icon.Default.prototype._getIconUrl;

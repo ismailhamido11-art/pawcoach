@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Lightbulb, ChevronRight, Sparkles } from "lucide-react";
+import { springUI } from "@/lib/animations";
 
 // 25 tips rotating daily — {name} and {breed} are replaced dynamically
 const TIPS = [

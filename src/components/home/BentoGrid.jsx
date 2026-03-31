@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Heart, Utensils, Dumbbell, MessageCircle, ChevronRight } from "lucide-react";
-import { tapScale, hoverGlow, staggerContainer, springSnappy } from "@/lib/animations";
+import { staggerContainer, springSnappy } from "@/lib/animations";
 import { PALETTE } from "@/lib/colorPalette";
 /**
  * BentoGrid — Navigation grid premium light (fond blanc, ombres douces)

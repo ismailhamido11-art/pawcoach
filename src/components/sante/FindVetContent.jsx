@@ -85,7 +85,7 @@ export default function FindVetContent({ dog, user }) {
       hasAutoSearched.current = true;
       handleSearch();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, []);
 
   const handleGeolocate = () => {
@@ -106,7 +106,7 @@ export default function FindVetContent({ dog, user }) {
       pendingGeoSearch.current = false;
       handleSearch();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [mapCenter]);
 
   const handleSearch = async () => {

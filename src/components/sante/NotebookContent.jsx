@@ -108,7 +108,7 @@ export default function NotebookContent({ dog, user: _user, records = [], setRec
     VetNote.filter({ dog_id: dog.id })
       .then(notes => setVetNotes(notes || []))
       .catch(e => console.warn("Failed to load vet notes:", e?.message || String(e)));
-  }, [dog]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dog]);  
 
   // No-op kept for call sites that still invoke it (e.g. accordion open)
   const ensureVetNotes = () => {};

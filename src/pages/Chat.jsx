@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Camera, Bookmark, BookmarkCheck, ChevronDown, Copy, RotateCcw, Plus } from "lucide-react";
 import { DogChat } from "../components/ui/PawIllustrations";
-import Illustration from "../components/illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { isUserPremium } from "@/utils/premium";
 import { initCredits } from "@/utils/ai-credits";

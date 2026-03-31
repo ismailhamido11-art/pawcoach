@@ -15,7 +15,6 @@ import confetti from "canvas-confetti";
 import { CONFETTI_COLORS, PALETTE } from "@/lib/colorPalette";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { DogTrophy } from "../components/ui/PawIllustrations";
-import Illustration from "../components/illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { springUI } from "@/lib/animations";
 

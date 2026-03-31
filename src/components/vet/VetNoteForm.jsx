@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MobileSelect from "@/components/ui/MobileSelect";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, Send, Search, Lightbulb, Pill, CalendarDays, AlertTriangle } from "lucide-react";
+import { Loader2, Send, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 const CATEGORIES = [

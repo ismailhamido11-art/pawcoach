@@ -20,10 +20,9 @@ import CoachHomeHeader from "../components/home/CoachHomeHeader";
 import CalendarStrip from "../components/home/CalendarStrip";
 import DailyBriefing from "../components/home/DailyBriefing";
 import DailyProgress from "../components/home/DailyProgress";
-import EmotionalTip from "../components/home/EmotionalTip";
 // ContentArticles removed — hardcoded placeholder content, will be replaced with real content later
 
-import { Flame, ScanLine, Footprints, Stethoscope, BookOpen, Lock, Sparkles, ChevronRight, BarChart3, UtensilsCrossed, Heart } from "lucide-react";
+import { Flame, Lock, Sparkles, ChevronRight, BarChart3, UtensilsCrossed, Heart } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
 import { CONFETTI_COLORS, PALETTE } from "@/lib/colorPalette";
@@ -34,7 +33,6 @@ import PostTrialSheet from "../components/premium/PostTrialSheet";
 import TrialExpiryBanner from "../components/home/TrialExpiryBanner";
 import FirstDayGuide from "../components/home/FirstDayGuide";
 import SkeletonPage from "@/components/ui/SkeletonPage";
-import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import ErrorState from "@/components/ErrorState";
 
 

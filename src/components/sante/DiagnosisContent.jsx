@@ -4,7 +4,6 @@ import { DiagnosisReport } from "@/api/entities";
 import DiagnosisReportView from "@/components/vet/DiagnosisReportView";
 import { Button } from "@/components/ui/button";
 import { Stethoscope, Phone, ExternalLink, AlertTriangle, ThumbsDown, Bed, UtensilsCrossed, PawPrint, Eye, Wind, Droplets, History, ChevronDown, ChevronUp } from "lucide-react";
-import Illustration from "../illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { motion } from "framer-motion";
 

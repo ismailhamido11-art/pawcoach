@@ -5,7 +5,6 @@ import ReactMarkdown from "react-markdown";
 import {
   Camera, Check, Sparkles, ExternalLink, MapPin, Phone, AlertCircle, Send, Copy
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -88,7 +87,7 @@ export default function SmartHealthAssistant({ dogId, onRecordAdded }) {
         }
       }
     } catch {}
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, []);
 
   // Sync pending records to localStorage whenever they change

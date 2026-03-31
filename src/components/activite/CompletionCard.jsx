@@ -6,7 +6,7 @@ import {
   Frown, Meh, Smile, ThumbsUp, Laugh,
   MessageSquare, Compass
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { springUI } from "@/lib/animations";
 
 export const GOAL_SUGGESTIONS = [

@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import EmptyState from "@/components/ui/EmptyState";
 import { addDaysToDate, formatDateFr } from "@/utils/dateHelpers";
 import { ACTIVITY_ICONS } from "@/utils/programHelpers";
+import { springUI } from "@/lib/animations";
 
 const DAY_NAMES = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 const _WEEK_DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];

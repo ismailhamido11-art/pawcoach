@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { DietPreferences } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, Plus, X, Clock, Leaf, Wallet, Check, Loader2, Heart, Star, Diamond } from "lucide-react";
+import { Save, Plus, X, Clock, Leaf, Wallet, Check, Loader2, Star, Diamond } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
