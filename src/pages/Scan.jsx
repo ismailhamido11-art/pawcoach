@@ -527,6 +527,29 @@ export default function Scan() {
                         </div>
                       </div>
                     )}
+                    {result.verdict === "toxic" && (
+                      <div className="p-3 rounded-2xl border border-red-200 bg-red-50">
+                        <p className="text-xs font-bold text-red-700 mb-2 flex items-center gap-1">
+                          <Phone className="w-3.5 h-3.5" /> Action vétérinaire
+                        </p>
+                        {dog?.vet_name ? (
+                          <button
+                            onClick={() => navigate(createPageUrl("DogProfile"))}
+                            className="w-full py-3 px-4 rounded-xl text-sm font-bold bg-red-600 text-white flex items-center justify-center gap-2 active:scale-95 transition-transform focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1 focus:outline-none"
+                          >
+                            <Phone className="w-4 h-4" />
+                            Consulter {dog.vet_name}
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => navigate(createPageUrl("DogProfile"))}
+                            className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-red-700 border-2 border-red-300 bg-white flex items-center justify-center gap-2 active:scale-95 transition-transform focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1 focus:outline-none"
+                          >
+                            Ajoute ton vétérinaire dans le profil de {dog?.name || "ton chien"}
+                          </button>
+                        )}
+                      </div>
+                    )}
                     <div className="p-3 bg-white/70 rounded-2xl border border-white">
                       <p className="text-xs font-bold text-primary mb-1 flex items-center gap-1"><Lightbulb className="w-3 h-3" /> Pour {dog?.name}</p>
                       <p className="text-sm text-foreground">{result.recommendation}</p>
