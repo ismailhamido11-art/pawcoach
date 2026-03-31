@@ -861,18 +861,27 @@ export default function Home() {
 }
 
 function MilestoneCelebration({ milestone, onClose }) {
+  const dialogRef = useRef(null);
+
   useEffect(() => {
     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
     confetti({ particleCount: 100, spread: 80, origin: { x: 0.5, y: 0.55 }, colors: CONFETTI_COLORS });
+    dialogRef.current?.focus();
   }, []);
 
   return (
     <motion.div
+      ref={dialogRef}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Félicitations"
+      tabIndex={-1}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm outline-none"
       onClick={onClose}
+      onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
     >
       <motion.div
         initial={{ scale: 0.5, y: -40, rotate: -10 }}
