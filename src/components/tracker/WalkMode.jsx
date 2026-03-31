@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Pause, Play, StopCircle, Timer, Footprints, Zap, TreePine, Dog } from "lucide-react";
 import { DailyLog } from "@/api/entities";
-import { PALETTE } from "@/lib/colorPalette";
+import { PALETTE, GRADIENT_PRIMARY } from "@/lib/colorPalette";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import WalkSummary from "./WalkSummary";
@@ -465,13 +465,13 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
             <div className="relative w-56 h-56 flex items-center justify-center">
               <motion.div
                 className="absolute inset-0 rounded-full opacity-20"
-                style={{ background: "radial-gradient(circle, hsl(162,55%,42%), transparent 70%)" }}
+                style={{ background: `radial-gradient(circle, ${PALETTE.accent}, transparent 70%)` }}
                 animate={status === "running" ? { scale: [1, 1.08, 1] } : { scale: 1 }}
                 transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
               />
               <div
                 className="w-48 h-48 rounded-full flex flex-col items-center justify-center shadow-2xl border border-white/10"
-                style={{ background: "linear-gradient(135deg, hsl(160,50%,18%), hsl(162,45%,30%))" }}
+                style={{ background: GRADIENT_PRIMARY }}
               >
                 <div className="font-bold tabular-nums text-white" style={{ fontSize: "3.5rem", lineHeight: 1 }}>
                   {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}

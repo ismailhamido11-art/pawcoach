@@ -5,6 +5,7 @@ import { getTodayString } from "@/utils/recommendations";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Footprints, PawPrint, ScanLine, Dumbbell, MessageCircle, Laugh, Smile, Meh, Frown } from "lucide-react";
 import { PALETTE, GRADIENT_PRIMARY } from "@/lib/colorPalette";
+import { springUI } from "@/lib/animations";
 
 const MOOD_OPTIONS = [
   { value: 5, Icon: Laugh, color: "text-emerald-300", label: "Super" },

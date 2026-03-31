@@ -10,7 +10,7 @@ const ACTIONS = [
   { icon: Scale, label: "Peser", page: "Sante", tab: "weight", color: PALETTE.accent },
   { icon: Dumbbell, label: "Exercice", page: "Activite", tab: "dressage", color: PALETTE.indigo },
   { icon: MapPin, label: "Véto", page: "Sante", tab: "findvet", color: PALETTE.blue },
-  { icon: BookOpen, label: "Guides", page: "Library", color: PALETTE.violet },
+  { icon: BookOpen, label: "Guides", page: "Library", color: PALETTE.blue },
 ];
 
 export default function QuickActions() {
