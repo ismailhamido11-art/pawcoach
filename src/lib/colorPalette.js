@@ -47,13 +47,22 @@ export const PALETTE = {
   // Gamification tiers (StreakBar)
   tierSlate:      "#94A3B8",  // Slate-400 — Débutant
 
+  // Chart-specific
+  chartGold:      "#D4A855",  // Gold — growth reference weight line
+
   // UI utility (charts, grids, maps — not design tokens)
   red500:         "#EF4444",  // Red-500 — data list destructive items
   amber400:       "#F59E0B",  // Amber-400 — chart caution / streak icon
   green400:       "#4ADE80",  // Green-400 — mood bar (lighter than emerald)
   gray200:        "#E5E7EB",  // Gray-200 — chart grid lines, subtle SVG rings
+  gray300:        "#D1D5DB",  // Gray-300 — inactive icon (WalkShareCard)
   gray400:        "#9CA3AF",  // Gray-400 — axis ticks, inactive text
   gray500:        "#6B7280",  // Gray-500 — secondary text / notes
+  slate700:       "#374151",  // Slate-700 — dark gradient base (WalkShareCard)
+  navy:           "#1E3A5F",  // Navy — dark blue gradient base (WalkShareCard)
+  cyan:           "#06B6D4",  // Cyan-500 — water/hydration field (CombinedFAB)
+  emeraldMedium:  "#6EE7B7",  // Emerald-300 — badge icon tint (WalkShareCard)
+  blue300:        "#93C5FD",  // Blue-300 — badge icon tint (WalkShareCard)
   mapBg:          "#F0F0F0",  // Map tile placeholder background
 };
 

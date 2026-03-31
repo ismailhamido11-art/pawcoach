@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { useActionCredits } from "@/hooks/useActionCredits";
 import EmptyState from "@/components/ui/EmptyState";
 import { CustomTooltip } from "@/utils/chartHelpers";
+import { PALETTE } from "@/lib/colorPalette";
 
 // Breed reference curves (weight in kg by age in months)
 const BREED_REFERENCES = {
@@ -319,12 +320,12 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
             <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -15, bottom: 0 }}>
               <defs>
                 <linearGradient id="gWeight" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#1A4D3E" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="#1A4D3E" stopOpacity={0} />
+                  <stop offset="5%" stopColor={PALETTE.primary} stopOpacity={0.15} />
+                  <stop offset="95%" stopColor={PALETTE.primary} stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="gRef" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#d4a855" stopOpacity={0.1} />
-                  <stop offset="95%" stopColor="#d4a855" stopOpacity={0} />
+                  <stop offset="5%" stopColor={PALETTE.chartGold} stopOpacity={0.1} />
+                  <stop offset="95%" stopColor={PALETTE.chartGold} stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -333,14 +334,14 @@ export default function GrowthTrackerContent({ dog, user, healthRecords = [], da
               <Tooltip content={<CustomTooltip />} />
               {activeChart === "weight" && (
                 <>
-                  <Area type="monotone" dataKey="weight" name="Poids (kg)" stroke="#1A4D3E" fill="url(#gWeight)" strokeWidth={2} dot={{ r: 3, fill: "#1A4D3E" }} connectNulls />
+                  <Area type="monotone" dataKey="weight" name="Poids (kg)" stroke={PALETTE.primary} fill="url(#gWeight)" strokeWidth={2} dot={{ r: 3, fill: PALETTE.primary }} connectNulls />
                   {chartData.some(d => d.ref_weight) && (
-                    <Area type="monotone" dataKey="ref_weight" name="Réf. race (kg)" stroke="#d4a855" fill="url(#gRef)" strokeWidth={1.5} strokeDasharray="4 3" dot={false} connectNulls />
+                    <Area type="monotone" dataKey="ref_weight" name="Réf. race (kg)" stroke={PALETTE.chartGold} fill="url(#gRef)" strokeWidth={1.5} strokeDasharray="4 3" dot={false} connectNulls />
                   )}
                 </>
               )}
               {activeChart === "height" && (
-                <Area type="monotone" dataKey="height" name="Hauteur (cm)" stroke="#2D9F82" fill="url(#gWeight)" strokeWidth={2} dot={{ r: 3, fill: "#2D9F82" }} connectNulls />
+                <Area type="monotone" dataKey="height" name="Hauteur (cm)" stroke={PALETTE.accent} fill="url(#gWeight)" strokeWidth={2} dot={{ r: 3, fill: PALETTE.accent }} connectNulls />
               )}
             </AreaChart>
           </ResponsiveContainer>

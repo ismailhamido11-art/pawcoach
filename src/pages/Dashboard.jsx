@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useDog } from "@/lib/DogContext";
 import { motion } from "framer-motion";
 import { computeVaccineMap, computeHealthScore } from "@/utils/healthStatus";
+import { PALETTE } from "@/lib/colorPalette";
 import { getWeekStart } from "@/utils/dateHelpers";
 import { CustomTooltip } from "@/utils/chartHelpers";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -168,7 +169,7 @@ export default function Dashboard() {
 
   // Health score — unified via computeHealthScore (same as Santé page)
   const score = computeHealthScore(records, dog, [...growthEntries, ...dailyLogs]);
-  const scoreColor = score >= 75 ? "#10b981" : score >= 50 ? "#d97706" : "#ef4444";
+  const scoreColor = score >= 75 ? PALETTE.emerald : score >= 50 ? PALETTE.cautionAmber : PALETTE.red500;
   const scoreLabel = score >= 75 ? "Bon état" : score >= 50 ? "À surveiller" : "À améliorer";
 
   return { weightData, weightTrend, walkData, checkinChart, avgMood, alerts, score, scoreColor, scoreLabel };
@@ -192,14 +193,14 @@ export default function Dashboard() {
   const nextSteps = useMemo(() => {
     const steps = [];
     if (checkinCountRaw < 5) {
-      steps.push({ icon: Heart, color: "#ec4899", label: "Check-in quotidien", desc: "Suis l'humeur et l'énergie de " + (dog?.name || "ton chien"), to: createPageUrl("Home") });
+      steps.push({ icon: Heart, color: PALETTE.pink, label: "Check-in quotidien", desc: "Suis l'humeur et l'énergie de " + (dog?.name || "ton chien"), to: createPageUrl("Home") });
     }
     if (progress.length < 3) {
-      steps.push({ icon: Dumbbell, color: "#8b5cf6", label: "Commencer le dressage", desc: "Des exercices adaptés à " + (dog?.name || "ton chien"), to: createPageUrl("Training") });
+      steps.push({ icon: Dumbbell, color: PALETTE.violet, label: "Commencer le dressage", desc: "Des exercices adaptés à " + (dog?.name || "ton chien"), to: createPageUrl("Training") });
     }
-    steps.push({ icon: Salad, color: "#10b981", label: "Plan nutrition IA", desc: "Génère un plan repas personnalisé", to: createPageUrl("Nutri") });
+    steps.push({ icon: Salad, color: PALETTE.emerald, label: "Plan nutrition IA", desc: "Génère un plan repas personnalisé", to: createPageUrl("Nutri") });
     if (alerts.some(a => a.type === "warning")) {
-      steps.unshift({ icon: Stethoscope, color: "#3b82f6", label: "Mettre à jour le carnet", desc: "Des informations de santé manquent", to: createPageUrl("Sante") });
+      steps.unshift({ icon: Stethoscope, color: PALETTE.blue, label: "Mettre à jour le carnet", desc: "Des informations de santé manquent", to: createPageUrl("Sante") });
     }
     return steps;
   }, [checkinCountRaw, progress.length, alerts, dog?.name]);
@@ -281,10 +282,10 @@ export default function Dashboard() {
         {/* Stats row */}
         <div className="grid grid-cols-2 gap-3">
           {[
-            { icon: Weight, color: "#2d9f82", label: "Dernier poids", value: weightData.length ? `${animatedWeight} kg` : "—", sub: dog?.weight ? `Référence : ${dog.weight} kg` : undefined, trend: weightTrend },
-            { icon: Activity, color: "#8b5cf6", label: "Check-ins (7j)", value: animatedCheckins, sub: "jours enregistrés" },
-            { icon: Star, color: "#2d9f82", label: "Humeur moy. (7j)", value: avgMood ? `${(animatedMood / 10).toFixed(1)}/4` : "—", sub: "basé sur les check-ins" },
-            { icon: Dumbbell, color: "#ec4899", label: "Exercices faits", value: animatedExercices, sub: "tours maîtrisés" },
+            { icon: Weight, color: PALETTE.accent, label: "Dernier poids", value: weightData.length ? `${animatedWeight} kg` : "—", sub: dog?.weight ? `Référence : ${dog.weight} kg` : undefined, trend: weightTrend },
+            { icon: Activity, color: PALETTE.violet, label: "Check-ins (7j)", value: animatedCheckins, sub: "jours enregistrés" },
+            { icon: Star, color: PALETTE.accent, label: "Humeur moy. (7j)", value: avgMood ? `${(animatedMood / 10).toFixed(1)}/4` : "—", sub: "basé sur les check-ins" },
+            { icon: Dumbbell, color: PALETTE.pink, label: "Exercices faits", value: animatedExercices, sub: "tours maîtrisés" },
           ].map((card, i) => (
             <motion.div
               key={card.label}
@@ -332,15 +333,15 @@ export default function Dashboard() {
               <AreaChart data={weightData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
                 <defs>
                   <linearGradient id="weightGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2d9f82" stopOpacity={0.15} />
-                    <stop offset="95%" stopColor="#2d9f82" stopOpacity={0} />
+                    <stop offset="5%" stopColor={PALETTE.accent} stopOpacity={0.15} />
+                    <stop offset="95%" stopColor={PALETTE.accent} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <CartesianGrid strokeDasharray="3 3" stroke={PALETTE.mapBg} />
                 <XAxis dataKey="date" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
                 <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} domain={['auto', 'auto']} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="poids" name="Poids" stroke="#2d9f82" strokeWidth={2.5} fill="url(#weightGrad)" unit=" kg" dot={{ r: 3, fill: "#2d9f82" }} />
+                <Area type="monotone" dataKey="poids" name="Poids" stroke={PALETTE.accent} strokeWidth={2.5} fill="url(#weightGrad)" unit=" kg" dot={{ r: 3, fill: PALETTE.accent }} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -367,11 +368,11 @@ export default function Dashboard() {
             </div>
             <ResponsiveContainer width="100%" height={130}>
               <BarChart data={walkData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke={PALETTE.mapBg} vertical={false} />
                 <XAxis dataKey="date" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
                 <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="min" name="Minutes" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={20} unit=" min" />
+                <Bar dataKey="min" name="Minutes" fill={PALETTE.emerald} radius={[4, 4, 0, 0]} maxBarSize={20} unit=" min" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -392,12 +393,12 @@ export default function Dashboard() {
             </div>
             <ResponsiveContainer width="100%" height={140}>
               <BarChart data={checkinChart} margin={{ top: 5, right: 5, bottom: 0, left: -20 }} barGap={2}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke={PALETTE.mapBg} vertical={false} />
                 <XAxis dataKey="date" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
                 <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} domain={[0, 4]} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="humeur" name="Humeur" fill="#2d9f82" radius={[4, 4, 0, 0]} maxBarSize={16} />
-                <Bar dataKey="energie" name="Énergie" fill="#4ade80" radius={[4, 4, 0, 0]} maxBarSize={16} />
+                <Bar dataKey="humeur" name="Humeur" fill={PALETTE.accent} radius={[4, 4, 0, 0]} maxBarSize={16} />
+                <Bar dataKey="energie" name="Énergie" fill={PALETTE.green400} radius={[4, 4, 0, 0]} maxBarSize={16} />
               </BarChart>
             </ResponsiveContainer>
           </div>

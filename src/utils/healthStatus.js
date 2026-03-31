@@ -6,6 +6,7 @@
  *
  * WSAVA 2024 guidelines adapted for France.
  */
+import { PALETTE } from "@/lib/colorPalette";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -380,8 +381,6 @@ export function computeHealthScore(records, dog, extraWeightSources = []) {
   const total = Math.round(vaccineScore + weightScore + vetScore + activityScore);
   return Math.min(100, Math.max(0, total));
 }
-
-import { PALETTE } from "@/lib/colorPalette";
 
 /**
  * Get score label and color from score value.
