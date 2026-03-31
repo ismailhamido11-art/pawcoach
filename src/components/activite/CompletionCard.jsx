@@ -127,7 +127,7 @@ export default function CompletionCard({ program, dog, totalMinutes, bilanState,
       </div>
 
       {/* ─── Bilan ─── */}
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-4 space-y-4">
+      <div className="bg-gradient-to-br from-blue-50 to-blue-50 border border-blue-200 rounded-2xl p-4 space-y-4">
         <div className="flex items-center gap-2">
           <MessageSquare className="w-4 h-4 text-blue-600" />
           <p className="font-bold text-sm text-foreground">Ton bilan</p>

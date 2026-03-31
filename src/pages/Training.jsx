@@ -775,7 +775,7 @@ export default function Training() {
 
       {/* Illustrated card — personalised program */}
       <div className="px-4 pt-5">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50/50 rounded-3xl p-4 border border-blue-100/50 shadow-sm flex items-center gap-4">
+        <div className="bg-gradient-to-r from-blue-50 to-blue-50/50 rounded-3xl p-4 border border-blue-100/50 shadow-sm flex items-center gap-4">
           <StorysetIllustration name="achievement" className="w-24 h-24 flex-shrink-0" />
           <div className="flex-1 min-w-0">
             <p className="text-[14px] font-bold text-foreground">Programme personnalisé</p>

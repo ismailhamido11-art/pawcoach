@@ -40,7 +40,7 @@ const TABS = [
   { id: "scan",     label: "Scanner",           Icon: ScanLine, bg: "from-violet-500 to-purple-600" },
   { id: "mealplan", label: "Plan repas",         Icon: Calendar, bg: "from-amber-500 to-amber-600" },
   { id: "coach",    label: "Coach IA",           Icon: Salad,    bg: "from-emerald-500 to-emerald-700" },
-  { id: "compare",  label: "Comparer croquettes", Icon: Scale,    bg: "from-blue-500 to-indigo-600" },
+  { id: "compare",  label: "Comparer croquettes", Icon: Scale,    bg: "from-blue-500 to-blue-700" },
   { id: "prefs",    label: "Préférences",        Icon: Settings, bg: "from-slate-500 to-slate-700" },
 ];
 

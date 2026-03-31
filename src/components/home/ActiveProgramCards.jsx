@@ -387,7 +387,7 @@ function BehaviorProgramCard({ program }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 400, damping: 30, delay: 0.1 }}
     >
-      <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden">
+      <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-blue-50 relative overflow-hidden">
         <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-blue-400 opacity-[0.06]" />
 
         <button className="w-full text-left p-4" onClick={() => setOpen(v => !v)}>
@@ -429,7 +429,7 @@ function BehaviorProgramCard({ program }) {
             <div className="mt-2.5 flex items-center gap-2">
               <div className="flex-1 h-1.5 bg-blue-100 rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
+                  className="h-full bg-gradient-to-r from-blue-500 to-blue-500 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.8, ease: "easeOut" }}

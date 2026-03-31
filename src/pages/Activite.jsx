@@ -24,7 +24,7 @@ import useTabNavigation, { tabVariants } from "@/hooks/useTabNavigation";
 
 const TABS = [
   { id: "balade",     label: "Balade",     icon: Footprints, bg: "from-emerald-500 to-emerald-700" },
-  { id: "historique", label: "Historique", icon: History,    bg: "from-blue-500 to-indigo-600" },
+  { id: "historique", label: "Historique", icon: History,    bg: "from-blue-500 to-blue-700" },
   { id: "programme",  label: "Programme",  icon: Sparkles,   bg: "from-violet-500 to-purple-600" },
   { id: "dressage",   label: "Dressage",   icon: Dumbbell,   bg: "from-amber-500 to-amber-600" },
 ];
@@ -227,7 +227,7 @@ function DressageContent({ dog }) {
   return (
     <div className="space-y-4 pb-4">
       {/* Illustrated info card */}
-      <div className="bg-gradient-to-r from-indigo-50 to-blue-50/50 rounded-3xl p-4 border border-indigo-100/50 shadow-sm flex items-center gap-4">
+      <div className="bg-gradient-to-r from-blue-50 to-blue-50/50 rounded-3xl p-4 border border-blue-100/50 shadow-sm flex items-center gap-4">
         <StorysetIllustration name="training" className="w-24 h-24 flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-[14px] font-bold text-foreground">Conseils personnalisés</p>
