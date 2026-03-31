@@ -68,7 +68,7 @@ getTrialDaysLeft(user) = max(0, floor(diff_ms / ms_per_day))
 | Carnet sante — notes libres | Non | Oui | `PremiumSection` composant | `components/notebook/PremiumSection.jsx:33-39` |
 | Rappels sante par email | Non | Oui | Backend filtre premium users | `base44/functions/vaccineReminders/entry.ts` |
 | Bilan hebdomadaire IA | Non | Oui | Backend filtre `is_premium` + trial | `base44/functions/weeklyInsightGenerate/entry.ts:27-38` |
-| Nombre de chiens | 1 | Jusqu'a 3 | [A VERIFIER] — pas de gate explicite dans le code frontend |
+| Nombre de chiens | 1 | 3 | `FREE_DOG_LIMIT=1 / PREMIUM_DOG_LIMIT=3` enforced backend + frontend | `base44/functions/createDog/entry.ts`, `pages/Onboarding.jsx:265`, `pages/Profile.jsx:99` |
 | Plans nutrition IA | 2 plans/mois (gratuit) | Illimite | `MONTHLY_FREE_LIMIT = 2` enforced frontend + backend | `components/nutrition/NutritionMealPlan.jsx:17`, `components/nutrition/MealPlanGenerator.jsx:7`, `base44/functions/generateMealPlan/entry.ts:3` |
 
 #### Paiement Stripe

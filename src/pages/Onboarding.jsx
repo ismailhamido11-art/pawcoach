@@ -274,15 +274,15 @@ export default function Onboarding() {
 
       let dog;
 
+      let createResult;
       if (isQuickStartRef.current) {
         // Quick-start path: create dog with minimal data only
         const name = answers[2]?.trim() || "Mon chien";
         const ownerGoal = answers[0] || null;
         const photoUrl = answers[1] || null;
-        dog = await Dog.create({
+        createResult = await base44.functions.invoke("createDog", {
           name,
           photo: photoUrl,
-          owner: user.email,
           owner_goal: ownerGoal,
           onboarding_completed: false,
         });
@@ -313,15 +313,25 @@ Extrais ces informations et renvoie un objet JSON.
           }
         });
         const extracted = typeof aiResponse === "string" ? JSON.parse(aiResponse) : aiResponse;
-        dog = await Dog.create({
+        createResult = await base44.functions.invoke("createDog", {
           name: extracted.name || "Mon chien", photo: photoUrl || null,
           breed: extracted.breed || null, birth_date: extracted.birth_date || null,
           sex: extracted.sex || null, weight: extracted.weight || null,
           activity_level: extracted.activity_level || null, environment: extracted.environment || null,
           allergies: extracted.allergies || null, health_issues: extracted.health_issues || null,
-          owner: user.email, owner_goal: ownerGoal || null, onboarding_completed: true,
+          owner_goal: ownerGoal || null, onboarding_completed: true,
         });
       }
+
+      if (createResult?.error === 'dog_limit_reached') {
+        setSaving(false); savingRef.current = false;
+        navigate(createPageUrl("Premium") + "?from=profile");
+        return;
+      }
+      if (createResult?.error) {
+        throw new Error(createResult.error);
+      }
+      dog = createResult?.dog;
 
       setDogData(dog);
       // Set new dog as active
