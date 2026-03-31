@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
-const listContainer = { show: { transition: { staggerChildren: 0.07 } } };
+import { staggerContainer as listContainer, springGentle } from "@/lib/animations";
 const listItem = {
   hidden: { opacity: 0, y: 14 },
   show: { opacity: 1, y: 0, transition: springGentle },

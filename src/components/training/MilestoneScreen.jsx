@@ -7,10 +7,10 @@ import { CheckCircle, Share2, PawPrint, ArrowRight, Trophy, Medal, Award } from 
 import { motion } from "framer-motion";
 import Illustration from "../illustrations/Illustration";
 
-const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
+import { staggerContainer as listContainer, springGentle } from "@/lib/animations";
 const listItem = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: springGentle }
+  show: { opacity: 1, y: 0, transition: springGentle },
 };
 
 export default function MilestoneScreen({ dogName, completedExercises, onContinue }) {

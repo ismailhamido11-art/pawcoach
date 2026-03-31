@@ -22,16 +22,15 @@ import Illustration from "../components/illustrations/Illustration";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import { isUserPremium } from "@/utils/premium";
 import { toast } from "sonner";
-import { spring } from "@/lib/animations";
+import { spring, springGentle, staggerContainer } from "@/lib/animations";
 import EmptyState from "@/components/ui/EmptyState";
 import LottieAnimation from "@/components/ui/LottieAnimation";
 import { LOTTIE } from "@/lib/lottieLibrary";
 import LabelScanMode from "../components/scan/LabelScanMode";
 import { VERDICT_CONFIG } from "@/lib/verdictConfig";
-const listContainer = { show: { transition: { staggerChildren: 0.06 } } };
 const listItem = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: springGentle }
+  show: { opacity: 1, y: 0, transition: springGentle },
 };
 
 const FREE_SCAN_LIMIT = 3;
@@ -616,7 +615,7 @@ export default function Scan() {
                       ))}
                     </div>
                     {/* Filtered list */}
-                    <motion.div className="space-y-2" variants={listContainer} initial="hidden" animate="show">
+                    <motion.div className="space-y-2" variants={staggerContainer} initial="hidden" animate="show">
                       {history
                         .filter(s => historyFilter === "all" || s.verdict === historyFilter)
                         .map((scan, i) => {

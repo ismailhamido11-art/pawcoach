@@ -74,9 +74,9 @@ export default function AchievementFeed({ dog }) {
       ) : (
         <motion.div
           className="space-y-2"
-          variants={containerVariants}
+          variants={staggerContainer}
           initial="hidden"
-          animate="visible"
+          animate="show"
         >
           {recent.map((a) => {
             const desc =
@@ -86,7 +86,7 @@ export default function AchievementFeed({ dog }) {
             return (
               <motion.div
                 key={a.id}
-                variants={itemVariants}
+                variants={staggerItem}
                 className="flex items-center gap-3 bg-white border border-amber-100 rounded-xl px-3.5 py-3 shadow-sm"
               >
                 <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center flex-shrink-0">

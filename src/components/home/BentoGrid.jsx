@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Heart, Utensils, Dumbbell, MessageCircle, ChevronRight } from "lucide-react";
-import { tapScale, hoverGlow } from "@/lib/animations";
+import { tapScale, hoverGlow, staggerContainer, springSnappy } from "@/lib/animations";
 import { PALETTE } from "@/lib/colorPalette";
 /**
  * BentoGrid — Navigation grid premium light (fond blanc, ombres douces)
@@ -13,11 +13,6 @@ const NAV_TILES = [
   { icon: Dumbbell,      iconColor: PALETTE.indigo, label: "Dressage",   sub: "Exercices, programmes",   page: "Activite", tab: "dressage" },
   { icon: MessageCircle, iconColor: PALETTE.violet, label: "Chat IA",    sub: "Questions santé",         page: "Chat" },
 ];
-
-const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
-};
 
 const item = {
   hidden: { opacity: 0, y: 12, scale: 0.95 },
@@ -30,7 +25,7 @@ export default function BentoGrid() {
       <p className="text-xs font-semibold text-muted-foreground mb-2">Explorer</p>
       <motion.div
         className="grid grid-cols-2 gap-3"
-        variants={stagger}
+        variants={staggerContainer}
         initial="hidden"
         animate="show"
       >
