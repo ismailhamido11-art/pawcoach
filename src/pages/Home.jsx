@@ -309,7 +309,7 @@ export default function Home() {
         return;
       }
 
-      const cached = getCachedHome();
+      const cached = getCachedHome(authUser?.id);
 
       if (cached) {
         // Cache hit: show immediately, full refresh in background

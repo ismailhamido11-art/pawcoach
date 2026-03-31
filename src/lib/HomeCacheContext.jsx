@@ -13,8 +13,10 @@ export function HomeCacheProvider({ children }) {
     return () => window.removeEventListener("pawcoach:logout", handleLogout);
   }, []);
 
-  const getCachedHome = () => {
+  const getCachedHome = (currentUserId) => {
     if (!cacheRef.current) return null;
+    // Invalidate if user changed (multi-user same device)
+    if (currentUserId && cacheRef.current.userId !== currentUserId) return null;
     // Invalidate if active dog changed since cache was written
     const currentDogId = localStorage.getItem("activeDogId");
     if (currentDogId && cacheRef.current.dogId !== currentDogId) return null;
