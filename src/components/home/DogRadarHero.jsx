@@ -132,7 +132,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
           {/* Status dynamique basé sur score moyen */}
           <p
             className="text-xs font-semibold mt-0.5"
-            style={{ color: avgScore >= 75 ? "#2d9f82" : avgScore >= 50 ? "#d97706" : avgScore > 0 ? "#ef4444" : "#94a3b8" }}
+            style={{ color: avgScore >= 75 ? PALETTE.accent : avgScore >= 50 ? PALETTE.cautionAmber : avgScore > 0 ? PALETTE.destructive : PALETTE.tierSlate }}
           >
             {avgScore >= 75
               ? "En forme"
@@ -147,9 +147,9 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
         {/* Mini cercle score global — cliquable → Dashboard */}
         <Link to={createPageUrl("Dashboard")} className="flex-shrink-0 w-11 h-11 relative" aria-label="Voir le tableau de bord">
           <svg width="44" height="44" viewBox="0 0 44 44" style={{ transform: "rotate(-90deg)" }}>
-            <circle cx="22" cy="22" r="18" fill="none" stroke="#e5e7eb" strokeWidth="4" />
+            <circle cx="22" cy="22" r="18" fill="none" stroke={PALETTE.border} strokeWidth="4" />
             <motion.circle
-              cx="22" cy="22" r="18" fill="none" stroke="#2d9f82" strokeWidth="4"
+              cx="22" cy="22" r="18" fill="none" stroke={PALETTE.accent} strokeWidth="4"
               strokeLinecap="round"
               strokeDasharray={2 * Math.PI * 18}
               initial={{ strokeDashoffset: 2 * Math.PI * 18 }}
@@ -179,7 +179,7 @@ export default function DogRadarHero({ user, dog, streak, checkins = [], records
             >
               <Icon className="w-3.5 h-3.5" style={{ color: arc.color }} />
               <span className="text-[11px] font-semibold text-muted-foreground">{arc.label}</span>
-              <span className="text-xs font-bold" style={{ color: arc.hasData ? arc.color : "#94a3b8" }}>
+              <span className="text-xs font-bold" style={{ color: arc.hasData ? arc.color : PALETTE.tierSlate }}>
                 {arc.hasData ? `${arc.score}%` : "—"}
               </span>
               {/* Mini barre de progression */}

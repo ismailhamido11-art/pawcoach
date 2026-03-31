@@ -2,11 +2,12 @@ import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { X, Download, Share2 } from "lucide-react";
+import { PALETTE, GRADIENT_SCAN_SAFE, GRADIENT_SCAN_CAUTION, GRADIENT_SCAN_TOXIC } from "@/lib/colorPalette";
 
 const VERDICT_STYLE = {
-  safe:    { label: "SANS DANGER", icon: "[OK]", bg: "linear-gradient(135deg, #065f46, #10b981)", accent: "#34d399", ring: "#22c55e" },
-  caution: { label: "AVEC PRECAUTION", icon: "[!]", bg: "linear-gradient(135deg, #78350f, #d97706)", accent: "#fbbf24", ring: "#d97706" },
-  toxic:   { label: "TOXIQUE", icon: "[X]", bg: "linear-gradient(135deg, #7f1d1d, #ef4444)", accent: "#f87171", ring: "#ef4444" },
+  safe:    { label: "SANS DANGER", icon: "[OK]", bg: GRADIENT_SCAN_SAFE,    accent: PALETTE.emeraldLight, ring: PALETTE.greenMid },
+  caution: { label: "AVEC PRECAUTION", icon: "[!]", bg: GRADIENT_SCAN_CAUTION, accent: PALETTE.cautionLight,  ring: PALETTE.cautionAmber },
+  toxic:   { label: "TOXIQUE", icon: "[X]", bg: GRADIENT_SCAN_TOXIC,   accent: PALETTE.destructiveLight, ring: PALETTE.destructive },
 };
 
 export default function ShareCard({ result, dogName, onClose }) {

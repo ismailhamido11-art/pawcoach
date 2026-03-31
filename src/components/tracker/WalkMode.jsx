@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Pause, Play, StopCircle, Timer, Footprints, Zap, TreePine, Dog } from "lucide-react";
 import { DailyLog } from "@/api/entities";
+import { PALETTE } from "@/lib/colorPalette";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import WalkSummary from "./WalkSummary";
@@ -527,7 +528,7 @@ export default function WalkMode({ dog, user, logs = [], onLogged, onViewHistory
                 whileTap={{ scale: 0.93 }}
                 onClick={handleStop}
                 className="w-20 h-20 rounded-full shadow-xl flex flex-col items-center justify-center gap-0.5"
-                style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)" }}
+                style={{ background: `linear-gradient(135deg, ${PALETTE.destructive}, ${PALETTE.destructiveDark})` }}
               >
                 <StopCircle className="w-7 h-7 text-white" />
                 <span className="text-white text-[11px] font-bold">TERMINER</span>

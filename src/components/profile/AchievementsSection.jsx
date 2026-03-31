@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { DogAchievement } from "@/api/entities";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Lock, ChevronRight, Zap, PawPrint, Footprints, Calendar, Medal, Sparkles, GraduationCap, Flame, Crown, Diamond, Dog, Target } from "lucide-react";
+import { PALETTE, GRADIENT_PRIMARY } from "@/lib/colorPalette";
 
 // All possible badges — source of truth for display
 const ALL_BADGES = [
@@ -202,7 +203,7 @@ export default function AchievementsSection({ dog }) {
       {/* ── Hero card ─────────────────────────────────────── */}
       <div
         className="rounded-2xl p-4 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1A4D3E 0%, #2D9F82 100%)" }}
+        style={{ background: GRADIENT_PRIMARY }}
       >
         {/* Decorative circles */}
         <div className="absolute top-[-30%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
@@ -250,7 +251,7 @@ export default function AchievementsSection({ dog }) {
               <div className="h-2 bg-white/20 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full rounded-full"
-                  style={{ background: "linear-gradient(90deg, #34d399, #a7f3d0)" }}
+                  style={{ background: `linear-gradient(90deg, ${PALETTE.emeraldLight}, ${PALETTE.emeraldPale})` }}
                   initial={{ width: 0 }}
                   animate={{ width: `${progressPct}%` }}
                   transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}

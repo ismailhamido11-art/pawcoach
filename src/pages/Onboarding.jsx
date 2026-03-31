@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, Sparkles, ChevronLeft, Mic, MicOff, Camera as CameraIcon, PawPrint, Dog as DogIcon, Cake, Users, Scale, PersonStanding, Home as HomeIcon, Hospital, HeartPulse, GraduationCap, Salad, Smile, Handshake, Loader2, ArrowRight, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { PALETTE, GRADIENT_PRIMARY } from "@/lib/colorPalette";
 import WelcomeScreen from "../components/onboarding/WelcomeScreen";
 import Illustration from "../components/illustrations/Illustration";
 import { spring } from "@/lib/animations";
@@ -648,7 +649,7 @@ Extrais ces informations et renvoie un objet JSON.
                       onClick={toggleMic}
                       className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
                       style={{
-                        background: listening ? "#ef4444" : "linear-gradient(135deg, #1A4D3E, #2D9F82)",
+                        background: listening ? PALETTE.destructive : GRADIENT_PRIMARY,
                       }}
                     >
                       {listening ? <MicOff className="w-5 h-5 text-white" /> : <Mic className="w-5 h-5 text-white" />}
