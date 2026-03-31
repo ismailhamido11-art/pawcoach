@@ -550,6 +550,12 @@ export default function Scan() {
                         )}
                       </div>
                     )}
+                    {result.verdict === "toxic" && (
+                      <div className="p-3 bg-amber-50 border border-amber-300 rounded-2xl text-xs text-amber-900 flex items-start gap-2">
+                        <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-600" />
+                        <span>Cette analyse est générée par une IA. Elle ne remplace pas l'avis d'un vétérinaire. En cas de doute, contacte immédiatement ton vétérinaire.</span>
+                      </div>
+                    )}
                     <div className="p-3 bg-white/70 rounded-2xl border border-white">
                       <p className="text-xs font-bold text-primary mb-1 flex items-center gap-1"><Lightbulb className="w-3 h-3" /> Pour {dog?.name}</p>
                       <p className="text-sm text-foreground">{result.recommendation}</p>
