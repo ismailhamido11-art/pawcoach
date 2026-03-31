@@ -115,6 +115,8 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setIsAuthenticated(false);
     clearNotifications(); // Vider le cache singleton pour eviter les fuites cross-session
+    localStorage.removeItem('activeDogId');
+    window.dispatchEvent(new Event('pawcoach:logout'));
 
     if (shouldRedirect) {
       // Use the SDK's logout method which handles token cleanup and redirect

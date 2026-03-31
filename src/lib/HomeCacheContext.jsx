@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 
 const CACHE_TTL = 2 * 60 * 1000; // 2 minutes
 
@@ -6,6 +6,12 @@ const HomeCacheContext = createContext(null);
 
 export function HomeCacheProvider({ children }) {
   const cacheRef = useRef(null);
+
+  useEffect(() => {
+    const handleLogout = () => { cacheRef.current = null; };
+    window.addEventListener("pawcoach:logout", handleLogout);
+    return () => window.removeEventListener("pawcoach:logout", handleLogout);
+  }, []);
 
   const getCachedHome = () => {
     if (!cacheRef.current) return null;
@@ -19,6 +25,7 @@ export function HomeCacheProvider({ children }) {
   const setCachedHome = (data) => {
     cacheRef.current = {
       user: data.user,
+      userId: data.user?.id || null,
       dog: data.dog,
       dogId: data.dog?.id || null,
       dogData: data.dogData,
