@@ -381,14 +381,16 @@ export function computeHealthScore(records, dog, extraWeightSources = []) {
   return Math.min(100, Math.max(0, total));
 }
 
+import { PALETTE } from "@/lib/colorPalette";
+
 /**
  * Get score label and color from score value.
  */
 export function getScoreLevel(score) {
-  if (score >= 80) return { label: "Excellent", color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200", barColor: "#2D9F82" };
-  if (score >= 60) return { label: "Bon", color: "text-primary", bg: "bg-primary/5", border: "border-primary/20", barColor: "#1A4D3E" };
-  if (score >= 40) return { label: "À améliorer", color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200", barColor: "#d97706" };
-  return { label: "Attention requise", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", barColor: "#dc2626" };
+  if (score >= 80) return { label: "Excellent", color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200", barColor: PALETTE.accent };
+  if (score >= 60) return { label: "Bon", color: "text-primary", bg: "bg-primary/5", border: "border-primary/20", barColor: PALETTE.primary };
+  if (score >= 40) return { label: "À améliorer", color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200", barColor: PALETTE.cautionAmber };
+  return { label: "Attention requise", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", barColor: PALETTE.destructive };
 }
 
 /**

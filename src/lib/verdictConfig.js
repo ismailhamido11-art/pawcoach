@@ -1,4 +1,5 @@
 import { CheckCircle, AlertTriangle, AlertCircle } from "lucide-react";
+import { PALETTE } from "@/lib/colorPalette";
 
 /**
  * VERDICT_CONFIG — unified food scan verdict styling (safe / caution / toxic).
@@ -21,7 +22,7 @@ export const VERDICT_CONFIG = {
     badgeBg: "bg-emerald-100 text-emerald-700",
     cardBg: "bg-emerald-50",
     border: "border-emerald-200",
-    ring: "#10b981",
+    ring: PALETTE.emerald,
     icon: CheckCircle,
     iconColor: "text-emerald-500",
     text: "text-emerald-700",
@@ -31,7 +32,7 @@ export const VERDICT_CONFIG = {
     badgeBg: "bg-amber-100 text-amber-700",
     cardBg: "bg-amber-50",
     border: "border-amber-200",
-    ring: "#d97706",
+    ring: PALETTE.cautionAmber,
     icon: AlertTriangle,
     iconColor: "text-amber-600",
     text: "text-amber-700",
@@ -41,7 +42,7 @@ export const VERDICT_CONFIG = {
     badgeBg: "bg-red-100 text-red-700",
     cardBg: "bg-red-50",
     border: "border-red-200",
-    ring: "#ef4444",
+    ring: PALETTE.red500,
     icon: AlertCircle,
     iconColor: "text-red-500",
     text: "text-red-700",

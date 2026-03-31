@@ -12,6 +12,7 @@ import { createPageUrl } from "@/utils";
 import { getDogAgeSegment } from "@/utils/healthStatus";
 import BottomNav from "../components/BottomNav";
 import confetti from "canvas-confetti";
+import { CONFETTI_COLORS } from "@/lib/colorPalette";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { DogTrophy } from "../components/ui/PawIllustrations";
 import Illustration from "../components/illustrations/Illustration";
@@ -118,7 +119,7 @@ export default function Premium() {
         particleCount: 100,
         spread: 70,
         origin: { x: 0.5, y: 1 },
-        colors: ["#1A4D3E", "#2D9F82", "#10b981", "#34d399"],
+        colors: CONFETTI_COLORS,
       });
     }
   }, [isFirstVisit]);

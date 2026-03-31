@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import confetti from "canvas-confetti";
+import { CONFETTI_COLORS } from "@/lib/colorPalette";
 import { motion } from "framer-motion";
 import { Zap, Repeat2 } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
@@ -30,7 +31,7 @@ export default function CelebrationScreen({ dogName, exerciseName, exerciseNumbe
       particleCount: 80,
       spread: 70,
       origin: { y: 0.5 },
-      colors: ["#1A4D3E", "#2D9F82", "#10b981", "#34d399"],
+      colors: CONFETTI_COLORS,
     });
   }, []);
 

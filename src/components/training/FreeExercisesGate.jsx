@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Crown, Megaphone, Handshake, Target } from "lucide-react";
 import Illustration from "../illustrations/Illustration";
 import confetti from "canvas-confetti";
+import { CONFETTI_COLORS } from "@/lib/colorPalette";
 import { motion } from "framer-motion";
 
 const NEXT_EXERCISES = [
@@ -21,7 +22,7 @@ export default function FreeExercisesGate({ dogName, onDismiss }) {
       particleCount: 100,
       spread: 70,
       origin: { x: 0.5, y: 0.5 },
-      colors: ["#1A4D3E", "#2D9F82", "#10b981", "#34d399"],
+      colors: CONFETTI_COLORS,
     });
   }, []);
 

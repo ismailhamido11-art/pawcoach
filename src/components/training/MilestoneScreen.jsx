@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
+import { CONFETTI_COLORS } from "@/lib/colorPalette";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Share2, PawPrint, ArrowRight, Trophy, Medal, Award } from "lucide-react";
 import { motion } from "framer-motion";
@@ -19,7 +20,7 @@ export default function MilestoneScreen({ dogName, completedExercises, onContinu
   useEffect(() => {
     if (fired.current) return;
     fired.current = true;
-    confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 }, colors: ["#3db87a", "#10b981", "#fff", "#6366f1"] });
+    confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 }, colors: CONFETTI_COLORS });
   }, []);
 
   const handleShare = async () => {

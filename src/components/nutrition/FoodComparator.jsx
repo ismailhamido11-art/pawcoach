@@ -10,22 +10,23 @@ import ReactMarkdown from "react-markdown";
 import { useActionCredits } from "@/hooks/useActionCredits";
 import { CreditBadge, UpgradePrompt } from "@/components/ui/AICreditsGate";
 import { spring } from "@/lib/animations";
+import { PALETTE } from "@/lib/colorPalette";
 
 const SCORE_COLOR = (s) => {
-  if (s >= 7.5) return { ring: "#10b981", bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" };
-  if (s >= 5)   return { ring: "#f59e0b", bg: "bg-amber-50",  text: "text-amber-700",  border: "border-amber-200" };
-  return              { ring: "#ef4444", bg: "bg-red-50",    text: "text-red-700",    border: "border-red-200"   };
+  if (s >= 7.5) return { ring: PALETTE.emerald,      bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" };
+  if (s >= 5)   return { ring: PALETTE.amber400,     bg: "bg-amber-50",  text: "text-amber-700",  border: "border-amber-200" };
+  return              { ring: PALETTE.red500,        bg: "bg-red-50",    text: "text-red-700",    border: "border-red-200"   };
 };
 
 function CircleScore({ score, size = 60 }) {
   const r = (size / 2) - 7;
   const circ = 2 * Math.PI * r;
   const filled = score != null ? (score / 10) * circ : 0;
-  const col = score != null ? SCORE_COLOR(score).ring : "#e5e7eb";
+  const col = score != null ? SCORE_COLOR(score).ring : PALETTE.gray200;
   return (
     <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
       <svg className="-rotate-90" width={size} height={size}>
-        <circle cx={size/2} cy={size/2} r={r} stroke="#e5e7eb" strokeWidth="7" fill="none" />
+        <circle cx={size/2} cy={size/2} r={r} stroke={PALETTE.gray200} strokeWidth="7" fill="none" />
         <circle cx={size/2} cy={size/2} r={r} stroke={col} strokeWidth="7" fill="none"
           strokeDasharray={`${filled} ${circ}`} strokeLinecap="round"
           style={{ transition: "stroke-dasharray 0.8s ease" }} />

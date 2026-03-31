@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Camera, MapPin, CheckCircle2, Star } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import confetti from "canvas-confetti";
+import { CONFETTI_COLORS } from "@/lib/colorPalette";
 
 const STEPS = [
   {
@@ -110,7 +111,7 @@ export default function FirstDayGuide({ dog, todayCheckin, scans, dailyLogs, onS
         particleCount: 80,
         spread: 70,
         origin: { x: 0.5, y: 0.6 },
-        colors: ["#2d9f82", "#1A4D3E", "#10b981", "#f0fdf4"],
+        colors: CONFETTI_COLORS,
       });
       const timer = setTimeout(() => setDismissed(true), 2800);
       return () => clearTimeout(timer);

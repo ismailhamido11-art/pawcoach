@@ -46,6 +46,15 @@ export const PALETTE = {
 
   // Gamification tiers (StreakBar)
   tierSlate:      "#94A3B8",  // Slate-400 — Débutant
+
+  // UI utility (charts, grids, maps — not design tokens)
+  red500:         "#EF4444",  // Red-500 — data list destructive items
+  amber400:       "#F59E0B",  // Amber-400 — chart caution / streak icon
+  green400:       "#4ADE80",  // Green-400 — mood bar (lighter than emerald)
+  gray200:        "#E5E7EB",  // Gray-200 — chart grid lines, subtle SVG rings
+  gray400:        "#9CA3AF",  // Gray-400 — axis ticks, inactive text
+  gray500:        "#6B7280",  // Gray-500 — secondary text / notes
+  mapBg:          "#F0F0F0",  // Map tile placeholder background
 };
 
 export const CONFETTI_COLORS = [

@@ -26,6 +26,7 @@ import EmotionalTip from "../components/home/EmotionalTip";
 import { Flame, ScanLine, Footprints, Stethoscope, BookOpen, Lock, Sparkles, ChevronRight, BarChart3, UtensilsCrossed, Heart } from "lucide-react";
 import Illustration from "../components/illustrations/Illustration";
 import confetti from "canvas-confetti";
+import { CONFETTI_COLORS } from "@/lib/colorPalette";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { toast } from "sonner";
 import PremiumNudgeSheet from "../components/premium/PremiumNudgeSheet";
@@ -335,7 +336,7 @@ export default function Home() {
 
       premiumSuccessHandledRef.current = true;
       window.history.replaceState({}, "", "/");
-      confetti({ particleCount: 120, spread: 90, origin: { x: 0.5, y: 0.5 }, colors: ["#1A4D3E", "#2D9F82", "#10b981", "#34d399", "#f59e0b"] });
+      confetti({ particleCount: 120, spread: 90, origin: { x: 0.5, y: 0.5 }, colors: CONFETTI_COLORS });
 
       // Poll base44.auth.me() every 2s for up to 10s — webhook may not have fired yet
       let attempts = 0;
@@ -854,7 +855,7 @@ export default function Home() {
 function MilestoneCelebration({ milestone, onClose }) {
   useEffect(() => {
     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-    confetti({ particleCount: 100, spread: 80, origin: { x: 0.5, y: 0.55 }, colors: ["#1A4D3E", "#2D9F82", "#10b981", "#34d399"] });
+    confetti({ particleCount: 100, spread: 80, origin: { x: 0.5, y: 0.55 }, colors: CONFETTI_COLORS });
   }, []);
 
   return (
