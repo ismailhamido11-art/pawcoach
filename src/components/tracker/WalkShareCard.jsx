@@ -6,7 +6,7 @@ import { X, Download, Share2, Trophy, Target, PawPrint, Dog, Bone } from "lucide
 import { PALETTE } from "@/lib/colorPalette";
 
 function getWalkLevel(minutes) {
-  if (minutes >= 45) return { label: "SUPER BALADE", Icon: Trophy, iconColor: PALETTE.amber400, bg: `linear-gradient(135deg, #064e3b, ${PALETTE.emeraldDark})`, accent: PALETTE.emeraldLight };
+  if (minutes >= 45) return { label: "SUPER BALADE", Icon: Trophy, iconColor: PALETTE.amber400, bg: `linear-gradient(135deg, ${PALETTE.safeDeep}, ${PALETTE.emeraldDark})`, accent: PALETTE.emeraldLight };
   if (minutes >= 30) return { label: "OBJECTIF ATTEINT", Icon: Target, iconColor: PALETTE.emeraldMedium, bg: `linear-gradient(135deg, ${PALETTE.primary}, ${PALETTE.accent})`, accent: PALETTE.emeraldMedium };
   if (minutes >= 15) return { label: "BONNE BALADE", Icon: PawPrint, iconColor: PALETTE.blue300, bg: `linear-gradient(135deg, ${PALETTE.navy}, ${PALETTE.blue})`, accent: PALETTE.blue300 };
   return { label: "PETITE SORTIE", Icon: Dog, iconColor: PALETTE.gray300, bg: `linear-gradient(135deg, ${PALETTE.slate700}, ${PALETTE.gray500})`, accent: PALETTE.gray300 };
