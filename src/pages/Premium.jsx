@@ -40,6 +40,24 @@ const PREMIUM_FEATURES = [
   { text: "Jusqu'à 3 chiens", icon: DogIcon, color: "#ec4899" },
 ];
 
+const TESTIMONIALS = [
+  {
+    text: "Depuis que j'utilise PawCoach, je suis enfin serein sur l'alimentation de Rex. Le chat IA répond à toutes mes questions en 30 secondes.",
+    author: "Thomas",
+    detail: "propriétaire d'un Golden Retriever",
+  },
+  {
+    text: "Le scanner m'a évité une vraie frayeur — j'allais donner du raisin à Luna sans savoir que c'était toxique. Merci PawCoach !",
+    author: "Sarah",
+    detail: "propriétaire d'un Cavalier King Charles",
+  },
+  {
+    text: "Le carnet santé est génial pour suivre les vaccins et les visites véto. Mon vétérinaire a été impressionné par le suivi.",
+    author: "Mehdi",
+    detail: "propriétaire d'un Berger Australien",
+  },
+];
+
 const SEGMENT_HERO = {
   puppy: {
     subtitle: (name) => `${name} grandit vite — ne rate pas ses semaines critiques`,
@@ -65,6 +83,13 @@ export default function Premium() {
   const [pageLoading, setPageLoading] = useState(true);
   const confettiFired = useRef(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
+  const [testimonialIdx, setTestimonialIdx] = useState(0);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    const t = setInterval(() => setTestimonialIdx(i => (i + 1) % TESTIMONIALS.length), 5000);
+    return () => clearInterval(t);
+  }, [prefersReducedMotion]);
 
   useEffect(() => {
     if (isLoadingAuth || loadingDog) return;
@@ -476,15 +501,37 @@ export default function Premium() {
         </div>
 
         {/* Social proof */}
-        <div className="bg-muted/30 rounded-2xl p-4 border border-border">
+        <div className="bg-muted/30 rounded-2xl p-4 border border-border overflow-hidden">
           <StorysetIllustration name="premium" className="w-36 h-36 mx-auto mb-2" />
           <div className="flex items-center gap-1 mb-2">
             {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 fill-primary text-primary" />)}
           </div>
-          <p className="text-sm text-foreground italic leading-relaxed">
-            "Depuis que j'utilise PawCoach, je suis enfin serein sur l'alimentation de Rex. Le chat IA répond à toutes mes questions en 30 secondes."
-          </p>
-          <p className="text-xs text-muted-foreground mt-2 font-medium">— Thomas, propriétaire d'un Golden Retriever</p>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={testimonialIdx}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25 }}
+            >
+              <p className="text-sm text-foreground italic leading-relaxed">
+                "{TESTIMONIALS[testimonialIdx].text}"
+              </p>
+              <p className="text-xs text-muted-foreground mt-2 font-medium">
+                — {TESTIMONIALS[testimonialIdx].author}, {TESTIMONIALS[testimonialIdx].detail}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+          <div className="flex justify-center gap-1.5 mt-3">
+            {TESTIMONIALS.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setTestimonialIdx(i)}
+                className={`w-1.5 h-1.5 rounded-full transition-colors duration-150 ${i === testimonialIdx ? "bg-primary" : "bg-muted-foreground/30"}`}
+                aria-label={`Témoignage ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Trial urgency */}
