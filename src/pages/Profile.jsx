@@ -21,6 +21,7 @@ import WalkReminderSettings from "../components/profile/WalkReminderSettings.jsx
 import AchievementsSection from "../components/profile/AchievementsSection.jsx";
 import AchievementFeed from "../components/achievements/AchievementFeed.jsx";
 import ChatFAB from "../components/ChatFAB";
+import PullToRefresh from "@/components/PullToRefresh";
 import SkeletonPage from "@/components/ui/SkeletonPage";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
 import EmptyState from "@/components/ui/EmptyState";
@@ -141,6 +142,7 @@ export default function Profile() {
       <h1 className="sr-only">Mon profil</h1>
       <ProfileHeader user={user} achievementPoints={achievementPoints} />
 
+      <PullToRefresh onRefresh={async () => { setRetryKey(k => k + 1); }}>
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -242,6 +244,7 @@ export default function Profile() {
           <SettingsSection />
         </motion.div>
       </motion.div>
+      </PullToRefresh>
 
       <ChatFAB />
       <BottomNav currentPage="Profile" />

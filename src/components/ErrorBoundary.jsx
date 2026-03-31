@@ -90,7 +90,7 @@ class ErrorBoundary extends Component {
           <p
             style={{
               fontSize: '0.875rem',
-              color: '#4a5568',
+              color: PALETTE.gray500,
               lineHeight: 1.5,
             }}
           >
@@ -105,7 +105,7 @@ class ErrorBoundary extends Component {
               onClick={this.handleRetry}
               style={{
                 backgroundColor: PALETTE.accent,
-                color: '#ffffff',
+                color: 'white',
                 border: 'none',
                 borderRadius: '9999px',
                 padding: '0.625rem 1.5rem',
@@ -124,7 +124,7 @@ class ErrorBoundary extends Component {
             onClick={() => { window.location.reload(); }}
             style={{
               backgroundColor: this.state.retryCount >= 2 ? PALETTE.accent : 'transparent',
-              color: this.state.retryCount >= 2 ? '#ffffff' : PALETTE.primary,
+              color: this.state.retryCount >= 2 ? 'white' : PALETTE.primary,
               border: this.state.retryCount >= 2 ? 'none' : `1.5px solid ${PALETTE.primary}`,
               borderRadius: '9999px',
               padding: '0.625rem 1.5rem',
