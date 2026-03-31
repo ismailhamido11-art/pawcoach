@@ -76,7 +76,7 @@ function ProductSlot({ index, product, onAdd, onRemove }) {
       {/* Image + remove */}
       <div className="relative">
         <img src={preview} alt="Aperçu de l'aliment" loading="lazy" className="w-full h-28 object-cover" />
-        <button onClick={() => onRemove(index)}
+        <button aria-label="Retirer cet aliment" onClick={() => onRemove(index)}
           className="absolute top-1.5 right-1.5 bg-white/90 rounded-full p-1 shadow">
           <X className="w-3.5 h-3.5 text-muted-foreground" />
         </button>

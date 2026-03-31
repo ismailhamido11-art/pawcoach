@@ -164,7 +164,7 @@ export default function DietPreferencesPanel({ dog, user, onPreferencesSaved }) 
               <motion.span key={b} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
                 className="flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-semibold px-3 py-1.5 rounded-full">
                 {b}
-                <button onClick={() => setPreferredBrands(prev => prev.filter((_, idx) => idx !== i))}>
+                <button aria-label={`Retirer ${b}`} onClick={() => setPreferredBrands(prev => prev.filter((_, idx) => idx !== i))}>
                   <X className="w-3 h-3" />
                 </button>
               </motion.span>

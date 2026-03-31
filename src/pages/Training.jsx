@@ -443,7 +443,7 @@ export default function Training() {
       <div className="min-h-screen bg-background" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom, 0px))" }}>
         <WellnessBanner />
         <div className="gradient-primary safe-pt-14 pb-6 px-5 mt-8">
-          <button onClick={() => navigate(createPageUrl("Training"))} className="relative z-20 w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center mb-2 hover:bg-white/30 transition-colors">
+          <button aria-label="Retour" onClick={() => navigate(createPageUrl("Training"))} className="relative z-20 w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center mb-2 hover:bg-white/30 transition-colors">
             <ChevronRight className="w-5 h-5 text-white rotate-180" />
           </button>
           <div className="text-center">

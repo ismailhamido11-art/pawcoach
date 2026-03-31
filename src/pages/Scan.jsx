@@ -448,7 +448,7 @@ export default function Scan() {
                   {preview ? (
                     <div className="relative w-full px-4">
                       <img src={preview} alt="Aperçu" loading="lazy" className="w-full max-h-56 object-contain rounded-2xl" />
-                      <button onClick={e => { e.stopPropagation(); reset(); }} className="absolute top-2 right-6 bg-white rounded-full p-1 shadow">
+                      <button aria-label="Effacer l'image" onClick={e => { e.stopPropagation(); reset(); }} className="absolute top-2 right-6 bg-white rounded-full p-1 shadow">
                         <X className="w-4 h-4 text-muted-foreground" />
                       </button>
                     </div>

@@ -636,10 +636,10 @@ RÈGLES :
                         <button onClick={() => handleActivateOld(p.id)} className="h-7 px-2 rounded-lg bg-emerald-50 text-emerald-700 text-[11px] font-semibold">
                           Activer
                         </button>
-                        <button onClick={() => setExpandedHistoryId(isExpanded ? null : p.id)} className="w-7 h-7 rounded-lg bg-muted/50 flex items-center justify-center">
+                        <button aria-label={isExpanded ? "Réduire" : "Développer"} onClick={() => setExpandedHistoryId(isExpanded ? null : p.id)} className="w-7 h-7 rounded-lg bg-muted/50 flex items-center justify-center">
                           {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                         </button>
-                        <button onClick={() => handleDeletePlan(p.id)} className="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center text-red-400">
+                        <button aria-label="Supprimer ce plan" onClick={() => handleDeletePlan(p.id)} className="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center text-red-400">
                           <Trash2 className="w-3 h-3" />
                         </button>
                       </div>
