@@ -23,16 +23,16 @@ const GOAL_OPTIONS = [
 ];
 
 const INTERVIEW_STEPS = [
-  { type: "choice", question: "Qu'est-ce qui compte le plus pour toi ?", icon: PawPrint, iconColor: "#2d9f82" },
-  { type: "photo", question: "Une photo de ton chien ?", icon: CameraIcon, iconColor: "#6366f1" },
-  { type: "voice", question: "Comment s'appelle-t-il ?", icon: DogIcon, iconColor: "#10b981", placeholder: "Son prénom..." },
-  { type: "voice", question: "Quelle est sa race ?", icon: DogIcon, iconColor: "#10b981", placeholder: "Ex: Beagle, Croisé..." },
-  { type: "voice", question: "Quel âge a-t-il ?", icon: Cake, iconColor: "#ec4899", placeholder: "Ex: 2 ans, 6 mois..." },
-  { type: "voice", question: "Mâle ou femelle ?", icon: Users, iconColor: "#3b82f6", placeholder: "Mâle ou Femelle" },
-  { type: "voice", question: "Combien pèse-t-il environ ?", icon: Scale, iconColor: "#10b981", placeholder: "Ex: 15 kg" },
-  { type: "voice", question: "Son niveau d'activité ?", icon: PersonStanding, iconColor: "#10b981", placeholder: "Calme, Modéré, Très actif..." },
-  { type: "voice", question: "Où vit-il principalement ?", icon: HomeIcon, iconColor: "#6366f1", placeholder: "Appartement, Maison..." },
-  { type: "voice", question: "Des problèmes de santé ou allergies ?", icon: Hospital, iconColor: "#ef4444", placeholder: "Non, ou préciser..." },
+  { type: "choice", question: "Qu'est-ce qui compte le plus pour toi ?", icon: PawPrint, iconColor: PALETTE.accent },
+  { type: "photo", question: "Une photo de ton chien ?", icon: CameraIcon, iconColor: PALETTE.indigo },
+  { type: "voice", question: "Comment s'appelle-t-il ?", icon: DogIcon, iconColor: PALETTE.emerald, placeholder: "Son prénom..." },
+  { type: "voice", question: "Quelle est sa race ?", icon: DogIcon, iconColor: PALETTE.emerald, placeholder: "Ex: Beagle, Croisé..." },
+  { type: "voice", question: "Quel âge a-t-il ?", icon: Cake, iconColor: PALETTE.pink, placeholder: "Ex: 2 ans, 6 mois..." },
+  { type: "voice", question: "Mâle ou femelle ?", icon: Users, iconColor: PALETTE.blue, placeholder: "Mâle ou Femelle" },
+  { type: "voice", question: "Combien pèse-t-il environ ?", icon: Scale, iconColor: PALETTE.emerald, placeholder: "Ex: 15 kg" },
+  { type: "voice", question: "Son niveau d'activité ?", icon: PersonStanding, iconColor: PALETTE.emerald, placeholder: "Calme, Modéré, Très actif..." },
+  { type: "voice", question: "Où vit-il principalement ?", icon: HomeIcon, iconColor: PALETTE.indigo, placeholder: "Appartement, Maison..." },
+  { type: "voice", question: "Des problèmes de santé ou allergies ?", icon: Hospital, iconColor: PALETTE.red500, placeholder: "Non, ou préciser..." },
 ];
 
 // Groups of interview steps displayed as a single "visible" step
@@ -613,7 +613,7 @@ Extrais ces informations et renvoie un objet JSON.
                     whileTap={{ scale: 0.96 }}
                     onClick={() => fileRef.current?.click()}
                     className="relative w-36 h-36 rounded-3xl border-2 border-dashed bg-white flex items-center justify-center overflow-hidden shadow-md mb-2 transition-all"
-                    style={{ borderColor: answers[1] ? "#10b981" : "#cbd5e1" }}
+                    style={{ borderColor: answers[1] ? PALETTE.emerald : "#cbd5e1" }}
                   >
                     {answers[1] ? (
                       <img src={answers[1]} alt="Chien" loading="lazy" className="w-full h-full object-cover" />

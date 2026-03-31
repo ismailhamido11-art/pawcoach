@@ -1,4 +1,5 @@
 import { ArrowLeft, CheckCircle, Lock, Timer, PawPrint, Crown } from "lucide-react";
+import { PALETTE } from "@/lib/colorPalette";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -93,7 +94,7 @@ export default function JourneyView({ journey, exercises, progresses, isPremium,
                   done ? "bg-safe/10" : exerciseLocked ? "bg-muted" : "bg-secondary"
                 }`}
               >
-                {exercise.icon ? <exercise.icon className="w-5 h-5" style={{ color: exercise.iconColor || "#1A4D3E" }} /> : <PawPrint className="w-5 h-5 text-emerald-600" />}
+                {exercise.icon ? <exercise.icon className="w-5 h-5" style={{ color: exercise.iconColor || PALETTE.primary }} /> : <PawPrint className="w-5 h-5 text-emerald-600" />}
               </div>
 
               <div className="flex-1 min-w-0">

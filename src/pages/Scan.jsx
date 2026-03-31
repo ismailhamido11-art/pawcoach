@@ -43,7 +43,7 @@ function CircleScore({ score, color }) {
   return (
     <div className="relative w-20 h-20 flex-shrink-0">
       <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-        <circle cx="40" cy="40" r={r} stroke="#e5e7eb" strokeWidth="8" fill="none" />
+        <circle cx="40" cy="40" r={r} stroke={PALETTE.gray200} strokeWidth="8" fill="none" />
         <circle cx="40" cy="40" r={r} stroke={color} strokeWidth="8" fill="none"
           strokeDasharray={`${filled} ${circ}`} strokeLinecap="round"
           style={{ transition: "stroke-dasharray 1s ease" }} />

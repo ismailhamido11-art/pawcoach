@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PALETTE } from "@/lib/colorPalette";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, Check, Loader2, TrendingUp, TrendingDown, Minus, Clock } from "lucide-react";
 import { DogCurious } from "../ui/PawIllustrations";
@@ -60,7 +61,7 @@ export default function WeeklyInsightCard({ insight, previousInsight, pastInsigh
               transition={{ duration: 3, repeat: Infinity, repeatDelay: 4 }}
               className="w-12 h-12 flex-shrink-0"
             >
-              <DogCurious color="#2d9f82" />
+              <DogCurious color={PALETTE.accent} />
             </motion.div>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-foreground text-sm">Bilan de la semaine</p>

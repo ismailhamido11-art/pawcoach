@@ -3,22 +3,7 @@ import { DogAchievement } from "@/api/entities";
 import { motion } from "framer-motion";
 import { Trophy, Medal } from "lucide-react";
 import EmptyState from "@/components/ui/EmptyState";
-
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.08 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 14 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: spring,
-  },
-};
+import { staggerContainer, staggerItem } from "@/lib/animations";
 
 const BADGE_DESCRIPTIONS = {
   first_walk:         "Première sortie enregistrée — le voyage commence.",

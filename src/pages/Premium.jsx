@@ -32,13 +32,13 @@ const FEATURES = [
 ];
 
 const PREMIUM_FEATURES = [
-  { text: "Conseils IA sans limite", icon: MessageCircle, color: "#3b82f6" },
-  { text: "Scanner aliments illimité", icon: Search, color: "#2d9f82" },
-  { text: "Programme dressage complet", icon: Target, color: "#6366f1" },
-  { text: "Carnet santé intégral", icon: ClipboardList, color: "#ef4444" },
-  { text: "Rappels santé par email", icon: Bell, color: "#2D9F82" },
-  { text: "Bilan mensuel personnalisé", icon: BarChart3, color: "#10b981" },
-  { text: "Jusqu'à 3 chiens", icon: DogIcon, color: "#ec4899" },
+  { text: "Conseils IA sans limite", icon: MessageCircle, color: PALETTE.blue },
+  { text: "Scanner aliments illimité", icon: Search, color: PALETTE.accent },
+  { text: "Programme dressage complet", icon: Target, color: PALETTE.indigo },
+  { text: "Carnet santé intégral", icon: ClipboardList, color: PALETTE.red500 },
+  { text: "Rappels santé par email", icon: Bell, color: PALETTE.accent },
+  { text: "Bilan mensuel personnalisé", icon: BarChart3, color: PALETTE.emerald },
+  { text: "Jusqu'à 3 chiens", icon: DogIcon, color: PALETTE.pink },
 ];
 
 const TESTIMONIALS = [
@@ -405,7 +405,7 @@ export default function Premium() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-28 h-28 mx-auto mb-3"
           >
-            <DogTrophy color="#ffffff" accent="#a7f3d0" />
+            <DogTrophy color="#ffffff" accent={PALETTE.emeraldPale} />
           </motion.div>
           <h1 className="text-white font-bold text-2xl">PawCoach Premium</h1>
           <p className="text-white/80 text-sm mt-1">{SEGMENT_HERO[segment].subtitle(dogName)}</p>

@@ -704,7 +704,7 @@ export default function Training() {
                   animate={{ width: `${(completedCount / EXERCISES.length) * 100}%` }}
                   transition={{ ...springGentle, delay: 0.2 }}
                   className="h-2.5 rounded-full"
-                  style={{ backgroundColor: "#2D9F82" }}
+                  style={{ backgroundColor: PALETTE.accent }}
                 />
               </div>
             </div>

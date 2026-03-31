@@ -184,12 +184,7 @@ export default function FirstDayGuide({ dog, todayCheckin, scans, dailyLogs, onS
                 initial={{ opacity: 0, x: -16, scale: 0.97 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, x: 40, scale: 0.95, transition: { duration: 0.22 } }}
-                transition={{
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 30,
-                  delay: i * 0.07,
-                }}
+                transition={{ ...springUI, delay: i * 0.07 }}
                 whileTap={{ scale: 0.98 }}
                 className={`relative rounded-2xl overflow-hidden bg-card border-l-4 shadow-sm ${step.borderClass}`}
               >

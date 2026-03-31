@@ -4,6 +4,7 @@
  * Animation : Framer Motion fadeIn + slight scale
  */
 import { motion } from "framer-motion";
+import { spring } from "@/lib/animations";
 import { HelpCircle } from "lucide-react";
 import {
   DogWave,
@@ -76,7 +77,7 @@ export default function EmptyState({
     <motion.div
       initial={reduceMotion ? false : { opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: "spring", stiffness: 360, damping: 28, duration: reduceMotion ? 0 : 0.32 }}
+      transition={{ ...spring, duration: reduceMotion ? 0 : 0.32 }}
       className={`flex flex-col items-center justify-center text-center py-10 px-6 ${className}`}
     >
       {lottieSrc ? (
@@ -113,7 +114,7 @@ export default function EmptyState({
       {actionLabel && onAction && (
         <motion.button
           whileTap={reduceMotion ? undefined : { scale: 0.96 }}
-          transition={{ type: "spring", stiffness: 360, damping: 28 }}
+          transition={spring}
           onClick={onAction}
           className="mt-5 px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity"
         >

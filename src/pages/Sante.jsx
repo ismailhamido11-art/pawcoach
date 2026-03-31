@@ -30,11 +30,11 @@ import { spring } from "@/lib/animations";
 import useTabNavigation, { tabVariants } from "@/hooks/useTabNavigation";
 
 const TABS = [
-  { id: "carnet",  label: "Carnet",       Icon: BookHeart,    color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
-  { id: "malade",  label: "Sympt\u00F4mes",    Icon: AlertTriangle, color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
-  { id: "growth",  label: "Croissance",   Icon: TrendingUp,   color: "#2d9f82", bg: "from-emerald-500 to-emerald-700" },
-  { id: "import",  label: "Documents",    Icon: Camera,       color: "#8b5cf6", bg: "from-violet-500 to-purple-600" },
-  { id: "findvet", label: "V\u00E9to",         Icon: MapPin,       color: "#3b82f6", bg: "from-blue-500 to-indigo-600" },
+  { id: "carnet",  label: "Carnet",       Icon: BookHeart,    color: PALETTE.accent,  bg: "from-emerald-500 to-emerald-700" },
+  { id: "malade",  label: "Sympt\u00F4mes",    Icon: AlertTriangle, color: PALETTE.accent, bg: "from-emerald-500 to-emerald-700" },
+  { id: "growth",  label: "Croissance",   Icon: TrendingUp,   color: PALETTE.accent,  bg: "from-emerald-500 to-emerald-700" },
+  { id: "import",  label: "Documents",    Icon: Camera,       color: PALETTE.violet, bg: "from-violet-500 to-purple-600" },
+  { id: "findvet", label: "V\u00E9to",         Icon: MapPin,       color: PALETTE.blue, bg: "from-blue-500 to-indigo-600" },
 ];
 
 export default function Sante() {
@@ -152,7 +152,7 @@ export default function Sante() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-20 h-20 flex-shrink-0"
           >
-            <DogDoctor color="#ffffff" accent="#a7f3d0" />
+            <DogDoctor color="#ffffff" accent={PALETTE.emeraldPale} />
           </motion.div>
         </div>
 

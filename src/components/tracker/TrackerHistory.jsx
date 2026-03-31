@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { PALETTE } from "@/lib/colorPalette";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { format, parseISO, isSameWeek, subDays } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -7,7 +8,6 @@ import { motion } from "framer-motion";
 import ActivityCalendar from "./ActivityCalendar";
 import EmptyState from "@/components/ui/EmptyState";
 import StorysetIllustration from "@/components/ui/StorysetIllustration";
-import { PALETTE } from "@/lib/colorPalette";
 
 const WEEKLY_GOAL = 5;
 const MIN_WALK_MINUTES = 20;
@@ -299,7 +299,7 @@ export default function TrackerHistory({ logs, dog }) {
           <p className="text-xs font-bold text-muted-foreground mb-3">14 derniers jours</p>
           <ResponsiveContainer width="100%" height={120}>
             <BarChart data={chartData} barSize={14}>
-              <XAxis dataKey="day" tick={{ fontSize: 9, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="day" tick={{ fontSize: 9, fill: PALETTE.gray400 }} axisLine={false} tickLine={false} />
               <YAxis hide />
               <Tooltip
                 contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 12, fontSize: 11, color: "hsl(var(--foreground))" }}

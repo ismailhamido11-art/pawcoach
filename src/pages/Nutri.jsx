@@ -436,7 +436,7 @@ export default function Nutri() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="w-24 h-24 flex-shrink-0"
           >
-            <DogChef color="#ffffff" accent="#a7f3d0" />
+            <DogChef color="#ffffff" accent={PALETTE.emeraldPale} />
           </motion.div>
         </div>
         <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
@@ -581,7 +581,7 @@ export default function Nutri() {
 
                 <motion.div {...msgAnim} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   {msg.role === "assistant" && (
-                    <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
+                    <IconBadge icon={Salad} color={PALETTE.emerald} size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                   )}
                   <div className="flex flex-col gap-0.5 max-w-[82%]">
                     <div
@@ -640,7 +640,7 @@ export default function Nutri() {
             {/* Typewriter streaming message */}
             {isStreaming && streamingText && (
               <motion.div {...msgAnim} className="flex gap-2 justify-start">
-                <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
+                <IconBadge icon={Salad} color={PALETTE.emerald} size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                 <div className="flex flex-col gap-0.5 max-w-[82%]">
                   <div className="chat-bubble-assistant px-4 py-3 rounded-2xl rounded-bl-sm text-sm leading-relaxed text-foreground">
                     <ReactMarkdown className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0" components={mdComponents}>
@@ -654,7 +654,7 @@ export default function Nutri() {
             {/* Typing dots */}
             {((loading && !isStreaming) || (isStreaming && !streamingText)) && (
               <div className="flex gap-2 justify-start">
-                <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
+                <IconBadge icon={Salad} color={PALETTE.emerald} size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                 <div className="chat-bubble-assistant px-2 py-1.5 rounded-2xl rounded-bl-sm">
                   <LottieAnimation src={LOTTIE.loading.dots[0]} size={40} loop autoplay ariaLabel="Reflexion en cours" />
                 </div>
@@ -682,7 +682,7 @@ export default function Nutri() {
             {isLimitReached ? (
               <div className="px-5 py-3">
                 <div className="flex gap-2 justify-start mb-2">
-                  <IconBadge icon={Salad} color="#10b981" size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
+                  <IconBadge icon={Salad} color={PALETTE.emerald} size="sm" className="mt-1 !w-8 !h-8 !rounded-xl" />
                   <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-bl-sm chat-bubble-assistant text-foreground">
                     <p className="text-sm leading-relaxed">J'adorerais continuer ! {"\u{1F957}"} Tes cr&eacute;dits IA sont &eacute;puis&eacute;s pour aujourd'hui. Reviens demain ou passe en Premium.</p>
                     <Button onClick={() => navigate(createPageUrl("Premium") + "?from=nutrition")} size="sm" className="mt-2 bg-safe hover:bg-safe/90 border-0 text-white text-xs h-8">

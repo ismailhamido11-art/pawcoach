@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { createPageUrl } from '@/utils';
+import { PALETTE } from '@/lib/colorPalette';
 
 /**
  * ErrorBoundary — isole les crashs React par page.
@@ -62,7 +63,7 @@ class ErrorBoundary extends Component {
         {/* Icône patte SVG */}
         <svg
           viewBox="0 0 24 28"
-          style={{ width: '56px', height: '56px', color: '#1A4D3E', opacity: 0.35 }}
+          style={{ width: '56px', height: '56px', color: PALETTE.primary, opacity: 0.35 }}
           fill="currentColor"
           aria-hidden="true"
         >
@@ -79,7 +80,7 @@ class ErrorBoundary extends Component {
             style={{
               fontWeight: 700,
               fontSize: '1.125rem',
-              color: '#1A4D3E', // forest green
+              color: PALETTE.primary, // forest green
               marginBottom: '0.5rem',
               lineHeight: 1.35,
             }}
@@ -103,7 +104,7 @@ class ErrorBoundary extends Component {
             <button
               onClick={this.handleRetry}
               style={{
-                backgroundColor: '#2D9F82', // emerald
+                backgroundColor: PALETTE.accent,
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '9999px',
@@ -122,9 +123,9 @@ class ErrorBoundary extends Component {
           <button
             onClick={() => { window.location.reload(); }}
             style={{
-              backgroundColor: this.state.retryCount >= 2 ? '#2D9F82' : 'transparent',
-              color: this.state.retryCount >= 2 ? '#ffffff' : '#1A4D3E',
-              border: this.state.retryCount >= 2 ? 'none' : '1.5px solid #1A4D3E',
+              backgroundColor: this.state.retryCount >= 2 ? PALETTE.accent : 'transparent',
+              color: this.state.retryCount >= 2 ? '#ffffff' : PALETTE.primary,
+              border: this.state.retryCount >= 2 ? 'none' : `1.5px solid ${PALETTE.primary}`,
               borderRadius: '9999px',
               padding: '0.625rem 1.5rem',
               fontSize: '0.9rem',
@@ -141,8 +142,8 @@ class ErrorBoundary extends Component {
             onClick={() => { window.location.href = createPageUrl('Home'); }}
             style={{
               backgroundColor: 'transparent',
-              color: '#1A4D3E',
-              border: '1.5px solid #1A4D3E',
+              color: PALETTE.primary,
+              border: `1.5px solid ${PALETTE.primary}`,
               borderRadius: '9999px',
               padding: '0.625rem 1.5rem',
               fontSize: '0.9rem',
