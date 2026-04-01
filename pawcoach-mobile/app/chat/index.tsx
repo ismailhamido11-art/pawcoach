@@ -194,7 +194,7 @@ export default function ChatScreen() {
       const assistantMsg: Message = {
         id: (data as any)?.id ?? `ast-${Date.now()}`,
         role: 'assistant',
-        content: (data as any)?.content ?? '',
+        content: (data as any)?.response ?? '',
         created_at: new Date().toISOString(),
       };
 
