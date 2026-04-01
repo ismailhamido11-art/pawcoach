@@ -4,12 +4,12 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import Purchases, { LOG_LEVEL } from 'react-native-purchases';
+import { AuthProvider } from '../lib/auth';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   useEffect(() => {
-    // RevenueCat SDK init
     const apiKey = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY;
     if (apiKey) {
       Purchases.setLogLevel(LOG_LEVEL.DEBUG);
@@ -23,12 +23,15 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: { backgroundColor: '#FFF8F0' },
-        headerTintColor: '#2D5A3D',
-        contentStyle: { backgroundColor: '#FFF8F0' },
-      }}
-    />
+    <AuthProvider>
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: '#FFF8F0' },
+          headerTintColor: '#2D5A3D',
+          contentStyle: { backgroundColor: '#FFF8F0' },
+          headerShown: false,
+        }}
+      />
+    </AuthProvider>
   );
 }
