@@ -42,9 +42,18 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-router',
     'expo-splash-screen',
   ],
+  runtimeVersion: {
+    policy: 'appVersion',
+  },
+  updates: {
+    url: 'https://u.expo.dev/b78bf6d0-6dbd-44e7-b9f5-d0f7e1af5250',
+  },
   extra: {
     supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
     supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
     revenueCatApiKey: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY,
+    eas: {
+      projectId: 'b78bf6d0-6dbd-44e7-b9f5-d0f7e1af5250',
+    },
   },
 });
