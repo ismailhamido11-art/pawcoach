@@ -93,9 +93,38 @@ Deno.serve(async (req) => {
       }
     }
 
-    // 4. Supprimer l'utilisateur Supabase Auth
-    // Les CASCADE sur toutes les FK font le reste :
-    //   auth.users → profiles → dogs → health_records, daily_checkins, streaks, etc.
+    // 4. RGPD: Supprimer les fichiers Storage (pas gere par CASCADE — S3 != DB)
+    const storageBuckets = ['dog-photos', 'food-scans', 'growth-photos', 'health-docs', 'chat-images']
+    for (const bucket of storageBuckets) {
+      try {
+        const { data: items } = await supabase.storage.from(bucket).list(user.id, { limit: 1000 })
+        if (!items || items.length === 0) continue
+
+        const paths: string[] = []
+        for (const item of items) {
+          if (item.id) {
+            paths.push(`${user.id}/${item.name}`)
+          } else {
+            const { data: subItems } = await supabase.storage
+              .from(bucket)
+              .list(`${user.id}/${item.name}`, { limit: 1000 })
+            if (subItems) {
+              paths.push(...subItems.filter((s: any) => s.id).map((s: any) => `${user.id}/${item.name}/${s.name}`))
+            }
+          }
+        }
+
+        if (paths.length > 0) {
+          await supabase.storage.from(bucket).remove(paths)
+          console.log(`[delete-user] Deleted ${paths.length} files from ${bucket}`)
+        }
+      } catch (e) {
+        console.error(`[delete-user] Storage cleanup error (${bucket}):`, e)
+      }
+    }
+
+    // 5. Supprimer l'utilisateur Supabase Auth
+    // Les CASCADE sur toutes les FK font le reste (DB rows only)
     console.log(`[delete-user] Deleting Supabase auth user: ${user.id}`)
     const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id)
 

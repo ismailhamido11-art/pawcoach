@@ -11,6 +11,7 @@ function mapEventToStatus(eventType: string): string {
   if (PREMIUM_DEACTIVATE_EVENTS.includes(eventType)) return 'expired'
   if (eventType === 'CANCELLATION') return 'cancelled'
   if (eventType === 'BILLING_ISSUE') return 'billing_issue'
+  if (eventType === 'PRODUCT_CHANGE') return 'active'
   return 'unknown'
 }
 
