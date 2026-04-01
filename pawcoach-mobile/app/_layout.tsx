@@ -3,20 +3,27 @@ import '../global.css';
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import Purchases, { LOG_LEVEL } from 'react-native-purchases';
 import { AuthProvider } from '../lib/auth';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   useEffect(() => {
-    const apiKey = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY;
-    if (apiKey) {
-      Purchases.setLogLevel(LOG_LEVEL.DEBUG);
-      Purchases.configure({ apiKey });
-      console.log('[RevenueCat] SDK configured');
-    } else {
-      console.warn('[RevenueCat] EXPO_PUBLIC_REVENUECAT_API_KEY not set');
+    // RevenueCat — loaded dynamically to avoid crash in Expo Go
+    // (native module not available in Expo Go runtime)
+    try {
+      const Purchases = require('react-native-purchases').default;
+      const { LOG_LEVEL } = require('react-native-purchases');
+      const apiKey = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY;
+      if (apiKey && !apiKey.startsWith('appl_your')) {
+        Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+        Purchases.configure({ apiKey });
+        console.log('[RevenueCat] SDK configured');
+      } else {
+        console.warn('[RevenueCat] API key not configured — skipping');
+      }
+    } catch {
+      console.warn('[RevenueCat] Native module not available (Expo Go) — skipping');
     }
 
     SplashScreen.hideAsync();
