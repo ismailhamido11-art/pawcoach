@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390px, initial-scale=1.0">
+<title>PawCoach — Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2D5A3D;
+    --green-light: #E8F5E9;
+    --green-mid: #4A7C5E;
+    --cream: #FFF8F0;
+    --amber: #E8A87C;
+    --coral: #F4A261;
+    --white: #FFFFFF;
+    --text-primary: #1A2E23;
+    --text-secondary: #6B7A6F;
+    --text-muted: #9DB0A3;
+    --shadow-card: 0 2px 16px rgba(45,90,61,0.10);
+    --shadow-sm: 0 1px 8px rgba(45,90,61,0.07);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-full: 999px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-primary);
+    width: 390px;
+    min-height: 844px;
+    margin: 0 auto;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    background: var(--cream);
+    padding: 14px 20px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  /* HEADER */
+  .header {
+    padding: 4px 20px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-left h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+  .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #C8A882 0%, #A07850 100%);
+    border: 2.5px solid var(--white);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    overflow: hidden;
+  }
+
+  /* SCROLL CONTENT */
+  .scroll-content {
+    padding: 0 20px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* STREAK CARD */
+  .streak-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .streak-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--coral), var(--amber));
+  }
+  .streak-left {}
+  .streak-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+  }
+  .streak-number {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .streak-number span { font-size: 30px; }
+  .streak-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+  .streak-ring {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    flex-shrink: 0;
+  }
+  .streak-ring svg {
+    transform: rotate(-90deg);
+  }
+  .streak-ring-label {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--green);
+    text-align: center;
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .section-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .section-link {
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  /* CHECK-IN */
+  .checkin-row {
+    display: flex;
+    gap: 8px;
+  }
+  .checkin-pill {
+    flex: 1;
+    background: var(--white);
+    border: 1.5px solid var(--green-light);
+    border-radius: var(--radius-full);
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .checkin-pill:hover {
+    border-color: var(--green);
+    background: var(--green-light);
+  }
+  .checkin-icon { font-size: 20px; }
+  .checkin-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  /* RECO CARDS */
+  .reco-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .reco-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .reco-icon-wrap {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .reco-icon-wrap.orange { background: #FFF3E0; }
+  .reco-icon-wrap.green  { background: var(--green-light); }
+  .reco-icon-wrap.premium { background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%); }
+  .reco-body { flex: 1; }
+  .reco-body h4 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .reco-body p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .reco-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.5px;
+  }
+  .reco-badge.urgent { background: #FFF3E0; color: #E65100; }
+  .reco-badge.ok { background: var(--green-light); color: var(--green); }
+  .reco-badge.premium-badge { background: var(--amber); color: #5C3A1E; }
+
+  /* PREMIUM INSIGHT */
+  .insight-card {
+    background: linear-gradient(135deg, var(--green) 0%, #1E3D2A 100%);
+    border-radius: var(--radius);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .insight-card::after {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .insight-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .insight-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .insight-preview {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.5;
+    filter: blur(4px);
+    margin-bottom: 14px;
+    user-select: none;
+  }
+  .insight-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--amber);
+    color: #5C3A1E;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: var(--radius-full);
+    border: none;
+    cursor: pointer;
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 390px;
+    background: var(--white);
+    border-top: 1px solid rgba(45,90,61,0.08);
+    padding: 10px 0 24px;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0 -4px 20px rgba(45,90,61,0.08);
+    z-index: 100;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+  }
+  .nav-icon { font-size: 22px; filter: grayscale(1) opacity(0.4); }
+  .nav-icon.active { filter: none; }
+  .nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .nav-label.active { color: var(--green); }
+  .nav-dot {
+    width: 4px; height: 4px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <span>9:41</span>
+  <span>●●●◦ WiFi 🔋</span>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>Bonjour 🐾<br>Max</h1>
+    <p>Aujourd'hui, 1er avril 2026</p>
+  </div>
+  <div class="avatar">🐕</div>
+</div>
+
+<!-- SCROLL CONTENT -->
+<div class="scroll-content">
+
+  <!-- STREAK CARD -->
+  <div class="streak-card">
+    <div class="streak-left">
+      <div class="streak-label">Streak actuel</div>
+      <div class="streak-number">
+        <span>🔥</span> 7 jours
+      </div>
+      <div class="streak-sub">Continuez comme ça !</div>
+    </div>
+    <div class="streak-ring">
+      <svg width="68" height="68" viewBox="0 0 68 68">
+        <circle cx="34" cy="34" r="28" fill="none" stroke="#E8F5E9" stroke-width="6"/>
+        <circle cx="34" cy="34" r="28" fill="none" stroke="#2D5A3D" stroke-width="6"
+          stroke-dasharray="175.9" stroke-dashoffset="53" stroke-linecap="round"/>
+      </svg>
+      <div class="streak-ring-label">70%</div>
+    </div>
+  </div>
+
+  <!-- CHECK-IN -->
+  <div>
+    <div class="section-header" style="margin-bottom: 10px;">
+      <span class="section-title">Comment va Max ?</span>
+    </div>
+    <div class="checkin-row">
+      <div class="checkin-pill">
+        <div class="checkin-icon">😊</div>
+        <div class="checkin-label">Humeur</div>
+      </div>
+      <div class="checkin-pill">
+        <div class="checkin-icon">⚡</div>
+        <div class="checkin-label">Énergie</div>
+      </div>
+      <div class="checkin-pill">
+        <div class="checkin-icon">🍖</div>
+        <div class="checkin-label">Appétit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECOMMANDATIONS -->
+  <div>
+    <div class="section-header" style="margin-bottom: 12px;">
+      <span class="section-title">Pour Max aujourd'hui</span>
+      <a href="#" class="section-link">Voir tout</a>
+    </div>
+    <div class="reco-list">
+      <div class="reco-card">
+        <div class="reco-icon-wrap orange">💉</div>
+        <div class="reco-body">
+          <h4>Vaccin à jour ?</h4>
+          <p>Rappel CHPP prévu le 15 avril</p>
+        </div>
+        <span class="reco-badge urgent">J-14</span>
+      </div>
+      <div class="reco-card">
+        <div class="reco-icon-wrap green">🐾</div>
+        <div class="reco-body">
+          <h4>Pas encore de balade</h4>
+          <p>Max a besoin de 45 min aujourd'hui</p>
+        </div>
+        <span class="reco-badge ok">À faire</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSIGHT IA PREMIUM -->
+  <div class="insight-card">
+    <div class="insight-label">✨ Insight IA — Semaine 13</div>
+    <div class="insight-title">Résumé de la semaine de Max</div>
+    <div class="insight-preview">Max a montré des signes de fatigue accrue cette semaine. Son score d'activité a baissé de 12% par rapport à la semaine précédente, notamment…</div>
+    <button class="insight-cta">🔓 Débloquer Premium</button>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item">
+    <div class="nav-icon active">🏠</div>
+    <div class="nav-label active">Accueil</div>
+    <div class="nav-dot"></div>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon">🏥</div>
+    <div class="nav-label">Santé</div>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon">🏃</div>
+    <div class="nav-label">Activité</div>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon">🥗</div>
+    <div class="nav-label">Nutrition</div>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon">👤</div>
+    <div class="nav-label">Profil</div>
+  </div>
+</div>
+
+</body>
+</html>

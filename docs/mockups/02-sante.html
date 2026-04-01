@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390px, initial-scale=1.0">
+<title>PawCoach — Santé</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2D5A3D;
+    --green-light: #E8F5E9;
+    --green-mid: #4A7C5E;
+    --cream: #FFF8F0;
+    --amber: #E8A87C;
+    --coral: #F4A261;
+    --white: #FFFFFF;
+    --text-primary: #1A2E23;
+    --text-secondary: #6B7A6F;
+    --text-muted: #9DB0A3;
+    --shadow-card: 0 2px 16px rgba(45,90,61,0.10);
+    --shadow-sm: 0 1px 8px rgba(45,90,61,0.07);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-full: 999px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-primary);
+    width: 390px;
+    min-height: 844px;
+    margin: 0 auto;
+    overflow-x: hidden;
+  }
+  .status-bar {
+    background: var(--cream);
+    padding: 14px 20px 8px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 4px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .back-btn {
+    width: 36px; height: 36px;
+    background: var(--white);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .header-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-primary);
+    flex: 1;
+  }
+  .header-gear {
+    width: 36px; height: 36px;
+    background: var(--white);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+  }
+
+  /* SCORE HERO */
+  .score-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 20px 20px;
+    background: var(--white);
+    margin: 0 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+  }
+  .score-ring {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    margin-bottom: 12px;
+  }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-inner {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .score-number {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--green);
+    line-height: 1;
+  }
+  .score-unit {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .score-label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .score-trend {
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 600;
+    background: var(--green-light);
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    margin-bottom: 16px;
+  }
+  .stat-row {
+    display: flex;
+    gap: 0;
+    width: 100%;
+    border-top: 1px solid rgba(45,90,61,0.06);
+    padding-top: 14px;
+  }
+  .stat-item {
+    flex: 1;
+    text-align: center;
+    border-right: 1px solid rgba(45,90,61,0.06);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-value {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .stat-key {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* TABS */
+  .tabs-scroll {
+    overflow-x: auto;
+    padding: 16px 20px 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs-scroll::-webkit-scrollbar { display: none; }
+  .tabs-row {
+    display: flex;
+    gap: 8px;
+    width: max-content;
+  }
+  .tab {
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .tab.active {
+    background: var(--green);
+    color: var(--white);
+    box-shadow: 0 2px 8px rgba(45,90,61,0.25);
+  }
+  .tab.inactive {
+    background: var(--white);
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* TIMELINE */
+  .timeline-section {
+    padding: 16px 20px 100px;
+  }
+  .section-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+  }
+  .timeline {
+    position: relative;
+    padding-left: 24px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px; top: 8px; bottom: 8px;
+    width: 2px;
+    background: var(--green-light);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -24px; top: 12px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2.5px solid var(--white);
+    box-shadow: 0 0 0 2px currentColor;
+  }
+  .timeline-dot.green { background: #4CAF50; color: #4CAF50; }
+  .timeline-dot.orange { background: #FF9800; color: #FF9800; }
+  .timeline-dot.blue { background: #2196F3; color: #2196F3; }
+  .timeline-dot.red { background: #F44336; color: #F44336; }
+  .tl-card {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .tl-body h4 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .tl-body p {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .tl-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+  }
+  .tl-badge.green { background: var(--green-light); color: var(--green); }
+  .tl-badge.orange { background: #FFF3E0; color: #E65100; }
+  .tl-badge.amber { background: #FFF8E1; color: #F57C00; }
+
+  /* FLOATING DIAGNOSTIC */
+  .diag-banner {
+    position: fixed;
+    bottom: 76px; left: 50%;
+    transform: translateX(-50%);
+    width: 350px;
+    background: linear-gradient(135deg, var(--green) 0%, #1E3D2A 100%);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 8px 24px rgba(45,90,61,0.35);
+    cursor: pointer;
+    z-index: 50;
+  }
+  .diag-icon {
+    width: 44px; height: 44px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .diag-body { flex: 1; }
+  .diag-body h4 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .diag-body p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 2px;
+  }
+  .diag-arrow {
+    font-size: 20px;
+    color: var(--amber);
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 390px;
+    background: var(--white);
+    border-top: 1px solid rgba(45,90,61,0.08);
+    padding: 10px 0 24px;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0 -4px 20px rgba(45,90,61,0.08);
+    z-index: 100;
+  }
+  .nav-item {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    cursor: pointer; padding: 4px 12px;
+  }
+  .nav-icon { font-size: 22px; filter: grayscale(1) opacity(0.4); }
+  .nav-icon.active { filter: none; }
+  .nav-label { font-size: 10px; font-weight: 600; color: var(--text-muted); }
+  .nav-label.active { color: var(--green); }
+  .nav-dot { width: 4px; height: 4px; background: var(--green); border-radius: 50%; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="status-bar"><span>9:41</span><span>●●●◦ WiFi 🔋</span></div>
+
+<div class="header">
+  <div class="back-btn">←</div>
+  <div class="header-title">Santé de Max</div>
+  <div class="header-gear">⚙️</div>
+</div>
+
+<!-- HEALTH SCORE -->
+<div class="score-section">
+  <div class="score-ring">
+    <svg width="130" height="130" viewBox="0 0 130 130">
+      <circle cx="65" cy="65" r="54" fill="none" stroke="#E8F5E9" stroke-width="10"/>
+      <circle cx="65" cy="65" r="54" fill="none" stroke="#2D5A3D" stroke-width="10"
+        stroke-dasharray="339.3" stroke-dashoffset="61" stroke-linecap="round"/>
+    </svg>
+    <div class="score-inner">
+      <div class="score-number">82</div>
+      <div class="score-unit">/100</div>
+    </div>
+  </div>
+  <div class="score-label">Score Santé Global</div>
+  <div class="score-trend">↑ +3 pts ce mois</div>
+  <div class="stat-row">
+    <div class="stat-item">
+      <div class="stat-value">12 kg</div>
+      <div class="stat-key">Poids</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">3 ans</div>
+      <div class="stat-key">Âge</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">Labrador</div>
+      <div class="stat-key">Race</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">15 mars</div>
+      <div class="stat-key">Dernière visite</div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-scroll">
+  <div class="tabs-row">
+    <div class="tab active">Carnet</div>
+    <div class="tab inactive">Symptômes</div>
+    <div class="tab inactive">Croissance</div>
+    <div class="tab inactive">Documents</div>
+    <div class="tab inactive">Véto</div>
+  </div>
+</div>
+
+<!-- TIMELINE -->
+<div class="timeline-section">
+  <div class="section-title">Historique récent</div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot green"></div>
+      <div class="tl-card">
+        <div class="tl-body">
+          <h4>Vaccin Rage</h4>
+          <p>15 mars 2026 • Docteur Leblanc</p>
+        </div>
+        <span class="tl-badge green">À jour ✓</span>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot orange"></div>
+      <div class="tl-card">
+        <div class="tl-body">
+          <h4>Visite annuelle</h4>
+          <p>2 janvier 2026 • Contrôle standard</p>
+        </div>
+        <span class="tl-badge orange">Consulté</span>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot blue"></div>
+      <div class="tl-card">
+        <div class="tl-body">
+          <h4>Poids : 12.4 kg</h4>
+          <p>1 décembre 2025 • +0.2 kg</p>
+        </div>
+        <span class="tl-badge" style="background:#E3F2FD;color:#1565C0;">Suivi</span>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot red"></div>
+      <div class="tl-card">
+        <div class="tl-body">
+          <h4>Rappel Vaccin CHPP</h4>
+          <p>15 avril 2026 • Dans 14 jours</p>
+        </div>
+        <span class="tl-badge amber">À venir !</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DIAGNOSTIC BANNER -->
+<div class="diag-banner">
+  <div class="diag-icon">🧠</div>
+  <div class="diag-body">
+    <h4>Analyser un symptôme avec l'IA</h4>
+    <p>Photo ou description — réponse en 10 sec</p>
+  </div>
+  <div class="diag-arrow">→</div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">Accueil</div></div>
+  <div class="nav-item"><div class="nav-icon active">🏥</div><div class="nav-label active">Santé</div><div class="nav-dot"></div></div>
+  <div class="nav-item"><div class="nav-icon">🏃</div><div class="nav-label">Activité</div></div>
+  <div class="nav-item"><div class="nav-icon">🥗</div><div class="nav-label">Nutrition</div></div>
+  <div class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profil</div></div>
+</div>
+
+</body>
+</html>
