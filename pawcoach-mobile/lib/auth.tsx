@@ -8,10 +8,10 @@ import type { Session, User } from '@supabase/supabase-js';
 interface Profile {
   id: string;
   full_name: string | null;
-  avatar_url: string | null;
-  credits: number;
-  streak: number;
+  messages_remaining: number;
   points: number;
+  is_premium: boolean;
+  trial_expires_at: string | null;
 }
 
 interface AuthContextValue {
@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, full_name, avatar_url, credits, streak, points')
+        .select('id, full_name, messages_remaining, points, is_premium, trial_expires_at')
         .eq('id', userId)
         .single();
 

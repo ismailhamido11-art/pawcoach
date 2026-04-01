@@ -103,7 +103,7 @@ export default function ChatScreen() {
   const [quotaExceeded, setQuotaExceeded] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
-  const credits = profile?.credits ?? 0;
+  const credits = profile?.messages_remaining ?? 0;
   const charCount = input.length;
   const canSend = input.trim().length > 0 && charCount <= MAX_CHARS && credits > 0 && !sending && !quotaExceeded;
 
@@ -116,7 +116,7 @@ export default function ChatScreen() {
         const { data: dogs } = await supabase
           .from('dogs')
           .select('id')
-          .eq('user_id', user.id)
+          .eq('owner_id', user.id)
           .limit(1);
 
         const firstDogId = dogs?.[0]?.id ?? null;
@@ -132,7 +132,7 @@ export default function ChatScreen() {
           .from('chat_messages')
           .select('id, role, content, created_at')
           .eq('dog_id', firstDogId)
-          .eq('user_id', user.id)
+          .eq('owner_id', user.id)
           .order('created_at', { ascending: true })
           .limit(50);
 

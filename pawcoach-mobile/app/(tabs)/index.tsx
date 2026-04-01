@@ -132,10 +132,24 @@ export default function HomeScreen() {
 
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [selectedDog, setSelectedDog] = useState<Dog | null>(null);
+  const [streak, setStreak] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   const firstName = profile?.full_name?.split(' ')[0] ?? 'toi';
+
+  const loadStreak = useCallback(async (dogId: string) => {
+    try {
+      const { data } = await supabase
+        .from('streaks')
+        .select('current_streak')
+        .eq('dog_id', dogId)
+        .single();
+      setStreak(data?.current_streak ?? 0);
+    } catch {
+      setStreak(0);
+    }
+  }, []);
 
   const loadDogs = useCallback(async () => {
     if (!user) return;
@@ -143,7 +157,7 @@ export default function HomeScreen() {
       const { data, error } = await supabase
         .from('dogs')
         .select('id, name, breed, birth_date, sex')
-        .eq('user_id', user.id)
+        .eq('owner_id', user.id)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
@@ -161,13 +175,21 @@ export default function HomeScreen() {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await Promise.all([loadDogs(), refreshProfile()]);
+    await Promise.all([
+      loadDogs(),
+      refreshProfile(),
+      selectedDog ? loadStreak(selectedDog.id) : Promise.resolve(),
+    ]);
     setRefreshing(false);
-  }, [loadDogs, refreshProfile]);
+  }, [loadDogs, refreshProfile, loadStreak, selectedDog]);
 
   useEffect(() => {
     loadDogs();
   }, [loadDogs]);
+
+  useEffect(() => {
+    if (selectedDog) loadStreak(selectedDog.id);
+  }, [selectedDog, loadStreak]);
 
   // ── Loading ──────────────────────────────────────────────────────────────
   if (loading) {
@@ -303,16 +325,16 @@ export default function HomeScreen() {
           <StatCard
             icon="flame"
             label="Série"
-            value={profile?.streak ?? 0}
+            value={streak}
             color="#C4A882"
-            accessibilityLabel={`Série de ${profile?.streak ?? 0} jours`}
+            accessibilityLabel={`Série de ${streak} jours`}
           />
           <StatCard
             icon="chatbubble-outline"
             label="Crédits"
-            value={profile?.credits ?? 0}
+            value={profile?.messages_remaining ?? 0}
             color="#2D5A3D"
-            accessibilityLabel={`${profile?.credits ?? 0} crédits messages`}
+            accessibilityLabel={`${profile?.messages_remaining ?? 0} crédits messages`}
           />
           <StatCard
             icon="star-outline"
@@ -334,9 +356,9 @@ export default function HomeScreen() {
             label="Chat IA"
             onPress={() => router.push('/chat')}
             primary
-            disabled={(profile?.credits ?? 0) === 0}
+            disabled={(profile?.messages_remaining ?? 0) === 0}
             accessibilityLabel={
-              (profile?.credits ?? 0) === 0
+              (profile?.messages_remaining ?? 0) === 0
                 ? 'Chat IA — crédits épuisés'
                 : 'Ouvrir le Chat IA'
             }
@@ -360,7 +382,7 @@ export default function HomeScreen() {
         </View>
 
         {/* Alerte crédits bas */}
-        {(profile?.credits ?? 0) === 0 ? (
+        {(profile?.messages_remaining ?? 0) === 0 ? (
           <View className="mt-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex-row items-center gap-3">
             <Ionicons name="warning-outline" size={18} color="#C4A882" />
             <Text className="text-sm text-amber-800 flex-1">

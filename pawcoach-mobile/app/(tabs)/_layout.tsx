@@ -27,7 +27,7 @@ const TAB_CONFIG: {
   { name: 'index',      title: 'Accueil',    icon: 'home-outline',         iconFocused: 'home',         label: 'Accueil' },
   { name: 'sante',      title: 'Santé',      icon: 'heart-outline',        iconFocused: 'heart',        label: 'Santé' },
   { name: 'activite',   title: 'Activité',   icon: 'bicycle-outline',      iconFocused: 'bicycle',      label: 'Activité' },
-  { name: 'nutrition',  title: 'Nutrition',  icon: 'nutrition-outline',    iconFocused: 'nutrition',    label: 'Nutrition' },
+  { name: 'nutrition',  title: 'Nutrition',  icon: 'leaf-outline',         iconFocused: 'leaf',         label: 'Nutrition' },
   { name: 'profil',     title: 'Profil',     icon: 'person-outline',       iconFocused: 'person',       label: 'Profil' },
 ];
 
