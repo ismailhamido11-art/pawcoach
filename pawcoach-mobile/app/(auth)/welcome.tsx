@@ -1,10 +1,27 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { useState } from 'react';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { supabase } from '../../lib/supabase';
 
 export default function WelcomeScreen() {
   const router = useRouter();
+  const [loadingDemo, setLoadingDemo] = useState(false);
+
+  const handleDemoSignIn = async () => {
+    if (loadingDemo) return;
+    setLoadingDemo(true);
+    try {
+      await supabase.auth.signInWithPassword({
+        email: 'test@pawcoach.app',
+        password: 'test1234',
+      });
+      // Redirection gérée par onAuthStateChange dans AuthProvider
+    } finally {
+      setLoadingDemo(false);
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-cream">
@@ -56,6 +73,24 @@ export default function WelcomeScreen() {
             <Text className="text-base font-semibold text-forest-500">
               J'ai déjà un compte
             </Text>
+          </TouchableOpacity>
+
+          {/* Bouton demo */}
+          <TouchableOpacity
+            onPress={handleDemoSignIn}
+            disabled={loadingDemo}
+            className="h-11 items-center justify-center"
+            accessibilityRole="button"
+            accessibilityLabel="Tester l'application sans créer de compte"
+            activeOpacity={0.7}
+          >
+            {loadingDemo ? (
+              <ActivityIndicator color="#5B9467" size="small" />
+            ) : (
+              <Text className="text-sm text-forest-500">
+                Tester sans compte
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
 

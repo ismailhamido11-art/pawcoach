@@ -41,6 +41,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     'expo-router',
     'expo-splash-screen',
+    'expo-apple-authentication',
+    // TODO: remplacer IOS_CLIENT_ID par le vrai ID fourni par le CEO (Google Cloud Console)
+    ['@react-native-google-signin/google-signin', {
+      iosUrlScheme: 'com.googleusercontent.apps.IOS_CLIENT_ID',
+    }],
   ],
   runtimeVersion: {
     policy: 'appVersion',

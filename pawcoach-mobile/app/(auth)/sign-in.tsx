@@ -5,8 +5,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase';
+import { signInWithGoogle, signInWithApple } from '../../lib/oauth';
 
 export default function SignInScreen() {
   const router = useRouter();
@@ -14,6 +15,8 @@ export default function SignInScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingGoogle, setLoadingGoogle] = useState(false);
+  const [loadingApple, setLoadingApple] = useState(false);
   const [error, setError] = useState('');
 
   const isValid = email.includes('@') && password.length >= 1;
@@ -34,6 +37,40 @@ export default function SignInScreen() {
       setError('Email ou mot de passe incorrect. Réessayez.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    if (loadingGoogle || loadingApple || loading) return;
+    setLoadingGoogle(true);
+    setError('');
+    try {
+      await signInWithGoogle();
+      // Redirection gérée par onAuthStateChange
+    } catch (e: any) {
+      // Ignorer l'annulation utilisateur
+      if (e?.code !== 'SIGN_IN_CANCELLED') {
+        setError('Connexion Google échouée. Réessayez.');
+      }
+    } finally {
+      setLoadingGoogle(false);
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    if (loadingApple || loadingGoogle || loading) return;
+    setLoadingApple(true);
+    setError('');
+    try {
+      await signInWithApple();
+      // Redirection gérée par onAuthStateChange
+    } catch (e: any) {
+      // ERR_REQUEST_CANCELED = user cancelled Apple auth sheet
+      if (e?.code !== 'ERR_REQUEST_CANCELED') {
+        setError('Connexion Apple échouée. Réessayez.');
+      }
+    } finally {
+      setLoadingApple(false);
     }
   };
 
@@ -163,6 +200,60 @@ export default function SignInScreen() {
                 </Text>
               )}
             </TouchableOpacity>
+
+            {/* Séparateur */}
+            <View className="flex-row items-center my-6">
+              <View className="flex-1 h-px bg-earth-200" />
+              <Text className="mx-4 text-sm text-forest-500">ou</Text>
+              <View className="flex-1 h-px bg-earth-200" />
+            </View>
+
+            {/* Boutons OAuth */}
+            <View className="gap-3">
+              {/* Google */}
+              <TouchableOpacity
+                onPress={handleGoogleSignIn}
+                disabled={loadingGoogle || loadingApple || loading}
+                className="h-14 bg-white border border-earth-200 rounded-xl flex-row items-center justify-center gap-3"
+                accessibilityRole="button"
+                accessibilityLabel="Continuer avec Google"
+                activeOpacity={0.85}
+              >
+                {loadingGoogle ? (
+                  <ActivityIndicator color="#2D5A3D" />
+                ) : (
+                  <>
+                    <MaterialCommunityIcons name="google" size={20} color="#4285F4" />
+                    <Text className="text-base font-medium text-forest-800">
+                      Continuer avec Google
+                    </Text>
+                  </>
+                )}
+              </TouchableOpacity>
+
+              {/* Apple — iOS uniquement */}
+              {Platform.OS === 'ios' && (
+                <TouchableOpacity
+                  onPress={handleAppleSignIn}
+                  disabled={loadingApple || loadingGoogle || loading}
+                  className="h-14 bg-black rounded-xl flex-row items-center justify-center gap-3"
+                  accessibilityRole="button"
+                  accessibilityLabel="Continuer avec Apple"
+                  activeOpacity={0.85}
+                >
+                  {loadingApple ? (
+                    <ActivityIndicator color="#FFFFFF" />
+                  ) : (
+                    <>
+                      <Ionicons name="logo-apple" size={20} color="#FFFFFF" />
+                      <Text className="text-base font-medium text-white">
+                        Continuer avec Apple
+                      </Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              )}
+            </View>
 
             {/* Lien inscription */}
             <TouchableOpacity
