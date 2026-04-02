@@ -19,6 +19,8 @@ export default function SignUpScreen() {
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [loadingApple, setLoadingApple] = useState(false);
   const [error, setError] = useState('');
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
 
   const isValid = fullName.trim().length >= 2 && email.includes('@') && password.length >= 8;
 
@@ -27,17 +29,33 @@ export default function SignUpScreen() {
     setLoading(true);
     setError('');
     try {
-      const { error: authError } = await supabase.auth.signUp({
+      const { data, error: authError } = await supabase.auth.signUp({
         email: email.trim().toLowerCase(),
         password,
         options: { data: { full_name: fullName.trim() } },
       });
       if (authError) throw authError;
-      // La redirection est gérée par onAuthStateChange dans AuthProvider
+      if (data.user && !data.session) {
+        // Email confirmation required — afficher le feedback
+        setSignUpSuccess(true);
+      }
+      // Si data.session existe, la redirection est gérée par onAuthStateChange dans AuthProvider
     } catch (e: any) {
       setError(e?.message ?? 'Une erreur est survenue. Réessayez.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (resendLoading) return;
+    setResendLoading(true);
+    try {
+      await supabase.auth.resend({ type: 'signup', email: email.trim().toLowerCase() });
+    } catch {
+      // Echec silencieux — pas critique
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -188,16 +206,46 @@ export default function SignUpScreen() {
               </View>
             ) : null}
 
+            {/* Succès — confirmation email requise */}
+            {signUpSuccess ? (
+              <View className="mt-4 bg-green-50 border border-green-200 rounded-xl px-4 py-4 gap-3">
+                <View className="flex-row items-center gap-3">
+                  <Ionicons name="checkmark-circle-outline" size={18} color="#15803D" />
+                  <Text className="text-sm text-green-700 flex-1">
+                    Un email de confirmation a été envoyé à {email.trim().toLowerCase()}. Vérifie ta boite mail (spam inclus).
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={handleResend}
+                  disabled={resendLoading}
+                  className="h-11 bg-green-100 border border-green-200 rounded-xl items-center justify-center flex-row gap-2"
+                  accessibilityRole="button"
+                  accessibilityLabel="Renvoyer l'email de confirmation"
+                  accessibilityState={{ disabled: resendLoading }}
+                  activeOpacity={0.75}
+                >
+                  {resendLoading ? (
+                    <ActivityIndicator size="small" color="#15803D" />
+                  ) : (
+                    <>
+                      <Ionicons name="mail-outline" size={16} color="#15803D" />
+                      <Text className="text-sm font-medium text-green-700">Renvoyer l'email</Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              </View>
+            ) : null}
+
             {/* CTA */}
             <TouchableOpacity
               onPress={handleSignUp}
-              disabled={!isValid || loading}
+              disabled={!isValid || loading || signUpSuccess}
               className={`mt-8 h-14 rounded-xl items-center justify-center ${
-                isValid && !loading ? 'bg-forest-500' : 'bg-forest-200 opacity-50'
+                isValid && !loading && !signUpSuccess ? 'bg-forest-500' : 'bg-forest-200 opacity-50'
               }`}
               accessibilityRole="button"
               accessibilityLabel={loading ? 'Création en cours…' : 'Créer mon compte'}
-              accessibilityState={{ disabled: !isValid || loading }}
+              accessibilityState={{ disabled: !isValid || loading || signUpSuccess }}
               activeOpacity={0.85}
             >
               {loading ? (
