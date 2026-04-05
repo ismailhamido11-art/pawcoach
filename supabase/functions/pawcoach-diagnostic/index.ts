@@ -143,9 +143,19 @@ Genere un bilan au format JSON strict avec ces champs exactement:
 
     return new Response(
       JSON.stringify({
-        id: report?.id ?? null,
-        ...diagnosisText,
-        report_date: report?.report_date ?? new Date().toISOString().split('T')[0],
+        success: true,
+        report: {
+          id: report?.id ?? null,
+          urgency_level: urgencyLevel,
+          causes: (Array.isArray(result.possible_causes) ? result.possible_causes : []).map((c: string, i: number) => ({
+            name: c,
+            probability: Math.round(Math.max(10, 95 - (i * 15))),
+          })),
+          recommendations: Array.isArray(result.immediate_advice) ? result.immediate_advice : [],
+          disclaimer: result.important_note ||
+            'Ce bilan a ete genere par une IA pour faciliter votre visite veterinaire. Seul votre veterinaire peut poser un diagnostic.',
+          report_date: report?.report_date ?? new Date().toISOString().split('T')[0],
+        },
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     )

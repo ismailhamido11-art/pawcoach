@@ -63,7 +63,7 @@ begin
   order by date desc
   limit 1;
 
-  if v_dog_weight is null or v_last_weight is null then
+  if v_dog_weight is null or v_dog_weight = 0 or v_last_weight is null then
     v_score_poids := 50;
   else
     v_weight_diff_pct := abs(v_last_weight - v_dog_weight) / v_dog_weight * 100;
