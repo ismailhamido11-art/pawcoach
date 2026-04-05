@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useSegments, useRouter } from 'expo-router';
+import { useSegments, useRouter, usePathname } from 'expo-router';
 import { supabase } from './supabase';
 import { registerPushToken } from './notifications';
 import type { Session, User } from '@supabase/supabase-js';
@@ -122,14 +122,16 @@ export function useProtectedRoute() {
   const { session, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (loading) return;
     const inAuthGroup = segments[0] === '(auth)';
-    if (session && inAuthGroup) {
+    // pathname === '/' covers the root index screen at cold start (segments has no typed value for it)
+    if (session && (inAuthGroup || pathname === '/')) {
       router.replace('/(tabs)');
     } else if (!session && !inAuthGroup) {
       router.replace('/(auth)/welcome');
     }
-  }, [session, loading, segments]);
+  }, [session, loading, segments, pathname]);
 }
