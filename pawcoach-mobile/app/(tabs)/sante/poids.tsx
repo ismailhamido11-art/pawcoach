@@ -18,11 +18,12 @@ import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../lib/auth';
 import WeightChart, { WeightPoint } from '../../../components/health/WeightChart';
 import { HealthRecord } from '../../../components/health/VaccineCard';
+import { Colors } from '../../../constants/theme';
 
 // ─── Skeleton ────────────────────────────────────────────────────────────────
 
 function Skeleton({ h, rounded = 8 }: { h: number; rounded?: number }) {
-  return <View style={{ height: h, borderRadius: rounded, backgroundColor: '#E8EDEA', marginBottom: 8 }} />;
+  return <View style={{ height: h, borderRadius: rounded, backgroundColor: Colors.skeleton, marginBottom: 8 }} />;
 }
 
 function PoidsSkeleton() {
@@ -77,28 +78,28 @@ function WeightRow({ record, onPress }: { record: HealthRecord; onPress: () => v
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.white,
         borderRadius: 12,
         padding: 16,
         marginBottom: 8,
         minHeight: 56,
-        shadowColor: '#2D5A3D',
+        shadowColor: Colors.forest[500],
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.06,
         shadowRadius: 2,
         elevation: 1,
       }}
     >
-      <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: '#EEF4F0', alignItems: 'center', justifyContent: 'center' }}>
-        <Ionicons name="scale" size={18} color="#2D5A3D" />
+      <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: Colors.forest[50], alignItems: 'center', justifyContent: 'center' }}>
+        <Ionicons name="scale" size={18} color={Colors.forest[500]} />
       </View>
       <View style={{ flex: 1, marginLeft: 12 }}>
-        <Text style={{ fontSize: 15, fontWeight: '600', color: '#132A1C' }}>
+        <Text style={{ fontSize: 15, fontWeight: '600', color: Colors.forest[800] }}>
           {record.value} kg
         </Text>
-        <Text style={{ fontSize: 12, color: '#687068', marginTop: 2 }}>{formatDateFr(record.date)}</Text>
+        <Text style={{ fontSize: 12, color: Colors.muted, marginTop: 2 }}>{formatDateFr(record.date)}</Text>
       </View>
-      <Ionicons name="pencil-outline" size={16} color="#C4A882" />
+      <Ionicons name="pencil-outline" size={16} color={Colors.earth[300]} />
     </TouchableOpacity>
   );
 }
@@ -157,14 +158,14 @@ function WeightFormModal({
         accessibilityLabel="Fermer"
       >
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, justifyContent: 'flex-end' }}>
-          <Pressable onPress={() => {}} style={{ backgroundColor: '#FFFFFF', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+          <Pressable onPress={() => {}} style={{ backgroundColor: Colors.white, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
             {/* Handle */}
             <View style={{ alignItems: 'center', paddingTop: 12, paddingBottom: 4 }}>
-              <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: '#E4D0BB' }} />
+              <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: Colors.earth[200] }} />
             </View>
             {/* Header */}
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingBottom: 16, paddingTop: 8 }}>
-              <Text style={{ flex: 1, fontSize: 18, fontWeight: '700', color: '#132A1C' }}>
+              <Text style={{ flex: 1, fontSize: 18, fontWeight: '700', color: Colors.forest[800] }}>
                 {editing ? 'Modifier la pesée' : 'Ajouter une pesée'}
               </Text>
               <TouchableOpacity
@@ -172,9 +173,9 @@ function WeightFormModal({
                 accessibilityRole="button"
                 accessibilityLabel="Fermer"
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: '#EEF4F0', alignItems: 'center', justifyContent: 'center' }}
+                style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: Colors.forest[50], alignItems: 'center', justifyContent: 'center' }}
               >
-                <Ionicons name="close" size={18} color="#687068" />
+                <Ionicons name="close" size={18} color={Colors.muted} />
               </TouchableOpacity>
             </View>
 
@@ -185,7 +186,7 @@ function WeightFormModal({
                   value={form.value}
                   onChangeText={(v) => setForm((f) => ({ ...f, value: v }))}
                   placeholder="Ex : 12.5"
-                  placeholderTextColor="#C4A882"
+                  placeholderTextColor={Colors.earth[300]}
                   style={fieldInput}
                   keyboardType="decimal-pad"
                   accessibilityLabel="Poids en kilogrammes"
@@ -198,7 +199,7 @@ function WeightFormModal({
                   value={form.date}
                   onChangeText={(v) => setForm((f) => ({ ...f, date: v }))}
                   placeholder="AAAA-MM-JJ"
-                  placeholderTextColor="#C4A882"
+                  placeholderTextColor={Colors.earth[300]}
                   style={fieldInput}
                   keyboardType="numbers-and-punctuation"
                   accessibilityLabel="Date de pesée au format AAAA-MM-JJ"
@@ -211,7 +212,7 @@ function WeightFormModal({
                   value={form.notes}
                   onChangeText={(v) => setForm((f) => ({ ...f, notes: v }))}
                   placeholder="Vétérinaire, contexte..."
-                  placeholderTextColor="#C4A882"
+                  placeholderTextColor={Colors.earth[300]}
                   style={[fieldInput, { height: 64, textAlignVertical: 'top' }]}
                   multiline
                   accessibilityLabel="Notes sur la pesée"
@@ -226,7 +227,7 @@ function WeightFormModal({
                 accessibilityLabel={saving ? 'Enregistrement en cours' : 'Enregistrer la pesée'}
                 accessibilityState={{ disabled: !canSave || saving }}
                 style={{
-                  backgroundColor: '#2D5A3D',
+                  backgroundColor: Colors.forest[500],
                   borderRadius: 12,
                   paddingVertical: 14,
                   alignItems: 'center',
@@ -237,8 +238,8 @@ function WeightFormModal({
                   opacity: !canSave || saving ? 0.5 : 1,
                 }}
               >
-                {saving ? <ActivityIndicator size="small" color="#FFF8F0" /> : <Ionicons name="checkmark" size={18} color="#FFF8F0" />}
-                <Text style={{ color: '#FFF8F0', fontSize: 16, fontWeight: '700' }}>
+                {saving ? <ActivityIndicator size="small" color={Colors.cream} /> : <Ionicons name="checkmark" size={18} color={Colors.cream} />}
+                <Text style={{ color: Colors.cream, fontSize: 16, fontWeight: '700' }}>
                   {saving ? 'Enregistrement…' : 'Enregistrer'}
                 </Text>
               </TouchableOpacity>
@@ -253,12 +254,12 @@ function WeightFormModal({
                   style={{
                     borderRadius: 12, paddingVertical: 14, alignItems: 'center',
                     flexDirection: 'row', justifyContent: 'center', gap: 8,
-                    minHeight: 48, borderWidth: 1.5, borderColor: '#FCA5A5',
-                    backgroundColor: '#FFF5F5', opacity: saving ? 0.5 : 1,
+                    minHeight: 48, borderWidth: 1.5, borderColor: Colors.errorBorder,
+                    backgroundColor: Colors.errorBg, opacity: saving ? 0.5 : 1,
                   }}
                 >
-                  <Ionicons name="trash-outline" size={18} color="#C0392B" />
-                  <Text style={{ color: '#C0392B', fontSize: 15, fontWeight: '600' }}>Supprimer</Text>
+                  <Ionicons name="trash-outline" size={18} color={Colors.error} />
+                  <Text style={{ color: Colors.error, fontSize: 15, fontWeight: '600' }}>Supprimer</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -269,11 +270,11 @@ function WeightFormModal({
   );
 }
 
-const fieldLabel = { fontSize: 13 as const, fontWeight: '600' as const, color: '#132A1C', marginBottom: 6 };
+const fieldLabel = { fontSize: 13 as const, fontWeight: '600' as const, color: Colors.forest[800], marginBottom: 6 };
 const fieldInput = {
-  backgroundColor: '#F5F1EB', borderRadius: 10, borderWidth: 1,
-  borderColor: '#E4D0BB', paddingHorizontal: 14, paddingVertical: 12,
-  fontSize: 15 as const, color: '#132A1C', minHeight: 48,
+  backgroundColor: Colors.fieldBg, borderRadius: 10, borderWidth: 1,
+  borderColor: Colors.earth[200], paddingHorizontal: 14, paddingVertical: 12,
+  fontSize: 15 as const, color: Colors.forest[800], minHeight: 48,
 };
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
@@ -323,7 +324,8 @@ export default function PoidsScreen() {
 
   async function getDogId(): Promise<string | null> {
     if (!user) return null;
-    const { data } = await supabase.from('dogs').select('id').eq('owner_id', user.id).order('created_at', { ascending: true }).limit(1);
+    const { data, error } = await supabase.from('dogs').select('id').eq('owner_id', user.id).order('created_at', { ascending: true }).limit(1);
+    if (error) throw error;
     return data?.[0]?.id ?? null;
   }
 
@@ -372,7 +374,7 @@ export default function PoidsScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: '#FFF8F0' }}>
+      <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.cream }}>
         <PoidsSkeleton />
       </SafeAreaView>
     );
@@ -380,16 +382,16 @@ export default function PoidsScreen() {
 
   if (error) {
     return (
-      <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: '#FFF8F0', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-        <Ionicons name="alert-circle-outline" size={48} color="#C0392B" />
-        <Text style={{ fontSize: 16, fontWeight: '600', color: '#132A1C', marginTop: 12, textAlign: 'center' }}>{error}</Text>
+      <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.cream, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+        <Ionicons name="alert-circle-outline" size={48} color={Colors.error} />
+        <Text style={{ fontSize: 16, fontWeight: '600', color: Colors.forest[800], marginTop: 12, textAlign: 'center' }}>{error}</Text>
         <TouchableOpacity
           onPress={loadData}
           accessibilityRole="button"
           accessibilityLabel="Réessayer"
-          style={{ marginTop: 16, backgroundColor: '#2D5A3D', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, minHeight: 44, justifyContent: 'center' }}
+          style={{ marginTop: 16, backgroundColor: Colors.forest[500], paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, minHeight: 44, justifyContent: 'center' }}
         >
-          <Text style={{ color: '#FFF8F0', fontWeight: '600', fontSize: 15 }}>Réessayer</Text>
+          <Text style={{ color: Colors.cream, fontWeight: '600', fontSize: 15 }}>Réessayer</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -410,7 +412,7 @@ export default function PoidsScreen() {
   const [normalMin, normalMax] = getNormalRange(dogBreed) ?? [null, null];
 
   return (
-    <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: '#FFF8F0' }}>
+    <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.cream }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
 
         {/* Current weight summary */}
@@ -419,12 +421,12 @@ export default function PoidsScreen() {
             style={{
               marginHorizontal: 16,
               marginTop: 12,
-              backgroundColor: '#FFFFFF',
+              backgroundColor: Colors.white,
               borderRadius: 16,
               padding: 20,
               flexDirection: 'row',
               alignItems: 'center',
-              shadowColor: '#2D5A3D',
+              shadowColor: Colors.forest[500],
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.08,
               shadowRadius: 8,
@@ -432,11 +434,11 @@ export default function PoidsScreen() {
             }}
           >
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 13, color: '#687068', fontWeight: '500', marginBottom: 4 }}>POIDS ACTUEL</Text>
-              <Text style={{ fontSize: 32, fontWeight: '700', color: '#132A1C' }}>
+              <Text style={{ fontSize: 13, color: Colors.muted, fontWeight: '500', marginBottom: 4 }}>POIDS ACTUEL</Text>
+              <Text style={{ fontSize: 32, fontWeight: '700', color: Colors.forest[800] }}>
                 {latest.value} kg
               </Text>
-              <Text style={{ fontSize: 12, color: '#687068', marginTop: 4 }}>
+              <Text style={{ fontSize: 12, color: Colors.muted, marginTop: 4 }}>
                 {formatDateFr(latest.date)}
               </Text>
             </View>
@@ -444,7 +446,7 @@ export default function PoidsScreen() {
               <View
                 style={{
                   alignItems: 'center',
-                  backgroundColor: diff > 0 ? '#FFF5F5' : diff < 0 ? '#EEF4F0' : '#F5F1EB',
+                  backgroundColor: diff > 0 ? Colors.errorBg : diff < 0 ? Colors.forest[50] : Colors.fieldBg,
                   borderRadius: 12,
                   paddingHorizontal: 16,
                   paddingVertical: 12,
@@ -453,34 +455,34 @@ export default function PoidsScreen() {
                 <Ionicons
                   name={diff > 0 ? 'trending-up' : diff < 0 ? 'trending-down' : 'remove'}
                   size={20}
-                  color={diff > 0 ? '#C0392B' : diff < 0 ? '#2D5A3D' : '#687068'}
+                  color={diff > 0 ? Colors.error : diff < 0 ? Colors.forest[500] : Colors.muted}
                 />
                 <Text
                   style={{
                     fontSize: 15,
                     fontWeight: '700',
-                    color: diff > 0 ? '#C0392B' : diff < 0 ? '#2D5A3D' : '#687068',
+                    color: diff > 0 ? Colors.error : diff < 0 ? Colors.forest[500] : Colors.muted,
                     marginTop: 4,
                   }}
                 >
                   {diff > 0 ? '+' : ''}{diff.toFixed(1)} kg
                 </Text>
-                <Text style={{ fontSize: 10, color: '#687068', marginTop: 2 }}>vs précédent</Text>
+                <Text style={{ fontSize: 10, color: Colors.muted, marginTop: 2 }}>vs précédent</Text>
               </View>
             )}
           </View>
         ) : null}
 
         {/* Chart */}
-        <View style={{ marginHorizontal: 16, marginTop: 12, backgroundColor: '#FFFFFF', borderRadius: 16, padding: 16, shadowColor: '#2D5A3D', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 2 }}>
-          <Text style={{ fontSize: 13, fontWeight: '600', color: '#687068', marginBottom: 12, letterSpacing: 0.5 }}>COURBE D'ÉVOLUTION</Text>
+        <View style={{ marginHorizontal: 16, marginTop: 12, backgroundColor: Colors.white, borderRadius: 16, padding: 16, shadowColor: Colors.forest[500], shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 2 }}>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: Colors.muted, marginBottom: 12, letterSpacing: 0.5 }}>COURBE D'ÉVOLUTION</Text>
           <WeightChart
             data={chartData}
             normalMin={normalMin ?? undefined}
             normalMax={normalMax ?? undefined}
           />
           {normalMin && normalMax && (
-            <Text style={{ fontSize: 11, color: '#687068', marginTop: 8, textAlign: 'center' }}>
+            <Text style={{ fontSize: 11, color: Colors.muted, marginTop: 8, textAlign: 'center' }}>
               Zone normale {dogBreed ? `pour ${dogBreed}` : ''} : {normalMin}–{normalMax} kg
             </Text>
           )}
@@ -488,26 +490,26 @@ export default function PoidsScreen() {
 
         {/* History */}
         <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
-          <Text style={{ fontSize: 13, fontWeight: '600', color: '#687068', marginBottom: 10, letterSpacing: 0.5 }}>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: Colors.muted, marginBottom: 10, letterSpacing: 0.5 }}>
             HISTORIQUE
           </Text>
 
           {records.length === 0 ? (
             <View style={{ alignItems: 'center', paddingVertical: 48 }}>
-              <Ionicons name="scale-outline" size={56} color="#ADD1B5" />
-              <Text style={{ fontSize: 16, fontWeight: '600', color: '#132A1C', marginTop: 16, textAlign: 'center' }}>
+              <Ionicons name="scale-outline" size={56} color={Colors.forest[200]} />
+              <Text style={{ fontSize: 16, fontWeight: '600', color: Colors.forest[800], marginTop: 16, textAlign: 'center' }}>
                 Aucune pesée enregistrée
               </Text>
-              <Text style={{ fontSize: 13, color: '#687068', marginTop: 8, textAlign: 'center', lineHeight: 18 }}>
+              <Text style={{ fontSize: 13, color: Colors.muted, marginTop: 8, textAlign: 'center', lineHeight: 18 }}>
                 Commencez le suivi en ajoutant la première pesée.
               </Text>
               <TouchableOpacity
                 onPress={() => { setEditing(null); setModalVisible(true); }}
                 accessibilityRole="button"
                 accessibilityLabel="Ajouter une pesée"
-                style={{ marginTop: 16, backgroundColor: '#2D5A3D', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, minHeight: 44, justifyContent: 'center' }}
+                style={{ marginTop: 16, backgroundColor: Colors.forest[500], paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, minHeight: 44, justifyContent: 'center' }}
               >
-                <Text style={{ color: '#FFF8F0', fontWeight: '600', fontSize: 15 }}>Ajouter une pesée</Text>
+                <Text style={{ color: Colors.cream, fontWeight: '600', fontSize: 15 }}>Ajouter une pesée</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -531,12 +533,12 @@ export default function PoidsScreen() {
         style={{
           position: 'absolute', bottom: 24, right: 20,
           width: 56, height: 56, borderRadius: 28,
-          backgroundColor: '#2D5A3D', alignItems: 'center', justifyContent: 'center',
-          shadowColor: '#2D5A3D', shadowOffset: { width: 0, height: 4 },
+          backgroundColor: Colors.forest[500], alignItems: 'center', justifyContent: 'center',
+          shadowColor: Colors.forest[500], shadowOffset: { width: 0, height: 4 },
           shadowOpacity: 0.3, shadowRadius: 12, elevation: 6,
         }}
       >
-        <Ionicons name="add" size={28} color="#FFF8F0" />
+        <Ionicons name="add" size={28} color={Colors.cream} />
       </TouchableOpacity>
 
       <WeightFormModal

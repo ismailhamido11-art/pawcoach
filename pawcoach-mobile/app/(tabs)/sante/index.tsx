@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../lib/auth';
 import HealthScore from '../../../components/health/HealthScore';
+import { Colors } from '../../../constants/theme';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -40,7 +41,7 @@ function Skeleton({ w, h, rounded = 8 }: { w?: DimensionValue; h: number; rounde
         width: w ?? '100%',
         height: h,
         borderRadius: rounded,
-        backgroundColor: '#E8EDEA',
+        backgroundColor: Colors.skeleton,
       }}
     />
   );
@@ -50,7 +51,7 @@ function DashboardSkeleton() {
   return (
     <View style={{ paddingHorizontal: 16, paddingTop: 24, gap: 16 }}>
       <Skeleton h={28} w={160} />
-      <View style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: 24, alignItems: 'center', gap: 16 }}>
+      <View style={{ backgroundColor: Colors.white, borderRadius: 16, padding: 24, alignItems: 'center', gap: 16 }}>
         <Skeleton h={140} w={140} rounded={70} />
         <Skeleton h={14} w={200} />
         <Skeleton h={12} w={160} />
@@ -79,18 +80,18 @@ function PillarBar({
   weight: number;
   icon: React.ComponentProps<typeof Ionicons>['name'];
 }) {
-  const color = score >= 70 ? '#2D5A3D' : score >= 40 ? '#C4A882' : '#C0392B';
+  const color = score >= 70 ? Colors.forest[500] : score >= 40 ? Colors.earth[300] : Colors.error;
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
           <Ionicons name={icon} size={13} color={color} />
-          <Text style={{ fontSize: 12, color: '#687068', fontWeight: '500' }}>{label}</Text>
+          <Text style={{ fontSize: 12, color: Colors.muted, fontWeight: '500' }}>{label}</Text>
         </View>
         <Text style={{ fontSize: 12, fontWeight: '700', color }}>{score}</Text>
       </View>
       {/* Track */}
-      <View style={{ height: 6, backgroundColor: '#EEF4F0', borderRadius: 3, overflow: 'hidden' }}>
+      <View style={{ height: 6, backgroundColor: Colors.forest[50], borderRadius: 3, overflow: 'hidden' }}>
         <View
           style={{
             width: `${score}%`,
@@ -100,7 +101,7 @@ function PillarBar({
           }}
         />
       </View>
-      <Text style={{ fontSize: 10, color: '#C4A882', marginTop: 4 }}>Poids {weight}%</Text>
+      <Text style={{ fontSize: 10, color: Colors.earth[300], marginTop: 4 }}>Poids {weight}%</Text>
     </View>
   );
 }
@@ -128,24 +129,24 @@ function NavCard({
       accessibilityLabel={`${label} — ${sublabel}`}
       style={{
         flex: 1,
-        backgroundColor: accent ? '#2D5A3D' : '#FFFFFF',
+        backgroundColor: accent ? Colors.forest[500] : Colors.white,
         borderRadius: 12,
         padding: 16,
         minHeight: 88,
         justifyContent: 'space-between',
-        shadowColor: '#2D5A3D',
+        shadowColor: Colors.forest[500],
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: accent ? 0.2 : 0.08,
         shadowRadius: 8,
         elevation: accent ? 4 : 2,
       }}
     >
-      <Ionicons name={icon} size={22} color={accent ? '#FFF8F0' : '#2D5A3D'} />
+      <Ionicons name={icon} size={22} color={accent ? Colors.cream : Colors.forest[500]} />
       <View>
-        <Text style={{ fontSize: 13, fontWeight: '700', color: accent ? '#FFF8F0' : '#132A1C', lineHeight: 18 }}>
+        <Text style={{ fontSize: 13, fontWeight: '700', color: accent ? Colors.cream : Colors.forest[800], lineHeight: 18 }}>
           {label}
         </Text>
-        <Text style={{ fontSize: 11, color: accent ? 'rgba(255,248,240,0.75)' : '#687068', marginTop: 2 }}>
+        <Text style={{ fontSize: 11, color: accent ? 'rgba(255,248,240,0.75)' : Colors.muted, marginTop: 2 }}>
           {sublabel}
         </Text>
       </View>
@@ -214,7 +215,7 @@ export default function SanteDashboard() {
   // ── Loading ────────────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#FFF8F0' }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.cream }}>
         <DashboardSkeleton />
       </SafeAreaView>
     );
@@ -223,9 +224,9 @@ export default function SanteDashboard() {
   // ── Error ──────────────────────────────────────────────────────────────────
   if (error) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#FFF8F0', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-        <Ionicons name="alert-circle-outline" size={48} color="#C0392B" />
-        <Text style={{ fontSize: 16, fontWeight: '600', color: '#132A1C', marginTop: 12, textAlign: 'center' }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.cream, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+        <Ionicons name="alert-circle-outline" size={48} color={Colors.error} />
+        <Text style={{ fontSize: 16, fontWeight: '600', color: Colors.forest[800], marginTop: 12, textAlign: 'center' }}>
           {error}
         </Text>
         <TouchableOpacity
@@ -234,7 +235,7 @@ export default function SanteDashboard() {
           accessibilityLabel="Réessayer le chargement"
           style={{
             marginTop: 16,
-            backgroundColor: '#2D5A3D',
+            backgroundColor: Colors.forest[500],
             paddingHorizontal: 24,
             paddingVertical: 12,
             borderRadius: 12,
@@ -242,7 +243,7 @@ export default function SanteDashboard() {
             justifyContent: 'center',
           }}
         >
-          <Text style={{ color: '#FFF8F0', fontWeight: '600', fontSize: 15 }}>Réessayer</Text>
+          <Text style={{ color: Colors.cream, fontWeight: '600', fontSize: 15 }}>Réessayer</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -251,12 +252,12 @@ export default function SanteDashboard() {
   // ── Empty (no dog) ─────────────────────────────────────────────────────────
   if (dogs.length === 0) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#FFF8F0', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-        <Ionicons name="paw-outline" size={56} color="#ADD1B5" />
-        <Text style={{ fontSize: 18, fontWeight: '700', color: '#132A1C', marginTop: 16, textAlign: 'center' }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.cream, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+        <Ionicons name="paw-outline" size={56} color={Colors.forest[200]} />
+        <Text style={{ fontSize: 18, fontWeight: '700', color: Colors.forest[800], marginTop: 16, textAlign: 'center' }}>
           Aucun chien enregistré
         </Text>
-        <Text style={{ fontSize: 14, color: '#687068', marginTop: 8, textAlign: 'center', lineHeight: 20 }}>
+        <Text style={{ fontSize: 14, color: Colors.muted, marginTop: 8, textAlign: 'center', lineHeight: 20 }}>
           Ajoutez votre chien depuis l'accueil pour suivre sa santé.
         </Text>
       </SafeAreaView>
@@ -275,22 +276,22 @@ export default function SanteDashboard() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#FFF8F0' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.cream }}>
       <ScrollView
         contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#2D5A3D" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.forest[500]} />}
       >
         {/* Header */}
         <View style={{ paddingHorizontal: 16, paddingTop: 20, paddingBottom: 8 }}>
           <Text
-            style={{ fontSize: 24, fontWeight: '700', color: '#132A1C' }}
+            style={{ fontSize: 24, fontWeight: '700', color: Colors.forest[800] }}
             accessibilityRole="header"
           >
             Santé
           </Text>
           {selectedDog && (
-            <Text style={{ fontSize: 14, color: '#687068', marginTop: 2 }}>
+            <Text style={{ fontSize: 14, color: Colors.muted, marginTop: 2 }}>
               {selectedDog.name}
               {selectedDog.breed ? ` · ${selectedDog.breed}` : ''}
             </Text>
@@ -301,18 +302,18 @@ export default function SanteDashboard() {
         <View style={{ marginHorizontal: 16, marginTop: 8 }}>
           <View
             style={{
-              backgroundColor: '#FFFFFF',
+              backgroundColor: Colors.white,
               borderRadius: 20,
               padding: 24,
               alignItems: 'center',
-              shadowColor: '#2D5A3D',
+              shadowColor: Colors.forest[500],
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.1,
               shadowRadius: 16,
               elevation: 4,
             }}
           >
-            <Text style={{ fontSize: 13, fontWeight: '600', color: '#687068', marginBottom: 16, letterSpacing: 0.5 }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: Colors.muted, marginBottom: 16, letterSpacing: 0.5 }}>
               SCORE GLOBAL
             </Text>
 
@@ -337,10 +338,10 @@ export default function SanteDashboard() {
             style={{
               marginHorizontal: 16,
               marginTop: 12,
-              backgroundColor: '#FFF8F0',
+              backgroundColor: Colors.cream,
               borderRadius: 12,
               borderWidth: 1.5,
-              borderColor: '#E4D0BB',
+              borderColor: Colors.earth[200],
               padding: 16,
               flexDirection: 'row',
               alignItems: 'center',
@@ -348,24 +349,24 @@ export default function SanteDashboard() {
               minHeight: 60,
             }}
           >
-            <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: '#FFF0E0', alignItems: 'center', justifyContent: 'center' }}>
-              <Ionicons name="notifications" size={18} color="#C4A882" />
+            <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: Colors.notifBg, alignItems: 'center', justifyContent: 'center' }}>
+              <Ionicons name="notifications" size={18} color={Colors.earth[300]} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 13, fontWeight: '700', color: '#132A1C' }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: Colors.forest[800] }}>
                 Rappel vaccin
               </Text>
-              <Text style={{ fontSize: 12, color: '#687068', marginTop: 2 }}>
+              <Text style={{ fontSize: 12, color: Colors.muted, marginTop: 2 }}>
                 {healthData.next_vaccine_title} · {formatDateFr(healthData.next_vaccine_date)}
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={16} color="#C4A882" />
+            <Ionicons name="chevron-forward" size={16} color={Colors.earth[300]} />
           </TouchableOpacity>
         )}
 
         {/* Navigation Cards */}
         <View style={{ paddingHorizontal: 16, marginTop: 12 }}>
-          <Text style={{ fontSize: 13, fontWeight: '600', color: '#687068', marginBottom: 10, letterSpacing: 0.5 }}>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: Colors.muted, marginBottom: 10, letterSpacing: 0.5 }}>
             MODULES
           </Text>
           <View style={{ flexDirection: 'row', gap: 10 }}>

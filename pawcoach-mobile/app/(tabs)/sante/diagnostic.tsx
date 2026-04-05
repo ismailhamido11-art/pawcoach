@@ -16,6 +16,7 @@ import { useRouter } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../lib/auth';
 import PremiumGate from '../../../components/health/PremiumGate';
+import { Colors } from '../../../constants/theme';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -70,9 +71,9 @@ const CATEGORIES: SymptomCategory[] = [
 ];
 
 const SEVERITY_OPTIONS: { key: Severity; label: string; color: string; bg: string; border: string }[] = [
-  { key: 'léger',  label: 'Léger',  color: '#2D5A3D', bg: '#EEF4F0', border: '#ADD1B5' },
-  { key: 'modéré', label: 'Modéré', color: '#7A5230', bg: '#FFF8F0', border: '#E4D0BB' },
-  { key: 'sévère', label: 'Sévère', color: '#C0392B', bg: '#FFF5F5', border: '#FCA5A5' },
+  { key: 'léger',  label: 'Léger',  color: Colors.forest[500], bg: Colors.forest[50], border: Colors.forest[200] },
+  { key: 'modéré', label: 'Modéré', color: Colors.earth[500], bg: Colors.cream, border: Colors.earth[200] },
+  { key: 'sévère', label: 'Sévère', color: Colors.error, bg: Colors.errorBg, border: Colors.errorBorder },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -90,6 +91,7 @@ export default function DiagnosticScreen() {
   // ── Gate check state ────────────────────────────────────────────────────────
   const [gateLoading, setGateLoading] = useState(true);
   const [actionsRemaining, setActionsRemaining] = useState<number | null>(null);
+  const [quotaError, setQuotaError] = useState(false);
 
   // ── Form state ─────────────────────────────────────────────────────────────
   const [category, setCategory] = useState<SymptomCategory | null>(null);
@@ -127,7 +129,8 @@ export default function DiagnosticScreen() {
           .single();
         setActionsRemaining(data?.actions_remaining ?? 0);
       } catch {
-        setActionsRemaining(0);
+        setQuotaError(true);
+        setActionsRemaining(null);
       } finally {
         setGateLoading(false);
       }
@@ -194,8 +197,8 @@ export default function DiagnosticScreen() {
   // ── Gate loading ────────────────────────────────────────────────────────────
   if (gateLoading) {
     return (
-      <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: '#FFF8F0', alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color="#2D5A3D" />
+      <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.cream, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color={Colors.forest[500]} />
       </SafeAreaView>
     );
   }
@@ -203,7 +206,7 @@ export default function DiagnosticScreen() {
   // ── Premium gate ────────────────────────────────────────────────────────────
   if (!profile?.is_premium && actionsRemaining === 0) {
     return (
-      <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: '#FFF8F0' }}>
+      <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.cream }}>
         <PremiumGate
           title="Diagnostic IA Premium"
           subtitle="Vos diagnostics gratuits du jour sont épuisés. Passez Premium pour analyser la santé de votre chien sans limite."
@@ -212,10 +215,44 @@ export default function DiagnosticScreen() {
     );
   }
 
+  // ── Quota error ──────────────────────────────────────────────────────────────
+  if (quotaError) {
+    return (
+      <SafeAreaView
+        edges={['bottom']}
+        style={{ flex: 1, backgroundColor: Colors.cream, alignItems: 'center', justifyContent: 'center', padding: 24 }}
+      >
+        <Ionicons name="cloud-offline-outline" size={48} color={Colors.error} />
+        <Text style={{ fontSize: 16, fontWeight: '600', color: Colors.forest[800], marginTop: 12, textAlign: 'center' }}>
+          Impossible de vérifier votre quota
+        </Text>
+        <Text style={{ fontSize: 13, color: Colors.muted, marginTop: 8, textAlign: 'center', lineHeight: 18 }}>
+          Vérifiez votre connexion et réessayez.
+        </Text>
+        <TouchableOpacity
+          onPress={() => router.replace('/(tabs)/sante/diagnostic')}
+          accessibilityRole="button"
+          accessibilityLabel="Réessayer le chargement"
+          style={{
+            marginTop: 20,
+            backgroundColor: Colors.forest[500],
+            paddingHorizontal: 24,
+            paddingVertical: 14,
+            borderRadius: 12,
+            minHeight: 48,
+            justifyContent: 'center',
+          }}
+        >
+          <Text style={{ color: Colors.cream, fontWeight: '600', fontSize: 15 }}>Réessayer</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
+
   // ─── Form ─────────────────────────────────────────────────────────────────
 
   return (
-    <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: '#FFF8F0' }}>
+    <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.cream }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
@@ -230,18 +267,18 @@ export default function DiagnosticScreen() {
             style={{
               marginHorizontal: 16,
               marginTop: 12,
-              backgroundColor: '#FFF8F0',
+              backgroundColor: Colors.cream,
               borderRadius: 12,
               borderWidth: 1.5,
-              borderColor: '#E4D0BB',
+              borderColor: Colors.earth[200],
               padding: 16,
               flexDirection: 'row',
               gap: 12,
             }}
             accessibilityRole="alert"
           >
-            <Ionicons name="warning-outline" size={20} color="#7A5230" style={{ marginTop: 1 }} />
-            <Text style={{ flex: 1, fontSize: 13, color: '#7A5230', lineHeight: 18 }}>
+            <Ionicons name="warning-outline" size={20} color={Colors.earth[500]} style={{ marginTop: 1 }} />
+            <Text style={{ flex: 1, fontSize: 13, color: Colors.earth[500], lineHeight: 18 }}>
               <Text style={{ fontWeight: '700' }}>Avertissement médical : </Text>
               PawDoc IA fournit une orientation préliminaire, pas un diagnostic vétérinaire. Consultez toujours un vétérinaire pour tout problème de santé.
             </Text>
@@ -254,34 +291,34 @@ export default function DiagnosticScreen() {
                 width: 56,
                 height: 56,
                 borderRadius: 28,
-                backgroundColor: '#EEF4F0',
+                backgroundColor: Colors.forest[50],
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: 8,
-                shadowColor: '#2D5A3D',
+                shadowColor: Colors.forest[500],
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.1,
                 shadowRadius: 8,
                 elevation: 2,
               }}
             >
-              <Ionicons name="medkit" size={26} color="#2D5A3D" />
+              <Ionicons name="medkit" size={26} color={Colors.forest[500]} />
             </View>
-            <Text style={{ fontSize: 18, fontWeight: '700', color: '#132A1C' }}>PawDoc IA</Text>
-            <Text style={{ fontSize: 13, color: '#687068', marginTop: 4 }}>
+            <Text style={{ fontSize: 18, fontWeight: '700', color: Colors.forest[800] }}>PawDoc IA</Text>
+            <Text style={{ fontSize: 13, color: Colors.muted, marginTop: 4 }}>
               Décrivez les symptômes de votre chien
             </Text>
             {!profile?.is_premium && actionsRemaining !== null && actionsRemaining < 999 && actionsRemaining > 0 && (
               <View
                 style={{
                   marginTop: 8,
-                  backgroundColor: '#EEF4F0',
+                  backgroundColor: Colors.forest[50],
                   borderRadius: 20,
                   paddingHorizontal: 12,
                   paddingVertical: 4,
                 }}
               >
-                <Text style={{ fontSize: 12, color: '#2D5A3D', fontWeight: '600' }}>
+                <Text style={{ fontSize: 12, color: Colors.forest[500], fontWeight: '600' }}>
                   {actionsRemaining} diagnostic{actionsRemaining !== 1 ? 's' : ''} gratuit{actionsRemaining !== 1 ? 's' : ''} restant{actionsRemaining !== 1 ? 's' : ''}
                 </Text>
               </View>
@@ -310,13 +347,13 @@ export default function DiagnosticScreen() {
                       paddingVertical: 10,
                       borderRadius: 20,
                       minHeight: 40,
-                      backgroundColor: active ? '#2D5A3D' : '#FFFFFF',
+                      backgroundColor: active ? Colors.forest[500] : Colors.white,
                       borderWidth: 1,
-                      borderColor: active ? '#2D5A3D' : '#E4D0BB',
+                      borderColor: active ? Colors.forest[500] : Colors.earth[200],
                     }}
                   >
-                    <Ionicons name={cat.icon} size={14} color={active ? '#FFF8F0' : '#687068'} />
-                    <Text style={{ fontSize: 13, fontWeight: '600', color: active ? '#FFF8F0' : '#687068' }}>
+                    <Ionicons name={cat.icon} size={14} color={active ? Colors.cream : Colors.muted} />
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: active ? Colors.cream : Colors.muted }}>
                       {cat.label}
                     </Text>
                   </TouchableOpacity>
@@ -348,13 +385,13 @@ export default function DiagnosticScreen() {
                         paddingVertical: 8,
                         borderRadius: 20,
                         minHeight: 36,
-                        backgroundColor: active ? '#EEF4F0' : '#FFFFFF',
+                        backgroundColor: active ? Colors.forest[50] : Colors.white,
                         borderWidth: 1.5,
-                        borderColor: active ? '#2D5A3D' : '#E4D0BB',
+                        borderColor: active ? Colors.forest[500] : Colors.earth[200],
                       }}
                     >
-                      {active && <Ionicons name="checkmark" size={12} color="#2D5A3D" />}
-                      <Text style={{ fontSize: 13, color: active ? '#2D5A3D' : '#687068', fontWeight: active ? '600' : '400' }}>
+                      {active && <Ionicons name="checkmark" size={12} color={Colors.forest[500]} />}
+                      <Text style={{ fontSize: 13, color: active ? Colors.forest[500] : Colors.muted, fontWeight: active ? '600' : '400' }}>
                         {sym}
                       </Text>
                     </TouchableOpacity>
@@ -383,13 +420,13 @@ export default function DiagnosticScreen() {
                       alignItems: 'center',
                       paddingVertical: 12,
                       borderRadius: 12,
-                      backgroundColor: active ? opt.bg : '#FFFFFF',
+                      backgroundColor: active ? opt.bg : Colors.white,
                       borderWidth: 1.5,
-                      borderColor: active ? opt.color : '#E4D0BB',
+                      borderColor: active ? opt.color : Colors.earth[200],
                       minHeight: 44,
                     }}
                   >
-                    <Text style={{ fontSize: 14, fontWeight: '700', color: active ? opt.color : '#687068' }}>
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: active ? opt.color : Colors.muted }}>
                       {opt.label}
                     </Text>
                   </TouchableOpacity>
@@ -405,7 +442,7 @@ export default function DiagnosticScreen() {
               value={startDate}
               onChangeText={setStartDate}
               placeholder="AAAA-MM-JJ"
-              placeholderTextColor="#C4A882"
+              placeholderTextColor={Colors.earth[300]}
               style={fieldInput}
               keyboardType="numbers-and-punctuation"
               accessibilityLabel="Date de début des symptômes au format AAAA-MM-JJ"
@@ -419,7 +456,7 @@ export default function DiagnosticScreen() {
               value={additionalInfo}
               onChangeText={setAdditionalInfo}
               placeholder="Décrivez en détail : comportement, durée, contexte..."
-              placeholderTextColor="#C4A882"
+              placeholderTextColor={Colors.earth[300]}
               style={[fieldInput, { height: 100, textAlignVertical: 'top' }]}
               multiline
               accessibilityLabel="Informations complémentaires sur les symptômes"
@@ -436,7 +473,7 @@ export default function DiagnosticScreen() {
               accessibilityLabel={submitting ? 'Analyse en cours' : 'Analyser avec PawDoc IA'}
               accessibilityState={{ disabled: !canSubmit || submitting }}
               style={{
-                backgroundColor: '#2D5A3D',
+                backgroundColor: Colors.forest[500],
                 borderRadius: 14,
                 paddingVertical: 16,
                 alignItems: 'center',
@@ -449,15 +486,15 @@ export default function DiagnosticScreen() {
             >
               {submitting ? (
                 <>
-                  <ActivityIndicator size="small" color="#FFF8F0" />
-                  <Text style={{ color: '#FFF8F0', fontSize: 16, fontWeight: '700' }}>
+                  <ActivityIndicator size="small" color={Colors.cream} />
+                  <Text style={{ color: Colors.cream, fontSize: 16, fontWeight: '700' }}>
                     Analyse en cours…
                   </Text>
                 </>
               ) : (
                 <>
-                  <Ionicons name="flash" size={18} color="#FFF8F0" />
-                  <Text style={{ color: '#FFF8F0', fontSize: 16, fontWeight: '700' }}>
+                  <Ionicons name="flash" size={18} color={Colors.cream} />
+                  <Text style={{ color: Colors.cream, fontSize: 16, fontWeight: '700' }}>
                     Analyser avec PawDoc IA
                   </Text>
                 </>
@@ -475,19 +512,19 @@ export default function DiagnosticScreen() {
 const sectionLabel = {
   fontSize: 12 as const,
   fontWeight: '700' as const,
-  color: '#687068',
+  color: Colors.muted,
   letterSpacing: 0.5,
 };
 
 const fieldInput = {
   marginTop: 8,
-  backgroundColor: '#F5F1EB',
+  backgroundColor: Colors.fieldBg,
   borderRadius: 10,
   borderWidth: 1,
-  borderColor: '#E4D0BB',
+  borderColor: Colors.earth[200],
   paddingHorizontal: 14,
   paddingVertical: 12,
   fontSize: 15 as const,
-  color: '#132A1C',
+  color: Colors.forest[800],
   minHeight: 48,
 };

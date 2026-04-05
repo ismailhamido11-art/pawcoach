@@ -63,6 +63,22 @@ export const Colors = {
   error:   '#C0392B',
   info:    '#4E8060',
 
+  // Muted text / secondary
+  muted:          '#687068',
+
+  // UI component states
+  skeleton:       '#E8EDEA',
+  fieldBg:        '#F5F1EB',
+  notifBg:        '#FFF0E0',
+  errorBg:        '#FFF5F5',
+  errorBorder:    '#FCA5A5',
+  done:           '#9AA49A',
+
+  // Emergency urgency level (diagnostic)
+  emergency:       '#7B0000',
+  emergencyBg:     '#FFF0F0',
+  emergencyBorder: '#F87171',
+
   // Pure
   white: '#FFFFFF',
   black: '#000000',

@@ -17,11 +17,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../lib/auth';
 import VaccineCard, { HealthRecord, getVaccineStatus } from '../../../components/health/VaccineCard';
+import { Colors } from '../../../constants/theme';
 
 // ─── Skeleton ────────────────────────────────────────────────────────────────
 
 function Skeleton({ h, rounded = 8 }: { h: number; rounded?: number }) {
-  return <View style={{ height: h, borderRadius: rounded, backgroundColor: '#E8EDEA', marginBottom: 8 }} />;
+  return <View style={{ height: h, borderRadius: rounded, backgroundColor: Colors.skeleton, marginBottom: 8 }} />;
 }
 
 function VaccineSkeleton() {
@@ -29,7 +30,7 @@ function VaccineSkeleton() {
     <View style={{ paddingHorizontal: 16, paddingTop: 16, gap: 8 }}>
       <View style={{ flexDirection: 'row', gap: 8, marginBottom: 8 }}>
         {[1, 2, 3, 4].map((i) => (
-          <View key={i} style={{ flex: 1, height: 32, borderRadius: 20, backgroundColor: '#E8EDEA' }} />
+          <View key={i} style={{ flex: 1, height: 32, borderRadius: 20, backgroundColor: Colors.skeleton }} />
         ))}
       </View>
       {[1, 2, 3].map((i) => <Skeleton key={i} h={80} />)}
@@ -55,23 +56,23 @@ function Chip({ label, count, active, onPress }: { label: string; count: number;
         paddingVertical: 8,
         borderRadius: 20,
         minHeight: 36,
-        backgroundColor: active ? '#2D5A3D' : '#FFFFFF',
+        backgroundColor: active ? Colors.forest[500] : Colors.white,
         borderWidth: 1,
-        borderColor: active ? '#2D5A3D' : '#E4D0BB',
+        borderColor: active ? Colors.forest[500] : Colors.earth[200],
       }}
     >
-      <Text style={{ fontSize: 12, fontWeight: '600', color: active ? '#FFF8F0' : '#687068' }}>
+      <Text style={{ fontSize: 12, fontWeight: '600', color: active ? Colors.cream : Colors.muted }}>
         {label}
       </Text>
       <View
         style={{
-          backgroundColor: active ? 'rgba(255,248,240,0.25)' : '#EEF4F0',
+          backgroundColor: active ? 'rgba(255,248,240,0.25)' : Colors.forest[50],
           borderRadius: 10,
           paddingHorizontal: 6,
           paddingVertical: 1,
         }}
       >
-        <Text style={{ fontSize: 11, fontWeight: '700', color: active ? '#FFF8F0' : '#2D5A3D' }}>
+        <Text style={{ fontSize: 11, fontWeight: '700', color: active ? Colors.cream : Colors.forest[500] }}>
           {count}
         </Text>
       </View>
@@ -158,13 +159,13 @@ function VaccineFormModal({
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={{ flex: 1, justifyContent: 'flex-end' }}
         >
-          <Pressable onPress={() => {}} style={{ backgroundColor: '#FFFFFF', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+          <Pressable onPress={() => {}} style={{ backgroundColor: Colors.white, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
             {/* Handle + header */}
             <View style={{ alignItems: 'center', paddingTop: 12, paddingBottom: 4 }}>
-              <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: '#E4D0BB' }} />
+              <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: Colors.earth[200] }} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingBottom: 16, paddingTop: 8 }}>
-              <Text style={{ flex: 1, fontSize: 18, fontWeight: '700', color: '#132A1C' }}>
+              <Text style={{ flex: 1, fontSize: 18, fontWeight: '700', color: Colors.forest[800] }}>
                 {editing ? 'Modifier le vaccin' : 'Ajouter un vaccin'}
               </Text>
               <TouchableOpacity
@@ -172,9 +173,9 @@ function VaccineFormModal({
                 accessibilityRole="button"
                 accessibilityLabel="Fermer"
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: '#EEF4F0', alignItems: 'center', justifyContent: 'center' }}
+                style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: Colors.forest[50], alignItems: 'center', justifyContent: 'center' }}
               >
-                <Ionicons name="close" size={18} color="#687068" />
+                <Ionicons name="close" size={18} color={Colors.muted} />
               </TouchableOpacity>
             </View>
 
@@ -186,7 +187,7 @@ function VaccineFormModal({
                   value={form.title}
                   onChangeText={(v) => setForm((f) => ({ ...f, title: v }))}
                   placeholder="Ex : Rage, CHPPIL..."
-                  placeholderTextColor="#C4A882"
+                  placeholderTextColor={Colors.earth[300]}
                   style={fieldInput}
                   returnKeyType="next"
                   accessibilityLabel="Nom du vaccin"
@@ -199,7 +200,7 @@ function VaccineFormModal({
                   value={form.date}
                   onChangeText={(v) => setForm((f) => ({ ...f, date: v }))}
                   placeholder="AAAA-MM-JJ"
-                  placeholderTextColor="#C4A882"
+                  placeholderTextColor={Colors.earth[300]}
                   style={fieldInput}
                   keyboardType="numbers-and-punctuation"
                   accessibilityLabel="Date d'administration au format AAAA-MM-JJ"
@@ -212,7 +213,7 @@ function VaccineFormModal({
                   value={form.nextDate}
                   onChangeText={(v) => setForm((f) => ({ ...f, nextDate: v }))}
                   placeholder="AAAA-MM-JJ"
-                  placeholderTextColor="#C4A882"
+                  placeholderTextColor={Colors.earth[300]}
                   style={fieldInput}
                   keyboardType="numbers-and-punctuation"
                   accessibilityLabel="Date du prochain rappel au format AAAA-MM-JJ"
@@ -225,7 +226,7 @@ function VaccineFormModal({
                   value={form.notes}
                   onChangeText={(v) => setForm((f) => ({ ...f, notes: v }))}
                   placeholder="Vétérinaire, lot, observations..."
-                  placeholderTextColor="#C4A882"
+                  placeholderTextColor={Colors.earth[300]}
                   style={[fieldInput, { height: 80, textAlignVertical: 'top' }]}
                   multiline
                   accessibilityLabel="Notes sur le vaccin"
@@ -241,7 +242,7 @@ function VaccineFormModal({
                 accessibilityLabel={saving ? 'Enregistrement en cours' : 'Enregistrer le vaccin'}
                 accessibilityState={{ disabled: !canSave || saving }}
                 style={{
-                  backgroundColor: '#2D5A3D',
+                  backgroundColor: Colors.forest[500],
                   borderRadius: 12,
                   paddingVertical: 14,
                   alignItems: 'center',
@@ -253,11 +254,11 @@ function VaccineFormModal({
                 }}
               >
                 {saving ? (
-                  <ActivityIndicator size="small" color="#FFF8F0" />
+                  <ActivityIndicator size="small" color={Colors.cream} />
                 ) : (
-                  <Ionicons name="checkmark" size={18} color="#FFF8F0" />
+                  <Ionicons name="checkmark" size={18} color={Colors.cream} />
                 )}
-                <Text style={{ color: '#FFF8F0', fontSize: 16, fontWeight: '700' }}>
+                <Text style={{ color: Colors.cream, fontSize: 16, fontWeight: '700' }}>
                   {saving ? 'Enregistrement…' : 'Enregistrer'}
                 </Text>
               </TouchableOpacity>
@@ -279,13 +280,13 @@ function VaccineFormModal({
                     gap: 8,
                     minHeight: 48,
                     borderWidth: 1.5,
-                    borderColor: '#FCA5A5',
-                    backgroundColor: '#FFF5F5',
+                    borderColor: Colors.errorBorder,
+                    backgroundColor: Colors.errorBg,
                     opacity: saving ? 0.5 : 1,
                   }}
                 >
-                  <Ionicons name="trash-outline" size={18} color="#C0392B" />
-                  <Text style={{ color: '#C0392B', fontSize: 15, fontWeight: '600' }}>
+                  <Ionicons name="trash-outline" size={18} color={Colors.error} />
+                  <Text style={{ color: Colors.error, fontSize: 15, fontWeight: '600' }}>
                     Supprimer ce vaccin
                   </Text>
                 </TouchableOpacity>
@@ -303,19 +304,19 @@ function VaccineFormModal({
 const fieldLabel = {
   fontSize: 13 as const,
   fontWeight: '600' as const,
-  color: '#132A1C',
+  color: Colors.forest[800],
   marginBottom: 6,
 };
 
 const fieldInput = {
-  backgroundColor: '#F5F1EB',
+  backgroundColor: Colors.fieldBg,
   borderRadius: 10,
   borderWidth: 1,
-  borderColor: '#E4D0BB',
+  borderColor: Colors.earth[200],
   paddingHorizontal: 14,
   paddingVertical: 12,
   fontSize: 15 as const,
-  color: '#132A1C',
+  color: Colors.forest[800],
   minHeight: 48,
 };
 
@@ -369,12 +370,13 @@ export default function VaccinsScreen() {
 
   async function getDogId(): Promise<string | null> {
     if (!user) return null;
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('dogs')
       .select('id')
       .eq('owner_id', user.id)
       .order('created_at', { ascending: true })
       .limit(1);
+    if (error) throw error;
     return data?.[0]?.id ?? null;
   }
 
@@ -450,7 +452,7 @@ export default function VaccinsScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: '#FFF8F0' }}>
+      <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.cream }}>
         <VaccineSkeleton />
       </SafeAreaView>
     );
@@ -458,23 +460,23 @@ export default function VaccinsScreen() {
 
   if (error) {
     return (
-      <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: '#FFF8F0', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-        <Ionicons name="alert-circle-outline" size={48} color="#C0392B" />
-        <Text style={{ fontSize: 16, fontWeight: '600', color: '#132A1C', marginTop: 12, textAlign: 'center' }}>{error}</Text>
+      <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.cream, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+        <Ionicons name="alert-circle-outline" size={48} color={Colors.error} />
+        <Text style={{ fontSize: 16, fontWeight: '600', color: Colors.forest[800], marginTop: 12, textAlign: 'center' }}>{error}</Text>
         <TouchableOpacity
           onPress={loadVaccines}
           accessibilityRole="button"
           accessibilityLabel="Réessayer le chargement"
-          style={{ marginTop: 16, backgroundColor: '#2D5A3D', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, minHeight: 44, justifyContent: 'center' }}
+          style={{ marginTop: 16, backgroundColor: Colors.forest[500], paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, minHeight: 44, justifyContent: 'center' }}
         >
-          <Text style={{ color: '#FFF8F0', fontWeight: '600', fontSize: 15 }}>Réessayer</Text>
+          <Text style={{ color: Colors.cream, fontWeight: '600', fontSize: 15 }}>Réessayer</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: '#FFF8F0' }}>
+    <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.cream }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
 
         {/* Urgent alert */}
@@ -483,10 +485,10 @@ export default function VaccinsScreen() {
             style={{
               marginHorizontal: 16,
               marginTop: 12,
-              backgroundColor: getVaccineStatus(nextUrgent.next_date) === 'expired' ? '#FFF5F5' : '#FFF8F0',
+              backgroundColor: getVaccineStatus(nextUrgent.next_date) === 'expired' ? Colors.errorBg : Colors.cream,
               borderRadius: 12,
               borderWidth: 1.5,
-              borderColor: getVaccineStatus(nextUrgent.next_date) === 'expired' ? '#FCA5A5' : '#E4D0BB',
+              borderColor: getVaccineStatus(nextUrgent.next_date) === 'expired' ? Colors.errorBorder : Colors.earth[200],
               padding: 16,
               flexDirection: 'row',
               alignItems: 'center',
@@ -497,13 +499,13 @@ export default function VaccinsScreen() {
             <Ionicons
               name={getVaccineStatus(nextUrgent.next_date) === 'expired' ? 'alert-circle' : 'time'}
               size={22}
-              color={getVaccineStatus(nextUrgent.next_date) === 'expired' ? '#C0392B' : '#7A5230'}
+              color={getVaccineStatus(nextUrgent.next_date) === 'expired' ? Colors.error : Colors.earth[500]}
             />
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 13, fontWeight: '700', color: '#132A1C' }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: Colors.forest[800] }}>
                 {getVaccineStatus(nextUrgent.next_date) === 'expired' ? 'Vaccin expiré' : 'Rappel à prévoir'}
               </Text>
-              <Text style={{ fontSize: 12, color: '#687068', marginTop: 2 }}>
+              <Text style={{ fontSize: 12, color: Colors.muted, marginTop: 2 }}>
                 {nextUrgent.title} · {nextUrgent.next_date ? new Date(nextUrgent.next_date).toLocaleDateString('fr-FR') : ''}
               </Text>
             </View>
@@ -526,8 +528,8 @@ export default function VaccinsScreen() {
         <View style={{ paddingHorizontal: 16 }}>
           {filtered.length === 0 ? (
             <View style={{ alignItems: 'center', paddingVertical: 48 }}>
-              <Ionicons name="shield-checkmark-outline" size={56} color="#ADD1B5" />
-              <Text style={{ fontSize: 16, fontWeight: '600', color: '#132A1C', marginTop: 16, textAlign: 'center' }}>
+              <Ionicons name="shield-checkmark-outline" size={56} color={Colors.forest[200]} />
+              <Text style={{ fontSize: 16, fontWeight: '600', color: Colors.forest[800], marginTop: 16, textAlign: 'center' }}>
                 {filter === 'all' ? 'Aucun vaccin enregistré' : `Aucun vaccin "${filter === 'ok' ? 'à jour' : filter === 'soon' ? 'bientôt' : 'expiré'}"`}
               </Text>
               {filter === 'all' && (
@@ -535,9 +537,9 @@ export default function VaccinsScreen() {
                   onPress={() => { setEditing(null); setModalVisible(true); }}
                   accessibilityRole="button"
                   accessibilityLabel="Ajouter un vaccin"
-                  style={{ marginTop: 16, backgroundColor: '#2D5A3D', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, minHeight: 44, justifyContent: 'center' }}
+                  style={{ marginTop: 16, backgroundColor: Colors.forest[500], paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, minHeight: 44, justifyContent: 'center' }}
                 >
-                  <Text style={{ color: '#FFF8F0', fontWeight: '600', fontSize: 15 }}>Ajouter un vaccin</Text>
+                  <Text style={{ color: Colors.cream, fontWeight: '600', fontSize: 15 }}>Ajouter un vaccin</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -566,17 +568,17 @@ export default function VaccinsScreen() {
           width: 56,
           height: 56,
           borderRadius: 28,
-          backgroundColor: '#2D5A3D',
+          backgroundColor: Colors.forest[500],
           alignItems: 'center',
           justifyContent: 'center',
-          shadowColor: '#2D5A3D',
+          shadowColor: Colors.forest[500],
           shadowOffset: { width: 0, height: 4 },
           shadowOpacity: 0.3,
           shadowRadius: 12,
           elevation: 6,
         }}
       >
-        <Ionicons name="add" size={28} color="#FFF8F0" />
+        <Ionicons name="add" size={28} color={Colors.cream} />
       </TouchableOpacity>
 
       <VaccineFormModal

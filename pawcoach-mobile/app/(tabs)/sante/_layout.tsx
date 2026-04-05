@@ -1,13 +1,14 @@
 import { Stack } from 'expo-router';
+import { Colors } from '../../../constants/theme';
 
 export default function SanteLayout() {
   return (
     <Stack
       screenOptions={{
-        headerStyle: { backgroundColor: '#FFF8F0' },
-        headerTintColor: '#2D5A3D',
+        headerStyle: { backgroundColor: Colors.cream },
+        headerTintColor: Colors.forest[500],
         headerTitleStyle: { fontWeight: '700', fontSize: 17 },
-        contentStyle: { backgroundColor: '#FFF8F0' },
+        contentStyle: { backgroundColor: Colors.cream },
         animation: 'slide_from_right',
       }}
     >

@@ -7,6 +7,7 @@ import Animated, {
   withSpring,
   withDelay,
 } from 'react-native-reanimated';
+import { Colors } from '../../constants/theme';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -35,7 +36,7 @@ export default function HealthScore({ score, size = 140, strokeWidth = 10, label
   }, [score]);
 
   const color =
-    score >= 70 ? '#2D5A3D' : score >= 40 ? '#C4A882' : '#C0392B';
+    score >= 70 ? Colors.forest[500] : score >= 40 ? Colors.earth[300] : Colors.error;
 
   const scoreLabel =
     score >= 70 ? 'Excellent' : score >= 40 ? 'Correct' : 'À améliorer';
@@ -54,7 +55,7 @@ export default function HealthScore({ score, size = 140, strokeWidth = 10, label
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="#EEF4F0"
+            stroke={Colors.forest[50]}
             strokeWidth={strokeWidth}
             fill="none"
           />
@@ -78,13 +79,13 @@ export default function HealthScore({ score, size = 140, strokeWidth = 10, label
           style={{
             fontSize: size >= 130 ? 32 : 22,
             fontWeight: '700',
-            color: '#132A1C',
+            color: Colors.forest[800],
             lineHeight: size >= 130 ? 38 : 28,
           }}
         >
           {score}
         </Text>
-        <Text style={{ fontSize: 11, color: '#687068', marginTop: 2 }}>
+        <Text style={{ fontSize: 11, color: Colors.muted, marginTop: 2 }}>
           {label ?? scoreLabel}
         </Text>
       </View>
