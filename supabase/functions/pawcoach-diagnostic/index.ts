@@ -1,6 +1,6 @@
 import { corsHeaders } from '../_shared/cors.ts'
 import { requireAuth, requireDogOwnership } from '../_shared/auth.ts'
-import { consumeActionCredit } from '../_shared/quota.ts'
+import { checkActionCredit, consumeActionCredit } from '../_shared/quota.ts'
 import { invokeLLM } from '../_shared/openrouter.ts'
 import { createServiceClient } from '../_shared/supabase-client.ts'
 import { sanitize } from '../_shared/sanitize.ts'
@@ -33,8 +33,8 @@ Deno.serve(async (req) => {
     // Verify dog ownership via RLS
     await requireDogOwnership(authHeader, dogId)
 
-    // Consume 1 action credit — throws 429 if quota exceeded
-    await consumeActionCredit(authHeader)
+    // Check quota BEFORE LLM call — throws 429 if exceeded, no credit consumed yet
+    await checkActionCredit(authHeader)
 
     const serviceClient = createServiceClient()
 
@@ -97,6 +97,9 @@ Genere un bilan au format JSON strict avec ces champs exactement:
       response_format: { type: 'json_object' },
     })
 
+    // LLM succeeded — consume 1 action credit now
+    await consumeActionCredit(authHeader)
+
     let result: any = {}
     try {
       result = JSON.parse(raw)
@@ -144,6 +147,7 @@ Genere un bilan au format JSON strict avec ces champs exactement:
     return new Response(
       JSON.stringify({
         success: true,
+        report_saved: !insertError,
         report: {
           id: report?.id ?? null,
           urgency_level: urgencyLevel,

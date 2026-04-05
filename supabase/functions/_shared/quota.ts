@@ -25,6 +25,30 @@ export async function consumeMessageCredit(authHeader: string): Promise<void> {
 }
 
 /**
+ * Vérifie si l'utilisateur dispose d'un crédit action, SANS consommer.
+ * À appeler avant invokeLLM pour bloquer les appels LLM inutiles si quota dépassé.
+ * Throws une Response 429 si quota dépassé.
+ */
+export async function checkActionCredit(authHeader: string): Promise<void> {
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_ANON_KEY')!,
+    { global: { headers: { Authorization: authHeader } } },
+  )
+
+  const { data, error } = await supabase.rpc('check_action_credit')
+
+  if (error) throw new Error(`Quota check failed: ${error.message}`)
+
+  if (!data) {
+    throw new Response(
+      JSON.stringify({ error: 'Action quota exceeded. Upgrade to premium for unlimited actions.' }),
+      { status: 429, headers: { 'Content-Type': 'application/json' } },
+    )
+  }
+}
+
+/**
  * Vérifie et consomme 1 crédit action (analyses, diagnostics, etc.).
  * Throws une Response 429 si quota dépassé.
  */

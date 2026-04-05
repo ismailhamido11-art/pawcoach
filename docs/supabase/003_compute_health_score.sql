@@ -97,7 +97,9 @@ begin
   -- ------------------------------------------------
   select current_streak into v_current_streak
   from streaks
-  where dog_id = p_dog_id;
+  where dog_id = p_dog_id
+  order by updated_at desc
+  limit 1;
 
   select count(*) into v_logs_30j
   from daily_logs
