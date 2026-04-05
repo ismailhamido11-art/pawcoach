@@ -12,7 +12,7 @@ import {
   Platform,
   Pressable,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../lib/auth';
@@ -281,11 +281,13 @@ const fieldInput = {
 
 export default function PoidsScreen() {
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
 
   const [records, setRecords] = useState<HealthRecord[]>([]);
   const [dogBreed, setDogBreed] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [cachedDogId, setCachedDogId] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [editing, setEditing] = useState<HealthRecord | null>(null);
   const [saving, setSaving] = useState(false);
@@ -303,6 +305,7 @@ export default function PoidsScreen() {
       if (!dogs || dogs.length === 0) { setLoading(false); return; }
       const dog = dogs[0];
       setDogBreed(dog.breed ?? null);
+      setCachedDogId(dog.id);
 
       const { data, error: e } = await supabase
         .from('health_records')
@@ -322,13 +325,6 @@ export default function PoidsScreen() {
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  async function getDogId(): Promise<string | null> {
-    if (!user) return null;
-    const { data, error } = await supabase.from('dogs').select('id').eq('owner_id', user.id).order('created_at', { ascending: true }).limit(1);
-    if (error) throw error;
-    return data?.[0]?.id ?? null;
-  }
-
   const handleSave = async (form: { value: string; date: string; notes: string }) => {
     setSaving(true);
     try {
@@ -339,8 +335,11 @@ export default function PoidsScreen() {
         }).eq('id', editing.id);
         if (error) throw error;
       } else {
-        const dogId = await getDogId();
-        if (!dogId) return;
+        const dogId = cachedDogId;
+        if (!dogId) {
+          Alert.alert('Aucun chien', 'Ajoutez votre chien depuis l\'accueil.');
+          return;
+        }
         const { error } = await supabase.from('health_records').insert({
           dog_id: dogId, type: 'weight', title: 'Pesée',
           value: weightValue, date: form.date.trim(), notes: form.notes.trim() || null,
@@ -531,7 +530,7 @@ export default function PoidsScreen() {
         accessibilityRole="button"
         accessibilityLabel="Ajouter une pesée"
         style={{
-          position: 'absolute', bottom: 24, right: 20,
+          position: 'absolute', bottom: Math.max(24, insets.bottom + 8), right: 20,
           width: 56, height: 56, borderRadius: 28,
           backgroundColor: Colors.forest[500], alignItems: 'center', justifyContent: 'center',
           shadowColor: Colors.forest[500], shadowOffset: { width: 0, height: 4 },

@@ -12,7 +12,7 @@ import {
   Platform,
   Pressable,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../lib/auth';
@@ -326,11 +326,13 @@ type FilterKey = 'all' | 'ok' | 'soon' | 'expired';
 
 export default function VaccinsScreen() {
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
 
   const [vaccines, setVaccines] = useState<HealthRecord[]>([]);
   const [filter, setFilter] = useState<FilterKey>('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [cachedDogId, setCachedDogId] = useState<string | null>(null);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editing, setEditing] = useState<HealthRecord | null>(null);
@@ -349,6 +351,7 @@ export default function VaccinsScreen() {
         .limit(1);
       if (!dogs || dogs.length === 0) { setLoading(false); return; }
       const dogId = dogs[0].id;
+      setCachedDogId(dogId);
 
       const { data, error: e } = await supabase
         .from('health_records')
@@ -368,18 +371,6 @@ export default function VaccinsScreen() {
 
   useEffect(() => { loadVaccines(); }, [loadVaccines]);
 
-  async function getDogId(): Promise<string | null> {
-    if (!user) return null;
-    const { data, error } = await supabase
-      .from('dogs')
-      .select('id')
-      .eq('owner_id', user.id)
-      .order('created_at', { ascending: true })
-      .limit(1);
-    if (error) throw error;
-    return data?.[0]?.id ?? null;
-  }
-
   const handleSave = async (form: FormState) => {
     setSaving(true);
     try {
@@ -395,8 +386,11 @@ export default function VaccinsScreen() {
           .eq('id', editing.id);
         if (error) throw error;
       } else {
-        const dogId = await getDogId();
-        if (!dogId) return;
+        const dogId = cachedDogId;
+        if (!dogId) {
+          Alert.alert('Aucun chien', 'Ajoutez votre chien depuis l\'accueil.');
+          return;
+        }
         const { error } = await supabase.from('health_records').insert({
           dog_id: dogId,
           type: 'vaccine',
@@ -563,7 +557,7 @@ export default function VaccinsScreen() {
         accessibilityLabel="Ajouter un vaccin"
         style={{
           position: 'absolute',
-          bottom: 24,
+          bottom: Math.max(24, insets.bottom + 8),
           right: 20,
           width: 56,
           height: 56,

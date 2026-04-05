@@ -225,7 +225,7 @@ export default function DiagnosticResultScreen() {
         </View>
 
         {/* Probable causes */}
-        {report.causes.length > 0 && (
+        {report.causes?.length > 0 && (
           <View
             style={{
               marginHorizontal: 16,
@@ -250,7 +250,7 @@ export default function DiagnosticResultScreen() {
         )}
 
         {/* Recommendations */}
-        {report.recommendations.length > 0 && (
+        {report.recommendations?.length > 0 && (
           <View
             style={{
               marginHorizontal: 16,

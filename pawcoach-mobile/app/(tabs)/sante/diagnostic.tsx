@@ -161,7 +161,7 @@ export default function DiagnosticScreen() {
     }
     setSubmitting(true);
     try {
-      const { data, error } = await supabase.functions.invoke('pawcoach-diagnostic', {
+      const invokePromise = supabase.functions.invoke('pawcoach-diagnostic', {
         body: {
           dogId,
           symptoms: selectedSymptoms,
@@ -171,6 +171,10 @@ export default function DiagnosticScreen() {
           additionalInfo: additionalInfo.trim() || undefined,
         },
       });
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), 20000)
+      );
+      const { data, error } = await Promise.race([invokePromise, timeoutPromise]);
       if (error) throw error;
       if (!data?.success || !data?.report) throw new Error('Réponse invalide du serveur.');
 
@@ -179,14 +183,18 @@ export default function DiagnosticScreen() {
         params: { report: JSON.stringify(data.report) },
       });
     } catch (e: any) {
-      const status = (e as any)?.context?.status;
-      if (status === 429 || (e as any)?.message?.includes('quota')) {
-        Alert.alert(
-          'Quota atteint',
-          'Vos diagnostics gratuits du jour sont épuisés. Passez Premium pour un accès illimité.',
-        );
+      if ((e as any)?.message === 'timeout') {
+        Alert.alert('Délai dépassé', 'L\'analyse prend trop de temps. Vérifiez votre connexion et réessayez.');
       } else {
-        Alert.alert('Erreur', 'Impossible d\'analyser. Vérifiez votre connexion et réessayez.');
+        const status = (e as any)?.context?.status;
+        if (status === 429 || (e as any)?.message?.includes('quota')) {
+          Alert.alert(
+            'Quota atteint',
+            'Vos diagnostics gratuits du jour sont épuisés. Passez Premium pour un accès illimité.',
+          );
+        } else {
+          Alert.alert('Erreur', 'Impossible d\'analyser. Vérifiez votre connexion et réessayez.');
+        }
       }
       console.warn('[Diagnostic] submit error:', e);
     } finally {
