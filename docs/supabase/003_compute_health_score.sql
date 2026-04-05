@@ -5,7 +5,14 @@
 --   Poids    30% — ecart entre dernier poids mesure et poids reference du chien
 --   Activite 30% — streak current + daily_logs des 30 derniers jours
 --
--- Appliquee via migration: 20260405_compute_health_score_function
+-- Retour attendu par le frontend (HealthScoreData) :
+--   { total, vaccine_score, weight_score, activity_score,
+--     next_vaccine_title, next_vaccine_date }
+--
+-- Appliquee via migrations :
+--   20260405144919_compute_health_score_function
+--   20260405162849_fix_compute_health_score_division_by_zero
+--   20260405xxxxxx_fix_compute_health_score_return_shape  (ce fix)
 -- ============================================================================
 
 create or replace function compute_health_score(p_dog_id uuid)
@@ -29,6 +36,9 @@ declare
 
   v_current_streak  integer;
   v_logs_30j        integer;
+
+  v_next_vaccine_title  text;
+  v_next_vaccine_date   date;
 begin
   -- ------------------------------------------------
   -- 40% VACCINS
@@ -120,28 +130,26 @@ begin
     (v_score_activite * 0.30)
   );
 
+  -- ------------------------------------------------
+  -- PROCHAIN VACCIN (pour alerte dashboard)
+  -- Prend le vaccin dont next_date est le plus proche dans le futur
+  -- ------------------------------------------------
+  select title, next_date
+  into v_next_vaccine_title, v_next_vaccine_date
+  from health_records
+  where dog_id = p_dog_id
+    and type = 'vaccine'
+    and next_date >= current_date
+  order by next_date asc
+  limit 1;
+
   return jsonb_build_object(
-    'score', v_score_total,
-    'components', jsonb_build_object(
-      'vaccins', jsonb_build_object(
-        'score',  round(v_score_vaccins),
-        'weight', 0.40,
-        'total',  v_total_vaccins,
-        'a_jour', v_vaccins_a_jour
-      ),
-      'poids', jsonb_build_object(
-        'score',            round(v_score_poids),
-        'weight',           0.30,
-        'reference_kg',     v_dog_weight,
-        'last_measured_kg', v_last_weight
-      ),
-      'activite', jsonb_build_object(
-        'score',          round(v_score_activite),
-        'weight',         0.30,
-        'current_streak', v_current_streak,
-        'logs_30j',       v_logs_30j
-      )
-    )
+    'total',              v_score_total,
+    'vaccine_score',      round(v_score_vaccins),
+    'weight_score',       round(v_score_poids),
+    'activity_score',     round(v_score_activite),
+    'next_vaccine_title', v_next_vaccine_title,
+    'next_vaccine_date',  v_next_vaccine_date
   );
 end;
 $$;
