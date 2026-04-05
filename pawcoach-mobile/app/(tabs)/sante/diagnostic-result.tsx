@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Colors } from '../../../constants/theme';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -34,30 +35,30 @@ const URGENCY_CONFIG: Record<
 > = {
   low: {
     label: 'Situation normale',
-    color: '#2D5A3D',
-    bg: '#EEF4F0',
-    border: '#ADD1B5',
+    color: Colors.forest[500],
+    bg: Colors.forest[50],
+    border: Colors.forest[200],
     icon: 'checkmark-circle',
   },
   medium: {
     label: 'Surveillance recommandée',
-    color: '#7A5230',
-    bg: '#FFF8F0',
-    border: '#E4D0BB',
+    color: Colors.earth[500],
+    bg: Colors.cream,
+    border: Colors.earth[200],
     icon: 'warning',
   },
   high: {
     label: 'Consultation vétérinaire',
-    color: '#C0392B',
-    bg: '#FFF5F5',
-    border: '#FCA5A5',
+    color: Colors.error,
+    bg: Colors.errorBg,
+    border: Colors.errorBorder,
     icon: 'alert-circle',
   },
   emergency: {
     label: 'Urgence — Consultez immédiatement',
-    color: '#7B0000',
-    bg: '#FFF0F0',
-    border: '#F87171',
+    color: Colors.emergency,
+    bg: Colors.emergencyBg,
+    border: Colors.emergencyBorder,
     icon: 'medical',
   },
 };
@@ -66,18 +67,18 @@ const URGENCY_CONFIG: Record<
 
 function CauseBar({ name, probability }: Cause) {
   const pct = Math.min(100, Math.max(0, Math.round(probability)));
-  const color = pct >= 60 ? '#C0392B' : pct >= 30 ? '#7A5230' : '#2D5A3D';
+  const color = pct >= 60 ? Colors.error : pct >= 30 ? Colors.earth[500] : Colors.forest[500];
   return (
     <View style={{ marginBottom: 16 }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
-        <Text style={{ fontSize: 14, color: '#132A1C', fontWeight: '500', flex: 1, marginRight: 12 }}
+        <Text style={{ fontSize: 14, color: Colors.forest[800], fontWeight: '500', flex: 1, marginRight: 12 }}
           numberOfLines={2}
         >
           {name}
         </Text>
         <Text style={{ fontSize: 13, fontWeight: '700', color }}>{pct}%</Text>
       </View>
-      <View style={{ height: 8, backgroundColor: '#EEF4F0', borderRadius: 4, overflow: 'hidden' }}>
+      <View style={{ height: 8, backgroundColor: Colors.forest[50], borderRadius: 4, overflow: 'hidden' }}>
         <View
           style={{
             width: `${pct}%`,
@@ -110,13 +111,13 @@ export default function DiagnosticResultScreen() {
     return (
       <SafeAreaView
         edges={['bottom']}
-        style={{ flex: 1, backgroundColor: '#FFF8F0', alignItems: 'center', justifyContent: 'center', padding: 24 }}
+        style={{ flex: 1, backgroundColor: Colors.cream, alignItems: 'center', justifyContent: 'center', padding: 24 }}
       >
-        <Ionicons name="alert-circle-outline" size={48} color="#C0392B" />
-        <Text style={{ fontSize: 16, fontWeight: '600', color: '#132A1C', marginTop: 12, textAlign: 'center' }}>
+        <Ionicons name="alert-circle-outline" size={48} color={Colors.error} />
+        <Text style={{ fontSize: 16, fontWeight: '600', color: Colors.forest[800], marginTop: 12, textAlign: 'center' }}>
           Résultat indisponible
         </Text>
-        <Text style={{ fontSize: 13, color: '#687068', marginTop: 8, textAlign: 'center', lineHeight: 18 }}>
+        <Text style={{ fontSize: 13, color: Colors.muted, marginTop: 8, textAlign: 'center', lineHeight: 18 }}>
           Une erreur est survenue lors de la récupération du résultat.
         </Text>
         <TouchableOpacity
@@ -125,7 +126,7 @@ export default function DiagnosticResultScreen() {
           accessibilityLabel="Retour au diagnostic"
           style={{
             marginTop: 20,
-            backgroundColor: '#2D5A3D',
+            backgroundColor: Colors.forest[500],
             paddingHorizontal: 24,
             paddingVertical: 14,
             borderRadius: 12,
@@ -133,7 +134,7 @@ export default function DiagnosticResultScreen() {
             justifyContent: 'center',
           }}
         >
-          <Text style={{ color: '#FFF8F0', fontWeight: '600', fontSize: 15 }}>Retour</Text>
+          <Text style={{ color: Colors.cream, fontWeight: '600', fontSize: 15 }}>Retour</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -173,7 +174,7 @@ export default function DiagnosticResultScreen() {
   }
 
   return (
-    <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: '#FFF8F0' }}>
+    <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.cream }}>
       <ScrollView
         contentContainerStyle={{ paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
@@ -200,7 +201,7 @@ export default function DiagnosticResultScreen() {
               width: 52,
               height: 52,
               borderRadius: 26,
-              backgroundColor: '#FFFFFF',
+              backgroundColor: Colors.white,
               alignItems: 'center',
               justifyContent: 'center',
               shadowColor: cfg.color,
@@ -217,7 +218,7 @@ export default function DiagnosticResultScreen() {
             <Text style={{ fontSize: 16, fontWeight: '700', color: cfg.color, lineHeight: 22 }}>
               {cfg.label}
             </Text>
-            <Text style={{ fontSize: 12, color: '#687068', marginTop: 4 }}>
+            <Text style={{ fontSize: 12, color: Colors.muted, marginTop: 4 }}>
               Analyse PawDoc IA
             </Text>
           </View>
@@ -229,10 +230,10 @@ export default function DiagnosticResultScreen() {
             style={{
               marginHorizontal: 16,
               marginTop: 16,
-              backgroundColor: '#FFFFFF',
+              backgroundColor: Colors.white,
               borderRadius: 16,
               padding: 20,
-              shadowColor: '#2D5A3D',
+              shadowColor: Colors.forest[500],
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.08,
               shadowRadius: 8,
@@ -254,10 +255,10 @@ export default function DiagnosticResultScreen() {
             style={{
               marginHorizontal: 16,
               marginTop: 16,
-              backgroundColor: '#FFFFFF',
+              backgroundColor: Colors.white,
               borderRadius: 16,
               padding: 20,
-              shadowColor: '#2D5A3D',
+              shadowColor: Colors.forest[500],
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.08,
               shadowRadius: 8,
@@ -290,21 +291,21 @@ export default function DiagnosticResultScreen() {
                         height: 22,
                         borderRadius: 11,
                         borderWidth: 2,
-                        borderColor: done ? '#2D5A3D' : '#C4A882',
-                        backgroundColor: done ? '#2D5A3D' : 'transparent',
+                        borderColor: done ? Colors.forest[500] : Colors.earth[300],
+                        backgroundColor: done ? Colors.forest[500] : 'transparent',
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginTop: 1,
                         flexShrink: 0,
                       }}
                     >
-                      {done && <Ionicons name="checkmark" size={13} color="#FFF8F0" />}
+                      {done && <Ionicons name="checkmark" size={13} color={Colors.cream} />}
                     </View>
                     <Text
                       style={{
                         flex: 1,
                         fontSize: 14,
-                        color: done ? '#9AA49A' : '#132A1C',
+                        color: done ? Colors.done : Colors.forest[800],
                         lineHeight: 20,
                         textDecorationLine: done ? 'line-through' : 'none',
                       }}
@@ -330,7 +331,7 @@ export default function DiagnosticResultScreen() {
             accessibilityRole="link"
             accessibilityLabel="Trouver un vétérinaire"
             style={{
-              backgroundColor: '#2D5A3D',
+              backgroundColor: Colors.forest[500],
               borderRadius: 14,
               paddingVertical: 16,
               alignItems: 'center',
@@ -340,8 +341,8 @@ export default function DiagnosticResultScreen() {
               minHeight: 52,
             }}
           >
-            <Ionicons name="location" size={18} color="#FFF8F0" />
-            <Text style={{ color: '#FFF8F0', fontSize: 16, fontWeight: '700' }}>
+            <Ionicons name="location" size={18} color={Colors.cream} />
+            <Text style={{ color: Colors.cream, fontSize: 16, fontWeight: '700' }}>
               Trouver un vétérinaire
             </Text>
           </TouchableOpacity>
@@ -360,12 +361,12 @@ export default function DiagnosticResultScreen() {
               gap: 10,
               minHeight: 52,
               borderWidth: 1.5,
-              borderColor: '#ADD1B5',
-              backgroundColor: '#EEF4F0',
+              borderColor: Colors.forest[200],
+              backgroundColor: Colors.forest[50],
             }}
           >
-            <Ionicons name="share-social-outline" size={18} color="#2D5A3D" />
-            <Text style={{ color: '#2D5A3D', fontSize: 15, fontWeight: '600' }}>
+            <Ionicons name="share-social-outline" size={18} color={Colors.forest[500]} />
+            <Text style={{ color: Colors.forest[500], fontSize: 15, fontWeight: '600' }}>
               Partager avec mon vétérinaire
             </Text>
           </TouchableOpacity>
@@ -376,12 +377,12 @@ export default function DiagnosticResultScreen() {
           style={{
             marginHorizontal: 16,
             marginTop: 20,
-            backgroundColor: '#F5F1EB',
+            backgroundColor: Colors.fieldBg,
             borderRadius: 12,
             padding: 16,
           }}
         >
-          <Text style={{ fontSize: 12, color: '#687068', lineHeight: 18 }}>
+          <Text style={{ fontSize: 12, color: Colors.muted, lineHeight: 18 }}>
             {report.disclaimer}
           </Text>
         </View>
@@ -395,6 +396,6 @@ export default function DiagnosticResultScreen() {
 const sectionLabel = {
   fontSize: 12 as const,
   fontWeight: '700' as const,
-  color: '#687068',
+  color: Colors.muted,
   letterSpacing: 0.5,
 };
