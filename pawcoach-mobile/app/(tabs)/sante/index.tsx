@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  type DimensionValue,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -32,7 +33,7 @@ interface Dog {
 
 // ─── Skeleton ───────────────────────────────────────────────────────────────
 
-function Skeleton({ w, h, rounded = 8 }: { w?: string | number; h: number; rounded?: number }) {
+function Skeleton({ w, h, rounded = 8 }: { w?: DimensionValue; h: number; rounded?: number }) {
   return (
     <View
       style={{
