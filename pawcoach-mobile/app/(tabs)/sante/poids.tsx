@@ -332,16 +332,18 @@ export default function PoidsScreen() {
     try {
       const weightValue = parseFloat(form.value);
       if (editing) {
-        await supabase.from('health_records').update({
+        const { error } = await supabase.from('health_records').update({
           value: weightValue, date: form.date.trim(), notes: form.notes.trim() || null,
         }).eq('id', editing.id);
+        if (error) throw error;
       } else {
         const dogId = await getDogId();
         if (!dogId) return;
-        await supabase.from('health_records').insert({
+        const { error } = await supabase.from('health_records').insert({
           dog_id: dogId, type: 'weight', title: 'Pesée',
           value: weightValue, date: form.date.trim(), notes: form.notes.trim() || null,
         });
+        if (error) throw error;
       }
       setModalVisible(false);
       setEditing(null);
@@ -356,7 +358,8 @@ export default function PoidsScreen() {
   const handleDelete = async (id: string) => {
     setSaving(true);
     try {
-      await supabase.from('health_records').delete().eq('id', id);
+      const { error } = await supabase.from('health_records').delete().eq('id', id);
+      if (error) throw error;
       setModalVisible(false);
       setEditing(null);
       await loadData();
