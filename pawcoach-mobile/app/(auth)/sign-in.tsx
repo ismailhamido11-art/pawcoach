@@ -31,7 +31,7 @@ export default function SignInScreen() {
         password,
       });
       if (authError) throw authError;
-      // Redirection gérée par AuthProvider + index.tsx
+      router.replace('/(tabs)');
     } catch {
       // [A-10] Message générique — ne révèle pas si c'est l'email ou le mot de passe
       setError('Email ou mot de passe incorrect. Réessayez.');
