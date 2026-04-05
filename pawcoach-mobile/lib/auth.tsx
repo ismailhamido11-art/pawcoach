@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useSegments, useRouter } from 'expo-router';
 import { supabase } from './supabase';
 import { registerPushToken } from './notifications';
 import type { Session, User } from '@supabase/supabase-js';
@@ -113,4 +114,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   return useContext(AuthContext);
+}
+
+// ─── Protection de route centralisée ───────────────────────────────────────
+
+export function useProtectedRoute() {
+  const { session, loading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (loading) return;
+    const inAuthGroup = segments[0] === '(auth)';
+    if (session && inAuthGroup) {
+      router.replace('/(tabs)');
+    } else if (!session && !inAuthGroup) {
+      router.replace('/(auth)/welcome');
+    }
+  }, [session, loading, segments]);
 }

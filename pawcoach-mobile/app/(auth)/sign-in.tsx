@@ -31,7 +31,6 @@ export default function SignInScreen() {
         password,
       });
       if (authError) throw authError;
-      router.replace('/(tabs)');
     } catch {
       // [A-10] Message générique — ne révèle pas si c'est l'email ou le mot de passe
       setError('Email ou mot de passe incorrect. Réessayez.');
@@ -46,7 +45,6 @@ export default function SignInScreen() {
     setError('');
     try {
       await signInWithGoogle();
-      // Redirection gérée par onAuthStateChange
     } catch (e: any) {
       // Ignorer l'annulation utilisateur
       if (e?.code !== 'SIGN_IN_CANCELLED') {
@@ -63,7 +61,6 @@ export default function SignInScreen() {
     setError('');
     try {
       await signInWithApple();
-      // Redirection gérée par onAuthStateChange
     } catch (e: any) {
       // ERR_REQUEST_CANCELED = user cancelled Apple auth sheet
       if (e?.code !== 'ERR_REQUEST_CANCELED') {

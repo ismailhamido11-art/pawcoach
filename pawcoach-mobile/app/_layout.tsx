@@ -3,7 +3,7 @@ import '../global.css';
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { AuthProvider } from '../lib/auth';
+import { AuthProvider, useProtectedRoute } from '../lib/auth';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,14 +31,21 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <Stack
-        screenOptions={{
-          headerStyle: { backgroundColor: '#FFF8F0' },
-          headerTintColor: '#2D5A3D',
-          contentStyle: { backgroundColor: '#FFF8F0' },
-          headerShown: false,
-        }}
-      />
+      <RootLayoutNav />
     </AuthProvider>
+  );
+}
+
+function RootLayoutNav() {
+  useProtectedRoute();
+  return (
+    <Stack
+      screenOptions={{
+        headerStyle: { backgroundColor: '#FFF8F0' },
+        headerTintColor: '#2D5A3D',
+        contentStyle: { backgroundColor: '#FFF8F0' },
+        headerShown: false,
+      }}
+    />
   );
 }

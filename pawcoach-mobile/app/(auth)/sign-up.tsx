@@ -39,7 +39,6 @@ export default function SignUpScreen() {
         // Email confirmation required — afficher le feedback
         setSignUpSuccess(true);
       }
-      // Si data.session existe, la redirection est gérée par onAuthStateChange dans AuthProvider
     } catch (e: any) {
       setError(e?.message ?? 'Une erreur est survenue. Réessayez.');
     } finally {
@@ -65,7 +64,6 @@ export default function SignUpScreen() {
     setError('');
     try {
       await signInWithGoogle();
-      // Redirection gérée par onAuthStateChange
     } catch (e: any) {
       if (e?.code !== 'SIGN_IN_CANCELLED') {
         setError('Connexion Google échouée. Réessayez.');
@@ -81,7 +79,6 @@ export default function SignUpScreen() {
     setError('');
     try {
       await signInWithApple();
-      // Redirection gérée par onAuthStateChange
     } catch (e: any) {
       if (e?.code !== 'ERR_REQUEST_CANCELED') {
         setError('Connexion Apple échouée. Réessayez.');

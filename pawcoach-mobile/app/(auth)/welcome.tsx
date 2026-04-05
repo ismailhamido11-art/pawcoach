@@ -17,7 +17,6 @@ export default function WelcomeScreen() {
         email: 'test@pawcoach.app',
         password: 'test1234',
       });
-      // Redirection gérée par onAuthStateChange dans AuthProvider
     } finally {
       setLoadingDemo(false);
     }
