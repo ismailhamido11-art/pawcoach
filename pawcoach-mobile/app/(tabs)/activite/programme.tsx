@@ -237,7 +237,7 @@ function ExerciseRow({
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 export default function ProgrammeScreen() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
 
   const [dog, setDog] = useState<Dog | null>(null);
   const [programme, setProgramme] = useState<Programme | null>(null);
@@ -377,7 +377,7 @@ export default function ProgrammeScreen() {
     } finally {
       setRegenerating(false);
     }
-  }, [dog, regenerating, profile, loadData]);
+  }, [dog, regenerating, loadData]);
 
   // ── Loading ────────────────────────────────────────────────────────────────
   if (loading) {
