@@ -447,9 +447,9 @@ export default function PlanScreen() {
               >
                 <MealPlanDay
                   plan={currentDay}
-                  totalCalories={plan!.total_daily_calories}
-                  recommendedMin={plan!.recommended_range.min}
-                  recommendedMax={plan!.recommended_range.max}
+                  totalCalories={plan!.total_daily_calories ?? 0}
+                  recommendedMin={plan!.recommended_range?.min ?? 0}
+                  recommendedMax={plan!.recommended_range?.max ?? 0}
                 />
               </View>
             </View>
