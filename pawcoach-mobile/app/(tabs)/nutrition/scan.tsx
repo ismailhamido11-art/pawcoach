@@ -126,6 +126,7 @@ export default function ScanScreen() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [showPaywall, setShowPaywall] = useState(false);
 
   // ── Init: load dog + quota + history ────────────────────────────────────────
@@ -169,6 +170,7 @@ export default function ScanScreen() {
     if (!food || submitting) return;
 
     setSubmitting(true);
+    setSubmitError(null);
     const startTime = Date.now();
 
     try {
@@ -201,9 +203,9 @@ export default function ScanScreen() {
       if (status === 429 || msg.includes('quota') || msg.includes('exceeded')) {
         setShowPaywall(true);
       } else if (msg === 'timeout') {
-        // inline error handled below via state — no Alert
-        console.warn('[ScanScreen] timeout');
+        setSubmitError('L\'analyse prend trop de temps. Vérifiez votre connexion et réessayez.');
       } else {
+        setSubmitError('Une erreur est survenue. Réessayez dans quelques instants.');
         console.warn('[ScanScreen] submit error:', e);
       }
     } finally {
@@ -322,6 +324,30 @@ export default function ScanScreen() {
                 )}
               </TouchableOpacity>
             </View>
+
+            {/* Submit error */}
+            {submitError && (
+              <View
+                style={{
+                  marginHorizontal: 16,
+                  marginTop: 12,
+                  backgroundColor: Colors.errorBg,
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: Colors.errorBorder,
+                  padding: 12,
+                  flexDirection: 'row',
+                  gap: 8,
+                  alignItems: 'flex-start',
+                }}
+                accessibilityRole="alert"
+              >
+                <Ionicons name="alert-circle-outline" size={15} color={Colors.error} style={{ marginTop: 1 }} />
+                <Text style={{ flex: 1, fontSize: 13, color: Colors.error, lineHeight: 18 }}>
+                  {submitError}
+                </Text>
+              </View>
+            )}
 
             {/* Disclaimer */}
             <View
