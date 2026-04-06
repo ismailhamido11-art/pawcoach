@@ -78,7 +78,12 @@ Deno.serve(async (req) => {
 
       if (countError) {
         console.error('Quota count error:', countError.message)
-      } else if ((count ?? 0) >= 1) {
+        return new Response(
+          JSON.stringify({ error: 'Unable to verify quota. Please try again.' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        )
+      }
+      if ((count ?? 0) >= 1) {
         return new Response(
           JSON.stringify({
             error: 'nutrition_plan_quota_exceeded',
