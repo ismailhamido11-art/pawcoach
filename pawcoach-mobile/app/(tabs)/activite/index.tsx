@@ -38,15 +38,15 @@ interface ActiveProgramme {
 interface RecentWalk {
   id: string;
   walk_minutes: number;
-  walk_distance: number | null;
+  walk_distance_km: number | null;
   created_at: string;
 }
 
 interface RecentBadge {
   id: string;
   badge_id: string;
-  name: string;
-  emoji: string;
+  badge_name: string;
+  badge_emoji: string;
   unlocked_at: string;
 }
 
@@ -134,7 +134,7 @@ export default function ActiviteHub() {
         const { count: progressCount, error: progressCountErr } = await supabase
           .from('user_progress')
           .select('id', { count: 'exact', head: true })
-          .eq('bookmark_id', bookmarkData.id)
+          .eq('dog_id', activeDog.id)
           .eq('completed', true);
         if (progressCountErr) throw progressCountErr;
         setProgramme({
@@ -150,7 +150,7 @@ export default function ActiviteHub() {
       // 4. Dernières promenades
       const { data: walksData } = await supabase
         .from('daily_logs')
-        .select('id, walk_minutes, walk_distance, created_at')
+        .select('id, walk_minutes, walk_distance_km, created_at')
         .eq('dog_id', activeDog.id)
         .gt('walk_minutes', 0)
         .order('created_at', { ascending: false })
@@ -160,7 +160,7 @@ export default function ActiviteHub() {
       // 5. Badges récents
       const { data: badgesData } = await supabase
         .from('dog_achievements')
-        .select('id, badge_id, name, emoji, unlocked_at')
+        .select('id, badge_id, badge_name, badge_emoji, unlocked_at')
         .eq('dog_id', activeDog.id)
         .order('unlocked_at', { ascending: false })
         .limit(3);
@@ -565,8 +565,8 @@ export default function ActiviteHub() {
                   day: '2-digit',
                   month: 'short',
                 });
-                const lbl = walk.walk_distance
-                  ? `${walk.walk_minutes} min · ${walk.walk_distance} km`
+                const lbl = walk.walk_distance_km
+                  ? `${walk.walk_minutes} min · ${walk.walk_distance_km} km`
                   : `${walk.walk_minutes} min`;
                 return (
                   <View key={walk.id}>
@@ -652,12 +652,12 @@ export default function ActiviteHub() {
                     elevation: 1,
                   }}
                 >
-                  <Text style={{ fontSize: 28 }}>{badge.emoji || '🏅'}</Text>
+                  <Text style={{ fontSize: 28 }}>{badge.badge_emoji || '🏅'}</Text>
                   <Text
                     style={{ fontSize: 11, fontWeight: '600', color: Colors.forest[700], textAlign: 'center' }}
                     numberOfLines={2}
                   >
-                    {badge.name}
+                    {badge.badge_name}
                   </Text>
                 </View>
               ))}

@@ -128,7 +128,7 @@ export default function LogWalkScreen() {
 
   // ── Check & unlock badges ─────────────────────────────────────────────────
 
-  const checkBadges = useCallback(async (dId: string, totalLogs: number, currentStreak: number): Promise<BadgeDef | null> => {
+  const checkBadges = useCallback(async (dId: string, ownerId: string, totalLogs: number, currentStreak: number): Promise<BadgeDef | null> => {
     // Which badges should now be unlocked?
     const candidates: BadgeDef[] = [];
     if (totalLogs >= 1)  candidates.push(BADGE_DEFS[0]); // first_walk
@@ -154,9 +154,10 @@ export default function LogWalkScreen() {
     // Insert new achievements
     const rows = newlyUnlocked.map((b) => ({
       dog_id: dId,
+      owner_id: ownerId,
       badge_id: b.badge_id,
-      name: b.name,
-      emoji: b.emoji,
+      badge_name: b.name,
+      badge_emoji: b.emoji,
       category: b.category,
       unlocked_at: new Date().toISOString(),
     }));
@@ -181,9 +182,9 @@ export default function LogWalkScreen() {
       const { error: insertErr } = await supabase.from('daily_logs').insert({
         dog_id: dogId,
         walk_minutes: duration,
-        walk_distance: distanceNum && !isNaN(distanceNum) ? distanceNum : null,
+        walk_distance_km: distanceNum && !isNaN(distanceNum) ? distanceNum : null,
         walk_mood: mood,
-        tags: selectedTags.length > 0 ? selectedTags : null,
+        walk_tags: selectedTags.length > 0 ? selectedTags : null,
         notes: notes.trim() || null,
       });
       if (insertErr) throw insertErr;
@@ -200,7 +201,7 @@ export default function LogWalkScreen() {
       const newStreak = await updateStreak(dogId);
 
       // 4. Check badges
-      const newBadge = await checkBadges(dogId, totalLogs ?? 0, newStreak);
+      const newBadge = await checkBadges(dogId, user.id, totalLogs ?? 0, newStreak);
 
       if (newBadge) {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);

@@ -4,6 +4,7 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
+  RefreshControl,
   type DimensionValue,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,46 +13,41 @@ import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../lib/auth';
 import { Colors } from '../../../constants/theme';
 
-// ─── All badge definitions ────────────────────────────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────────────────
 
-interface BadgeDef {
-  id: string;
+type BadgeCategory = 'walk' | 'streak' | 'training';
+
+interface BadgeDefinition {
+  badge_id: string;
   name: string;
   emoji: string;
-  category: 'walk' | 'streak' | 'training';
+  category: BadgeCategory;
   condition: string;
 }
 
-const ALL_BADGES: BadgeDef[] = [
-  // Walk
-  { id: 'premiere_balade',   name: 'Première Balade',   emoji: '🐾', category: 'walk',     condition: '1 promenade loguée' },
-  { id: 'marcheur',          name: 'Marcheur',           emoji: '🚶', category: 'walk',     condition: '10 promenades loguées' },
-  { id: 'marathonien',       name: 'Marathonien',        emoji: '🏃', category: 'walk',     condition: '50 promenades loguées' },
-  // Streak
-  { id: 'semaine_parfaite',  name: 'Semaine Parfaite',   emoji: '🌟', category: 'streak',   condition: '7 jours de suite' },
-  { id: 'mois_or',           name: 'Mois d\'Or',          emoji: '🥇', category: 'streak',   condition: '30 jours de suite' },
-  // Training
-  { id: 'premier_programme', name: 'Premier Programme',  emoji: '💪', category: 'training', condition: '1 programme généré' },
-  { id: 'athlete',           name: 'Athlète',             emoji: '🏆', category: 'training', condition: '3 programmes complétés' },
-];
-
-const CATEGORIES = [
-  { key: 'all',      label: 'Tous' },
-  { key: 'walk',     label: 'Marche' },
-  { key: 'streak',   label: 'Série' },
-  { key: 'training', label: 'Entraînement' },
-] as const;
-
-type Category = typeof CATEGORIES[number]['key'];
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 interface UnlockedBadge {
   badge_id: string;
-  created_at: string;
+  unlocked_at: string;
 }
 
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
+// ─── All badges (locked + unlocked) ─────────────────────────────────────────
+
+const ALL_BADGES: BadgeDefinition[] = [
+  { badge_id: 'first_walk',     name: 'Première Balade',  emoji: '🐾', category: 'walk',     condition: '1 promenade' },
+  { badge_id: 'walker_10',      name: 'Marcheur',          emoji: '🚶', category: 'walk',     condition: '10 promenades' },
+  { badge_id: 'marathonien_50', name: 'Marathonien',       emoji: '🏃', category: 'walk',     condition: '50 promenades' },
+  { badge_id: 'streak_7',       name: 'Semaine Parfaite',  emoji: '🔥', category: 'streak',   condition: '7 jours consécutifs' },
+  { badge_id: 'streak_30',      name: 'Mois d\'Or',        emoji: '🥇', category: 'streak',   condition: '30 jours consécutifs' },
+];
+
+const CATEGORIES: { value: BadgeCategory | 'all'; label: string }[] = [
+  { value: 'all',      label: 'Tous' },
+  { value: 'walk',     label: 'Balades' },
+  { value: 'streak',   label: 'Séries' },
+  { value: 'training', label: 'Entraînement' },
+];
+
+// ─── Skeleton ────────────────────────────────────────────────────────────────
 
 function Skeleton({ w, h, rounded = 8 }: { w?: DimensionValue; h: number; rounded?: number }) {
   return (
@@ -59,37 +55,42 @@ function Skeleton({ w, h, rounded = 8 }: { w?: DimensionValue; h: number; rounde
   );
 }
 
-function BadgesSkeleton() {
+function BadgeGridSkeleton() {
   return (
-    <View style={{ padding: 16, gap: 16 }}>
-      {/* Filter tabs skeleton */}
-      <View style={{ flexDirection: 'row', gap: 8 }}>
-        {[0, 1, 2, 3].map((i) => <Skeleton key={i} w={72} h={32} rounded={16} />)}
-      </View>
-      {/* Grid skeleton */}
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-        {Array.from({ length: 6 }).map((_, i) => (
-          <View key={i} style={{ width: '30%', alignItems: 'center', gap: 8 }}>
-            <Skeleton w={72} h={72} rounded={36} />
-            <Skeleton h={11} w={56} />
-          </View>
-        ))}
-      </View>
+    <View style={{ paddingHorizontal: 16, paddingTop: 16, flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <View
+          key={i}
+          style={{
+            width: '30%',
+            backgroundColor: Colors.white,
+            borderRadius: 12,
+            padding: 14,
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
+          <Skeleton w={44} h={44} rounded={22} />
+          <Skeleton h={11} w="80%" />
+          <Skeleton h={10} w="60%" />
+        </View>
+      ))}
     </View>
   );
 }
 
-// ─── Badge Cell ───────────────────────────────────────────────────────────────
+// ─── Badge cell ──────────────────────────────────────────────────────────────
 
 function BadgeCell({
-  def,
+  badge,
+  unlocked,
   unlockedAt,
 }: {
-  def: BadgeDef;
+  badge: BadgeDefinition;
+  unlocked: boolean;
   unlockedAt: string | null;
 }) {
-  const unlocked = !!unlockedAt;
-  const date = unlockedAt
+  const dateLabel = unlockedAt
     ? new Date(unlockedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })
     : null;
 
@@ -97,93 +98,111 @@ function BadgeCell({
     <View
       style={{
         flex: 1,
+        backgroundColor: Colors.white,
+        borderRadius: 12,
+        padding: 14,
         alignItems: 'center',
-        paddingVertical: 16,
         gap: 6,
+        opacity: unlocked ? 1 : 0.4,
+        shadowColor: Colors.forest[500],
+        shadowOffset: { width: 0, height: unlocked ? 1 : 0 },
+        shadowOpacity: unlocked ? 0.06 : 0,
+        shadowRadius: 6,
+        elevation: unlocked ? 1 : 0,
+        minHeight: 100,
+        justifyContent: 'center',
       }}
-      accessibilityLabel={`${def.name}${unlocked ? `, débloqué le ${date}` : `, verrouillé : ${def.condition}`}`}
+      accessibilityLabel={
+        unlocked
+          ? `${badge.name}, débloqué le ${dateLabel}`
+          : `${badge.name}, verrouillé — ${badge.condition}`
+      }
     >
-      {/* Badge circle */}
-      <View
-        style={{
-          width: 72,
-          height: 72,
-          borderRadius: 36,
-          backgroundColor: unlocked ? Colors.forest[50] : Colors.fieldBg,
-          alignItems: 'center',
-          justifyContent: 'center',
-          opacity: unlocked ? 1 : 0.4,
-          borderWidth: unlocked ? 2 : 1,
-          borderColor: unlocked ? Colors.forest[200] : Colors.earth[200],
-        }}
-      >
-        <Text style={{ fontSize: 30 }}>{def.emoji}</Text>
-      </View>
+      {/* Icon */}
+      {unlocked ? (
+        <Text style={{ fontSize: 32 }}>{badge.emoji}</Text>
+      ) : (
+        <View
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 22,
+            backgroundColor: Colors.fieldBg,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Ionicons name="lock-closed" size={20} color={Colors.muted} />
+        </View>
+      )}
 
       {/* Name */}
       <Text
         style={{
           fontSize: 11,
           fontWeight: '600',
-          color: unlocked ? Colors.forest[700] : Colors.done,
+          color: unlocked ? Colors.forest[700] : Colors.muted,
           textAlign: 'center',
+          lineHeight: 14,
         }}
         numberOfLines={2}
       >
-        {def.name}
+        {badge.name}
       </Text>
 
       {/* Date or condition */}
-      <Text
-        style={{
-          fontSize: 10,
-          color: unlocked ? Colors.muted : Colors.earth[300],
-          textAlign: 'center',
-        }}
-        numberOfLines={2}
-      >
-        {unlocked ? date : def.condition}
-      </Text>
+      {unlocked && dateLabel ? (
+        <Text style={{ fontSize: 10, color: Colors.muted, textAlign: 'center' }}>{dateLabel}</Text>
+      ) : (
+        <Text style={{ fontSize: 10, color: Colors.earth[300], textAlign: 'center', lineHeight: 13 }} numberOfLines={2}>
+          {badge.condition}
+        </Text>
+      )}
     </View>
   );
 }
 
-// ─── Screen ───────────────────────────────────────────────────────────────────
+// ─── Screen ──────────────────────────────────────────────────────────────────
 
 export default function BadgesScreen() {
   const { user } = useAuth();
 
-  const [unlockedMap, setUnlockedMap] = useState<Record<string, string>>({});
+  const [dogId, setDogId] = useState<string | null>(null);
+  const [unlockedMap, setUnlockedMap] = useState<Map<string, string>>(new Map()); // badge_id → unlocked_at
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeCategory, setActiveCategory] = useState<Category>('all');
+  const [activeCategory, setActiveCategory] = useState<BadgeCategory | 'all'>('all');
 
   const loadBadges = useCallback(async () => {
     if (!user) return;
     setError(null);
     try {
-      // Load dog
       const { data: dogData, error: dogErr } = await supabase
         .from('dogs')
         .select('id')
         .eq('owner_id', user.id)
+        .order('created_at', { ascending: true })
         .limit(1)
         .single();
       if (dogErr && dogErr.code !== 'PGRST116') throw dogErr;
-      if (!dogData) return;
 
-      // Load achievements
+      const dId = dogData?.id ?? null;
+      setDogId(dId);
+      if (!dId) return;
+
       const { data: achievements, error: achErr } = await supabase
         .from('dog_achievements')
-        .select('badge_id, created_at')
-        .eq('dog_id', dogData.id);
+        .select('badge_id, unlocked_at')
+        .eq('dog_id', dId);
       if (achErr) throw achErr;
 
-      const map: Record<string, string> = {};
-      for (const a of achievements ?? []) {
-        map[(a as UnlockedBadge).badge_id] = (a as UnlockedBadge).created_at;
-      }
+      const map = new Map<string, string>();
+      (achievements as UnlockedBadge[] ?? []).forEach((a) => {
+        map.set(a.badge_id, a.unlocked_at);
+      });
       setUnlockedMap(map);
+
     } catch (e) {
       setError('Impossible de charger les badges.');
       console.warn('[BadgesScreen] error:', e);
@@ -194,23 +213,35 @@ export default function BadgesScreen() {
 
   useEffect(() => { loadBadges(); }, [loadBadges]);
 
-  const filtered = activeCategory === 'all'
-    ? ALL_BADGES
-    : ALL_BADGES.filter((b) => b.category === activeCategory);
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await loadBadges();
+    setRefreshing(false);
+  }, [loadBadges]);
 
-  // Build rows of 3 for FlatList
-  const unlockedCount = Object.keys(unlockedMap).length;
+  // Filtered + sorted badges (unlocked first)
+  const filteredBadges = ALL_BADGES
+    .filter((b) => activeCategory === 'all' || b.category === activeCategory)
+    .sort((a, b) => {
+      const aUnlocked = unlockedMap.has(a.badge_id);
+      const bUnlocked = unlockedMap.has(b.badge_id);
+      if (aUnlocked && !bUnlocked) return -1;
+      if (!aUnlocked && bUnlocked) return 1;
+      return 0;
+    });
 
-  // ── Loading ────────────────────────────────────────────────────────────────
+  const unlockedCount = ALL_BADGES.filter((b) => unlockedMap.has(b.badge_id)).length;
+
+  // ── Loading ───────────────────────────────────────────────────────────────
   if (loading) {
     return (
       <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.cream }}>
-        <BadgesSkeleton />
+        <BadgeGridSkeleton />
       </SafeAreaView>
     );
   }
 
-  // ── Error ──────────────────────────────────────────────────────────────────
+  // ── Error ─────────────────────────────────────────────────────────────────
   if (error) {
     return (
       <SafeAreaView
@@ -243,115 +274,132 @@ export default function BadgesScreen() {
 
   return (
     <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: Colors.cream }}>
-      {/* Progress header */}
-      <View
-        style={{
-          marginHorizontal: 16,
-          marginTop: 12,
-          backgroundColor: Colors.forest[500],
-          borderRadius: 14,
-          padding: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 14,
-        }}
-        accessibilityLabel={`${unlockedCount} badges débloqués sur ${ALL_BADGES.length}`}
-      >
-        <View
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 22,
-            backgroundColor: 'rgba(255,248,240,0.15)',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <Ionicons name="ribbon" size={22} color={Colors.cream} />
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.cream }}>
-            {unlockedCount} / {ALL_BADGES.length} badges
-          </Text>
-          <View style={{ height: 6, backgroundColor: 'rgba(255,248,240,0.2)', borderRadius: 3, marginTop: 6, overflow: 'hidden' }}>
+      <FlatList
+        data={filteredBadges}
+        keyExtractor={(item) => item.badge_id}
+        numColumns={3}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.forest[500]} />
+        }
+        columnWrapperStyle={{ gap: 12, paddingHorizontal: 16 }}
+        contentContainerStyle={{ paddingBottom: 32, paddingTop: 0 }}
+        ListHeaderComponent={
+          <>
+            {/* Progress summary */}
             <View
               style={{
-                width: `${Math.round((unlockedCount / ALL_BADGES.length) * 100)}%`,
-                height: '100%',
-                backgroundColor: Colors.cream,
-                borderRadius: 3,
+                marginHorizontal: 16,
+                marginTop: 16,
+                backgroundColor: Colors.white,
+                borderRadius: 16,
+                padding: 20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 16,
+                shadowColor: Colors.forest[500],
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.08,
+                shadowRadius: 10,
+                elevation: 2,
               }}
-            />
-          </View>
-        </View>
-      </View>
-
-      {/* Category filter */}
-      <View style={{ paddingHorizontal: 16, marginTop: 16, marginBottom: 8 }}>
-        <FlatList
-          data={CATEGORIES}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.key}
-          contentContainerStyle={{ gap: 8 }}
-          renderItem={({ item }) => {
-            const active = activeCategory === item.key;
-            return (
-              <TouchableOpacity
-                onPress={() => setActiveCategory(item.key)}
-                activeOpacity={0.75}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: active }}
-                accessibilityLabel={item.label}
+            >
+              <View
                 style={{
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
-                  borderRadius: 20,
-                  backgroundColor: active ? Colors.forest[500] : Colors.white,
-                  borderWidth: active ? 0 : 1,
-                  borderColor: Colors.earth[200],
-                  minHeight: 36,
+                  width: 52,
+                  height: 52,
+                  borderRadius: 26,
+                  backgroundColor: Colors.forest[50],
+                  alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <Text
-                  style={{
-                    fontSize: 13,
-                    fontWeight: '600',
-                    color: active ? Colors.cream : Colors.muted,
-                  }}
-                >
-                  {item.label}
+                <Ionicons name="ribbon" size={26} color={Colors.forest[500]} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 22, fontWeight: '700', color: Colors.forest[800], lineHeight: 26 }}>
+                  {unlockedCount}/{ALL_BADGES.length}
                 </Text>
-              </TouchableOpacity>
-            );
-          }}
-        />
-      </View>
+                <Text style={{ fontSize: 13, color: Colors.muted, marginTop: 2 }}>
+                  {unlockedCount === 0
+                    ? 'Loguez votre première promenade !'
+                    : unlockedCount === ALL_BADGES.length
+                    ? 'Tous les badges débloqués — bravo !'
+                    : `${ALL_BADGES.length - unlockedCount} badge${ALL_BADGES.length - unlockedCount > 1 ? 's' : ''} à débloquer`}
+                </Text>
+              </View>
+            </View>
 
-      {/* Badges grid */}
-      <FlatList
-        data={filtered}
-        keyExtractor={(item) => item.id}
-        numColumns={3}
-        contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 32 }}
-        columnWrapperStyle={{ gap: 4 }}
+            {/* Category filter */}
+            <View
+              style={{
+                paddingHorizontal: 16,
+                marginTop: 16,
+                marginBottom: 12,
+                flexDirection: 'row',
+                gap: 8,
+              }}
+            >
+              {CATEGORIES.map((cat) => {
+                const active = activeCategory === cat.value;
+                return (
+                  <TouchableOpacity
+                    key={cat.value}
+                    onPress={() => setActiveCategory(cat.value)}
+                    activeOpacity={0.75}
+                    accessibilityRole="tab"
+                    accessibilityState={{ selected: active }}
+                    accessibilityLabel={cat.label}
+                    style={{
+                      paddingHorizontal: 14,
+                      paddingVertical: 8,
+                      borderRadius: 20,
+                      backgroundColor: active ? Colors.forest[500] : Colors.white,
+                      borderWidth: 1.5,
+                      borderColor: active ? Colors.forest[500] : Colors.earth[200],
+                      minHeight: 44,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        fontWeight: '600',
+                        color: active ? Colors.cream : Colors.forest[700],
+                      }}
+                    >
+                      {cat.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </>
+        }
         ListEmptyComponent={
           <View
-            style={{ alignItems: 'center', paddingVertical: 48, gap: 12 }}
+            style={{
+              marginHorizontal: 16,
+              marginTop: 16,
+              backgroundColor: Colors.white,
+              borderRadius: 12,
+              padding: 28,
+              alignItems: 'center',
+              gap: 8,
+            }}
           >
-            <Ionicons name="ribbon-outline" size={40} color={Colors.forest[200]} />
-            <Text style={{ fontSize: 14, color: Colors.muted, textAlign: 'center' }}>
+            <Ionicons name="ribbon-outline" size={36} color={Colors.forest[200]} />
+            <Text style={{ fontSize: 14, color: Colors.muted, textAlign: 'center', lineHeight: 20 }}>
               Aucun badge dans cette catégorie.
             </Text>
           </View>
         }
         renderItem={({ item }) => (
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, marginBottom: 12 }}>
             <BadgeCell
-              def={item}
-              unlockedAt={unlockedMap[item.id] ?? null}
+              badge={item}
+              unlocked={unlockedMap.has(item.badge_id)}
+              unlockedAt={unlockedMap.get(item.badge_id) ?? null}
             />
           </View>
         )}
