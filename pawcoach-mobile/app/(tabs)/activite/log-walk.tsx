@@ -163,10 +163,10 @@ export default function LogWalkScreen() {
       });
       if (logErr) throw logErr;
 
-      // 3. Update streak
+      // 3. Update streak (avec grace day — CODEBASE_KNOWLEDGE.md §1.3)
       const { data: streakData, error: streakFetchErr } = await supabase
         .from('streaks')
-        .select('id, current_streak, longest_streak, last_activity_date')
+        .select('id, current_streak, longest_streak, last_activity_date, grace_days_remaining, grace_days_used')
         .eq('dog_id', dogId)
         .maybeSingle();
       if (streakFetchErr) throw streakFetchErr;
@@ -174,25 +174,55 @@ export default function LogWalkScreen() {
       let newStreak = 1;
       if (streakData) {
         const lastDate = streakData.last_activity_date;
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayStr = yesterday.toISOString().split('T')[0];
         if (lastDate === today) {
           // Déjà loguée aujourd'hui — pas de mise à jour nécessaire
           newStreak = streakData.current_streak ?? 1;
         } else {
-          newStreak = lastDate === yesterdayStr
-            ? (streakData.current_streak ?? 0) + 1
-            : 1;
-          const { error: streakErr } = await supabase
-            .from('streaks')
-            .update({
-              current_streak: newStreak,
-              longest_streak: Math.max(newStreak, streakData.longest_streak ?? 0),
-              last_activity_date: today,
-            })
-            .eq('id', streakData.id);
-          if (streakErr) throw streakErr;
+          const daysBetween = lastDate
+            ? Math.round((new Date(today).getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24))
+            : 999;
+          const graceRemaining = streakData.grace_days_remaining ?? 1;
+          const isConsecutive = daysBetween === 1;
+          const isGraceDay = daysBetween === 2 && graceRemaining > 0;
+
+          if (isConsecutive) {
+            newStreak = (streakData.current_streak ?? 0) + 1;
+            const { error: streakErr } = await supabase
+              .from('streaks')
+              .update({
+                current_streak: newStreak,
+                longest_streak: Math.max(newStreak, streakData.longest_streak ?? 0),
+                last_activity_date: today,
+              })
+              .eq('id', streakData.id);
+            if (streakErr) throw streakErr;
+          } else if (isGraceDay) {
+            // Grace day : 1 jour manqué toléré (spec CODEBASE_KNOWLEDGE §1.3)
+            newStreak = (streakData.current_streak ?? 0) + 1;
+            const { error: streakErr } = await supabase
+              .from('streaks')
+              .update({
+                current_streak: newStreak,
+                longest_streak: Math.max(newStreak, streakData.longest_streak ?? 0),
+                last_activity_date: today,
+                grace_days_remaining: graceRemaining - 1,
+                grace_days_used: (streakData.grace_days_used ?? 0) + 1,
+              })
+              .eq('id', streakData.id);
+            if (streakErr) throw streakErr;
+          } else {
+            // Reset streak
+            newStreak = 1;
+            const { error: streakErr } = await supabase
+              .from('streaks')
+              .update({
+                current_streak: 1,
+                longest_streak: Math.max(1, streakData.longest_streak ?? 0),
+                last_activity_date: today,
+              })
+              .eq('id', streakData.id);
+            if (streakErr) throw streakErr;
+          }
         }
       } else {
         const { error: streakInsErr } = await supabase
