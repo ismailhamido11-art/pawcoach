@@ -164,11 +164,12 @@ export default function LogWalkScreen() {
       if (logErr) throw logErr;
 
       // 3. Update streak
-      const { data: streakData } = await supabase
+      const { data: streakData, error: streakFetchErr } = await supabase
         .from('streaks')
         .select('id, current_streak, longest_streak, last_activity_date')
         .eq('dog_id', dogId)
         .maybeSingle();
+      if (streakFetchErr) throw streakFetchErr;
 
       let newStreak = 1;
       if (streakData) {
@@ -176,21 +177,23 @@ export default function LogWalkScreen() {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         const yesterdayStr = yesterday.toISOString().split('T')[0];
-        if (lastDate === yesterdayStr) {
-          newStreak = (streakData.current_streak ?? 0) + 1;
-        } else if (lastDate === today) {
+        if (lastDate === today) {
+          // Déjà loguée aujourd'hui — pas de mise à jour nécessaire
           newStreak = streakData.current_streak ?? 1;
+        } else {
+          newStreak = lastDate === yesterdayStr
+            ? (streakData.current_streak ?? 0) + 1
+            : 1;
+          const { error: streakErr } = await supabase
+            .from('streaks')
+            .update({
+              current_streak: newStreak,
+              longest_streak: Math.max(newStreak, streakData.longest_streak ?? 0),
+              last_activity_date: today,
+            })
+            .eq('id', streakData.id);
+          if (streakErr) throw streakErr;
         }
-
-        const { error: streakErr } = await supabase
-          .from('streaks')
-          .update({
-            current_streak: newStreak,
-            longest_streak: Math.max(newStreak, streakData.longest_streak ?? 0),
-            last_activity_date: today,
-          })
-          .eq('id', streakData.id);
-        if (streakErr) throw streakErr;
       } else {
         const { error: streakInsErr } = await supabase
           .from('streaks')
