@@ -43,17 +43,19 @@ export default function NutritionPaywall({ visible, onClose, headline }: Props) 
       const Purchases = require('react-native-purchases').default;
       Purchases.getOfferings().then((offerings: any) => {
         const packages = offerings.current?.availablePackages ?? [];
+        let localMonthly: string | null = null;
+        let localAnnual: string | null = null;
         for (const pkg of packages) {
           const period = pkg.packageType ?? '';
           if (period === 'MONTHLY' || pkg.identifier?.includes('monthly')) {
-            setMonthlyPrice(pkg.product.priceString);
+            localMonthly = pkg.product.priceString;
           }
           if (period === 'ANNUAL' || pkg.identifier?.includes('annual')) {
-            setAnnualPrice(pkg.product.priceString);
+            localAnnual = pkg.product.priceString;
           }
         }
-        if (!monthlyPrice) setMonthlyPrice('7,99 €/mois');
-        if (!annualPrice) setAnnualPrice('59,99 €/an');
+        setMonthlyPrice(localMonthly ?? '7,99 €/mois');
+        setAnnualPrice(localAnnual ?? '59,99 €/an');
       }).catch(() => {
         setMonthlyPrice('7,99 €/mois');
         setAnnualPrice('59,99 €/an');

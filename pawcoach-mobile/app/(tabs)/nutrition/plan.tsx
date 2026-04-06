@@ -168,10 +168,9 @@ export default function PlanScreen() {
         .limit(1)
         .single();
 
-      if (existingPlan?.plan_json) {
-        const parsed = typeof existingPlan.plan_json === 'string'
-          ? JSON.parse(existingPlan.plan_json)
-          : existingPlan.plan_json;
+      const rawPlan = existingPlan?.plan_text ?? existingPlan?.plan_json;
+      if (rawPlan) {
+        const parsed = typeof rawPlan === 'string' ? JSON.parse(rawPlan) : rawPlan;
         setPlan(parsed as NutritionPlan);
       }
     } catch (e) {

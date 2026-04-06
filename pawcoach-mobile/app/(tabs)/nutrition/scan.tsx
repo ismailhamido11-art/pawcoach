@@ -30,6 +30,14 @@ interface HistoryItem {
   created_at: string;
 }
 
+interface FoodScanRow {
+  id: string;
+  food_name: string;
+  verdict: string;
+  score: number;
+  created_at: string;
+}
+
 // ─── Danger badge config ──────────────────────────────────────────────────────
 
 const DANGER_COLORS: Record<DangerCategory, { color: string; bg: string; label: string }> = {
@@ -131,15 +139,21 @@ export default function ScanScreen() {
           : supabase.from('profiles').select('actions_remaining').eq('id', user.id).single(),
         supabase
           .from('food_scans')
-          .select('id, food_name, danger_category, toxicity_score, created_at')
-          .eq('user_id', user.id)
+          .select('id, food_name, verdict, score, created_at')
           .order('created_at', { ascending: false })
           .limit(5),
       ]);
 
       setDogId(dogRes.data?.[0]?.id ?? null);
       setActionsRemaining(profile?.is_premium ? 999 : ((profileRes.data as any)?.actions_remaining ?? 3));
-      setHistory((historyRes.data as HistoryItem[]) ?? []);
+      const rows = (historyRes.data as FoodScanRow[]) ?? [];
+      setHistory(rows.map((r) => ({
+        id: r.id,
+        food_name: r.food_name,
+        danger_category: (['safe', 'caution', 'toxic'].includes(r.verdict) ? r.verdict : 'caution') as DangerCategory,
+        toxicity_score: r.score,
+        created_at: r.created_at,
+      })));
     } catch (e) {
       console.warn('[ScanScreen] init error:', e);
     } finally {
