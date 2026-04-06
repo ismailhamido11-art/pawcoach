@@ -153,13 +153,13 @@ export default function LogWalkScreen() {
       // 2. INSERT daily_log
       const { error: logErr } = await supabase.from('daily_logs').insert({
         dog_id: dogId,
-        logged_date: today,
+        owner_id: user.id,
+        date: today,
         walk_minutes: duration,
         walk_distance_km: distanceKm,
         walk_mood: mood,
         walk_tags: selectedTags.length > 0 ? selectedTags : null,
         notes: notes.trim() || null,
-        user_id: user.id,
       });
       if (logErr) throw logErr;
 
@@ -227,7 +227,7 @@ export default function LogWalkScreen() {
       } else {
         const { error: streakInsErr } = await supabase
           .from('streaks')
-          .insert({ dog_id: dogId, current_streak: 1, longest_streak: 1, last_activity_date: today, user_id: user.id });
+          .insert({ dog_id: dogId, owner_id: user.id, current_streak: 1, longest_streak: 1, last_activity_date: today });
         if (streakInsErr) throw streakInsErr;
       }
 
@@ -252,6 +252,7 @@ export default function LogWalkScreen() {
         if (def.check(totalWalks ?? 0, newStreak)) {
           const { error: badgeErr } = await supabase.from('dog_achievements').insert({
             dog_id: dogId,
+            owner_id: user.id,
             badge_id: def.id,
             badge_name: def.name,
             badge_emoji: def.emoji,

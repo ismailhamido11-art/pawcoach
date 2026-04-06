@@ -43,7 +43,7 @@ interface ProgrammeContent {
 
 interface WalkLog {
   id: string;
-  logged_date: string;
+  date: string;
   walk_minutes: number;
   walk_distance_km: number | null;
   walk_mood: string | null;
@@ -308,7 +308,7 @@ const MOOD_EMOJI: Record<string, string> = {
 };
 
 function WalkRow({ log }: { log: WalkLog }) {
-  const date = new Date(log.logged_date).toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' });
+  const date = new Date(log.date).toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' });
   const mood = log.walk_mood ? MOOD_EMOJI[log.walk_mood] ?? '' : '';
   return (
     <View
@@ -424,10 +424,10 @@ export default function ActiviteHub() {
           .maybeSingle(),
         supabase
           .from('daily_logs')
-          .select('id, logged_date, walk_minutes, walk_distance_km, walk_mood')
+          .select('id, date, walk_minutes, walk_distance_km, walk_mood')
           .eq('dog_id', activeDog.id)
           .gt('walk_minutes', 0)
-          .order('logged_date', { ascending: false })
+          .order('date', { ascending: false })
           .limit(3),
         supabase
           .from('dog_achievements')
