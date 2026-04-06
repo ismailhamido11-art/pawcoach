@@ -125,11 +125,15 @@ Deno.serve(async (req) => {
     }
 
     // Apply input preferences overrides
-    const inputAllergies: string[] | undefined = preferences?.allergies
-    const inputDietType: string | undefined = preferences?.diet_type
+    const inputAllergies: string[] | undefined = Array.isArray(preferences?.allergies)
+      ? preferences.allergies
+      : undefined
+    const inputDietType: string | undefined = typeof preferences?.diet_type === 'string'
+      ? preferences.diet_type
+      : undefined
 
     const effectiveAllergies = inputAllergies && inputAllergies.length > 0
-      ? inputAllergies.map((a: string) => sanitize(a, 100)).join(', ')
+      ? inputAllergies.map((a: string) => sanitize(String(a), 100)).join(', ')
       : sanitize(dog.allergies, 500) || 'Aucune'
 
     const effectiveDietType = inputDietType
